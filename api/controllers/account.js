@@ -224,151 +224,86 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
     body: { language }
   } = req;
   const { studentId } = req.params;
-  // const { _id } = student;
   let student_id;
+
   if (user.role === Role.Student || user.role === Role.Guest) {
     student_id = user._id.toString();
   } else {
     student_id = studentId;
   }
-  language['updatedAt'] = new Date();
+
+  language.updatedAt = new Date();
+
   const updatedStudent = await req.db.model('User').findByIdAndUpdate(
     student_id,
     {
       'academic_background.language': language
-      // $set: {
-      //   'academic_background.language': language
-      // }
     },
     { upsert: true, new: true }
   );
 
-  // German not needed
-  let german_certificate_doc = updatedStudent.profile.find(
-    (doc) => doc.name === profile_name_list.German_Certificate
-  );
-  let english_certificate_doc = updatedStudent.profile.find(
-    (doc) => doc.name === profile_name_list.Englisch_Certificate
-  );
-  let gre_certificate_doc = updatedStudent.profile.find(
-    (doc) => doc.name === profile_name_list.GRE
-  );
-  let gmat_certificate_doc = updatedStudent.profile.find(
-    (doc) => doc.name === profile_name_list.GMAT
-  );
-  if (updatedStudent.academic_background.language.german_isPassed === '--') {
-    if (!german_certificate_doc) {
-      // Set not needed
-      german_certificate_doc = updatedStudent.profile.create({
-        name: profile_name_list.German_Certificate
-      });
-      german_certificate_doc.status = DocumentStatus.NotNeeded;
-      german_certificate_doc.required = true;
-      german_certificate_doc.updatedAt = new Date();
-      german_certificate_doc.path = '';
-      updatedStudent.profile.push(german_certificate_doc);
-    } else if (german_certificate_doc.status === DocumentStatus.Missing) {
-      german_certificate_doc.status = DocumentStatus.NotNeeded;
+  const profileUpdates = [
+    {
+      fieldName: 'german_isPassed',
+      docName: profile_name_list.German_Certificate
+    },
+    {
+      fieldName: 'english_isPassed',
+      docName: profile_name_list.Englisch_Certificate
+    },
+    {
+      fieldName: 'gre_isPassed',
+      docName: profile_name_list.GRE
+    },
+    {
+      fieldName: 'gmat_isPassed',
+      docName: profile_name_list.GMAT
     }
-  } else if (!german_certificate_doc) {
-    // Set not needed
-    german_certificate_doc = updatedStudent.profile.create({
-      name: profile_name_list.German_Certificate
-    });
-    german_certificate_doc.status = DocumentStatus.Missing;
-    german_certificate_doc.required = true;
-    german_certificate_doc.updatedAt = new Date();
-    german_certificate_doc.path = '';
-    updatedStudent.profile.push(german_certificate_doc);
-  } else if (german_certificate_doc.status === DocumentStatus.NotNeeded) {
-    german_certificate_doc.status = DocumentStatus.Missing;
-  }
+  ];
 
-  if (updatedStudent.academic_background.language.english_isPassed === '--') {
-    if (!english_certificate_doc) {
-      // Set not needed
-      english_certificate_doc = updatedStudent.profile.create({
-        name: profile_name_list.Englisch_Certificate
-      });
-      english_certificate_doc.status = DocumentStatus.NotNeeded;
-      english_certificate_doc.required = true;
-      english_certificate_doc.updatedAt = new Date();
-      english_certificate_doc.path = '';
-      updatedStudent.profile.push(english_certificate_doc);
-    } else if (english_certificate_doc.status === DocumentStatus.Missing) {
-      english_certificate_doc.status = DocumentStatus.NotNeeded;
-    }
-  } else if (!english_certificate_doc) {
-    // Set not needed
-    english_certificate_doc = updatedStudent.profile.create({
-      name: profile_name_list.Englisch_Certificate
-    });
-    english_certificate_doc.status = DocumentStatus.Missing;
-    english_certificate_doc.required = true;
-    english_certificate_doc.updatedAt = new Date();
-    english_certificate_doc.path = '';
-    updatedStudent.profile.push(english_certificate_doc);
-  } else if (english_certificate_doc.status === DocumentStatus.NotNeeded) {
-    english_certificate_doc.status = DocumentStatus.Missing;
-  }
-  if (updatedStudent.academic_background.language.gre_isPassed === '--') {
-    if (!gre_certificate_doc) {
-      // Set not needed
-      gre_certificate_doc = updatedStudent.profile.create({
-        name: profile_name_list.GRE
-      });
-      gre_certificate_doc.status = DocumentStatus.NotNeeded;
-      gre_certificate_doc.required = true;
-      gre_certificate_doc.updatedAt = new Date();
-      gre_certificate_doc.path = '';
-      updatedStudent.profile.push(gre_certificate_doc);
-    } else if (gre_certificate_doc.status === DocumentStatus.Missing) {
-      gre_certificate_doc.status = DocumentStatus.NotNeeded;
-    }
-  } else if (!gre_certificate_doc) {
-    // Set not needed
-    gre_certificate_doc = updatedStudent.profile.create({
-      name: profile_name_list.GRE
-    });
-    gre_certificate_doc.status = DocumentStatus.Missing;
-    gre_certificate_doc.required = true;
-    gre_certificate_doc.updatedAt = new Date();
-    gre_certificate_doc.path = '';
-    updatedStudent.profile.push(gre_certificate_doc);
-  } else if (gre_certificate_doc.status === DocumentStatus.NotNeeded) {
-    gre_certificate_doc.status = DocumentStatus.Missing;
-  }
+  // Helper function to update document status
+  const updateDocumentStatus = (isPassed, docName) => {
+    let certificateDoc = updatedStudent.profile.find(
+      (doc) => doc.name === docName
+    );
 
-  if (updatedStudent.academic_background.language.gmat_isPassed === '--') {
-    if (!gmat_certificate_doc) {
-      // Set not needed
-      gmat_certificate_doc = updatedStudent.profile.create({
-        name: profile_name_list.GMAT
+    if (isPassed === '--') {
+      if (!certificateDoc) {
+        certificateDoc = updatedStudent.profile.create({
+          name: docName,
+          status: DocumentStatus.NotNeeded,
+          required: true,
+          updatedAt: new Date(),
+          path: ''
+        });
+        updatedStudent.profile.push(certificateDoc);
+      } else if (certificateDoc.status === DocumentStatus.Missing) {
+        certificateDoc.status = DocumentStatus.NotNeeded;
+      }
+    } else if (!certificateDoc) {
+      certificateDoc = updatedStudent.profile.create({
+        name: docName,
+        status: DocumentStatus.Missing,
+        required: true,
+        updatedAt: new Date(),
+        path: ''
       });
-      gmat_certificate_doc.status = DocumentStatus.NotNeeded;
-      gmat_certificate_doc.required = true;
-      gmat_certificate_doc.updatedAt = new Date();
-      gmat_certificate_doc.path = '';
-      updatedStudent.profile.push(gmat_certificate_doc);
-    } else if (gmat_certificate_doc.status === DocumentStatus.Missing) {
-      gmat_certificate_doc.status = DocumentStatus.NotNeeded;
+      updatedStudent.profile.push(certificateDoc);
+    } else if (certificateDoc.status === DocumentStatus.NotNeeded) {
+      certificateDoc.status = DocumentStatus.Missing;
     }
-  } else if (!gmat_certificate_doc) {
-    // Set not needed
-    gmat_certificate_doc = updatedStudent.profile.create({
-      name: profile_name_list.GMAT
-    });
-    gmat_certificate_doc.status = DocumentStatus.Missing;
-    gmat_certificate_doc.required = true;
-    gmat_certificate_doc.updatedAt = new Date();
-    gmat_certificate_doc.path = '';
-    updatedStudent.profile.push(gmat_certificate_doc);
-  } else if (gmat_certificate_doc.status === DocumentStatus.NotNeeded) {
-    gmat_certificate_doc.status = DocumentStatus.Missing;
-  }
+  };
+
+  // Iterate through each profile update configuration
+  profileUpdates.forEach(({ fieldName, docName }) => {
+    updateDocumentStatus(
+      updatedStudent.academic_background.language[fieldName],
+      docName
+    );
+  });
 
   await updatedStudent.save();
-  // TODO: minor: profile field not used for student.
+
   res.status(200).send({
     success: true,
     data: updatedStudent.academic_background.language,

@@ -17,9 +17,7 @@ const {
 } = require('../middlewares/file-upload');
 const { Role } = require('../constants');
 
-
 const {
-  getStudent,
   getStudentAndDocLinks,
   updateDocumentationHelperLink,
   getStudentsAndDocLinks,
@@ -160,18 +158,6 @@ router
     permission_canAccessStudentDatabase_filter,
     InnerTaigerMultitenantFilter,
     updateStudentsArchivStatus,
-    logAccess
-  );
-
-router
-  .route('/:studentId')
-  .get(
-    filter_archiv_user,
-    GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    permission_canAccessStudentDatabase_filter,
-    multitenant_filter,
-    getStudent,
     logAccess
   );
 

@@ -76,9 +76,6 @@ export const getApplicationStudent = (studentId) =>
 export const getStudentUniAssist = (studentId) =>
   request.get(`/api/uniassist/${studentId}`);
 
-export const getStudent = (studentId) =>
-  request.get(`/api/students/${studentId}`);
-
 export const getArchivStudents = (TaiGerStaffId) =>
   request.get(`/api/teams/archiv/${TaiGerStaffId}`);
 

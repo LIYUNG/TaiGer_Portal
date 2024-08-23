@@ -569,56 +569,6 @@ describe('updateCredentials Controller', () => {
 //   });
 // });
 
-// // TODO: uploading transcript for courses analyser
-// describe('POST /api/account/transcript/:category/:group', () => {
-//   it('should run python script on the uploaded file', async () => {
-//     const pythonProcess = new EventEmitter();
-//     spawn.mockImplementation((cmd, ...args) => {
-//       setTimeout(() => pythonProcess.emit('close', 0), 0);
-//       return pythonProcess;
-//     });
-
-//     const category = 'bachelorTranscript_';
-//     const filename = 'my-file.xlsx';
-//     const group = 'cs';
-
-//     const resp = await request(app)
-//       .post(`/api/account/transcript/${category}/${group}`)
-//       .set('tenantId', TENANT_ID)
-//       .attach('file', Buffer.from('Lorem ipsum'), filename);
-
-//     expect(spawn).toBeCalled();
-//     expect(resp.status).toBe(200);
-//     // FIXME: not a reasonable response
-//     expect(resp.body).toMatchObject({ generatedfile: `analyzed_${filename}` });
-//   });
-
-//   it('should return 500 when error occurs while processing file', async () => {
-//     const pythonProcess = new EventEmitter();
-//     spawn.mockImplementation((cmd, ...args) => {
-//       setTimeout(() => pythonProcess.emit('close', 1), 0);
-//       return pythonProcess;
-//     });
-
-//     const category = 'bachelorTranscript_';
-//     const filename = 'my-file.xlsx';
-//     const group = 'cs';
-
-//     const resp = await request(app)
-//       .post(`/api/account/transcript/${category}/${group}`)
-//       .set('tenantId', TENANT_ID)
-//       .attach('file', Buffer.from('Lorem ipsum'), filename);
-
-//     expect(resp.status).toBe(500);
-//   });
-
-//   it.todo('should return 400 for invalid file');
-// });
-
-// describe("GET /api/account/download/:category/:filename", () => {
-//   it.todo("should download the analyzed report");
-// });
-
 describe('POST /api/account/profile/:user_id', () => {
   const personaldata = { firstname: 'New_FirstName', lastname: 'New_LastName' };
   beforeEach(async () => {

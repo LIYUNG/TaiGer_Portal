@@ -142,6 +142,12 @@ beforeAll(async () => {
   await ProgramModel.create(program);
 });
 afterAll(async () => {
+  const db = connectToDatabase(TENANT_ID, dbUri);
+  const UserModel = db.model('User', UserSchema);
+  const ProgramModel = db.model('Program', programSchema);
+  await UserModel.deleteMany();
+  await ProgramModel.deleteMany();
+
   await clearDatabase();
 });
 beforeEach(async () => {});

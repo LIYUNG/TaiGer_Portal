@@ -34,12 +34,14 @@ const {
   removeNotification,
   removeAgentNotification,
   getMyAcademicBackground,
+  updateStudentApplicationResult
+} = require('../controllers/files');
+const {
   updateAcademicBackground,
   updateLanguageSkill,
   updateApplicationPreferenceSkill,
-  updatePersonalData,
-  updateStudentApplicationResult
-} = require('../controllers/files');
+  updatePersonalData
+} = require('../controllers/account');
 
 const {
   updateCredentials,

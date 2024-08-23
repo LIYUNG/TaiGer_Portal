@@ -1,7 +1,6 @@
 const { ErrorResponse } = require('../common/errors');
 const { Role } = require('../constants');
 
-
 const multitenant_filter = (req, res, next) => {
   const {
     user,
@@ -20,6 +19,26 @@ const multitenant_filter = (req, res, next) => {
   next();
 };
 
+const complaintTicketMultitenant_filter = async (req, res, next) => {
+  const {
+    user,
+    params: { ticketId }
+  } = req;
+  if (user.role === Role.Student || user.role === Role.Guest) {
+    const ticket = await req.db.model('Complaint').findById(ticketId);
+    if (
+      ticket.requester_id.toString() &&
+      user._id.toString() !== ticket.requester_id.toString()
+    ) {
+      return next(
+        new ErrorResponse(403, 'Not allowed to access other resource.')
+      );
+    }
+  }
+  next();
+};
+
 module.exports = {
-  multitenant_filter
+  multitenant_filter,
+  complaintTicketMultitenant_filter
 };

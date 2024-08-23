@@ -17,31 +17,43 @@ const { AWS_S3_BUCKET_NAME } = require('../config');
 const { emptyS3Directory } = require('../utils/modelHelper/versionControl');
 const { threadS3GarbageCollector } = require('../utils/utils_function');
 
+const getManagers = async (req) =>
+  req.db
+    .model('Permission')
+    .find({
+      $or: [
+        { canAssignEditors: true },
+        { canAssignAgents: true },
+        { canModifyAllBaseDocuments: true },
+        { canAccessAllChat: true }
+      ]
+    })
+    .populate('user_id', 'firstname lastname email archiv')
+    .lean();
+
 const getComplaints = asyncHandler(async (req, res) => {
   const { user } = req;
 
-  const { type, program_id, status } = req.query;
+  const { type, status } = req.query;
   const query = {};
   if (type) {
-    query.type = type;
+    // query.type = type;
   }
-  if (program_id) {
-    query.program_id = program_id;
-  }
+
   if (status) {
     query.status = status;
   }
   if (user.role === Role.Student) {
     const tickets = await req.db
       .model('Complaint')
-      .find()
-      .select('-requester_id')
+      .find({ requester_id: user._id })
+      .populate('requester_id', 'firstname lastname email')
       .sort({ createdAt: -1 });
     res.send({ success: true, data: tickets });
   } else {
     const tickets = await req.db
       .model('Complaint')
-      .find()
+      .find(query)
       .populate('requester_id', 'firstname lastname email')
       .sort({ createdAt: -1 });
     res.send({ success: true, data: tickets });
@@ -72,37 +84,25 @@ const createComplaint = asyncHandler(async (req, res) => {
 
   res.status(201).send({ success: true, data: new_ticket });
 
-  // TODO: inform manager
-  const permissions = await req.db
-    .model('Permission')
-    .find({
-      $or: [
-        { canAssignEditors: true },
-        { canAssignAgents: true },
-        { canModifyAllBaseDocuments: true },
-        { canAccessAllChat: true }
-      ]
-    })
-    .populate('user_id', 'firstname lastname email archiv')
-    .lean();
-  if (permissions) {
-    for (let x = 0; x < permissions.length; x += 1) {
-      if (isNotArchiv(permissions[x].user_id)) {
-        newCustomerCenterTicketEmail(
-          {
-            firstname: permissions[x].user_id.firstname,
-            lastname: permissions[x].user_id.lastname,
-            address: permissions[x].user_id.email
-          },
-          {
-            requester: user,
-            ticket_id: new_ticket._id?.toString(),
-            ticket_title: new_ticket.title,
-            ticket_description: new_ticket.description,
-            createdAt: new Date()
-          }
-        );
-      }
+  // inform manager
+  const permissions = await getManagers(req);
+  const users = permissions.map((p) => p.user_id);
+  for (let x = 0; x < users.length; x += 1) {
+    if (isNotArchiv(users[x])) {
+      newCustomerCenterTicketEmail(
+        {
+          firstname: users[x].firstname,
+          lastname: users[x].lastname,
+          address: users[x].email
+        },
+        {
+          requester: user,
+          ticket_id: new_ticket._id?.toString(),
+          ticket_title: new_ticket.title,
+          ticket_description: new_ticket.description,
+          createdAt: new Date()
+        }
+      );
     }
   }
 
@@ -241,20 +241,17 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
     .findById(ticket.requester_id)
     .populate('editors agents', 'firstname lastname email archiv');
 
+  const payload = {
+    student_firstname: student.firstname,
+    student_lastname: student.lastname,
+    ticket_id: ticket._id.toString(),
+    ticket_title: ticket.title
+  };
+
   if (user.role === Role.Student) {
     // TODO: Inform Manager
     if (isNotArchiv(student)) {
-      const permissions = await req.db
-        .model('Permission')
-        .find({
-          $or: [
-            { canAssignAgents: true },
-            { canAssignEditors: true },
-            { canAccessAllChat: true }
-          ]
-        })
-        .populate('user_id', 'firstname lastname email archiv')
-        .lean();
+      const permissions = await getManagers(req);
       const users = permissions.map((p) => p.user_id);
       for (let i = 0; i < users.length; i += 1) {
         if (isNotArchiv(users[i])) {
@@ -262,12 +259,6 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
             firstname: users[i].firstname,
             lastname: users[i].lastname,
             address: users[i].email
-          };
-          const payload = {
-            student_firstname: student.firstname,
-            student_lastname: student.lastname,
-            ticket_id: ticket._id.toString(),
-            ticket_title: ticket.title
           };
           newCustomerCenterTicketMessageEmail(manager_recipent, payload);
         }
@@ -283,12 +274,6 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
       lastname: ticket2.requester_id.lastname,
       address: ticket2.requester_id.email
     };
-    const payload = {
-      student_firstname: student.firstname,
-      student_lastname: student.lastname,
-      ticket_id: ticket._id.toString()
-    };
-    // TODO: email
     newCustomerCenterTicketMessageEmail(student_recipient, payload);
   }
 });

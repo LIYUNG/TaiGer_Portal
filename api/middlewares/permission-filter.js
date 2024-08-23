@@ -122,6 +122,20 @@ const permission_canModifyTicketList_filter = asyncHandler(
   }
 );
 
+const permission_canModifyComplaintList_filter = async (req, res, next) => {
+  const { user } = req;
+  if (user.role === Role.Agent) {
+    const permission = await getPermission(req, user);
+    if (!permission?.canModifyTicketList) {
+      logger.warn('permissions denied: permission_canModifyTicketList_filter');
+      throw new ErrorResponse(403, 'Permission denied: Operation forbidden.');
+    }
+    next();
+  } else {
+    next();
+  }
+};
+
 module.exports = {
   permission_canAssignEditor_filter,
   permission_canAssignAgent_filter,
@@ -130,5 +144,6 @@ module.exports = {
   permission_TaiGerAIRatelimiter,
   permission_canUseTaiGerAI_filter,
   permission_canModifyProgramList_filter,
-  permission_canModifyTicketList_filter
+  permission_canModifyTicketList_filter,
+  permission_canModifyComplaintList_filter
 };

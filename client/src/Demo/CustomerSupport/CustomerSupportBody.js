@@ -5,32 +5,24 @@ import {
   Link,
   Breadcrumbs,
   Typography,
-  //   Container,
-  //   Tabs,
-  //   Tab,
   List,
   Paper,
   Grid,
-  //   ListItem,
   ListItemText,
   Button,
-  //   FormControl,
-  //   InputLabel,
-  //   Select,
-  //   MenuItem,
-  //   TextField,
   ListItemButton,
   Accordion,
   AccordionSummary,
   AccordionDetails
 } from '@mui/material';
-import { appConfig } from '../../config';
-import DEMO from '../../store/constant';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import ExportIcon from '@mui/icons-material/ExitToApp';
+import { appConfig } from '../../config';
+import DEMO from '../../store/constant';
+
+import { convertDate_ux_friendly } from '../Utils/contants';
 
 function CustomerSupportBody({ complaintTickets }) {
   const { t } = useTranslation();
@@ -98,7 +90,6 @@ function CustomerSupportBody({ complaintTickets }) {
                 mb={2}
               >
                 <Typography variant="h6">Latest Support History</Typography>
-                <Button startIcon={<ExportIcon />}>Export</Button>
               </Box>
               <Typography variant="body2" gutterBottom>
                 Here is your most recent history
@@ -124,8 +115,10 @@ function CustomerSupportBody({ complaintTickets }) {
                     }}
                   >
                     <ListItemText
-                      primary={ticket.title}
-                      secondary={`${ticket.description} - ${ticket.date}`}
+                      primary={`${ticket.title} - ${ticket.requester_id?.firstname}`}
+                      secondary={`${
+                        ticket.description
+                      } - ${convertDate_ux_friendly(ticket.updatedAt)}`}
                     />
                     <Typography variant="body2" color="textSecondary">
                       {ticket.status}

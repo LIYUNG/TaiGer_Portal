@@ -21,10 +21,9 @@ const {
   updateAMessageInComplaint
 } = require('../controllers/complaints');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
-const { multitenant_filter } = require('../middlewares/multitenant-filter');
 const {
-  doc_thread_ops_validator
-} = require('../middlewares/docs_thread_operation_validation');
+  complaintTicketMultitenant_filter
+} = require('../middlewares/multitenant-filter');
 const { MessagesTicketUpload } = require('../middlewares/file-upload');
 // const {
 //   permission_canModifyComplaintList_filter
@@ -57,20 +56,21 @@ router
     filter_archiv_user,
     GetComplaintRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    complaintTicketMultitenant_filter,
     getComplaint
   )
   .put(
     filter_archiv_user,
     UpdateComplaintRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
-    // permission_canModifyComplaintList_filter,
+    complaintTicketMultitenant_filter,
     updateComplaint
   )
   .delete(
     filter_archiv_user,
     DeleteComplaintRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
-    // permission_canModifyComplaintList_filter,
+    complaintTicketMultitenant_filter,
     deleteComplaint
   );
 
@@ -81,37 +81,37 @@ router
     filter_archiv_user,
     UpdateComplaintRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
-    // permission_canModifyComplaintList_filter,
+    complaintTicketMultitenant_filter,
     updateAMessageInComplaint
   )
   .delete(
     filter_archiv_user,
     DeleteComplaintRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
-    // permission_canModifyComplaintList_filter,
+    complaintTicketMultitenant_filter,
     deleteAMessageInComplaint
   );
 
-router.route('/:studentId/:ticketId/:fileKey').get(
-  filter_archiv_user,
-  UpdateComplaintRateLimiter,
-  permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
-  // permission_canModifyComplaintList_filter,
-  // multitenant_filter,
-  // doc_thread_ops_validator,
-  MessagesTicketUpload,
-  getMessageFileInTicket
-);
+router
+  .route('/:studentId/:ticketId/:fileKey')
+  .get(
+    filter_archiv_user,
+    UpdateComplaintRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+    complaintTicketMultitenant_filter,
+    MessagesTicketUpload,
+    getMessageFileInTicket
+  );
 
-router.route('/new-message/:ticketId/:studentId').post(
-  filter_archiv_user,
-  UpdateComplaintRateLimiter,
-  permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
-  // permission_canModifyComplaintList_filter,
-  // multitenant_filter,
-  // doc_thread_ops_validator,
-  MessagesTicketUpload,
-  postMessageInTicket
-);
+router
+  .route('/new-message/:ticketId/:studentId')
+  .post(
+    filter_archiv_user,
+    UpdateComplaintRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+    complaintTicketMultitenant_filter,
+    MessagesTicketUpload,
+    postMessageInTicket
+  );
 
 module.exports = router;

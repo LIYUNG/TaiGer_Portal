@@ -244,19 +244,32 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
   if (user.role === Role.Student) {
     // TODO: Inform Manager
     if (isNotArchiv(student)) {
-      for (let i = 0; i < student.agents.length; i += 1) {
-        if (isNotArchiv(student.agents[i])) {
-          const agent_recipent = {
-            firstname: student.agents[i].firstname,
-            lastname: student.agents[i].lastname,
-            address: student.agents[i].email
+      const permissions = await req.db
+        .model('Permission')
+        .find({
+          $or: [
+            { canAssignAgents: true },
+            { canAssignEditors: true },
+            { canAccessAllChat: true }
+          ]
+        })
+        .populate('user_id', 'firstname lastname email archiv')
+        .lean();
+      const users = permissions.map((p) => p.user_id);
+      for (let i = 0; i < users.length; i += 1) {
+        if (isNotArchiv(users[i])) {
+          const manager_recipent = {
+            firstname: users[i].firstname,
+            lastname: users[i].lastname,
+            address: users[i].email
           };
           const payload = {
             student_firstname: student.firstname,
             student_lastname: student.lastname,
-            ticket_id: ticket._id.toString()
+            ticket_id: ticket._id.toString(),
+            ticket_title: ticket.title
           };
-          newCustomerCenterTicketMessageEmail(agent_recipent, payload);
+          newCustomerCenterTicketMessageEmail(manager_recipent, payload);
         }
       }
     }

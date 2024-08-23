@@ -8,82 +8,17 @@ const { isNotArchiv } = require('../constants');
 const {
   newCustomerCenterTicketEmail,
   newCustomerCenterTicketSubmitConfirmationEmail,
-  complaintResolvedRequesterReminderEmail
+  complaintResolvedRequesterReminderEmail,
+  newCustomerCenterTicketMessageEmail
 } = require('../services/email/complaints');
 const { s3 } = require('../aws');
 const { one_month_cache } = require('../cache/node-cache');
 const { AWS_S3_BUCKET_NAME } = require('../config');
 const { emptyS3Directory } = require('../utils/modelHelper/versionControl');
+const { threadS3GarbageCollector } = require('../utils/utils_function');
 
-const getComplaints = asyncHandler(async (req, res) => {
-  const { user } = req;
-
-  const { type, program_id, status } = req.query;
-  const query = {};
-  if (type) {
-    query.type = type;
-  }
-  if (program_id) {
-    query.program_id = program_id;
-  }
-  if (status) {
-    query.status = status;
-  }
-  if (user.role === Role.Student) {
-    const tickets = await req.db
-      .model('Complaint')
-      .find()
-      .select('-requester_id')
-      .sort({ createdAt: -1 });
-    res.send({ success: true, data: tickets });
-  } else {
-    const tickets = await req.db
-      .model('Complaint')
-      .find()
-      .populate('requester_id', 'firstname lastname email')
-      .sort({ createdAt: -1 });
-    res.send({ success: true, data: tickets });
-  }
-});
-
-const getComplaint = asyncHandler(async (req, res) => {
-  const { user } = req;
-  const { ticketId } = req.params;
-  if (user.role === Role.Student) {
-    const ticket = await req.db
-      .model('Complaint')
-      .findById(ticketId)
-      .select('-requester_id');
-    if (!ticket) {
-      logger.error('getComplaint: Invalid ticket id');
-      throw new ErrorResponse(404, 'Complaint not found');
-    }
-    res.send({ success: true, data: ticket });
-  } else {
-    const ticket = await req.db
-      .model('Complaint')
-      .findById(ticketId)
-      .populate('messages.user_id', 'firstname lastname email ')
-      .populate('requester_id', 'firstname lastname email ');
-    if (!ticket) {
-      logger.error('getComplaint: Invalid ticket id');
-      throw new ErrorResponse(404, 'Complaint not found');
-    }
-    res.send({ success: true, data: ticket });
-  }
-});
-
-const createComplaint = asyncHandler(async (req, res) => {
-  const { user } = req;
-  const { ticket } = req.body;
-  ticket.requester_id = user._id.toString();
-  // TODO: DO not create the same
-  const new_ticket = await req.db.model('Complaint').create(ticket);
-
-  res.status(201).send({ success: true, data: new_ticket });
-
-  // TODO: inform manager
-  const permissions = await req.db
+const getManagers = async (req) =>
+  req.db
     .model('Permission')
     .find({
       $or: [
@@ -95,24 +30,79 @@ const createComplaint = asyncHandler(async (req, res) => {
     })
     .populate('user_id', 'firstname lastname email archiv')
     .lean();
-  if (permissions) {
-    for (let x = 0; x < permissions.length; x += 1) {
-      if (isNotArchiv(permissions[x].user_id)) {
-        newCustomerCenterTicketEmail(
-          {
-            firstname: permissions[x].user_id.firstname,
-            lastname: permissions[x].user_id.lastname,
-            address: permissions[x].user_id.email
-          },
-          {
-            requester: user,
-            ticket_id: new_ticket._id?.toString(),
-            ticket_title: new_ticket.title,
-            ticket_description: new_ticket.description,
-            createdAt: new Date()
-          }
-        );
-      }
+
+const getComplaints = asyncHandler(async (req, res) => {
+  const { user } = req;
+
+  const { type, status } = req.query;
+  const query = {};
+  if (type) {
+    // query.type = type;
+  }
+
+  if (status) {
+    query.status = status;
+  }
+  if (user.role === Role.Student) {
+    const tickets = await req.db
+      .model('Complaint')
+      .find({ requester_id: user._id })
+      .populate('requester_id', 'firstname lastname email')
+      .sort({ createdAt: -1 });
+    res.send({ success: true, data: tickets });
+  } else {
+    const tickets = await req.db
+      .model('Complaint')
+      .find(query)
+      .populate('requester_id', 'firstname lastname email')
+      .sort({ createdAt: -1 });
+    res.send({ success: true, data: tickets });
+  }
+});
+
+const getComplaint = asyncHandler(async (req, res) => {
+  const { ticketId } = req.params;
+
+  const ticket = await req.db
+    .model('Complaint')
+    .findById(ticketId)
+    .populate('messages.user_id', 'firstname lastname email')
+    .populate('requester_id', 'firstname lastname email ');
+  if (!ticket) {
+    logger.error('getComplaint: Invalid ticket id');
+    throw new ErrorResponse(404, 'Complaint not found');
+  }
+  res.send({ success: true, data: ticket });
+});
+
+const createComplaint = asyncHandler(async (req, res) => {
+  const { user } = req;
+  const { ticket } = req.body;
+  ticket.requester_id = user._id.toString();
+  // TODO: DO not create the same
+  const new_ticket = await req.db.model('Complaint').create(ticket);
+
+  res.status(201).send({ success: true, data: new_ticket });
+
+  // inform manager
+  const permissions = await getManagers(req);
+  const users = permissions.map((p) => p.user_id);
+  for (let x = 0; x < users.length; x += 1) {
+    if (isNotArchiv(users[x])) {
+      newCustomerCenterTicketEmail(
+        {
+          firstname: users[x].firstname,
+          lastname: users[x].lastname,
+          address: users[x].email
+        },
+        {
+          requester: user,
+          ticket_id: new_ticket._id?.toString(),
+          ticket_title: new_ticket.title,
+          ticket_description: new_ticket.description,
+          createdAt: new Date()
+        }
+      );
     }
   }
 
@@ -181,7 +171,6 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
     params: { ticketId }
   } = req;
   const { message } = req.body;
-  console.log(message);
   const ticket = await req.db
     .model('Complaint')
     .findById(ticketId)
@@ -191,7 +180,7 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
     throw new ErrorResponse(404, 'Thread Id not found');
   }
 
-  if (ticket?.isFinalVersion) {
+  if (ticket?.status === 'resolved') {
     logger.info('postMessageInTicket: thread is closed! Please refresh!');
     throw new ErrorResponse(403, ' thread is closed! Please refresh!');
   }
@@ -203,7 +192,7 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
   }
   // Check student can only access their own thread!!!!
   if (user.role === Role.Student) {
-    if (ticket.student_id._id.toString() !== user._id.toString()) {
+    if (ticket.requester_id._id.toString() !== user._id.toString()) {
       logger.error('getMessages: Unauthorized request!');
       throw new ErrorResponse(403, 'Unauthorized request');
     }
@@ -252,56 +241,40 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
     .findById(ticket.requester_id)
     .populate('editors agents', 'firstname lastname email archiv');
 
+  const payload = {
+    student_firstname: student.firstname,
+    student_lastname: student.lastname,
+    ticket_id: ticket._id.toString(),
+    ticket_title: ticket.title
+  };
+
   if (user.role === Role.Student) {
-    // Inform Agent
+    // TODO: Inform Manager
     if (isNotArchiv(student)) {
-      for (let i = 0; i < student.agents.length; i += 1) {
-        // Inform Agent
-        if (isNotArchiv(student.agents[i])) {
-          const agent_recipent = {
-            firstname: student.agents[i].firstname,
-            lastname: student.agents[i].lastname,
-            address: student.agents[i].email
+      const permissions = await getManagers(req);
+      const users = permissions.map((p) => p.user_id);
+      for (let i = 0; i < users.length; i += 1) {
+        if (isNotArchiv(users[i])) {
+          const manager_recipent = {
+            firstname: users[i].firstname,
+            lastname: users[i].lastname,
+            address: users[i].email
           };
-          const agent_payload = {
-            writer_firstname: user.firstname,
-            writer_lastname: user.lastname,
-            student_firstname: student.firstname,
-            student_lastname: student.lastname,
-            uploaded_documentname: ticket.file_type,
-            thread_id: ticket._id.toString(),
-            uploaded_updatedAt: new Date()
-          };
-          // sendNewGeneraldocMessageInThreadEmail(
-          //   agent_recipent,
-          //   agent_payload
-          // );
+          newCustomerCenterTicketMessageEmail(manager_recipent, payload);
         }
       }
     }
+    return;
   }
 
   // Inform student
   if (isNotArchiv(ticket.requester_id)) {
     const student_recipient = {
-      firstname: document_thread.requester_id.firstname,
-      lastname: document_thread.requester_id.lastname,
-      address: document_thread.requester_id.email
+      firstname: ticket2.requester_id.firstname,
+      lastname: ticket2.requester_id.lastname,
+      address: ticket2.requester_id.email
     };
-    const student_payload = {
-      writer_firstname: user.firstname,
-      writer_lastname: user.lastname,
-      student_firstname: student.firstname,
-      student_lastname: student.lastname,
-      uploaded_documentname: document_thread.file_type,
-      thread_id: document_thread._id.toString(),
-      uploaded_updatedAt: new Date()
-    };
-    // TODO: email
-    // sendNewApplicationMessageInThreadEmail(
-    //   student_recipient,
-    //   student_payload
-    // );
+    newCustomerCenterTicketMessageEmail(student_recipient, payload);
   }
 });
 
@@ -319,10 +292,21 @@ const updateComplaint = asyncHandler(async (req, res) => {
     })
     .populate('requester_id', 'firstname lastname email archiv');
 
+  if (!updatedComplaint) {
+    logger.error('updateComplaint: Invalid message thread id');
+    throw new ErrorResponse(404, 'Thread not found');
+  }
+
   res.status(200).send({ success: true, data: updatedComplaint });
 
   // TODO: to avoid resolved many times
   if (fields?.status === 'resolved') {
+    // cleanup
+    logger.info('cleanup files');
+    const collection = 'Complaint';
+    const userFolder = 'requester_id';
+    await threadS3GarbageCollector(req, collection, userFolder, ticketId);
+    // inform student
     if (isNotArchiv(updatedComplaint.requester_id)) {
       complaintResolvedRequesterReminderEmail(
         {
@@ -331,7 +315,7 @@ const updateComplaint = asyncHandler(async (req, res) => {
           address: updatedComplaint.requester_id.email
         },
         {
-          program: updatedComplaint.program_id,
+          ticket_id: updatedComplaint._id,
           student: updatedComplaint.requester_id,
           taigerUser: user
         }

@@ -124,12 +124,8 @@ const getMyInterview = asyncHandler(async (req, res) => {
     .populate('program_id', 'school program_name degree semester')
     .populate('thread_id event_id')
     .lean();
-  if (
-    user.role === Role.Admin ||
-    user.role === Role.Agent ||
-    user.role === Role.Editor
-  ) {
-    if (user.role === Role.Agent || user.role === Role.Editor) {
+  if ([Role.Admin, Role.Agent, Role.Editor].includes(user.role)) {
+    if ([Role.Agent, Role.Editor].includes(user.role)) {
       const permissions = await getPermission(req, user);
       if (!(permissions?.canAssignAgents || permissions?.canAssignEditors)) {
         studentFilter.agents = user._id;
@@ -142,8 +138,8 @@ const getMyInterview = asyncHandler(async (req, res) => {
       .populate('applications.programId', 'school program_name degree semester')
       .lean();
     if (!students) {
-      logger.info('getMyInterview: this student is not existed!');
-      throw new ErrorResponse(400, 'this student is not existed!');
+      logger.info('getMyInterview: No students found!');
+      throw new ErrorResponse(400, 'No students found!');
     }
 
     res.status(200).send({ success: true, data: interviews, students });
@@ -154,8 +150,8 @@ const getMyInterview = asyncHandler(async (req, res) => {
       .populate('applications.programId', 'school program_name degree semester')
       .lean();
     if (!student) {
-      logger.info('getMyInterview: this student is not existed!');
-      throw new ErrorResponse(400, 'this student is not existed!');
+      logger.info('getMyInterview: Student not found!');
+      throw new ErrorResponse(400, 'Student not found!');
     }
 
     res.status(200).send({ success: true, data: interviews, student });
@@ -485,7 +481,7 @@ const updateInterviewSurvey = asyncHandler(async (req, res) => {
     .lean();
 
   res.status(200).send({ success: true, data: interviewSurvey });
-  // TODO Inform Trainer
+  // Inform Trainer
   const interview = await req.db
     .model('Interview')
     .findById(interview_id)

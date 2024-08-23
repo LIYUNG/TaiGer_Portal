@@ -20,14 +20,16 @@ import {
   DialogContentText,
   DialogActions,
   Avatar,
-  Card
+  Card,
+  CircularProgress
 } from '@mui/material';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import {
   deleteAMessageinTicket,
   deleteComplaintsTicket,
-  submitMessageInTicketWithAttachment
+  submitMessageInTicketWithAttachment,
+  updateComplaintsTicket
 } from '../../api';
 import MessageList from '../../components/Message/MessageList';
 import { stringAvatar } from '../Utils/contants';
@@ -39,6 +41,7 @@ import {
   readPDF,
   readXLSX
 } from '../Utils/checking-functions';
+import { TopBar } from '../../components/TopBar/TopBar';
 
 function CustomerTicketDetailPageBody({ complaintTicket }) {
   const { t } = useTranslation();
@@ -51,6 +54,7 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
   ] = useState({
     thread: complaintTicket,
     editorState: {},
+    isSubmissionLoaded: true,
     accordionKeys: new Array(complaintTicket.messages.length)
       .fill()
       .map((x, i) => (i === complaintTicket.messages.length - 1 ? i : -1)), // to collapse all
@@ -137,7 +141,6 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
       ...prevState,
       buttonDisabled: true
     }));
-    console.log(editorState);
     var message = JSON.stringify(editorState);
     const formData = new FormData();
 
@@ -192,6 +195,7 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
           ...prevState,
           isLoaded: true,
           error,
+          buttonDisabled: false,
           res_modal_status: 500,
           res_modal_message: ''
         }));
@@ -263,9 +267,76 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
     }));
   };
 
+  const closeSetAsFinalFileModelWindow = () => {
+    setCustomerTicketDetailPageBodyState((prevState) => ({
+      ...prevState,
+      SetAsFinalFileModel: false
+    }));
+  };
+
+  const handleAsFinalFile = (ticket_id, newStatus) => {
+    setCustomerTicketDetailPageBodyState((prevState) => ({
+      ...prevState,
+      ticket_id,
+      newStatus,
+      SetAsFinalFileModel: true
+    }));
+  };
+
+  const ConfirmSetAsFinalFileHandler = (e) => {
+    e.preventDefault();
+    setCustomerTicketDetailPageBodyState((prevState) => ({
+      ...prevState,
+      isSubmissionLoaded: false // false to reload everything
+    }));
+
+    updateComplaintsTicket(
+      customerTicketDetailPageBodyState.thread._id.toString(),
+      { status: customerTicketDetailPageBodyState.newStatus }
+    ).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          setCustomerTicketDetailPageBodyState((prevState) => ({
+            ...prevState,
+            isSubmissionLoaded: true,
+            thread: {
+              ...prevState.thread,
+              status: data.status
+            },
+            success: success,
+            newStatus: '',
+            SetAsFinalFileModel: false,
+            res_modal_status: status
+          }));
+        } else {
+          const { message } = resp.data;
+          setCustomerTicketDetailPageBodyState((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            isSubmissionLoaded: true,
+            res_modal_message: message,
+            res_modal_status: status
+          }));
+        }
+      },
+      (error) => {
+        setCustomerTicketDetailPageBodyState((prevState) => ({
+          ...prevState,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: ''
+        }));
+      }
+    );
+  };
+
   const returnBack = () => {
     navigate(DEMO.CUSTOMER_CENTER_LINK);
   };
+  const { isLoaded, isSubmissionLoaded } = customerTicketDetailPageBodyState;
 
   return (
     <Box>
@@ -288,6 +359,9 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
         </Link>
         <Typography color="text.primary">{`${complaintTicket.title} (Ticket Nr. ${complaintTicket._id})`}</Typography>
       </Breadcrumbs>
+      {customerTicketDetailPageBodyState.thread.status === 'resolved' && (
+        <TopBar />
+      )}
       {isDeleted ? (
         <Box>
           <Grid container spacing={2} sx={{ mt: 1 }}>
@@ -300,7 +374,7 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                 >
                   <Box>
                     <Typography variant="h5" gutterBottom>
-                      Ticket Deleted
+                      {t('Ticket Deleted', { ns: 'common' })}
                     </Typography>
                     <Button variant="outlined" onClick={returnBack}>
                       {t('Back', { ns: 'common' })}
@@ -324,9 +398,12 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
               <Button
                 variant="contained"
                 startIcon={<DeleteIcon />}
+                disabled={
+                  customerTicketDetailPageBodyState.thread.status === 'resolved'
+                }
                 onClick={() => setOpen(true)}
               >
-                Delete Ticket
+                {t('Delete Ticket', { ns: 'common' })}
               </Button>
             </Box>
           </Box>
@@ -363,30 +440,6 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                   <Typography variant="h6" gutterBottom>
                     {t('Frequently Asked Questions', { ns: 'common' })}
                   </Typography>
-                  <Accordion disableGutters>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>How do tickets get issued?</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Typography>
-                        To issue a ticket, you go to the booking search, make a
-                        booking, fill out the passenger information, and create
-                        a PNR. Then click to order ticket.
-                      </Typography>
-                    </AccordionDetails>
-                  </Accordion>
-                  <Accordion disableGutters>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>
-                        How can see ticket history by PNR?
-                      </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Typography>
-                        Details about viewing ticket history by PNR.
-                      </Typography>
-                    </AccordionDetails>
-                  </Accordion>
                   <Accordion disableGutters>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                       <Typography>How can see issue ticket?</Typography>
@@ -435,7 +488,7 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                   </b>
                 </Typography>
                 {customerTicketDetailPageBodyState.thread.isFinalVersion ? (
-                  <Typography>This discussion thread is close.</Typography>
+                  <Typography>This ticket is resolved.</Typography>
                 ) : (
                   <DocThreadEditor
                     thread={customerTicketDetailPageBodyState.thread}
@@ -459,9 +512,87 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                 </Typography>
               </Card>
             )}
+            {is_TaiGer_role(user) &&
+              (customerTicketDetailPageBodyState.thread.status === 'open' ? (
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="success"
+                  onClick={() =>
+                    handleAsFinalFile(
+                      customerTicketDetailPageBodyState.thread._id,
+                      'resolved'
+                    )
+                  }
+                  sx={{ mt: 2 }}
+                >
+                  {isSubmissionLoaded ? (
+                    t('Mark as finished')
+                  ) : (
+                    <CircularProgress />
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() =>
+                    handleAsFinalFile(
+                      customerTicketDetailPageBodyState.thread._id,
+                      'open'
+                    )
+                  }
+                  sx={{ mt: 2 }}
+                >
+                  {isSubmissionLoaded ? (
+                    t('Mark as open')
+                  ) : (
+                    <CircularProgress />
+                  )}
+                </Button>
+              ))}
           </Box>
         </Box>
       )}
+      <Dialog
+        open={customerTicketDetailPageBodyState.SetAsFinalFileModel}
+        onClose={closeSetAsFinalFileModelWindow}
+      >
+        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to set the ticket as{' '}
+            <b>
+              {customerTicketDetailPageBodyState.thread.isFinalVersion
+                ? 'open'
+                : 'resolved'}
+            </b>
+            ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={!isLoaded || !isSubmissionLoaded}
+            onClick={(e) => ConfirmSetAsFinalFileHandler(e)}
+          >
+            {isSubmissionLoaded ? (
+              t('Yes', { ns: 'common' })
+            ) : (
+              <CircularProgress />
+            )}
+          </Button>
+          <Button
+            color="secondary"
+            variant="outlined"
+            onClick={closeSetAsFinalFileModelWindow}
+          >
+            {t('No', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
         <DialogContent>

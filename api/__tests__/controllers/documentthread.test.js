@@ -141,7 +141,9 @@ beforeAll(async () => {
   await ProgramModel.deleteMany();
   await ProgramModel.create(program);
 });
-afterAll(async () => await clearDatabase());
+afterAll(async () => {
+  await clearDatabase();
+});
 beforeEach(async () => {});
 
 afterEach(() => {
@@ -226,7 +228,6 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
 
     expect(resp_std.status).toBe(200);
     const newStudentData = resp_std.body.data;
-    // expect(newStudentData).toBe('{');
 
     const newApplication = newStudentData.applications.find(
       (appl) => appl.programId._id?.toString() === programId
@@ -279,21 +280,14 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
   });
 
   // it('should save the uploaded program specific file and store the path in db', async () => {
-  //   const resp = await request(app)
-  //     .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
-  //     .set('tenantId', TENANT_ID)
-  //     .attach('file', Buffer.from('Lorem ipsum'), filename);
+  // const resp_std = await request(app)
+  //   .get(`/api/students/doc-links/${studentId}`)
+  //   .set('tenantId', TENANT_ID);
 
-  //   const { status, body } = resp;
-  //   expect(status).toBe(201);
-  //   expect(body.success).toBe(true);
-
-  //   const updatedStudent = await Student.findById(studentId)
-  //     .populate('applications.programId')
-  //     .lean()
-  //     .exec();
-  //   const application = updatedStudent.applications.find(
-  //     ({ programId }) => programId._id?.toString() === applicationId
+  // expect(resp_std.status).toBe(200);
+  // const newStudentData = resp_std.body.data;
+  //   const application = newStudentData.applications.find(
+  //     (appl) => appl.programId._id?.toString() === programId
   //   );
 
   //   application.documents.forEach((editoroutput) => {
@@ -365,55 +359,4 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
 
   //   expect(resp3.status).toBe(400);
   //   expect(resp3.body.success).toBe(false);
-
-  //   // test delete
-  //   const resp4 = await request(app)
-  //     .delete(
-  //       `/api/account/files/programspecific/${studentId}/${applicationId}/${whoupdate}/${temp_name}`
-  //     )
-  //     .set('tenantId', TENANT_ID);
-  //   expect(resp4.status).toBe(200);
-  //   expect(resp4.body.success).toBe(true);
-
-  //   // Mark program as "GetAdmission"
-  //   const resp7 = await request(app).put(
-  //     `/api/account/program/admission/${studentId}/${applicationId}`
-  //   );
-  //   expect(resp7.status).toBe(201);
-  //   expect(resp7.body.success).toBe(true);
-
-  //   const resp8 = await request(app)
-  //     .put(
-  //       `/api/account/program/admission/${studentId}/${invalidApplicationId}`
-  //     )
-  //     .set('tenantId', TENANT_ID);
-  //   expect(resp8.status).toBe(400);
-  //   expect(resp8.body.success).toBe(false);
-
-  //   // Mark program as "Close"
-  //   const resp9 = await request(app)
-  //     .put(`/api/account/program/close/${studentId}/${applicationId}`)
-  //     .set('tenantId', TENANT_ID);
-  //   expect(resp9.status).toBe(201);
-  //   expect(resp9.body.success).toBe(true);
-
-  //   const resp10 = await request(app)
-  //     .put(`/api/account/program/close/${studentId}/${invalidApplicationId}`)
-  //     .set('tenantId', TENANT_ID);
-  //   expect(resp10.status).toBe(400);
-  //   expect(resp10.body.success).toBe(false);
-
-  //   // Mark program as "Decided"
-  //   const resp11 = await request(app)
-  //     .put(`/api/account/program/decided/${studentId}/${applicationId}`)
-  //     .set('tenantId', TENANT_ID);
-  //   expect(resp11.status).toBe(201);
-  //   expect(resp11.body.success).toBe(true);
-
-  //   const resp12 = await request(app)
-  //     .put(`/api/account/program/decided/${studentId}/${invalidApplicationId}`)
-  //     .set('tenantId', TENANT_ID);
-  //   expect(resp12.status).toBe(400);
-  //   expect(resp12.body.success).toBe(false);
-  // });
 });

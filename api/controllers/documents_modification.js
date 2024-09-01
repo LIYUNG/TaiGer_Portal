@@ -596,6 +596,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
 
 // (O) email inform Editor
 // (O) email inform Student
+// (O) Tested
 const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   const {
     params: { studentId, program_id, document_category }
@@ -1477,7 +1478,7 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
   }
 
   if (
-    user.role === 'Student' &&
+    user.role === Role.Student &&
     document_thread.file_type === 'Essay' &&
     !document_thread.isOriginAuthorDeclarationConfirmedByStudent
   ) {

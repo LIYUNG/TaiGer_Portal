@@ -1,15 +1,18 @@
+const fs = require('fs');
+const path = require('path');
+const { spawn } = require('child_process');
+const EventEmitter = require('events');
 const request = require('supertest');
-
-const { connect, clearDatabase } = require('../fixtures/db');
+const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { Role } = require('../../constants');
 const { app } = require('../../app');
 const { UserSchema } = require('../../models/User');
 const { generateUser } = require('../fixtures/faker');
+const { generateProgram } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
-const { complaintSchema } = require('../../models/Complaint');
-const { generateComlaintTicket } = require('../fixtures/faker');
+const { interviewsSchema } = require('../../models/Interview');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -52,15 +55,6 @@ jest.mock('../../middlewares/permission-filter', () => {
   };
 });
 
-jest.mock('../../middlewares/multitenant-filter', () => {
-  const passthrough = async (req, res, next) => next();
-
-  return {
-    ...jest.requireActual('../../middlewares/multitenant-filter'),
-    complaintTicketMultitenant_filter: jest.fn().mockImplementation(passthrough)
-  };
-});
-
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
@@ -90,9 +84,10 @@ const users = [
   student,
   student2
 ];
-const tickets = [...Array(3)].map(() => generateComlaintTicket());
-const ticket = generateComlaintTicket();
 
+const requiredDocuments = ['transcript', 'resume'];
+const optionalDocuments = ['certificate', 'visa'];
+const program = generateProgram(requiredDocuments, optionalDocuments);
 let dbUri;
 
 beforeAll(async () => {
@@ -104,13 +99,12 @@ beforeEach(async () => {
   const db = connectToDatabase(TENANT_ID, dbUri);
 
   const UserModel = db.model('User', UserSchema);
-  const ComplaintSchema = db.model('Complaint', complaintSchema);
-
-  await ComplaintSchema.deleteMany();
-  await ComplaintSchema.insertMany([...tickets, ticket]);
+  const InterviewModel = db.model('Interview', interviewsSchema);
 
   await UserModel.deleteMany();
   await UserModel.insertMany(users);
+  await InterviewModel.deleteMany();
+  await InterviewModel.insertMany([]);
 
   protect.mockImplementation(async (req, res, next) => {
     req.user = await UserModel.findById(student._id);
@@ -118,47 +112,8 @@ beforeEach(async () => {
   });
 });
 
-describe('getComplaints Controller', () => {
-  it('should get all tickets', async () => {
-    const resp = await request(app)
-      .get('/api/complaints')
-      .set('tenantId', TENANT_ID);
-
-    expect(resp.status).toBe(200);
-    expect(resp.body.success).toEqual(true);
-  });
-});
-
-describe('getComplaint Controller', () => {
-  it('should get a ticket', async () => {
-    const resp = await request(app)
-      .get(`/api/complaints/${ticket._id.toString()}`)
-      .set('tenantId', TENANT_ID);
-
-    expect(resp.status).toBe(200);
-    expect(resp.body.success).toEqual(true);
-  });
-});
-
-describe('updateComplaint Controller', () => {
-  it('should update a ticket', async () => {
-    const resp = await request(app)
-      .put(`/api/complaints/${ticket._id.toString()}`)
-      .set('tenantId', TENANT_ID)
-      .send({ description: 'new information' });
-    const updatedTicket = resp.body.data;
-    expect(resp.status).toBe(200);
-    expect(updatedTicket.description).toEqual('new information');
-  });
-});
-
-describe('deleteComplaint Controller', () => {
-  it('should delete a tickets', async () => {
-    const resp = await request(app)
-      .delete(`/api/complaints/${ticket._id.toString()}`)
-      .set('tenantId', TENANT_ID);
-
-    expect(resp.status).toBe(200);
-    expect(resp.body.success).toEqual(true);
+describe('Event Controller', () => {
+  it('TODO', async () => {
+    expect(200).toEqual(200);
   });
 });

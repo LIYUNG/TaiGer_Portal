@@ -6,6 +6,7 @@ dotenv.config({
 });
 
 const isProd = () => process.env.NODE_ENV === 'production';
+const isTest = () => process.env.NODE_ENV === 'test';
 const isDev = () =>
   process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
 
@@ -14,6 +15,7 @@ const env = (name, default_) => process.env[name] || default_;
 
 module.exports = {
   isProd,
+  isTest,
   isDev,
   PORT: env('PORT', 3000),
   HTTPS_PORT: env('HTTPS_PORT', 3000),

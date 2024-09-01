@@ -5,8 +5,7 @@ const {
   DownloadTemplateRateLimiter,
   RemoveNotificationRateLimiter,
   updateCredentialRateLimiter,
-  updatePersonalInformationRateLimiter,
-  TranscriptAnalyserRateLimiter
+  updatePersonalInformationRateLimiter
 } = require('../middlewares/rate_limiter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
@@ -21,13 +20,6 @@ const {
 } = require('../middlewares/file-upload');
 
 const {
-  processTranscript_test,
-  processTranscript_api,
-  downloadXLSX
-} = require('../controllers/course');
-
-const {
-  getMyfiles,
   getTemplates,
   deleteTemplate,
   uploadTemplate,
@@ -36,12 +28,14 @@ const {
   removeNotification,
   removeAgentNotification,
   getMyAcademicBackground,
+  updateStudentApplicationResult
+} = require('../controllers/files');
+const {
   updateAcademicBackground,
   updateLanguageSkill,
   updateApplicationPreferenceSkill,
-  updatePersonalData,
-  updateStudentApplicationResult
-} = require('../controllers/files');
+  updatePersonalData
+} = require('../controllers/account');
 
 const {
   updateCredentials,
@@ -53,16 +47,6 @@ const { logAccess } = require('../utils/log/log');
 const router = Router();
 
 router.use(protect);
-
-router
-  .route('/files')
-  .get(
-    filter_archiv_user,
-    GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    getMyfiles,
-    logAccess
-  );
 
 router
   .route('/files/template')
@@ -119,42 +103,6 @@ router
     InnerTaigerMultitenantFilter,
     admissionUpload,
     updateStudentApplicationResult,
-    logAccess
-  );
-// TaiGer Transcript Analyser:
-router
-  .route('/transcript/:studentId/:category/:language')
-  .post(
-    filter_archiv_user,
-    TranscriptAnalyserRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    multitenant_filter,
-    InnerTaigerMultitenantFilter,
-    processTranscript_test,
-    logAccess
-  );
-
-// TaiGer Transcript Analyser (Python Backend)
-router
-  .route('/transcript-test/:studentId/:category/:language')
-  .post(
-    filter_archiv_user,
-    TranscriptAnalyserRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    multitenant_filter,
-    InnerTaigerMultitenantFilter,
-    processTranscript_api,
-    logAccess
-  );
-
-router
-  .route('/transcript/:studentId')
-  .get(
-    filter_archiv_user,
-    DownloadTemplateRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
-    multitenant_filter,
-    downloadXLSX,
     logAccess
   );
 

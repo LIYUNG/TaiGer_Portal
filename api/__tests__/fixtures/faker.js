@@ -43,9 +43,15 @@ const generateProgram = (requiredDocuments, optionalDocuments) => ({
   application_start: faker.date.recent(),
   application_deadline: faker.date.future(),
   isArchiv: false,
-  ml_required: true,
+  ml_required: 'yes',
   requiredDocuments,
   optionalDocuments
+});
+
+const generateCourse = (student_id) => ({
+  _id: new ObjectId().toHexString(),
+  student_id,
+  name: faker.lorem.word(10)
 });
 
 const generateCommunicationMessage = (props) => ({
@@ -69,6 +75,7 @@ module.exports = {
   generateEditor,
   generateStudent,
   generateProgram,
+  generateCourse,
   generateCommunicationMessage,
   generateComlaintTicket
 };

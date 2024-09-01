@@ -190,7 +190,7 @@ const NavSearch = () => {
           (searchResults.length > 0 ? (
             <Box className="search-results result-list">
               {searchResults.map((result, i) =>
-                result.role === 'Student' ? (
+                result.role === Role.Student ? (
                   <li onClick={() => onClickStudentHandler(result)} key={i}>
                     {`${result.firstname} ${result.lastname} ${
                       result.firstname_chinese ? result.firstname_chinese : ' '

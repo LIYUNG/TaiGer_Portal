@@ -79,7 +79,7 @@ const createCourse = asyncHandler(async (req, res) => {
     })
     .populate('student_id', 'firstname lastname');
   res.send({ success: true, data: courses2 });
-  if (user.role === 'Student') {
+  if (user.role === Role.Student) {
     // TODO: send course update to Agent
     const student = await req.db
       .model('Student')
@@ -288,7 +288,9 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
   } = req;
 
   const studentIdToUse =
-    user.role === Role.Student || user.role === 'Guest' ? user._id : studentId;
+    user.role === Role.Student || user.role === Role.Guest
+      ? user._id
+      : studentId;
   const course = await req.db.model('Course').findOne({
     student_id: studentIdToUse.toString()
   });

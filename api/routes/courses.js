@@ -2,7 +2,9 @@ const { Router } = require('express');
 const {
   GeneralPOSTRequestRateLimiter,
   GeneralGETRequestRateLimiter,
-  GeneralPUTRequestRateLimiter
+  GeneralPUTRequestRateLimiter,
+  TranscriptAnalyserRateLimiter,
+  DownloadTemplateRateLimiter
 } = require('../middlewares/rate_limiter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
@@ -12,13 +14,16 @@ const {
 const { protect, permit, prohibit } = require('../middlewares/auth');
 const { Role } = require('../constants');
 
-
 const {
   getCourse,
   createCourse,
-  putCourse
+  putCourse,
+  processTranscript_api,
+  processTranscript_test,
+  downloadXLSX
   //   updateCourses,
 } = require('../controllers/course');
+const { logAccess } = require('../utils/log/log');
 
 const router = Router();
 
@@ -47,6 +52,42 @@ router
     getCourse
   );
 
+// TaiGer Transcript Analyser (Python Backend)
+router
+  .route('/transcript-test/:studentId/:category/:language')
+  .post(
+    filter_archiv_user,
+    TranscriptAnalyserRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    multitenant_filter,
+    InnerTaigerMultitenantFilter,
+    processTranscript_api,
+    logAccess
+  );
+
+// TaiGer Transcript Analyser:
+router
+  .route('/transcript/:studentId/:category/:language')
+  .post(
+    filter_archiv_user,
+    TranscriptAnalyserRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    multitenant_filter,
+    InnerTaigerMultitenantFilter,
+    processTranscript_test,
+    logAccess
+  );
+
+router
+  .route('/transcript/:studentId')
+  .get(
+    filter_archiv_user,
+    DownloadTemplateRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
+    downloadXLSX,
+    logAccess
+  );
 // router
 //   .route('/:id')
 //   .put(permit(Role.Admin, Role.Agent), updateCourses)

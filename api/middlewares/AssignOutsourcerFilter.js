@@ -48,12 +48,11 @@ const AssignOutsourcerFilter = asyncHandler(async (req, res, next) => {
       permissions?.canAssignAgents ||
       outsourcer_allowed_modify
     ) {
-      next();
+      return next();
     }
-
     throw new ErrorResponse(
       403,
-      'Permission denied: Not allowed to access other students documents. Please contact administrator.'
+      'Permission denied: Not allowed to access other students documents. Please contact administrator2.'
     );
   }
   next();

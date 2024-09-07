@@ -362,7 +362,9 @@ const updatePersonalData = asyncHandler(async (req, res, next) => {
         firstname_chinese: updatedStudent.firstname_chinese,
         lastname: updatedStudent.lastname,
         lastname_chinese: updatedStudent.lastname_chinese,
-        birthday: personaldata.birthday
+        birthday: personaldata.birthday,
+        linkedIn: personaldata.linkedIn,
+        lineId: personaldata.lineId
       }
     });
     next();

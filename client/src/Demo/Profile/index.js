@@ -70,7 +70,9 @@ function Profile() {
           lastname: '',
           lastname_chinese: '',
           birthday: '',
-          email: ''
+          email: '',
+          lineId: '',
+          linkedIn: ''
         }
       : {
           firstname: user.firstname,
@@ -79,7 +81,9 @@ function Profile() {
           lastname_chinese: user.lastname_chinese,
           birthday: user.birthday,
           role: user.role,
-          email: user.email
+          email: user.email,
+          lineId: user.lineId,
+          linkedIn: user.linkedIn
         },
     updateconfirmed: false,
     updateOfficeHoursConfirmed: false,
@@ -111,7 +115,9 @@ function Profile() {
                 lastname_chinese: data.lastname_chinese,
                 birthday: data.birthday,
                 role: data.role,
-                email: data.email
+                email: data.email,
+                linkedIn: data.linkedIn,
+                lineId: data.lineId
               },
               user_id: user_id ? user_id : user._id.toString(),
               res_status: status
@@ -471,7 +477,46 @@ function Profile() {
             />
           </Grid>
           <Grid item xs={12}>
-            <Typography>Email: {profileState.personaldata.email}</Typography>
+            <TextField
+              autoComplete="email"
+              name="email"
+              fullWidth
+              id="email"
+              label={`${t('Email', { ns: 'common' })}`}
+              InputLabelProps={{
+                shrink: true
+              }}
+              value={profileState.personaldata.email}
+              disabled
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              autoComplete="linkedIn"
+              name="linkedIn"
+              fullWidth
+              id="linkedIn"
+              label={`${t('LinkedIn', { ns: 'common' })}`}
+              InputLabelProps={{
+                shrink: true
+              }}
+              value={profileState.personaldata.linkedIn}
+              onChange={(e) => handleChange_PersonalData(e)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              autoComplete="lineId"
+              name="lineId"
+              fullWidth
+              id="lineId"
+              label={`${t('Line ID', { ns: 'common' })}`}
+              InputLabelProps={{
+                shrink: true
+              }}
+              value={profileState.personaldata.lineId}
+              onChange={(e) => handleChange_PersonalData(e)}
+            />
           </Grid>
         </Grid>
         <Button

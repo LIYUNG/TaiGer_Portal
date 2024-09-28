@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const { ObjectId } = Schema.Types;
 // const { handleProgramChanges } = require('../utils/modelHelper/programChange');
 
-
 // const Degree = {
 //   bachelor_sc: 'B.Sc',
 //   bachelor_eng: 'B.Eng',
@@ -207,8 +206,6 @@ const programModule = {
   country: {
     type: String
   },
-  requiredDocuments: [String], // Not used
-  optionalDocuments: [String], // not used
   url: String,
   vcId: ObjectId
 };

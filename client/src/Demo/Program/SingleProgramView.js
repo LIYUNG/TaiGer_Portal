@@ -1,8 +1,12 @@
 import React, { Fragment, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import CompareIcon from '@mui/icons-material/Compare';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import {
+  Compare as CompareIcon,
+  OpenInNew as OpenInNewIcon,
+  Info as InfoIcon
+} from '@mui/icons-material';
+
 import {
   Box,
   Button,
@@ -420,7 +424,16 @@ function SingleProgramView(props) {
                           <TableRow></TableRow>
                           <TableRow>
                             <TableCell rowSpan={(keys?.length || 0) + 1}>
-                              <Typography>{reverseIndex}</Typography>
+                              <Typography>
+                                {reverseIndex}{' '}
+                                {change?.changeRequest && (
+                                  <div
+                                    title={`from change request ${change?.changeRequest}`}
+                                  >
+                                    <InfoIcon fontSize="small" />
+                                  </div>
+                                )}
+                              </Typography>
                             </TableCell>
                             <TableCell rowSpan={(keys?.length || 0) + 1}>
                               <div>{change.changedBy}</div>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Navigate, useParams } from 'react-router-dom';
-import 'react-datasheet-grid/dist/style.css';
 
 import { is_TaiGer_Student } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';

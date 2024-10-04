@@ -59,7 +59,6 @@ export default function MyCourses() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const theme = useTheme(); // Get the current theme from Material UI
-  console.log(theme);
   let [statedata, setStatedata] = useState({
     error: '',
     isLoaded: false,
@@ -576,9 +575,6 @@ export default function MyCourses() {
             statedata.table_data_string_locked ? onChange_ReadOnly : onChange
           }
           columns={columns}
-          cellClassName={() => {
-            return theme.palette.mode === 'light' ? '' : 'child'; // a class defined in our stylesheet
-          }}
         />
       </TableContainer>
       <Card

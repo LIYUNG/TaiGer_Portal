@@ -20,7 +20,8 @@ const {
   putCourse,
   processTranscript_api,
   processTranscript_test,
-  downloadXLSX
+  downloadXLSX,
+  processTranscript_api_gatway
   //   updateCourses,
 } = require('../controllers/course');
 const { logAccess } = require('../utils/log/log');
@@ -28,6 +29,19 @@ const { logAccess } = require('../utils/log/log');
 const router = Router();
 
 router.use(protect);
+
+// TaiGer Transcript Analyser (Python Backend)
+router
+  .route('/transcript/test')
+  .get(
+    filter_archiv_user,
+    TranscriptAnalyserRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    multitenant_filter,
+    // InnerTaigerMultitenantFilter,
+    processTranscript_api_gatway,
+    logAccess
+  );
 
 router
   .route('/:studentId')

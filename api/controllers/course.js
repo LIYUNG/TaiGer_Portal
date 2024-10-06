@@ -13,7 +13,7 @@ const {
 const { one_month_cache } = require('../cache/node-cache');
 const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
 const { isNotArchiv, Role } = require('../constants');
-const { s3 } = require('../aws/index');
+const { s3, getTemporaryCredentials, callApiGateway } = require('../aws/index');
 
 const getCourse = asyncHandler(async (req, res) => {
   const { studentId } = req.params;
@@ -280,6 +280,23 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const processTranscript_api_gatway = asyncHandler(async (req, res, next) => {
+  const {
+    params: { category, studentId, language }
+  } = req;
+
+  try {
+    const credentials = await getTemporaryCredentials();
+    const apiResponse = await callApiGateway(credentials);
+    res.status(200).send({ success: true, data: apiResponse });
+  } catch (err) {
+    logger.info(err);
+    res.status(403).send({ message: 'analyze failed' });
+  }
+
+  next();
+});
+
 // Download original transcript excel
 const downloadXLSX = asyncHandler(async (req, res, next) => {
   const {
@@ -365,6 +382,7 @@ module.exports = {
   createCourse,
   processTranscript_test,
   processTranscript_api,
+  processTranscript_api_gatway,
   downloadXLSX,
   deleteCourse
 };

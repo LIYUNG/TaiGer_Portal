@@ -20,7 +20,8 @@ const {
 const { AWS_S3_BUCKET_NAME, AWS_S3_PUBLIC_BUCKET_NAME } = require('../config');
 const logger = require('../services/logger');
 
-const { s3 } = require('../aws/index');
+const { s3 } = require('../aws/s3');
+const { getS3Object } = require('../aws/s3');
 
 const getTemplates = asyncHandler(async (req, res, next) => {
   const templates = await req.db.model('Template').find({});
@@ -110,36 +111,20 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   // download the file via aws s3 here
   let document_split = template.path.replace(/\\/g, '/');
   document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = document_split[0];
+  const [directory, fileName] = document_split;
+  const fileKey = path.join(directory, fileName).replace(/\\/g, '/');
   logger.info('Trying to download template file', fileKey);
-  directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, directory);
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
 
   const value = two_month_cache.get(fileKey); // vpd name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-
-      // No error happened
-      const success = two_month_cache.set(fileKey, data.Body);
-      if (success) {
-        logger.info('Template file cache set successfully');
-      }
-
-      res.attachment(fileKey);
-      res.end(data.Body);
-      next();
-    });
+    const response = await getS3Object(AWS_S3_PUBLIC_BUCKET_NAME, fileKey);
+    const success = two_month_cache.set(fileKey, Buffer.from(response));
+    if (success) {
+      logger.info('Template file cache set successfully');
+    }
+    res.attachment(fileKey);
+    res.end(response);
+    next();
   } else {
     logger.info('Template file cache hit');
     res.attachment(fileKey);
@@ -517,37 +502,23 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
     );
   }
   document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = path.join(AWS_S3_BUCKET_NAME, document_split[0]);
+
+  const [directory, fileName] = document_split;
+  const fileKey = path.join(directory, fileName).replace(/\\/g, '/');
+
   logger.info(`Trying to download ${fileType} file`);
-
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
-
   const cache_key = `${studentId}${fileKey}`;
   const value = one_month_cache.get(cache_key); // vpd name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
+    const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
 
-      // No error happened
-      const success = one_month_cache.set(cache_key, data.Body);
-      if (success) {
-        logger.info('VPD file cache set successfully');
-      }
-
-      res.attachment(fileKey);
-      res.end(data.Body);
-      next();
-    });
+    const success = one_month_cache.set(cache_key, Buffer.from(response));
+    if (success) {
+      logger.info('VPD file cache set successfully');
+    }
+    res.attachment(fileKey);
+    res.end(response);
+    next();
   } else {
     logger.info('VPD file cache hit');
     res.attachment(fileKey);
@@ -584,37 +555,21 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
 
   let document_split = document.path.replace(/\\/g, '/');
   document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = document_split[0];
+  const [directory, fileName] = document_split;
+  const fileKey = path.join(directory, fileName).replace(/\\/g, '/');
   logger.info(`Trying to download profile file ${fileKey}`);
-  directory = path.join(AWS_S3_BUCKET_NAME, directory);
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
 
   const cache_key = `${studentId}${fileKey}`;
-  const value = one_month_cache.get(cache_key); // vpd name
+  const value = one_month_cache.get(cache_key); // profile name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-
-      // No error happened
-      const success = one_month_cache.set(cache_key, data.Body);
-      if (success) {
-        logger.info('Profile file cache set successfully');
-      }
-
-      res.attachment(fileKey);
-      res.end(data.Body);
-      next();
-    });
+    const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    const success = one_month_cache.set(cache_key, Buffer.from(response));
+    if (success) {
+      logger.info('Profile file cache set successfully');
+    }
+    res.attachment(fileKey);
+    res.end(response);
+    next();
   } else {
     logger.info('Profile file cache hit');
     res.attachment(fileKey);

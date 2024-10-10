@@ -34,7 +34,7 @@ const {
 const { asyncHandler } = require('../middlewares/error-handler');
 const { isProd, AWS_S3_BUCKET_NAME } = require('../config');
 const { connectToDatabase } = require('../middlewares/tenantMiddleware');
-const { s3 } = require('../aws');
+const { s3 } = require('../aws/s3');
 const { ErrorResponse } = require('../common/errors');
 
 const threadS3GarbageCollector = async (

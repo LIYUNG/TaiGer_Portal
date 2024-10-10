@@ -38,13 +38,14 @@ const {
 } = require('../services/email');
 
 const { AWS_S3_BUCKET_NAME, API_ORIGIN } = require('../config');
-const { s3 } = require('../aws/index');
+const { s3 } = require('../aws/s3');
 const {
   deleteApplicationThread,
   createApplicationThread,
   emptyS3Directory
 } = require('../utils/modelHelper/versionControl');
 const { threadS3GarbageCollector } = require('../utils/utils_function');
+const { getS3Object } = require('../aws/s3');
 
 const ThreadS3GarbageCollector = asyncHandler(async (req) => {
   try {
@@ -83,13 +84,11 @@ const ThreadS3GarbageCollector = asyncHandler(async (req) => {
         Delimiter: '/',
         Prefix: `${directory_files}/`
       };
-      const listedObjectsPublic = await s3
-        .listObjectsV2(listParamsPublic)
-        .promise();
+      const listedObjectsPublic = await s3.listObjectsV2(listParamsPublic);
 
-      const listedObjectsPublic_files = await s3
-        .listObjectsV2(listParamsPublic_files)
-        .promise();
+      const listedObjectsPublic_files = await s3.listObjectsV2(
+        listParamsPublic_files
+      );
       if (listedObjectsPublic.Contents.length > 0) {
         listedObjectsPublic.Contents.forEach((Obj) => {
           let file_found = false;
@@ -143,7 +142,11 @@ const ThreadS3GarbageCollector = asyncHandler(async (req) => {
       }
     }
     if (deleteParams.Delete.Objects.length > 0) {
-      await s3.deleteObjects(deleteParams).promise();
+      await // The `.promise()` call might be on an JS SDK v2 client API.
+      // If yes, please remove .promise(). If not, remove this comment.
+      // The `.promise()` call might be on an JS SDK v2 client API.
+      // If yes, please remove .promise(). If not, remove this comment.
+      s3.deleteObjects(deleteParams).promise();
       logger.info('Deleted redundant images for threads.');
       logger.info(deleteParams.Delete.Objects);
     } else {
@@ -151,7 +154,11 @@ const ThreadS3GarbageCollector = asyncHandler(async (req) => {
     }
 
     if (delete_files_Params.Delete.Objects.length > 0) {
-      await s3.deleteObjects(delete_files_Params).promise();
+      await // The `.promise()` call might be on an JS SDK v2 client API.
+      // If yes, please remove .promise(). If not, remove this comment.
+      // The `.promise()` call might be on an JS SDK v2 client API.
+      // If yes, please remove .promise(). If not, remove this comment.
+      s3.deleteObjects(delete_files_Params).promise();
       logger.info('Deleted redundant files for threads.');
       logger.info(delete_files_Params.Delete.Objects);
     } else {
@@ -1423,38 +1430,20 @@ const getMessageImageDownload = asyncHandler(async (req, res) => {
     params: { messagesThreadId, studentId, file_name }
   } = req;
 
-  let directory = path.join(
-    AWS_S3_BUCKET_NAME,
-    studentId,
-    messagesThreadId,
-    'img'
-  );
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: file_name,
-    Bucket: directory
-  };
+  const fileKey = path
+    .join(studentId, messagesThreadId, 'img', file_name)
+    .replace(/\\/g, '/');
 
   const cache_key = `${studentId}${req.originalUrl.split('/')[6]}`;
   const value = one_month_cache.get(cache_key); // image name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-
-      // No error happened
-      const success = one_month_cache.set(cache_key, data.Body);
-      if (success) {
-        logger.info('image cache set successfully');
-      }
-
-      res.attachment(file_name);
-      return res.end(data.Body);
-    });
+    const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    const success = one_month_cache.set(cache_key, Buffer.from(response));
+    if (success) {
+      logger.info('image cache set successfully');
+    }
+    res.attachment(file_name);
+    res.end(response);
   } else {
     logger.info('cache hit');
     res.attachment(file_name);
@@ -1500,35 +1489,22 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     throw new ErrorResponse(403, 'Not authorized');
   }
 
-  logger.info('Trying to download message file', file_key);
-  let directory = path.join(AWS_S3_BUCKET_NAME, studentId, messagesThreadId);
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: file_key,
-    Bucket: directory
-  };
+  const fileKey = path
+    .join(studentId, messagesThreadId, file_key)
+    .replace(/\\/g, '/');
+  logger.info('Trying to download message file', fileKey);
 
   // messageid + extension
   const cache_key = `${messagesThreadId}${encodeURIComponent(file_key)}`;
   const value = one_month_cache.get(cache_key); // file name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-
-      // No error happened
-      const success = one_month_cache.set(cache_key, data.Body);
-      if (success) {
-        logger.info('thread file cache set successfully');
-      }
-
-      res.attachment(file_key);
-      return res.end(data.Body);
-    });
+    const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    const success = one_month_cache.set(cache_key, Buffer.from(response));
+    if (success) {
+      logger.info('thread file cache set successfully');
+    }
+    res.attachment(file_key);
+    return res.end(response);
   } else {
     logger.info('thread file cache hit');
     res.attachment(file_key);

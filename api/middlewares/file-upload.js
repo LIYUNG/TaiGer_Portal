@@ -5,7 +5,7 @@ const multerS3 = require('multer-s3');
 const uuid = require('uuid');
 const { ErrorResponse } = require('../common/errors');
 const { AWS_S3_BUCKET_NAME, AWS_S3_PUBLIC_BUCKET_NAME } = require('../config');
-const { s3 } = require('../aws/index');
+const { s3 } = require('../aws/s3');
 
 const MAX_FILE_SIZE_MB = 2 * 1024 * 1024; // 2 MB
 const MAX_DOC_FILE_SIZE_MB = 1 * 1024 * 1024; // 1 MB
@@ -176,7 +176,7 @@ const storage_profile_s3 = multerS3({
         if (student) {
           let temp_name = `${student.lastname}_${student.firstname}_${
             req.params.category
-          }${path.extname(file.originalname).toLowerCase()}`;
+          }${path.extname(file.originalname).toLowerCase()}`.replace(/ /g, '_');
           temp_name = temp_name.replace(/\//g, '_');
 
           return {

@@ -12,7 +12,7 @@ const {
   notes_transformer,
   permissions_transformer
 } = require('./utils_function');
-const { s3 } = require('../aws');
+const { s3 } = require('../aws/s3');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { connectToDatabase } = require('../middlewares/tenantMiddleware');
 

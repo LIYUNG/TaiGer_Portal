@@ -1,6 +1,9 @@
-const aws = require('aws-sdk');
+const axios = require('axios');
+const { SES } = require('@aws-sdk/client-ses');
+const { STS } = require('@aws-sdk/client-sts');
+const { Sha256 } = require('@aws-crypto/sha256-browser');
+
 const Bottleneck = require('bottleneck/es5');
-const https = require('https');
 
 const {
   AWS_S3_ACCESS_KEY_ID,
@@ -9,6 +12,7 @@ const {
   isTest
 } = require('../config');
 const logger = require('../services/logger');
+const { SignatureV4 } = require('@aws-sdk/signature-v4');
 
 // AWS configuration
 const region = 'us-east-1'; // Replace with your AWS region
@@ -16,32 +20,24 @@ const roleToAssume = 'arn:aws:iam::669131042313:role/AuthorizedClientRole'; // R
 const apiGatewayUrl =
   'https://lr2g2exm26.execute-api.us-east-1.amazonaws.com/prod/analyze'; // Replace with your API Gateway URL
 
-const s3 = isProd()
-  ? new aws.S3()
-  : isTest()
-  ? new aws.S3({
-      accessKeyId: AWS_S3_ACCESS_KEY_ID,
-      secretAccessKey: AWS_S3_ACCESS_KEY
-    })
-  : new aws.S3({
-      accessKeyId: AWS_S3_ACCESS_KEY_ID,
-      secretAccessKey: AWS_S3_ACCESS_KEY
-    });
 const ses = isProd()
-  ? new aws.SES({
+  ? new SES({
       region: 'us-west-2'
     })
-  : new aws.SES({
+  : new SES({
       region: 'us-west-2',
-      accessKeyId: AWS_S3_ACCESS_KEY_ID,
-      secretAccessKey: AWS_S3_ACCESS_KEY
+
+      credentials: {
+        accessKeyId: AWS_S3_ACCESS_KEY_ID,
+        secretAccessKey: AWS_S3_ACCESS_KEY
+      }
     });
 
 const limiter = new Bottleneck({
   minTime: 1100 / 14
 });
 
-const sts = new aws.STS();
+const sts = new STS();
 
 async function getTemporaryCredentials() {
   return new Promise((resolve, reject) => {
@@ -67,48 +63,41 @@ async function getTemporaryCredentials() {
 }
 
 async function callApiGateway(credentials) {
-  return new Promise((resolve, reject) => {
-    const endpoint = new aws.Endpoint(apiGatewayUrl);
-    const request = new aws.HttpRequest(endpoint, region);
+  const signer = new SignatureV4({
+    credentials,
+    region,
+    service: 'execute-api',
+    sha256: Sha256
+  });
 
-    request.method = 'GET';
-    request.path = endpoint.pathname;
-    request.headers['Host'] = endpoint.host;
+  const url = new URL(apiGatewayUrl);
+  const signedRequest = await signer.sign({
+    method: 'GET',
+    hostname: url.hostname,
+    path: url.pathname,
+    protocol: url.protocol,
+    headers: {
+      host: url.hostname
+    }
+  });
 
-    const signer = new aws.Signers.V4(request, 'execute-api');
-    signer.addAuthorization(credentials, new Date());
-
-    const client = new https.Agent();
-    const req = https.request(
-      {
-        ...request,
-        host: endpoint.host,
-        agent: client
-      },
-      (res) => {
-        let body = '';
-        res.on('data', (chunk) => (body += chunk));
-        res.on('end', () => {
-          if (res.statusCode !== 200) {
-            reject(new Error(`HTTP Status Code ${res.statusCode}: ${body}`));
-          } else {
-            resolve(JSON.parse(body));
-          }
-        });
-      }
-    );
-
-    req.on('error', (error) => {
-      logger.error('Error calling API Gateway:', error);
-      reject(error);
+  try {
+    const response = await axios({
+      ...signedRequest,
+      url: apiGatewayUrl,
+      method: signedRequest.method,
+      headers: signedRequest.headers,
+      data: signedRequest.body
     });
 
-    req.end();
-  });
+    return response.data;
+  } catch (error) {
+    logger.error('Error calling API Gateway:', error);
+    throw error;
+  }
 }
 
 module.exports = {
-  s3,
   ses,
   limiter,
   getTemporaryCredentials,

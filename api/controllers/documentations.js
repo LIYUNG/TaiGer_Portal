@@ -7,8 +7,7 @@ const { one_month_cache } = require('../cache/node-cache');
 const logger = require('../services/logger');
 const { getNumberOfDays, Role } = require('../constants');
 const { API_ORIGIN, AWS_S3_PUBLIC_BUCKET_NAME } = require('../config');
-
-const { s3 } = require('../aws/index');
+const { getS3Object } = require('../aws/s3');
 
 const valid_categories = [
   'howtostart',
@@ -224,35 +223,21 @@ const getDocFile = asyncHandler(async (req, res) => {
     params: { object_key }
   } = req;
 
-  let directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, 'Documentations');
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: object_key,
-    Bucket: directory
-  };
+  const fileKey = path.join('Documentations', object_key).replace(/\\/g, '/');
+
   // Use redis/cache
   // TODO: need to update when new uploaded file with same key name!
   const value = one_month_cache.get(req.originalUrl);
   if (value === undefined) {
     // cache miss
     logger.info(`cache miss: ${req.originalUrl}`);
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-      // No error happened
-      // Convert Body from a Buffer to a String
-      const objectData = data.Body.toString('utf-8'); // Use the encoding necessary
-      const success = one_month_cache.set(req.originalUrl, data.Body);
-      if (success) {
-        logger.info('cache set successfully');
-      }
-      res.attachment(object_key);
-      return res.end(data.Body);
-    });
+    const response = await getS3Object(AWS_S3_PUBLIC_BUCKET_NAME, fileKey);
+    const success = one_month_cache.set(req.originalUrl, Buffer.from(response));
+    if (success) {
+      logger.info('cache set successfully');
+    }
+    res.attachment(object_key);
+    return res.end(response);
   } else {
     logger.info('cache hit');
     res.attachment(object_key);

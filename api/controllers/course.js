@@ -13,7 +13,7 @@ const {
 const { one_month_cache } = require('../cache/node-cache');
 const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
 const { isNotArchiv, Role } = require('../constants');
-const { getTemporaryCredentials, callApiGateway } = require('../aws/index');
+const { getTemporaryCredentials, callApiGateway } = require('../aws');
 const { getS3Object } = require('../aws/s3');
 
 const getCourse = asyncHandler(async (req, res) => {
@@ -282,13 +282,9 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
 });
 
 const processTranscript_api_gatway = asyncHandler(async (req, res, next) => {
-  const {
-    params: { category, studentId, language }
-  } = req;
-
   try {
-    const credentials = await getTemporaryCredentials();
-    const apiResponse = await callApiGateway(credentials);
+    const { Credentials } = await getTemporaryCredentials();
+    const apiResponse = await callApiGateway(Credentials);
     res.status(200).send({ success: true, data: apiResponse });
   } catch (err) {
     logger.info(err);

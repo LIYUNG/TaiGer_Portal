@@ -1,40 +1,42 @@
-const axios = require('axios');
-const { STSClient } = require('@aws-sdk/client-sts');
-const { Sha256 } = require('@aws-crypto/sha256-browser');
+const { STSClient, AssumeRoleCommand } = require('@aws-sdk/client-sts');
 
 const logger = require('../services/logger');
-const { SignatureV4 } = require('@aws-sdk/signature-v4');
+const { AWS_S3_ACCESS_KEY_ID, AWS_S3_ACCESS_KEY } = require('../config');
 
 // AWS configuration
-const region = 'us-east-1'; // Replace with your AWS region
-const roleToAssume = 'arn:aws:iam::669131042313:role/AuthorizedClientRole'; // Replace with your role ARN
-const apiGatewayUrl =
-  'https://lr2g2exm26.execute-api.us-east-1.amazonaws.com/prod/analyze'; // Replace with your API Gateway URL
+const roleToAssume =
+  'arn:aws:iam::669131042313:role/Beta-FE-LambdaStack-AuthorizedClientRole5754DEAB-TA2fPw9Der3w'; // Replace with your role ARN
 
-const stsClient = new STSClient({ region: 'us-west-2' });
+const stsClient = new STSClient({
+  region: 'us-east-1',
+  credentials: {
+    accessKeyId: AWS_S3_ACCESS_KEY_ID,
+    secretAccessKey: AWS_S3_ACCESS_KEY
+  }
+});
 
-async function getTemporaryCredentials() {
-  return new Promise((resolve, reject) => {
-    const params = {
+const getTemporaryCredentials = async () => {
+  try {
+    // Returns a set of temporary security credentials that you can use to
+    // access Amazon Web Services resources that you might not normally
+    // have access to.
+    const command = new AssumeRoleCommand({
+      // The Amazon Resource Name (ARN) of the role to assume.
       RoleArn: roleToAssume,
-      RoleSessionName: 'AssumeRoleSession',
-      DurationSeconds: 900 // 15 minutes
-    };
-
-    stsClient.assumeRole(params, (err, data) => {
-      if (err) {
-        logger.error('Error assuming role:', err);
-        reject(err);
-      } else {
-        resolve({
-          accessKeyId: data.Credentials.AccessKeyId,
-          secretAccessKey: data.Credentials.SecretAccessKey,
-          sessionToken: data.Credentials.SessionToken
-        });
-      }
+      // An identifier for the assumed role session.
+      RoleSessionName: 'session2',
+      // The duration, in seconds, of the role session. The value specified
+      // can range from 900 seconds (15 minutes) up to the maximum session
+      // duration set for the role.
+      DurationSeconds: 900
     });
-  });
-}
+    const response = await stsClient.send(command);
+    logger.info(response);
+    return response;
+  } catch (err) {
+    logger.error(err);
+  }
+};
 
 module.exports = {
   getTemporaryCredentials

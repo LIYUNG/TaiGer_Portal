@@ -38,7 +38,7 @@ const {
 } = require('../services/email');
 
 const { AWS_S3_BUCKET_NAME, API_ORIGIN } = require('../config');
-const { s3 } = require('../aws/s3');
+const { deleteS3Objects } = require('../aws/s3');
 const {
   deleteApplicationThread,
   createApplicationThread,
@@ -46,129 +46,6 @@ const {
 } = require('../utils/modelHelper/versionControl');
 const { threadS3GarbageCollector } = require('../utils/utils_function');
 const { getS3Object } = require('../aws/s3');
-
-const ThreadS3GarbageCollector = asyncHandler(async (req) => {
-  try {
-    // TODO: could be bottleneck if number of thread increase.
-    const doc_threads = await req.db.model('Documentthread').find();
-
-    const deleteParams = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delete: { Objects: [] }
-    };
-
-    const delete_files_Params = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delete: { Objects: [] }
-    };
-
-    logger.info(
-      'Trying to delete redundant images S3 of corresponding message thread'
-    );
-    for (let j = 0; j < doc_threads.length; j += 1) {
-      // eslint-disable-next-line no-underscore-dangle
-      const thread_id = doc_threads[j]._id.toString();
-      const student_id = doc_threads[j].student_id.toString();
-      const message_a = doc_threads[j].messages;
-      let directory_img = path.join(student_id, thread_id, 'img');
-      directory_img = directory_img.replace(/\\/g, '/');
-      let directory_files = path.join(student_id, thread_id);
-      directory_files = directory_files.replace(/\\/g, '/');
-      const listParamsPublic = {
-        Bucket: AWS_S3_BUCKET_NAME,
-        Delimiter: '/',
-        Prefix: `${directory_img}/`
-      };
-      const listParamsPublic_files = {
-        Bucket: AWS_S3_BUCKET_NAME,
-        Delimiter: '/',
-        Prefix: `${directory_files}/`
-      };
-      const listedObjectsPublic = await s3.listObjectsV2(listParamsPublic);
-
-      const listedObjectsPublic_files = await s3.listObjectsV2(
-        listParamsPublic_files
-      );
-      if (listedObjectsPublic.Contents.length > 0) {
-        listedObjectsPublic.Contents.forEach((Obj) => {
-          let file_found = false;
-          const temp_date = new Date();
-          if (message_a.length === 0) {
-            deleteParams.Delete.Objects.push({ Key: Obj.Key });
-          }
-          for (let i = 0; i < message_a.length; i += 1) {
-            const file_name = Obj.Key.split('/')[3];
-            if (message_a[i].message.includes(file_name)) {
-              file_found = true;
-              break;
-            }
-          }
-          if (!file_found) {
-            // if until last message_a still not found, add the Key to the delete list
-            // Delete only older than 2 week
-            if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
-              deleteParams.Delete.Objects.push({ Key: Obj.Key });
-            }
-          }
-        });
-      }
-      if (listedObjectsPublic_files.Contents.length > 0) {
-        listedObjectsPublic_files.Contents.forEach((Obj2) => {
-          let file_found = false;
-          const temp_date = new Date();
-          if (message_a.length === 0) {
-            delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
-          }
-          for (let i = 0; i < message_a.length; i += 1) {
-            const file_name = Obj2.Key.split('/')[2];
-            for (let k = 0; k < message_a[i].file.length; k += 1) {
-              if (message_a[i].file[k].path.includes(file_name)) {
-                file_found = true;
-                break;
-              }
-            }
-            if (file_found) {
-              break;
-            }
-          }
-          if (!file_found) {
-            // if until last message_a still not found, add the Key to the delete list
-            // Delete only older than 2 week
-            if (getNumberOfDays(Obj2.LastModified, temp_date) > 14) {
-              delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
-            }
-          }
-        });
-      }
-    }
-    if (deleteParams.Delete.Objects.length > 0) {
-      await // The `.promise()` call might be on an JS SDK v2 client API.
-      // If yes, please remove .promise(). If not, remove this comment.
-      // The `.promise()` call might be on an JS SDK v2 client API.
-      // If yes, please remove .promise(). If not, remove this comment.
-      s3.deleteObjects(deleteParams).promise();
-      logger.info('Deleted redundant images for threads.');
-      logger.info(deleteParams.Delete.Objects);
-    } else {
-      logger.info('No images to be deleted for threads.');
-    }
-
-    if (delete_files_Params.Delete.Objects.length > 0) {
-      await // The `.promise()` call might be on an JS SDK v2 client API.
-      // If yes, please remove .promise(). If not, remove this comment.
-      // The `.promise()` call might be on an JS SDK v2 client API.
-      // If yes, please remove .promise(). If not, remove this comment.
-      s3.deleteObjects(delete_files_Params).promise();
-      logger.info('Deleted redundant files for threads.');
-      logger.info(delete_files_Params.Delete.Objects);
-    } else {
-      logger.info('No files to be deleted for threads.');
-    }
-  } catch (e) {
-    logger.error(e);
-    logger.error('Error during garbage collection.');
-  }
-});
 
 const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   const students = await req.db
@@ -820,8 +697,10 @@ const postImageInThread = asyncHandler(async (req, res) => {
   const {
     params: { messagesThreadId, studentId }
   } = req;
+  const filePath = req.file.key.split('/');
+  const fileName = filePath[3];
   let imageurl = new URL(
-    `/api/document-threads/image/${messagesThreadId}/${studentId}/${req.file.key}`,
+    `/api/document-threads/image/${messagesThreadId}/${studentId}/${fileName}`,
     API_ORIGIN
   ).href;
   imageurl = imageurl.replace(/\\/g, '/');
@@ -865,9 +744,12 @@ const postMessages = asyncHandler(async (req, res) => {
   let newfile = [];
   if (req.files) {
     for (let i = 0; i < req.files.length; i += 1) {
+      const filePath = req.files[i].key.split('/');
+      const fileName = filePath[2];
+
       newfile.push({
-        name: req.files[i].key,
-        path: path.join(req.files[i].metadata.path, req.files[i].key)
+        name: fileName,
+        path: req.files[i].key
       });
       // Check for duplicate file extensions
       const fileExtensions = req.files.map(
@@ -1495,7 +1377,8 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
   logger.info('Trying to download message file', fileKey);
 
   // messageid + extension
-  const cache_key = `${messagesThreadId}${encodeURIComponent(file_key)}`;
+  const cache_key = `${encodeURIComponent(fileKey)}`;
+  console.log(cache_key);
   const value = one_month_cache.get(cache_key); // file name
   if (value === undefined) {
     const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
@@ -1859,10 +1742,24 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
   }
 
   // Messageid + extension (because extension is unique per message id)
+  try {
+    if (msg.file.filter((file) => file.path !== '')?.length > 0) {
+      await deleteS3Objects({
+        bucketName: AWS_S3_BUCKET_NAME,
+        objectKeys: msg.file
+          .filter((file) => file.path !== '')
+          .map((file) => file.path)
+      });
+    }
+  } catch (err) {
+    if (err) {
+      logger.error('delete thread files: ', err);
+      throw new ErrorResponse(500, 'Error occurs while deleting thread files');
+    }
+  }
+
   for (let i = 0; i < msg.file.length; i += 1) {
-    const cache_key = `${messageId}${encodeURIComponent(
-      msg.file[i].name.split('.')[1]
-    )}`;
+    const cache_key = `${encodeURIComponent(msg.file[i].path)}`;
     const value = one_month_cache.del(cache_key);
     if (value === 1) {
       logger.info('file cache key deleted successfully');
@@ -2198,7 +2095,6 @@ const IgnoreMessageInDocumentThread = asyncHandler(async (req, res, next) => {
 });
 
 module.exports = {
-  ThreadS3GarbageCollector,
   getAllCVMLRLOverview,
   getSurveyInputs,
   postSurveyInput,

@@ -14,7 +14,7 @@ const { isNotArchiv } = require('../constants');
 const { getPermission } = require('../utils/queryFunctions');
 const { AWS_S3_BUCKET_NAME } = require('../config');
 const { one_month_cache } = require('../cache/node-cache');
-const { s3 } = require('../aws/s3');
+const { deleteS3Objects } = require('../aws/s3');
 const { TENANT_SHORT_NAME } = require('../constants/common');
 const { getS3Object } = require('../aws/s3');
 
@@ -580,9 +580,11 @@ const postMessages = asyncHandler(async (req, res, next) => {
   let newfile = [];
   if (req.files) {
     for (let i = 0; i < req.files.length; i += 1) {
+      const filePath = req.files[i].key.split('/');
+      const fileName = filePath[2];
       newfile.push({
-        name: req.files[i].key,
-        path: path.join(req.files[i].metadata.path, req.files[i].key)
+        name: fileName,
+        path: req.files[i].key
       });
       // Check for duplicate file extensions
       const fileExtensions = req.files.map(
@@ -694,27 +696,19 @@ const deleteAMessageInCommunicationThread = asyncHandler(
     } = req;
     const msg = await req.db.model('Communication').findById(messageId);
 
-    const deleteParams = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delete: { Objects: [] }
-    };
-
     // remove chat attachment cache.
     msg.files?.map((file) =>
       one_month_cache.del(`chat-${msg.student_id?.toString()}${file.name}`)
     );
 
-    msg.files?.map((file) =>
-      deleteParams.Delete.Objects.push({
-        Key: file.path.replace(/\\/g, '/')
-      })
-    );
-
     try {
-      if (deleteParams.Delete.Objects.length > 0) {
-        await s3.deleteObjects(deleteParams);
-        logger.info('Deleted chat files:');
-        logger.info(JSON.stringify(deleteParams.Delete.Objects));
+      if (msg.files.filter((file) => file.path !== '')?.length > 0) {
+        await deleteS3Objects({
+          bucketName: AWS_S3_BUCKET_NAME,
+          objectKeys: msg.files
+            .filter((file) => file.path !== '')
+            .map((file) => file.path)
+        });
       }
     } catch (err) {
       if (err) {

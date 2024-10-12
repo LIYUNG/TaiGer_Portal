@@ -20,55 +20,6 @@ const valid_categories = [
   'visa',
   'enrolment'
 ];
-// const DocumentationS3GarbageCollector = asyncHandler(async (req) => {
-//   const doc = await req.db.model('Documentation').find();
-//   const listParamsPublic = {
-//     Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
-//     Delimiter: '/',
-//     Prefix: 'Documentations/'
-//   };
-//   const listedObjectsPublic = await s3
-//     .listObjectsV2(listParamsPublic)
-//     .promise();
-
-//   const temp_date = new Date();
-//   if (listedObjectsPublic.Contents.length > 0) {
-//     const deleteParams = {
-//       Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
-//       Delete: { Objects: [] }
-//     };
-//     listedObjectsPublic.Contents.forEach((Obj) => {
-//       for (let i = 0; i < doc.length; i += 1) {
-//         const file_name = encodeURIComponent(Obj.Key.split('/')[1]);
-//         if (doc[i].text.includes(file_name)) {
-//           break;
-//         }
-
-//         if (i === doc.length - 1) {
-//           // if until last doc still not found, add the Key to the delete list
-//           if (!doc[i].text.includes(file_name)) {
-//             // Delete only older than 2 week
-//             if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
-//               deleteParams.Delete.Objects.push({ Key: Obj.Key });
-//             }
-//           }
-//         }
-//       }
-//       // logger.info('Deleting ', Key);
-//     });
-//     // TODO: there are something mixed in Documentations/ folder:
-//     // 1. documentation
-//     if (deleteParams.Delete.Objects.length > 0) {
-//       await s3.deleteObjects(deleteParams).promise();
-//       logger.info('Deleted redundant files and image for documentation.');
-//       logger.info(deleteParams.Delete.Objects);
-//     } else {
-//       logger.info('Nothing to be deleted for documentation.');
-//     }
-
-//     // if (listedObjectsPublic.IsTruncated) await emptyS3Directory(bucket, dir);
-//   }
-// });
 
 const updateInternalDocumentationPage = asyncHandler(async (req, res) => {
   const fields = _.omit(req.body, '_id');
@@ -212,7 +163,8 @@ const createInternalDocumentation = asyncHandler(async (req, res) => {
 });
 
 const uploadDocImage = asyncHandler(async (req, res) => {
-  let imageurl = new URL(`/api/docs/file/${req.file.key}`, API_ORIGIN).href;
+  const filePath = req.file.key.split('/');
+  let imageurl = new URL(`/api/docs/file/${filePath[1]}`, API_ORIGIN).href;
   imageurl = imageurl.replace(/\\/g, '/');
   // TODO: to overwrite cache image, pdf, docs, file here.
   return res.send({ success: true, data: imageurl });
@@ -246,16 +198,18 @@ const getDocFile = asyncHandler(async (req, res) => {
 });
 
 const uploadDocDocs = asyncHandler(async (req, res) => {
-  let imageurl = new URL(
-    `/api/docs/file/${encodeURIComponent(req.file.key)}`,
+  const filePath = req.file.key.split('/');
+  const fileName = filePath[1];
+  let docUrl = new URL(
+    `/api/docs/file/${encodeURIComponent(fileName)}`,
     API_ORIGIN
   ).href;
-  imageurl = imageurl.replace(/\\/g, '/');
-  let extname = path.extname(req.file.key);
+  docUrl = docUrl.replace(/\\/g, '/');
+  let extname = path.extname(fileName);
   extname = extname.replace('.', '');
   // TODO: to delete cache key for image, pdf, docs, file here.
   const value = one_month_cache.del(
-    `/api/docs/file/${encodeURIComponent(req.file.key)}`
+    `/api/docs/file/${encodeURIComponent(fileName)}`
   );
   // encodeURIComponent convert chinese to url match charater %E7%94%B3%E8%AB%8 etc.
   if (value === 1) {
@@ -263,7 +217,7 @@ const uploadDocDocs = asyncHandler(async (req, res) => {
   }
   return res.send({
     success: true,
-    url: imageurl,
+    url: docUrl,
     title: req.file.key,
     extension: extname
   });

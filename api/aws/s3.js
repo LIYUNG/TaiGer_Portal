@@ -1,4 +1,3 @@
-const aws = require('aws-sdk');
 const {
   S3Client,
   NoSuchKey,
@@ -17,15 +16,6 @@ const {
   isProd
 } = require('../config');
 const logger = require('../services/logger');
-
-const s3 = isProd()
-  ? new aws.S3({})
-  : new aws.S3({
-      credentials: {
-        accessKeyId: AWS_S3_ACCESS_KEY_ID,
-        secretAccessKey: AWS_S3_ACCESS_KEY
-      }
-    });
 
 const s3Client = isProd()
   ? new S3Client({ region: 'us-west-2' })
@@ -209,7 +199,6 @@ const listS3ObjectsV2 = async ({ bucketName, Delimiter, pageSize, Prefix }) => {
 };
 
 module.exports = {
-  s3,
   s3Client,
   putS3Object,
   getS3Object,

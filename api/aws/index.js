@@ -6,11 +6,11 @@ const logger = require('../services/logger');
 const { ses, limiter, SendRawEmailCommand } = require('./ses');
 const { s3Client } = require('./s3');
 const { getTemporaryCredentials } = require('./sts');
+const { AWS_REGION } = require('../config');
 
 // AWS configuration
-const region = 'us-east-1'; // Replace with your AWS region
 const apiGatewayUrl =
-  'https://lr2g2exm26.execute-api.us-east-1.amazonaws.com/prod/analyze'; // Replace with your API Gateway URL
+  'https://tsqrfyzwp6.execute-api.us-east-1.amazonaws.com/prod/analyze'; // Replace with your API Gateway URL
 
 const callApiGateway = async (credentials) => {
   try {
@@ -20,7 +20,7 @@ const callApiGateway = async (credentials) => {
         secretAccessKey: credentials.SecretAccessKey,
         sessionToken: credentials.SessionToken
       },
-      region,
+      region: AWS_REGION,
       service: 'execute-api',
       sha256: Sha256
     });

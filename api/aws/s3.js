@@ -13,14 +13,15 @@ const {
 const {
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,
-  isProd
+  isProd,
+  AWS_REGION
 } = require('../config');
 const logger = require('../services/logger');
 
 const s3Client = isProd()
-  ? new S3Client({ region: 'us-west-2' })
+  ? new S3Client({ region: AWS_REGION })
   : new S3Client({
-      region: 'us-east-1',
+      region: AWS_REGION,
       credentials: {
         accessKeyId: AWS_S3_ACCESS_KEY_ID,
         secretAccessKey: AWS_S3_ACCESS_KEY

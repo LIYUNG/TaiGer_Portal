@@ -1,4 +1,4 @@
-const { SES } = require('@aws-sdk/client-ses');
+const { SES, SendRawEmailCommand } = require('@aws-sdk/client-ses');
 
 const Bottleneck = require('bottleneck/es5');
 
@@ -12,5 +12,6 @@ const limiter = new Bottleneck({
 
 module.exports = {
   ses,
+  SendRawEmailCommand,
   limiter
 };

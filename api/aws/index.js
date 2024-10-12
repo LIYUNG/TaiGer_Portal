@@ -3,7 +3,7 @@ const { Sha256 } = require('@aws-crypto/sha256-browser');
 
 const logger = require('../services/logger');
 const { SignatureV4 } = require('@aws-sdk/signature-v4');
-const { ses, limiter } = require('./ses');
+const { ses, limiter, SendRawEmailCommand } = require('./ses');
 const { s3Client } = require('./s3');
 
 // AWS configuration
@@ -50,6 +50,7 @@ async function callApiGateway(credentials) {
 module.exports = {
   s3Client,
   ses,
+  SendRawEmailCommand,
   limiter,
   callApiGateway
 };

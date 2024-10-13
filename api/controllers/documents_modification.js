@@ -1378,7 +1378,6 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
 
   // messageid + extension
   const cache_key = `${encodeURIComponent(fileKey)}`;
-  console.log(cache_key);
   const value = one_month_cache.get(cache_key); // file name
   if (value === undefined) {
     const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
@@ -1388,11 +1387,11 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     }
     res.attachment(file_key);
     return res.end(response);
-  } else {
-    logger.info('thread file cache hit');
-    res.attachment(file_key);
-    return res.end(value);
   }
+
+  logger.info('thread file cache hit');
+  res.attachment(file_key);
+  return res.end(value);
 });
 
 const putOriginAuthorConfirmedByStudent = asyncHandler(async (req, res) => {
@@ -1707,9 +1706,6 @@ const handleDeleteProgramThread = asyncHandler(async (req, res) => {
     logger.error('handleDeleteProgramThread: Invalid student id!');
     throw new ErrorResponse(404, 'Student not found');
   }
-  console.log(`studentId: ${studentId}`);
-  console.log(`program_id: ${program_id}`);
-  console.log(`messagesThreadId: ${messagesThreadId}`);
 
   await deleteApplicationThread(
     {

@@ -39,11 +39,11 @@ const processProgramListAi = asyncHandler(async (req, res, next) => {
     }
   );
   python.on('data', (data) => {
-    logger.log(`${data}`);
+    logger.info(`${data}`);
   });
   python.on('error', (err) => {
-    logger.log('error');
-    logger.log(err);
+    logger.info('error');
+    logger.info(err);
   });
 
   python.on('close', (code) => {

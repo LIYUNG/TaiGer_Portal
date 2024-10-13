@@ -13,13 +13,17 @@ const roleToAssume = isProd()
   ? 'arn:aws:iam::669131042313:role/Prod-NA-LambdaStack-AuthorizedClientRoleProdNA32E8E-C6jpOkI8QTls'
   : 'arn:aws:iam::669131042313:role/Beta-FE-LambdaStack-AuthorizedClientRoleBetaFE1B184-7cxjOdtI3pLE'; // Replace with your role ARN
 
-const stsClient = new STSClient({
-  region: AWS_REGION,
-  credentials: {
-    accessKeyId: AWS_S3_ACCESS_KEY_ID,
-    secretAccessKey: AWS_S3_ACCESS_KEY
-  }
-});
+const stsClient = isProd()
+  ? new STSClient({
+      region: AWS_REGION
+    })
+  : new STSClient({
+      region: AWS_REGION,
+      credentials: {
+        accessKeyId: AWS_S3_ACCESS_KEY_ID,
+        secretAccessKey: AWS_S3_ACCESS_KEY
+      }
+    });
 
 const getTemporaryCredentials = async () => {
   try {

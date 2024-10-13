@@ -148,11 +148,11 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
     { stdio: 'inherit' }
   );
   python.on('data', (data) => {
-    logger.log(`${data}`);
+    logger.info(`${data}`);
   });
   python.on('error', (err) => {
-    logger.log('error');
-    logger.log(err);
+    logger.error('error');
+    logger.error(err);
     exitCode_Python = err;
   });
 

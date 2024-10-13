@@ -1638,13 +1638,30 @@ const deleteGeneralThread = asyncHandler(async (req, studentId, threadId) => {
   logger.info('Trying to delete message thread and folder');
   directory = directory.replace(/\\/g, '/');
 
-  emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
-  await req.db.model('Documentthread').findByIdAndDelete(threadId);
-  await req.db.model('Student').findByIdAndUpdate(studentId, {
-    $pull: {
-      generaldocs_threads: { doc_thread_id: { _id: threadId } }
-    }
-  });
+  await emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
+
+  // Start a session for the transaction
+  const session = await req.db.startSession();
+  session.startTransaction();
+
+  try {
+    await req.db.model('Documentthread').findByIdAndDelete(threadId);
+    await req.db.model('Student').findByIdAndUpdate(studentId, {
+      $pull: {
+        generaldocs_threads: { doc_thread_id: { _id: threadId } }
+      }
+    });
+
+    // Commit the transaction
+    await session.commitTransaction();
+    await session.endSession();
+  } catch (error) {
+    // If any operation fails, abort the transaction
+    await session.abortTransaction();
+    await session.endSession();
+    logger.error('Failed to delete message thread and folder', error);
+    throw error;
+  }
 });
 
 // () TODO email : notification
@@ -1748,7 +1765,7 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
         bucketName: AWS_S3_BUCKET_NAME,
         objectKeys: msg.file
           .filter((file) => file.path !== '')
-          .map((file) => file.path)
+          .map((file) => ({ Key: file.path }))
       });
     }
   } catch (err) {

@@ -707,7 +707,9 @@ const deleteAMessageInCommunicationThread = asyncHandler(
           bucketName: AWS_S3_BUCKET_NAME,
           objectKeys: msg.files
             .filter((file) => file.path !== '')
-            .map((file) => file.path)
+            .map((file) => ({
+              Key: file.path
+            }))
         });
       }
     } catch (err) {

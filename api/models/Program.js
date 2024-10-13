@@ -207,6 +207,19 @@ const programModule = {
   country: {
     type: String
   },
+  isPrivateSchool: {
+    type: Boolean
+  },
+  schoolType: {
+    type: String,
+    enum: ['University', 'University_of_Applied_Sciences']
+  },
+  tags: [
+    {
+      type: String,
+      enum: ['TU9', 'U15']
+    }
+  ],
   requiredDocuments: [String], // Not used
   optionalDocuments: [String], // not used
   url: String,

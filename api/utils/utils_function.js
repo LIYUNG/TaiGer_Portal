@@ -74,14 +74,10 @@ const threadS3GarbageCollector = async (
     directory_files = directory_files.replace(/\\/g, '/');
     const listParamsPublic = {
       bucketName: AWS_S3_BUCKET_NAME,
-      Delimiter: '/',
-      pageSize: 10,
       Prefix: `${directory_img}/`
     };
     const listParamsPublic_files = {
       bucketName: AWS_S3_BUCKET_NAME,
-      Delimiter: '/',
-      pageSize: 10,
       Prefix: `${directory_files}/`
     };
     const listedObjectsPublic = await listS3ObjectsV2(listParamsPublic);
@@ -140,10 +136,9 @@ const threadS3GarbageCollector = async (
     }
 
     if (deleteParams.Delete.Objects.length > 0) {
-      const ObjectKeys = deleteParams.Delete.Objects.map((Obj) => Obj.Key);
       await deleteS3Objects({
         bucketName: AWS_S3_BUCKET_NAME,
-        objectKeys: ObjectKeys
+        objectKeys: deleteParams.Delete.Objects
       });
 
       logger.info('Deleted redundant images for threads.');
@@ -153,12 +148,9 @@ const threadS3GarbageCollector = async (
     }
 
     if (delete_files_Params.Delete.Objects.length > 0) {
-      const ObjectKeys = delete_files_Params.Delete.Objects.map(
-        (Obj) => Obj.Key
-      );
       await deleteS3Objects({
         bucketName: AWS_S3_BUCKET_NAME,
-        objectKeys: ObjectKeys
+        objectKeys: delete_files_Params.Delete.Objects
       });
       logger.info('Deleted redundant files for threads.');
       logger.info(delete_files_Params.Delete.Objects);

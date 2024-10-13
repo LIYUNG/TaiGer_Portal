@@ -7,7 +7,8 @@ const {
   waitUntilObjectNotExists,
   DeleteObjectsCommand,
   paginateListObjectsV2,
-  PutObjectCommand
+  PutObjectCommand,
+  ListObjectsCommand
 } = require('@aws-sdk/client-s3');
 
 const {
@@ -119,13 +120,14 @@ const deleteS3Object = async (bucketName, objectKey) => {
   }
 };
 
+// objectKeys = [{Key: 'abc/hey.pdf},{Key:'abc/key.pdf'}]
 const deleteS3Objects = async ({ bucketName, objectKeys }) => {
   try {
     const { Deleted } = await s3Client.send(
       new DeleteObjectsCommand({
         Bucket: bucketName,
         Delete: {
-          Objects: objectKeys.map((objectKey) => ({ Key: objectKey }))
+          Objects: objectKeys
         }
       })
     );
@@ -133,7 +135,7 @@ const deleteS3Objects = async ({ bucketName, objectKeys }) => {
       objectKeys.map((objectKey) =>
         waitUntilObjectNotExists(
           { client: s3Client },
-          { Bucket: bucketName, Key: objectKey }
+          { Bucket: bucketName, Key: objectKey.Key }
         )
       )
     );
@@ -160,38 +162,26 @@ const deleteS3Objects = async ({ bucketName, objectKeys }) => {
   }
 };
 
-const listS3ObjectsV2 = async ({ bucketName, Delimiter, pageSize, Prefix }) => {
+const listS3ObjectsV2 = async ({ bucketName, Prefix }) => {
   try {
-    const objects = [];
-    const paginator = paginateListObjectsV2(
-      {
-        client: s3Client,
-        /* Max items per page */ pageSize: parseInt(pageSize, 10)
-      },
-      { Bucket: bucketName }
-    );
-
-    for await (const page of paginator) {
-      objects.push(page.Contents.map((o) => o.Key));
-    }
-    objects.forEach((objectList, pageNum) => {
-      logger.info(
-        `Page ${pageNum + 1}\n------\n${objectList
-          .map((o) => `• ${o}`)
-          .join('\n')}\n`
-      );
+    const command = new ListObjectsCommand({
+      Bucket: bucketName,
+      Prefix
     });
+
+    const response = await s3Client.send(command);
+    return response;
   } catch (caught) {
     if (
       caught instanceof S3ServiceException &&
       caught.name === 'NoSuchBucket'
     ) {
       logger.error(
-        `Error from S3 while deleting objects from ${bucketName}. The bucket doesn't exist.`
+        `Error from S3 while listing objects from ${bucketName}. The bucket doesn't exist.`
       );
     } else if (caught instanceof S3ServiceException) {
       logger.error(
-        `Error from S3 while deleting objects from ${bucketName}.  ${caught.name}: ${caught.message}`
+        `Error from S3 while deleting listS3Objects from ${bucketName}.  ${caught.name}: ${caught.message}`
       );
     } else {
       throw caught;

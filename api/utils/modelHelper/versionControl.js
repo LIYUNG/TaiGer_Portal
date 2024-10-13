@@ -8,33 +8,30 @@ const { AWS_S3_BUCKET_NAME } = require('../../config');
 const { listS3ObjectsV2, deleteS3Objects } = require('../../aws/s3');
 
 // TODO: aws-sdk v3 to be tested
+// only delete first 1000 objects
 const emptyS3Directory = asyncHandler(async (bucket, dir) => {
   const listParams = {
     bucketName: bucket,
-    Delimiter: '/',
-    // pageSize: 10,
     Prefix: dir
   };
 
   const listedObjects = await listS3ObjectsV2(listParams);
-
-  if (listedObjects.Contents.length === 0) return;
+  if (!listedObjects?.Contents || listedObjects.Contents.length === 0) return;
 
   const deleteParams = {
     Delete: { Objects: [] }
   };
 
-  listedObjects.Contents.forEach(({ Key }) => {
+  listedObjects?.Contents?.forEach(({ Key }) => {
     deleteParams.Delete.Objects.push({ Key });
   });
   logger.warn(JSON.stringify(deleteParams));
-  const ObjectKeys = deleteParams.Delete.Objects.map((Obj) => Obj.Key);
-  await deleteS3Objects({
-    bucketName: AWS_S3_BUCKET_NAME,
-    objectKeys: ObjectKeys
-  });
-
-  if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
+  if (deleteParams.Delete.Objects.length > 0) {
+    await deleteS3Objects({
+      bucketName: AWS_S3_BUCKET_NAME,
+      objectKeys: deleteParams.Delete.Objects
+    });
+  }
 });
 
 const createApplicationThread = async (

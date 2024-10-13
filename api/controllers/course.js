@@ -13,7 +13,8 @@ const {
 const { one_month_cache } = require('../cache/node-cache');
 const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
 const { isNotArchiv, Role } = require('../constants');
-const { s3, getTemporaryCredentials, callApiGateway } = require('../aws/index');
+const { getTemporaryCredentials, callApiGateway } = require('../aws');
+const { getS3Object } = require('../aws/s3');
 
 const getCourse = asyncHandler(async (req, res) => {
   const { studentId } = req.params;
@@ -281,13 +282,9 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
 });
 
 const processTranscript_api_gatway = asyncHandler(async (req, res, next) => {
-  const {
-    params: { category, studentId, language }
-  } = req;
-
   try {
-    const credentials = await getTemporaryCredentials();
-    const apiResponse = await callApiGateway(credentials);
+    const { Credentials } = await getTemporaryCredentials();
+    const apiResponse = await callApiGateway(Credentials);
     res.status(200).send({ success: true, data: apiResponse });
   } catch (err) {
     logger.info(err);
@@ -321,43 +318,26 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(403, 'Transcript not analysed yet');
   }
 
-  const fileKey = course.analysis.path.replace(/\\/g, '/').split('/')[1];
-  const directory = path
-    .join(
-      AWS_S3_BUCKET_NAME,
-      course.analysis.path.replace(/\\/g, '/').split('/')[0]
-    )
-    .replace(/\\/g, '/');
+  const fileKey = course.analysis.path.replace(/\\/g, '/');
+
   logger.info(`Trying to download transcript excel file ${fileKey}`);
 
   const url_split = req.originalUrl.split('/');
   const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
   const value = one_month_cache.get(cache_key);
   if (value === undefined) {
-    const options = {
-      Key: fileKey,
-      Bucket: directory
-    };
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-      // Convert Body from a Buffer to a String
-      const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
+    const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    // Convert Body from a Buffer to a String
+    const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
 
-      const success = one_month_cache.set(cache_key, data.Body);
-      if (success) {
-        logger.info('cache set successfully');
-      }
+    const success = one_month_cache.set(cache_key, Buffer.from(response));
+    if (success) {
+      logger.info('cache set successfully');
+    }
 
-      res.attachment(fileKey_converted);
-      // return res.send({ data: data.Body, lastModifiedDate: data.LastModified });
-      res.end(data.Body);
-      next();
-    });
+    res.attachment(fileKey_converted);
+    res.end(response);
+    next();
   } else {
     logger.info('cache hit');
     const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary

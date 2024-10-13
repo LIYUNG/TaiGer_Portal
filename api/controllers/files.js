@@ -20,7 +20,8 @@ const {
 const { AWS_S3_BUCKET_NAME, AWS_S3_PUBLIC_BUCKET_NAME } = require('../config');
 const logger = require('../services/logger');
 
-const { s3 } = require('../aws/index');
+const { deleteS3Object } = require('../aws/s3');
+const { getS3Object } = require('../aws/s3');
 
 const getTemplates = asyncHandler(async (req, res, next) => {
   const templates = await req.db.model('Template').find({});
@@ -38,27 +39,16 @@ const deleteTemplate = asyncHandler(async (req, res, next) => {
 
   let document_split = template.path.replace(/\\/g, '/');
   document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = document_split[0];
+  const [directory, fileName] = document_split;
+  const fileKey = path.join(directory, fileName).replace(/\\/g, '/');
   logger.info('Trying to delete file', fileKey);
-  directory = path.join(AWS_S3_BUCKET_NAME, directory);
-  directory = directory.replace(/\\/g, '/');
 
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
   try {
-    s3.deleteObject(options, (error, data) => {
-      if (error) {
-        logger.error('deleteObject');
-        logger.error(error);
-      }
-      const value = two_month_cache.del(fileKey);
-      if (value === 1) {
-        logger.info('Template cache key deleted successfully');
-      }
-    });
+    await deleteS3Object(AWS_S3_PUBLIC_BUCKET_NAME, fileKey);
+    const value = two_month_cache.del(fileKey);
+    if (value === 1) {
+      logger.info('Template cache key deleted successfully');
+    }
   } catch (err) {
     if (err) {
       logger.error('deleteTemplate: ', err);
@@ -91,7 +81,7 @@ const uploadTemplate = asyncHandler(async (req, res, next) => {
     {
       name: req.file.key,
       category_name,
-      path: path.join(req.file.metadata.path, req.file.key),
+      path: req.file.key,
       updatedAt: new Date()
     },
     { upsert: true, new: true }
@@ -110,36 +100,20 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   // download the file via aws s3 here
   let document_split = template.path.replace(/\\/g, '/');
   document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = document_split[0];
+  const [directory, fileName] = document_split;
+  const fileKey = path.join(directory, fileName).replace(/\\/g, '/');
   logger.info('Trying to download template file', fileKey);
-  directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, directory);
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
 
   const value = two_month_cache.get(fileKey); // vpd name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-
-      // No error happened
-      const success = two_month_cache.set(fileKey, data.Body);
-      if (success) {
-        logger.info('Template file cache set successfully');
-      }
-
-      res.attachment(fileKey);
-      res.end(data.Body);
-      next();
-    });
+    const response = await getS3Object(AWS_S3_PUBLIC_BUCKET_NAME, fileKey);
+    const success = two_month_cache.set(fileKey, Buffer.from(response));
+    if (success) {
+      logger.info('Template file cache set successfully');
+    }
+    res.attachment(fileKey);
+    res.end(response);
+    next();
   } else {
     logger.info('Template file cache hit');
     res.attachment(fileKey);
@@ -171,7 +145,7 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
     document.status = DocumentStatus.Uploaded;
     document.required = true;
     document.updatedAt = new Date();
-    document.path = path.join(req.file.metadata.path, req.file.key);
+    document.path = req.file.key;
     student.profile.push(document);
     await student.save();
     res.status(201).send({ success: true, data: student });
@@ -236,7 +210,7 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
     document.status = DocumentStatus.Uploaded;
     document.required = true;
     document.updatedAt = new Date();
-    document.path = path.join(req.file.metadata.path, req.file.key);
+    document.path = req.file.key;
     await student.save();
 
     // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -396,10 +370,7 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
   if (!app) {
     app.uni_assist.status = DocumentStatus.Uploaded;
     app.uni_assist.updatedAt = new Date();
-    app.uni_assist.vpd_file_path = path.join(
-      req.file.metadata.path,
-      req.file.key
-    );
+    app.uni_assist.vpd_file_path = req.file.key;
     await student.save();
     res.status(201).send({ success: true, data: student });
 
@@ -408,18 +379,12 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
   if (fileType === 'VPD') {
     app.uni_assist.status = DocumentStatus.Uploaded;
     app.uni_assist.updatedAt = new Date();
-    app.uni_assist.vpd_file_path = path.join(
-      req.file.metadata.path,
-      req.file.key
-    );
+    app.uni_assist.vpd_file_path = req.file.key;
   }
   if (fileType === 'VPDConfirmation') {
     // app.uni_assist.status = DocumentStatus.Uploaded;
     app.uni_assist.updatedAt = new Date();
-    app.uni_assist.vpd_paid_confirmation_file_path = path.join(
-      req.file.metadata.path,
-      req.file.key
-    );
+    app.uni_assist.vpd_paid_confirmation_file_path = req.file.key;
   }
 
   await student.save();
@@ -517,37 +482,22 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
     );
   }
   document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = path.join(AWS_S3_BUCKET_NAME, document_split[0]);
+
+  const [directory, fileName] = document_split;
+  const fileKey = path.join(directory, fileName).replace(/\\/g, '/');
+
   logger.info(`Trying to download ${fileType} file`);
-
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
-
-  const cache_key = `${studentId}${fileKey}`;
-  const value = one_month_cache.get(cache_key); // vpd name
+  const value = one_month_cache.get(fileKey); // vpd name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
+    const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
 
-      // No error happened
-      const success = one_month_cache.set(cache_key, data.Body);
-      if (success) {
-        logger.info('VPD file cache set successfully');
-      }
-
-      res.attachment(fileKey);
-      res.end(data.Body);
-      next();
-    });
+    const success = one_month_cache.set(fileKey, Buffer.from(response));
+    if (success) {
+      logger.info('VPD file cache set successfully');
+    }
+    res.attachment(fileKey);
+    res.end(response);
+    next();
   } else {
     logger.info('VPD file cache hit');
     res.attachment(fileKey);
@@ -584,37 +534,21 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
 
   let document_split = document.path.replace(/\\/g, '/');
   document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = document_split[0];
+  const [directory, fileName] = document_split;
+  const fileKey = path.join(directory, fileName).replace(/\\/g, '/');
   logger.info(`Trying to download profile file ${fileKey}`);
-  directory = path.join(AWS_S3_BUCKET_NAME, directory);
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
 
   const cache_key = `${studentId}${fileKey}`;
-  const value = one_month_cache.get(cache_key); // vpd name
+  const value = one_month_cache.get(cache_key); // profile name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-
-      // No error happened
-      const success = one_month_cache.set(cache_key, data.Body);
-      if (success) {
-        logger.info('Profile file cache set successfully');
-      }
-
-      res.attachment(fileKey);
-      res.end(data.Body);
-      next();
-    });
+    const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    const success = one_month_cache.set(cache_key, Buffer.from(response));
+    if (success) {
+      logger.info('Profile file cache set successfully');
+    }
+    res.attachment(fileKey);
+    res.end(response);
+    next();
   } else {
     logger.info('Profile file cache hit');
     res.attachment(fileKey);
@@ -909,7 +843,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
   if (req.file) {
     const admission_letter_temp = {
       status: DocumentStatus.Uploaded,
-      admission_file_path: path.join(req.file.metadata.path, req.file.key),
+      admission_file_path: req.file.key,
       comments: '',
       updatedAt: new Date()
     };
@@ -928,32 +862,21 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
     );
     const file_path = app.admission_letter?.admission_file_path;
     if (file_path && file_path !== '') {
-      let document_split = file_path.replace(/\\/g, '/');
-      document_split = document_split.split('/');
-      const fileKey = document_split[2];
-      let directory = `${document_split[0]}/${document_split[1]}`;
+      const fileKey = file_path.replace(/\\/g, '/');
       logger.info('Trying to delete file', fileKey);
-      directory = path.join(AWS_S3_BUCKET_NAME, directory);
-      directory = directory.replace(/\\/g, '/');
-      const options = {
-        Key: fileKey,
-        Bucket: directory
-      };
       try {
-        s3.deleteObject(options, (error, data) => {
-          if (error) {
-            logger.error('deleteObject');
-            logger.error(error);
-          }
-          const value = two_month_cache.del(fileKey);
-          if (value === 1) {
-            logger.info('Admission cache key deleted successfully');
-          }
-        });
+        await deleteS3Object(AWS_S3_BUCKET_NAME, fileKey);
+        const value = two_month_cache.del(fileKey);
+        if (value === 1) {
+          logger.info('Admission cache key deleted successfully');
+        }
       } catch (err) {
         if (err) {
-          logger.error(`Error: deleteTemplate: ${err}`);
-          throw new ErrorResponse(500, 'Error occurs while deleting');
+          logger.error(`Error: delete Application result letter: ${err}`);
+          throw new ErrorResponse(
+            500,
+            'Error occurs while deleting Application result letter'
+          );
         }
       }
     }
@@ -1056,37 +979,24 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(404, 'Document File not found');
   }
 
-  let document_split = document.path.replace(/\\/g, '/');
-  document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = document_split[0];
-  logger.info('Trying to delete file', fileKey);
-  directory = path.join(AWS_S3_BUCKET_NAME, directory);
-  directory = directory.replace(/\\/g, '/');
+  const fileKey = document.path.replace(/\\/g, '/');
 
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
+  logger.info('Trying to delete file', fileKey);
+
   const cache_key = `${studentId}${fileKey}`;
   try {
-    s3.deleteObject(options, (error, data) => {
-      if (error) {
-        logger.error(error);
-      } else {
-        document.status = DocumentStatus.Missing;
-        document.path = '';
-        document.updatedAt = new Date();
+    await deleteS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    document.status = DocumentStatus.Missing;
+    document.path = '';
+    document.updatedAt = new Date();
 
-        student.save();
-        const value = one_month_cache.del(cache_key);
-        if (value === 1) {
-          logger.info('Profile cache key deleted successfully');
-        }
-        res.status(200).send({ success: true, data: document });
-        next();
-      }
-    });
+    student.save();
+    const value = one_month_cache.del(cache_key);
+    if (value === 1) {
+      logger.info('Profile cache key deleted successfully');
+    }
+    res.status(200).send({ success: true, data: document });
+    next();
   } catch (err) {
     if (err) {
       logger.error('deleteProfileFile: ', err);
@@ -1143,40 +1053,26 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
     );
   }
 
-  document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = path.join(AWS_S3_BUCKET_NAME, document_split[0]);
+  const fileKey = document_split.replace(/\\/g, '/');
   logger.info(`Trying to delete file ${fileKey}`);
-  directory = directory.replace(/\\/g, '/');
 
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
   try {
-    s3.deleteObject(options, (error, data) => {
-      if (error) {
-        logger.error(error);
-      } else {
-        if (fileType === 'VPD') {
-          app.uni_assist.status = DocumentStatus.Missing;
-          app.uni_assist.vpd_file_path = '';
-        }
-        if (fileType === 'VPDConfirmation') {
-          app.uni_assist.vpd_paid_confirmation_file_path = '';
-        }
-        app.uni_assist.updatedAt = new Date();
-
-        student.save();
-        const cache_key = `${studentId}${fileKey}`;
-        const value = one_month_cache.del(cache_key);
-        if (value === 1) {
-          logger.info('VPD cache key deleted successfully');
-        }
-        res.status(200).send({ success: true });
-        next();
-      }
-    });
+    await deleteS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    const value = one_month_cache.del(fileKey);
+    if (value === 1) {
+      logger.info('VPD cache key deleted successfully');
+    }
+    if (fileType === 'VPD') {
+      app.uni_assist.status = DocumentStatus.Missing;
+      app.uni_assist.vpd_file_path = '';
+    }
+    if (fileType === 'VPDConfirmation') {
+      app.uni_assist.vpd_paid_confirmation_file_path = '';
+    }
+    app.uni_assist.updatedAt = new Date();
+    student.save();
+    res.status(200).send({ success: true });
+    next();
   } catch (err) {
     if (err) {
       logger.error('deleteVPDFile: ', err);

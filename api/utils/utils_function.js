@@ -34,9 +34,10 @@ const {
 const { asyncHandler } = require('../middlewares/error-handler');
 const { isProd, AWS_S3_BUCKET_NAME } = require('../config');
 const { connectToDatabase } = require('../middlewares/tenantMiddleware');
-const { s3 } = require('../aws');
+const { deleteS3Objects, listS3ObjectsV2 } = require('../aws/s3');
 const { ErrorResponse } = require('../common/errors');
 
+// TODO: aws-sdk v3 not tested yet.
 const threadS3GarbageCollector = async (
   req,
   collection,
@@ -53,12 +54,10 @@ const threadS3GarbageCollector = async (
     }
 
     const deleteParams = {
-      Bucket: AWS_S3_BUCKET_NAME,
       Delete: { Objects: [] }
     };
 
     const delete_files_Params = {
-      Bucket: AWS_S3_BUCKET_NAME,
       Delete: { Objects: [] }
     };
 
@@ -74,22 +73,22 @@ const threadS3GarbageCollector = async (
     let directory_files = path.join(user_id, thread_id);
     directory_files = directory_files.replace(/\\/g, '/');
     const listParamsPublic = {
-      Bucket: AWS_S3_BUCKET_NAME,
+      bucketName: AWS_S3_BUCKET_NAME,
       Delimiter: '/',
+      pageSize: 10,
       Prefix: `${directory_img}/`
     };
     const listParamsPublic_files = {
-      Bucket: AWS_S3_BUCKET_NAME,
+      bucketName: AWS_S3_BUCKET_NAME,
       Delimiter: '/',
+      pageSize: 10,
       Prefix: `${directory_files}/`
     };
-    const listedObjectsPublic = await s3
-      .listObjectsV2(listParamsPublic)
-      .promise();
+    const listedObjectsPublic = await listS3ObjectsV2(listParamsPublic);
 
-    const listedObjectsPublic_files = await s3
-      .listObjectsV2(listParamsPublic_files)
-      .promise();
+    const listedObjectsPublic_files = await listS3ObjectsV2(
+      listParamsPublic_files
+    );
     if (listedObjectsPublic.Contents.length > 0) {
       listedObjectsPublic.Contents.forEach((Obj) => {
         let file_found = false;
@@ -141,7 +140,12 @@ const threadS3GarbageCollector = async (
     }
 
     if (deleteParams.Delete.Objects.length > 0) {
-      await s3.deleteObjects(deleteParams).promise();
+      const ObjectKeys = deleteParams.Delete.Objects.map((Obj) => Obj.Key);
+      await deleteS3Objects({
+        bucketName: AWS_S3_BUCKET_NAME,
+        objectKeys: ObjectKeys
+      });
+
       logger.info('Deleted redundant images for threads.');
       logger.info(deleteParams.Delete.Objects);
     } else {
@@ -149,7 +153,13 @@ const threadS3GarbageCollector = async (
     }
 
     if (delete_files_Params.Delete.Objects.length > 0) {
-      await s3.deleteObjects(delete_files_Params).promise();
+      const ObjectKeys = delete_files_Params.Delete.Objects.map(
+        (Obj) => Obj.Key
+      );
+      await deleteS3Objects({
+        bucketName: AWS_S3_BUCKET_NAME,
+        objectKeys: ObjectKeys
+      });
       logger.info('Deleted redundant files for threads.');
       logger.info(delete_files_Params.Delete.Objects);
     } else {

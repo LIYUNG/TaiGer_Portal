@@ -11,11 +11,11 @@ const {
   complaintResolvedRequesterReminderEmail,
   newCustomerCenterTicketMessageEmail
 } = require('../services/email/complaints');
-const { s3 } = require('../aws');
 const { one_month_cache } = require('../cache/node-cache');
 const { AWS_S3_BUCKET_NAME } = require('../config');
 const { emptyS3Directory } = require('../utils/modelHelper/versionControl');
 const { threadS3GarbageCollector } = require('../utils/utils_function');
+const { getS3Object } = require('../aws/s3');
 
 const getManagers = async (req) =>
   req.db
@@ -125,38 +125,23 @@ const createComplaint = asyncHandler(async (req, res) => {
 
 const getMessageFileInTicket = asyncHandler(async (req, res) => {
   const {
-    params: { ticketId, studentId, fileKey }
+    params: { ticketId, studentId, fileKey: filename }
   } = req;
 
-  logger.info('Trying to download ticket file', fileKey);
-  let directory = path.join(AWS_S3_BUCKET_NAME, studentId, ticketId);
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
+  logger.info('Trying to download ticket file', filename);
+  const fileKey = path.join(studentId, ticketId, filename).replace(/\\/g, '/');
 
   // messageid + extension
   const cache_key = `${studentId}${ticketId}${encodeURIComponent(fileKey)}`;
   const value = one_month_cache.get(cache_key); // file name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('ticket file not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-
-      // No error happened
-      const success = one_month_cache.set(cache_key, data.Body);
-      if (success) {
-        logger.info('ticket file cache set successfully');
-      }
-
-      res.attachment(fileKey);
-      return res.end(data.Body);
-    });
+    const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    const success = one_month_cache.set(cache_key, Buffer.from(response));
+    if (success) {
+      logger.info('ticket file cache set successfully');
+    }
+    res.attachment(fileKey);
+    return res.end(response);
   } else {
     logger.info('ticket file cache hit');
     res.attachment(fileKey);
@@ -200,9 +185,10 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
   let newfile = [];
   if (req.files) {
     for (let i = 0; i < req.files.length; i += 1) {
+      const fileName = req.files[i].key[2];
       newfile.push({
-        name: req.files[i].key,
-        path: path.join(req.files[i].metadata.path, req.files[i].key)
+        name: fileName,
+        path: req.files[i].key
       });
       // Check for duplicate file extensions
       const fileExtensions = req.files.map(

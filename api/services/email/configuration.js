@@ -1,17 +1,20 @@
 const { createTransport } = require('nodemailer');
 const {
-  isDev,
   SMTP_HOST,
   SMTP_PORT,
   SMTP_USERNAME,
-  SMTP_PASSWORD
+  SMTP_PASSWORD,
+  isProd
 } = require('../../config');
-const { ses, limiter } = require('../../aws');
+const { ses, limiter, SendRawEmailCommand } = require('../../aws');
 const { senderName, taigerNotReplyGmail } = require('../../constants/email');
 const { htmlContent } = require('../emailTemplate');
 
-const transporter = isDev()
+const transporter = isProd()
   ? createTransport({
+      SES: { ses, aws: { SendRawEmailCommand } }
+    })
+  : createTransport({
       host: SMTP_HOST,
       port: SMTP_PORT,
       auth: {
@@ -21,9 +24,6 @@ const transporter = isDev()
       tls: {
         rejectUnauthorized: false
       }
-    })
-  : createTransport({
-      SES: ses
     });
 
 const sendEmail = (to, subject, message) => {

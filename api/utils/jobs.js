@@ -12,10 +12,11 @@ const {
   notes_transformer,
   permissions_transformer
 } = require('./utils_function');
-const { s3 } = require('../aws');
+const { putS3Object } = require('../aws/s3');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { connectToDatabase } = require('../middlewares/tenantMiddleware');
 
+// TODO: to be optimized
 const MongoDBDataBaseDailySnapshot = asyncHandler(async () => {
   const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
   const req = {};
@@ -143,21 +144,13 @@ const MongoDBDataBaseDailySnapshot = asyncHandler(async () => {
 
     // Convert JSON to string
     const jsonString = JSON.stringify(jsonObject);
-    s3.putObject(
-      {
-        Bucket: `${AWS_S3_MONGODB_BACKUP_SNAPSHOT}/${year}-${month}-${day}/${hours}-${minutes}-${seconds}`,
-        Key: `${data_category[i]}.json`,
-        Body: jsonString,
-        ContentType: 'application/json'
-      },
-      (error, data) => {
-        if (error) {
-          logger.error(`Error uploading ${data_category[i]}.json:`, error);
-        } else {
-          logger.info(`${data_category[i]}.json uploaded successfully`);
-        }
-      }
-    );
+    const params = {
+      bucketName: AWS_S3_MONGODB_BACKUP_SNAPSHOT,
+      key: `${year}-${month}-${day}/${hours}-${minutes}-${seconds}/${data_category[i]}.json`,
+      Body: jsonString,
+      ContentType: 'application/json'
+    };
+    await putS3Object(params);
   }
 });
 

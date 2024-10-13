@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const { ObjectId } = Schema.Types;
 // const { handleProgramChanges } = require('../utils/modelHelper/programChange');
 
-
 // const Degree = {
 //   bachelor_sc: 'B.Sc',
 //   bachelor_eng: 'B.Eng',
@@ -208,6 +207,9 @@ const programModule = {
     type: String
   },
   isPrivateSchool: {
+    type: Boolean
+  },
+  isPartnerSchool: {
     type: Boolean
   },
   schoolType: {

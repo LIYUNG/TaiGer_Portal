@@ -14,7 +14,8 @@ const {
   getProgram,
   createProgram,
   updateProgram,
-  deleteProgram
+  deleteProgram,
+  getDistinctSchoolsAttributes
 } = require('../controllers/programs');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const {
@@ -39,6 +40,15 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent),
     permission_canModifyProgramList_filter,
     createProgram
+  );
+
+router
+  .route('/schools')
+  .get(
+    filter_archiv_user,
+    GetProgramListRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    getDistinctSchoolsAttributes
   );
 
 router

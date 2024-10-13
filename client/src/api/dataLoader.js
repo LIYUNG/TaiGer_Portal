@@ -11,7 +11,8 @@ import {
   getAllStudents,
   getStudentUniAssist,
   getComplaintsTickets,
-  getComplaintsTicket
+  getComplaintsTicket,
+  getDistinctSchools
 } from '.';
 
 export async function getStudentsLoader() {
@@ -165,4 +166,17 @@ async function loadStudentAndEssays() {
 
 export function combinedLoader() {
   return defer({ studentAndEssays: loadStudentAndEssays() });
+}
+
+export async function DistinctSchoolsLoader() {
+  const response = await getDistinctSchools();
+  if (response.status >= 400) {
+    throw json({ message: response.statusText }, { status: response.status });
+  } else {
+    return response.data.data;
+  }
+}
+
+export function getDistinctSchoolsLoader({ params }) {
+  return defer({ distinctSchools: DistinctSchoolsLoader({ params }) });
 }

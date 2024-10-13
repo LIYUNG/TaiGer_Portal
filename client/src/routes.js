@@ -12,7 +12,8 @@ import {
   getAllStudentsLoader,
   getAllArchivedStudentsLoader,
   getAllComplaintTicketsLoader,
-  getComplaintTicketLoader
+  getComplaintTicketLoader,
+  getDistinctSchoolsLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
@@ -134,6 +135,7 @@ const StudentApplications = React.lazy(() =>
   import('./Demo/StudentApplications/index')
 );
 const SingleProgram = React.lazy(() => import('./Demo/Program/SingleProgram'));
+const SchoolConfig = React.lazy(() => import('./Demo/Program/SchoolConfig'));
 const UsersTable = React.lazy(() => import('./Demo/Users/UsersTable'));
 const Survey = React.lazy(() => import('./Demo/Survey/index'));
 const Settings = React.lazy(() => import('./Demo/Settings/index'));
@@ -242,6 +244,13 @@ const routes = [
     errorElement: <DefaultErrorPage />,
     loader: getAllArchivedStudentsLoader,
     element: <AllArchivStudent />
+  },
+  {
+    path: '/programs/config',
+    exact: true,
+    name: 'SchoolConfig',
+    loader: getDistinctSchoolsLoader,
+    Component: SchoolConfig
   },
   {
     path: '/programs/:programId',

@@ -1,11 +1,17 @@
 const { STSClient, AssumeRoleCommand } = require('@aws-sdk/client-sts');
 
 const logger = require('../services/logger');
-const { AWS_S3_ACCESS_KEY_ID, AWS_S3_ACCESS_KEY, AWS_REGION } = require('../config');
+const {
+  AWS_S3_ACCESS_KEY_ID,
+  AWS_S3_ACCESS_KEY,
+  AWS_REGION,
+  isProd
+} = require('../config');
 
 // AWS configuration
-const roleToAssume =
-  'arn:aws:iam::669131042313:role/Beta-FE-LambdaStack-AuthorizedClientRoleBetaFE1B184-1W2CiKHyKQ5h'; // Replace with your role ARN
+const roleToAssume = isProd()
+  ? 'arn:aws:iam::669131042313:role/Prod-NA-LambdaStack-AuthorizedClientRoleProdNA32E8E-C6jpOkI8QTls'
+  : 'arn:aws:iam::669131042313:role/Beta-FE-LambdaStack-AuthorizedClientRoleBetaFE1B184-7cxjOdtI3pLE'; // Replace with your role ARN
 
 const stsClient = new STSClient({
   region: AWS_REGION,

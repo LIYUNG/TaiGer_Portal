@@ -28,7 +28,7 @@ passport.use(
         await User.findOneAndUpdate(
           { email },
           { lastLoginAt: new Date() },
-          { upsert: true }
+          { upsert: false }
         );
         return done(null, user);
       } catch (err) {

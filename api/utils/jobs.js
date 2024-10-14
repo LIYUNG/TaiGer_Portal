@@ -188,13 +188,23 @@ const MongoDBDataBaseDailySnapshotV2 = asyncHandler(async () => {
   const req = {};
   req.db = connectToDatabase(tenantId);
   // Get all collections in the database
-  const modelNames = Object.keys(req.db.models);
+  let modelNames = Object.keys(req.db.models);
 
   // Upload JSON data to S3
   logger.info('database snapshot starts');
-  for (const modelName of modelNames) {
+  modelNames = modelNames.filter(
+    (modelName) =>
+      !['Admin', 'Editor', 'Agent', 'Student', 'Guest'].includes(modelName)
+  );
+
+  const promises = modelNames.map(async (modelName) => {
     // Fetch all documents from the collection
-    const documents = await req.db.model(modelName).find({});
+    let documents;
+    if (modelName === 'User') {
+      documents = await req.db.model(modelName).find({}).select('+password');
+    } else {
+      documents = await req.db.model(modelName).find({});
+    }
     // Transform each document
     const transformedData = documents.map((doc) =>
       transformDocument(doc.toObject())
@@ -209,8 +219,13 @@ const MongoDBDataBaseDailySnapshotV2 = asyncHandler(async () => {
       ContentType: 'application/json'
     };
     await putS3Object(params);
-    logger.info(`Uploaded ${modelName} collection in S3 ${AWS_S3_MONGODB_BACKUP_SNAPSHOT}`);
-  }
+    logger.info(
+      `Uploaded ${modelName} collection in S3 ${AWS_S3_MONGODB_BACKUP_SNAPSHOT}`
+    );
+  });
+
+  // Wait for all promises to resolve
+  await Promise.all(promises);
 });
 
 module.exports = {

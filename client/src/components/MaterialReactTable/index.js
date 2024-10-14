@@ -6,25 +6,30 @@ import {
   useMaterialReactTable
 } from 'material-react-table';
 
-import { Box, Typography } from '@mui/material';
-
 const MRTable = ({
   columns,
   data,
-  hasDetailPanel,
-  hasCheckBox,
+  enableRowSelection,
+  enableMultiRowSelection,
+  muiTableBodyRowProps,
+  onRowSelectionChange,
+  rowSelection,
   columnVisibilityModel
 }) => {
   const table = useMaterialReactTable({
     columns,
     data, //data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
+    onRowSelectionChange: onRowSelectionChange ?? null,
+    state: rowSelection ? { rowSelection } : null,
     enableColumnFilterModes: true,
     enableColumnOrdering: true,
     enableColumnPinning: true,
     enableColumnResizing: true,
     enableColumnFilters: true,
     // enableRowActions: true,
-    enableRowSelection: hasCheckBox ? true : false,
+    enableRowSelection: enableRowSelection ?? false,
+    enableMultiRowSelection: enableMultiRowSelection ?? false,
+    muiTableBodyRowProps: muiTableBodyRowProps ?? null,
     initialState: {
       showColumnFilters: true,
       showGlobalFilter: true,
@@ -47,36 +52,7 @@ const MRTable = ({
       rowsPerPageOptions: [10, 20, 50, 100],
       shape: 'rounded',
       variant: 'outlined'
-    },
-    renderDetailPanel: hasDetailPanel
-      ? ({ row }) => (
-          <Box
-            sx={{
-              alignItems: 'center',
-              display: 'flex',
-              justifyContent: 'space-around',
-              left: '30px',
-              maxWidth: '1000px',
-              position: 'sticky',
-              width: '100%'
-            }}
-          >
-            <img
-              alt="avatar"
-              height={200}
-              src={row.original.avatar}
-              loading="lazy"
-              style={{ borderRadius: '50%' }}
-            />
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="h4">Signature Catch Phrase:</Typography>
-              <Typography variant="h1">
-                &quot;{row.original.signatureCatchPhrase}&quot;
-              </Typography>
-            </Box>
-          </Box>
-        )
-      : undefined
+    }
   });
 
   return <MaterialReactTable table={table} />;
@@ -86,12 +62,28 @@ const MRTable = ({
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-const ExampleWithLocalizationProvider = ({ col, data }) => {
+const ExampleWithLocalizationProvider = ({
+  col,
+  data,
+  enableRowSelection,
+  enableMultiRowSelection,
+  muiTableBodyRowProps,
+  onRowSelectionChange,
+  rowSelection
+}) => {
   //App.tsx or AppProviders file
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <MRTable columns={col} data={data} />
+      <MRTable
+        columns={col}
+        data={data}
+        enableRowSelection={enableRowSelection}
+        enableMultiRowSelection={enableMultiRowSelection}
+        muiTableBodyRowProps={muiTableBodyRowProps}
+        onRowSelectionChange={onRowSelectionChange}
+        rowSelection={rowSelection}
+      />
     </LocalizationProvider>
   );
 };

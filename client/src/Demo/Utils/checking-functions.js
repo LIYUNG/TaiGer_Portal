@@ -1403,6 +1403,40 @@ export const needGraduatedApplicantsPrograms = (applications) => {
   );
 };
 
+export const isLanguageNotMatchedInAnyProgram = (student) => {
+  if (student.applications === undefined) {
+    return false;
+  }
+  for (let j = 0; j < student.applications.length; j += 1) {
+    if (
+      isProgramDecided(student.applications[j]) &&
+      student.applications[j].programId.lang?.toLowerCase().includes('german') &&
+      check_german_language_Notneeded(student.academic_background)
+    ) {
+      return true;
+    }
+    if (
+      isProgramDecided(student.applications[j]) &&
+      student.applications[j].programId.lang?.toLowerCase().includes('english') &&
+      check_english_language_Notneeded(student.academic_background)
+    ) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const languageNotMatchedPrograms = (student) => {
+  return student.applications?.filter(
+    (app) =>
+      isProgramDecided(app) &&
+      ((app.programId.lang?.toLowerCase().includes('english') &&
+        check_english_language_Notneeded(student.academic_background)) ||
+        (app.programId.lang?.toLowerCase().includes('german') &&
+          check_german_language_Notneeded(student.academic_background)))
+  );
+};
+
 export const is_all_uni_assist_vpd_uploaded = (student) => {
   if (student.applications === undefined) {
     return false;

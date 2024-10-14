@@ -39,6 +39,7 @@ import { updateBanner } from '../../../api';
 import DEMO from '../../../store/constant';
 import ApplicationProgressCard from '../../../components/ApplicationProgressCard/ApplicationProgressCard';
 import { appConfig } from '../../../config';
+import ProgramLanguageNotMatchedBanner from '../../../components/Banner/ProgramLanguageNotMatchedBanner';
 
 function StudentDashboard(props) {
   const { t } = useTranslation();
@@ -325,6 +326,9 @@ function StudentDashboard(props) {
               )}
             </Card>
           )}
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <ProgramLanguageNotMatchedBanner student={student} />
         </Grid>
         <Grid item xs={12} md={8}>
           <Card style={{ border: '4px solid red' }}>

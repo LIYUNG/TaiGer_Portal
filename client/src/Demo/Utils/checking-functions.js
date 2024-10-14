@@ -1358,27 +1358,19 @@ export const is_the_uni_assist_vpd_uploaded = (application) => {
   return true;
 };
 
-export const is_personal_data_filled = (student) => {
-  if (
-    student.birthday === undefined ||
-    student.firstname === undefined ||
-    student.firstname_chinese === undefined ||
-    student.lastname === undefined ||
-    student.lastname_chinese === undefined
-  ) {
-    return false;
-  }
-  if (
-    student.birthday === '' ||
-    student.firstname === '' ||
-    student.firstname_chinese === '' ||
-    student.lastname === '' ||
-    student.lastname_chinese === ''
-  ) {
-    return false;
-  }
+export const requiredFields = [
+  'birthday',
+  'firstname',
+  'firstname_chinese',
+  'lastname',
+  'lastname_chinese',
+  'linkedIn'
+];
 
-  return true;
+export const is_personal_data_filled = (student) => {
+  return requiredFields.every(
+    (field) => student[field] !== undefined && student[field] !== ''
+  );
 };
 
 export const needGraduatedApplicantsButStudentNotGraduated = (student) => {
@@ -1404,25 +1396,34 @@ export const needGraduatedApplicantsPrograms = (applications) => {
 };
 
 export const isLanguageNotMatchedInAnyProgram = (student) => {
-  if (student.applications === undefined) {
+  const { applications, academic_background } = student;
+
+  if (!applications) {
     return false;
   }
-  for (let j = 0; j < student.applications.length; j += 1) {
+
+  for (let app of applications) {
+    if (!isProgramDecided(app)) {
+      continue;
+    }
+
+    const programLang = app.programId.lang?.toLowerCase();
+
     if (
-      isProgramDecided(student.applications[j]) &&
-      student.applications[j].programId.lang?.toLowerCase().includes('german') &&
-      check_german_language_Notneeded(student.academic_background)
+      programLang?.includes('german') &&
+      check_german_language_Notneeded(academic_background)
     ) {
       return true;
     }
+
     if (
-      isProgramDecided(student.applications[j]) &&
-      student.applications[j].programId.lang?.toLowerCase().includes('english') &&
-      check_english_language_Notneeded(student.academic_background)
+      programLang?.includes('english') &&
+      check_english_language_Notneeded(academic_background)
     ) {
       return true;
     }
   }
+
   return false;
 };
 

@@ -19,6 +19,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Stack,
   TextField,
   Typography
 } from '@mui/material';
@@ -315,6 +316,39 @@ function Profile() {
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
   }
+
+  const personalDataFields = [
+    { name: 'firstname', label: `${t('First Name')} (English)`, sm: 6 },
+    { name: 'lastname', label: `${t('Last Name')} (English)`, sm: 6 },
+    { name: 'firstname_chinese', label: `${t('First Name')} (中文)`, sm: 6 },
+    { name: 'lastname_chinese', label: `${t('Last Name')} (中文)`, sm: 6 },
+    {
+      name: 'birthday',
+      label: t('Birthday', { ns: 'common' }),
+      type: 'date',
+      sm: 12,
+      inputLabelProps: { shrink: true }
+    },
+    {
+      name: 'email',
+      label: t('Email', { ns: 'common' }),
+      sm: 12,
+      disabled: true,
+      inputLabelProps: { shrink: true }
+    },
+    {
+      name: 'linkedIn',
+      label: t('LinkedIn', { ns: 'common' }),
+      sm: 12,
+      inputLabelProps: { shrink: true }
+    },
+    {
+      name: 'lineId',
+      label: t('Line ID', { ns: 'common' }),
+      sm: 12,
+      inputLabelProps: { shrink: true }
+    }
+  ];
   return (
     <Box>
       {res_modal_status >= 400 && (
@@ -375,149 +409,52 @@ function Profile() {
                   aria-controls="panel1-content"
                   id="panel1-header"
                 >
-                  <ReportProblemIcon size={18} />
-                  <Typography>{t('Reminder')}: Please fill your</Typography>
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    <ReportProblemIcon size={18} />
+                    <Typography>{t('Reminder')}: Please fill your</Typography>
+                  </Stack>
                 </AccordionSummary>
                 <AccordionDetails>
                   <List>
-                    {!profileState.personaldata.firstname && (
-                      <ListItem>
-                        <ListItemText primary="First Name (English)" />
-                      </ListItem>
-                    )}
-                    {!profileState.personaldata.lastname && (
-                      <ListItem>
-                        <ListItemText primary="Last Name (English)" />
-                      </ListItem>
-                    )}
-                    {!profileState.personaldata.firstname_chinese && (
-                      <ListItem>
-                        <ListItemText primary="名 (中文)" />
-                      </ListItem>
-                    )}
-                    {!profileState.personaldata.lastname_chinese && (
-                      <ListItem>
-                        <ListItemText primary="姓 (中文)" />
-                      </ListItem>
-                    )}
-                    {!profileState.personaldata.birthday && (
-                      <ListItem>
-                        <ListItemText
-                          primary={t('Birthday', { ns: 'common' })}
-                        />
-                      </ListItem>
+                    {personalDataFields.map(
+                      (item) =>
+                        !profileState.personaldata[item.name] && (
+                          <ListItem key={item.name}>
+                            <ListItemText primary={item.label} />
+                          </ListItem>
+                        )
                     )}
                   </List>
                 </AccordionDetails>
               </Accordion>
             )}
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              autoComplete="firstname"
-              name="firstname"
-              required
-              fullWidth
-              id="firstname"
-              label={`${t('First Name')} (English)`}
-              value={profileState.personaldata.firstname}
-              onChange={(e) => handleChange_PersonalData(e)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              autoComplete="lastname"
-              name="lastname"
-              required
-              fullWidth
-              id="lastname"
-              label={`${t('Last Name')} (English)`}
-              value={profileState.personaldata.lastname}
-              onChange={(e) => handleChange_PersonalData(e)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              autoComplete="firstname_chinese"
-              name="firstname_chinese"
-              required
-              fullWidth
-              id="firstname_chinese"
-              label={`${t('First Name')} (中文)`}
-              value={profileState.personaldata.firstname_chinese}
-              onChange={(e) => handleChange_PersonalData(e)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              autoComplete="lastname_chinese"
-              name="lastname_chinese"
-              required
-              fullWidth
-              id="lastname_chinese"
-              label={`${t('Last Name')} (中文)`}
-              value={profileState.personaldata.lastname_chinese}
-              onChange={(e) => handleChange_PersonalData(e)}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              autoComplete="birthday"
-              name="birthday"
-              type="date"
-              required
-              fullWidth
-              id="birthday"
-              label={`${t('Birthday', { ns: 'common' })}`}
-              InputLabelProps={{
-                shrink: true
-              }}
-              value={profileState.personaldata.birthday}
-              onChange={(e) => handleChange_PersonalData(e)}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              autoComplete="email"
-              name="email"
-              fullWidth
-              id="email"
-              label={`${t('Email', { ns: 'common' })}`}
-              InputLabelProps={{
-                shrink: true
-              }}
-              value={profileState.personaldata.email}
-              disabled
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              autoComplete="linkedIn"
-              name="linkedIn"
-              fullWidth
-              id="linkedIn"
-              label={`${t('LinkedIn', { ns: 'common' })}`}
-              InputLabelProps={{
-                shrink: true
-              }}
-              value={profileState.personaldata.linkedIn}
-              onChange={(e) => handleChange_PersonalData(e)}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              autoComplete="lineId"
-              name="lineId"
-              fullWidth
-              id="lineId"
-              label={`${t('Line ID', { ns: 'common' })}`}
-              InputLabelProps={{
-                shrink: true
-              }}
-              value={profileState.personaldata.lineId}
-              onChange={(e) => handleChange_PersonalData(e)}
-            />
-          </Grid>
+          {personalDataFields.map(
+            ({
+              name,
+              label,
+              sm,
+              type = 'text',
+              disabled = false,
+              inputLabelProps
+            }) => (
+              <Grid item xs={12} sm={sm} key={name}>
+                <TextField
+                  autoComplete={name}
+                  name={name}
+                  fullWidth
+                  required={!disabled}
+                  id={name}
+                  label={label}
+                  type={type}
+                  InputLabelProps={inputLabelProps}
+                  value={profileState.personaldata[name]}
+                  onChange={(e) => handleChange_PersonalData(e)}
+                  disabled={disabled}
+                />
+              </Grid>
+            )
+          )}
         </Grid>
         <Button
           color="primary"

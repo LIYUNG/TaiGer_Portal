@@ -16,6 +16,15 @@ const { isNotArchiv, Role } = require('../constants');
 const { getTemporaryCredentials, callApiGateway } = require('../aws');
 const { getS3Object } = require('../aws/s3');
 
+// AWS configuration
+const roleToAssumeForCourseAnalyzerAPIG = isProd()
+  ? 'arn:aws:iam::669131042313:role/Prod-NA-LambdaStack-AuthorizedClientRoleProdNA32E8E-C6jpOkI8QTls'
+  : 'arn:aws:iam::669131042313:role/Beta-FE-LambdaStack-AuthorizedClientRoleBetaFE1B184-7cxjOdtI3pLE'; // Replace with your role ARN
+
+const apiGatewayUrl = isProd()
+  ? 'https://prod.taigerconsultancy-portal.com/analyze'
+  : 'https://beta.taigerconsultancy-portal.com/analyze'; // Replace with your API Gateway URL
+
 const getCourse = asyncHandler(async (req, res) => {
   const { studentId } = req.params;
   const student = await req.db.model('Student').findById(studentId);
@@ -283,8 +292,10 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
 
 const processTranscript_api_gatway = asyncHandler(async (req, res, next) => {
   try {
-    const { Credentials } = await getTemporaryCredentials();
-    const apiResponse = await callApiGateway(Credentials);
+    const { Credentials } = await getTemporaryCredentials(
+      roleToAssumeForCourseAnalyzerAPIG
+    );
+    const apiResponse = await callApiGateway(Credentials, apiGatewayUrl);
     res.status(200).send({ success: true, data: apiResponse });
   } catch (err) {
     logger.info(err);

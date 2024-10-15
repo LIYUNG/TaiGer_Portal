@@ -8,11 +8,6 @@ const {
   isProd
 } = require('../config');
 
-// AWS configuration
-const roleToAssume = isProd()
-  ? 'arn:aws:iam::669131042313:role/Prod-NA-LambdaStack-AuthorizedClientRoleProdNA32E8E-C6jpOkI8QTls'
-  : 'arn:aws:iam::669131042313:role/Beta-FE-LambdaStack-AuthorizedClientRoleBetaFE1B184-7cxjOdtI3pLE'; // Replace with your role ARN
-
 const stsClient = isProd()
   ? new STSClient({
       region: AWS_REGION
@@ -25,14 +20,14 @@ const stsClient = isProd()
       }
     });
 
-const getTemporaryCredentials = async () => {
+const getTemporaryCredentials = async (roleToAssumeArn) => {
   try {
     // Returns a set of temporary security credentials that you can use to
     // access Amazon Web Services resources that you might not normally
     // have access to.
     const command = new AssumeRoleCommand({
       // The Amazon Resource Name (ARN) of the role to assume.
-      RoleArn: roleToAssume,
+      RoleArn: roleToAssumeArn,
       // An identifier for the assumed role session.
       RoleSessionName: 'session2',
       // The duration, in seconds, of the role session. The value specified

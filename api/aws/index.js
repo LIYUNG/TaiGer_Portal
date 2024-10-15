@@ -6,14 +6,9 @@ const logger = require('../services/logger');
 const { ses, limiter, SendRawEmailCommand } = require('./ses');
 const { s3Client } = require('./s3');
 const { getTemporaryCredentials } = require('./sts');
-const { AWS_REGION, isProd } = require('../config');
+const { AWS_REGION } = require('../config');
 
-// AWS configuration
-const apiGatewayUrl = isProd()
-  ? 'https://prod.taigerconsultancy-portal.com/analyze'
-  : 'https://beta.taigerconsultancy-portal.com/analyze'; // Replace with your API Gateway URL
-
-const callApiGateway = async (credentials) => {
+const callApiGateway = async (credentials, apiGatewayUrl) => {
   try {
     const signer = new SignatureV4({
       credentials: {

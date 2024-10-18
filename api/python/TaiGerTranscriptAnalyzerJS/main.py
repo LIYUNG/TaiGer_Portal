@@ -28,15 +28,6 @@ def analyze_transcript(str_courses, category, student_id, student_name, language
     print("Python version:")
     print(sys.version)
     print("--------------------------")
-    # Get the database connection
-    database = get_database()
-
-    # Use the database connection to perform operations
-    collection = database['testkeywords']
-
-    # Example: Fetch all documents from the collection
-    documents = list(collection.find({}))
-    print(documents)
 
     ## print course:
     course = json.loads(str_courses)

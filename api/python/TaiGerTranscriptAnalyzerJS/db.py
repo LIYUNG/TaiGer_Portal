@@ -61,3 +61,36 @@ def get_database():
         db = mongo_client[db_name]
 
     return db
+
+def get_keywords_collection():
+    # Get the database connection
+    database = get_database()
+
+    # Use the database connection to perform operations
+    collection = database['testkeywords']
+
+    # Example: Fetch all documents from the collection
+    documents = list(collection.find({}))
+
+    # Preprocess data to convert to desired structure
+    processed_data = {
+        item['categoryName']: {
+            'keywords': item['keywords'],
+            'antiKeywords': item['antiKeywords']
+        }
+        for item in documents
+    }
+
+    return processed_data
+
+
+def generate_classification(lang, subjects, processed_data):
+    """Helper function to dynamically generate classification dict for 'zh' and 'en'."""
+    return {
+        subject_name: [
+            processed_data[category]['keywords'][lang],
+            processed_data[category]['antiKeywords'][lang],
+            extras
+        ]
+        for subject_name, (category, extras) in subjects.items()
+    }

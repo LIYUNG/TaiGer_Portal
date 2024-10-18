@@ -8,16 +8,101 @@ import sys
 # Global variable:
 column_len_array = []
 
+# Mock
+
 
 def TUM_EI(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
-    print("Create TUM EI sheet")
-    # TODO: implement the mapping from the existing courses to program's requirement
-    start_row = 0
-    for idx, sortedcourses in enumerate(df_transcript_array):
-        sortedcourses.to_excel(
-            writer, sheet_name='TUM_EI', startrow=start_row, index=False)
-        start_row += len(sortedcourses.index) + 2
-    print("Save to TUM_EI")
+    program_name = 'TUM_EI'
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # Create transcript_sorted_group to program_category mapping
+    PROG_SPEC_MATH_PARAM = {
+        'Program_Category': 'Mathematics', 'Required_ECTS': 28,
+        "Keywords_Group": ['CALCULUS', 'ME_MATH']}
+    PROG_SPEC_PHYSIK_PARAM = {
+        'Program_Category': 'Physics', 'Required_ECTS': 10,
+        "Keywords_Group": ['GENERAL_PHYSICS', 'EE_ADVANCED_PHYSICS', 'PHYSICS_EXP']}
+    PROG_SPEC_PROGRAMMIERUNG_PARAM = {
+        'Program_Category': 'Programming and Computer science', 'Required_ECTS': 12,
+        "Keywords_Group": ['EE_INTRO_COMPUTER_SCIENCE', 'PROGRAMMING_LANGUAGE', 'SOFTWARE_ENGINEERING']}
+    PROG_SPEC_SYSTEM_THEORIE_PARAM = {
+        'Program_Category': 'System_Theory', 'Required_ECTS': 8,
+        "Keywords_Group": ['CONTROL_THEORY']}
+    PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM = {
+        'Program_Category': 'Electronics and Circuits Module', 'Required_ECTS': 34,
+        "Keywords_Group": ['ELECTRONICS', 'ELECTRONICS_EXPERIMENT', 'ELECTRO_CIRCUIT', 'SIGNAL_SYSTEM', 'ELECTRO_MAGNET']}
+    PROG_SPEC_THEORETICAL_EECS_EI_PARAM = {
+        'Program_Category': 'Theoretical_Module_EECS', 'Required_ECTS': 8,
+        "Keywords_Group": ['EE_HF_RF_THEO_INFO']}
+    PROG_SPEC_ANWENDUNG_MODULE_PARAM = {
+        'Program_Category': 'Application_Module_EECS', 'Required_ECTS': 20,
+        "Keywords_Group": ['POWER_ELECTRONICS', 'COMMUNICATION_ENGINEERING', 'EE_ADVANCED_ELECTRO', 'EE_APPLICATION_ORIENTED']}
+    PROG_SPEC_OTHERS = {
+        'Program_Category': 'Others', 'Required_ECTS': 0,
+        "Keywords_Group": []}
+
+    # This fixed to program course category.
+    program_category = [
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_PHYSIK_PARAM,  # 物理
+        PROG_SPEC_PROGRAMMIERUNG_PARAM,  # 資訊
+        PROG_SPEC_SYSTEM_THEORIE_PARAM,  # 控制系統
+        PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電子電路電磁
+        PROG_SPEC_THEORETICAL_EECS_EI_PARAM,  # 電機專業選修
+        PROG_SPEC_ANWENDUNG_MODULE_PARAM,  # 應用科技
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    program_category_map = [
+        PROG_SPEC_MATH_PARAM,  # 微積分
+        PROG_SPEC_MATH_PARAM,  # 數學
+        PROG_SPEC_PHYSIK_PARAM,  # 物理
+        PROG_SPEC_PHYSIK_PARAM,  # 進階物理
+        PROG_SPEC_PHYSIK_PARAM,  # 物理實驗
+        PROG_SPEC_PROGRAMMIERUNG_PARAM,  # 資訊
+        PROG_SPEC_PROGRAMMIERUNG_PARAM,  # 程式
+        PROG_SPEC_PROGRAMMIERUNG_PARAM,  # 軟體工程
+        PROG_SPEC_SYSTEM_THEORIE_PARAM,  # 控制系統
+        PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電子
+        PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電子實驗
+        PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電路
+        PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 信號與系統
+        PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電磁
+        PROG_SPEC_ANWENDUNG_MODULE_PARAM,  # 電力電子
+        PROG_SPEC_ANWENDUNG_MODULE_PARAM,  # 通訊
+        PROG_SPEC_OTHERS,  # 半導體
+        PROG_SPEC_OTHERS,  # 電子材料
+        PROG_SPEC_THEORETICAL_EECS_EI_PARAM,  # 進階電磁理論
+        PROG_SPEC_ANWENDUNG_MODULE_PARAM,  # 電機專業選修
+        PROG_SPEC_ANWENDUNG_MODULE_PARAM,  # 應用科技
+        PROG_SPEC_OTHERS,  # 力學,機械
+        PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電路設計
+        PROG_SPEC_OTHERS  # 其他
+    ]
+
+    # Development check
+    if len(program_category_map) != len(df_transcript_array):
+        print("program_category_map size: " + str(len(program_category_map)))
+        print("df_transcript_array size:  " + str(len(df_transcript_array)))
+        print("Please check the number of program_category_map again!")
+        sys.exit()
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, program_category_map,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
 
 def RWTH_EI(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
@@ -712,6 +797,8 @@ def TUM_ASIA_IC_DESIGN(transcript_sorted_group_map, df_transcript_array, df_cate
 
 # FPSO: https://www.etit.kit.edu/rd_download/MHB/MHB_BSc23_ETIT_WS23-82-048-H-2023_v1_2023-10-20_de.pdf
 # Year 2023
+
+
 def KIT_EI(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer):
     program_name = 'KIT_EI'
     print("Create " + program_name + " sheet")
@@ -742,7 +829,7 @@ def KIT_EI(transcript_sorted_group_map, df_transcript_array, df_category_courses
     program_category = [
         PROG_SPEC_MATH_PHY_PARAM,  # 數學
         PROG_SPEC_ELECTRICAL_ENGINEERING_PARAM,  # 基礎電機
-        PROG_SPEC_SYSTEM_ENGINEERING_PARAM, # 基礎系統
+        PROG_SPEC_SYSTEM_ENGINEERING_PARAM,  # 基礎系統
         PROG_SPEC_INFORMATION_TECHNOLOGY_ENG_PARAM,  # 基礎資工
         PROG_SPEC_OTHERS  # 其他
     ]
@@ -800,3 +887,5 @@ program_sort_function = [TUM_EI,
                          FAU_INFO_COMM_TECH,
                          TUM_ASIA_IC_DESIGN,
                          KIT_EI]
+
+program_sort_function2 = [TUM_EI]

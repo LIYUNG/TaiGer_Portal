@@ -56,7 +56,7 @@ def CheckTemplateFormat(df_transcript, analysis_lang):
 
 
 def CheckDBFormat(df_database):
-    if '所有科目' not in df_database.columns:
+    if 'all_course_chinese' not in df_database.columns:
         print("Error: Please check the database xlsx file.")
         sys.exit(1)
 
@@ -78,9 +78,9 @@ def isOutputEnglish(df_transcript):
 
 
 def DataPreparation(df_database, df_transcript):
-    df_database['所有科目'] = df_database['所有科目'].fillna('-')
-    if '所有科目_英語' in df_database.columns:
-        df_database['所有科目_英語'] = df_database['所有科目_英語'].str.lower()
+    df_database['all_course_chinese'] = df_database['all_course_chinese'].fillna('-')
+    if 'all_course_english' in df_database.columns:
+        df_database['all_course_english'] = df_database['all_course_english'].str.lower()
     # unify course naming convention
     if 'course_chinese' in df_transcript.columns:
         df_transcript = Naming_Convention_ZH(df_transcript)
@@ -162,6 +162,32 @@ def Naming_Convention_EN(df_course):
 def CoursesToProgramCategoryMapping(df_PROG_SPEC_CATES, program_category_map, transcript_sorted_group_list, df_transcript_array_temp, isSuggestionCourse):
     for idx, trans_cat in enumerate(df_transcript_array_temp):
         # append sorted courses to program's category
+        print(program_category_map[idx]['Keywords_Group'])
+        categ = program_category_map[idx]['Program_Category']
+        trans_cat.rename(
+            columns={transcript_sorted_group_list[idx]: categ}, inplace=True)
+        # find the idx corresponding to program's category
+        idx_temp = -1
+        for idx2, cat in enumerate(df_PROG_SPEC_CATES):
+            if categ == cat.columns[0]:
+                idx_temp = idx2
+                break
+        # remove the redundant suggestion courses mapping to "Others" because those categories in Others are not advanced courses.
+        if isSuggestionCourse:
+            if idx != len(df_transcript_array_temp) - 1 and idx_temp == len(df_PROG_SPEC_CATES) - 1:
+                continue
+        # print(trans_cat)
+        # df_trans_cat = pd.DataFrame(data=trans_cat, index=[0])
+        df_PROG_SPEC_CATES[idx_temp] = pd.concat(
+            [df_PROG_SPEC_CATES[idx_temp], trans_cat])
+    return df_PROG_SPEC_CATES
+
+
+# mapping courses to target programs category
+def CoursesToProgramCategoryMappingNew(df_PROG_SPEC_CATES, program_category_map, transcript_sorted_group_list, df_transcript_array_temp, isSuggestionCourse):
+    for idx, trans_cat in enumerate(df_transcript_array_temp):
+        # append sorted courses to program's category
+        print(program_category_map[idx]['Keywords_Group'])
         categ = program_category_map[idx]['Program_Category']
         trans_cat.rename(
             columns={transcript_sorted_group_list[idx]: categ}, inplace=True)
@@ -334,20 +360,14 @@ def WriteToExcel(writer, program_name, program_category, program_category_map, t
     print("Save to " + program_name)
 
 
-def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId, student_name, analysis_language):
-
-    Database_Path = env_file_path + '/'
-    Database_file_name = abbrev + '_Course_database.xlsx'
-
-    df_transcript = pd.DataFrame.from_dict(obj_arr)
+def Classifier(courses_arr, courses_db, basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId, student_name, analysis_language):
+    df_transcript = pd.DataFrame.from_dict(courses_arr)
     # TODO: move the checking mechanism to util.py!
     # Verify the format of transcript_course_list.xlsx
     CheckTemplateFormat(df_transcript, analysis_language)
     print("Checked input template successfully.")
 
-    sheetname = 'All_' + abbrev + '_Courses'
-    df_database = pd.read_excel(Database_Path+Database_file_name,
-                                sheet_name=sheetname)
+    df_database = pd.DataFrame.from_dict(courses_db)
     # # Verify the format of Course_database.xlsx
     CheckDBFormat(df_database)
     print("Checked database successfully.")
@@ -384,14 +404,14 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
             df_transcript, df_category_data, transcript_sorted_group_map, "course_english")
         # 基本分類電機課程資料庫
         df_category_courses_sugesstion_data = DatabaseCourseSorting(
-            df_database, df_category_courses_sugesstion_data, transcript_sorted_group_map, "所有科目_英語")
+            df_database, df_category_courses_sugesstion_data, transcript_sorted_group_map, "all_course_english")
     else:
         # 基本分類課程 (與申請學程無關)
         df_category_data = CourseSorting(
             df_transcript, df_category_data, transcript_sorted_group_map, "course_chinese")
         # 基本分類電機課程資料庫
         df_category_courses_sugesstion_data = DatabaseCourseSorting(
-            df_database, df_category_courses_sugesstion_data, transcript_sorted_group_map, "所有科目")
+            df_database, df_category_courses_sugesstion_data, transcript_sorted_group_map, "all_course_chinese")
 
     for idx, cat in enumerate(df_category_data):
         df_category_courses_sugesstion_data[idx]['建議修課'] = df_category_courses_sugesstion_data[idx]['建議修課'].str.replace(
@@ -434,7 +454,7 @@ def Classifier(program_idx, obj_arr, abbrev, env_file_path, basic_classification
                 # Modify to column width for "Required_ECTS"
                 column_len_array.append(6)
 
-            for idx in program_idx:
+            for idx, choose in enumerate(program_sort_function):
                 program_sort_function[idx](
                     transcript_sorted_group_map,
                     sorted_courses,

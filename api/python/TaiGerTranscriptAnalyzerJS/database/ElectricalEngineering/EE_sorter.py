@@ -2,8 +2,8 @@ import xlsxwriter
 from CourseSuggestionAlgorithms import *
 from util import *
 from keywords import *
-from database.ElectricalEngineering.EE_Programs import program_sort_function, column_len_array
-from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
+from database.ElectricalEngineering.EE_Programs import program_sort_function2, column_len_array
+from database.ElectricalEngineering.EE_Course_db import ee_course_db
 import pandas as pd
 import sys
 import os
@@ -13,7 +13,7 @@ env_file_path = os.path.realpath(__file__)
 env_file_path = os.path.dirname(env_file_path)
 
 
-def EE_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_language):
+def EE_sorter(course_arr, studentId, student_name, analysis_language):
     # Preprocess data to convert to desired structure
     processed_data = get_keywords_collection()
 
@@ -29,7 +29,7 @@ def EE_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_
         '軟體工程': ('SOFTWARE_ENGINEERING', []),
         '控制系統': ('CONTROL_THEORY', []),
         '電子': ('ELECTRONICS', ['一', '二']),
-        '電子實驗': ('ELECTRONICS', ['一', '二']),
+        '電子實驗': ('ELECTRONICS_EXPERIMENT', ['一', '二']),
         '電路': ('ELECTRO_CIRCUIT', ['一', '二']),
         '訊號系統': ('SIGNAL_SYSTEM', []),
         '電磁': ('ELECTRO_MAGNET', ['一', '二']),
@@ -51,5 +51,6 @@ def EE_sorter(program_idx, file_path, abbrev, studentId, student_name, analysis_
     basic_classification_zh = generate_classification(
         'zh', subjects, processed_data)
 
-    Classifier(program_idx, file_path, abbrev, env_file_path,
-               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId, student_name, analysis_language)
+
+    Classifier(course_arr, ee_course_db,
+               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function2, studentId, student_name, analysis_language)

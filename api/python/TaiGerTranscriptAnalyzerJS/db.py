@@ -94,3 +94,21 @@ def generate_classification(lang, subjects, processed_data):
         ]
         for subject_name, (category, extras) in subjects.items()
     }
+
+
+def convert_courses(course_dict, lang):
+    result = {}
+
+    # Loop through each course in the dictionary
+    for course_name, course_details in course_dict.items():
+        # Extract the relevant details
+        keywords = course_details.get('keywords', {}).get(lang, [])
+        anti_keywords = course_details.get('antiKeywords', {}).get(lang, [])
+
+        # Add the additional ['一', '二'] list
+        additional_list = ['一', '二']
+
+        # Store the course data in the desired format
+        result[course_name] = [keywords, anti_keywords, additional_list]
+
+    return result

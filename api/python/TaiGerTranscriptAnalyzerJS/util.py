@@ -78,7 +78,8 @@ def isOutputEnglish(df_transcript):
 
 
 def DataPreparation(df_database, df_transcript):
-    df_database['all_course_chinese'] = df_database['all_course_chinese'].fillna('-')
+    df_database['all_course_chinese'] = df_database['all_course_chinese'].fillna(
+        '-')
     if 'all_course_english' in df_database.columns:
         df_database['all_course_english'] = df_database['all_course_english'].str.lower()
     # unify course naming convention
@@ -162,7 +163,6 @@ def Naming_Convention_EN(df_course):
 def CoursesToProgramCategoryMapping(df_PROG_SPEC_CATES, program_category_map, transcript_sorted_group_list, df_transcript_array_temp, isSuggestionCourse):
     for idx, trans_cat in enumerate(df_transcript_array_temp):
         # append sorted courses to program's category
-        print(program_category_map[idx]['Keywords_Group'])
         categ = program_category_map[idx]['Program_Category']
         trans_cat.rename(
             columns={transcript_sorted_group_list[idx]: categ}, inplace=True)
@@ -176,35 +176,52 @@ def CoursesToProgramCategoryMapping(df_PROG_SPEC_CATES, program_category_map, tr
         if isSuggestionCourse:
             if idx != len(df_transcript_array_temp) - 1 and idx_temp == len(df_PROG_SPEC_CATES) - 1:
                 continue
-        # print(trans_cat)
-        # df_trans_cat = pd.DataFrame(data=trans_cat, index=[0])
         df_PROG_SPEC_CATES[idx_temp] = pd.concat(
             [df_PROG_SPEC_CATES[idx_temp], trans_cat])
     return df_PROG_SPEC_CATES
 
 
 # mapping courses to target programs category
-def CoursesToProgramCategoryMappingNew(df_PROG_SPEC_CATES, program_category_map, transcript_sorted_group_list, df_transcript_array_temp, isSuggestionCourse):
+def CoursesToProgramCategoryMappingNew(df_PROG_SPEC_CATES, program_category, baseCategoryToProgramMapping, transcript_sorted_group_list, df_transcript_array_temp, isSuggestionCourse):
+
+    # ['GENERAL_PHYSICS', 'EE_ADVANCED_PHYSICS',...]
+    # print(transcript_sorted_group_list)
+    # [{'Program_Category': 'Mathematics', 'Required_ECTS': 28, 'Keywords_Group': ['CALCULUS', 'ME_MATH']}, {'Program_Category': 'Physics', 'Required_ECTS': 10, 'Keywords_Group': ['GENERAL_PHYSICS', 'EE_ADVANCED_PHYSICS', 'PHYSICS_EXP']}, {'Program_Category': 'Programming and Computer science', 'Required_ECTS': 12, 'Keywords_Group': ['EE_INTRO_COMPUTER_SCIENCE', 'PROGRAMMING_LANGUAGE', 'SOFTWARE_ENGINEERING']}, {'Program_Category': 'System_Theory', 'Required_ECTS': 8, 'Keywords_Group': ['CONTROL_THEORY']}, {'Program_Category': 'Electronics and Circuits Module', 'Required_ECTS': 34, 'Keywords_Group': ['ELECTRONICS', 'ELECTRONICS_EXPERIMENT', 'ELECTRO_CIRCUIT', 'SIGNAL_SYSTEM', 'ELECTRO_MAGNET']}, {'Program_Category': 'Theoretical_Module_EECS', 'Required_ECTS': 8, 'Keywords_Group': ['EE_HF_RF_THEO_INFO']}, {'Program_Category': 'Application_Module_EECS', 'Required_ECTS': 20, 'Keywords_Group': ['POWER_ELECTRONICS', 'COMMUNICATION_ENGINEERING', 'EE_ADVANCED_ELECTRO', 'EE_APPLICATION_ORIENTED']}, {'Program_Category': 'Others', 'Required_ECTS': 0, 'Keywords_Group': []}]
+    # print(program_category)
+    # df array, Columns: [MECHANIK, credits, grades] Index: [], Empty DataFrame,  || Columns: [建議修課] Index: [], Empty DataFrame
+    # print(df_transcript_array_temp)
+
     for idx, trans_cat in enumerate(df_transcript_array_temp):
         # append sorted courses to program's category
-        print(program_category_map[idx]['Keywords_Group'])
-        categ = program_category_map[idx]['Program_Category']
-        trans_cat.rename(
-            columns={transcript_sorted_group_list[idx]: categ}, inplace=True)
-        # find the idx corresponding to program's category
-        idx_temp = -1
-        for idx2, cat in enumerate(df_PROG_SPEC_CATES):
-            if categ == cat.columns[0]:
-                idx_temp = idx2
-                break
-        # remove the redundant suggestion courses mapping to "Others" because those categories in Others are not advanced courses.
-        if isSuggestionCourse:
-            if idx != len(df_transcript_array_temp) - 1 and idx_temp == len(df_PROG_SPEC_CATES) - 1:
-                continue
-        # print(trans_cat)
-        # df_trans_cat = pd.DataFrame(data=trans_cat, index=[0])
-        df_PROG_SPEC_CATES[idx_temp] = pd.concat(
-            [df_PROG_SPEC_CATES[idx_temp], trans_cat])
+        # print(transcript_sorted_group_list[idx])
+        # Use .get() to avoid KeyError and provide a default value if the key is not found
+        categ = baseCategoryToProgramMapping.get(
+            transcript_sorted_group_list[idx], None)
+
+        if categ is not None:
+            # Continue with your logic if the category is found
+            # (append courses, etc.)
+            trans_cat.rename(
+                columns={transcript_sorted_group_list[idx]: categ['program_category']}, inplace=True)
+            # find the idx corresponding to program's category
+            idx_temp = -1
+            for idx2, cat in enumerate(df_PROG_SPEC_CATES):
+                print(cat.columns[0])
+                print(categ['program_category'])
+                if categ['program_category'] == cat.columns[0]:
+                    idx_temp = idx2
+                    break
+            # remove the redundant suggestion courses mapping to "Others" because those categories in Others are not advanced courses.
+            if isSuggestionCourse:
+                if idx != len(df_transcript_array_temp) - 1 and idx_temp == len(df_PROG_SPEC_CATES) - 1:
+                    continue
+            df_PROG_SPEC_CATES[idx_temp] = pd.concat(
+                [df_PROG_SPEC_CATES[idx_temp], trans_cat])
+        else:
+            print(
+                f"Key {transcript_sorted_group_list[idx]} not found in baseCategoryToProgramMapping")
+
+    # print(df_PROG_SPEC_CATES)
     return df_PROG_SPEC_CATES
 
 
@@ -232,7 +249,7 @@ def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map, 
                     else:
                         temp0 = {cat: subj, 'credits': df_transcript['credits'][idx],
                                  'grades': df_transcript['grades'][idx]}
-                # print(df_category_data[idx2])
+
                 df_temp0 = pd.DataFrame(data=temp0, index=[0])
                 if not df_temp0.empty:
                     df_category_data[idx2] = pd.concat(
@@ -299,8 +316,6 @@ def AppendCreditsCount(df_PROG_SPEC_CATES, program_category):
             data=category_credits_sum, index=[0])
         df_PROG_SPEC_CATES[idx] = pd.concat(
             [df_PROG_SPEC_CATES[idx], df_category_credits_sum])
-        # print(df_PROG_SPEC_CATES[idx]['credits'])
-        # print(credit_sum)
         category_credits_sum = {trans_cat.columns[0]: "ECTS轉換", 'credits': 1.5 *
                                 credit_sum, 'Required_ECTS': program_category[idx]['Required_ECTS']}
         df_category_credits_sum = pd.DataFrame(
@@ -310,19 +325,19 @@ def AppendCreditsCount(df_PROG_SPEC_CATES, program_category):
     return df_PROG_SPEC_CATES
 
 
-def WriteToExcel(writer, program_name, program_category, program_category_map, transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array):
+def WriteToExcel(writer, program_name, program_category, baseCategoryToProgramMapping, transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array):
     df_PROG_SPEC_CATES, df_PROG_SPEC_CATES_COURSES_SUGGESTION = ProgramCategoryInit(
         program_category)
-
     transcript_sorted_group_list = list(transcript_sorted_group_map)
+    print(df_PROG_SPEC_CATES)
 
     # Courses: mapping the students' courses to program-specific category
-    df_PROG_SPEC_CATES = CoursesToProgramCategoryMapping(
-        df_PROG_SPEC_CATES, program_category_map, transcript_sorted_group_list, df_transcript_array_temp, False)
+    df_PROG_SPEC_CATES = CoursesToProgramCategoryMappingNew(
+        df_PROG_SPEC_CATES, program_category, baseCategoryToProgramMapping, transcript_sorted_group_list, df_transcript_array_temp, False)
 
     # Suggestion courses: mapping the sugesstion courses to program-specific category
-    df_PROG_SPEC_CATES_COURSES_SUGGESTION = CoursesToProgramCategoryMapping(
-        df_PROG_SPEC_CATES_COURSES_SUGGESTION, program_category_map, transcript_sorted_group_list, df_category_courses_sugesstion_data_temp, True)
+    df_PROG_SPEC_CATES_COURSES_SUGGESTION = CoursesToProgramCategoryMappingNew(
+        df_PROG_SPEC_CATES_COURSES_SUGGESTION, program_category, baseCategoryToProgramMapping, transcript_sorted_group_list, df_category_courses_sugesstion_data_temp, True)
 
     # append 總credits for each program category
     df_PROG_SPEC_CATES = AppendCreditsCount(
@@ -337,6 +352,7 @@ def WriteToExcel(writer, program_name, program_category, program_category_map, t
     # Write to Excel
     start_row = 0
     for idx, sortedcourses in enumerate(df_PROG_SPEC_CATES):
+        print(sortedcourses)
         sortedcourses.to_excel(
             writer, sheet_name=program_name, startrow=start_row, header=True, index=False)
         df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].to_excel(
@@ -430,6 +446,9 @@ def Classifier(courses_arr, courses_db, basic_classification_en, basic_classific
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
             start_row = 0
             for idx, sortedcourses in enumerate(sorted_courses):
+                if sortedcourses.empty:
+                    print(f"Skipping empty DataFrame at index {idx}")
+                    continue  # Skip to the next DataFrame if empty
                 sortedcourses.to_excel(
                     writer, sheet_name='General', startrow=start_row, index=False)
                 start_row += len(sortedcourses.index) + 2

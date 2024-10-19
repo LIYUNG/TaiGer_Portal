@@ -24,84 +24,129 @@ def TUM_EI(transcript_sorted_group_map, df_transcript_array, df_category_courses
     ############## Program Specific Parameters ##########################
     #####################################################################
 
-    # Create transcript_sorted_group to program_category mapping
-    PROG_SPEC_MATH_PARAM = {
-        'Program_Category': 'Mathematics', 'Required_ECTS': 28,
-        "Keywords_Group": ['CALCULUS', 'ME_MATH']}
-    PROG_SPEC_PHYSIK_PARAM = {
-        'Program_Category': 'Physics', 'Required_ECTS': 10,
-        "Keywords_Group": ['GENERAL_PHYSICS', 'EE_ADVANCED_PHYSICS', 'PHYSICS_EXP']}
-    PROG_SPEC_PROGRAMMIERUNG_PARAM = {
-        'Program_Category': 'Programming and Computer science', 'Required_ECTS': 12,
-        "Keywords_Group": ['EE_INTRO_COMPUTER_SCIENCE', 'PROGRAMMING_LANGUAGE', 'SOFTWARE_ENGINEERING']}
-    PROG_SPEC_SYSTEM_THEORIE_PARAM = {
-        'Program_Category': 'System_Theory', 'Required_ECTS': 8,
-        "Keywords_Group": ['CONTROL_THEORY']}
-    PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM = {
-        'Program_Category': 'Electronics and Circuits Module', 'Required_ECTS': 34,
-        "Keywords_Group": ['ELECTRONICS', 'ELECTRONICS_EXPERIMENT', 'ELECTRO_CIRCUIT', 'SIGNAL_SYSTEM', 'ELECTRO_MAGNET']}
-    PROG_SPEC_THEORETICAL_EECS_EI_PARAM = {
-        'Program_Category': 'Theoretical_Module_EECS', 'Required_ECTS': 8,
-        "Keywords_Group": ['EE_HF_RF_THEO_INFO']}
-    PROG_SPEC_ANWENDUNG_MODULE_PARAM = {
-        'Program_Category': 'Application_Module_EECS', 'Required_ECTS': 20,
-        "Keywords_Group": ['POWER_ELECTRONICS', 'COMMUNICATION_ENGINEERING', 'EE_ADVANCED_ELECTRO', 'EE_APPLICATION_ORIENTED']}
-    PROG_SPEC_OTHERS = {
-        'Program_Category': 'Others', 'Required_ECTS': 0,
-        "Keywords_Group": []}
-
     # This fixed to program course category.
     program_category = [
-        PROG_SPEC_MATH_PARAM,  # 數學
-        PROG_SPEC_PHYSIK_PARAM,  # 物理
-        PROG_SPEC_PROGRAMMIERUNG_PARAM,  # 資訊
-        PROG_SPEC_SYSTEM_THEORIE_PARAM,  # 控制系統
-        PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電子電路電磁
-        PROG_SPEC_THEORETICAL_EECS_EI_PARAM,  # 電機專業選修
-        PROG_SPEC_ANWENDUNG_MODULE_PARAM,  # 應用科技
-        PROG_SPEC_OTHERS  # 其他
+        {
+            'Program_Category': 'Mathematics', 'Required_ECTS': 28,
+            "Keywords_Group": ['CALCULUS', 'ME_MATH']},  # 數學
+        {
+            'Program_Category': 'Physics', 'Required_ECTS': 10,
+            "Keywords_Group": ['GENERAL_PHYSICS', 'EE_ADVANCED_PHYSICS', 'PHYSICS_EXP']},  # 物理
+        {
+            'Program_Category': 'Programming and Computer science', 'Required_ECTS': 12,
+            "Keywords_Group": ['FUNDAMENTAL_COMPUTER_SCIENCE', 'EE_INTRO_COMPUTER_SCIENCE', 'PROGRAMMING_LANGUAGE', 'SOFTWARE_ENGINEERING']},  # 資訊
+        {
+            'Program_Category': 'System_Theory', 'Required_ECTS': 8,
+            "Keywords_Group": ['CONTROL_THEORY']},  # 控制系統
+        {
+            'Program_Category': 'Electronics and Circuits Module', 'Required_ECTS': 34,
+            "Keywords_Group": ['FUNDAMENTAL_ELECTRICAL_ENGINEERING', 'ELECTRONICS', 'ELECTRONICS_EXPERIMENT', 'ELECTRO_CIRCUIT', 'SIGNAL_SYSTEM', 'ELECTRO_MAGNET', 'ELECTRO_CIRCUIT_DESIGN']},  # 電子電路電磁
+        {
+            'Program_Category': 'Theoretical_Module_EECS', 'Required_ECTS': 8,
+            "Keywords_Group": ['EE_HF_RF_THEO_INFO']},  # 電機專業選修
+        {
+            'Program_Category': 'Application_Module_EECS', 'Required_ECTS': 20,
+            "Keywords_Group": ['POWER_ELECTRONICS', 'COMMUNICATION_ENGINEERING', 'EE_ADVANCED_ELECTRO', 'EE_APPLICATION_ORIENTED']}  # 應用科技
     ]
 
-    # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
-    program_category_map = [
-        PROG_SPEC_MATH_PARAM,  # 微積分
-        PROG_SPEC_MATH_PARAM,  # 數學
-        PROG_SPEC_PHYSIK_PARAM,  # 物理
-        PROG_SPEC_PHYSIK_PARAM,  # 進階物理
-        PROG_SPEC_PHYSIK_PARAM,  # 物理實驗
-        PROG_SPEC_PROGRAMMIERUNG_PARAM,  # 資訊
-        PROG_SPEC_PROGRAMMIERUNG_PARAM,  # 程式
-        PROG_SPEC_PROGRAMMIERUNG_PARAM,  # 軟體工程
-        PROG_SPEC_SYSTEM_THEORIE_PARAM,  # 控制系統
-        PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電子
-        PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電子實驗
-        PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電路
-        PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 信號與系統
-        PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電磁
-        PROG_SPEC_ANWENDUNG_MODULE_PARAM,  # 電力電子
-        PROG_SPEC_ANWENDUNG_MODULE_PARAM,  # 通訊
-        PROG_SPEC_OTHERS,  # 半導體
-        PROG_SPEC_OTHERS,  # 電子材料
-        PROG_SPEC_THEORETICAL_EECS_EI_PARAM,  # 進階電磁理論
-        PROG_SPEC_ANWENDUNG_MODULE_PARAM,  # 電機專業選修
-        PROG_SPEC_ANWENDUNG_MODULE_PARAM,  # 應用科技
-        PROG_SPEC_OTHERS,  # 力學,機械
-        PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電路設計
-        PROG_SPEC_OTHERS  # 其他
-    ]
+    all_keywords = [
+        keyword for program in program_category for keyword in program['Keywords_Group']]
+
+    # Main array
+    transcript_sorted_group_list = list(transcript_sorted_group_map)
+
+    # Convert to set and use difference
+    transcript_sorted_group_list_others = list(set(transcript_sorted_group_list) -
+                                               set(all_keywords))
+
+    program_category.append({
+        'Program_Category': 'Others', 'Required_ECTS': 0,
+        "Keywords_Group": transcript_sorted_group_list_others}  # 其他
+    )
+
+    # Initialize an empty dictionary to store the results
+    baseCategoryToProgramMapping = {}
+
+    # Iterate over each program category
+    for program in program_category:
+        category = program['Program_Category']
+        ects = program['Required_ECTS']
+
+        # Iterate over each keyword in the Keywords_Group
+        for keyword in program['Keywords_Group']:
+            # Add the keyword to the dictionary with its corresponding program category and ECTS
+            baseCategoryToProgramMapping[keyword] = {
+                'program_category': category,
+                'Required_ECTS': ects
+            }
+
+    print(program_category)
+    # {
+    #     'CALCULUS':
+    #     {
+    #         'program_category': 'Mathematics',
+    #         'Required_ECTS': 28,
+    #     },
+    #     'ME_MATH':
+    #     {
+    #         'program_category': 'Mathematics',
+    #         'Required_ECTS': 28,
+    #     },
+    #     'GENERAL_PHYSICS':
+    #     {
+    #         'program_category': 'Physics',
+    #         'Required_ECTS': 28,
+    #     },
+    #     'EE_ADVANCED_PHYSICS':
+    #     {
+    #         'program_category': 'Physics',
+    #         'Required_ECTS': 28,
+    #     },
+    #     ...
+    # }
+    # print(baseCategoryToProgramMapping)
+    # # Mapping table: same dimension as transcript_sorted_group/ The length depends on how fine the transcript is classified
+    # program_category_map = [
+    #     PROG_SPEC_MATH_PARAM,  # 微積分
+    #     PROG_SPEC_MATH_PARAM,  # 數學
+    #     PROG_SPEC_PHYSIK_PARAM,  # 物理
+    #     PROG_SPEC_PHYSIK_PARAM,  # 進階物理
+    #     PROG_SPEC_PHYSIK_PARAM,  # 物理實驗
+    #     PROG_SPEC_PROGRAMMIERUNG_PARAM,  # 資訊
+    #     PROG_SPEC_PROGRAMMIERUNG_PARAM,  # 程式
+    #     PROG_SPEC_PROGRAMMIERUNG_PARAM,  # 軟體工程
+    #     PROG_SPEC_SYSTEM_THEORIE_PARAM,  # 控制系統
+    #     PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電子
+    #     PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電子實驗
+    #     PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電路
+    #     PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 信號與系統
+    #     PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電磁
+    #     PROG_SPEC_ANWENDUNG_MODULE_PARAM,  # 電力電子
+    #     PROG_SPEC_ANWENDUNG_MODULE_PARAM,  # 通訊
+    #     PROG_SPEC_OTHERS,  # 半導體
+    #     PROG_SPEC_OTHERS,  # 電子材料
+    #     PROG_SPEC_THEORETICAL_EECS_EI_PARAM,  # 進階電磁理論
+    #     PROG_SPEC_ANWENDUNG_MODULE_PARAM,  # 電機專業選修
+    #     PROG_SPEC_ANWENDUNG_MODULE_PARAM,  # 應用科技
+    #     PROG_SPEC_OTHERS,  # 力學,機械
+    #     PROG_SPEC_ELEKTROTECHNIK_SCHALTUNGSTECHNIK_PARAM,  # 電路設計
+    #     PROG_SPEC_OTHERS  # 其他
+    # ]
 
     # Development check
-    if len(program_category_map) != len(df_transcript_array):
-        print("program_category_map size: " + str(len(program_category_map)))
-        print("df_transcript_array size:  " + str(len(df_transcript_array)))
-        print("Please check the number of program_category_map again!")
-        sys.exit()
+    # Get the number of keys
+    # num_keys = len(json_obj.keys())
+    # if len(processed_data.keys()) != len(df_transcript_array):
+    #     print("processed_data size: " + str(len(processed_data.keys())))
+    #     print("df_transcript_array size:  " + str(len(df_transcript_array)))
+    #     print("Please check the number of processed_data again!")
+    #     sys.exit()
 
     #####################################################################
     ####################### End #########################################
     #####################################################################
 
-    WriteToExcel(writer, program_name, program_category, program_category_map,
+    WriteToExcel(writer, program_name, program_category, baseCategoryToProgramMapping,
                  transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)
 
 

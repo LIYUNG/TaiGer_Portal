@@ -7,7 +7,7 @@ from database.ElectricalEngineering.EE_Course_db import ee_course_db
 import pandas as pd
 import sys
 import os
-from db import get_keywords_collection, generate_classification
+from db import get_keywords_collection, generate_classification, convert_courses
 
 env_file_path = os.path.realpath(__file__)
 env_file_path = os.path.dirname(env_file_path)
@@ -16,7 +16,8 @@ env_file_path = os.path.dirname(env_file_path)
 def EE_sorter(course_arr, studentId, student_name, analysis_language):
     # Preprocess data to convert to desired structure
     processed_data = get_keywords_collection()
-
+    # {'GENERAL_PHYSICS': {'keywords': {'zh': ['物理'], 'en': ['physics']}, 'antiKeywords': {'zh': ['固態', '化學', '冶金'], 'en': ['lab', 'solid', 'chemi', 'quantu']}},
+    # print(processed_data)
     # Mapping of Chinese and English subjects to their respective category names
     subjects = {
         '微積分': ('CALCULUS', ['一', '二']),
@@ -45,12 +46,15 @@ def EE_sorter(course_arr, studentId, student_name, analysis_language):
         '其他': ('USELESS_COURSES', [])
     }
 
-    # Generate classification dynamically
-    basic_classification_en = generate_classification(
-        'en', subjects, processed_data)
-    basic_classification_zh = generate_classification(
-        'zh', subjects, processed_data)
+    # Generate all classification dynamically
+    basic_classification_en = convert_courses(processed_data, 'en')
+    basic_classification_zh = convert_courses(processed_data, 'zh')
 
+    # Generate subset category dynamically
+    basic_classification_z_en = generate_classification(
+        'en', subjects, processed_data)
+    basic_classification_z_zh = generate_classification(
+        'zh', subjects, processed_data)
 
     Classifier(course_arr, ee_course_db,
                basic_classification_en, basic_classification_zh, column_len_array, program_sort_function2, studentId, student_name, analysis_language)

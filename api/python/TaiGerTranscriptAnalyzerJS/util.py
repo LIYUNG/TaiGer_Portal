@@ -111,49 +111,50 @@ def Grades_Preprocessing(df_course):
 
 
 def Naming_Convention_ZH(df_course):
-    # modify data in the same
-    df_course['course_chinese'] = df_course['course_chinese'].fillna('-')
-    # lowercase even for Chinese name!
-    df_course['course_chinese'] = df_course['course_chinese'].str.lower()
+    # modify data in the same, lowercase even for Chinese name!
+    df_course['course_chinese'] = df_course['course_chinese'].fillna(
+        '-').str.lower()
 
-    df_course['course_chinese'] = df_course['course_chinese'].str.replace(
-        '+', '＋', regex=False)
-    df_course['course_chinese'] = df_course['course_chinese'].str.replace(
-        '1', '一', regex=False)
-    df_course['course_chinese'] = df_course['course_chinese'].str.replace(
-        '2', '二', regex=False)
-    df_course['course_chinese'] = df_course['course_chinese'].str.replace(
-        '3', '三', regex=False)
-    df_course['course_chinese'] = df_course['course_chinese'].str.replace(
-        '(', '', regex=False)
-    df_course['course_chinese'] = df_course['course_chinese'].str.replace(
-        '（', '', regex=False)
-    df_course['course_chinese'] = df_course['course_chinese'].str.replace(
-        ')', '', regex=False)
-    df_course['course_chinese'] = df_course['course_chinese'].str.replace(
-        '）', '', regex=False)
-    df_course['course_chinese'] = df_course['course_chinese'].str.replace(
-        ' ', '', regex=False)
+    # Create a mapping for replacements
+    replacements = {
+        '+': '＋',
+        '1': '一',
+        '2': '二',
+        '3': '三',
+        '(': '',
+        '（': '',
+        ')': '',
+        '）': '',
+        ' ': ''
+    }
+
+    # Apply replacements using a single loop
+    for old, new in replacements.items():
+        df_course['course_chinese'] = df_course['course_chinese'].str.replace(
+            old, new, regex=False)
+
     return df_course
 
 
 def Naming_Convention_EN(df_course):
-    # English Version only:
-    df_course['course_english'] = df_course['course_english'].fillna('-')
+    # Fill NaN values and convert to lowercase
+    df_course['course_english'] = df_course['course_english'].fillna(
+        '-').str.lower()
 
-    df_course['course_english'] = df_course['course_english'].str.lower()
+    # Create a mapping for replacements
+    replacements = {
+        '+': '＋',
+        '(': '',
+        '（': '',
+        ')': '',
+        '）': ''
+    }
 
-    df_course['course_english'] = df_course['course_english'].str.replace(
-        '+', '＋', regex=False)
+    # Apply replacements using a single loop
+    for old, new in replacements.items():
+        df_course['course_english'] = df_course['course_english'].str.replace(
+            old, new, regex=False)
 
-    df_course['course_english'] = df_course['course_english'].str.replace(
-        '(', '', regex=False)
-    df_course['course_english'] = df_course['course_english'].str.replace(
-        '（', '', regex=False)
-    df_course['course_english'] = df_course['course_english'].str.replace(
-        ')', '', regex=False)
-    df_course['course_english'] = df_course['course_english'].str.replace(
-        '）', '', regex=False)
     return df_course
 
 

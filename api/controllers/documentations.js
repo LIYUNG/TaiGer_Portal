@@ -7,8 +7,7 @@ const { one_month_cache } = require('../cache/node-cache');
 const logger = require('../services/logger');
 const { getNumberOfDays, Role } = require('../constants');
 const { API_ORIGIN, AWS_S3_PUBLIC_BUCKET_NAME } = require('../config');
-
-const { s3 } = require('../aws/index');
+const { getS3Object } = require('../aws/s3');
 
 const valid_categories = [
   'howtostart',
@@ -21,55 +20,6 @@ const valid_categories = [
   'visa',
   'enrolment'
 ];
-// const DocumentationS3GarbageCollector = asyncHandler(async (req) => {
-//   const doc = await req.db.model('Documentation').find();
-//   const listParamsPublic = {
-//     Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
-//     Delimiter: '/',
-//     Prefix: 'Documentations/'
-//   };
-//   const listedObjectsPublic = await s3
-//     .listObjectsV2(listParamsPublic)
-//     .promise();
-
-//   const temp_date = new Date();
-//   if (listedObjectsPublic.Contents.length > 0) {
-//     const deleteParams = {
-//       Bucket: AWS_S3_PUBLIC_BUCKET_NAME,
-//       Delete: { Objects: [] }
-//     };
-//     listedObjectsPublic.Contents.forEach((Obj) => {
-//       for (let i = 0; i < doc.length; i += 1) {
-//         const file_name = encodeURIComponent(Obj.Key.split('/')[1]);
-//         if (doc[i].text.includes(file_name)) {
-//           break;
-//         }
-
-//         if (i === doc.length - 1) {
-//           // if until last doc still not found, add the Key to the delete list
-//           if (!doc[i].text.includes(file_name)) {
-//             // Delete only older than 2 week
-//             if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
-//               deleteParams.Delete.Objects.push({ Key: Obj.Key });
-//             }
-//           }
-//         }
-//       }
-//       // logger.info('Deleting ', Key);
-//     });
-//     // TODO: there are something mixed in Documentations/ folder:
-//     // 1. documentation
-//     if (deleteParams.Delete.Objects.length > 0) {
-//       await s3.deleteObjects(deleteParams).promise();
-//       logger.info('Deleted redundant files and image for documentation.');
-//       logger.info(deleteParams.Delete.Objects);
-//     } else {
-//       logger.info('Nothing to be deleted for documentation.');
-//     }
-
-//     // if (listedObjectsPublic.IsTruncated) await emptyS3Directory(bucket, dir);
-//   }
-// });
 
 const updateInternalDocumentationPage = asyncHandler(async (req, res) => {
   const fields = _.omit(req.body, '_id');
@@ -213,7 +163,8 @@ const createInternalDocumentation = asyncHandler(async (req, res) => {
 });
 
 const uploadDocImage = asyncHandler(async (req, res) => {
-  let imageurl = new URL(`/api/docs/file/${req.file.key}`, API_ORIGIN).href;
+  const filePath = req.file.key.split('/');
+  let imageurl = new URL(`/api/docs/file/${filePath[1]}`, API_ORIGIN).href;
   imageurl = imageurl.replace(/\\/g, '/');
   // TODO: to overwrite cache image, pdf, docs, file here.
   return res.send({ success: true, data: imageurl });
@@ -224,35 +175,21 @@ const getDocFile = asyncHandler(async (req, res) => {
     params: { object_key }
   } = req;
 
-  let directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, 'Documentations');
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: object_key,
-    Bucket: directory
-  };
+  const fileKey = path.join('Documentations', object_key).replace(/\\/g, '/');
+
   // Use redis/cache
   // TODO: need to update when new uploaded file with same key name!
   const value = one_month_cache.get(req.originalUrl);
   if (value === undefined) {
     // cache miss
     logger.info(`cache miss: ${req.originalUrl}`);
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-      // No error happened
-      // Convert Body from a Buffer to a String
-      const objectData = data.Body.toString('utf-8'); // Use the encoding necessary
-      const success = one_month_cache.set(req.originalUrl, data.Body);
-      if (success) {
-        logger.info('cache set successfully');
-      }
-      res.attachment(object_key);
-      return res.end(data.Body);
-    });
+    const response = await getS3Object(AWS_S3_PUBLIC_BUCKET_NAME, fileKey);
+    const success = one_month_cache.set(req.originalUrl, Buffer.from(response));
+    if (success) {
+      logger.info('cache set successfully');
+    }
+    res.attachment(object_key);
+    return res.end(response);
   } else {
     logger.info('cache hit');
     res.attachment(object_key);
@@ -261,16 +198,18 @@ const getDocFile = asyncHandler(async (req, res) => {
 });
 
 const uploadDocDocs = asyncHandler(async (req, res) => {
-  let imageurl = new URL(
-    `/api/docs/file/${encodeURIComponent(req.file.key)}`,
+  const filePath = req.file.key.split('/');
+  const fileName = filePath[1];
+  let docUrl = new URL(
+    `/api/docs/file/${encodeURIComponent(fileName)}`,
     API_ORIGIN
   ).href;
-  imageurl = imageurl.replace(/\\/g, '/');
-  let extname = path.extname(req.file.key);
+  docUrl = docUrl.replace(/\\/g, '/');
+  let extname = path.extname(fileName);
   extname = extname.replace('.', '');
   // TODO: to delete cache key for image, pdf, docs, file here.
   const value = one_month_cache.del(
-    `/api/docs/file/${encodeURIComponent(req.file.key)}`
+    `/api/docs/file/${encodeURIComponent(fileName)}`
   );
   // encodeURIComponent convert chinese to url match charater %E7%94%B3%E8%AB%8 etc.
   if (value === 1) {
@@ -278,7 +217,7 @@ const uploadDocDocs = asyncHandler(async (req, res) => {
   }
   return res.send({
     success: true,
-    url: imageurl,
+    url: docUrl,
     title: req.file.key,
     extension: extname
   });

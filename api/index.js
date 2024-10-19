@@ -29,9 +29,7 @@ const logger = require('./services/logger');
 // const {
 //   DocumentationS3GarbageCollector
 // } = require('./controllers/documentations');
-// const {
-//   ThreadS3GarbageCollector
-// } = require('./controllers/documents_modification');
+
 const {
   TasksReminderEmails,
   UrgentTasksReminderEmails,
@@ -44,7 +42,10 @@ const {
   NoInterviewTrainerOrTrainingDateDailyReminderChecker,
   DailyInterviewSurveyChecker
 } = require('./utils/utils_function');
-const { MongoDBDataBaseDailySnapshot } = require('./utils/jobs');
+const {
+  // MongoDBDataBaseDailySnapshot,
+  MongoDBDataBaseDailySnapshotV2
+} = require('./utils/jobs');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
 // process.on('SIGINT', () => {
@@ -100,12 +101,6 @@ const launch = async () => {
   // const job = schedule.scheduleJob(
   //   CLEAN_UP_SCHEDULE,
   //   DocumentationS3GarbageCollector
-  // );
-
-  // every 1. of month clean up the redundant screenshots,for the thread.
-  // const job2 = schedule.scheduleJob(
-  //   CLEAN_UP_SCHEDULE,
-  //   ThreadS3GarbageCollector
   // );
 
   // every Friday, send tasks reminder emails to agents, editor and student
@@ -185,7 +180,7 @@ const launch = async () => {
   if (isProd()) {
     const job5 = schedule.scheduleJob(
       DAILY_TASKS_REMINDER_SCHEDULE,
-      MongoDBDataBaseDailySnapshot
+      MongoDBDataBaseDailySnapshotV2
     );
     // launch http server
     app.listen(PORT, () => {
@@ -196,7 +191,7 @@ const launch = async () => {
     // launch https server
     // const job5 = schedule.scheduleJob(
     //   '40 * * * * *',
-    //   MongoDBDataBaseDailySnapshot
+    //   MongoDBDataBaseDailySnapshotV2
     // );
 
     if (

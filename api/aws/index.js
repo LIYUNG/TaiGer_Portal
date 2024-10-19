@@ -1,33 +1,57 @@
-const aws = require('aws-sdk');
-const Bottleneck = require('bottleneck/es5');
-const {
-  AWS_S3_ACCESS_KEY_ID,
-  AWS_S3_ACCESS_KEY,
-  isProd
-} = require('../config');
+const axios = require('axios');
+const { Sha256 } = require('@aws-crypto/sha256-browser');
+const { SignatureV4 } = require('@aws-sdk/signature-v4');
 
-const s3 = isProd()
-  ? new aws.S3()
-  : new aws.S3({
-      accessKeyId: AWS_S3_ACCESS_KEY_ID,
-      secretAccessKey: AWS_S3_ACCESS_KEY
-    });
-const ses = isProd()
-  ? new aws.SES({
-      region: 'us-west-2'
-    })
-  : new aws.SES({
-      region: 'us-west-2',
-      accessKeyId: AWS_S3_ACCESS_KEY_ID,
-      secretAccessKey: AWS_S3_ACCESS_KEY
+const logger = require('../services/logger');
+const { ses, limiter, SendRawEmailCommand } = require('./ses');
+const { s3Client } = require('./s3');
+const { getTemporaryCredentials } = require('./sts');
+const { AWS_REGION } = require('../config');
+
+const callApiGateway = async (credentials, apiGatewayUrl) => {
+  try {
+    const signer = new SignatureV4({
+      credentials: {
+        accessKeyId: credentials.AccessKeyId,
+        secretAccessKey: credentials.SecretAccessKey,
+        sessionToken: credentials.SessionToken
+      },
+      region: AWS_REGION,
+      service: 'execute-api',
+      sha256: Sha256
     });
 
-const limiter = new Bottleneck({
-  minTime: 1100 / 14
-});
+    const url = new URL(apiGatewayUrl);
+    const signedRequest = await signer.sign({
+      method: 'GET',
+      hostname: url.hostname,
+      path: url.pathname,
+      protocol: url.protocol,
+      headers: {
+        host: url.hostname
+      }
+    });
+
+    const response = await axios({
+      ...signedRequest,
+      url: apiGatewayUrl,
+      method: signedRequest.method,
+      headers: signedRequest.headers,
+      data: signedRequest.body
+    });
+
+    return response.data;
+  } catch (error) {
+    logger.error('Error calling API Gateway:', error);
+    throw error;
+  }
+};
 
 module.exports = {
-  s3,
+  s3Client,
   ses,
-  limiter
+  SendRawEmailCommand,
+  limiter,
+  getTemporaryCredentials,
+  callApiGateway
 };

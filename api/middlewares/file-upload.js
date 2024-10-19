@@ -5,7 +5,7 @@ const multerS3 = require('multer-s3');
 const uuid = require('uuid');
 const { ErrorResponse } = require('../common/errors');
 const { AWS_S3_BUCKET_NAME, AWS_S3_PUBLIC_BUCKET_NAME } = require('../config');
-const { s3 } = require('../aws/index');
+const { s3Client } = require('../aws');
 
 const MAX_FILE_SIZE_MB = 2 * 1024 * 1024; // 2 MB
 const MAX_DOC_FILE_SIZE_MB = 1 * 1024 * 1024; // 1 MB
@@ -39,11 +39,9 @@ const formatDate = (date) => {
 
 // Template file upload
 const template_storage_s3 = multerS3({
-  s3,
+  s3: s3Client,
   bucket: (req, file, cb) => {
-    let directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, 'taiger_template');
-    directory = directory.replace(/\\/, '/');
-    cb(null, directory);
+    cb(null, AWS_S3_PUBLIC_BUCKET_NAME);
   },
   metadata: (req, file, cb) => {
     const directory = 'taiger_template';
@@ -56,7 +54,7 @@ const template_storage_s3 = multerS3({
     )}`;
     temp_name = temp_name.replace(/\//g, '_');
 
-    cb(null, temp_name);
+    cb(null, `taiger_template/${temp_name}`);
   }
 });
 // upload template pdf/docx/image
@@ -92,17 +90,9 @@ const upload_template_s3 = multer({
 
 // VPD file upload
 const storage_vpd_s3 = multerS3({
-  s3,
+  s3: s3Client,
   bucket: (req, file, cb) => {
-    let { studentId } = req.params;
-    // eslint-disable-next-line no-underscore-dangle
-    if (!studentId) studentId = String(req.user._id);
-
-    // TODO: check studentId exist
-    let directory = path.join(AWS_S3_BUCKET_NAME, studentId);
-    // var directory = path.join(AWS_S3_BUCKET_NAME, studentId);
-    directory = directory.replace(/\\/g, '/');
-    cb(null, directory);
+    cb(null, AWS_S3_BUCKET_NAME);
   },
   metadata: (req, file, cb) => {
     let { studentId } = req.params;
@@ -132,7 +122,7 @@ const storage_vpd_s3 = multerS3({
               }_${program_name}_${fileType}${path.extname(file.originalname)}`;
               temp_name = temp_name.replace(/ /g, '_');
               temp_name = temp_name.replace(/\//g, '_');
-              cb(null, temp_name);
+              cb(null, `${studentId}/${temp_name}`);
             });
         }
       });
@@ -141,16 +131,9 @@ const storage_vpd_s3 = multerS3({
 
 // Profile file upload
 const storage_profile_s3 = multerS3({
-  s3,
+  s3: s3Client,
   bucket: (req, file, cb) => {
-    let { studentId } = req.params;
-    // eslint-disable-next-line no-underscore-dangle
-    if (!studentId) studentId = String(req.user._id);
-
-    // TODO: check studentId exist
-    let directory = path.join(AWS_S3_BUCKET_NAME, studentId);
-    directory = directory.replace(/\\/, '/');
-    cb(null, directory);
+    cb(null, AWS_S3_BUCKET_NAME);
   },
   metadata: (req, file, cb) => {
     let { studentId } = req.params;
@@ -176,7 +159,7 @@ const storage_profile_s3 = multerS3({
         if (student) {
           let temp_name = `${student.lastname}_${student.firstname}_${
             req.params.category
-          }${path.extname(file.originalname).toLowerCase()}`;
+          }${path.extname(file.originalname).toLowerCase()}`.replace(/ /g, '_');
           temp_name = temp_name.replace(/\//g, '_');
 
           return {
@@ -185,17 +168,15 @@ const storage_profile_s3 = multerS3({
         }
       })
       .then((resp) => {
-        cb(null, resp.fileName);
+        cb(null, `${studentId}/${resp.fileName}`);
       });
   }
 });
 
 const doc_image_s3 = multerS3({
-  s3,
+  s3: s3Client,
   bucket: (req, file, cb) => {
-    let directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, 'Documentations');
-    directory = directory.replace(/\\/, '/');
-    cb(null, directory);
+    cb(null, AWS_S3_PUBLIC_BUCKET_NAME);
   },
   metadata: (req, file, cb) => {
     const directory = 'Documentations';
@@ -204,35 +185,28 @@ const doc_image_s3 = multerS3({
   key: (req, file, cb) => {
     const id = uuid.v4();
     const fileName = id + path.extname(file.originalname);
-    cb(null, fileName);
+    cb(null, `Documentations/${fileName}`);
   }
 });
 
 const doc_docs_s3 = multerS3({
-  s3,
+  s3: s3Client,
   bucket: (req, file, cb) => {
-    let directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, 'Documentations');
-    directory = directory.replace(/\\/, '/');
-    cb(null, directory);
+    cb(null, AWS_S3_PUBLIC_BUCKET_NAME);
   },
   metadata: (req, file, cb) => {
     cb(null, { fieldName: file.fieldname, path: '' });
   },
   key: (req, file, cb) => {
-    // var id = uuid.v4();
-    // const fileName = id + path.extname(file.originalname);
     const fileName = file.originalname;
-    cb(null, fileName);
+    cb(null, `Documentations/${fileName}`);
   }
 });
 
 const admission_letter_s3 = multerS3({
-  s3,
+  s3: s3Client,
   bucket: (req, file, cb) => {
-    const { studentId } = req.params;
-    let directory = path.join(AWS_S3_BUCKET_NAME, studentId, 'admission');
-    directory = directory.replace(/\\/g, '/');
-    cb(null, directory);
+    cb(null, AWS_S3_BUCKET_NAME);
   },
   metadata: (req, file, cb) => {
     const { studentId } = req.params;
@@ -261,7 +235,7 @@ const admission_letter_s3 = multerS3({
               )}`;
               temp_name = temp_name.replace(/ /g, '_');
               temp_name = temp_name.replace(/\//g, '_');
-              cb(null, temp_name);
+              cb(null, `${studentId}/admission/${temp_name}`);
             });
         }
       });
@@ -411,13 +385,9 @@ const upload_profile_s3 = multer({
 
 // Message ticket files upload
 const storage_messagesticket_file_s3 = multerS3({
-  s3,
+  s3: s3Client,
   bucket: (req, file, cb) => {
-    const { ticketId, studentId } = req.params;
-    // TODO: check studentId and ticketId exist
-    let directory = path.join(AWS_S3_BUCKET_NAME, studentId, ticketId);
-    directory = directory.replace(/\\/g, '/');
-    cb(null, directory);
+    cb(null, AWS_S3_BUCKET_NAME);
   },
   metadata: (req, file, cb) => {
     const { ticketId, studentId } = req.params;
@@ -427,7 +397,7 @@ const storage_messagesticket_file_s3 = multerS3({
     cb(null, { fieldName: file.fieldname, path: directory });
   },
   key: (req, file, cb) => {
-    const { ticketId } = req.params;
+    const { studentId, ticketId } = req.params;
     req.db
       .model('Complaint')
       .findById(ticketId)
@@ -442,20 +412,16 @@ const storage_messagesticket_file_s3 = multerS3({
           ticket.requester_id.firstname
         }_Ticket_Attachment_${formattedDate}${path.extname(file.originalname)}`;
 
-        cb(null, temp_name);
+        cb(null, `${studentId}/${ticketId}/${temp_name}`);
       });
   }
 });
 
 // Message thread file upload (general)
 const storage_messagesthread_file_s3 = multerS3({
-  s3,
+  s3: s3Client,
   bucket: (req, file, cb) => {
-    const { messagesThreadId, studentId } = req.params;
-    // TODO: check studentId and messagesThreadId exist
-    let directory = path.join(AWS_S3_BUCKET_NAME, studentId, messagesThreadId);
-    directory = directory.replace(/\\/g, '/');
-    cb(null, directory);
+    cb(null, AWS_S3_BUCKET_NAME);
   },
   metadata: (req, file, cb) => {
     const { messagesThreadId, studentId } = req.params;
@@ -465,7 +431,7 @@ const storage_messagesthread_file_s3 = multerS3({
     cb(null, { fieldName: file.fieldname, path: directory });
   },
   key: (req, file, cb) => {
-    const { messagesThreadId } = req.params;
+    const { studentId, messagesThreadId } = req.params;
     req.db
       .model('Documentthread')
       .findById(messagesThreadId)
@@ -506,7 +472,7 @@ const storage_messagesthread_file_s3 = multerS3({
               temp_name = temp_name.replace(/ /g, '_');
               temp_name = temp_name.replace(/\//g, '_');
 
-              cb(null, temp_name);
+              cb(null, `${studentId}/${messagesThreadId}/${temp_name}`);
             });
         } else {
           let version_number_max = 0;
@@ -530,20 +496,16 @@ const storage_messagesthread_file_s3 = multerS3({
           )}`;
           temp_name = temp_name.replace(/ /g, '_');
           temp_name = temp_name.replace(/\//g, '_');
-          cb(null, temp_name);
+          cb(null, `${studentId}/${messagesThreadId}/${temp_name}`);
         }
       });
   }
 });
 
 const storage_messagesChat_file_s3 = multerS3({
-  s3,
+  s3: s3Client,
   bucket: (req, file, cb) => {
-    const { studentId } = req.params;
-    // TODO: check studentId and messagesThreadId exist
-    let directory = path.join(AWS_S3_BUCKET_NAME, studentId, 'chat');
-    directory = directory.replace(/\\/g, '/');
-    cb(null, directory);
+    cb(null, AWS_S3_BUCKET_NAME);
   },
   metadata: (req, file, cb) => {
     const { studentId } = req.params;
@@ -566,24 +528,16 @@ const storage_messagesChat_file_s3 = multerS3({
         }_Attachment_${formattedDate}${path.extname(file.originalname)}`;
         temp_name = temp_name.replace(/ /g, '_');
         temp_name = temp_name.replace(/\//g, '_');
-        cb(null, temp_name);
+        cb(null, `${studentId}/chat/${temp_name}`);
       });
   }
 });
 
 // Message thread image upload (general)
 const storage_messagesthread_image_s3 = multerS3({
-  s3,
+  s3: s3Client,
   bucket: (req, file, cb) => {
-    const { messagesThreadId, studentId } = req.params;
-    let directory = path.join(
-      AWS_S3_BUCKET_NAME,
-      studentId,
-      messagesThreadId,
-      'img'
-    );
-    directory = directory.replace(/\\/g, '/');
-    cb(null, directory);
+    cb(null, AWS_S3_BUCKET_NAME);
   },
   metadata: (req, file, cb) => {
     const { messagesThreadId, studentId } = req.params;
@@ -592,9 +546,10 @@ const storage_messagesthread_image_s3 = multerS3({
     cb(null, { fieldName: file.fieldname, path: directory });
   },
   key: (req, file, cb) => {
+    const { messagesThreadId, studentId } = req.params;
     const id = uuid.v4();
     const fileName = id + path.extname(file.originalname);
-    cb(null, fileName);
+    cb(null, `${studentId}/${messagesThreadId}/img/${fileName}`);
   }
 });
 const upload_messagesticket_file_s3 = multer({

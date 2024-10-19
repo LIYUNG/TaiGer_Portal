@@ -14,8 +14,9 @@ const { isNotArchiv } = require('../constants');
 const { getPermission } = require('../utils/queryFunctions');
 const { AWS_S3_BUCKET_NAME } = require('../config');
 const { one_month_cache } = require('../cache/node-cache');
-const { s3 } = require('../aws');
+const { deleteS3Objects } = require('../aws/s3');
 const { TENANT_SHORT_NAME } = require('../constants/common');
+const { getS3Object } = require('../aws/s3');
 
 const pageSize = 5;
 
@@ -512,39 +513,23 @@ const getChatFile = asyncHandler(async (req, res, next) => {
     params: { studentId, fileName }
   } = req;
 
-  let directory = path.join(AWS_S3_BUCKET_NAME, studentId, 'chat');
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: fileName,
-    Bucket: directory
-  };
+  const fileKey = path.join(studentId, 'chat', fileName).replace(/\\/g, '/');
 
   const cache_key = `chat-${studentId}${req.originalUrl.split('/')[5]}`;
   const value = one_month_cache.get(cache_key); // image name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-
-      // No error happened
-      const success = one_month_cache.set(cache_key, data.Body);
-      if (success) {
-        logger.info('image cache set successfully');
-      }
-
-      res.attachment(fileName);
-      return res.end(data.Body);
-    });
+    const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    const success = one_month_cache.set(cache_key, Buffer.from(response));
+    if (success) {
+      logger.info('image cache set successfully');
+    }
+    res.attachment(fileName);
+    return res.end(response);
   } else {
     logger.info('cache hit');
     res.attachment(fileName);
     return res.end(value);
   }
-  next();
 });
 
 // (O) notification email works
@@ -595,9 +580,11 @@ const postMessages = asyncHandler(async (req, res, next) => {
   let newfile = [];
   if (req.files) {
     for (let i = 0; i < req.files.length; i += 1) {
+      const filePath = req.files[i].key.split('/');
+      const fileName = filePath[2];
       newfile.push({
-        name: req.files[i].key,
-        path: path.join(req.files[i].metadata.path, req.files[i].key)
+        name: fileName,
+        path: req.files[i].key
       });
       // Check for duplicate file extensions
       const fileExtensions = req.files.map(
@@ -709,27 +696,21 @@ const deleteAMessageInCommunicationThread = asyncHandler(
     } = req;
     const msg = await req.db.model('Communication').findById(messageId);
 
-    const deleteParams = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delete: { Objects: [] }
-    };
-
     // remove chat attachment cache.
     msg.files?.map((file) =>
       one_month_cache.del(`chat-${msg.student_id?.toString()}${file.name}`)
     );
 
-    msg.files?.map((file) =>
-      deleteParams.Delete.Objects.push({
-        Key: file.path.replace(/\\/g, '/')
-      })
-    );
-
     try {
-      if (deleteParams.Delete.Objects.length > 0) {
-        await s3.deleteObjects(deleteParams).promise();
-        logger.info('Deleted chat files:');
-        logger.info(JSON.stringify(deleteParams.Delete.Objects));
+      if (msg.files.filter((file) => file.path !== '')?.length > 0) {
+        await deleteS3Objects({
+          bucketName: AWS_S3_BUCKET_NAME,
+          objectKeys: msg.files
+            .filter((file) => file.path !== '')
+            .map((file) => ({
+              Key: file.path
+            }))
+        });
       }
     } catch (err) {
       if (err) {

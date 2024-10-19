@@ -189,33 +189,3 @@ describe('DELETE /api/users/:id', () => {
     expect(deletedUser).toBe(null);
   });
 });
-
-// //TODO: token-specific API!!!
-// describe("GET /api/students", () => {
-//   it("should return role-specific students", async () => {
-//     const resp = await request(app).get("/api/students").set('tenantId', TENANT_ID);
-//     const { success, data } = resp.body;
-
-//     const studentIds = students.map(({ _id }) => _id).sort();
-//     // const receivedIds = data.map(({ _id }) => _id).sort();
-
-//     expect(resp.status).toBe(200);
-//     expect(success).toBe(true);
-//     // expect(receivedIds).toEqual(studentIds);
-//   });
-// });
-
-// TODO: token-specific API!!!
-// describe("GET /api/students/archiv", () => {
-//   it("should return all archiv students", async () => {
-//     const resp = await request(app).get("/api/students/archiv");
-//     const { success, data } = resp.body;
-
-//     const studentIds = students.map(({ _id }) => _id).sort();
-//     const receivedIds = data.map(({ _id }) => _id).sort();
-
-//     expect(resp.status).toBe(200);
-//     expect(success).toBe(true);
-//     expect(receivedIds).toEqual(studentIds);
-//   });
-// });

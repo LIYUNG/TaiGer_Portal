@@ -1204,7 +1204,8 @@ export const DEGREE_CATOGARY_ARRAY_OPTIONS = [
   { value: 'M. Sc.', label: 'Master of Science' },
   { value: 'M. Res.', label: 'Master of Reserach' },
   { value: 'MPhil.', label: 'Master of Philosophy' },
-  { value: 'MBA', label: 'MBA' }
+  { value: 'MBA', label: 'MBA' },
+  { value: 'PhD', label: 'PhD' }
 ];
 
 export const LANGUAGES_ARRAY_OPTIONS = [

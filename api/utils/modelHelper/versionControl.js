@@ -5,30 +5,33 @@ const { asyncHandler } = require('../../middlewares/error-handler');
 const { findStudentDelta } = require('./programChange');
 const { ErrorResponse } = require('../../common/errors');
 const { AWS_S3_BUCKET_NAME } = require('../../config');
-const { s3 } = require('../../aws');
+const { listS3ObjectsV2, deleteS3Objects } = require('../../aws/s3');
 
+// TODO: aws-sdk v3 to be tested
+// only delete first 1000 objects
 const emptyS3Directory = asyncHandler(async (bucket, dir) => {
   const listParams = {
-    Bucket: bucket,
+    bucketName: bucket,
     Prefix: dir
   };
 
-  const listedObjects = await s3.listObjectsV2(listParams).promise();
-
-  if (listedObjects.Contents.length === 0) return;
+  const listedObjects = await listS3ObjectsV2(listParams);
+  if (!listedObjects?.Contents || listedObjects.Contents.length === 0) return;
 
   const deleteParams = {
-    Bucket: bucket,
     Delete: { Objects: [] }
   };
 
-  listedObjects.Contents.forEach(({ Key }) => {
+  listedObjects?.Contents?.forEach(({ Key }) => {
     deleteParams.Delete.Objects.push({ Key });
   });
   logger.warn(JSON.stringify(deleteParams));
-  await s3.deleteObjects(deleteParams).promise();
-
-  if (listedObjects.IsTruncated) await emptyS3Directory(bucket, dir);
+  if (deleteParams.Delete.Objects.length > 0) {
+    await deleteS3Objects({
+      bucketName: AWS_S3_BUCKET_NAME,
+      objectKeys: deleteParams.Delete.Objects
+    });
+  }
 });
 
 const createApplicationThread = async (

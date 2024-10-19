@@ -76,9 +76,6 @@ export const getApplicationStudent = (studentId) =>
 export const getStudentUniAssist = (studentId) =>
   request.get(`/api/uniassist/${studentId}`);
 
-export const getStudent = (studentId) =>
-  request.get(`/api/students/${studentId}`);
-
 export const getArchivStudents = (TaiGerStaffId) =>
   request.get(`/api/teams/archiv/${TaiGerStaffId}`);
 
@@ -120,15 +117,10 @@ export const downloadProfile = (category, studentId) =>
     responseType: 'blob'
   });
 
-export const getProfilePdf = (studentId, path) =>
-  request.get(`/api/students/${studentId}/files/${path}`, {
+export const getPdf = (apiPath) =>
+  request.get(apiPath, {
     responseType: 'blob'
   });
-
-// export const getProfilePdf = (path, studentId) =>
-//   request.get(`/api/students/${studentId}/files/${path}`, {
-//     responseType: 'blob'
-//   });
 
 export const uploadforstudent = (category, studentId, data) =>
   request.post(`/api/students/${studentId}/files/${category}`, data);
@@ -173,8 +165,6 @@ export const updateProfileDocumentStatus = (
   });
 
 // Account APIs
-export const getMyfiles = () => request.get(`/api/account/files`);
-
 export const getTemplates = () => request.get(`/api/account/files/template`);
 export const uploadtemplate = (category, data) =>
   request.post(`/api/account/files/template/${category}`, data);
@@ -205,16 +195,9 @@ export const WidgetExportMessagePDF = (student_id) =>
   });
 
 export const transcriptanalyser_test = (studentId, category, language) =>
-  request.post(`/api/account/transcript/${studentId}/${category}/${language}`);
+  request.post(`/api/courses/transcript/${studentId}/${category}/${language}`);
 export const analyzedFileDownload_test = (studentId) =>
-  request.get(`/api/account/transcript/${studentId}`, {
-    responseType: 'blob'
-  });
-export const transcriptanalyser = (studentId, category, data) =>
-  request.post(`/api/account/transcript/${studentId}/${category}`, data);
-
-export const generatedFileDownload = (studentId, filename) =>
-  request.get(`/api/account/transcript/${studentId}/${filename}`, {
+  request.get(`/api/courses/transcript/${studentId}`, {
     responseType: 'blob'
   });
 
@@ -328,6 +311,7 @@ export const deleteInternalDocumentation = (doc_id) =>
 
 // Program APIs
 export const getPrograms = () => request.get('/api/programs');
+export const getDistinctSchools = () => request.get('/api/programs/schools');
 export const getProgram = (programId) =>
   request.get(`/api/programs/${programId}`);
 
@@ -694,7 +678,8 @@ export const submitMessageInTicketWithAttachment = (
   ticketId,
   studentId,
   newFile
-) => request.post(`/api/complaints/new-message/${ticketId}/${studentId}`, newFile);
+) =>
+  request.post(`/api/complaints/new-message/${ticketId}/${studentId}`, newFile);
 export const deleteAMessageinTicket = (ticketId, message_id) =>
   request.delete(`/api/complaints/${ticketId}/${message_id}`);
 

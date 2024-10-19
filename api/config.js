@@ -6,6 +6,7 @@ dotenv.config({
 });
 
 const isProd = () => process.env.NODE_ENV === 'production';
+const isTest = () => process.env.NODE_ENV === 'test';
 const isDev = () =>
   process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
 
@@ -14,6 +15,7 @@ const env = (name, default_) => process.env[name] || default_;
 
 module.exports = {
   isProd,
+  isTest,
   isDev,
   PORT: env('PORT', 3000),
   HTTPS_PORT: env('HTTPS_PORT', 3000),
@@ -65,6 +67,7 @@ module.exports = {
   ),
   ESCALATION_DEADLINE_DAYS_TRIGGER: env('ESCALATION_DEADLINE_DAYS_TRIGGER', 30),
   AWS_S3_PUBLIC_BUCKET: env('AWS_S3_PUBLIC_BUCKET'),
+  AWS_REGION: env('AWS_REGION', ''),
   AWS_S3_ACCESS_KEY_ID: env('AWS_S3_ACCESS_KEY_ID', ''),
   AWS_S3_ACCESS_KEY: env('AWS_S3_ACCESS_KEY', ''),
   AWS_S3_PUBLIC_BUCKET_NAME: env('AWS_S3_PUBLIC_BUCKET_NAME', ''),

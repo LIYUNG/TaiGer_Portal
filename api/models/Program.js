@@ -206,6 +206,22 @@ const programModule = {
   country: {
     type: String
   },
+  isPrivateSchool: {
+    type: Boolean
+  },
+  isPartnerSchool: {
+    type: Boolean
+  },
+  schoolType: {
+    type: String,
+    enum: ['University', 'University_of_Applied_Sciences']
+  },
+  tags: [
+    {
+      type: String,
+      enum: ['TU9', 'U15']
+    }
+  ],
   url: String,
   vcId: ObjectId
 };

@@ -1,3 +1,4 @@
+const path = require('path');
 const async = require('async');
 const {
   sendAssignEditorReminderEmail,
@@ -31,10 +32,136 @@ const {
   Role
 } = require('../constants');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { isProd } = require('../config');
+const { isProd, AWS_S3_BUCKET_NAME } = require('../config');
 const { connectToDatabase } = require('../middlewares/tenantMiddleware');
+const { deleteS3Objects, listS3ObjectsV2 } = require('../aws/s3');
+const { ErrorResponse } = require('../common/errors');
 
+// TODO: aws-sdk v3 not tested yet.
+const threadS3GarbageCollector = async (
+  req,
+  collection,
+  userFolder,
+  ThreadId
+) => {
+  // This functino will be called when thread marked as finished.
+  try {
+    // TODO: could be bottleneck if number of thread increase.
+    const ticket = await req.db.model(collection).findById(ThreadId);
+    if (!ticket) {
+      logger.error('threadS3GarbageCollector Invalid ThreadId');
+      throw new ErrorResponse(404, 'Thread not found');
+    }
 
+    const deleteParams = {
+      Delete: { Objects: [] }
+    };
+
+    const delete_files_Params = {
+      Delete: { Objects: [] }
+    };
+
+    logger.info(
+      'Trying to delete redundant images S3 of corresponding message thread'
+    );
+    // eslint-disable-next-line no-underscore-dangle
+    const thread_id = ticket._id.toString();
+    const user_id = ticket[userFolder].toString();
+    const message_a = ticket.messages;
+    let directory_img = path.join(user_id, thread_id, 'img');
+    directory_img = directory_img.replace(/\\/g, '/');
+    let directory_files = path.join(user_id, thread_id);
+    directory_files = directory_files.replace(/\\/g, '/');
+    const listParamsPublic = {
+      bucketName: AWS_S3_BUCKET_NAME,
+      Prefix: `${directory_img}/`
+    };
+    const listParamsPublic_files = {
+      bucketName: AWS_S3_BUCKET_NAME,
+      Prefix: `${directory_files}/`
+    };
+    const listedObjectsPublic = await listS3ObjectsV2(listParamsPublic);
+
+    const listedObjectsPublic_files = await listS3ObjectsV2(
+      listParamsPublic_files
+    );
+    if (listedObjectsPublic.Contents.length > 0) {
+      listedObjectsPublic.Contents.forEach((Obj) => {
+        let file_found = false;
+        if (message_a.length === 0) {
+          deleteParams.Delete.Objects.push({ Key: Obj.Key });
+        }
+        for (let i = 0; i < message_a.length; i += 1) {
+          const file_name = Obj.Key.split('/')[3];
+          if (message_a[i].message.includes(file_name)) {
+            file_found = true;
+            break;
+          }
+        }
+        if (!file_found) {
+          // if until last message_a still not found, add the Key to the delete list
+          // Delete only older than 2 week
+          // if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
+          deleteParams.Delete.Objects.push({ Key: Obj.Key });
+          // }
+        }
+      });
+    }
+    if (listedObjectsPublic_files.Contents.length > 0) {
+      listedObjectsPublic_files.Contents.forEach((Obj2) => {
+        let file_found = false;
+        if (message_a.length === 0) {
+          delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
+        }
+        for (let i = 0; i < message_a.length; i += 1) {
+          const file_name = Obj2.Key.split('/')[2];
+          for (let k = 0; k < message_a[i].file.length; k += 1) {
+            if (message_a[i].file[k].path.includes(file_name)) {
+              file_found = true;
+              break;
+            }
+          }
+          if (file_found) {
+            break;
+          }
+        }
+        if (!file_found) {
+          // if until last message_a still not found, add the Key to the delete list
+          // Delete only older than 2 week
+          // if (getNumberOfDays(Obj2.LastModified, temp_date) > 14) {
+          delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
+          // }
+        }
+      });
+    }
+
+    if (deleteParams.Delete.Objects.length > 0) {
+      await deleteS3Objects({
+        bucketName: AWS_S3_BUCKET_NAME,
+        objectKeys: deleteParams.Delete.Objects
+      });
+
+      logger.info('Deleted redundant images for threads.');
+      logger.info(deleteParams.Delete.Objects);
+    } else {
+      logger.info('No images to be deleted for threads.');
+    }
+
+    if (delete_files_Params.Delete.Objects.length > 0) {
+      await deleteS3Objects({
+        bucketName: AWS_S3_BUCKET_NAME,
+        objectKeys: delete_files_Params.Delete.Objects
+      });
+      logger.info('Deleted redundant files for threads.');
+      logger.info(delete_files_Params.Delete.Objects);
+    } else {
+      logger.info('No files to be deleted for threads.');
+    }
+  } catch (e) {
+    logger.error(e);
+    logger.error('Error during garbage collection.');
+  }
+};
 
 const TasksReminderEmails_Editor_core = asyncHandler(async (req) => {
   // Only inform active student
@@ -887,7 +1014,7 @@ const NextSemesterCourseSelectionReminderEmails = asyncHandler(async () => {
   const req = {};
   req.db = connectToDatabase(tenantId);
   req.VCModel = req.db.model('VC');
-  await NextSemesterCourseSelectionStudentReminderEmails();
+  await NextSemesterCourseSelectionStudentReminderEmails(req);
   // await NextSemesterCourseSelectionAgentReminderEmails();
 });
 
@@ -1653,6 +1780,7 @@ const NoInterviewTrainerOrTrainingDateDailyReminderChecker = asyncHandler(
 );
 
 module.exports = {
+  threadS3GarbageCollector,
   TasksReminderEmails,
   events_transformer,
   users_transformer,

@@ -596,8 +596,10 @@ function MyDocumentCard(props) {
       >
         <DialogTitle>{props.path}</DialogTitle>
         <FilePreview
+          apiFilePath={`/api/students/${MyDocumentCardState.student_id.toString()}/files/${
+            MyDocumentCardState.preview_path
+          }`}
           path={MyDocumentCardState.preview_path}
-          student_id={MyDocumentCardState.student_id.toString()}
         />
         <DialogContent>
           {is_TaiGer_AdminAgent(user) && (

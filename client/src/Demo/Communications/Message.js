@@ -13,18 +13,21 @@ import {
   Checkbox,
   IconButton,
   Card,
-  Link,
+  // Link,
   DialogTitle,
   Dialog,
   DialogContent,
   DialogContentText,
-  DialogActions
+  DialogActions,
+  Typography,
+  CircularProgress
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
-import { Link as LinkDom } from 'react-router-dom';
+// import { Link as LinkDom } from 'react-router-dom';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 // import Output from 'editorjs-react-renderer';
 import EditorSimple from '../../components/EditorJs/EditorSimple';
@@ -35,6 +38,7 @@ import { IgnoreMessage } from '../../api/index';
 import { is_TaiGer_Student } from '../Utils/checking-functions';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 import { BASE_URL } from '../../api/request';
+import FilePreview from '../../components/FilePreview/FilePreview';
 
 function Message(props) {
   // const onlyWidth = useWindowWidth();
@@ -44,6 +48,8 @@ function Message(props) {
     editorState: null,
     message_id: '',
     isLoaded: false,
+    filePath: '',
+    previewModalShow: false,
     deleteMessageModalShow: false,
     ignore_message:
       props.message.ignore_message === false ||
@@ -99,6 +105,22 @@ function Message(props) {
     props.onDeleteSingleMessage(e, messageState.message_id);
   };
 
+  const closePreviewWindow = () => {
+    setMessageState((prevState) => ({
+      ...prevState,
+      previewModalShow: false
+    }));
+  };
+
+  const handleClick = (filePath, fileName) => {
+    setMessageState((prevState) => ({
+      ...prevState,
+      filePath,
+      fileName,
+      previewModalShow: true
+    }));
+  };
+
   const handleCheckboxChange = async () => {
     const ignoreMessageState = !messageState.ignore_message;
     setMessageState((prevState) => ({
@@ -135,6 +157,7 @@ function Message(props) {
       : false
     : false;
   const full_name = `${firstname} ${lastname}`;
+
   return (
     <>
       <Accordion
@@ -206,13 +229,16 @@ function Message(props) {
             {props.message?.files.map((file, i) => (
               <Card key={i} sx={{ p: 1 }}>
                 <span>
-                  <Link
+                  <Typography
+                    onClick={() =>
+                      handleClick(
+                        `/api/communications/${props.message?.student_id?._id.toString()}/chat/${
+                          file.name
+                        }`,
+                        file.name
+                      )
+                    }
                     underline="hover"
-                    to={`${BASE_URL}/api/communications/${props.message.student_id._id.toString()}/chat/${
-                      file.name
-                    }`}
-                    component={LinkDom}
-                    target="_blank"
                   >
                     <svg
                       width="24"
@@ -242,7 +268,7 @@ function Message(props) {
                         strokeLinecap="round"
                       ></path>
                     </svg>
-                  </Link>
+                  </Typography>
                 </span>
               </Card>
             ))}
@@ -289,6 +315,48 @@ function Message(props) {
           </Button>
           <Button variant="outlined" onClick={onHidedeleteMessageModalShow}>
             {t('Cancel', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        fullWidth={true}
+        maxWidth={'xl'}
+        open={messageState.previewModalShow}
+        onClose={closePreviewWindow}
+        aria-labelledby="contained-modal-title-vcenter2"
+      >
+        <DialogTitle>{messageState.filePath}</DialogTitle>
+        <FilePreview
+          apiFilePath={messageState.filePath}
+          path={messageState.fileName}
+        />
+        <DialogContent>
+          {props.path && props.path.split('.')[1] !== 'pdf' && (
+            <a
+              href={`${BASE_URL}}${messageState.filePath}`}
+              download
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Button
+                color="primary"
+                variant="contained"
+                size="small"
+                title="Download"
+                startIcon={<FileDownloadIcon />}
+              >
+                {t('Download', { ns: 'common' })}
+              </Button>
+            </a>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button size="small" variant="outlined" onClick={closePreviewWindow}>
+            {!messageState.isLoaded ? (
+              <CircularProgress size={24} />
+            ) : (
+              t('Close', { ns: 'common' })
+            )}
           </Button>
         </DialogActions>
       </Dialog>

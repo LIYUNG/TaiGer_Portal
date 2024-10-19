@@ -44,6 +44,8 @@ const UserSchema = new Schema(
       type: String,
       default: ''
     },
+    linkedIn: String,
+    lineId: String,
     isAccountActivated: {
       type: Boolean,
       default: false
@@ -472,10 +474,6 @@ const Student = User.discriminator(
       applying_program_count: {
         type: Number,
         default: 0
-      },
-      linkedIn: {
-        type: String,
-        default: ''
       },
       attributes: [
         {

@@ -44,25 +44,6 @@ const fetchStudents = asyncHandler(async (req, filter) =>
     .lean()
 );
 
-const getStudent = asyncHandler(async (req, res, next) => {
-  const {
-    params: { studentId }
-  } = req;
-
-  const student = await req.db
-    .model('Student')
-    .findById(studentId)
-    .populate('agents editors', 'firstname lastname email')
-    .populate('applications.programId')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    )
-    .lean();
-  res.status(200).send({ success: true, data: student });
-  next();
-});
-
 const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
   const {
     user,
@@ -1172,7 +1153,6 @@ const deleteApplication = asyncHandler(async (req, res, next) => {
 });
 
 module.exports = {
-  getStudent,
   getStudentAndDocLinks,
   updateDocumentationHelperLink,
   getAllArchivStudents,

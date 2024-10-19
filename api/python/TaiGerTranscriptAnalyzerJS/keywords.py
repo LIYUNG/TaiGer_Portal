@@ -196,10 +196,10 @@ MATH_NUM_METHOD_ANTI_KEY_WORDS_EN = ['asdgladfj;l', '管理', '文明', '服務'
 # 基礎資工
 FUNDAMENTAL_COMPUTER_SCIENCE_KEY_WORDS = ['計算機', '物件', '運算']
 FUNDAMENTAL_COMPUTER_SCIENCE_ANTI_KEY_WORDS = ['倫理', '組織',
-                                               '架構', '結構', '理論', '網路', 'MATLAB', 'Matlab']
+                                               '架構', '結構', '理論', '網路', 'MATLAB', 'Matlab', '專題']
 FUNDAMENTAL_COMPUTER_SCIENCE_KEY_WORDS_EN = ['計算機', 'object', 'copmuting']
 FUNDAMENTAL_COMPUTER_SCIENCE_ANTI_KEY_WORDS_EN = ['倫理', '組織',
-                                                  '架構', '結構', '理論', '網路', 'matlab']
+                                                  '架構', '結構', '理論', '網路', 'matlab', '專題']
 
 MGM_BASIC_CS_KEY_WORDS = ['計算機', '資料庫', '資料結構', '軟體工程', '計概',
                           '演算法', '作業系統', '軟體', '電腦網路', '分散式系統', '人工智慧', '機器學習']

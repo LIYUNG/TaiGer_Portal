@@ -133,17 +133,16 @@ function MessageCard(props) {
       : false
     : false;
   const full_name = `${firstname} ${lastname}`;
+  const apiFilePath = (apiPrefix, key_path) => {
+    return `${BASE_URL}${apiPrefix}/${key_path}`;
+  };
   const files_info = props.message.file.map((file, i) => (
     <Box key={i}>
       <span>
-        {/* /api/document-threads/${documentsthreadId}/${messageId}/${file_key} */}
+        {/* /api/document-threads/${studentId}/${documentsthreadId}/${file_key} */}
         <Link
           underline="hover"
-          to={`${BASE_URL}/api/document-threads/${
-            props.documentsthreadId
-          }/${props.message._id.toString()}/${
-            file.path.replace(/\\/g, '/').split('/')[2]
-          }`}
+          to={apiFilePath(props.apiPrefix, file.path.replace(/\\/g, '/'))}
           component={LinkDom}
           target="_blank"
         >

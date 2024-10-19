@@ -15,9 +15,11 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
+import { useTranslation } from 'react-i18next';
 
 function InternaldocsPage(props) {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [internalDocsPageState, setInternalDocsPageState] = useState({
     error: '',
     isLoaded: false,
@@ -42,7 +44,6 @@ function InternaldocsPage(props) {
           } else {
             initialEditorState = { time: new Date(), blocks: [] };
           }
-          // initialEditorState = JSON.parse(data.text);
 
           setInternalDocsPageState((prevState) => ({
             ...prevState,
@@ -154,7 +155,7 @@ function InternaldocsPage(props) {
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
   }
-  TabTitle('Internal Documentations');
+  TabTitle(t('Internal Documentation', { ns: 'common' }));
   return (
     <>
       {res_modal_status >= 400 && (
@@ -164,9 +165,9 @@ function InternaldocsPage(props) {
           res_modal_message={res_modal_message}
         />
       )}
-
-      <Alert severity='info'>Internal Documentation</Alert>
-
+      <Alert severity="info">
+        {t('Internal Documentation', { ns: 'common' })}
+      </Alert>
       {internalDocsPageState.isEdit ? (
         <DocPageEdit
           category={'category'}

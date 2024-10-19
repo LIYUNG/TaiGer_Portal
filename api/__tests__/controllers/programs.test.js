@@ -1,6 +1,6 @@
 const request = require('supertest');
 
-const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
+const { connect, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { programSchema } = require('../../models/Program');
 const { generateProgram } = require('../fixtures/faker');
@@ -9,9 +9,7 @@ const { protect } = require('../../middlewares/auth');
 const { Role } = require('../../constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { TENANT_ID } = require('../fixtures/constants');
-const {
-  decryptCookieMiddleware
-} = require('../../middlewares/decryptCookieMiddleware');
+
 const admins = [...Array(2)].map(() => generateUser(Role.Admin));
 const agents = [...Array(3)].map(() => generateUser(Role.Agent));
 const editors = [...Array(3)].map(() => generateUser(Role.Editor));
@@ -42,10 +40,11 @@ jest.mock('../../middlewares/decryptCookieMiddleware', () => {
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
-  return Object.assign({}, jest.requireActual('../../middlewares/auth'), {
+  return {
+    ...jest.requireActual('../../middlewares/auth'),
     protect: jest.fn().mockImplementation(passthrough),
-    permit: jest.fn().mockImplementation((...roles) => passthrough)
-  });
+    permit: jest.fn().mockImplementation(() => passthrough)
+  };
 });
 const programs = [...Array(5)].map(() => generateProgram());
 
@@ -55,7 +54,9 @@ beforeAll(async () => {
   // await Program.deleteMany();
   // await Program.insertMany(programs);
 });
-afterAll(async () => await clearDatabase());
+afterAll(async () => {
+  await clearDatabase();
+});
 
 beforeEach(async () => {
   const db = connectToDatabase(TENANT_ID, dbUri);

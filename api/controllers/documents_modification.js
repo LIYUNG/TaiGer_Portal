@@ -3,7 +3,6 @@ const async = require('async');
 const path = require('path');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../constants');
 const { one_month_cache } = require('../cache/node-cache');
 const { informOnSurveyUpdate } = require('../utils/informEditor');
 const {
@@ -29,7 +28,8 @@ const {
   isNotArchiv,
   CVDeadline_Calculator,
   EDITOR_SCOPE,
-  ESSAY_WRITER_SCOPE
+  ESSAY_WRITER_SCOPE,
+  Role
 } = require('../constants');
 const {
   informEssayWriterNewEssayEmail,
@@ -38,252 +38,14 @@ const {
 } = require('../services/email');
 
 const { AWS_S3_BUCKET_NAME, API_ORIGIN } = require('../config');
-const { s3 } = require('../aws/index');
+const { deleteS3Objects } = require('../aws/s3');
 const {
   deleteApplicationThread,
   createApplicationThread,
   emptyS3Directory
 } = require('../utils/modelHelper/versionControl');
-
-const ThreadS3GarbageCollector = asyncHandler(async (req) => {
-  try {
-    // TODO: could be bottleneck if number of thread increase.
-    const doc_threads = await req.db.model('Documentthread').find();
-
-    const deleteParams = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delete: { Objects: [] }
-    };
-
-    const delete_files_Params = {
-      Bucket: AWS_S3_BUCKET_NAME,
-      Delete: { Objects: [] }
-    };
-
-    logger.info(
-      'Trying to delete redundant images S3 of corresponding message thread'
-    );
-    for (let j = 0; j < doc_threads.length; j += 1) {
-      // eslint-disable-next-line no-underscore-dangle
-      const thread_id = doc_threads[j]._id.toString();
-      const student_id = doc_threads[j].student_id.toString();
-      const message_a = doc_threads[j].messages;
-      let directory_img = path.join(student_id, thread_id, 'img');
-      directory_img = directory_img.replace(/\\/g, '/');
-      let directory_files = path.join(student_id, thread_id);
-      directory_files = directory_files.replace(/\\/g, '/');
-      const listParamsPublic = {
-        Bucket: AWS_S3_BUCKET_NAME,
-        Delimiter: '/',
-        Prefix: `${directory_img}/`
-      };
-      const listParamsPublic_files = {
-        Bucket: AWS_S3_BUCKET_NAME,
-        Delimiter: '/',
-        Prefix: `${directory_files}/`
-      };
-      const listedObjectsPublic = await s3
-        .listObjectsV2(listParamsPublic)
-        .promise();
-
-      const listedObjectsPublic_files = await s3
-        .listObjectsV2(listParamsPublic_files)
-        .promise();
-      if (listedObjectsPublic.Contents.length > 0) {
-        listedObjectsPublic.Contents.forEach((Obj) => {
-          let file_found = false;
-          const temp_date = new Date();
-          if (message_a.length === 0) {
-            deleteParams.Delete.Objects.push({ Key: Obj.Key });
-          }
-          for (let i = 0; i < message_a.length; i += 1) {
-            const file_name = Obj.Key.split('/')[3];
-            if (message_a[i].message.includes(file_name)) {
-              file_found = true;
-              break;
-            }
-          }
-          if (!file_found) {
-            // if until last message_a still not found, add the Key to the delete list
-            // Delete only older than 2 week
-            if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
-              deleteParams.Delete.Objects.push({ Key: Obj.Key });
-            }
-          }
-        });
-      }
-      if (listedObjectsPublic_files.Contents.length > 0) {
-        listedObjectsPublic_files.Contents.forEach((Obj2) => {
-          let file_found = false;
-          const temp_date = new Date();
-          if (message_a.length === 0) {
-            delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
-          }
-          for (let i = 0; i < message_a.length; i += 1) {
-            const file_name = Obj2.Key.split('/')[2];
-            for (let k = 0; k < message_a[i].file.length; k += 1) {
-              if (message_a[i].file[k].path.includes(file_name)) {
-                file_found = true;
-                break;
-              }
-            }
-            if (file_found) {
-              break;
-            }
-          }
-          if (!file_found) {
-            // if until last message_a still not found, add the Key to the delete list
-            // Delete only older than 2 week
-            if (getNumberOfDays(Obj2.LastModified, temp_date) > 14) {
-              delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
-            }
-          }
-        });
-      }
-    }
-    if (deleteParams.Delete.Objects.length > 0) {
-      await s3.deleteObjects(deleteParams).promise();
-      logger.info('Deleted redundant images for threads.');
-      logger.info(deleteParams.Delete.Objects);
-    } else {
-      logger.info('No images to be deleted for threads.');
-    }
-
-    if (delete_files_Params.Delete.Objects.length > 0) {
-      await s3.deleteObjects(delete_files_Params).promise();
-      logger.info('Deleted redundant files for threads.');
-      logger.info(delete_files_Params.Delete.Objects);
-    } else {
-      logger.info('No files to be deleted for threads.');
-    }
-  } catch (e) {
-    logger.error(e);
-    logger.error('Error during garbage collection.');
-  }
-});
-
-const SingleThreadThreadS3GarbageCollector = asyncHandler(
-  async (req, ThreadId) => {
-    // This functino will be called when thread marked as finished.
-    try {
-      // TODO: could be bottleneck if number of thread increase.
-      const doc_thread = await req.db
-        .model('Documentthread')
-        .findById(ThreadId);
-      if (!doc_thread) {
-        logger.error('SingleThreadThreadS3GarbageCollector Invalid ThreadId');
-        throw new ErrorResponse(404, 'Thread not found');
-      }
-
-      const deleteParams = {
-        Bucket: AWS_S3_BUCKET_NAME,
-        Delete: { Objects: [] }
-      };
-
-      const delete_files_Params = {
-        Bucket: AWS_S3_BUCKET_NAME,
-        Delete: { Objects: [] }
-      };
-
-      logger.info(
-        'Trying to delete redundant images S3 of corresponding message thread'
-      );
-      // eslint-disable-next-line no-underscore-dangle
-      const thread_id = doc_thread._id.toString();
-      const student_id = doc_thread.student_id.toString();
-      const message_a = doc_thread.messages;
-      let directory_img = path.join(student_id, thread_id, 'img');
-      directory_img = directory_img.replace(/\\/g, '/');
-      let directory_files = path.join(student_id, thread_id);
-      directory_files = directory_files.replace(/\\/g, '/');
-      const listParamsPublic = {
-        Bucket: AWS_S3_BUCKET_NAME,
-        Delimiter: '/',
-        Prefix: `${directory_img}/`
-      };
-      const listParamsPublic_files = {
-        Bucket: AWS_S3_BUCKET_NAME,
-        Delimiter: '/',
-        Prefix: `${directory_files}/`
-      };
-      const listedObjectsPublic = await s3
-        .listObjectsV2(listParamsPublic)
-        .promise();
-
-      const listedObjectsPublic_files = await s3
-        .listObjectsV2(listParamsPublic_files)
-        .promise();
-      if (listedObjectsPublic.Contents.length > 0) {
-        listedObjectsPublic.Contents.forEach((Obj) => {
-          let file_found = false;
-          if (message_a.length === 0) {
-            deleteParams.Delete.Objects.push({ Key: Obj.Key });
-          }
-          for (let i = 0; i < message_a.length; i += 1) {
-            const file_name = Obj.Key.split('/')[3];
-            if (message_a[i].message.includes(file_name)) {
-              file_found = true;
-              break;
-            }
-          }
-          if (!file_found) {
-            // if until last message_a still not found, add the Key to the delete list
-            // Delete only older than 2 week
-            // if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
-            deleteParams.Delete.Objects.push({ Key: Obj.Key });
-            // }
-          }
-        });
-      }
-      if (listedObjectsPublic_files.Contents.length > 0) {
-        listedObjectsPublic_files.Contents.forEach((Obj2) => {
-          let file_found = false;
-          if (message_a.length === 0) {
-            delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
-          }
-          for (let i = 0; i < message_a.length; i += 1) {
-            const file_name = Obj2.Key.split('/')[2];
-            for (let k = 0; k < message_a[i].file.length; k += 1) {
-              if (message_a[i].file[k].path.includes(file_name)) {
-                file_found = true;
-                break;
-              }
-            }
-            if (file_found) {
-              break;
-            }
-          }
-          if (!file_found) {
-            // if until last message_a still not found, add the Key to the delete list
-            // Delete only older than 2 week
-            // if (getNumberOfDays(Obj2.LastModified, temp_date) > 14) {
-            delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
-            // }
-          }
-        });
-      }
-
-      if (deleteParams.Delete.Objects.length > 0) {
-        await s3.deleteObjects(deleteParams).promise();
-        logger.info('Deleted redundant images for threads.');
-        logger.info(deleteParams.Delete.Objects);
-      } else {
-        logger.info('No images to be deleted for threads.');
-      }
-
-      if (delete_files_Params.Delete.Objects.length > 0) {
-        await s3.deleteObjects(delete_files_Params).promise();
-        logger.info('Deleted redundant files for threads.');
-        logger.info(delete_files_Params.Delete.Objects);
-      } else {
-        logger.info('No files to be deleted for threads.');
-      }
-    } catch (e) {
-      logger.error(e);
-      logger.error('Error during garbage collection.');
-    }
-  }
-);
+const { threadS3GarbageCollector } = require('../utils/utils_function');
+const { getS3Object } = require('../aws/s3');
 
 const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   const students = await req.db
@@ -718,6 +480,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
 
 // (O) email inform Editor
 // (O) email inform Student
+// (O) Tested
 const initApplicationMessagesThread = asyncHandler(async (req, res) => {
   const {
     params: { studentId, program_id, document_category }
@@ -934,8 +697,10 @@ const postImageInThread = asyncHandler(async (req, res) => {
   const {
     params: { messagesThreadId, studentId }
   } = req;
+  const filePath = req.file.key.split('/');
+  const fileName = filePath[3];
   let imageurl = new URL(
-    `/api/document-threads/image/${messagesThreadId}/${studentId}/${req.file.key}`,
+    `/api/document-threads/image/${messagesThreadId}/${studentId}/${fileName}`,
     API_ORIGIN
   ).href;
   imageurl = imageurl.replace(/\\/g, '/');
@@ -979,9 +744,12 @@ const postMessages = asyncHandler(async (req, res) => {
   let newfile = [];
   if (req.files) {
     for (let i = 0; i < req.files.length; i += 1) {
+      const filePath = req.files[i].key.split('/');
+      const fileName = filePath[2];
+
       newfile.push({
-        name: req.files[i].key,
-        path: path.join(req.files[i].metadata.path, req.files[i].key)
+        name: fileName,
+        path: req.files[i].key
       });
       // Check for duplicate file extensions
       const fileExtensions = req.files.map(
@@ -1544,38 +1312,20 @@ const getMessageImageDownload = asyncHandler(async (req, res) => {
     params: { messagesThreadId, studentId, file_name }
   } = req;
 
-  let directory = path.join(
-    AWS_S3_BUCKET_NAME,
-    studentId,
-    messagesThreadId,
-    'img'
-  );
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: file_name,
-    Bucket: directory
-  };
+  const fileKey = path
+    .join(studentId, messagesThreadId, 'img', file_name)
+    .replace(/\\/g, '/');
 
   const cache_key = `${studentId}${req.originalUrl.split('/')[6]}`;
   const value = one_month_cache.get(cache_key); // image name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-
-      // No error happened
-      const success = one_month_cache.set(cache_key, data.Body);
-      if (success) {
-        logger.info('image cache set successfully');
-      }
-
-      res.attachment(file_name);
-      return res.end(data.Body);
-    });
+    const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    const success = one_month_cache.set(cache_key, Buffer.from(response));
+    if (success) {
+      logger.info('image cache set successfully');
+    }
+    res.attachment(file_name);
+    res.end(response);
   } else {
     logger.info('cache hit');
     res.attachment(file_name);
@@ -1587,7 +1337,7 @@ const getMessageImageDownload = asyncHandler(async (req, res) => {
 const getMessageFileDownload = asyncHandler(async (req, res) => {
   const {
     user,
-    params: { messagesThreadId, messageId, file_key }
+    params: { studentId, messagesThreadId, file_key }
   } = req;
 
   const document_thread = await req.db
@@ -1599,7 +1349,7 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
   }
 
   if (
-    user.role === 'Student' &&
+    user.role === Role.Student &&
     document_thread.file_type === 'Essay' &&
     !document_thread.isOriginAuthorDeclarationConfirmedByStudent
   ) {
@@ -1621,61 +1371,27 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
     throw new ErrorResponse(403, 'Not authorized');
   }
 
-  const message = document_thread.messages.find(
-    (msg) => msg._id.toString() === messageId
-  );
-  if (!message) {
-    logger.error('getMessageFileDownload: message not found!');
-    throw new ErrorResponse(404, 'Message not found');
-  }
-
-  const file = message.file.find(
-    (each_file) => each_file.path.replace(/\\/g, '/').split('/')[2] === file_key
-  );
-  if (!file) {
-    logger.error('getMessageFileDownload: file not found!');
-    throw new ErrorResponse(404, 'file not found');
-  }
-
-  let path_split = file.path.replace(/\\/g, '/');
-  path_split = path_split.split('/');
-  const fileKey = path_split[2];
+  const fileKey = path
+    .join(studentId, messagesThreadId, file_key)
+    .replace(/\\/g, '/');
   logger.info('Trying to download message file', fileKey);
-  let directory = path.join(AWS_S3_BUCKET_NAME, path_split[0], path_split[1]);
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
 
   // messageid + extension
-  const cache_key = `${messageId}${encodeURIComponent(
-    req.originalUrl.split('/')[5].split('.')[1]
-  )}`;
+  const cache_key = `${encodeURIComponent(fileKey)}`;
   const value = one_month_cache.get(cache_key); // file name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-
-      // No error happened
-      const success = one_month_cache.set(cache_key, data.Body);
-      if (success) {
-        logger.info('thread file cache set successfully');
-      }
-
-      res.attachment(fileKey);
-      return res.end(data.Body);
-    });
-  } else {
-    logger.info('thread file cache hit');
-    res.attachment(fileKey);
-    return res.end(value);
+    const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    const success = one_month_cache.set(cache_key, Buffer.from(response));
+    if (success) {
+      logger.info('thread file cache set successfully');
+    }
+    res.attachment(file_key);
+    return res.end(response);
   }
+
+  logger.info('thread file cache hit');
+  res.attachment(file_key);
+  return res.end(value);
 });
 
 const putOriginAuthorConfirmedByStudent = asyncHandler(async (req, res) => {
@@ -1770,7 +1486,14 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     if (document_thread.isFinalVersion) {
       // cleanup
       logger.info('cleanup prgraom thread');
-      await SingleThreadThreadS3GarbageCollector(req, messagesThreadId);
+      const collection = 'Documentthread';
+      const userFolder = 'student_id';
+      await threadS3GarbageCollector(
+        req,
+        collection,
+        userFolder,
+        messagesThreadId
+      );
     }
     if (isNotArchiv(student)) {
       await sendSetAsFinalProgramSpecificFileForStudentEmail(
@@ -1849,7 +1572,14 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     if (document_thread.isFinalVersion) {
       // cleanup
       logger.info('cleanup cv');
-      await SingleThreadThreadS3GarbageCollector(req, messagesThreadId);
+      const collection = 'Documentthread';
+      const userFolder = 'student_id';
+      await threadS3GarbageCollector(
+        req,
+        collection,
+        userFolder,
+        messagesThreadId
+      );
     }
     if (isNotArchiv(student)) {
       await sendSetAsFinalGeneralFileForStudentEmail(
@@ -1907,13 +1637,30 @@ const deleteGeneralThread = asyncHandler(async (req, studentId, threadId) => {
   logger.info('Trying to delete message thread and folder');
   directory = directory.replace(/\\/g, '/');
 
-  emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
-  await req.db.model('Documentthread').findByIdAndDelete(threadId);
-  await req.db.model('Student').findByIdAndUpdate(studentId, {
-    $pull: {
-      generaldocs_threads: { doc_thread_id: { _id: threadId } }
-    }
-  });
+  await emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
+
+  // Start a session for the transaction
+  const session = await req.db.startSession();
+  session.startTransaction();
+
+  try {
+    await req.db.model('Documentthread').findByIdAndDelete(threadId);
+    await req.db.model('Student').findByIdAndUpdate(studentId, {
+      $pull: {
+        generaldocs_threads: { doc_thread_id: { _id: threadId } }
+      }
+    });
+
+    // Commit the transaction
+    await session.commitTransaction();
+    await session.endSession();
+  } catch (error) {
+    // If any operation fails, abort the transaction
+    await session.abortTransaction();
+    await session.endSession();
+    logger.error('Failed to delete message thread and folder', error);
+    throw error;
+  }
 });
 
 // () TODO email : notification
@@ -1959,9 +1706,6 @@ const handleDeleteProgramThread = asyncHandler(async (req, res) => {
     logger.error('handleDeleteProgramThread: Invalid student id!');
     throw new ErrorResponse(404, 'Student not found');
   }
-  console.log(`studentId: ${studentId}`);
-  console.log(`program_id: ${program_id}`);
-  console.log(`messagesThreadId: ${messagesThreadId}`);
 
   await deleteApplicationThread(
     {
@@ -2011,10 +1755,24 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
   }
 
   // Messageid + extension (because extension is unique per message id)
+  try {
+    if (msg.file.filter((file) => file.path !== '')?.length > 0) {
+      await deleteS3Objects({
+        bucketName: AWS_S3_BUCKET_NAME,
+        objectKeys: msg.file
+          .filter((file) => file.path !== '')
+          .map((file) => ({ Key: file.path }))
+      });
+    }
+  } catch (err) {
+    if (err) {
+      logger.error('delete thread files: ', err);
+      throw new ErrorResponse(500, 'Error occurs while deleting thread files');
+    }
+  }
+
   for (let i = 0; i < msg.file.length; i += 1) {
-    const cache_key = `${messageId}${encodeURIComponent(
-      msg.file[i].name.split('.')[1]
-    )}`;
+    const cache_key = `${encodeURIComponent(msg.file[i].path)}`;
     const value = one_month_cache.del(cache_key);
     if (value === 1) {
       logger.info('file cache key deleted successfully');
@@ -2350,7 +2108,6 @@ const IgnoreMessageInDocumentThread = asyncHandler(async (req, res, next) => {
 });
 
 module.exports = {
-  ThreadS3GarbageCollector,
   getAllCVMLRLOverview,
   getSurveyInputs,
   postSurveyInput,

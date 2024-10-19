@@ -7,10 +7,9 @@ const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
 const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
-const { s3 } = require('../aws/index');
 const { font } = require('../utils/NotoSansTC-VariableFont_wght-normal');
 const { Role } = require('../constants');
-
+const { getS3Object } = require('../aws/s3');
 
 const student_name = 'PreCustomer';
 
@@ -81,36 +80,16 @@ const WidgetdownloadXLSX = asyncHandler(async (req, res, next) => {
 
   const fileKey = path
     .join(adminId, `analysed_transcript_${student_name}.xlsx`)
-    .replace(/\\/g, '/')
-    .split('/')[1];
-  const directory = path
-    .join(
-      AWS_S3_BUCKET_NAME,
-      path
-        .join(adminId, `analysed_transcript_${student_name}.xlsx`)
-        .replace(/\\/g, '/')
-        .split('/')[0]
-    )
     .replace(/\\/g, '/');
+
   logger.info(`Trying to download transcript excel file ${fileKey}`);
 
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
-  s3.getObject(options, (err, data) => {
-    // Handle any error and exit
-    if (!data || !data.Body) {
-      logger.error('File not found in S3');
-      // You can handle this case as needed, e.g., send a 404 response
-      return res.status(404).send(err);
-    }
-    // Convert Body from a Buffer to a String
-    const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
-    res.attachment(fileKey_converted);
-    // return res.send({ data: data.Body, lastModifiedDate: data.LastModified });
-    return res.end(data.Body);
-  });
+  const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
+  const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
+
+  res.attachment(fileKey_converted);
+  res.end(response);
+  next();
 });
 
 // Export messages as pdf

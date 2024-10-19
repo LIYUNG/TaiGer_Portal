@@ -3,11 +3,7 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const { one_month_cache, two_month_cache } = require('../cache/node-cache');
 const { Role } = require('../constants');
 const { ErrorResponse } = require('../common/errors');
-const {
-  DocumentStatus,
-  profile_name_list,
-  isNotArchiv
-} = require('../constants');
+const { DocumentStatus, isNotArchiv } = require('../constants');
 const {
   deleteTemplateSuccessEmail,
   sendAgentUploadedProfileFilesForStudentEmail,
@@ -24,19 +20,8 @@ const {
 const { AWS_S3_BUCKET_NAME, AWS_S3_PUBLIC_BUCKET_NAME } = require('../config');
 const logger = require('../services/logger');
 
-const { s3 } = require('../aws/index');
-
-const getMyfiles = asyncHandler(async (req, res, next) => {
-  const { user } = req;
-  const student = await req.db.model('User').findById(user._id);
-  if (!student) {
-    logger.error('getMyfiles: Invalid student id');
-    throw new ErrorResponse(404, 'Student not found');
-  }
-
-  res.status(201).send({ success: true, data: student });
-  next();
-});
+const { deleteS3Object } = require('../aws/s3');
+const { getS3Object } = require('../aws/s3');
 
 const getTemplates = asyncHandler(async (req, res, next) => {
   const templates = await req.db.model('Template').find({});
@@ -54,27 +39,16 @@ const deleteTemplate = asyncHandler(async (req, res, next) => {
 
   let document_split = template.path.replace(/\\/g, '/');
   document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = document_split[0];
+  const [directory, fileName] = document_split;
+  const fileKey = path.join(directory, fileName).replace(/\\/g, '/');
   logger.info('Trying to delete file', fileKey);
-  directory = path.join(AWS_S3_BUCKET_NAME, directory);
-  directory = directory.replace(/\\/g, '/');
 
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
   try {
-    s3.deleteObject(options, (error, data) => {
-      if (error) {
-        logger.error('deleteObject');
-        logger.error(error);
-      }
-      const value = two_month_cache.del(fileKey);
-      if (value === 1) {
-        logger.info('Template cache key deleted successfully');
-      }
-    });
+    await deleteS3Object(AWS_S3_PUBLIC_BUCKET_NAME, fileKey);
+    const value = two_month_cache.del(fileKey);
+    if (value === 1) {
+      logger.info('Template cache key deleted successfully');
+    }
   } catch (err) {
     if (err) {
       logger.error('deleteTemplate: ', err);
@@ -107,7 +81,7 @@ const uploadTemplate = asyncHandler(async (req, res, next) => {
     {
       name: req.file.key,
       category_name,
-      path: path.join(req.file.metadata.path, req.file.key),
+      path: req.file.key,
       updatedAt: new Date()
     },
     { upsert: true, new: true }
@@ -126,36 +100,20 @@ const downloadTemplateFile = asyncHandler(async (req, res, next) => {
   // download the file via aws s3 here
   let document_split = template.path.replace(/\\/g, '/');
   document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = document_split[0];
+  const [directory, fileName] = document_split;
+  const fileKey = path.join(directory, fileName).replace(/\\/g, '/');
   logger.info('Trying to download template file', fileKey);
-  directory = path.join(AWS_S3_PUBLIC_BUCKET_NAME, directory);
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
 
   const value = two_month_cache.get(fileKey); // vpd name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-
-      // No error happened
-      const success = two_month_cache.set(fileKey, data.Body);
-      if (success) {
-        logger.info('Template file cache set successfully');
-      }
-
-      res.attachment(fileKey);
-      res.end(data.Body);
-      next();
-    });
+    const response = await getS3Object(AWS_S3_PUBLIC_BUCKET_NAME, fileKey);
+    const success = two_month_cache.set(fileKey, Buffer.from(response));
+    if (success) {
+      logger.info('Template file cache set successfully');
+    }
+    res.attachment(fileKey);
+    res.end(response);
+    next();
   } else {
     logger.info('Template file cache hit');
     res.attachment(fileKey);
@@ -187,7 +145,7 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
     document.status = DocumentStatus.Uploaded;
     document.required = true;
     document.updatedAt = new Date();
-    document.path = path.join(req.file.metadata.path, req.file.key);
+    document.path = req.file.key;
     student.profile.push(document);
     await student.save();
     res.status(201).send({ success: true, data: student });
@@ -233,28 +191,26 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
           );
         }
       }
-    } else {
-      if (isNotArchiv(student)) {
-        await sendAgentUploadedProfileFilesForStudentEmail(
-          {
-            firstname: student.firstname,
-            lastname: student.lastname,
-            address: student.email
-          },
-          {
-            agent_firstname: user.firstname,
-            agent_lastname: user.lastname,
-            uploaded_documentname: document.name.replace(/_/g, ' '),
-            uploaded_updatedAt: document.updatedAt
-          }
-        );
-      }
+    } else if (isNotArchiv(student)) {
+      await sendAgentUploadedProfileFilesForStudentEmail(
+        {
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email
+        },
+        {
+          agent_firstname: user.firstname,
+          agent_lastname: user.lastname,
+          uploaded_documentname: document.name.replace(/_/g, ' '),
+          uploaded_updatedAt: document.updatedAt
+        }
+      );
     }
   } else {
     document.status = DocumentStatus.Uploaded;
     document.required = true;
     document.updatedAt = new Date();
-    document.path = path.join(req.file.metadata.path, req.file.key);
+    document.path = req.file.key;
     await student.save();
 
     // retrieve studentId differently depend on if student or Admin/Agent uploading the file
@@ -303,22 +259,20 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
           );
         }
       }
-    } else {
-      if (isNotArchiv(student)) {
-        await sendAgentUploadedProfileFilesForStudentEmail(
-          {
-            firstname: student.firstname,
-            lastname: student.lastname,
-            address: student.email
-          },
-          {
-            agent_firstname: user.firstname,
-            agent_lastname: user.lastname,
-            uploaded_documentname: document.name.replace(/_/g, ' '),
-            uploaded_updatedAt: document.updatedAt
-          }
-        );
-      }
+    } else if (isNotArchiv(student)) {
+      await sendAgentUploadedProfileFilesForStudentEmail(
+        {
+          firstname: student.firstname,
+          lastname: student.lastname,
+          address: student.email
+        },
+        {
+          agent_firstname: user.firstname,
+          agent_lastname: user.lastname,
+          uploaded_documentname: document.name.replace(/_/g, ' '),
+          uploaded_updatedAt: document.updatedAt
+        }
+      );
     }
   }
   next();
@@ -416,10 +370,7 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
   if (!app) {
     app.uni_assist.status = DocumentStatus.Uploaded;
     app.uni_assist.updatedAt = new Date();
-    app.uni_assist.vpd_file_path = path.join(
-      req.file.metadata.path,
-      req.file.key
-    );
+    app.uni_assist.vpd_file_path = req.file.key;
     await student.save();
     res.status(201).send({ success: true, data: student });
 
@@ -428,18 +379,12 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
   if (fileType === 'VPD') {
     app.uni_assist.status = DocumentStatus.Uploaded;
     app.uni_assist.updatedAt = new Date();
-    app.uni_assist.vpd_file_path = path.join(
-      req.file.metadata.path,
-      req.file.key
-    );
+    app.uni_assist.vpd_file_path = req.file.key;
   }
   if (fileType === 'VPDConfirmation') {
     // app.uni_assist.status = DocumentStatus.Uploaded;
     app.uni_assist.updatedAt = new Date();
-    app.uni_assist.vpd_paid_confirmation_file_path = path.join(
-      req.file.metadata.path,
-      req.file.key
-    );
+    app.uni_assist.vpd_paid_confirmation_file_path = req.file.key;
   }
 
   await student.save();
@@ -473,23 +418,21 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
         );
       }
     }
-  } else {
-    if (isNotArchiv(student_updated)) {
-      await sendAgentUploadedVPDForStudentEmail(
-        {
-          firstname: student_updated.firstname,
-          lastname: student_updated.lastname,
-          address: student_updated.email
-        },
-        {
-          agent_firstname: user.firstname,
-          agent_lastname: user.lastname,
-          fileType,
-          uploaded_documentname: req.file.key.replace(/_/g, ' '),
-          uploaded_updatedAt: app.uni_assist.updatedAt
-        }
-      );
-    }
+  } else if (isNotArchiv(student_updated)) {
+    await sendAgentUploadedVPDForStudentEmail(
+      {
+        firstname: student_updated.firstname,
+        lastname: student_updated.lastname,
+        address: student_updated.email
+      },
+      {
+        agent_firstname: user.firstname,
+        agent_lastname: user.lastname,
+        fileType,
+        uploaded_documentname: req.file.key.replace(/_/g, ' '),
+        uploaded_updatedAt: app.uni_assist.updatedAt
+      }
+    );
   }
   next();
 });
@@ -539,37 +482,22 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
     );
   }
   document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = path.join(AWS_S3_BUCKET_NAME, document_split[0]);
+
+  const [directory, fileName] = document_split;
+  const fileKey = path.join(directory, fileName).replace(/\\/g, '/');
+
   logger.info(`Trying to download ${fileType} file`);
-
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
-
-  const cache_key = `${studentId}${fileKey}`;
-  const value = one_month_cache.get(cache_key); // vpd name
+  const value = one_month_cache.get(fileKey); // vpd name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
+    const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
 
-      // No error happened
-      const success = one_month_cache.set(cache_key, data.Body);
-      if (success) {
-        logger.info('VPD file cache set successfully');
-      }
-
-      res.attachment(fileKey);
-      res.end(data.Body);
-      next();
-    });
+    const success = one_month_cache.set(fileKey, Buffer.from(response));
+    if (success) {
+      logger.info('VPD file cache set successfully');
+    }
+    res.attachment(fileKey);
+    res.end(response);
+    next();
   } else {
     logger.info('VPD file cache hit');
     res.attachment(fileKey);
@@ -606,37 +534,21 @@ const downloadProfileFileURL = asyncHandler(async (req, res, next) => {
 
   let document_split = document.path.replace(/\\/g, '/');
   document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = document_split[0];
+  const [directory, fileName] = document_split;
+  const fileKey = path.join(directory, fileName).replace(/\\/g, '/');
   logger.info(`Trying to download profile file ${fileKey}`);
-  directory = path.join(AWS_S3_BUCKET_NAME, directory);
-  directory = directory.replace(/\\/g, '/');
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
 
   const cache_key = `${studentId}${fileKey}`;
-  const value = one_month_cache.get(cache_key); // vpd name
+  const value = one_month_cache.get(cache_key); // profile name
   if (value === undefined) {
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-
-      // No error happened
-      const success = one_month_cache.set(cache_key, data.Body);
-      if (success) {
-        logger.info('Profile file cache set successfully');
-      }
-
-      res.attachment(fileKey);
-      res.end(data.Body);
-      next();
-    });
+    const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    const success = one_month_cache.set(cache_key, Buffer.from(response));
+    if (success) {
+      logger.info('Profile file cache set successfully');
+    }
+    res.attachment(fileKey);
+    res.end(response);
+    next();
   } else {
     logger.info('Profile file cache hit');
     res.attachment(fileKey);
@@ -931,7 +843,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
   if (req.file) {
     const admission_letter_temp = {
       status: DocumentStatus.Uploaded,
-      admission_file_path: path.join(req.file.metadata.path, req.file.key),
+      admission_file_path: req.file.key,
       comments: '',
       updatedAt: new Date()
     };
@@ -950,32 +862,21 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
     );
     const file_path = app.admission_letter?.admission_file_path;
     if (file_path && file_path !== '') {
-      let document_split = file_path.replace(/\\/g, '/');
-      document_split = document_split.split('/');
-      const fileKey = document_split[2];
-      let directory = `${document_split[0]}/${document_split[1]}`;
+      const fileKey = file_path.replace(/\\/g, '/');
       logger.info('Trying to delete file', fileKey);
-      directory = path.join(AWS_S3_BUCKET_NAME, directory);
-      directory = directory.replace(/\\/g, '/');
-      const options = {
-        Key: fileKey,
-        Bucket: directory
-      };
       try {
-        s3.deleteObject(options, (error, data) => {
-          if (error) {
-            logger.error('deleteObject');
-            logger.error(error);
-          }
-          const value = two_month_cache.del(fileKey);
-          if (value === 1) {
-            logger.info('Admission cache key deleted successfully');
-          }
-        });
+        await deleteS3Object(AWS_S3_BUCKET_NAME, fileKey);
+        const value = two_month_cache.del(fileKey);
+        if (value === 1) {
+          logger.info('Admission cache key deleted successfully');
+        }
       } catch (err) {
         if (err) {
-          logger.error(`Error: deleteTemplate: ${err}`);
-          throw new ErrorResponse(500, 'Error occurs while deleting');
+          logger.error(`Error: delete Application result letter: ${err}`);
+          throw new ErrorResponse(
+            500,
+            'Error occurs while deleting Application result letter'
+          );
         }
       }
     }
@@ -1010,8 +911,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
     (application) => application.programId?.id.toString() === programId
   );
   res.status(200).send({ success: true, data: udpatedApplication });
-  if (user.role === 'Student') {
-    // TODO: add email informing agent.
+  if (user.role === Role.Student) {
     if (result !== '-') {
       for (let i = 0; i < student.agents?.length; i += 1) {
         if (isNotArchiv(student.agents[i])) {
@@ -1079,37 +979,24 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(404, 'Document File not found');
   }
 
-  let document_split = document.path.replace(/\\/g, '/');
-  document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = document_split[0];
-  logger.info('Trying to delete file', fileKey);
-  directory = path.join(AWS_S3_BUCKET_NAME, directory);
-  directory = directory.replace(/\\/g, '/');
+  const fileKey = document.path.replace(/\\/g, '/');
 
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
+  logger.info('Trying to delete file', fileKey);
+
   const cache_key = `${studentId}${fileKey}`;
   try {
-    s3.deleteObject(options, (error, data) => {
-      if (error) {
-        logger.error(error);
-      } else {
-        document.status = DocumentStatus.Missing;
-        document.path = '';
-        document.updatedAt = new Date();
+    await deleteS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    document.status = DocumentStatus.Missing;
+    document.path = '';
+    document.updatedAt = new Date();
 
-        student.save();
-        const value = one_month_cache.del(cache_key);
-        if (value === 1) {
-          logger.info('Profile cache key deleted successfully');
-        }
-        res.status(200).send({ success: true, data: document });
-        next();
-      }
-    });
+    student.save();
+    const value = one_month_cache.del(cache_key);
+    if (value === 1) {
+      logger.info('Profile cache key deleted successfully');
+    }
+    res.status(200).send({ success: true, data: document });
+    next();
   } catch (err) {
     if (err) {
       logger.error('deleteProfileFile: ', err);
@@ -1166,40 +1053,26 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
     );
   }
 
-  document_split = document_split.split('/');
-  const fileKey = document_split[1];
-  let directory = path.join(AWS_S3_BUCKET_NAME, document_split[0]);
+  const fileKey = document_split.replace(/\\/g, '/');
   logger.info(`Trying to delete file ${fileKey}`);
-  directory = directory.replace(/\\/g, '/');
 
-  const options = {
-    Key: fileKey,
-    Bucket: directory
-  };
   try {
-    s3.deleteObject(options, (error, data) => {
-      if (error) {
-        logger.error(error);
-      } else {
-        if (fileType === 'VPD') {
-          app.uni_assist.status = DocumentStatus.Missing;
-          app.uni_assist.vpd_file_path = '';
-        }
-        if (fileType === 'VPDConfirmation') {
-          app.uni_assist.vpd_paid_confirmation_file_path = '';
-        }
-        app.uni_assist.updatedAt = new Date();
-
-        student.save();
-        const cache_key = `${studentId}${fileKey}`;
-        const value = one_month_cache.del(cache_key);
-        if (value === 1) {
-          logger.info('VPD cache key deleted successfully');
-        }
-        res.status(200).send({ success: true });
-        next();
-      }
-    });
+    await deleteS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    const value = one_month_cache.del(fileKey);
+    if (value === 1) {
+      logger.info('VPD cache key deleted successfully');
+    }
+    if (fileType === 'VPD') {
+      app.uni_assist.status = DocumentStatus.Missing;
+      app.uni_assist.vpd_file_path = '';
+    }
+    if (fileType === 'VPDConfirmation') {
+      app.uni_assist.vpd_paid_confirmation_file_path = '';
+    }
+    app.uni_assist.updatedAt = new Date();
+    student.save();
+    res.status(200).send({ success: true });
+    next();
   } catch (err) {
     if (err) {
       logger.error('deleteVPDFile: ', err);
@@ -1268,404 +1141,7 @@ const getMyAcademicBackground = asyncHandler(async (req, res, next) => {
   next();
 });
 
-// (O)  email : self notification
-// () TODO: agent update email
-const updateAcademicBackground = asyncHandler(async (req, res, next) => {
-  const {
-    user,
-    body: { university }
-  } = req;
-  const { studentId } = req.params;
-  // const { _id } = student;
-  let student_id;
-  if (user.role === Role.Student || user.role === Role.Guest) {
-    // eslint-disable-next-line no-underscore-dangle
-    student_id = user._id.toString();
-  } else {
-    student_id = studentId;
-  }
-  try {
-    university['updatedAt'] = new Date();
-    const updatedStudent = await req.db.model('User').findByIdAndUpdate(
-      student_id,
-      {
-        'academic_background.university': university
-        // $addToSet: {
-        //   academic_background: { university: university },
-        // },
-      },
-      { upsert: true, new: true }
-    );
-
-    // TODO: update base documents needed or not:
-    const documentsToEnsure = [
-      'Bachelor_Certificate',
-      'Bachelor_Transcript',
-      'Course_Description',
-      'Employment_Certificate',
-      'ECTS_Conversion'
-    ];
-    const ensureDocumentStatus = (
-      studentProfile,
-      docName,
-      profileNameList,
-      status,
-      DocStatus
-    ) => {
-      let document = studentProfile.find(
-        (doc) => doc.name === profileNameList[docName]
-      );
-
-      if (!document) {
-        document = studentProfile.create({ name: profileNameList[docName] });
-        document.status = status;
-        document.required = true;
-        document.updatedAt = new Date();
-        document.path = '';
-        studentProfile.push(document);
-      } else if (
-        document.status ===
-        (status === DocStatus.NotNeeded
-          ? DocStatus.Missing
-          : DocStatus.NotNeeded)
-      ) {
-        document.status = status;
-      }
-    };
-    let desiredStatus;
-
-    // no need university doc
-    if (
-      updatedStudent.academic_background.university.high_school_isGraduated ===
-        'pending' ||
-      updatedStudent.academic_background.university.isGraduated === 'No'
-    ) {
-      desiredStatus = DocumentStatus.NotNeeded;
-    } else {
-      desiredStatus = DocumentStatus.Missing;
-    }
-
-    documentsToEnsure.forEach((docName) => {
-      ensureDocumentStatus(
-        updatedStudent.profile,
-        docName,
-        profile_name_list,
-        desiredStatus,
-        DocumentStatus
-      );
-    });
-
-    let desiredSecondDegreeStatus;
-
-    // no need university doc
-    if (
-      updatedStudent.academic_background.university.isGraduated === 'pending' ||
-      updatedStudent.academic_background.university.isGraduated === 'No' ||
-      updatedStudent.academic_background.university.isSecondGraduated ===
-        'No' ||
-      updatedStudent.academic_background.university.isSecondGraduated === '-'
-    ) {
-      desiredSecondDegreeStatus = DocumentStatus.NotNeeded;
-    } else {
-      desiredSecondDegreeStatus = DocumentStatus.Missing;
-    }
-    const secondDegreeDocumentsToEnsure = [
-      'Second_Degree_Certificate',
-      'Second_Degree_Transcript'
-    ];
-    secondDegreeDocumentsToEnsure.forEach((docName) => {
-      ensureDocumentStatus(
-        updatedStudent.profile,
-        docName,
-        profile_name_list,
-        desiredSecondDegreeStatus,
-        DocumentStatus
-      );
-    });
-
-    const exchangeStatus =
-      updatedStudent.academic_background.university.Has_Exchange_Experience ===
-      'Yes'
-        ? DocumentStatus.Missing
-        : DocumentStatus.NotNeeded;
-
-    ensureDocumentStatus(
-      updatedStudent.profile,
-      'Exchange_Student_Certificate',
-      profile_name_list,
-      exchangeStatus,
-      DocumentStatus
-    );
-
-    const internshipStatus =
-      updatedStudent.academic_background.university
-        .Has_Internship_Experience === 'Yes'
-        ? DocumentStatus.Missing
-        : DocumentStatus.NotNeeded;
-    ensureDocumentStatus(
-      updatedStudent.profile,
-      'Internship',
-      profile_name_list,
-      internshipStatus,
-      DocumentStatus
-    );
-
-    const workExperienceStatus =
-      updatedStudent.academic_background.university.Has_Working_Experience ===
-      'Yes'
-        ? DocumentStatus.Missing
-        : DocumentStatus.NotNeeded;
-    ensureDocumentStatus(
-      updatedStudent.profile,
-      'Employment_Certificate',
-      profile_name_list,
-      workExperienceStatus,
-      DocumentStatus
-    );
-
-    await updatedStudent.save();
-
-    // TODO: minor: profile field not used for student.
-    res.status(200).send({
-      success: true,
-      data: university,
-      profile: updatedStudent.profile
-    });
-    next();
-  } catch (err) {
-    logger.error(err);
-    throw new ErrorResponse(400, JSON.stringify(err));
-  }
-});
-
-// (O) email : self notification
-// () TODO email: notify agents
-const updateLanguageSkill = asyncHandler(async (req, res, next) => {
-  const {
-    user,
-    body: { language }
-  } = req;
-  const { studentId } = req.params;
-  // const { _id } = student;
-  let student_id;
-  if (user.role === Role.Student || user.role === Role.Guest) {
-    student_id = user._id.toString();
-  } else {
-    student_id = studentId;
-  }
-  language['updatedAt'] = new Date();
-  const updatedStudent = await req.db.model('User').findByIdAndUpdate(
-    student_id,
-    {
-      'academic_background.language': language
-      // $set: {
-      //   'academic_background.language': language
-      // }
-    },
-    { upsert: true, new: true }
-  );
-
-  // German not needed
-  let german_certificate_doc = updatedStudent.profile.find(
-    (doc) => doc.name === profile_name_list.German_Certificate
-  );
-  let english_certificate_doc = updatedStudent.profile.find(
-    (doc) => doc.name === profile_name_list.Englisch_Certificate
-  );
-  let gre_certificate_doc = updatedStudent.profile.find(
-    (doc) => doc.name === profile_name_list.GRE
-  );
-  let gmat_certificate_doc = updatedStudent.profile.find(
-    (doc) => doc.name === profile_name_list.GMAT
-  );
-  if (updatedStudent.academic_background.language.german_isPassed === '--') {
-    if (!german_certificate_doc) {
-      // Set not needed
-      german_certificate_doc = updatedStudent.profile.create({
-        name: profile_name_list.German_Certificate
-      });
-      german_certificate_doc.status = DocumentStatus.NotNeeded;
-      german_certificate_doc.required = true;
-      german_certificate_doc.updatedAt = new Date();
-      german_certificate_doc.path = '';
-      updatedStudent.profile.push(german_certificate_doc);
-    } else if (german_certificate_doc.status === DocumentStatus.Missing) {
-      german_certificate_doc.status = DocumentStatus.NotNeeded;
-    }
-  } else if (!german_certificate_doc) {
-    // Set not needed
-    german_certificate_doc = updatedStudent.profile.create({
-      name: profile_name_list.German_Certificate
-    });
-    german_certificate_doc.status = DocumentStatus.Missing;
-    german_certificate_doc.required = true;
-    german_certificate_doc.updatedAt = new Date();
-    german_certificate_doc.path = '';
-    updatedStudent.profile.push(german_certificate_doc);
-  } else if (german_certificate_doc.status === DocumentStatus.NotNeeded) {
-    german_certificate_doc.status = DocumentStatus.Missing;
-  }
-
-  if (updatedStudent.academic_background.language.english_isPassed === '--') {
-    if (!english_certificate_doc) {
-      // Set not needed
-      english_certificate_doc = updatedStudent.profile.create({
-        name: profile_name_list.Englisch_Certificate
-      });
-      english_certificate_doc.status = DocumentStatus.NotNeeded;
-      english_certificate_doc.required = true;
-      english_certificate_doc.updatedAt = new Date();
-      english_certificate_doc.path = '';
-      updatedStudent.profile.push(english_certificate_doc);
-    } else if (english_certificate_doc.status === DocumentStatus.Missing) {
-      english_certificate_doc.status = DocumentStatus.NotNeeded;
-    }
-  } else if (!english_certificate_doc) {
-    // Set not needed
-    english_certificate_doc = updatedStudent.profile.create({
-      name: profile_name_list.Englisch_Certificate
-    });
-    english_certificate_doc.status = DocumentStatus.Missing;
-    english_certificate_doc.required = true;
-    english_certificate_doc.updatedAt = new Date();
-    english_certificate_doc.path = '';
-    updatedStudent.profile.push(english_certificate_doc);
-  } else if (english_certificate_doc.status === DocumentStatus.NotNeeded) {
-    english_certificate_doc.status = DocumentStatus.Missing;
-  }
-  if (updatedStudent.academic_background.language.gre_isPassed === '--') {
-    if (!gre_certificate_doc) {
-      // Set not needed
-      gre_certificate_doc = updatedStudent.profile.create({
-        name: profile_name_list.GRE
-      });
-      gre_certificate_doc.status = DocumentStatus.NotNeeded;
-      gre_certificate_doc.required = true;
-      gre_certificate_doc.updatedAt = new Date();
-      gre_certificate_doc.path = '';
-      updatedStudent.profile.push(gre_certificate_doc);
-    } else if (gre_certificate_doc.status === DocumentStatus.Missing) {
-      gre_certificate_doc.status = DocumentStatus.NotNeeded;
-    }
-  } else if (!gre_certificate_doc) {
-    // Set not needed
-    gre_certificate_doc = updatedStudent.profile.create({
-      name: profile_name_list.GRE
-    });
-    gre_certificate_doc.status = DocumentStatus.Missing;
-    gre_certificate_doc.required = true;
-    gre_certificate_doc.updatedAt = new Date();
-    gre_certificate_doc.path = '';
-    updatedStudent.profile.push(gre_certificate_doc);
-  } else if (gre_certificate_doc.status === DocumentStatus.NotNeeded) {
-    gre_certificate_doc.status = DocumentStatus.Missing;
-  }
-
-  if (updatedStudent.academic_background.language.gmat_isPassed === '--') {
-    if (!gmat_certificate_doc) {
-      // Set not needed
-      gmat_certificate_doc = updatedStudent.profile.create({
-        name: profile_name_list.GMAT
-      });
-      gmat_certificate_doc.status = DocumentStatus.NotNeeded;
-      gmat_certificate_doc.required = true;
-      gmat_certificate_doc.updatedAt = new Date();
-      gmat_certificate_doc.path = '';
-      updatedStudent.profile.push(gmat_certificate_doc);
-    } else if (gmat_certificate_doc.status === DocumentStatus.Missing) {
-      gmat_certificate_doc.status = DocumentStatus.NotNeeded;
-    }
-  } else if (!gmat_certificate_doc) {
-    // Set not needed
-    gmat_certificate_doc = updatedStudent.profile.create({
-      name: profile_name_list.GMAT
-    });
-    gmat_certificate_doc.status = DocumentStatus.Missing;
-    gmat_certificate_doc.required = true;
-    gmat_certificate_doc.updatedAt = new Date();
-    gmat_certificate_doc.path = '';
-    updatedStudent.profile.push(gmat_certificate_doc);
-  } else if (gmat_certificate_doc.status === DocumentStatus.NotNeeded) {
-    gmat_certificate_doc.status = DocumentStatus.Missing;
-  }
-
-  await updatedStudent.save();
-  // TODO: minor: profile field not used for student.
-  res.status(200).send({
-    success: true,
-    data: updatedStudent.academic_background.language,
-    profile: updatedStudent.profile
-  });
-  next();
-});
-
-// (O) email : self notification
-// () TODO email: notify agents
-const updateApplicationPreferenceSkill = asyncHandler(
-  async (req, res, next) => {
-    const {
-      user,
-      body: { application_preference }
-    } = req;
-    const { studentId } = req.params;
-    // const { _id } = student;
-    let student_id;
-    if (user.role === Role.Student || user.role === Role.Guest) {
-      // eslint-disable-next-line no-underscore-dangle
-      student_id = user._id;
-    } else {
-      student_id = studentId;
-    }
-    application_preference['updatedAt'] = new Date();
-    const updatedStudent = await req.db.model('User').findByIdAndUpdate(
-      student_id,
-      {
-        application_preference
-      },
-      { upsert: true, new: true }
-    );
-    // const updatedStudent = await req.db.model('User').findById(_id);
-    res.status(200).send({
-      success: true,
-      data: updatedStudent.application_preference
-    });
-    next();
-  }
-);
-
-// (O) email : self notification
-const updatePersonalData = asyncHandler(async (req, res, next) => {
-  const {
-    params: { user_id },
-    user,
-    body: { personaldata }
-  } = req;
-  try {
-    const updatedStudent = await req.db
-      .model('User')
-      .findByIdAndUpdate(user_id, personaldata, {
-        upsert: true,
-        new: true
-      });
-    // const updatedStudent = await req.db.model('User').findById(_id);
-    res.status(200).send({
-      success: true,
-      data: {
-        firstname: updatedStudent.firstname,
-        firstname_chinese: updatedStudent.firstname_chinese,
-        lastname: updatedStudent.lastname,
-        lastname_chinese: updatedStudent.lastname_chinese,
-        birthday: personaldata.birthday
-      }
-    });
-    next();
-  } catch (err) {
-    logger.error(err);
-  }
-});
-
 module.exports = {
-  getMyfiles,
   getTemplates,
   deleteTemplate,
   uploadTemplate,
@@ -1683,9 +1159,5 @@ module.exports = {
   deleteVPDFile,
   removeNotification,
   removeAgentNotification,
-  getMyAcademicBackground,
-  updateAcademicBackground,
-  updateLanguageSkill,
-  updateApplicationPreferenceSkill,
-  updatePersonalData
+  getMyAcademicBackground
 };

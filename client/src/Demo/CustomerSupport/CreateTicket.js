@@ -68,7 +68,9 @@ function CreateComplaintTicket() {
         >
           {t('Customer Center', { ns: 'common' })}
         </Link>
-        <Typography color="text.primary">Add Ticket</Typography>
+        <Typography color="text.primary">
+          {t('Add Ticket', { ns: 'customerCenter' })}
+        </Typography>
       </Breadcrumbs>
       <TextField
         label="Describe your title"

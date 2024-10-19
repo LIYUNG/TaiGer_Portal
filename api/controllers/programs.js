@@ -6,8 +6,96 @@ const { one_month_cache } = require('../cache/node-cache');
 const { two_weeks_cache } = require('../cache/node-cache');
 const { PROGRAMS_CACHE } = require('../config');
 
+const getDistinctSchoolsAttributes = async (req, res) => {
+  try {
+    const distinctCombinations = await req.db.model('Program').aggregate([
+      {
+        $group: {
+          _id: {
+            school: '$school',
+            isPrivateSchool: '$isPrivateSchool',
+            isPartnerSchool: '$isPartnerSchool',
+            schoolType: '$schoolType',
+            country: '$country',
+            tags: '$tags'
+          },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          school: '$_id.school',
+          isPrivateSchool: '$_id.isPrivateSchool',
+          isPartnerSchool: '$_id.isPartnerSchool',
+          schoolType: '$_id.schoolType',
+          country: '$_id.country',
+          tags: '$_id.tags',
+          count: 1
+        }
+      },
+      {
+        $sort: { school: 1 }
+      }
+    ]);
+
+    logger.info(
+      'Distinct school and program combinations:',
+      distinctCombinations
+    );
+
+    res.send({ success: true, data: distinctCombinations });
+  } catch (error) {
+    logger.error(
+      'Error fetching distinct school and program combinations:',
+      error
+    );
+    throw error;
+  }
+};
+
+// Function to get distinct school names
+const getDistinctSchools = async (req, res) => {
+  try {
+    const schools = await req.db.model('Program').distinct('school');
+    logger.info('Distinct schools:', schools);
+  } catch (error) {
+    logger.error('Error fetching distinct schools:', error);
+    throw error;
+  }
+};
+
+const updateBatchSchoolAttribute = async (req, res) => {
+  try {
+    const schools = await req.db.model('Program').updateMany(
+      {
+        school: 'Anhalt University of Applied Sciences',
+        $or: [
+          { isPrivateSchool: { $ne: false } },
+          { schoolType: { $ne: 'University' } },
+          { tags: { $ne: ['U15'] } }
+        ]
+      },
+      {
+        $set: {
+          isPrivateSchool: false,
+          schoolType: 'University',
+          tags: ['U15']
+        }
+      },
+      { upsert: false }
+    );
+    logger.info('Distinct schools:', schools);
+  } catch (error) {
+    logger.error('Error fetching distinct schools:', error);
+    throw error;
+  }
+};
+
 const getPrograms = asyncHandler(async (req, res) => {
   // Option 1 : Cache version
+  // await getDistinctSchools(req, res);
+  await updateBatchSchoolAttribute(req, res);
   if (PROGRAMS_CACHE === 'true') {
     const value = two_weeks_cache.get(req.originalUrl);
     if (value === undefined) {
@@ -311,6 +399,8 @@ const deleteProgram = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+  getDistinctSchoolsAttributes,
+  updateBatchSchoolAttribute,
   getStudentsByProgram,
   getPrograms,
   getProgram,

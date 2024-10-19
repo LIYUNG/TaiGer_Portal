@@ -84,8 +84,6 @@ function DocModificationThreadPage() {
       isFilesListOpen: false,
       showEditorPage: false,
       isSubmissionLoaded: true,
-      articles: [],
-      isEdit: false,
       thread: null,
       buttonDisabled: false,
       editorState: {},
@@ -1207,6 +1205,7 @@ function DocModificationThreadPage() {
         isLoaded={docModificationThreadPageState.isLoaded}
         user={user}
         onDeleteSingleMessage={onDeleteSingleMessage}
+        apiPrefix={'/api/document-threads'}
       />
       {user.archiv !== true ? (
         <Card

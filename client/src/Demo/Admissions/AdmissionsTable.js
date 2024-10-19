@@ -47,6 +47,7 @@ function AdmissionsTable(props) {
               result.push({
                 id: `${student._id}${application.programId._id}`,
                 student_id: student._id,
+                email: student.email,
                 name: `${student.firstname}, ${student.lastname}`,
                 first_name_chinese: `${student.firstname_chinese}`,
                 last_name_chinese: `${student.lastname_chinese}`,
@@ -69,6 +70,7 @@ function AdmissionsTable(props) {
             result.push({
               id: `${student._id}${application.programId._id}`,
               student_id: student._id,
+              email: student.email,
               name: `${student.firstname}, ${student.lastname}`,
               first_name_chinese: `${student.firstname_chinese}`,
               last_name_chinese: `${student.lastname_chinese}`,
@@ -145,6 +147,29 @@ function AdmissionsTable(props) {
     {
       field: 'name',
       headerName: 'Name',
+      align: 'left',
+      headerAlign: 'left',
+      width: 150,
+      renderCell: (params) => {
+        const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+          params.row.student_id,
+          DEMO.PROFILE_HASH
+        )}`;
+        return (
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+          >
+            {params.value}
+          </Link>
+        );
+      }
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
       align: 'left',
       headerAlign: 'left',
       width: 150,
@@ -270,19 +295,27 @@ function AdmissionsTable(props) {
           aria-label="basic tabs example"
         >
           <Tab
-            label={t('Admissions', { ns: 'admissions' })}
+            label={`${t('Admissions', {
+              ns: 'admissions'
+            })} ( ${admissions_table?.length || 0} )`}
             {...a11yProps(0)}
           />
           <Tab
-            label={t('Rejections', { ns: 'admissions' })}
+            label={`${t('Rejections', { ns: 'admissions' })} ( ${
+              rejections_table?.length || 0
+            } )`}
             {...a11yProps(1)}
           />
           <Tab
-            label={t('Pending Result', { ns: 'admissions' })}
+            label={`${t('Pending Result', {
+              ns: 'admissions'
+            })} ( ${pending_table?.length || 0} )`}
             {...a11yProps(2)}
           />
           <Tab
-            label={t('Not Closed Yet', { ns: 'admissions' })}
+            label={`${t('Not Closed Yet', { ns: 'admissions' })} ( ${
+              not_yet_closed_table?.length || 0
+            } )`}
             {...a11yProps(3)}
           />
         </Tabs>

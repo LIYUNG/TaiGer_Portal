@@ -13,7 +13,17 @@ const {
 const { one_month_cache } = require('../cache/node-cache');
 const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
 const { isNotArchiv, Role } = require('../constants');
-const { s3 } = require('../aws/index');
+const { getTemporaryCredentials, callApiGateway } = require('../aws');
+const { getS3Object } = require('../aws/s3');
+
+// AWS configuration
+const roleToAssumeForCourseAnalyzerAPIG = isProd()
+  ? 'arn:aws:iam::669131042313:role/Prod-NA-LambdaStack-AuthorizedClientRoleProdNA32E8E-C6jpOkI8QTls'
+  : 'arn:aws:iam::669131042313:role/Beta-FE-LambdaStack-AuthorizedClientRoleBetaFE1B184-7cxjOdtI3pLE'; // Replace with your role ARN
+
+const apiGatewayUrl = isProd()
+  ? 'https://prod.taigerconsultancy-portal.com/analyze'
+  : 'https://beta.taigerconsultancy-portal.com/analyze'; // Replace with your API Gateway URL
 
 const getCourse = asyncHandler(async (req, res) => {
   const { studentId } = req.params;
@@ -79,7 +89,7 @@ const createCourse = asyncHandler(async (req, res) => {
     })
     .populate('student_id', 'firstname lastname');
   res.send({ success: true, data: courses2 });
-  if (user.role === 'Student') {
+  if (user.role === Role.Student) {
     // TODO: send course update to Agent
     const student = await req.db
       .model('Student')
@@ -147,11 +157,11 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
     { stdio: 'inherit' }
   );
   python.on('data', (data) => {
-    logger.log(`${data}`);
+    logger.info(`${data}`);
   });
   python.on('error', (err) => {
-    logger.log('error');
-    logger.log(err);
+    logger.error('error');
+    logger.error(err);
     exitCode_Python = err;
   });
 
@@ -280,6 +290,21 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const processTranscript_api_gatway = asyncHandler(async (req, res, next) => {
+  try {
+    const { Credentials } = await getTemporaryCredentials(
+      roleToAssumeForCourseAnalyzerAPIG
+    );
+    const apiResponse = await callApiGateway(Credentials, apiGatewayUrl);
+    res.status(200).send({ success: true, data: apiResponse });
+  } catch (err) {
+    logger.info(err);
+    res.status(403).send({ message: 'analyze failed' });
+  }
+
+  next();
+});
+
 // Download original transcript excel
 const downloadXLSX = asyncHandler(async (req, res, next) => {
   const {
@@ -288,7 +313,9 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
   } = req;
 
   const studentIdToUse =
-    user.role === Role.Student || user.role === 'Guest' ? user._id : studentId;
+    user.role === Role.Student || user.role === Role.Guest
+      ? user._id
+      : studentId;
   const course = await req.db.model('Course').findOne({
     student_id: studentIdToUse.toString()
   });
@@ -302,43 +329,26 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(403, 'Transcript not analysed yet');
   }
 
-  const fileKey = course.analysis.path.replace(/\\/g, '/').split('/')[1];
-  const directory = path
-    .join(
-      AWS_S3_BUCKET_NAME,
-      course.analysis.path.replace(/\\/g, '/').split('/')[0]
-    )
-    .replace(/\\/g, '/');
+  const fileKey = course.analysis.path.replace(/\\/g, '/');
+
   logger.info(`Trying to download transcript excel file ${fileKey}`);
 
   const url_split = req.originalUrl.split('/');
   const cache_key = `${url_split[1]}/${url_split[2]}/${url_split[3]}/${url_split[4]}`;
   const value = one_month_cache.get(cache_key);
   if (value === undefined) {
-    const options = {
-      Key: fileKey,
-      Bucket: directory
-    };
-    s3.getObject(options, (err, data) => {
-      // Handle any error and exit
-      if (!data || !data.Body) {
-        logger.info('File not found in S3');
-        // You can handle this case as needed, e.g., send a 404 response
-        return res.status(404).send(err);
-      }
-      // Convert Body from a Buffer to a String
-      const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
+    const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    // Convert Body from a Buffer to a String
+    const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
 
-      const success = one_month_cache.set(cache_key, data.Body);
-      if (success) {
-        logger.info('cache set successfully');
-      }
+    const success = one_month_cache.set(cache_key, Buffer.from(response));
+    if (success) {
+      logger.info('cache set successfully');
+    }
 
-      res.attachment(fileKey_converted);
-      // return res.send({ data: data.Body, lastModifiedDate: data.LastModified });
-      res.end(data.Body);
-      next();
-    });
+    res.attachment(fileKey_converted);
+    res.end(response);
+    next();
   } else {
     logger.info('cache hit');
     const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
@@ -363,6 +373,7 @@ module.exports = {
   createCourse,
   processTranscript_test,
   processTranscript_api,
+  processTranscript_api_gatway,
   downloadXLSX,
   deleteCourse
 };

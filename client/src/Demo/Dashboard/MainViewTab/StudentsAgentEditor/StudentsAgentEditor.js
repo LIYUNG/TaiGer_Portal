@@ -16,7 +16,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  useTheme
 } from '@mui/material';
 
 import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
@@ -35,6 +36,7 @@ import { COLORS } from '../../../Utils/contants';
 function StudentsAgentEditor(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const theme = useTheme();
   const [studentsAgentEditor, setStudentsAgentEditor] = useState({
     showAgentPage: false,
     showEditorPage: false,
@@ -150,6 +152,12 @@ function StudentsAgentEditor(props) {
         <Link
           to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
           component={LinkDom}
+          style={{
+            color:
+              props.student.archiv === true
+                ? theme.palette.primary.contrastText
+                : ''
+          }}
         >
           {agent.firstname}
         </Link>
@@ -168,6 +176,12 @@ function StudentsAgentEditor(props) {
         <Link
           to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
           component={LinkDom}
+          style={{
+            color:
+              props.student.archiv === true
+                ? theme.palette.primary.contrastText
+                : ''
+          }}
         >
           {`${editor.firstname}`}
         </Link>
@@ -180,7 +194,8 @@ function StudentsAgentEditor(props) {
     <>
       <TableRow
         style={{
-          backgroundColor: props.student.archiv === true ? '#1de9b6' : ''
+          backgroundColor:
+            props.student.archiv === true ? theme.palette.secondary.main : ''
         }}
         title={props.student.archiv === true ? 'Closed' : 'Open'}
       >
@@ -238,6 +253,12 @@ function StudentsAgentEditor(props) {
                   DEMO.PROFILE_HASH
                 )}`}
                 component={LinkDom}
+                style={{
+                  color:
+                    props.student.archiv === true
+                      ? theme.palette.primary.contrastText
+                      : ''
+                }}
               >
                 {props.student.firstname}, {props.student.lastname} {' | '}
                 {props.student.lastname_chinese}

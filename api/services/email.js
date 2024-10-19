@@ -38,7 +38,7 @@ const {
 
 const { ORIGIN } = require('../config');
 const { htmlContent } = require('./emailTemplate');
-const { transporter } = require('./email/configuration');
+const { transporter, sendEmail } = require('./email/configuration');
 const {
   senderName,
   taigerNotReplyGmail,
@@ -48,18 +48,6 @@ const { asyncHandler } = require('../middlewares/error-handler');
 
 const verifySMTPConfig = () => {
   return transporter.verify();
-};
-
-const sendEmail = (to, subject, message) => {
-  const mail = {
-    from: senderName,
-    to,
-    bcc: taigerNotReplyGmail,
-    subject,
-    // text: message,
-    html: htmlContent(message)
-  };
-  return transporter.sendMail(mail);
 };
 
 const sendEventEmail = (
@@ -785,7 +773,9 @@ const informStudentTheirAgentEmail = asyncHandler(async (recipient, msg) => {
 
 const informAgentEssayAssignedEmail = asyncHandler(async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
-  const docName = `${msg.program.school} ${msg.program.program_name}${msg.program.degree} ${msg.program.semester}`;
+  const docName = msg.program
+    ? ` - ${msg.program.school} ${msg.program.program_name}${msg.program.degree} ${msg.program.semester}`
+    : '';
   const subject = `${
     msg.file_type === 'Essay' ? 'Essay writer' : 'Editor'
   } assigned for ${msg.std_firstname} ${msg.std_lastname}`;
@@ -798,7 +788,7 @@ const informAgentEssayAssignedEmail = asyncHandler(async (recipient, msg) => {
 
 <p>The following ${
     msg.file_type === 'Essay' ? 'Essay writer' : 'Editor'
-  } for <a href="${thread_url}">${msg.file_type} - ${docName}</a>
+  } for <a href="${thread_url}">${msg.file_type}${docName}</a>
 
 are assigned to student ${msg.std_firstname} ${msg.std_lastname}!</p>
 
@@ -841,12 +831,14 @@ const informAgentStudentAssignedEmail = asyncHandler(async (recipient, msg) => {
 
 const informEssayWriterNewEssayEmail = asyncHandler(async (recipient, msg) => {
   const thread_url = `${THREAD_URL}/${msg.thread_id}`;
-  const docName = `${msg.program.school} - ${msg.program.program_name} - ${msg.program.degree} - ${msg.program.semester}`;
-  const subject = `New ${msg.file_type} ${docName} assigned to you`;
+  const docName = msg.program
+    ? ` - ${msg.program.school} - ${msg.program.program_name} - ${msg.program.degree} - ${msg.program.semester}`
+    : '';
+  const subject = `New ${msg.file_type}${docName} assigned to you`;
   const message = `\
 <p>Hi ${recipient.firstname} ${recipient.lastname},</p>
 
-<p><a href="${thread_url}">${docName} for ${msg.std_firstname} ${msg.std_lastname}</a> -  will be assigned to you!</p>
+<p><a href="${thread_url}">${msg.file_type}${docName} for ${msg.std_firstname} ${msg.std_lastname}</a> -  will be assigned to you!</p>
 
 <p>Please go to
 <a href="${CVMLRL_CENTER_URL}">CVMLRL Center</a> in TaiGer Portal
@@ -932,10 +924,12 @@ const informStudentArchivedStudentEmail = asyncHandler(
 const informStudentTheirEssayWriterEmail = asyncHandler(
   async (recipient, msg) => {
     const thread_url = `${THREAD_URL}/${msg.thread_id}`;
-    const docName = `${msg.program.school} - ${msg.program.program_name} - ${msg.program.degree} - ${msg.program.semester}`;
+    const docName = msg.program
+      ? ` - ${msg.program.school} - ${msg.program.program_name} - ${msg.program.degree} - ${msg.program.semester}`
+      : '';
     const subject = `Your ${
       msg.file_type === 'Essay' ? 'Essay Writor' : 'Editor'
-    } for your ${msg.file_type} ${docName}`;
+    } for your ${msg.file_type}${docName}`;
     let editor;
     for (let i = 0; i < msg.editors.length; i += 1) {
       const editor_name = `${msg.editors[i].firstname} ${msg.editors[i].lastname}`;
@@ -952,7 +946,7 @@ const informStudentTheirEssayWriterEmail = asyncHandler(
 
 <p>從現在開始我們的專業外籍${
       msg.file_type === 'Essay' ? '論文' : ''
-    }編輯 ${editor} 會正式開始幫你修改及潤飾 ${msg.file_type} - ${docName}。</p>
+    }編輯 ${editor} 會正式開始幫你修改及潤飾 ${msg.file_type}${docName}。</p>
 
 <p>若有任何疑問請直接與 ${editor} 在該文件 <a href="${thread_url}">${
       msg.file_type
@@ -2779,7 +2773,6 @@ module.exports = {
   verifySMTPConfig,
   updateNotificationEmail,
   updatePermissionNotificationEmail,
-  sendEmail,
   deleteTemplateSuccessEmail,
   sendInvitationReminderEmail,
   sendInvitationEmail,

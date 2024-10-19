@@ -3,7 +3,8 @@ const WinstonCloudWatch = require('winston-cloudwatch');
 const {
   AWS_S3_ACCESS_KEY_ID,
   AWS_S3_ACCESS_KEY,
-  isProd
+  isProd,
+  AWS_REGION
 } = require('../config');
 
 const options = {
@@ -32,7 +33,7 @@ const logger = isProd()
         new WinstonCloudWatch({
           logGroupName: 'taiger-portal-dev',
           logStreamName: 'backend-log-dev',
-          awsRegion: 'us-west-2',
+          awsRegion: AWS_REGION,
           awsAccessKeyId: AWS_S3_ACCESS_KEY_ID,
           awsSecretKey: AWS_S3_ACCESS_KEY
         })

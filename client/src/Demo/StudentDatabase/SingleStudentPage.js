@@ -66,6 +66,7 @@ import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { SurveyProvider } from '../../components/SurveyProvider';
 import ProgramDetailsComparisonTable from '../Program/ProgramDetailsComparisonTable';
 import StudentBriefOverview from '../Dashboard/MainViewTab/StudentBriefOverview.js/StudentBriefOverview';
+import ProgramLanguageNotMatchedBanner from '../../components/Banner/ProgramLanguageNotMatchedBanner';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -417,7 +418,10 @@ export const SingleStudentPageMainContent = ({
                 </ListItem>
               ))}
             </Card>
-          )}
+          )}{' '}
+          <ProgramLanguageNotMatchedBanner
+            student={singleStudentPage.student}
+          />
           <Box
             sx={{
               my: 1,

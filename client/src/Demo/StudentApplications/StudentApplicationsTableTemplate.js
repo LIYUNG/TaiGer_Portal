@@ -271,7 +271,6 @@ function StudentApplicationsTableTemplate(props) {
     return <ErrorPage res_status={res_status} />;
   }
   var applying_university_info;
-  // var applying_university;
   var today = new Date();
   if (
     studentApplicationsTableTemplateState.student.applications === undefined ||

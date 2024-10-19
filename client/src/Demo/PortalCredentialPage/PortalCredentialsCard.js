@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
-// import 'react-datasheet-grid/dist/style.css';
 import { useTranslation } from 'react-i18next';
 import {
   Button,

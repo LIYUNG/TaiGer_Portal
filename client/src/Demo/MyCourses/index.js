@@ -22,12 +22,14 @@ import {
   MenuItem,
   Select,
   TableContainer,
-  Typography
+  Typography,
+  useTheme
 } from '@mui/material';
-import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
+import { DataSheetGrid, keyColumn, textColumn } from 'react-datasheet-grid';
 import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import 'react-datasheet-grid/dist/style.css';
+// import 'react-datasheet-grid/dist/style.css';
+import './react-datasheet-customize.css';
 
 import { convertDate, study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -56,6 +58,7 @@ export default function MyCourses() {
   const { student_id } = useParams();
   const { user } = useAuth();
   const { t } = useTranslation();
+  const theme = useTheme(); // Get the current theme from Material UI
   let [statedata, setStatedata] = useState({
     error: '',
     isLoaded: false,
@@ -419,6 +422,7 @@ export default function MyCourses() {
       analysisSuccessModalWindowOpen: false
     }));
   };
+
   const columns = [
     {
       ...keyColumn('course_chinese', textColumn),
@@ -432,7 +436,10 @@ export default function MyCourses() {
       ...keyColumn('credits', textColumn),
       title: 'Credits'
     },
-    { ...keyColumn('grades', textColumn), title: 'Grades' }
+    {
+      ...keyColumn('grades', textColumn),
+      title: 'Grades'
+    }
   ];
 
   if (!statedata.isLoaded) {
@@ -549,7 +556,14 @@ export default function MyCourses() {
       <TableContainer style={{ overflowX: 'auto' }}>
         <DataSheetGrid
           id={1}
-          style={{ minWidth: '450px' }}
+          style={{
+            minWidth: '450px',
+            '--dsg-selection-border-color': theme.palette.text.primary,
+            '--dsg-cell-color': theme.palette.text.primary,
+            '--dsg-cell-background-color': theme.palette.background.default,
+            '--dsg-header-text-color': theme.palette.text.primary,
+            '--dsg-header-active-text-color': theme.palette.text.primary
+          }}
           height={6000}
           disableContextMenu={false}
           disableExpandSelection={false}
@@ -563,7 +577,13 @@ export default function MyCourses() {
           columns={columns}
         />
       </TableContainer>
-      <Card sx={{ mt: 2, backgroundColor: '#e3e3e3' }}>
+      <Card
+        sx={{
+          mt: 2,
+          color: theme.palette.primary.contrastText,
+          backgroundColor: theme.palette.primary.main
+        }}
+      >
         <Typography variant="h6" sx={{ p: 2 }}>
           <b>表格二</b>：請放 {appConfig.companyName} 服務開始<b>後</b>
           所選的修課程
@@ -576,7 +596,14 @@ export default function MyCourses() {
         <TableContainer style={{ overflowX: 'auto' }}>
           <DataSheetGrid
             id={2}
-            style={{ minWidth: '450px' }}
+            style={{
+              minWidth: '450px',
+              '--dsg-selection-border-color': theme.palette.text.primary,
+              '--dsg-cell-color': theme.palette.text.primary,
+              '--dsg-cell-background-color': theme.palette.background.default,
+              '--dsg-header-text-color': theme.palette.text.primary,
+              '--dsg-header-active-text-color': theme.palette.text.primary
+            }}
             height={6000}
             disableContextMenu={true}
             disableExpandSelection={false}
@@ -627,7 +654,6 @@ export default function MyCourses() {
           { ns: 'courses' }
         )}
       </Typography>
-      {/* </Card> */}
       {is_TaiGer_Guest(user) && (
         <Card sx={{ mt: 2 }}>
           <Typography>

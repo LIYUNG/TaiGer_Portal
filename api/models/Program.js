@@ -222,8 +222,6 @@ const programModule = {
       enum: ['TU9', 'U15']
     }
   ],
-  requiredDocuments: [String], // Not used
-  optionalDocuments: [String], // not used
   url: String,
   vcId: ObjectId
 };

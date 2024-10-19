@@ -1,39 +1,36 @@
-import { React } from 'react';
+import { React, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Typography } from '@mui/material';
+import {
+  Select,
+  FormControl,
+  MenuItem,
+  Button,
+  InputLabel,
+  Typography
+} from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
+
+import { convertDate } from '../Utils/contants';
 import ModalNew from '../../components/Modal';
 import ProgramCompare from './ProgramCompare';
 
-const incomingProgram = {
-  _id: {
-    $oid: '12532fde46752651539120128'
-  },
-  allowOnlyGraduatedApplicant: true,
-  school: 'Durham University',
-  program_name: 'English Studies',
-  special_notes: 'send paper copy to the university!',
-  degree: 'M. A.',
-  semester: 'WS',
-  lang: 'English',
-  uni_assist: 'No',
-  ml_required: 'yes',
-  rl_required: '3',
-  country: 'ABC',
-  is_rl_specific: false,
-  optionalDocuments: [],
-  requiredDocuments: [],
-  updatedAt: {
-    $date: '2024-05-05T11:01:38.812Z'
-  },
-  whoupdated: 'Alex TaiGer',
-  application_deadline: 'Rolling',
-  comments: 'sadfsdfsdgf',
-  study_group_flag: '',
-  ml_requirements: ''
-};
+import { getProgramChangeRequests } from '../../api/index';
 
 function ProgramDiffModal(props) {
   const { t } = useTranslation();
+  const { originalProgram } = props;
+  const programId = originalProgram._id;
+
+  const [incomingChanges, setIncomingChanges] = useState([]);
+  const [changeIndex, setChangeIndex] = useState(0);
+
+  useEffect(() => {
+    getProgramChangeRequests(programId).then((res) => {
+      const { data } = res.data;
+      setIncomingChanges(data);
+    });
+  }, [programId]);
+
   return (
     <ModalNew
       open={props.open}
@@ -41,13 +38,36 @@ function ProgramDiffModal(props) {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Typography variant="h6">Merge Program input</Typography>
       <Button color="secondary" onClick={props.setModalHide}>
-        X
+        <CloseIcon />
       </Button>
+      <Typography variant="h6">Merge Program input </Typography>
+      <FormControl fullWidth>
+        <InputLabel id="request-select-label">Requests</InputLabel>
+        <Select
+          labelId="request-select-label"
+          id="request-select"
+          value={changeIndex}
+          label="Requests"
+          onChange={(e) => setChangeIndex(e.target.value)}
+        >
+          {incomingChanges.length > 0 &&
+            incomingChanges.map((change, index) => {
+              return (
+                <MenuItem key={index} value={index}>
+                  {convertDate(change?.updatedAt)} -{' '}
+                  {change.requestedBy
+                    ? `${change.requestedBy.firstname} ${change.requestedBy.lastname} `
+                    : 'External Source'}
+                </MenuItem>
+              );
+            })}
+        </Select>
+      </FormControl>
       <ProgramCompare
-        originalProgram={props.originalProgram}
-        incomingProgram={incomingProgram}
+        originalProgram={originalProgram}
+        incomingChanges={incomingChanges[changeIndex] || {}}
+        submitCallBack={props.setModalHide}
       />
       <Button color="secondary" variant="outlined" onClick={props.setModalHide}>
         {t('Close', { ns: 'common' })}

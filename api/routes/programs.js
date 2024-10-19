@@ -17,6 +17,11 @@ const {
   deleteProgram,
   getDistinctSchoolsAttributes
 } = require('../controllers/programs');
+const {
+  getProgramChangeRequests,
+  submitProgramChangeRequests,
+  reviewProgramChangeRequest
+} = require('../controllers/programChangeRequests');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const {
   permission_canModifyProgramList_filter
@@ -71,6 +76,30 @@ router
     permit(Role.Admin),
     permission_canModifyProgramList_filter,
     deleteProgram
+  );
+
+router
+  .route('/:programId/change-requests')
+  .get(
+    filter_archiv_user,
+    GetProgramRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    getProgramChangeRequests
+  )
+  .post(
+    filter_archiv_user,
+    PostProgramRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    submitProgramChangeRequests
+  );
+
+router
+  .route('/review-changes/:requestId')
+  .post(
+    filter_archiv_user,
+    UpdateProgramRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    reviewProgramChangeRequest
   );
 
 module.exports = router;

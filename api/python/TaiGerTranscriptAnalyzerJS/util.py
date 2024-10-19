@@ -1,6 +1,9 @@
 import pandas as pd
 from CourseSuggestionAlgorithms import *
 from cell_formatter import red_out_failed_subject, red_out_insufficient_credit
+from globals import column_len_array
+from db import get_programs_analysis_collection_mock
+
 import gc
 import sys
 import os
@@ -206,8 +209,6 @@ def CoursesToProgramCategoryMappingNew(df_PROG_SPEC_CATES, program_category, bas
             # find the idx corresponding to program's category
             idx_temp = -1
             for idx2, cat in enumerate(df_PROG_SPEC_CATES):
-                print(cat.columns[0])
-                print(categ['program_category'])
                 if categ['program_category'] == cat.columns[0]:
                     idx_temp = idx2
                     break
@@ -221,14 +222,11 @@ def CoursesToProgramCategoryMappingNew(df_PROG_SPEC_CATES, program_category, bas
             print(
                 f"Key {transcript_sorted_group_list[idx]} not found in baseCategoryToProgramMapping")
 
-    # print(df_PROG_SPEC_CATES)
     return df_PROG_SPEC_CATES
 
 
 # course sorting
 def CourseSorting(df_transcript, df_category_data, transcript_sorted_group_map, column_name_en_zh):
-    # print(df_transcript[column_name_en_zh])
-    # df_transcript = df_transcript.dropna()
     df_transcript['grades'] = df_transcript['grades'].astype(
         float, errors='ignore')
     for idx, subj in enumerate(df_transcript[column_name_en_zh]):
@@ -329,7 +327,6 @@ def WriteToExcel(writer, program_name, program_category, baseCategoryToProgramMa
     df_PROG_SPEC_CATES, df_PROG_SPEC_CATES_COURSES_SUGGESTION = ProgramCategoryInit(
         program_category)
     transcript_sorted_group_list = list(transcript_sorted_group_map)
-    print(df_PROG_SPEC_CATES)
 
     # Courses: mapping the students' courses to program-specific category
     df_PROG_SPEC_CATES = CoursesToProgramCategoryMappingNew(
@@ -352,7 +349,6 @@ def WriteToExcel(writer, program_name, program_category, baseCategoryToProgramMa
     # Write to Excel
     start_row = 0
     for idx, sortedcourses in enumerate(df_PROG_SPEC_CATES):
-        print(sortedcourses)
         sortedcourses.to_excel(
             writer, sheet_name=program_name, startrow=start_row, header=True, index=False)
         df_PROG_SPEC_CATES_COURSES_SUGGESTION[idx].to_excel(
@@ -367,16 +363,14 @@ def WriteToExcel(writer, program_name, program_category, baseCategoryToProgramMa
     # red_out_insufficient_credit(workbook, worksheet)
 
     for df in df_PROG_SPEC_CATES:
-        # print(df)
         for i, col in enumerate(df.columns):
-            # print(i)
             # set the column length
             worksheet.set_column(i, i, column_len_array[i] * 2)
     gc.collect()  # Forced GC
     print("Save to " + program_name)
 
 
-def Classifier(courses_arr, courses_db, basic_classification_en, basic_classification_zh, column_len_array, program_sort_function, studentId, student_name, analysis_language):
+def Classifier(courses_arr, courses_db, basic_classification_en, basic_classification_zh, column_len_array, studentId, student_name, analysis_language):
     df_transcript = pd.DataFrame.from_dict(courses_arr)
     # TODO: move the checking mechanism to util.py!
     # Verify the format of transcript_course_list.xlsx
@@ -473,12 +467,14 @@ def Classifier(courses_arr, courses_db, basic_classification_en, basic_classific
                 # Modify to column width for "Required_ECTS"
                 column_len_array.append(6)
 
-            for idx, choose in enumerate(program_sort_function):
-                program_sort_function[idx](
+            programs = get_programs_analysis_collection_mock()
+            
+            for idx, program in enumerate(programs):
+                createSheet(
                     transcript_sorted_group_map,
                     sorted_courses,
                     df_category_courses_sugesstion_data,
-                    writer)
+                    writer, program)
 
         data = output.getvalue()
 
@@ -498,3 +494,65 @@ def Classifier(courses_arr, courses_db, basic_classification_en, basic_classific
     transcript_path = studentId + '/analysed_transcript_' + student_name + '.xlsx'
     s3.Bucket(AWS_S3_BUCKET_NAME).put_object(Key=transcript_path, Body=data)
     sys.exit(0)
+
+
+def convertingKeywordsSetArrayToObject(program_category):
+    # Initialize an empty dictionary to store the results
+    baseCategoryToProgramMapping = {}
+
+    # Iterate over each program category
+    for program in program_category:
+        category = program['Program_Category']
+        ects = program['Required_ECTS']
+
+        # Iterate over each keyword in the Keywords_Group
+        for keyword in program['Keywords_Group']:
+            # Add the keyword to the dictionary with its corresponding program category and ECTS
+            baseCategoryToProgramMapping[keyword] = {
+                'program_category': category,
+                'Required_ECTS': ects
+            }
+    return baseCategoryToProgramMapping
+
+
+def createSheet(transcript_sorted_group_map, df_transcript_array, df_category_courses_sugesstion_data, writer, program):
+    program_name = program['program_name']
+    print("Create " + program_name + " sheet")
+    df_transcript_array_temp = []
+    df_category_courses_sugesstion_data_temp = []
+    for idx, df in enumerate(df_transcript_array):
+        df_transcript_array_temp.append(df.copy())
+    for idx, df in enumerate(df_category_courses_sugesstion_data):
+        df_category_courses_sugesstion_data_temp.append(df.copy())
+    #####################################################################
+    ############## Program Specific Parameters ##########################
+    #####################################################################
+
+    # This fixed to program course category.
+    program_category = program['program_category']
+
+    all_keywords = [
+        keyword for program in program_category for keyword in program['Keywords_Group']]
+
+    # Main array
+    transcript_sorted_group_list = list(transcript_sorted_group_map)
+
+    # Convert to set and use difference
+    transcript_sorted_group_list_others = list(set(transcript_sorted_group_list) -
+                                               set(all_keywords))
+
+    program_category.append({
+        'Program_Category': 'Others', 'Required_ECTS': 0,
+        "Keywords_Group": transcript_sorted_group_list_others}  # 其他
+    )
+
+    # Iterate over each program category
+    baseCategoryToProgramMapping = convertingKeywordsSetArrayToObject(
+        program_category)
+
+    #####################################################################
+    ####################### End #########################################
+    #####################################################################
+
+    WriteToExcel(writer, program_name, program_category, baseCategoryToProgramMapping,
+                 transcript_sorted_group_map, df_transcript_array_temp, df_category_courses_sugesstion_data_temp, column_len_array)

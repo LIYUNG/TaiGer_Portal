@@ -6,6 +6,8 @@ from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 from dotenv import load_dotenv
 
+from globals import programs_mock
+
 # Global variables to store the MongoDB client and database connection
 mongo_client = None
 db = None
@@ -82,6 +84,32 @@ def get_keywords_collection():
     }
 
     return processed_data
+
+
+def get_programs_analysis_collection():
+    # Get the database connection
+    database = get_database()
+
+    # Use the database connection to perform operations
+    collection = database['programanalyse']
+
+    # Example: Fetch all documents from the collection
+    documents = list(collection.find({}))
+
+    return documents
+
+
+def get_programs_analysis_collection_mock():
+    # # Get the database connection
+    # database = get_database()
+
+    # # Use the database connection to perform operations
+    # collection = database['programanalyse']
+
+    # Example: Fetch all documents from the collection
+    documents = programs_mock
+
+    return documents
 
 
 def generate_classification(lang, subjects, processed_data):

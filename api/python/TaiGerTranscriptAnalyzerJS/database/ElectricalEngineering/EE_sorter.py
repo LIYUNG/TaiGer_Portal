@@ -2,7 +2,7 @@ import xlsxwriter
 from CourseSuggestionAlgorithms import *
 from util import *
 from keywords import *
-from database.ElectricalEngineering.EE_Programs import program_sort_function2, column_len_array
+from globals import column_len_array
 from database.ElectricalEngineering.EE_Course_db import ee_course_db
 import pandas as pd
 import sys
@@ -57,4 +57,4 @@ def EE_sorter(course_arr, studentId, student_name, analysis_language):
         'zh', subjects, processed_data)
 
     Classifier(course_arr, ee_course_db,
-               basic_classification_en, basic_classification_zh, column_len_array, program_sort_function2, studentId, student_name, analysis_language)
+               basic_classification_en, basic_classification_zh, column_len_array, studentId, student_name, analysis_language)

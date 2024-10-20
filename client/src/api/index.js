@@ -201,6 +201,23 @@ export const analyzedFileDownload_test = (studentId) =>
     responseType: 'blob'
   });
 
+export const getCourseKeywordSets = () => request.get(`/api/course-keywords`);
+export const getCourseKeywordSet = (keywordsSetId) =>
+  request.get(`/api/course-keywords/${keywordsSetId}`);
+export const putKeywordSet = (keywordsSetId) =>
+  request.put(`/api/course-keywords/${keywordsSetId}`);
+export const deleteKeywordSet = (keywordsSetId) =>
+  request.delete(`/api/course-keywords/${keywordsSetId}`);
+
+export const getProgramRequirements = () =>
+  request.get(`/api/program-requirements`);
+export const getProgramRequirement = (programRequirementId) =>
+  request.get(`/api/program-requirements/${programRequirementId}`);
+export const putProgramRequirement = (programRequirementId) =>
+  request.put(`/api/program-requirements/${programRequirementId}`);
+export const deleteProgramRequirement = (programRequirementId) =>
+  request.delete(`/api/program-requirements/${programRequirementId}`);
+
 export const UpdateStudentApplications = (
   studentId,
   applications,

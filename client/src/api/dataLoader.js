@@ -12,7 +12,8 @@ import {
   getStudentUniAssist,
   getComplaintsTickets,
   getComplaintsTicket,
-  getDistinctSchools
+  getDistinctSchools,
+  getCourseKeywordSets
 } from '.';
 
 export async function getStudentsLoader() {
@@ -168,6 +169,8 @@ export function combinedLoader() {
   return defer({ studentAndEssays: loadStudentAndEssays() });
 }
 
+///
+
 export async function DistinctSchoolsLoader() {
   const response = await getDistinctSchools();
   if (response.status >= 400) {
@@ -179,4 +182,19 @@ export async function DistinctSchoolsLoader() {
 
 export function getDistinctSchoolsLoader({ params }) {
   return defer({ distinctSchools: DistinctSchoolsLoader({ params }) });
+}
+
+///
+
+export async function CourseKeywordSetsLoader() {
+  const response = await getCourseKeywordSets();
+  if (response.status >= 400) {
+    throw json({ message: response.statusText }, { status: response.status });
+  } else {
+    return response.data.data;
+  }
+}
+
+export function getCourseKeywordSetsLoader({ params }) {
+  return defer({ courseKeywordSets: CourseKeywordSetsLoader({ params }) });
 }

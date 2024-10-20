@@ -13,7 +13,8 @@ import {
   getAllArchivedStudentsLoader,
   getAllComplaintTicketsLoader,
   getComplaintTicketLoader,
-  getDistinctSchoolsLoader
+  getDistinctSchoolsLoader,
+  getCourseKeywordSetsLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
@@ -32,6 +33,14 @@ const InterviewResponseTable = React.lazy(() =>
 );
 
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard'));
+
+const CourseKeywordsEdit = React.lazy(() =>
+  import('./Demo/CourseAnalysis/CourseKeywordsEdit')
+);
+
+const ProgramRequirements = React.lazy(() =>
+  import('./Demo/CourseAnalysis/ProgramRequirements')
+);
 
 const AllArchivStudent = React.lazy(() =>
   import('./Demo/ArchivStudent/AllIndex')
@@ -226,6 +235,20 @@ const routes = [
     loader: combinedLoader,
     // loader: getStudentsLoader,
     element: <DashboardDefault />
+  },
+  {
+    path: '/courses/analysis/keywords',
+    errorElement: <DefaultErrorPage />,
+    loader: getCourseKeywordSetsLoader,
+    // loader: getStudentsLoader,
+    element: <CourseKeywordsEdit />
+  },
+  {
+    path: '/courses/analysis/programs',
+    errorElement: <DefaultErrorPage />,
+    loader: combinedLoader,
+    // loader: getStudentsLoader,
+    element: <ProgramRequirements />
   },
   {
     path: '/admissions-overview',

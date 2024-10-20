@@ -86,7 +86,7 @@ const connectToDatabase = (tenant, uri = null) => {
     connection.model('Interview', interviewsSchema);
 
     connection.model('InterviewSurveyResponse', interviewSurveyResponseSchema);
-    connection.model('Keywordset', keywordSetSchema);
+    connection.model('KeywordSet', keywordSetSchema);
     connection.model('Note', notesSchema);
     connection.model('Permission', permissionSchema);
     connection.model('ProgramRequirement', programRequirementSchema);

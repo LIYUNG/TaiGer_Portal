@@ -3,11 +3,11 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
 
 const getProgramRequirements = asyncHandler(async (req, res) => {
-  const keywordsets = await req.db
+  const programRequirements = await req.db
     .model('ProgramRequirement')
     .find({})
     .sort({ createdAt: -1 });
-  res.send({ success: true, data: keywordsets });
+  res.send({ success: true, data: programRequirements });
 });
 
 const getProgramRequirement = asyncHandler(async (req, res) => {

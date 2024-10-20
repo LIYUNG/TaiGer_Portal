@@ -18,8 +18,8 @@ const { getS3Object } = require('../aws/s3');
 
 // AWS configuration
 const roleToAssumeForCourseAnalyzerAPIG = isProd()
-  ? 'arn:aws:iam::669131042313:role/Prod-NA-LambdaStack-AuthorizedClientRoleProdNA32E8E-C6jpOkI8QTls'
-  : 'arn:aws:iam::669131042313:role/Beta-FE-LambdaStack-AuthorizedClientRoleBetaFE1B184-7cxjOdtI3pLE'; // Replace with your role ARN
+  ? 'arn:aws:iam::669131042313:role/Prod-NA-LambdaStack-AuthorizedClientRoleProdNA32E8E-BsKkincHH6wz'
+  : 'arn:aws:iam::669131042313:role/Beta-FE-LambdaStack-AuthorizedClientRoleBetaFE1B184-aZ4OBupLtN1Q'; // Replace with your role ARN
 
 const apiGatewayUrl = isProd()
   ? 'https://prod.taigerconsultancy-portal.com/analyze'

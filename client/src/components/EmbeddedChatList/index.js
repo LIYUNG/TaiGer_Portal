@@ -142,7 +142,7 @@ const EmbeddedChatList = (props) => {
         />
       </Search>
       {!chatListState.isLoaded &&
-        [0, 1, 2, 3, 4, 5, 6].map((i) => (
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
           <MenuItem key={i}>
             <Skeleton variant="circular" width={40} height={40} />
             <Skeleton

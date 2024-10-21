@@ -6,23 +6,23 @@ const getProgramRequirements = asyncHandler(async (req, res) => {
   const programRequirements = await req.db
     .model('ProgramRequirement')
     .find({})
+    .populate('programId program_categories.keywordSets')
     .sort({ createdAt: -1 });
   res.send({ success: true, data: programRequirements });
 });
 
 const getProgramRequirement = asyncHandler(async (req, res) => {
-  const { ticketId } = req.params;
+  const { programId } = req.params;
 
-  const ticket = await req.db
+  const requirement = await req.db
     .model('ProgramRequirement')
-    .findById(ticketId)
-    .populate('messages.user_id', 'firstname lastname email')
-    .populate('requester_id', 'firstname lastname email ');
-  if (!ticket) {
-    logger.error('getProgramRequirement: Invalid ticket id');
+    .findOne({ programId })
+    .populate('programId program_categories.keywordSets');
+  if (!requirement) {
+    logger.error('getProgramRequirement: Invalid program id');
     throw new ErrorResponse(404, 'ProgramRequirement not found');
   }
-  res.send({ success: true, data: ticket });
+  res.send({ success: true, data: requirement });
 });
 
 const createProgramRequirement = asyncHandler(async (req, res) => {
@@ -37,14 +37,14 @@ const createProgramRequirement = asyncHandler(async (req, res) => {
 
 const updateProgramRequirement = asyncHandler(async (req, res) => {
   const { user } = req;
-  const { ticketId } = req.params;
+  const { programId } = req.params;
   const fields = req.body;
 
   fields.updatedAt = new Date();
   // TODO: update resolver_id
   const updatedProgramRequirement = await req.db
     .model('ProgramRequirement')
-    .findByIdAndUpdate(ticketId, fields, {
+    .findByIdAndUpdate(programId, fields, {
       new: true
     })
     .populate('requester_id', 'firstname lastname email archiv');
@@ -58,8 +58,8 @@ const updateProgramRequirement = asyncHandler(async (req, res) => {
 });
 
 const deleteProgramRequirement = asyncHandler(async (req, res) => {
-  const { ticketId } = req.params;
-  await req.db.model('ProgramRequirement').findByIdAndDelete(ticketId);
+  const { programId } = req.params;
+  await req.db.model('ProgramRequirement').findByIdAndDelete(programId);
 
   res.status(200).send({ success: true });
 });

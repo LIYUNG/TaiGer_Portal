@@ -7,15 +7,15 @@ import { Box } from '@mui/material';
 import Loading from '../../../components/Loading/Loading';
 
 function Dashboard() {
-  const { studentAndEssays } = useLoaderData();
+  const { programRequirements } = useLoaderData();
 
   TabTitle('Program Requirement Edit');
 
   return (
     <Box data-testid="dashoboard_component">
       <Suspense fallback={<Loading />}>
-        <Await resolve={studentAndEssays}>
-          {(loadedData) => <ProgramRequirementsOverview studentAndEssays={loadedData} />}
+        <Await resolve={programRequirements}>
+          {(loadedData) => <ProgramRequirementsOverview programRequirements={loadedData} />}
         </Await>
       </Suspense>
     </Box>

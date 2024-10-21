@@ -18,7 +18,6 @@ import {
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-// TODO
 const CourseKeywordsOverview = ({ courseKeywordSets }) => {
   const [keywordsZH, setKeywordsZH] = useState('');
   const [antiKeywordsZH, setAntiKeywordsZH] = useState('');
@@ -157,6 +156,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                   color="primary"
                   onClick={() => handleAddCourseKeyword('zh', keywordsZH)}
                   sx={{ ml: 2 }}
+                  size="small"
                 >
                   + Add Keywords (ZH)
                 </Button>
@@ -193,6 +193,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                     handleAddCourseAntiKeyword('zh', antiKeywordsZH)
                   }
                   sx={{ ml: 2 }}
+                  size="small"
                 >
                   + Add Anti-Keywords (ZH)
                 </Button>
@@ -227,6 +228,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                   color="primary"
                   onClick={() => handleAddCourseKeyword('en', keywordsEN)}
                   sx={{ ml: 2 }}
+                  size="small"
                 >
                   + Add Keywords (EN)
                 </Button>
@@ -263,6 +265,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                     handleAddCourseAntiKeyword('en', antiKeywordsEN)
                   }
                   sx={{ ml: 2 }}
+                  size="small"
                 >
                   + Add Anti-Keywords (EN)
                 </Button>

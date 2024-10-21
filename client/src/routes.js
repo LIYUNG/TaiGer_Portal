@@ -14,7 +14,8 @@ import {
   getAllComplaintTicketsLoader,
   getComplaintTicketLoader,
   getDistinctSchoolsLoader,
-  getCourseKeywordSetsLoader
+  getCourseKeywordSetsLoader,
+  getProgramRequirementsLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
@@ -246,7 +247,7 @@ const routes = [
   {
     path: '/courses/analysis/programs',
     errorElement: <DefaultErrorPage />,
-    loader: combinedLoader,
+    loader: getProgramRequirementsLoader,
     // loader: getStudentsLoader,
     element: <ProgramRequirements />
   },

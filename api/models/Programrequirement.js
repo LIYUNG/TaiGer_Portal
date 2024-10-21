@@ -6,9 +6,9 @@ const {
 const programRequirementSchema = new Schema(
   {
     programId: { type: ObjectId, ref: 'Program' },
-    program_category: [
+    program_categories: [
       {
-        Program_Category: {
+        program_category: {
           type: String,
           default: ''
         },
@@ -16,7 +16,7 @@ const programRequirementSchema = new Schema(
           type: Number,
           default: 0
         },
-        keywordSets: [{ type: ObjectId, ref: 'Keywordset' }],
+        keywordSets: [{ type: ObjectId, ref: 'KeywordSet' }],
         maxScore: {
           type: Number,
           default: 0
@@ -54,6 +54,6 @@ const programRequirementSchema = new Schema(
   { timestamps: true }
 );
 
-programRequirementSchema.index({ categoryName: 1 });
+programRequirementSchema.index({ programId: 1 });
 
 module.exports = { programRequirementSchema };

@@ -13,7 +13,8 @@ import {
   getComplaintsTickets,
   getComplaintsTicket,
   getDistinctSchools,
-  getCourseKeywordSets
+  getCourseKeywordSets,
+  getProgramRequirements
 } from '.';
 
 export async function getStudentsLoader() {
@@ -197,4 +198,19 @@ export async function CourseKeywordSetsLoader() {
 
 export function getCourseKeywordSetsLoader({ params }) {
   return defer({ courseKeywordSets: CourseKeywordSetsLoader({ params }) });
+}
+
+///
+
+export async function ProgramRequirementsLoader() {
+  const response = await getProgramRequirements();
+  if (response.status >= 400) {
+    throw json({ message: response.statusText }, { status: response.status });
+  } else {
+    return response.data.data;
+  }
+}
+
+export function getProgramRequirementsLoader({ params }) {
+  return defer({ programRequirements: ProgramRequirementsLoader({ params }) });
 }

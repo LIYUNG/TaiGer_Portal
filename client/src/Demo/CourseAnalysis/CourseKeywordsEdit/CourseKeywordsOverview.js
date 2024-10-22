@@ -99,7 +99,6 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
 
   const handleSaveKeywordSet = async (e) => {
     e.preventDefault();
-    console.log(selectedCategory);
     const resp = await putKeywordSet(selectedCategory._id, selectedCategory);
     const { success } = resp.data;
     if (!success) {

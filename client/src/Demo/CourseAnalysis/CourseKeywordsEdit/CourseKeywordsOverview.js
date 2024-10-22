@@ -7,7 +7,6 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Divider,
   List,
   ListItem,
   ListItemButton,
@@ -17,6 +16,7 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { putKeywordSet } from '../../../api';
 
 const CourseKeywordsOverview = ({ courseKeywordSets }) => {
   const [keywordsZH, setKeywordsZH] = useState('');
@@ -85,8 +85,26 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
       }
     }));
   };
+
+  const handleCategoryNameAndDescription = (e) => {
+    setSelectedCategory((prevCategory) => ({
+      ...prevCategory,
+      [e.target.id]: e.target.value
+    }));
+  };
+
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
+  };
+
+  const handleSaveKeywordSet = async (e) => {
+    e.preventDefault();
+    console.log(selectedCategory);
+    const resp = await putKeywordSet(selectedCategory._id, selectedCategory);
+    const { success } = resp.data;
+    if (!success) {
+      console.log('warning');
+    }
   };
 
   return (
@@ -126,21 +144,47 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
         </List>
       </Box>
       {/* Right content */}
-      <Box sx={{ flexGrow: 1, p: 3 }}>
+      <Box
+        sx={{
+          p: 2,
+          flexGrow: 1,
+          overflowY: 'auto', // Makes the left sidebar scrollable
+          maxHeight: { xs: '200px', md: 'none' } // Control height on mobile for scrolling
+        }}
+      >
         {selectedCategory ? (
-          <>
-            <Typography variant="h6">
-              {selectedCategory.categoryName}
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              {selectedCategory.description}
-            </Typography>
+          <form onSubmit={(e) => handleSaveKeywordSet(e)}>
+            <div style={{ marginBottom: '16px' }}>
+              <Typography variant="h6">Category Name:</Typography>
+              <TextField
+                value={selectedCategory.categoryName}
+                onChange={(e) => handleCategoryNameAndDescription(e)}
+                variant="outlined"
+                fullWidth
+                id="categoryName"
+                size="small"
+              />
+            </div>
 
-            <Divider sx={{ my: 2 }} />
-
-            <Box sx={{ width: '100%', p: 2 }}>
+            {/* Editable description */}
+            <div style={{ marginBottom: '16px' }}>
+              <Typography variant="body2" color="textSecondary">
+                Description:
+              </Typography>
+              <TextField
+                value={selectedCategory.description}
+                onChange={(e) => handleCategoryNameAndDescription(e)}
+                variant="outlined"
+                fullWidth
+                id="description"
+                multiline
+                rows={3}
+                size="small"
+              />
+            </div>
+            <Box sx={{ width: '100%' }}>
               {/* Add Keywords ZH */}
-              <Typography variant="h6">
+              <Typography variant="body1">
                 {t('Course Keywords (ZH)', { ns: 'common' })}
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -150,6 +194,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                   value={keywordsZH}
                   onChange={(e) => setKeywordsZH(e.target.value)}
                   fullWidth
+                  size="small"
                 />
                 <Button
                   variant="contained"
@@ -175,7 +220,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
               </Box>
 
               {/* Add Anti-Keywords ZH */}
-              <Typography variant="h6">
+              <Typography variant="body1">
                 {t('Anti-Keywords (ZH)', { ns: 'common' })}
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -185,6 +230,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                   value={antiKeywordsZH}
                   onChange={(e) => setAntiKeywordsZH(e.target.value)}
                   fullWidth
+                  size="small"
                 />
                 <Button
                   variant="contained"
@@ -210,9 +256,8 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                   />
                 ))}
               </Box>
-
               {/* Add Keywords EN */}
-              <Typography variant="h6">
+              <Typography variant="body1">
                 {t('Course Keywords (EN)', { ns: 'common' })}
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -222,6 +267,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                   value={keywordsEN}
                   onChange={(e) => setKeywordsEN(e.target.value)}
                   fullWidth
+                  size="small"
                 />
                 <Button
                   variant="contained"
@@ -247,7 +293,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
               </Box>
 
               {/* Add Anti-Keywords EN */}
-              <Typography variant="h6">
+              <Typography variant="body1">
                 {t('Anti-Keywords (EN)', { ns: 'common' })}
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -257,6 +303,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                   value={antiKeywordsEN}
                   onChange={(e) => setAntiKeywordsEN(e.target.value)}
                   fullWidth
+                  size="small"
                 />
                 <Button
                   variant="contained"
@@ -282,8 +329,18 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                   />
                 ))}
               </Box>
+              <Box>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 2 }}
+                >
+                  {t('Save', { ns: 'common' })}
+                </Button>
+              </Box>
             </Box>
-          </>
+          </form>
         ) : (
           <Typography variant="body1">
             Select a category to manage keywords.

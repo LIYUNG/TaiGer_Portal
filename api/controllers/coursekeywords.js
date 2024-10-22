@@ -36,22 +36,20 @@ const createKeywordSet = asyncHandler(async (req, res) => {
 });
 
 const updateKeywordSet = asyncHandler(async (req, res) => {
-  const { user } = req;
-  const { ticketId } = req.params;
+  const { keywordsSetId } = req.params;
   const fields = req.body;
 
+  delete fields._id;
   fields.updatedAt = new Date();
-  // TODO: update resolver_id
   const updatedKeywordSet = await req.db
     .model('KeywordSet')
-    .findByIdAndUpdate(ticketId, fields, {
+    .findByIdAndUpdate(keywordsSetId, fields, {
       new: true
-    })
-    .populate('requester_id', 'firstname lastname email archiv');
+    });
 
   if (!updatedKeywordSet) {
-    logger.error('updateKeywordSet: Invalid message thread id');
-    throw new ErrorResponse(404, 'Thread not found');
+    logger.error('updateKeywordSet: Invalid keyword set id');
+    throw new ErrorResponse(404, 'Keyword set not found');
   }
 
   res.status(200).send({ success: true, data: updatedKeywordSet });

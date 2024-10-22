@@ -204,8 +204,8 @@ export const analyzedFileDownload_test = (studentId) =>
 export const getCourseKeywordSets = () => request.get(`/api/course-keywords`);
 export const getCourseKeywordSet = (keywordsSetId) =>
   request.get(`/api/course-keywords/${keywordsSetId}`);
-export const putKeywordSet = (keywordsSetId) =>
-  request.put(`/api/course-keywords/${keywordsSetId}`);
+export const putKeywordSet = (keywordsSetId, keywordsSet) =>
+  request.put(`/api/course-keywords/${keywordsSetId}`, keywordsSet);
 export const deleteKeywordSet = (keywordsSetId) =>
   request.delete(`/api/course-keywords/${keywordsSetId}`);
 

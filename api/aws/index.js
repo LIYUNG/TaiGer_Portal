@@ -8,7 +8,13 @@ const { s3Client } = require('./s3');
 const { getTemporaryCredentials } = require('./sts');
 const { AWS_REGION } = require('../config');
 
-const callApiGateway = async (credentials, apiGatewayUrl) => {
+const callApiGateway = async (
+  credentials,
+  apiGatewayUrl,
+  method,
+  requestBody = null,
+  additionalHeaders = {}
+) => {
   try {
     const signer = new SignatureV4({
       credentials: {
@@ -23,13 +29,17 @@ const callApiGateway = async (credentials, apiGatewayUrl) => {
 
     const url = new URL(apiGatewayUrl);
     const signedRequest = await signer.sign({
-      method: 'GET',
+      method,
       hostname: url.hostname,
       path: url.pathname,
       protocol: url.protocol,
       headers: {
-        host: url.hostname
-      }
+        host: url.hostname,
+        'Content-Type': requestBody ? 'application/json' : undefined, // Set content type if there is a body
+        ...additionalHeaders // Include any additional headers provided
+      },
+      // Only stringify if there's a body
+      body: requestBody ? JSON.stringify(requestBody) : undefined
     });
 
     const response = await axios({
@@ -37,7 +47,7 @@ const callApiGateway = async (credentials, apiGatewayUrl) => {
       url: apiGatewayUrl,
       method: signedRequest.method,
       headers: signedRequest.headers,
-      data: signedRequest.body
+      data: requestBody
     });
 
     return response.data;

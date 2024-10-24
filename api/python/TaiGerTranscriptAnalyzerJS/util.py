@@ -493,7 +493,7 @@ def Classifier(courses_arr, courses_db, basic_classification_en, basic_classific
     s3 = session.resource('s3')
     transcript_path = studentId + '/analysed_transcript_' + student_name + '.xlsx'
     s3.Bucket(AWS_S3_BUCKET_NAME).put_object(Key=transcript_path, Body=data)
-    sys.exit(0)
+    # sys.exit(0)
 
 
 def convertingKeywordsSetArrayToObject(program_category):

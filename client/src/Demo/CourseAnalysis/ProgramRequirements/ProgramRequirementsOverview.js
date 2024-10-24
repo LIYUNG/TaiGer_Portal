@@ -1,6 +1,7 @@
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import {
   Box,
+  Button,
   Collapse,
   IconButton,
   Paper,
@@ -22,11 +23,16 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
   };
   return (
     <>
-      {programRequirements?.map((requirement) => (
-        <li
-          key={requirement._id}
-        >{`${requirement?.programId?.school} ${requirement?.programId?.program_name} ${requirement?.programId?.degree}`}</li>
-      ))}
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        {programRequirements?.map((requirement) => (
+          <li
+            key={requirement._id}
+          >{`${requirement?.programId?.school} ${requirement?.programId?.program_name} ${requirement?.programId?.degree}`}</li>
+        ))}
+        <Button variant="contained" color="primary">
+          Create New Analysis
+        </Button>
+      </Box>
       <TableContainer component={Paper}>
         <Table aria-label="program table">
           <TableHead>

@@ -12,6 +12,10 @@ const programRequirementSchema = new Schema(
           type: String,
           default: ''
         },
+        category_description: {
+          type: String,
+          default: ''
+        },
         requiredECTS: {
           type: Number,
           default: 0

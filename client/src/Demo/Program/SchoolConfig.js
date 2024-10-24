@@ -262,7 +262,7 @@ function SchoolConfig() {
   };
   TabTitle('Student Database');
   return (
-    <Box data-testid="student_datdabase">
+    <Box data-testid="school_config">
       <Suspense fallback={<Loading />}>
         <Await resolve={distinctSchools}>
           {(loadedData) => (
@@ -276,7 +276,15 @@ function SchoolConfig() {
                 >
                   {appConfig.companyName}
                 </Link>
-                <Typography color="text.primary">Config</Typography>
+                <Link
+                  underline="hover"
+                  color="inherit"
+                  component={LinkDom}
+                  to={`${DEMO.PROGRAMS}`}
+                >
+                  Program List
+                </Link>
+                <Typography color="text.primary">School Configuration</Typography>
               </Breadcrumbs>
               <Grid container spacing={2}>
                 {/* Left side: School list */}

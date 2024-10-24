@@ -252,6 +252,13 @@ const routes = [
     element: <ProgramRequirements />
   },
   {
+    path: '/courses/analysis/programs/requirements/:requirementId', //TODO: create the page
+    errorElement: <DefaultErrorPage />,
+    loader: getProgramRequirementsLoader,
+    // loader: getStudentsLoader,
+    element: <ProgramRequirements />
+  },
+  {
     path: '/admissions-overview',
     exact: true,
     name: 'Admissions',

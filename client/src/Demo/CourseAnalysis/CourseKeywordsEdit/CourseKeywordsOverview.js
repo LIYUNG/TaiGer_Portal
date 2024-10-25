@@ -111,7 +111,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h6">Categories</Typography>
         <Button variant="contained" color="primary">
-          Create New Analysis
+          Create New Keyword Set
         </Button>
       </Box>
       <Box

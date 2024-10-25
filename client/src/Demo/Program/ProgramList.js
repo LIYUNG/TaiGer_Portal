@@ -402,31 +402,19 @@ function ProgramList(props) {
           res_modal_message={statedata.res_modal_message}
         />
       )}
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link
-            underline="hover"
-            color="inherit"
-            component={LinkDom}
-            to={`${DEMO.DASHBOARD_LINK}`}
-          >
-            {appConfig.companyName}
-          </Link>
-          <Typography color="text.primary">
-            {t('Program List', { ns: 'common' })}
-          </Typography>
-        </Breadcrumbs>
-        {/* Button on the right */}
-        <Button
-          variant="contained"
-          color="primary"
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
           component={LinkDom}
-          to="/programs/config"
-          size="small"
+          to={`${DEMO.DASHBOARD_LINK}`}
         >
-          School Config
-        </Button>
-      </Box>
+          {appConfig.companyName}
+        </Link>
+        <Typography color="text.primary">
+          {t('Program List', { ns: 'common' })}
+        </Typography>
+      </Breadcrumbs>
       {isCreationMode ? (
         <>
           <NewProgramEdit
@@ -439,24 +427,57 @@ function ProgramList(props) {
         </>
       ) : (
         <>
-          <Button
-            size="small"
-            color="primary"
-            variant="contained"
-            onClick={onClickIsCreateApplicationMode}
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{ my: 1 }}
           >
-            {t('Add New Program')}
-          </Button>
-          {rowSelectionModel.length > 0 && (
-            <Button
-              size="small"
-              color="primary"
-              variant="contained"
-              onClick={setModalShow2}
-              startIcon={<PersonAddIcon />}
-            ></Button>
-          )}
-          <br />
+            <Typography variant="h6">
+              {t('Program List', { ns: 'common' })}
+            </Typography>
+            {/* Button on the right */}
+            <Box>
+              {rowSelectionModel.length > 0 && (
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={setModalShow2}
+                  startIcon={<PersonAddIcon />}
+                  sx={{ mr: 1 }}
+                >
+                  {t('Assign', { ns: 'common' })}
+                </Button>
+              )}
+              <Button
+                variant="outlined"
+                color="primary"
+                component={LinkDom}
+                to="/courses/analysis/programs"
+                disabled={true}
+                sx={{ mr: 1 }}
+              >
+                {t('Program Requirements', { ns: 'common' })}
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                component={LinkDom}
+                to="/programs/config"
+                disabled={true}
+                sx={{ mr: 1 }}
+              >
+                {t('School Configuration', { ns: 'common' })}
+              </Button>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={onClickIsCreateApplicationMode}
+              >
+                {t('Add New Program')}
+              </Button>
+            </Box>
+          </Box>
           <div style={{ height: '50%', width: '100%' }}>
             <DataGrid
               columnHeaderHeight={130}

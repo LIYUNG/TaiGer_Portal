@@ -7,8 +7,10 @@ import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 import Loading from '../../../components/Loading/Loading';
 import DEMO from '../../../store/constant';
 import { appConfig } from '../../../config';
+import { useTranslation } from 'react-i18next';
 
 function ProgramRequirements() {
+  const { t } = useTranslation();
   const { programRequirements } = useLoaderData();
 
   TabTitle('Program Requirement Edit');
@@ -30,9 +32,11 @@ function ProgramRequirements() {
           component={LinkDom}
           to={`${DEMO.PROGRAMS}`}
         >
-          Program List
+          {t('Program List', { ns: 'common' })}
         </Link>
-        <Typography color="text.primary">Requirements</Typography>
+        <Typography color="text.primary">
+          {t('Program Requirements', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       <Suspense fallback={<Loading />}>
         <Await resolve={programRequirements}>

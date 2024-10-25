@@ -13,9 +13,13 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
 import React, { useState } from 'react';
+import DEMO from '../../../store/constant';
+import { useTranslation } from 'react-i18next';
 // TODO
 const ProgramRequirementsOverview = ({ programRequirements }) => {
+  const { t } = useTranslation();
   const [openRow, setOpenRow] = useState(null);
 
   const handleRowClick = (index) => {
@@ -23,15 +27,36 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
   };
   return (
     <>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        {programRequirements?.map((requirement) => (
-          <li
-            key={requirement._id}
-          >{`${requirement?.programId?.school} ${requirement?.programId?.program_name} ${requirement?.programId?.degree}`}</li>
-        ))}
-        <Button variant="contained" color="primary">
-          Create New Analysis
-        </Button>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ my: 1 }}
+      >
+        <Typography variant="h6">
+          {t('Program Analysis Collection', { ns: 'common' })}
+        </Typography>
+        <Box>
+          <Button
+            variant="outlined"
+            component={LinkDom}
+            to={`${DEMO.KEYWORDS_EDIT}`}
+            color="primary"
+            disabled={true}
+            sx={{ mr: 2 }}
+          >
+            {t('Edit Keywords', { ns: 'common' })}
+          </Button>
+          <Button
+            variant="contained"
+            component={LinkDom}
+            to={`${DEMO.CREATE_NEW_PROGRAM_ANALYSIS}`}
+            color="primary"
+            disabled={true}
+          >
+            {t('Create New Analysis', { ns: 'common' })}
+          </Button>
+        </Box>
       </Box>
       <TableContainer component={Paper}>
         <Table aria-label="program table">

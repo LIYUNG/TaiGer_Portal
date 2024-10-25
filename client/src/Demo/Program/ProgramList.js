@@ -417,15 +417,27 @@ function ProgramList(props) {
           </Typography>
         </Breadcrumbs>
         {/* Button on the right */}
-        <Button
-          variant="contained"
-          color="primary"
-          component={LinkDom}
-          to="/programs/config"
-          size="small"
-        >
-          School Config
-        </Button>
+        <Box>
+          <Button
+            variant="contained"
+            color="primary"
+            component={LinkDom}
+            to="/courses/analysis/programs"
+            size="small"
+            sx={{ mr: 2 }}
+          >
+            Program Requirements
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            component={LinkDom}
+            to="/programs/config"
+            size="small"
+          >
+            {t('School Configuration', { ns: 'common' })}
+          </Button>
+        </Box>
       </Box>
       {isCreationMode ? (
         <>

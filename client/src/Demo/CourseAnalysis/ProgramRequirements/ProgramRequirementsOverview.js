@@ -13,7 +13,9 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
 import React, { useState } from 'react';
+import DEMO from '../../../store/constant';
 // TODO
 const ProgramRequirementsOverview = ({ programRequirements }) => {
   const [openRow, setOpenRow] = useState(null);
@@ -23,15 +25,32 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
   };
   return (
     <>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        {programRequirements?.map((requirement) => (
-          <li
-            key={requirement._id}
-          >{`${requirement?.programId?.school} ${requirement?.programId?.program_name} ${requirement?.programId?.degree}`}</li>
-        ))}
-        <Button variant="contained" color="primary">
-          Create New Analysis
-        </Button>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ my: 1 }}
+      >
+        <Typography variant="h6">Program Analysis Collection</Typography>
+        <Box>
+          <Button
+            variant="contained"
+            component={LinkDom}
+            to={`${DEMO.KEYWORDS_EDIT}`}
+            color="primary"
+            sx={{ mr: 2 }}
+          >
+            Edit Keywords
+          </Button>
+          <Button
+            variant="contained"
+            component={LinkDom}
+            to={`${DEMO.CREATE_NEW_PROGRAM_ANALYSIS}`}
+            color="primary"
+          >
+            Create New Analysis
+          </Button>
+        </Box>
       </Box>
       <TableContainer component={Paper}>
         <Table aria-label="program table">

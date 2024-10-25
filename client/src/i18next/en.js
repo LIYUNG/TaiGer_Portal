@@ -263,6 +263,12 @@ export const translation_en = {
     'Download Center': 'Download Center',
     'Contact Us': 'Contact Us',
     'Program List': 'Program List',
+    'School Configuration': 'School Configuration',
+    'Is Private School': 'Is Private School',
+    'Is Partner School': 'Is Partner School',
+    'School Type': 'School Type',
+    'Programs Count': 'Programs Count',
+    'Please Select': 'Please Select',
     'User List': 'User List',
     Tools: 'Tools',
     'Course Analyser': 'Course Analyser',
@@ -305,6 +311,7 @@ export const translation_en = {
     Chat: 'Chat',
     'Upload file': 'Upload file',
     University: 'University',
+    'University of Applied Sciences': 'University of Applied Sciences',
     'Applications status updated successfully!':
       'Applications status updated successfully!',
     'Please update your applications results to the corresponding program in this page below':

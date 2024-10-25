@@ -88,6 +88,7 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
+    // processTranscript_api_gatway,
     processTranscript_test,
     logAccess
   );

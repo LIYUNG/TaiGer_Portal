@@ -402,19 +402,31 @@ function ProgramList(props) {
           res_modal_message={statedata.res_modal_message}
         />
       )}
-      <Breadcrumbs aria-label="breadcrumb">
-        <Link
-          underline="hover"
-          color="inherit"
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.DASHBOARD_LINK}`}
+          >
+            {appConfig.companyName}
+          </Link>
+          <Typography color="text.primary">
+            {t('Program List', { ns: 'common' })}
+          </Typography>
+        </Breadcrumbs>
+        {/* Button on the right */}
+        <Button
+          variant="contained"
+          color="primary"
           component={LinkDom}
-          to={`${DEMO.DASHBOARD_LINK}`}
+          to="/programs/config"
+          size="small"
         >
-          {appConfig.companyName}
-        </Link>
-        <Typography color="text.primary">
-          {t('Program List', { ns: 'common' })}
-        </Typography>
-      </Breadcrumbs>
+          School Config
+        </Button>
+      </Box>
       {isCreationMode ? (
         <>
           <NewProgramEdit

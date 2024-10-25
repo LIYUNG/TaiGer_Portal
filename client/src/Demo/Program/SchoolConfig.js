@@ -30,6 +30,8 @@ import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import ExampleWithLocalizationProvider from '../../components/MaterialReactTable';
 import { useTranslation } from 'react-i18next';
+import { updateSchoolAttributes } from '../../api';
+import { COUNTRIES_ARRAY_OPTIONS } from '../Utils/contants';
 
 function SchoolConfig() {
   const { user } = useAuth();
@@ -37,7 +39,6 @@ function SchoolConfig() {
   const { distinctSchools } = useLoaderData();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
-
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -72,6 +73,74 @@ function SchoolConfig() {
           </Box>
         );
       }
+    },
+    {
+      accessorKey: 'schoolType',
+      header: 'schoolType',
+      size: 150,
+      Cell: (params) => {
+        return (
+          <Box
+            sx={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden'
+            }}
+          >
+            {params.row.original?.schoolType}
+          </Box>
+        );
+      }
+    },
+    {
+      accessorKey: 'isPrivateSchool',
+      header: 'isPrivateSchool',
+      size: 150,
+      Cell: (params) => {
+        return (
+          <Box
+            sx={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden'
+            }}
+          >
+            {params.row.original?.isPrivateSchool ? 'Yes' : 'No'}
+          </Box>
+        );
+      }
+    },
+    {
+      accessorKey: 'isPartnerSchool',
+      header: 'isPartnerSchool',
+      size: 150,
+      Cell: (params) => {
+        return (
+          <Box
+            sx={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden'
+            }}
+          >
+            {params.row.original?.isPartnerSchool ? 'Yes' : 'No'}
+          </Box>
+        );
+      }
+    },
+    {
+      accessorKey: 'country',
+      header: 'Country',
+      size: 150,
+      Cell: (params) => {
+        return (
+          <Box
+            sx={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden'
+            }}
+          >
+            {params.row.original?.country}
+          </Box>
+        );
+      }
     }
   ];
 
@@ -86,67 +155,114 @@ function SchoolConfig() {
   }
 
   const EditCard = ({ data }) => {
+    const [attributes, setAttributes] = useState(data);
+    const handleChange = async (e, school) => {
+      e.preventDefault();
+      console.log(attributes);
+      setAttributes({
+        ...attributes,
+        school,
+        [e.target.name]: e.target.value
+      });
+    };
+
+    const handleSave = async (e) => {
+      e.preventDefault();
+      const resp = await updateSchoolAttributes(attributes);
+      const { success } = resp.data;
+      if (!success) {
+        console.log('warning');
+      }
+      setAttributes({});
+    };
+
     return (
       <Box>
-        <Typography variant="h6">Name: {data.school}</Typography>
-        <Typography variant="subtitle1">
-          Programs Count: {data.count}
-        </Typography>
-        <FormControl fullWidth size="small">
-          <InputLabel id="select-target-group">
-            {t('isPrivateSchool')}
-          </InputLabel>
-          <Select
-            labelId="isPrivateSchool"
-            label="isPrivateSchool"
-            name="isPrivateSchool"
-            id="isPrivateSchool"
-            // onChange={(e) => handleChange_category(e)}
-          >
-            <MenuItem value={true}>Yes</MenuItem>
-            <MenuItem value={false}>No</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl fullWidth size="small">
-          <InputLabel id="select-target-group">
-            {t('isPartnerSchool')}
-          </InputLabel>
-          <Select
-            labelId="isPartnerSchool"
-            label="isPartnerSchool"
-            name="isPartnerSchool"
-            id="isPartnerSchool"
-            // onChange={(e) => handleChange_category(e)}
-          >
-            <MenuItem value={true}>Yes</MenuItem>
-            <MenuItem value={false}>No</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl fullWidth size="small">
-          <InputLabel id="select-target-group">{t('schoolType')}</InputLabel>
-          <Select
-            labelId="schoolType"
-            label="schoolType"
-            name="schoolType"
-            id="schoolType"
-            // onChange={(e) => handleChange_category(e)}
-          >
-            <MenuItem value={'University'}>University</MenuItem>
-            <MenuItem value={'University_of_Applied_Sciences'}>
-              University_of_Applied_Sciences
-            </MenuItem>
-          </Select>
-        </FormControl>
-        {/* Additional configuration details go here */}
-        <Button variant="contained" color="primary">
-          Update
-        </Button>
+        <form onSubmit={(e) => handleSave(e)}>
+          <Typography variant="h6">Name: {attributes.school}</Typography>
+          <Typography variant="subtitle1">
+            Programs Count: {attributes.count}
+          </Typography>
+          <FormControl fullWidth size="small">
+            <InputLabel id="select-target-group">
+              {t('isPrivateSchool')}
+            </InputLabel>
+            <Select
+              labelId="isPrivateSchool"
+              label="isPrivateSchool"
+              name="isPrivateSchool"
+              id="isPrivateSchool"
+              defaultValue={attributes.isPrivateSchool ?? false}
+              onChange={(e) => handleChange(e, attributes.school)}
+            >
+              <MenuItem value={true}>{t('Yes', { ns: 'common' })}</MenuItem>
+              <MenuItem value={false}>{t('No', { ns: 'common' })}</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl fullWidth size="small">
+            <InputLabel id="select-target-group">
+              {t('isPartnerSchool')}
+            </InputLabel>
+            <Select
+              labelId="isPartnerSchool"
+              label="isPartnerSchool"
+              name="isPartnerSchool"
+              id="isPartnerSchool"
+              defaultValue={data.isPartnerSchool ?? false}
+              onChange={(e) => handleChange(e, data.school)}
+            >
+              <MenuItem value={true}>{t('Yes', { ns: 'common' })}</MenuItem>
+              <MenuItem value={false}>{t('No', { ns: 'common' })}</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl fullWidth size="small">
+            <InputLabel id="select-target-group">
+              {t('Country', { ns: 'common' })}
+            </InputLabel>
+            <Select
+              labelId="country"
+              label="country"
+              name="country"
+              id="country"
+              defaultValue={attributes.country ?? '-'}
+              onChange={(e) => handleChange(e, attributes.school)}
+            >
+              {COUNTRIES_ARRAY_OPTIONS.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl fullWidth size="small">
+            <InputLabel id="select-target-group">{t('schoolType')}</InputLabel>
+            <Select
+              labelId="schoolType"
+              label="schoolType"
+              name="schoolType"
+              id="schoolType"
+              defaultValue={attributes.schoolType ?? 'University'}
+              onChange={(e) => handleChange(e, attributes.school)}
+            >
+              <MenuItem value={'University'}>
+                {t('University', { ns: 'common' })}
+              </MenuItem>
+              <MenuItem value={'University_of_Applied_Sciences'}>
+                {t('University of Applied Sciences', { ns: 'common' })}
+              </MenuItem>
+            </Select>
+          </FormControl>
+          {/* Additional configuration details go here */}
+          <Button variant="contained" color="primary" type="submit">
+            {t('Update', { ns: 'common' })}
+          </Button>
+        </form>
       </Box>
     );
   };
   TabTitle('Student Database');
   return (
-    <Box data-testid="student_datdabase">
+    <Box data-testid="school_config">
       <Suspense fallback={<Loading />}>
         <Await resolve={distinctSchools}>
           {(loadedData) => (
@@ -160,7 +276,15 @@ function SchoolConfig() {
                 >
                   {appConfig.companyName}
                 </Link>
-                <Typography color="text.primary">Config</Typography>
+                <Link
+                  underline="hover"
+                  color="inherit"
+                  component={LinkDom}
+                  to={`${DEMO.PROGRAMS}`}
+                >
+                  Program List
+                </Link>
+                <Typography color="text.primary">School Configuration</Typography>
               </Breadcrumbs>
               <Grid container spacing={2}>
                 {/* Left side: School list */}

@@ -41,6 +41,8 @@ const { ResponseTimeSchema } = require('./models/ResponseTime');
 const { surveyInputSchema } = require('./models/SurveyInput');
 const { permissionSchema } = require('./models/Permission');
 const { complaintSchema } = require('./models/Complaint');
+const { keywordSetSchema } = require('./models/Keywordset');
+const { programRequirementSchema } = require('./models/Programrequirement');
 
 const connections = {};
 const tenantDb = 'Tenant';
@@ -85,8 +87,10 @@ const connectToDatabase = (tenant, uri = null) => {
     connection.model('Interview', interviewsSchema);
 
     connection.model('InterviewSurveyResponse', interviewSurveyResponseSchema);
+    connection.model('KeywordSet', keywordSetSchema);
     connection.model('Note', notesSchema);
     connection.model('Permission', permissionSchema);
+    connection.model('ProgramRequirement', programRequirementSchema);
     connection.model('ResponseTime', ResponseTimeSchema);
 
     surveyInputSchema.index(

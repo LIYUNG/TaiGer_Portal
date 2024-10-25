@@ -16,8 +16,10 @@ import {
 import { Link as LinkDom } from 'react-router-dom';
 import React, { useState } from 'react';
 import DEMO from '../../../store/constant';
+import { useTranslation } from 'react-i18next';
 // TODO
 const ProgramRequirementsOverview = ({ programRequirements }) => {
+  const { t } = useTranslation();
   const [openRow, setOpenRow] = useState(null);
 
   const handleRowClick = (index) => {
@@ -31,24 +33,28 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
         alignItems="center"
         sx={{ my: 1 }}
       >
-        <Typography variant="h6">Program Analysis Collection</Typography>
+        <Typography variant="h6">
+          {t('Program Analysis Collection', { ns: 'common' })}
+        </Typography>
         <Box>
           <Button
-            variant="contained"
+            variant="outlined"
             component={LinkDom}
             to={`${DEMO.KEYWORDS_EDIT}`}
             color="primary"
+            disabled={true}
             sx={{ mr: 2 }}
           >
-            Edit Keywords
+            {t('Edit Keywords', { ns: 'common' })}
           </Button>
           <Button
             variant="contained"
             component={LinkDom}
             to={`${DEMO.CREATE_NEW_PROGRAM_ANALYSIS}`}
             color="primary"
+            disabled={true}
           >
-            Create New Analysis
+            {t('Create New Analysis', { ns: 'common' })}
           </Button>
         </Box>
       </Box>

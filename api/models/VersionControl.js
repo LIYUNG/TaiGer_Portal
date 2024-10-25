@@ -16,6 +16,10 @@ const changesSchema = new Schema(
       type: String
       // type: mongoose.Schema.Types.ObjectId,
       // ref: 'User'
+    },
+    changeRequest: {
+      type: ObjectId,
+      refPath: 'changeRequestRef'
     }
   },
   { _id: false }
@@ -31,6 +35,14 @@ const versionControlSchema = new Schema({
     required: true
   },
   changes: [changesSchema]
+});
+
+// Mapping to original collection and change request collection
+const collectionMap = {
+  Program: 'ProgramChangeRequest'
+};
+versionControlSchema.virtual('changeRequestRef').get(function () {
+  return collectionMap?.[this.collectionName];
 });
 
 versionControlSchema.statics.getVersion = async function (

@@ -11,6 +11,7 @@ const {
 const { EventSchema } = require('./models/Event');
 const { documentThreadsSchema } = require('./models/Documentthread');
 const { programSchema } = require('./models/Program');
+const { programChangeRequestSchema } = require('./models/ProgramChangeRequest');
 const { coursesSchema } = require('./models/Course');
 const {
   basedocumentationslinksSchema
@@ -107,6 +108,7 @@ const connectToDatabase = (tenant, uri = null) => {
     connection.model('User').discriminator('Admin', Admin.schema);
     connection.model('User').discriminator('Guest', Guest.schema);
 
+    connection.model('ProgramChangeRequest', programChangeRequestSchema);
     connection.model('VC', versionControlSchema);
     applyProgramSchema(
       connection,

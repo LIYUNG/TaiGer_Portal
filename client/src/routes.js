@@ -135,6 +135,9 @@ const StudentApplications = React.lazy(() =>
   import('./Demo/StudentApplications/index')
 );
 const SingleProgram = React.lazy(() => import('./Demo/Program/SingleProgram'));
+const ProgramChangeRequestPage = React.lazy(() =>
+  import('./Demo/Program/ProgramChangeRequestPage')
+);
 const SchoolConfig = React.lazy(() => import('./Demo/Program/SchoolConfig'));
 const UsersTable = React.lazy(() => import('./Demo/Users/UsersTable'));
 const Survey = React.lazy(() => import('./Demo/Survey/index'));
@@ -244,6 +247,12 @@ const routes = [
     errorElement: <DefaultErrorPage />,
     loader: getAllArchivedStudentsLoader,
     element: <AllArchivStudent />
+  },
+  {
+    path: '/programs/:programId/change-requests',
+    exact: true,
+    name: 'SingleProgram',
+    Component: ProgramChangeRequestPage
   },
   {
     path: '/programs/config',

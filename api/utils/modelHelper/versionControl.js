@@ -329,6 +329,7 @@ const enableVersionControl = (schema, { VCModel }) => {
       try {
         const condition = this.getQuery();
         this._oldVersion = await this.model.find(condition).lean();
+        this._changeRequestId = this.getUpdate()?.changeRequestId;
       } catch (error) {
         logger.error(`VC (${collectionName}) - Error on pre hook: ${error}`);
       }
@@ -341,13 +342,18 @@ const enableVersionControl = (schema, { VCModel }) => {
       const collectionName = this.model.modelName;
 
       const docs = this._oldVersion;
+      const changeRequestId = this._changeRequestId;
       delete this._oldVersion;
+      delete this._changeRequestId;
       const changes = this.getUpdate().$set;
 
       for (let doc of docs) {
         const updatedDoc = { ...doc, ...changes };
         const objectId = updatedDoc._id;
         const docChanges = detectChanges(doc, updatedDoc);
+
+        // add reference to change request
+        docChanges.changeRequest = changeRequestId;
 
         // don't save if no changes
         if (

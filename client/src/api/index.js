@@ -324,6 +324,12 @@ export const createProgram = (program) =>
 export const updateProgram = (program) =>
   request.put(`/api/programs/${program._id}`, program);
 
+export const getProgramChangeRequests = (programId) =>
+  request.get(`/api/programs/${programId}/change-requests`);
+
+export const reviewProgramChangeRequests = (requestId) =>
+  request.post(`/api/programs/review-changes/${requestId}`);
+
 // Docs APIs
 export const deleteDoc = (id) => request.delete(`/api/docs/${id}`);
 export const addDoc = (id) => request.post(`/api/docs/${id}`);

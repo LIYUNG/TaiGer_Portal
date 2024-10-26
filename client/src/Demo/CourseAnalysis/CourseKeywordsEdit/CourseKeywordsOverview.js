@@ -35,7 +35,8 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
       antiKeywords_en: courseKeywordSet.antiKeywords?.en?.join(', ')
     }))
   );
-
+  const [itemToBeDeleted, setItemToBeDeleted] = useState({});
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
   const [drawerOpen, setDrawerOpen] = useState(false);
   const theme = useTheme();
@@ -57,15 +58,23 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
   const col = useMemo(() => col_keywords, [col_keywords]);
 
   const handleDelete = async (data) => {
-    // TODO: add popup window
+    setIsDeleteDialogOpen(true);
+    setItemToBeDeleted(data);
+  };
+
+  const handleDeleteConfirm = async () => {
     // TODO de-select!!
+    setIsDeleteDialogOpen;
+    setRowSelection({});
     setCourseKeywordSetsState((prevState) =>
-      prevState.filter((item) => item._id !== data._id)
+      prevState.filter((item) => item._id !== itemToBeDeleted._id)
     );
-    const resp = await deleteKeywordSet(data._id);
+    const resp = await deleteKeywordSet(itemToBeDeleted._id);
     if (!resp.success) {
       console.log('failed');
     }
+    setIsDeleteDialogOpen(false);
+    setItemToBeDeleted({});
   };
 
   const EditCard = (props) => {
@@ -592,6 +601,27 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
           </Button>
         </div>
       </Drawer>
+      <Dialog
+        open={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        aria-labelledby="error-dialog-title"
+        aria-describedby="error-dialog-description"
+      >
+        <DialogTitle id="error-dialog-title">Warning</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="error-dialog-description">
+            {t('Do you want to delete?')}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleDeleteConfirm(false)} color="primary">
+            Yes
+          </Button>
+          <Button onClick={() => setIsDeleteDialogOpen(false)} color="primary">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

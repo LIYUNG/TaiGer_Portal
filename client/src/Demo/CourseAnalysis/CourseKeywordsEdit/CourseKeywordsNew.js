@@ -21,8 +21,6 @@ import DEMO from '../../../store/constant';
 import { appConfig } from '../../../config';
 
 const CourseKeywordsOverviewNew = () => {
-  const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -43,7 +41,8 @@ const CourseKeywordsOverviewNew = () => {
     const [antiKeywordsZH, setAntiKeywordsZH] = useState('');
     const [keywordsEN, setKeywordsEN] = useState('');
     const [antiKeywordsEN, setAntiKeywordsEN] = useState('');
-
+    const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const handleAddCourseKeyword = (lang, keyword) => {
       if (selectedCategory.keywords[lang]?.includes(keywordsZH)) {
         setErrorMessage('This keyword already exists in the list.');
@@ -324,6 +323,24 @@ const CourseKeywordsOverviewNew = () => {
             </Box>
           </Box>
         </form>
+        <Dialog
+          open={isErrorDialogOpen}
+          onClose={() => setIsErrorDialogOpen(false)}
+          aria-labelledby="error-dialog-title"
+          aria-describedby="error-dialog-description"
+        >
+          <DialogTitle id="error-dialog-title">Duplicate Keyword</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="error-dialog-description">
+              {errorMessage}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setIsErrorDialogOpen(false)} color="primary">
+              {t('OK', { ns: 'common' })}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     );
   };
@@ -367,24 +384,6 @@ const CourseKeywordsOverviewNew = () => {
       <Paper style={{ padding: 16 }}>
         <EditCard />
       </Paper>
-      <Dialog
-        open={isErrorDialogOpen}
-        onClose={() => setIsErrorDialogOpen(false)}
-        aria-labelledby="error-dialog-title"
-        aria-describedby="error-dialog-description"
-      >
-        <DialogTitle id="error-dialog-title">Duplicate Keyword</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="error-dialog-description">
-            {errorMessage}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsErrorDialogOpen(false)} color="primary">
-            {t('OK', { ns: 'common' })}
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };

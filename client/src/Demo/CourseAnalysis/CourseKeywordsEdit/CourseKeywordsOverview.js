@@ -26,8 +26,15 @@ import { col_keywords } from '../../Utils/contants';
 import DEMO from '../../../store/constant';
 
 const CourseKeywordsOverview = ({ courseKeywordSets }) => {
-  const [courseKeywordSetsState, setCourseKeywordSetsState] =
-    useState(courseKeywordSets);
+  const [courseKeywordSetsState, setCourseKeywordSetsState] = useState(
+    courseKeywordSets.map((courseKeywordSet) => ({
+      ...courseKeywordSet,
+      keywords_zh: courseKeywordSet.keywords?.zh?.join(', '),
+      keywords_en: courseKeywordSet.keywords?.en?.join(', '),
+      antiKeywords_zh: courseKeywordSet.antiKeywords?.zh?.join(', '),
+      antiKeywords_en: courseKeywordSet.antiKeywords?.en?.join(', ')
+    }))
+  );
 
   const [rowSelection, setRowSelection] = useState({});
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -51,7 +58,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
   const col = useMemo(() => col_keywords, [col_keywords]);
 
   const handleDelete = async (data) => {
-    // TODO: add popup window 
+    // TODO: add popup window
     // TODO de-select!!
     setCourseKeywordSetsState((prevState) =>
       prevState.filter((item) => item._id !== data._id)
@@ -154,11 +161,30 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
         if (index !== -1) {
           // If found, update the existing object
           return prevState.map((item, i) =>
-            i === index ? { ...item, ...selectedCategory } : item
+            i === index
+              ? {
+                  ...item,
+                  ...selectedCategory,
+                  keywords_zh: selectedCategory.keywords?.zh?.join(', '),
+                  keywords_en: selectedCategory.keywords?.en?.join(', '),
+                  antiKeywords_zh:
+                    selectedCategory.antiKeywords?.zh?.join(', '),
+                  antiKeywords_en: selectedCategory.antiKeywords?.en?.join(', ')
+                }
+              : item
           );
         } else {
           // If not found, add the new object to the array
-          return [...prevState, selectedCategory];
+          return [
+            ...prevState,
+            {
+              ...selectedCategory,
+              keywords_zh: selectedCategory.keywords?.zh?.join(', '),
+              keywords_en: selectedCategory.keywords?.en?.join(', '),
+              antiKeywords_zh: selectedCategory.antiKeywords?.zh?.join(', '),
+              antiKeywords_en: selectedCategory.antiKeywords?.en?.join(', ')
+            }
+          ];
         }
       });
       setIsEditMode(false);

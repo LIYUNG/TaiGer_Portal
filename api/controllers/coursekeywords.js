@@ -23,8 +23,25 @@ const getKeywordSet = asyncHandler(async (req, res) => {
 
 const createKeywordSet = asyncHandler(async (req, res) => {
   const fields = req.body;
-  // TODO: DO not create the same
-  const existed = await req.db.model('KeywordSet').findOne(fields, {
+  // TODO: DO not create the same keywords
+  console.log(fields);
+  const query = {
+    $or: [
+      {
+        $and: [
+          { 'keywords.zh': { $in: fields.keywords.zh } },
+          { 'antiKeywords.zh': { $in: fields.antiKeywords.zh } }
+        ]
+      },
+      {
+        $and: [
+          { 'keywords.en': { $in: fields.keywords.en } },
+          { 'antiKeywords.en': { $in: fields.antiKeywords.en } }
+        ]
+      }
+    ]
+  };
+  const existed = await req.db.model('KeywordSet').findOne(query, {
     new: true
   });
   if (existed) {

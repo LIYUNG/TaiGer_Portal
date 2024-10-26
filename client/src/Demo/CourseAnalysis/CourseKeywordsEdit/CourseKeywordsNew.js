@@ -15,7 +15,7 @@ import {
   Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { Link as LinkDom } from 'react-router-dom';
+import { Link as LinkDom, useNavigate } from 'react-router-dom';
 import { postKeywordSet } from '../../../api';
 import DEMO from '../../../store/constant';
 import { appConfig } from '../../../config';
@@ -24,9 +24,21 @@ const CourseKeywordsOverviewNew = () => {
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
-  const EditCard = (props) => {
-    const [selectedCategory, setSelectedCategory] = useState(props.data);
+  const EditCard = () => {
+    const [selectedCategory, setSelectedCategory] = useState({
+      categoryName: '',
+      description: '',
+      keywords: {
+        zh: [],
+        en: []
+      },
+      antiKeywords: {
+        zh: [],
+        en: []
+      }
+    });
     const [keywordsZH, setKeywordsZH] = useState('');
     const [antiKeywordsZH, setAntiKeywordsZH] = useState('');
     const [keywordsEN, setKeywordsEN] = useState('');
@@ -97,19 +109,28 @@ const CourseKeywordsOverviewNew = () => {
       }));
     };
 
-    const handleSave = async () => {
-      const resp = await postKeywordSet(selectedCategory._id, selectedCategory);
+    const handleSave = async (e) => {
+      e.preventDefault();
+      const resp = await postKeywordSet(selectedCategory);
       const { success } = resp.data;
       if (!success) {
-        console.log('warning');
+        alert(resp.data?.message);
+        return;
       }
+      navigate(DEMO.KEYWORDS_EDIT);
     };
-
+    const isDisabled =
+      selectedCategory.description === '' ||
+      selectedCategory.categoryName === '' ||
+      selectedCategory.keywords.zh.length === 0 ||
+      selectedCategory.antiKeywords.zh.length === 0 ||
+      selectedCategory.keywords.en.length === 0 ||
+      selectedCategory.antiKeywords.en.length === 0;
     return (
       <Box>
         <form onSubmit={(e) => handleSave(e)}>
           <div style={{ marginBottom: '16px' }}>
-            <Typography variant="h6">
+            <Typography variant="body1">
               {t('Category Name', { ns: 'common' })}:
             </Typography>
             <TextField
@@ -292,8 +313,13 @@ const CourseKeywordsOverviewNew = () => {
               >
                 {t('Cancel', { ns: 'common' })}
               </Button>
-              <Button variant="contained" color="primary" type="submit">
-                {t('Update', { ns: 'common' })}
+              <Button
+                disabled={isDisabled}
+                variant="contained"
+                color="primary"
+                type="submit"
+              >
+                {t('Create', { ns: 'common' })}
               </Button>
             </Box>
           </Box>
@@ -325,12 +351,12 @@ const CourseKeywordsOverviewNew = () => {
           underline="hover"
           color="inherit"
           component={LinkDom}
-          to={`${DEMO.PROGRAMS}`}
+          to={`${DEMO.KEYWORDS_EDIT}`}
         >
           {t('Keywords', { ns: 'common' })}
         </Link>
         <Typography color="text.primary">
-          {t('New', { ns: 'common' })}
+          {t('Create', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
       <Box>
@@ -339,7 +365,7 @@ const CourseKeywordsOverviewNew = () => {
         </Typography>
       </Box>
       <Paper style={{ padding: 16 }}>
-        <EditCard data={{}} />
+        <EditCard />
       </Paper>
       <Dialog
         open={isErrorDialogOpen}

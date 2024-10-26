@@ -1549,8 +1549,8 @@ export const col_keywords = [
     header: 'Category'
   },
   {
-    accessorKey: 'keywords',
-    header: 'Keyword',
+    accessorKey: 'keywords_zh',
+    header: 'Keyword-ZH',
     Cell: (params) => {
       return (
         <Box
@@ -1559,14 +1559,14 @@ export const col_keywords = [
             overflow: 'hidden'
           }}
         >
-          {params.row.original?.keywords?.zh?.join(', ')}
+          {params.row.original?.keywords_zh}
         </Box>
       );
     }
   },
   {
-    accessorKey: 'antiKeywords',
-    header: 'Anti Keywords',
+    accessorKey: 'antiKeywords_zh',
+    header: 'Anti Keywords-ZH',
     Cell: (params) => {
       return (
         <Box
@@ -1575,7 +1575,39 @@ export const col_keywords = [
             overflow: 'hidden'
           }}
         >
-          {params.row.original?.antiKeywords?.zh?.join(', ')}
+          {params.row.original?.antiKeywords_zh}
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'keywords_en',
+    header: 'Keyword-EN',
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.keywords_en}
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'antiKeywords_en',
+    header: 'Anti Keywords-EN',
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.antiKeywords_en}
         </Box>
       );
     }

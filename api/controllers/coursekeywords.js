@@ -23,8 +23,6 @@ const getKeywordSet = asyncHandler(async (req, res) => {
 
 const createKeywordSet = asyncHandler(async (req, res) => {
   const fields = req.body;
-  // TODO: DO not create the same keywords
-  console.log(fields);
   const query = {
     $or: [
       {
@@ -41,12 +39,38 @@ const createKeywordSet = asyncHandler(async (req, res) => {
       }
     ]
   };
-  const existed = await req.db.model('KeywordSet').findOne(query, {
-    new: true
-  });
+  const existed = await req.db.model('KeywordSet').findOne(query);
   if (existed) {
-    logger.error('createKeywordSet: Duplicate Keyword set found');
-    throw new ErrorResponse(423, 'Duplicate Keyword set found');
+    // Find out which specific keywords and antiKeywords are duplicates
+    const duplicateKeywordsZh = fields.keywords.zh.filter((keyword) =>
+      existed.keywords.zh.includes(keyword)
+    );
+    const duplicateAntiKeywordsZh = fields.antiKeywords.zh.filter(
+      (antiKeyword) => existed.antiKeywords.zh.includes(antiKeyword)
+    );
+    const duplicateKeywordsEn = fields.keywords.en.filter((keyword) =>
+      existed.keywords.en.includes(keyword)
+    );
+    const duplicateAntiKeywordsEn = fields.antiKeywords.en.filter(
+      (antiKeyword) => existed.antiKeywords.en.includes(antiKeyword)
+    );
+    // Build a clear error message
+    const duplicateZH = {
+      keywords: duplicateKeywordsZh,
+      antiKeywords: duplicateAntiKeywordsZh
+    };
+    const duplicateEN = {
+      keywords: duplicateKeywordsEn,
+      antiKeywords: duplicateAntiKeywordsEn
+    };
+
+    logger.error('createKeywordSet: Duplicate Keyword set found:', fields);
+    throw new ErrorResponse(
+      423,
+      `Duplicate Keywordset found: ZH ${JSON.stringify(
+        duplicateZH
+      )}, Anti-Keywordset found: EN ${JSON.stringify(duplicateEN)}`
+    );
   }
   const newKeywordSet = await req.db.model('KeywordSet').create(fields);
 

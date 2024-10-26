@@ -1541,6 +1541,51 @@ export const studentOverviewTableHeader = [
   'open/offer/reject'
 ];
 
+export const col_keywords = [
+  {
+    accessorKey: 'categoryName', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
+    filterVariant: 'autocomplete',
+    filterFn: 'contains',
+    header: 'Category'
+  },
+  {
+    accessorKey: 'keywords',
+    header: 'Keyword',
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.keywords?.zh?.join(', ')}
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'antiKeywords',
+    header: 'Anti Keywords',
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.antiKeywords?.zh?.join(', ')}
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: 'Last Update'
+  }
+];
+
 export const c1_mrt = [
   {
     accessorKey: 'firstname_lastname', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically

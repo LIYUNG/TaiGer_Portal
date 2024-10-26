@@ -464,7 +464,6 @@ function ProgramList(props) {
                 color="primary"
                 component={LinkDom}
                 to="/programs/config"
-                disabled={true}
                 sx={{ mr: 1 }}
               >
                 {t('School Configuration', { ns: 'common' })}

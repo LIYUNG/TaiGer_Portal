@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
+  Breadcrumbs,
   Button,
   Chip,
   Dialog,
@@ -8,63 +9,24 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Drawer,
-  Grid,
-  IconButton,
+  Link,
   Paper,
   TextField,
-  Typography,
-  useMediaQuery,
-  useTheme
+  Typography
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom } from 'react-router-dom';
-import { deleteKeywordSet, putKeywordSet } from '../../../api';
-import ExampleWithLocalizationProvider from '../../../components/MaterialReactTable';
-import { col_keywords } from '../../Utils/contants';
+import { postKeywordSet } from '../../../api';
 import DEMO from '../../../store/constant';
+import { appConfig } from '../../../config';
 
-const CourseKeywordsOverview = ({ courseKeywordSets }) => {
-  const [courseKeywordSetsState, setCourseKeywordSetsState] =
-    useState(courseKeywordSets);
-
-  const [rowSelection, setRowSelection] = useState({});
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+const CourseKeywordsOverviewNew = () => {
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const { t } = useTranslation();
 
-  const handleDrawerClose = () => {
-    setDrawerOpen(false);
-  };
-
-  const handleCategoryClick = (row) => {
-    setRowSelection(row);
-    if (isSmallScreen) {
-      setDrawerOpen(true); // Open the Drawer on small screens
-    }
-  };
-
-  const col = useMemo(() => col_keywords, [col_keywords]);
-
-  const handleDelete = async (data) => {
-    // TODO: add popup window 
-    // TODO de-select!!
-    setCourseKeywordSetsState((prevState) =>
-      prevState.filter((item) => item._id !== data._id)
-    );
-    const resp = await deleteKeywordSet(data._id);
-    if (!resp.success) {
-      console.log('failed');
-    }
-  };
-
   const EditCard = (props) => {
     const [selectedCategory, setSelectedCategory] = useState(props.data);
-    const [isEditMode, setIsEditMode] = useState(false);
     const [keywordsZH, setKeywordsZH] = useState('');
     const [antiKeywordsZH, setAntiKeywordsZH] = useState('');
     const [keywordsEN, setKeywordsEN] = useState('');
@@ -135,45 +97,21 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
       }));
     };
 
-    const handleEditClick = () => {
-      setIsEditMode(!isEditMode);
-    };
-
-    const handleCancel = () => {
-      setIsEditMode(!isEditMode);
-      setSelectedCategory(props.data);
-    };
-
     const handleSave = async () => {
-      props.setCourseKeywordSetsState((prevState) => {
-        // Check if the keywordSet object already exists in the state based on a unique key (e.g., id)
-        const index = prevState.findIndex(
-          (item) => item._id === selectedCategory._id
-        );
-
-        if (index !== -1) {
-          // If found, update the existing object
-          return prevState.map((item, i) =>
-            i === index ? { ...item, ...selectedCategory } : item
-          );
-        } else {
-          // If not found, add the new object to the array
-          return [...prevState, selectedCategory];
-        }
-      });
-      setIsEditMode(false);
-      const resp = await putKeywordSet(selectedCategory._id, selectedCategory);
+      const resp = await postKeywordSet(selectedCategory._id, selectedCategory);
       const { success } = resp.data;
       if (!success) {
         console.log('warning');
       }
     };
 
-    return isEditMode ? (
+    return (
       <Box>
         <form onSubmit={(e) => handleSave(e)}>
           <div style={{ marginBottom: '16px' }}>
-            <Typography variant="h6">Category Name:</Typography>
+            <Typography variant="h6">
+              {t('Category Name', { ns: 'common' })}:
+            </Typography>
             <TextField
               value={selectedCategory.categoryName}
               onChange={(e) => handleCategoryNameAndDescription(e)}
@@ -183,11 +121,10 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
               size="small"
             />
           </div>
-
           {/* Editable description */}
           <div style={{ marginBottom: '16px' }}>
             <Typography variant="body2" color="textSecondary">
-              Description:
+              {t('Description', { ns: 'common' })}:
             </Typography>
             <TextField
               value={selectedCategory.description}
@@ -350,7 +287,8 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={handleCancel}
+                component={LinkDom}
+                to={DEMO.KEYWORDS_EDIT}
               >
                 {t('Cancel', { ns: 'common' })}
               </Button>
@@ -361,192 +299,48 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
           </Box>
         </form>
       </Box>
-    ) : (
-      <Box>
-        <div style={{ marginBottom: '16px' }}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mb={2}
-          >
-            <Typography variant="h6">Category Name:</Typography>
-            <IconButton onClick={handleEditClick} size="small">
-              <EditIcon />
-            </IconButton>
-          </Box>
-          <TextField
-            value={selectedCategory.categoryName}
-            onChange={(e) => handleCategoryNameAndDescription(e)}
-            variant="outlined"
-            fullWidth
-            id="categoryName"
-            size="small"
-            InputProps={{
-              readOnly: true
-            }}
-          />
-        </div>
-        {/* Editable description */}
-        <div style={{ marginBottom: '16px' }}>
-          <Typography variant="body2" color="textSecondary">
-            Description:
-          </Typography>
-          <TextField
-            value={selectedCategory.description}
-            onChange={(e) => handleCategoryNameAndDescription(e)}
-            variant="outlined"
-            fullWidth
-            id="description"
-            multiline
-            rows={3}
-            size="small"
-            InputProps={{
-              readOnly: true
-            }}
-          />
-        </div>
-        <Box sx={{ width: '100%' }}>
-          {/* Add Keywords ZH */}
-          <Typography variant="body1">
-            {t('Course Keywords (ZH)', { ns: 'common' })}
-          </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {selectedCategory?.keywords?.zh?.map((keyword, index) => (
-              <Chip key={index} label={keyword} color="primary" />
-            ))}
-          </Box>
-          {/* Add Anti-Keywords ZH */}
-          <Typography variant="body1">
-            {t('Anti-Keywords (ZH)', { ns: 'common' })}
-          </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {selectedCategory?.antiKeywords?.zh?.map((keyword, index) => (
-              <Chip key={index} label={keyword} color="secondary" />
-            ))}
-          </Box>
-          {/* Add Keywords EN */}
-          <Typography variant="body1">
-            {t('Course Keywords (EN)', { ns: 'common' })}
-          </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {selectedCategory?.keywords?.en?.map((keyword, index) => (
-              <Chip key={index} label={keyword} color="primary" />
-            ))}
-          </Box>
-          {/* Add Anti-Keywords EN */}
-          <Typography variant="body1">
-            {t('Anti-Keywords (EN)', { ns: 'common' })}
-          </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {selectedCategory?.antiKeywords?.en?.map((keyword, index) => (
-              <Chip key={index} label={keyword} color="secondary" />
-            ))}
-          </Box>
-        </Box>
-      </Box>
     );
   };
 
-  const selectedARow =
-    Object.keys(rowSelection) && Object.keys(rowSelection)[0];
   return (
-    <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h6">Categories</Typography>
-        <Box>
-          <Button
-            variant="outlined"
-            color="primary"
-            disabled={!selectedARow}
-            onClick={() =>
-              handleDelete(
-                courseKeywordSetsState[parseInt(Object.keys(rowSelection)[0])]
-              )
-            }
-            sx={{ mr: 1 }}
-          >
-            {t('Delete', { ns: 'common' })}
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            component={LinkDom}
-            to={DEMO.KEYWORDS_NEW}
-          >
-            {t('Create', { ns: 'common' })}
-          </Button>
-        </Box>
-      </Box>
-
-      {/* Left sidebar */}
-      <Grid container spacing={2} sx={{ height: '100vh', mt: 1 }}>
-        <Grid
-          item
-          xs={12}
-          sx={{ overflowY: 'auto', maxHeight: '100vh' }} // Left side scroll
-          md={selectedARow ? 7 : 12}
+    <Box data-testid="course-keywords-new-component">
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
         >
-          <ExampleWithLocalizationProvider
-            data={courseKeywordSetsState}
-            col={col}
-            enableRowSelection={true}
-            enableMultiRowSelection={false}
-            muiTableBodyRowProps={({ row }) => ({
-              //add onClick to row to select upon clicking anywhere in the row
-              onClick: row.getToggleSelectedHandler(),
-              sx: { cursor: 'pointer' }
-            })}
-            onRowSelectionChange={(e) => handleCategoryClick(e)}
-            rowSelection={rowSelection}
-          />
-        </Grid>
-        {/* Right content */}
-        {/* Right side: Configuration panel */}
-        {!isSmallScreen && (
-          <Grid
-            item
-            xs={12}
-            md={5}
-            sx={{ overflowY: 'auto', maxHeight: '100vh' }}
-          >
-            <Paper style={{ padding: 16 }}>
-              {selectedARow ? (
-                <EditCard
-                  data={
-                    courseKeywordSetsState[
-                      parseInt(Object.keys(rowSelection)[0])
-                    ]
-                  }
-                  setCourseKeywordSetsState={setCourseKeywordSetsState}
-                />
-              ) : (
-                <Typography variant="h6">
-                  Select a keyword set to configure
-                </Typography>
-              )}
-            </Paper>
-          </Grid>
-        )}
-      </Grid>
-      {/* Drawer for small screens */}
-      <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}>
-        <div style={{ width: 300, padding: 16 }}>
-          {Object.keys(rowSelection) && Object.keys(rowSelection)[0] ? (
-            <EditCard
-              data={
-                courseKeywordSetsState[parseInt(Object.keys(rowSelection)[0])]
-              }
-              setCourseKeywordSetsState={setCourseKeywordSetsState}
-            />
-          ) : (
-            <Typography variant="h6">Select a school to configure</Typography>
-          )}
-          <Button onClick={handleDrawerClose} variant="contained" fullWidth>
-            Close
-          </Button>
-        </div>
-      </Drawer>
+          {appConfig.companyName}
+        </Link>
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.PROGRAMS}`}
+        >
+          {t('Program List', { ns: 'common' })}
+        </Link>
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.PROGRAMS}`}
+        >
+          {t('Keywords', { ns: 'common' })}
+        </Link>
+        <Typography color="text.primary">
+          {t('New', { ns: 'common' })}
+        </Typography>
+      </Breadcrumbs>
+      <Box>
+        <Typography variant="h6">
+          {t('Categories', { ns: 'common' })}
+        </Typography>
+      </Box>
+      <Paper style={{ padding: 16 }}>
+        <EditCard data={{}} />
+      </Paper>
       <Dialog
         open={isErrorDialogOpen}
         onClose={() => setIsErrorDialogOpen(false)}
@@ -561,7 +355,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsErrorDialogOpen(false)} color="primary">
-            OK
+            {t('OK', { ns: 'common' })}
           </Button>
         </DialogActions>
       </Dialog>
@@ -569,4 +363,4 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
   );
 };
 
-export default CourseKeywordsOverview;
+export default CourseKeywordsOverviewNew;

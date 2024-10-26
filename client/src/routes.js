@@ -19,6 +19,7 @@ import {
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
+import CourseKeywordsOverviewNew from './Demo/CourseAnalysis/CourseKeywordsEdit/CourseKeywordsNew';
 
 const CreateComplaintTicket = React.lazy(() =>
   import('./Demo/CustomerSupport/CreateTicket')
@@ -244,8 +245,12 @@ const routes = [
     path: '/courses/analysis/keywords',
     errorElement: <DefaultErrorPage />,
     loader: getCourseKeywordSetsLoader,
-    // loader: getStudentsLoader,
     element: <CourseKeywordsEdit />
+  },
+  {
+    path: '/courses/analysis/keywords/new',
+    errorElement: <DefaultErrorPage />,
+    element: <CourseKeywordsOverviewNew />
   },
   {
     path: '/courses/analysis/programs',

@@ -81,6 +81,7 @@ const DEMO = {
   },
   PROGRAMS: '/programs',
   KEYWORDS_EDIT: '/courses/analysis/keywords',
+  KEYWORDS_NEW: '/courses/analysis/keywords/new',
   CREATE_NEW_PROGRAM_ANALYSIS: '/courses/analysis/programs/new',
   SINGLE_PROGRAM_LINK: (program_id) => {
     return `/programs/${program_id}`;

@@ -1,3 +1,4 @@
+import React, { useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -9,13 +10,15 @@ import {
   DialogTitle,
   Drawer,
   Grid,
+  IconButton,
   Paper,
   TextField,
   Typography,
   useMediaQuery,
   useTheme
 } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import EditIcon from '@mui/icons-material/Edit';
+
 import { useTranslation } from 'react-i18next';
 import { putKeywordSet } from '../../../api';
 import ExampleWithLocalizationProvider from '../../../components/MaterialReactTable';
@@ -24,11 +27,6 @@ import { col_keywords } from '../../Utils/contants';
 const CourseKeywordsOverview = ({ courseKeywordSets }) => {
   const [courseKeywordSetsState, setCourseKeywordSetsState] =
     useState(courseKeywordSets);
-
-  const [keywordsZH, setKeywordsZH] = useState('');
-  const [antiKeywordsZH, setAntiKeywordsZH] = useState('');
-  const [keywordsEN, setKeywordsEN] = useState('');
-  const [antiKeywordsEN, setAntiKeywordsEN] = useState('');
 
   const [rowSelection, setRowSelection] = useState({});
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -53,6 +51,11 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
 
   const EditCard = (props) => {
     const [selectedCategory, setSelectedCategory] = useState(props.data);
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [keywordsZH, setKeywordsZH] = useState('');
+    const [antiKeywordsZH, setAntiKeywordsZH] = useState('');
+    const [keywordsEN, setKeywordsEN] = useState('');
+    const [antiKeywordsEN, setAntiKeywordsEN] = useState('');
 
     const handleAddCourseKeyword = (lang, keyword) => {
       if (selectedCategory.keywords[lang]?.includes(keywordsZH)) {
@@ -119,8 +122,17 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
       }));
     };
 
+    const handleEditClick = () => {
+      setIsEditMode(!isEditMode);
+    };
+
+    const handleCancel = () => {
+      setIsEditMode(!isEditMode);
+      setSelectedCategory(props.data);
+    };
+
     const handleSave = async () => {
-      props.setDistinctSchoolsState((prevState) => {
+      props.setCourseKeywordSetsState((prevState) => {
         // Check if the keywordSet object already exists in the state based on a unique key (e.g., id)
         const index = prevState.findIndex(
           (item) => item._id === selectedCategory._id
@@ -136,7 +148,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
           return [...prevState, selectedCategory];
         }
       });
-
+      setIsEditMode(false);
       const resp = await putKeywordSet(selectedCategory._id, selectedCategory);
       const { success } = resp.data;
       if (!success) {
@@ -144,7 +156,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
       }
     };
 
-    return (
+    return isEditMode ? (
       <Box>
         <form onSubmit={(e) => handleSave(e)}>
           <div style={{ marginBottom: '16px' }}>
@@ -185,7 +197,10 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                 label="Add course keyword here..."
                 variant="outlined"
                 value={keywordsZH}
-                onChange={(e) => setKeywordsZH(e.target.value)}
+                onChange={(e) => {
+                  e.preventDefault();
+                  setKeywordsZH(e.target.value);
+                }}
                 fullWidth
                 size="small"
               />
@@ -196,7 +211,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                 sx={{ ml: 2 }}
                 size="small"
               >
-                + Add Keywords (ZH)
+                + Add (ZH)
               </Button>
             </Box>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
@@ -232,7 +247,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                 sx={{ ml: 2 }}
                 size="small"
               >
-                + Add Anti-Keywords (ZH)
+                + Add (ZH)
               </Button>
             </Box>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
@@ -267,7 +282,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                 sx={{ ml: 2 }}
                 size="small"
               >
-                + Add Keywords (EN)
+                + Add (EN)
               </Button>
             </Box>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
@@ -303,10 +318,10 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                 sx={{ ml: 2 }}
                 size="small"
               >
-                + Add Anti-Keywords (EN)
+                + Add (EN)
               </Button>
             </Box>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
               {selectedCategory?.antiKeywords?.en?.map((keyword, index) => (
                 <Chip
                   key={index}
@@ -318,7 +333,14 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                 />
               ))}
             </Box>
-            <Box>
+            <Box display="flex" justifyContent="flex-end" gap={2}>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleCancel}
+              >
+                {t('Cancel', { ns: 'common' })}
+              </Button>
               <Button variant="contained" color="primary" type="submit">
                 {t('Update', { ns: 'common' })}
               </Button>
@@ -326,107 +348,200 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
           </Box>
         </form>
       </Box>
+    ) : (
+      <Box>
+        <div style={{ marginBottom: '16px' }}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mb={2}
+          >
+            <Typography variant="h6">Category Name:</Typography>
+            <IconButton onClick={handleEditClick} size="small">
+              <EditIcon />
+            </IconButton>
+          </Box>
+          <TextField
+            value={selectedCategory.categoryName}
+            onChange={(e) => handleCategoryNameAndDescription(e)}
+            variant="outlined"
+            fullWidth
+            id="categoryName"
+            size="small"
+            InputProps={{
+              readOnly: true
+            }}
+          />
+        </div>
+        {/* Editable description */}
+        <div style={{ marginBottom: '16px' }}>
+          <Typography variant="body2" color="textSecondary">
+            Description:
+          </Typography>
+          <TextField
+            value={selectedCategory.description}
+            onChange={(e) => handleCategoryNameAndDescription(e)}
+            variant="outlined"
+            fullWidth
+            id="description"
+            multiline
+            rows={3}
+            size="small"
+            InputProps={{
+              readOnly: true
+            }}
+          />
+        </div>
+        <Box sx={{ width: '100%' }}>
+          {/* Add Keywords ZH */}
+          <Typography variant="body1">
+            {t('Course Keywords (ZH)', { ns: 'common' })}
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {selectedCategory?.keywords?.zh?.map((keyword, index) => (
+              <Chip key={index} label={keyword} color="primary" />
+            ))}
+          </Box>
+          {/* Add Anti-Keywords ZH */}
+          <Typography variant="body1">
+            {t('Anti-Keywords (ZH)', { ns: 'common' })}
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {selectedCategory?.antiKeywords?.zh?.map((keyword, index) => (
+              <Chip key={index} label={keyword} color="secondary" />
+            ))}
+          </Box>
+          {/* Add Keywords EN */}
+          <Typography variant="body1">
+            {t('Course Keywords (EN)', { ns: 'common' })}
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {selectedCategory?.keywords?.en?.map((keyword, index) => (
+              <Chip key={index} label={keyword} color="primary" />
+            ))}
+          </Box>
+          {/* Add Anti-Keywords EN */}
+          <Typography variant="body1">
+            {t('Anti-Keywords (EN)', { ns: 'common' })}
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {selectedCategory?.antiKeywords?.en?.map((keyword, index) => (
+              <Chip key={index} label={keyword} color="secondary" />
+            ))}
+          </Box>
+        </Box>
+      </Box>
     );
   };
 
+  const selectedARow =
+    Object.keys(rowSelection) && Object.keys(rowSelection)[0];
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h6">Categories</Typography>
-        <Button variant="contained" color="primary">
-          Create New Keyword Set
-        </Button>
+        <Box>
+          <Button
+            variant="outlined"
+            color="primary"
+            disabled={!selectedARow}
+            sx={{ mr: 1 }}
+          >
+            Delete
+          </Button>
+          <Button variant="contained" color="primary">
+            Create New Keyword Set
+          </Button>
+        </Box>
       </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          height: window.innerHeight - 160,
-          flexDirection: { xs: 'column', md: 'row' } // Responsive: column on small screens, row on medium and larger
-        }}
-      >
-        {/* Left sidebar */}
-        <Grid container spacing={2}>
+
+      {/* Left sidebar */}
+      <Grid container spacing={2} sx={{ height: '100vh', mt: 1 }}>
+        <Grid
+          item
+          xs={12}
+          sx={{ overflowY: 'auto', maxHeight: '100vh' }} // Left side scroll
+          md={selectedARow ? 7 : 12}
+        >
+          <ExampleWithLocalizationProvider
+            data={courseKeywordSetsState}
+            col={col}
+            enableRowSelection={true}
+            enableMultiRowSelection={false}
+            muiTableBodyRowProps={({ row }) => ({
+              //add onClick to row to select upon clicking anywhere in the row
+              onClick: row.getToggleSelectedHandler(),
+              sx: { cursor: 'pointer' }
+            })}
+            onRowSelectionChange={(e) => handleCategoryClick(e)}
+            rowSelection={rowSelection}
+          />
+        </Grid>
+        {/* Right content */}
+        {/* Right side: Configuration panel */}
+        {!isSmallScreen && (
           <Grid
             item
             xs={12}
-            md={
-              Object.keys(rowSelection) && Object.keys(rowSelection)[0] ? 7 : 12
-            }
+            md={5}
+            sx={{ overflowY: 'auto', maxHeight: '100vh' }}
           >
-            <ExampleWithLocalizationProvider
-              data={courseKeywordSetsState}
-              col={col}
-              enableRowSelection={true}
-              enableMultiRowSelection={false}
-              muiTableBodyRowProps={({ row }) => ({
-                //add onClick to row to select upon clicking anywhere in the row
-                onClick: row.getToggleSelectedHandler(),
-                sx: { cursor: 'pointer' }
-              })}
-              onRowSelectionChange={(e) => handleCategoryClick(e)}
-              rowSelection={rowSelection}
-            />
+            <Paper style={{ padding: 16 }}>
+              {selectedARow ? (
+                <EditCard
+                  data={
+                    courseKeywordSetsState[
+                      parseInt(Object.keys(rowSelection)[0])
+                    ]
+                  }
+                  setCourseKeywordSetsState={setCourseKeywordSetsState}
+                />
+              ) : (
+                <Typography variant="h6">
+                  Select a keyword set to configure
+                </Typography>
+              )}
+            </Paper>
           </Grid>
-          {/* Right content */}
-          {/* Right side: Configuration panel */}
-          {!isSmallScreen && (
-            <Grid item xs={12} md={5}>
-              <Paper style={{ padding: 16 }}>
-                {Object.keys(rowSelection) && Object.keys(rowSelection)[0] ? (
-                  <EditCard
-                    data={
-                      courseKeywordSetsState[
-                        parseInt(Object.keys(rowSelection)[0])
-                      ]
-                    }
-                    setCourseKeywordSetsState={setCourseKeywordSetsState}
-                  />
-                ) : (
-                  <Typography variant="h6">
-                    Select a keyword set to configure
-                  </Typography>
-                )}
-              </Paper>
-            </Grid>
+        )}
+      </Grid>
+      {/* Drawer for small screens */}
+      <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}>
+        <div style={{ width: 300, padding: 16 }}>
+          {Object.keys(rowSelection) && Object.keys(rowSelection)[0] ? (
+            <EditCard
+              data={
+                courseKeywordSetsState[parseInt(Object.keys(rowSelection)[0])]
+              }
+              setCourseKeywordSetsState={setCourseKeywordSetsState}
+            />
+          ) : (
+            <Typography variant="h6">Select a school to configure</Typography>
           )}
-        </Grid>
-        {/* Drawer for small screens */}
-        <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}>
-          <div style={{ width: 300, padding: 16 }}>
-            {Object.keys(rowSelection) && Object.keys(rowSelection)[0] ? (
-              <EditCard
-                data={
-                  courseKeywordSetsState[parseInt(Object.keys(rowSelection)[0])]
-                }
-                setCourseKeywordSetsState={setCourseKeywordSetsState}
-              />
-            ) : (
-              <Typography variant="h6">Select a school to configure</Typography>
-            )}
-            <Button onClick={handleDrawerClose} variant="contained" fullWidth>
-              Close
-            </Button>
-          </div>
-        </Drawer>
-        <Dialog
-          open={isErrorDialogOpen}
-          onClose={() => setIsErrorDialogOpen(false)}
-          aria-labelledby="error-dialog-title"
-          aria-describedby="error-dialog-description"
-        >
-          <DialogTitle id="error-dialog-title">Duplicate Keyword</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="error-dialog-description">
-              {errorMessage}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setIsErrorDialogOpen(false)} color="primary">
-              OK
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
+          <Button onClick={handleDrawerClose} variant="contained" fullWidth>
+            Close
+          </Button>
+        </div>
+      </Drawer>
+      <Dialog
+        open={isErrorDialogOpen}
+        onClose={() => setIsErrorDialogOpen(false)}
+        aria-labelledby="error-dialog-title"
+        aria-describedby="error-dialog-description"
+      >
+        <DialogTitle id="error-dialog-title">Duplicate Keyword</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="error-dialog-description">
+            {errorMessage}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsErrorDialogOpen(false)} color="primary">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

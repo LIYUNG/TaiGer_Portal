@@ -348,7 +348,11 @@ export const translation_zh_TW = {
     'Personal Data is updated successfully!': '個人資料更新成功！',
     'Office Hours time slots updated': 'Office Hours 更新成功',
     'Internal Documentation': '內部文檔',
-    'All Internal Documentations': '所有內部文檔'
+    'All Internal Documentations': '所有內部文檔',
+    'Program Requirements': '學程課程分析',
+    'Program Analysis Collection': '學成課程分析資料庫',
+    'Edit Keywords': '編輯關鍵字',
+    'Create New Analysis': '新增課程分析'
   },
   customerCenter: {
     'What is the purpose of the Customer Center?': '客服中心的目的是什麼？',

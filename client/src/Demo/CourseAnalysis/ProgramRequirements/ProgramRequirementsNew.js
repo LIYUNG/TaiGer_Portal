@@ -13,7 +13,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { Link as LinkDom } from 'react-router-dom';
+import { Link as LinkDom, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -23,8 +23,10 @@ import { postProgramRequirements } from '../../../api';
 const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
   const { t } = useTranslation();
   const [programCategories, setProgramCategories] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [program, setProgram] = useState({});
   const { distinctPrograms, keywordsets } = programsAndCourseKeywordSets;
+  const navigate = useNavigate();
 
   const handleAddCategory = () => {
     setProgramCategories([
@@ -98,7 +100,7 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    console.log(programCategories);
+    setIsSubmitting(true);
     const inputObject = {
       program: program,
       program_categories: programCategories?.map(
@@ -109,9 +111,11 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
     const resp = await postProgramRequirements(inputObject);
     const { success } = resp.data;
     if (!success) {
-      alert('Failed');
+      setIsSubmitting(false);
+      alert(`Creation Failed: ${resp.data.message}`);
+    } else {
+      navigate(DEMO.PROGRAM_ANALYSIS);
     }
-    console.log(inputObject);
   };
 
   console.log(programCategories?.length === 0);
@@ -125,6 +129,7 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
   );
   console.log(JSON.stringify(program) === '{}');
   const isSubmitDisabled =
+    isSubmitting ||
     programCategories?.length === 0 ||
     programCategories.some(
       (category) =>

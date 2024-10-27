@@ -69,7 +69,6 @@ const getProgramRequirement = asyncHandler(async (req, res) => {
 
 const createProgramRequirement = asyncHandler(async (req, res) => {
   const fields = req.body;
-  // TODO: DO not create the same
   const program = fields?.program;
   const program_categories = fields?.program_categories.map(
     (program_category) => ({
@@ -87,6 +86,22 @@ const createProgramRequirement = asyncHandler(async (req, res) => {
       degree: program.degree
     })
     .lean();
+  const matchedProgramIds = matchedPrograms.map(
+    (matchedProgram) => matchedProgram._id
+  );
+  const existedProgramRequirement = await req.db
+    .model('ProgramRequirement')
+    .find({ programId: matchedProgramIds })
+    .lean();
+  if (existedProgramRequirement?.length > 0) {
+    logger.error(
+      'createProgramRequirement: program analysis is already existed!'
+    );
+    throw new ErrorResponse(
+      423,
+      'createProgramRequirement: program analysis is already existed!'
+    );
+  }
   const payload = {
     programId: [...matchedPrograms.map((matchedProgram) => matchedProgram._id)],
     ...fields,
@@ -101,6 +116,8 @@ const createProgramRequirement = asyncHandler(async (req, res) => {
     success: true,
     data: newProgramRequirement
   });
+
+  // TODO: update Program Collection program analysis?
 });
 
 const updateProgramRequirement = asyncHandler(async (req, res) => {

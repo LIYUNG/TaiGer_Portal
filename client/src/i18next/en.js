@@ -345,7 +345,11 @@ export const translation_en = {
       'Personal Data is updated successfully!',
     'Office Hours time slots updated': 'Office Hours time slots updated',
     'Internal Documentation': 'Internal Documentation',
-    'All Internal Documentations': 'All Internal Documentations'
+    'All Internal Documentations': 'All Internal Documentations',
+    'Program Requirements': 'Program Requirements',
+    'Program Analysis Collection': 'Program Analysis Collection',
+    'Edit Keywords': 'Edit Keywords',
+    'Create New Analysis': 'Create New Analysis'
   },
   customerCenter: {
     'What is the purpose of the Customer Center?':

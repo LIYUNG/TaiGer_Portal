@@ -350,7 +350,7 @@ export const translation_zh_TW = {
     'Internal Documentation': '內部文檔',
     'All Internal Documentations': '所有內部文檔',
     'Program Requirements': '學程課程分析',
-    'Program Analysis Collection': '學成課程分析資料庫',
+    'Program Analysis Collection': '學程課程分析資料庫',
     'Edit Keywords': '編輯關鍵字',
     'Create New Analysis': '新增課程分析'
   },

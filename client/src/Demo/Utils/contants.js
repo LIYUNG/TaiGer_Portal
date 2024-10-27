@@ -1055,6 +1055,23 @@ export const ATTRIBUTES = [
   }
 ];
 
+export const PROGRAM_ANALYSIS_ATTRIBUTES = [
+  {
+    value: 'ee',
+    name: 'Electrical Engineering'
+  },
+  { value: 'cs', name: 'Computer Science' },
+
+  {
+    value: 'mgm',
+    name: 'Management'
+  },
+  {
+    value: 'phy',
+    name: 'Physics'
+  }
+];
+
 export const COLORS = [
   'primary',
   'secondary',

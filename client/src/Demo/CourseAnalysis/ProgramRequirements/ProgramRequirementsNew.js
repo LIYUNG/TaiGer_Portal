@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Checkbox,
   Chip,
   createFilterOptions,
   Grid,
@@ -16,9 +17,14 @@ import {
 import { Link as LinkDom, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 import DEMO from '../../../store/constant';
 import { postProgramRequirements, putProgramRequirement } from '../../../api';
+import { PROGRAM_ANALYSIS_ATTRIBUTES } from '../../Utils/contants';
 
 const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
   const { requirementId } = useParams();
@@ -38,8 +44,18 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
         }
       : {}
   );
+  const [checkboxState, setCheckboxState] = useState({
+    updateAttributesList: requirement?.attributes || []
+  });
+
   const navigate = useNavigate();
 
+  const onAttributesChange = (e, newValues) => {
+    setCheckboxState((prevState) => ({
+      ...prevState,
+      updateAttributesList: newValues
+    }));
+  };
   const handleAddCategory = () => {
     setProgramCategories([
       ...programCategories,
@@ -98,29 +114,35 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
     setIsSubmitting(true);
     const inputObject = {
       program: program,
+      attributes: checkboxState.updateAttributesList,
       program_categories: programCategories?.map(
         (programCategory) => programCategory
       ),
       fpso: ''
     };
-    if (requirementId) {
-      const resp = await putProgramRequirement(requirementId, inputObject);
-      const { success } = resp.data;
-      if (!success) {
-        setIsSubmitting(false);
-        alert(`Creation Failed: ${resp.data.message}`);
+    try {
+      if (requirementId) {
+        const resp = await putProgramRequirement(requirementId, inputObject);
+        const { success } = resp.data;
+        if (!success) {
+          setIsSubmitting(false);
+          alert(`Creation Failed: ${resp.data.message}`);
+        } else {
+          navigate(DEMO.PROGRAM_ANALYSIS);
+        }
       } else {
-        navigate(DEMO.PROGRAM_ANALYSIS);
+        const resp = await postProgramRequirements(inputObject);
+        const { success } = resp.data;
+        if (!success) {
+          setIsSubmitting(false);
+          alert(`Creation Failed: ${resp.data.message}`);
+        } else {
+          navigate(DEMO.PROGRAM_ANALYSIS);
+        }
       }
-    } else {
-      const resp = await postProgramRequirements(inputObject);
-      const { success } = resp.data;
-      if (!success) {
-        setIsSubmitting(false);
-        alert(`Creation Failed: ${resp.data.message}`);
-      } else {
-        navigate(DEMO.PROGRAM_ANALYSIS);
-      }
+    } catch (e) {
+      alert(`Creation Failed: server issue`);
+      setIsSubmitting(false);
     }
   };
 
@@ -180,6 +202,39 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                 <TextField {...params} label="Program" />
               )}
               size="small"
+            />
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Autocomplete
+              multiple
+              options={PROGRAM_ANALYSIS_ATTRIBUTES}
+              disableCloseOnSelect
+              getOptionLabel={(option) => option.name}
+              value={checkboxState.updateAttributesList || []}
+              onChange={(e, newValue) => onAttributesChange(e, newValue)}
+              isOptionEqualToValue={(option, value) =>
+                option.value === value.value
+              }
+              fullWidth
+              renderOption={(props, option, { selected }) => (
+                <li {...props}>
+                  <Checkbox
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    style={{ marginRight: 8 }}
+                    checked={selected}
+                  />
+                  {option.name}
+                </li>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  label="Attribute"
+                  placeholder="Demanding"
+                />
+              )}
             />
           </Box>
           <Box>
@@ -282,6 +337,7 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                             )} ${option.keywords?.en?.join(', ')} `
                           }
                           options={keywordsets || []}
+                          disableCloseOnSelect
                           isOptionEqualToValue={(option, value) =>
                             option._id === value._id
                           }

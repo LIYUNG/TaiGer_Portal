@@ -107,9 +107,6 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
               <TableCell>Program Name</TableCell>
               <TableCell>Degree</TableCell>
               <TableCell>Language</TableCell>
-              <TableCell>ML Required</TableCell>
-              <TableCell>RL Required</TableCell>
-              <TableCell>Essay Required</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -134,9 +131,6 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                   <TableCell>{item.programId[0].program_name}</TableCell>
                   <TableCell>{item.programId[0].degree}</TableCell>
                   <TableCell>{item.programId[0].lang}</TableCell>
-                  <TableCell>{item.programId[0].ml_required}</TableCell>
-                  <TableCell>{item.programId[0].rl_required}</TableCell>
-                  <TableCell>{item.programId[0].essay_required}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleRequirementEdit(item._id)}>
                       <EditIcon />

@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs');
 const isEmail = require('validator/lib/isEmail');
 
 const { DocumentStatus, ManagerType, Role } = require('../constants');
+const { attributeSchema } = require('./common');
 
 const options = { discriminatorKey: 'role', timestamps: true };
 const UserSchema = new Schema(
@@ -450,17 +451,6 @@ const applicationSchema = new Schema({
   decided: { type: String, default: '-' },
   closed: { type: String, default: '-' },
   admission: { type: String, default: '-' }
-});
-
-const attributeSchema = new Schema({
-  value: {
-    type: Number,
-    required: true
-  },
-  name: {
-    type: String,
-    required: true
-  }
 });
 
 const Student = User.discriminator(

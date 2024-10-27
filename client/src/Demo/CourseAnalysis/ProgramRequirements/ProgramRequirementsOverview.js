@@ -2,7 +2,12 @@ import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import {
   Box,
   Button,
+  CircularProgress,
   Collapse,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   IconButton,
   Paper,
   Table,
@@ -27,6 +32,9 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
   const [programRequirementsState, setProgramRequirementsState] =
     useState(programRequirements);
   const [openRow, setOpenRow] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [requirementIdToBeDeleted, setRequirementIdToBeDeleted] = useState('');
   const navigate = useNavigate();
 
   const handleRowClick = (index) => {
@@ -36,15 +44,27 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
   const handleRequirementEdit = (requirementId) => {
     navigate(DEMO.EDIT_PROGRAM_ANALYSIS(requirementId));
   };
-  const handleRequirementDelete = async (requirementId) => {
-    const resp = await deleteProgramRequirement(requirementId);
+
+  const handleDeleteModal = (requirementId) => {
+    setDeleteModalOpen(!deleteModalOpen);
+    setRequirementIdToBeDeleted(requirementId);
+  };
+  const handleRequirementDelete = async () => {
+    setIsDeleting(true);
+    const resp = await deleteProgramRequirement(requirementIdToBeDeleted);
     const { success } = resp.data;
     if (!success) {
       alert('Failed!');
+      setIsDeleting(false);
     } else {
       setProgramRequirementsState(
-        programRequirementsState.filter((r) => r._id !== requirementId)
+        programRequirementsState.filter(
+          (r) => r._id !== requirementIdToBeDeleted
+        )
       );
+      setRequirementIdToBeDeleted('');
+      setIsDeleting(false);
+      setDeleteModalOpen(false);
     }
   };
   return (
@@ -121,9 +141,7 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                     <IconButton onClick={() => handleRequirementEdit(item._id)}>
                       <EditIcon />
                     </IconButton>
-                    <IconButton
-                      onClick={() => handleRequirementDelete(item._id)}
-                    >
+                    <IconButton onClick={() => handleDeleteModal(item._id)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
@@ -203,6 +221,38 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
           </TableBody>
         </Table>
       </TableContainer>
+      <Dialog open={deleteModalOpen} onClose={setDeleteModalOpen} size="small">
+        <DialogTitle>{t('Attention')}</DialogTitle>
+        <DialogContent>
+          <Typography id="modal-modal-description" sx={{ my: 2 }}>
+            {t('Do you want to delete?')}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="secondary"
+            variant="contained"
+            disabled={isDeleting}
+            title="Undo"
+            sx={{ mr: 1 }}
+            onClick={() => handleRequirementDelete()}
+          >
+            {isDeleting ? (
+              <CircularProgress size="small" />
+            ) : (
+              t('Confirm', { ns: 'common' })
+            )}
+          </Button>
+          <Button
+            color="secondary"
+            variant="outlined"
+            title="Undo"
+            onClick={setDeleteModalOpen}
+          >
+            {t('Cancel', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

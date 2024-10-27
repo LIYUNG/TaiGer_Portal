@@ -25,7 +25,6 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
   const { t } = useTranslation();
   const { distinctPrograms, keywordsets, requirement } =
     programsAndCourseKeywordSets;
-  console.log(requirement);
   const [programCategories, setProgramCategories] = useState(
     requirement?.program_categories ?? []
   );
@@ -39,8 +38,6 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
         }
       : {}
   );
-  console.log(requirementId);
-  console.log(program);
   const navigate = useNavigate();
 
   const handleAddCategory = () => {
@@ -72,23 +69,6 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
           ? {
               ...programCategory,
               keywordSets: newKeywordSet
-            }
-          : programCategory
-      )
-    );
-  };
-
-  // Function to delete a keyword set from a program category
-  const handleDeleteCourseKeyword = (categoryIndex, keywordSetIndex) => {
-    console.log(categoryIndex, keywordSetIndex);
-    setProgramCategories((prev) =>
-      prev.map((programCategory, i) =>
-        i === categoryIndex
-          ? {
-              ...programCategory,
-              keywordSets: programCategory.keywordSets.filter(
-                (_, kIndex) => kIndex !== keywordSetIndex
-              )
             }
           : programCategory
       )
@@ -144,16 +124,6 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
     }
   };
 
-  console.log(programCategories?.length === 0);
-  console.log(
-    programCategories.some(
-      (category) =>
-        category.program_category.trim() === '' || // Check if program_category is not an empty string
-        category.requiredECTS <= 0 || // Check if requiredECTS is greater than 0
-        category.keywordSets.length === 0 // Ensure at least one keyword set is added
-    )
-  );
-  console.log(JSON.stringify(program) === '{}');
   const isSubmitDisabled =
     isSubmitting ||
     programCategories?.length === 0 ||
@@ -164,7 +134,6 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
         category.keywordSets.length === 0 // Ensure at least one keyword set is added
     ) ||
     JSON.stringify(program) === '{}';
-  console.log(isSubmitDisabled);
 
   return (
     <>
@@ -305,7 +274,6 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                       >
                         <Autocomplete
                           multiple
-                          label={t('Add Keyword Set', { ns: 'common' })}
                           variant="outlined"
                           value={programCategory.keywordSets}
                           getOptionLabel={(option) =>
@@ -314,6 +282,9 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                             )} ${option.keywords?.en?.join(', ')} `
                           }
                           options={keywordsets || []}
+                          isOptionEqualToValue={(option, value) =>
+                            option._id === value._id
+                          }
                           onChange={(e, newValue) =>
                             handleAddKeywordSet(newValue, index)
                           }
@@ -334,18 +305,15 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                             />
                           )}
                           renderTags={(value, getTagProps) =>
-                            value.map((option, index3) => {
-                              const { key, ...tagProps } = getTagProps({
-                                index3
+                            value.map((option, optionIndex) => {
+                              const { _id, ...tagProps } = getTagProps({
+                                index: optionIndex
                               });
                               return (
                                 <Chip
-                                  key={key}
+                                  key={_id}
                                   variant="outlined"
                                   label={option.categoryName}
-                                  onDelete={() =>
-                                    handleDeleteCourseKeyword(index, index3)
-                                  }
                                   {...tagProps}
                                 />
                               );

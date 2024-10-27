@@ -50,7 +50,7 @@ router
   );
 
 router
-  .route('/:keywordsSetId')
+  .route('/:requirementId')
   .put(
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),

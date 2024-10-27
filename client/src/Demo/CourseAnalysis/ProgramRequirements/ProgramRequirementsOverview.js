@@ -14,16 +14,33 @@ import {
   Typography
 } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 import React, { useState } from 'react';
 import DEMO from '../../../store/constant';
 import { useTranslation } from 'react-i18next';
-// TODO
+import { deleteProgramRequirement } from '../../../api';
+
 const ProgramRequirementsOverview = ({ programRequirements }) => {
   const { t } = useTranslation();
+  const [programRequirementsState, setProgramRequirementsState] =
+    useState(programRequirements);
   const [openRow, setOpenRow] = useState(null);
 
   const handleRowClick = (index) => {
     setOpenRow(openRow === index ? null : index); // Toggle open/close
+  };
+
+  const handleRequirementDelete = async (requirementId) => {
+    const resp = await deleteProgramRequirement(requirementId);
+    const { success } = resp.data;
+    if (!success) {
+      alert('Failed!');
+    } else {
+      setProgramRequirementsState(
+        programRequirementsState.filter((r) => r._id !== requirementId)
+      );
+    }
   };
   return (
     <>
@@ -68,10 +85,11 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
               <TableCell>ML Required</TableCell>
               <TableCell>RL Required</TableCell>
               <TableCell>Essay Required</TableCell>
+              <TableCell>Delete</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {programRequirements.map((item, index) => (
+            {programRequirementsState?.map((item, index) => (
               <React.Fragment key={item._id}>
                 <TableRow>
                   <TableCell>
@@ -94,6 +112,13 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                   <TableCell>{item.programId[0].ml_required}</TableCell>
                   <TableCell>{item.programId[0].rl_required}</TableCell>
                   <TableCell>{item.programId[0].essay_required}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={() => handleRequirementDelete(item._id)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
 
                 {/* Collapsible row for program categories */}

@@ -54,12 +54,12 @@ const getProgramRequirements = asyncHandler(async (req, res) => {
 });
 
 const getProgramRequirement = asyncHandler(async (req, res) => {
-  const { programId } = req.params;
+  const { requirementId } = req.params;
 
   const requirement = await req.db
     .model('ProgramRequirement')
-    .findOne({ programId })
-    .populate('programId program_categories.keywordSets');
+    .findById(requirementId)
+    .lean();
   if (!requirement) {
     logger.error('getProgramRequirement: Invalid program id');
     throw new ErrorResponse(404, 'ProgramRequirement not found');
@@ -121,17 +121,17 @@ const createProgramRequirement = asyncHandler(async (req, res) => {
 });
 
 const updateProgramRequirement = asyncHandler(async (req, res) => {
-  const { programId } = req.params;
+  const { requirementId } = req.params;
   const fields = req.body;
 
   fields.updatedAt = new Date();
   // TODO: update resolver_id
   const updatedProgramRequirement = await req.db
     .model('ProgramRequirement')
-    .findByIdAndUpdate(programId, fields, {
+    .findByIdAndUpdate(requirementId, fields, {
       new: true
     })
-    .populate('requester_id', 'firstname lastname email archiv');
+    .lean();
 
   if (!updatedProgramRequirement) {
     logger.error('updateProgramRequirement: Invalid message thread id');
@@ -142,8 +142,8 @@ const updateProgramRequirement = asyncHandler(async (req, res) => {
 });
 
 const deleteProgramRequirement = asyncHandler(async (req, res) => {
-  const { programId } = req.params;
-  await req.db.model('ProgramRequirement').findByIdAndDelete(programId);
+  const { requirementId } = req.params;
+  await req.db.model('ProgramRequirement').findByIdAndDelete(requirementId);
 
   res.status(200).send({ success: true });
 });

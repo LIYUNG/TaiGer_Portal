@@ -213,6 +213,8 @@ export const deleteKeywordSet = (keywordsSetId) =>
 
 export const getProgramRequirements = () =>
   request.get(`/api/program-requirements`);
+export const postProgramRequirements = (payload) =>
+  request.post(`/api/program-requirements/new`, payload);
 export const getProgramsAndCourseKeywordSets = () =>
   request.get(`/api/program-requirements/programs-and-keywords`);
 export const getProgramRequirement = (programRequirementId) =>

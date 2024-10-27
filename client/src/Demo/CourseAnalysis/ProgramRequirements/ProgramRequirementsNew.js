@@ -14,11 +14,12 @@ import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import DEMO from '../../../store/constant';
+import { postProgramRequirements } from '../../../api';
 
 const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
   const { t } = useTranslation();
-  const [keywordSet, setKeywordSet] = useState();
   const [programCategories, setProgramCategories] = useState([]);
+  const [program, setProgram] = useState({});
   const { distinctPrograms, keywordsets } = programsAndCourseKeywordSets;
 
   const handleAddCategory = () => {
@@ -36,10 +37,12 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
 
   const handleAddProgram = (newValue) => {
     console.log(newValue);
+    setProgram(newValue);
   };
 
   // Function to add a keyword set to a program category
   const handleAddKeywordSet = (newKeywordSet, index) => {
+    console.log(newKeywordSet);
     setProgramCategories((prev) =>
       prev.map((programCategory, i) =>
         i === index
@@ -80,13 +83,21 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
       )} ${option.keywords?.en?.join(', ')}`
   });
 
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
+    console.log(programCategories);
     const inputObject = {
-      programId: [''],
-      program_categories: programCategories,
+      program: program,
+      program_categories: programCategories?.map(
+        (programCategory) => programCategory
+      ),
       fpso: ''
     };
+    const resp = await postProgramRequirements(inputObject);
+    const { success } = resp.data;
+    if (!success) {
+      alert('Failed');
+    }
     console.log(inputObject);
   };
 
@@ -128,16 +139,8 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
               filterOptions={filterOptions}
               fullWidth
               renderInput={(params) => (
-                <TextField {...params} label="With categories" />
+                <TextField {...params} label="Program" />
               )}
-              size="small"
-            />
-            <TextField
-              label="Add course keywords"
-              variant="outlined"
-              value={keywordSet}
-              onChange={(e) => setKeywordSet(e.target.value)}
-              fullWidth
               size="small"
             />
           </Box>
@@ -228,14 +231,18 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                   </Grid>
                 </Grid>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {programCategories?.keywordSets?.map((keywordSet, kIndex) => (
-                    <Chip
-                      key={kIndex}
-                      label={keywordSet.categoryName}
-                      onDelete={() => handleDeleteCourseKeyword(index, kIndex)}
-                      color="secondary"
-                    />
-                  ))}
+                  {programCategories[index]?.keywordSets?.map(
+                    (keywordSet, kIndex) => (
+                      <Chip
+                        key={kIndex}
+                        label={keywordSet.categoryName}
+                        onDelete={() =>
+                          handleDeleteCourseKeyword(index, kIndex)
+                        }
+                        color="secondary"
+                      />
+                    )
+                  )}
                 </Box>
               </Card>
             ))}

@@ -32,6 +32,15 @@ router
   );
 
 router
+  .route('/new')
+  .post(
+    filter_archiv_user,
+    GeneralPOSTRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent),
+    createProgramRequirement
+  );
+
+router
   .route('/programs-and-keywords')
   .get(
     filter_archiv_user,
@@ -42,12 +51,6 @@ router
 
 router
   .route('/:keywordsSetId')
-  .post(
-    filter_archiv_user,
-    GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
-    createProgramRequirement
-  )
   .put(
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),

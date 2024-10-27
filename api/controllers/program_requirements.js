@@ -68,17 +68,42 @@ const getProgramRequirement = asyncHandler(async (req, res) => {
 });
 
 const createProgramRequirement = asyncHandler(async (req, res) => {
-  const { user } = req;
-  const { ticket } = req.body;
-  ticket.requester_id = user._id.toString();
+  const fields = req.body;
   // TODO: DO not create the same
-  const new_ticket = await req.db.model('ProgramRequirement').create(ticket);
+  const program = fields?.program;
+  const program_categories = fields?.program_categories.map(
+    (program_category) => ({
+      ...program_category,
+      keywordSets: program_category.keywordSets?.map(
+        (keywordSet) => keywordSet._id
+      )
+    })
+  );
+  const matchedPrograms = await req.db
+    .model('Program')
+    .find({
+      school: program.school,
+      program_name: program.program_name,
+      degree: program.degree
+    })
+    .lean();
+  const payload = {
+    programId: [...matchedPrograms.map((matchedProgram) => matchedProgram._id)],
+    ...fields,
+    program_categories
+  };
+  logger.info(JSON.stringify(payload));
+  const newProgramRequirement = await req.db
+    .model('ProgramRequirement')
+    .create(payload);
 
-  res.status(201).send({ success: true, data: new_ticket });
+  res.status(201).send({
+    success: true,
+    data: newProgramRequirement
+  });
 });
 
 const updateProgramRequirement = asyncHandler(async (req, res) => {
-  const { user } = req;
   const { programId } = req.params;
   const fields = req.body;
 

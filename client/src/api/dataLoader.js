@@ -14,6 +14,7 @@ import {
   getComplaintsTicket,
   getDistinctSchools,
   getCourseKeywordSets,
+  getProgramRequirement,
   getProgramRequirements,
   getProgramsAndCourseKeywordSets
 } from '.';
@@ -182,8 +183,8 @@ export async function DistinctSchoolsLoader() {
   }
 }
 
-export function getDistinctSchoolsLoader({ params }) {
-  return defer({ distinctSchools: DistinctSchoolsLoader({ params }) });
+export function getDistinctSchoolsLoader() {
+  return defer({ distinctSchools: DistinctSchoolsLoader() });
 }
 
 ///
@@ -197,8 +198,8 @@ export async function CourseKeywordSetsLoader() {
   }
 }
 
-export function getCourseKeywordSetsLoader({ params }) {
-  return defer({ courseKeywordSets: CourseKeywordSetsLoader({ params }) });
+export function getCourseKeywordSetsLoader() {
+  return defer({ courseKeywordSets: CourseKeywordSetsLoader() });
 }
 
 ///
@@ -215,6 +216,24 @@ export async function ProgramsAndCourseKeywordSetsLoader() {
 export function getProgramsAndCourseKeywordSetsLoader() {
   return defer({
     programsAndCourseKeywordSets: ProgramsAndCourseKeywordSetsLoader()
+  });
+}
+
+///
+
+export async function ProgramRequirementLoader({ params }) {
+  const requirementId = params.requirementId;
+  const response = await getProgramRequirement(requirementId);
+  if (response.status >= 400) {
+    throw json({ message: response.statusText }, { status: response.status });
+  } else {
+    return response.data.data;
+  }
+}
+
+export function getProgramRequirementLoader({ params }) {
+  return defer({
+    programRequirement: ProgramRequirementLoader({ params })
   });
 }
 

@@ -9,10 +9,10 @@ import { appConfig } from '../../../config';
 import { useTranslation } from 'react-i18next';
 import ProgramRequirementsNew from './ProgramRequirementsNew';
 
-function ProgramRequirementsNewIndex() {
+function ProgramRequirementsEditIndex() {
   const { t } = useTranslation();
-  const { programsAndCourseKeywordSets } = useLoaderData();
-  TabTitle('Program Requirement Creation');
+  const { programRequirement } = useLoaderData();
+  TabTitle('Program Requirement Edit');
 
   return (
     <Box data-testid="dashoboard_component">
@@ -46,7 +46,7 @@ function ProgramRequirementsNewIndex() {
         </Typography>
       </Breadcrumbs>
       <Suspense fallback={<Loading />}>
-        <Await resolve={programsAndCourseKeywordSets}>
+        <Await resolve={programRequirement}>
           {(loadedData) => (
             <ProgramRequirementsNew programsAndCourseKeywordSets={loadedData} />
           )}
@@ -56,4 +56,4 @@ function ProgramRequirementsNewIndex() {
   );
 }
 
-export default ProgramRequirementsNewIndex;
+export default ProgramRequirementsEditIndex;

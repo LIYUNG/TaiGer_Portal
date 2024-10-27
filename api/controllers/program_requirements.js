@@ -3,7 +3,7 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
 
 // Function to get distinct school names
-const getDistinctProgramsAndKeywordSets = async (req, res) => {
+const DistinctProgramsAndKeywordSets = async (req) => {
   try {
     const distinctProgramsPromise = req.db.model('Program').aggregate([
       {
@@ -37,6 +37,17 @@ const getDistinctProgramsAndKeywordSets = async (req, res) => {
       keywordsetsPromise
     ]);
 
+    return { distinctPrograms, keywordsets };
+  } catch (error) {
+    logger.error('Error fetching distinct programs and keyword sets:', error);
+    throw error;
+  }
+};
+
+const getDistinctProgramsAndKeywordSets = async (req, res) => {
+  try {
+    const { distinctPrograms, keywordsets } =
+      await DistinctProgramsAndKeywordSets(req);
     res.send({ success: true, data: { distinctPrograms, keywordsets } });
   } catch (error) {
     logger.error('Error fetching distinct schools:', error);
@@ -55,16 +66,22 @@ const getProgramRequirements = asyncHandler(async (req, res) => {
 
 const getProgramRequirement = asyncHandler(async (req, res) => {
   const { requirementId } = req.params;
-
+  const { distinctPrograms, keywordsets } =
+    await DistinctProgramsAndKeywordSets(req);
   const requirement = await req.db
     .model('ProgramRequirement')
     .findById(requirementId)
+    .populate('programId', 'school program_name degree')
+    .populate('program_categories.keywordSets')
     .lean();
   if (!requirement) {
     logger.error('getProgramRequirement: Invalid program id');
     throw new ErrorResponse(404, 'ProgramRequirement not found');
   }
-  res.send({ success: true, data: requirement });
+  res.send({
+    success: true,
+    data: { requirement, distinctPrograms, keywordsets }
+  });
 });
 
 const createProgramRequirement = asyncHandler(async (req, res) => {
@@ -125,17 +142,18 @@ const updateProgramRequirement = asyncHandler(async (req, res) => {
   const fields = req.body;
 
   fields.updatedAt = new Date();
-  // TODO: update resolver_id
+  delete fields.program;
   const updatedProgramRequirement = await req.db
     .model('ProgramRequirement')
     .findByIdAndUpdate(requirementId, fields, {
+      upsert: false,
       new: true
     })
     .lean();
 
   if (!updatedProgramRequirement) {
-    logger.error('updateProgramRequirement: Invalid message thread id');
-    throw new ErrorResponse(404, 'Thread not found');
+    logger.error('updateProgramRequirement: requirementId');
+    throw new ErrorResponse(404, 'Program requirement not found');
   }
 
   res.status(200).send({ success: true, data: updatedProgramRequirement });

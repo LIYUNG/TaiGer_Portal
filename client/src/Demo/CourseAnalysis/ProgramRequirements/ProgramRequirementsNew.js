@@ -13,19 +13,34 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { Link as LinkDom, useNavigate } from 'react-router-dom';
+import { Link as LinkDom, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 
 import DEMO from '../../../store/constant';
-import { postProgramRequirements } from '../../../api';
+import { postProgramRequirements, putProgramRequirement } from '../../../api';
 
 const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
+  const { requirementId } = useParams();
   const { t } = useTranslation();
-  const [programCategories, setProgramCategories] = useState([]);
+  const { distinctPrograms, keywordsets, requirement } =
+    programsAndCourseKeywordSets;
+  console.log(requirement);
+  const [programCategories, setProgramCategories] = useState(
+    requirement?.program_categories ?? []
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [program, setProgram] = useState({});
-  const { distinctPrograms, keywordsets } = programsAndCourseKeywordSets;
+  const [program, setProgram] = useState(
+    requirement?.programId[0]
+      ? {
+          school: requirement.programId[0].school,
+          program_name: requirement.programId[0].program_name,
+          degree: requirement.programId[0].degree
+        }
+      : {}
+  );
+  console.log(requirementId);
+  console.log(program);
   const navigate = useNavigate();
 
   const handleAddCategory = () => {
@@ -108,13 +123,24 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
       ),
       fpso: ''
     };
-    const resp = await postProgramRequirements(inputObject);
-    const { success } = resp.data;
-    if (!success) {
-      setIsSubmitting(false);
-      alert(`Creation Failed: ${resp.data.message}`);
+    if (requirementId) {
+      const resp = await putProgramRequirement(requirementId, inputObject);
+      const { success } = resp.data;
+      if (!success) {
+        setIsSubmitting(false);
+        alert(`Creation Failed: ${resp.data.message}`);
+      } else {
+        navigate(DEMO.PROGRAM_ANALYSIS);
+      }
     } else {
-      navigate(DEMO.PROGRAM_ANALYSIS);
+      const resp = await postProgramRequirements(inputObject);
+      const { success } = resp.data;
+      if (!success) {
+        setIsSubmitting(false);
+        alert(`Creation Failed: ${resp.data.message}`);
+      } else {
+        navigate(DEMO.PROGRAM_ANALYSIS);
+      }
     }
   };
 
@@ -150,7 +176,9 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
           sx={{ my: 1 }}
         >
           <Typography variant="h6">
-            {t('Create new program analysis', { ns: 'common' })}
+            {requirementId
+              ? t('Update program analysis', { ns: 'common' })
+              : t('Create new program analysis', { ns: 'common' })}
           </Typography>
           <Box>
             <Button
@@ -169,6 +197,8 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
             <Autocomplete
               label={t('Add Keyword Set', { ns: 'common' })}
+              value={program}
+              disabled={requirementId ? true : false}
               variant="outlined"
               options={distinctPrograms || []}
               getOptionLabel={(option) =>
@@ -277,6 +307,7 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                           multiple
                           label={t('Add Keyword Set', { ns: 'common' })}
                           variant="outlined"
+                          value={programCategory.keywordSets}
                           getOptionLabel={(option) =>
                             `${option.categoryName} ${option.keywords?.zh?.join(
                               ', '
@@ -354,7 +385,9 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
             type="submit"
             disabled={isSubmitDisabled}
           >
-            {t('Create', { ns: 'common' })}
+            {requirementId
+              ? t('Update', { ns: 'common' })
+              : t('Create', { ns: 'common' })}
           </Button>
         </Box>
       </form>

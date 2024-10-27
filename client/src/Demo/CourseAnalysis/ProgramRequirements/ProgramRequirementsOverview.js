@@ -13,8 +13,9 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { Link as LinkDom } from 'react-router-dom';
+import { Link as LinkDom, useNavigate } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 import React, { useState } from 'react';
 import DEMO from '../../../store/constant';
@@ -26,11 +27,15 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
   const [programRequirementsState, setProgramRequirementsState] =
     useState(programRequirements);
   const [openRow, setOpenRow] = useState(null);
+  const navigate = useNavigate();
 
   const handleRowClick = (index) => {
     setOpenRow(openRow === index ? null : index); // Toggle open/close
   };
 
+  const handleRequirementEdit = (requirementId) => {
+    navigate(DEMO.EDIT_PROGRAM_ANALYSIS(requirementId));
+  };
   const handleRequirementDelete = async (requirementId) => {
     const resp = await deleteProgramRequirement(requirementId);
     const { success } = resp.data;
@@ -85,7 +90,7 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
               <TableCell>ML Required</TableCell>
               <TableCell>RL Required</TableCell>
               <TableCell>Essay Required</TableCell>
-              <TableCell>Delete</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -113,6 +118,9 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                   <TableCell>{item.programId[0].rl_required}</TableCell>
                   <TableCell>{item.programId[0].essay_required}</TableCell>
                   <TableCell>
+                    <IconButton onClick={() => handleRequirementEdit(item._id)}>
+                      <EditIcon />
+                    </IconButton>
                     <IconButton
                       onClick={() => handleRequirementDelete(item._id)}
                     >

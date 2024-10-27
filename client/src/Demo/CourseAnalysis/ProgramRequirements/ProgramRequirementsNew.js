@@ -40,19 +40,21 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
   };
 
   const handleAddProgram = (newValue) => {
-    console.log(newValue);
-    setProgram(newValue);
+    if (newValue === null) {
+      setProgram({}); // Clear the program state
+    } else {
+      setProgram(newValue); // Set to the selected program
+    }
   };
 
   // Function to add a keyword set to a program category
   const handleAddKeywordSet = (newKeywordSet, index) => {
-    console.log(newKeywordSet);
     setProgramCategories((prev) =>
       prev.map((programCategory, i) =>
         i === index
           ? {
               ...programCategory,
-              keywordSets: [...programCategory.keywordSets, newKeywordSet]
+              keywordSets: newKeywordSet
             }
           : programCategory
       )
@@ -61,6 +63,7 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
 
   // Function to delete a keyword set from a program category
   const handleDeleteCourseKeyword = (categoryIndex, keywordSetIndex) => {
+    console.log(categoryIndex, keywordSetIndex);
     setProgramCategories((prev) =>
       prev.map((programCategory, i) =>
         i === categoryIndex
@@ -110,6 +113,27 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
     }
     console.log(inputObject);
   };
+
+  console.log(programCategories?.length === 0);
+  console.log(
+    programCategories.some(
+      (category) =>
+        category.program_category.trim() === '' || // Check if program_category is not an empty string
+        category.requiredECTS <= 0 || // Check if requiredECTS is greater than 0
+        category.keywordSets.length === 0 // Ensure at least one keyword set is added
+    )
+  );
+  console.log(JSON.stringify(program) === '{}');
+  const isSubmitDisabled =
+    programCategories?.length === 0 ||
+    programCategories.some(
+      (category) =>
+        category.program_category.trim() === '' || // Check if program_category is not an empty string
+        category.requiredECTS <= 0 || // Check if requiredECTS is greater than 0
+        category.keywordSets.length === 0 // Ensure at least one keyword set is added
+    ) ||
+    JSON.stringify(program) === '{}';
+  console.log(isSubmitDisabled);
 
   return (
     <>
@@ -182,6 +206,11 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                             )
                           )
                         }
+                        error={programCategory.program_category === ''}
+                        helperText={
+                          programCategory.program_category === '' &&
+                          'Please name the course category specified by the program'
+                        }
                         variant="outlined"
                         fullWidth
                         id="categoryName"
@@ -201,6 +230,11 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                                 : pc
                             )
                           )
+                        }
+                        error={programCategory.requiredECTS <= 0}
+                        helperText={
+                          programCategory.requiredECTS <= 0 &&
+                          'ECTS should more than 0'
                         }
                         variant="outlined"
                         fullWidth
@@ -235,6 +269,7 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                         sx={{ display: 'flex', alignItems: 'center', mb: 2 }}
                       >
                         <Autocomplete
+                          multiple
                           label={t('Add Keyword Set', { ns: 'common' })}
                           variant="outlined"
                           getOptionLabel={(option) =>
@@ -249,26 +284,39 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                           filterOptions={filterKeywordOptions}
                           fullWidth
                           renderInput={(params) => (
-                            <TextField {...params} label="With categories" />
+                            <TextField
+                              {...params}
+                              error={
+                                programCategories[index]?.keywordSets?.length <=
+                                0
+                              }
+                              helperText={
+                                programCategories[index]?.keywordSets?.length <=
+                                  0 && 'Please provide at least 1 keyword set'
+                              }
+                              label="With categories"
+                            />
                           )}
+                          renderTags={(value, getTagProps) =>
+                            value.map((option, index3) => {
+                              const { key, ...tagProps } = getTagProps({
+                                index3
+                              });
+                              return (
+                                <Chip
+                                  key={key}
+                                  variant="outlined"
+                                  label={option.categoryName}
+                                  onDelete={() =>
+                                    handleDeleteCourseKeyword(index, index3)
+                                  }
+                                  {...tagProps}
+                                />
+                              );
+                            })
+                          }
                           size="small"
                         />
-                      </Box>
-                    </Grid>
-                    <Grid item xs={12} md={12}>
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                        {programCategories[index]?.keywordSets?.map(
-                          (keywordSet, kIndex) => (
-                            <Chip
-                              key={kIndex}
-                              label={keywordSet.categoryName}
-                              onDelete={() =>
-                                handleDeleteCourseKeyword(index, kIndex)
-                              }
-                              color="secondary"
-                            />
-                          )
-                        )}
                       </Box>
                     </Grid>
                   </Grid>
@@ -287,10 +335,20 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
           </Button>
         </Box>
         <Box display="flex" justifyContent="flex-end" gap={2}>
-          <Button variant="outlined" color="secondary">
+          <Button
+            variant="outlined"
+            color="secondary"
+            as={LinkDom}
+            to={DEMO.PROGRAM_ANALYSIS}
+          >
             {t('Cancel', { ns: 'common' })}
           </Button>
-          <Button variant="contained" color="primary" type="submit">
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={isSubmitDisabled}
+          >
             {t('Create', { ns: 'common' })}
           </Button>
         </Box>

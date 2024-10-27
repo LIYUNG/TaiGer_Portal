@@ -131,27 +131,31 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                                 </TableCell>
                                 <TableCell>{category.requiredECTS}</TableCell>
                                 <TableCell>
-                                  {category.keywordSets[0]?.keywords.en.join(
-                                    ', '
+                                  {category.keywordSets?.map((keywordSet) =>
+                                    keywordSet.keywords.en.join(', ')
                                   )}
                                 </TableCell>
                                 <TableCell>
-                                  {category.keywordSets[0]?.keywords.zh.join(
-                                    ', '
+                                  {category.keywordSets?.map((keywordSet) =>
+                                    keywordSet.keywords.zh.join(', ')
                                   )}
                                 </TableCell>
                                 <TableCell>
-                                  {category.keywordSets[0]?.antiKeywords.en.join(
-                                    ', '
+                                  {category.keywordSets?.map((keywordSet) =>
+                                    keywordSet.antiKeywords.en.join(', ')
                                   )}
                                 </TableCell>
                                 <TableCell>
-                                  {category.keywordSets[0]?.antiKeywords.zh.join(
-                                    ', '
+                                  {category.keywordSets?.map((keywordSet) =>
+                                    keywordSet.antiKeywords.zh.join(', ')
                                   )}
                                 </TableCell>
                                 <TableCell>
-                                  {category.keywordSets[0]?.description}
+                                  {category.keywordSets?.map(
+                                    (keywordSet, i) => (
+                                      <li key={i}>{keywordSet.description}</li>
+                                    )
+                                  )}
                                 </TableCell>
                               </TableRow>
                             ))}

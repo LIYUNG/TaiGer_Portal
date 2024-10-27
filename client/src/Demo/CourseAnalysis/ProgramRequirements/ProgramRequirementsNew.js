@@ -4,14 +4,18 @@ import {
   Box,
   Button,
   Card,
+  CardContent,
+  CardHeader,
   Chip,
   createFilterOptions,
   Grid,
+  IconButton,
   TextField,
   Typography
 } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import CloseIcon from '@mui/icons-material/Close';
 
 import DEMO from '../../../store/constant';
 import { postProgramRequirements } from '../../../api';
@@ -83,6 +87,12 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
       )} ${option.keywords?.en?.join(', ')}`
   });
 
+  const handleDeleteCategory = (indexToDelete) => {
+    setProgramCategories((prev) =>
+      prev.filter((_, index) => index !== indexToDelete)
+    );
+  };
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     console.log(programCategories);
@@ -147,103 +157,122 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
           <Box>
             {programCategories?.map((programCategory, index) => (
               <Card key={index} sx={{ p: 1, mb: 1 }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} md={8}>
-                    <TextField
-                      label="Category Name"
-                      value={programCategory.program_category}
-                      onChange={(e) =>
-                        setProgramCategories((prev) =>
-                          prev.map((pc, i) =>
-                            i === index
-                              ? { ...pc, program_category: e.target.value }
-                              : pc
+                <CardHeader
+                  action={
+                    <IconButton
+                      aria-label="settings"
+                      onClick={() => handleDeleteCategory(index)}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  }
+                />
+                <CardContent>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={8}>
+                      <TextField
+                        label="Category Name"
+                        value={programCategory.program_category}
+                        onChange={(e) =>
+                          setProgramCategories((prev) =>
+                            prev.map((pc, i) =>
+                              i === index
+                                ? { ...pc, program_category: e.target.value }
+                                : pc
+                            )
                           )
-                        )
-                      }
-                      variant="outlined"
-                      fullWidth
-                      id="categoryName"
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <TextField
-                      label="Required ECTS"
-                      type="number"
-                      value={programCategory.requiredECTS}
-                      onChange={(e) =>
-                        setProgramCategories((prev) =>
-                          prev.map((pc, i) =>
-                            i === index
-                              ? { ...pc, requiredECTS: e.target.value }
-                              : pc
-                          )
-                        )
-                      }
-                      variant="outlined"
-                      fullWidth
-                      id="requiredECTS"
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={12}>
-                    <TextField
-                      label="Category Description"
-                      value={programCategory.category_description}
-                      onChange={(e) =>
-                        setProgramCategories((prev) =>
-                          prev.map((pc, i) =>
-                            i === index
-                              ? { ...pc, category_description: e.target.value }
-                              : pc
-                          )
-                        )
-                      }
-                      variant="outlined"
-                      fullWidth
-                      id="category_description"
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={12}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Autocomplete
-                        label={t('Add Keyword Set', { ns: 'common' })}
+                        }
                         variant="outlined"
-                        getOptionLabel={(option) =>
-                          `${option.categoryName} ${option.keywords?.zh?.join(
-                            ', '
-                          )} ${option.keywords?.en?.join(', ')} `
-                        }
-                        options={keywordsets || []}
-                        onChange={(e, newValue) =>
-                          handleAddKeywordSet(newValue, index)
-                        }
-                        filterOptions={filterKeywordOptions}
                         fullWidth
-                        renderInput={(params) => (
-                          <TextField {...params} label="With categories" />
-                        )}
+                        id="categoryName"
                         size="small"
                       />
-                    </Box>
-                  </Grid>
-                </Grid>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {programCategories[index]?.keywordSets?.map(
-                    (keywordSet, kIndex) => (
-                      <Chip
-                        key={kIndex}
-                        label={keywordSet.categoryName}
-                        onDelete={() =>
-                          handleDeleteCourseKeyword(index, kIndex)
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <TextField
+                        label="Required ECTS"
+                        type="number"
+                        value={programCategory.requiredECTS}
+                        onChange={(e) =>
+                          setProgramCategories((prev) =>
+                            prev.map((pc, i) =>
+                              i === index
+                                ? { ...pc, requiredECTS: e.target.value }
+                                : pc
+                            )
+                          )
                         }
-                        color="secondary"
+                        variant="outlined"
+                        fullWidth
+                        id="requiredECTS"
+                        size="small"
                       />
-                    )
-                  )}
-                </Box>
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                      <TextField
+                        label="Category Description"
+                        value={programCategory.category_description}
+                        onChange={(e) =>
+                          setProgramCategories((prev) =>
+                            prev.map((pc, i) =>
+                              i === index
+                                ? {
+                                    ...pc,
+                                    category_description: e.target.value
+                                  }
+                                : pc
+                            )
+                          )
+                        }
+                        variant="outlined"
+                        fullWidth
+                        id="category_description"
+                        size="small"
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                      <Box
+                        sx={{ display: 'flex', alignItems: 'center', mb: 2 }}
+                      >
+                        <Autocomplete
+                          label={t('Add Keyword Set', { ns: 'common' })}
+                          variant="outlined"
+                          getOptionLabel={(option) =>
+                            `${option.categoryName} ${option.keywords?.zh?.join(
+                              ', '
+                            )} ${option.keywords?.en?.join(', ')} `
+                          }
+                          options={keywordsets || []}
+                          onChange={(e, newValue) =>
+                            handleAddKeywordSet(newValue, index)
+                          }
+                          filterOptions={filterKeywordOptions}
+                          fullWidth
+                          renderInput={(params) => (
+                            <TextField {...params} label="With categories" />
+                          )}
+                          size="small"
+                        />
+                      </Box>
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                        {programCategories[index]?.keywordSets?.map(
+                          (keywordSet, kIndex) => (
+                            <Chip
+                              key={kIndex}
+                              label={keywordSet.categoryName}
+                              onDelete={() =>
+                                handleDeleteCourseKeyword(index, kIndex)
+                              }
+                              color="secondary"
+                            />
+                          )
+                        )}
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </CardContent>
               </Card>
             ))}
           </Box>

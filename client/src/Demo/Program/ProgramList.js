@@ -453,8 +453,7 @@ function ProgramList(props) {
                 variant="outlined"
                 color="primary"
                 component={LinkDom}
-                to="/courses/analysis/programs"
-                disabled={true}
+                to={DEMO.PROGRAM_ANALYSIS}
                 sx={{ mr: 1 }}
               >
                 {t('Program Requirements', { ns: 'common' })}
@@ -463,7 +462,7 @@ function ProgramList(props) {
                 variant="outlined"
                 color="primary"
                 component={LinkDom}
-                to="/programs/config"
+                to={DEMO.SCHOOL_CONFIG}
                 sx={{ mr: 1 }}
               >
                 {t('School Configuration', { ns: 'common' })}

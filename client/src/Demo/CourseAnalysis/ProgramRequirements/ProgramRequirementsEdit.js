@@ -18,7 +18,7 @@ import React, { useState } from 'react';
 import DEMO from '../../../store/constant';
 import { useTranslation } from 'react-i18next';
 // TODO
-const ProgramRequirementsOverview = ({ programRequirements }) => {
+const ProgramRequirementsEdit = ({ programRequirements }) => {
   const { t } = useTranslation();
   const [openRow, setOpenRow] = useState(null);
 
@@ -51,6 +51,7 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
             component={LinkDom}
             to={`${DEMO.CREATE_NEW_PROGRAM_ANALYSIS}`}
             color="primary"
+            disabled={true}
           >
             {t('Create New Analysis', { ns: 'common' })}
           </Button>
@@ -87,13 +88,13 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                       )}
                     </IconButton>
                   </TableCell>
-                  <TableCell>{item.programId[0].school}</TableCell>
-                  <TableCell>{item.programId[0].program_name}</TableCell>
-                  <TableCell>{item.programId[0].degree}</TableCell>
-                  <TableCell>{item.programId[0].lang}</TableCell>
-                  <TableCell>{item.programId[0].ml_required}</TableCell>
-                  <TableCell>{item.programId[0].rl_required}</TableCell>
-                  <TableCell>{item.programId[0].essay_required}</TableCell>
+                  <TableCell>{item.programId.school}</TableCell>
+                  <TableCell>{item.programId.program_name}</TableCell>
+                  <TableCell>{item.programId.degree}</TableCell>
+                  <TableCell>{item.programId.lang}</TableCell>
+                  <TableCell>{item.programId.ml_required}</TableCell>
+                  <TableCell>{item.programId.rl_required}</TableCell>
+                  <TableCell>{item.programId.essay_required}</TableCell>
                 </TableRow>
 
                 {/* Collapsible row for program categories */}
@@ -170,4 +171,4 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
   );
 };
 
-export default ProgramRequirementsOverview;
+export default ProgramRequirementsEdit;

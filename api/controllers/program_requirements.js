@@ -2,6 +2,48 @@ const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
 
+// Function to get distinct school names
+const getDistinctProgramsAndKeywordSets = async (req, res) => {
+  try {
+    const distinctProgramsPromise = req.db.model('Program').aggregate([
+      {
+        $group: {
+          _id: {
+            school: '$school',
+            program_name: '$program_name',
+            degree: '$degree'
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          school: '$_id.school',
+          program_name: '$_id.program_name',
+          degree: '$_id.degree'
+        }
+      },
+      {
+        $sort: { school: 1 }
+      }
+    ]);
+
+    const keywordsetsPromise = await req.db
+      .model('KeywordSet')
+      .find({})
+      .sort({ createdAt: -1 });
+    const [distinctPrograms, keywordsets] = await Promise.all([
+      distinctProgramsPromise,
+      keywordsetsPromise
+    ]);
+
+    res.send({ success: true, data: { distinctPrograms, keywordsets } });
+  } catch (error) {
+    logger.error('Error fetching distinct schools:', error);
+    throw error;
+  }
+};
+
 const getProgramRequirements = asyncHandler(async (req, res) => {
   const programRequirements = await req.db
     .model('ProgramRequirement')
@@ -65,6 +107,7 @@ const deleteProgramRequirement = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+  getDistinctProgramsAndKeywordSets,
   getProgramRequirements,
   getProgramRequirement,
   createProgramRequirement,

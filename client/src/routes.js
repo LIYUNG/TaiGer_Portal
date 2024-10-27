@@ -15,11 +15,14 @@ import {
   getComplaintTicketLoader,
   getDistinctSchoolsLoader,
   getCourseKeywordSetsLoader,
-  getProgramRequirementsLoader
+  getProgramRequirementsLoader,
+  getProgramsAndCourseKeywordSetsLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
 import CourseKeywordsOverviewNew from './Demo/CourseAnalysis/CourseKeywordsEdit/CourseKeywordsNew';
+import ProgramRequirementsEdit from './Demo/CourseAnalysis/ProgramRequirements/ProgramRequirementsEdit';
+import ProgramRequirementsNewIndex from './Demo/CourseAnalysis/ProgramRequirements/ProgramRequirementsNewIndex';
 
 const CreateComplaintTicket = React.lazy(() =>
   import('./Demo/CustomerSupport/CreateTicket')
@@ -260,11 +263,18 @@ const routes = [
     element: <ProgramRequirements />
   },
   {
+    path: '/courses/analysis/programs/requirements/new', //TODO: create the page
+    errorElement: <DefaultErrorPage />,
+    loader: getProgramsAndCourseKeywordSetsLoader,
+    // loader: getStudentsLoader,
+    element: <ProgramRequirementsNewIndex />
+  },
+  {
     path: '/courses/analysis/programs/requirements/:requirementId', //TODO: create the page
     errorElement: <DefaultErrorPage />,
     loader: getProgramRequirementsLoader,
     // loader: getStudentsLoader,
-    element: <ProgramRequirements />
+    element: <ProgramRequirementsEdit />
   },
   {
     path: '/admissions-overview',

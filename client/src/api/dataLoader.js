@@ -14,7 +14,8 @@ import {
   getComplaintsTicket,
   getDistinctSchools,
   getCourseKeywordSets,
-  getProgramRequirements
+  getProgramRequirements,
+  getProgramsAndCourseKeywordSets
 } from '.';
 
 export async function getStudentsLoader() {
@@ -202,6 +203,23 @@ export function getCourseKeywordSetsLoader({ params }) {
 
 ///
 
+export async function ProgramsAndCourseKeywordSetsLoader() {
+  const response = await getProgramsAndCourseKeywordSets();
+  if (response.status >= 400) {
+    throw json({ message: response.statusText }, { status: response.status });
+  } else {
+    return response.data.data;
+  }
+}
+
+export function getProgramsAndCourseKeywordSetsLoader() {
+  return defer({
+    programsAndCourseKeywordSets: ProgramsAndCourseKeywordSetsLoader()
+  });
+}
+
+///
+
 export async function ProgramRequirementsLoader() {
   const response = await getProgramRequirements();
   if (response.status >= 400) {
@@ -211,6 +229,6 @@ export async function ProgramRequirementsLoader() {
   }
 }
 
-export function getProgramRequirementsLoader({ params }) {
-  return defer({ programRequirements: ProgramRequirementsLoader({ params }) });
+export function getProgramRequirementsLoader() {
+  return defer({ programRequirements: ProgramRequirementsLoader() });
 }

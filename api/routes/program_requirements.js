@@ -14,7 +14,8 @@ const {
   getProgramRequirement,
   createProgramRequirement,
   updateProgramRequirement,
-  deleteProgramRequirement
+  deleteProgramRequirement,
+  getDistinctProgramsAndKeywordSets
 } = require('../controllers/program_requirements');
 
 const router = Router();
@@ -28,6 +29,15 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
     getProgramRequirements
+  );
+
+router
+  .route('/programs-and-keywords')
+  .get(
+    filter_archiv_user,
+    GeneralPOSTRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent),
+    getDistinctProgramsAndKeywordSets
   );
 
 router

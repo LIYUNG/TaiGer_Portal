@@ -46,13 +46,12 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
 
   const handleDrawerClose = () => {
     setDrawerOpen(false);
+    setRowSelection({});
   };
 
   const handleCategoryClick = (row) => {
     setRowSelection(row);
-    if (isSmallScreen) {
-      setDrawerOpen(true); // Open the Drawer on small screens
-    }
+    setDrawerOpen(true); // Open the Drawer on small screens
   };
 
   const col = useMemo(() => col_keywords, [col_keywords]);
@@ -63,7 +62,6 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
   };
 
   const handleDeleteConfirm = async () => {
-    // TODO de-select!!
     setIsDeleteDialogOpen;
     setRowSelection({});
     setCourseKeywordSetsState((prevState) =>
@@ -410,7 +408,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setIsErrorDialogOpen(false)} color="primary">
-              OK
+              {t('OK', { ns: 'common' })}
             </Button>
           </DialogActions>
         </Dialog>
@@ -424,7 +422,9 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
             alignItems="center"
             mb={2}
           >
-            <Typography variant="h6">Category Name:</Typography>
+            <Typography variant="h6">
+              {t('Category Name', { ns: 'common' })}:
+            </Typography>
             <IconButton onClick={handleEditClick} size="small">
               <EditIcon />
             </IconButton>
@@ -444,7 +444,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
         {/* Editable description */}
         <div style={{ marginBottom: '16px' }}>
           <Typography variant="body2" color="textSecondary">
-            Description:
+            {t('Description', { ns: 'common' })}:
           </Typography>
           <TextField
             value={selectedCategory.description}
@@ -534,11 +534,11 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
       </Box>
 
       {/* Left sidebar */}
-      <Grid container spacing={2} sx={{ height: '100vh', mt: 1 }}>
+      <Grid container spacing={2} sx={{ mt: 1 }}>
         <Grid
           item
           xs={12}
-          sx={{ overflowY: 'auto', maxHeight: '100vh' }} // Left side scroll
+          sx={{ overflowY: 'auto' }} // Left side scroll
           md={selectedARow ? 7 : 12}
         >
           <ExampleWithLocalizationProvider
@@ -558,14 +558,9 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
         {/* Right content */}
         {/* Right side: Configuration panel */}
         {!isSmallScreen && (
-          <Grid
-            item
-            xs={12}
-            md={5}
-            sx={{ overflowY: 'auto', maxHeight: '100vh' }}
-          >
+          <Grid item xs={12} md={5} sx={{ overflowY: 'auto' }}>
             <Paper style={{ padding: 16 }}>
-              {selectedARow ? (
+              {selectedARow && (
                 <EditCard
                   data={
                     courseKeywordSetsState[
@@ -574,33 +569,31 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                   }
                   setCourseKeywordSetsState={setCourseKeywordSetsState}
                 />
-              ) : (
-                <Typography variant="h6">
-                  Select a keyword set to configure
-                </Typography>
               )}
             </Paper>
           </Grid>
         )}
       </Grid>
       {/* Drawer for small screens */}
-      <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}>
-        <div style={{ width: 300, padding: 16 }}>
-          {Object.keys(rowSelection) && Object.keys(rowSelection)[0] ? (
-            <EditCard
-              data={
-                courseKeywordSetsState[parseInt(Object.keys(rowSelection)[0])]
-              }
-              setCourseKeywordSetsState={setCourseKeywordSetsState}
-            />
-          ) : (
-            <Typography variant="h6">Select a school to configure</Typography>
-          )}
-          <Button onClick={handleDrawerClose} variant="contained" fullWidth>
-            Close
-          </Button>
-        </div>
-      </Drawer>
+      {isSmallScreen && (
+        <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}>
+          <div style={{ width: 300, padding: 16 }}>
+            {Object.keys(rowSelection) && Object.keys(rowSelection)[0] ? (
+              <EditCard
+                data={
+                  courseKeywordSetsState[parseInt(Object.keys(rowSelection)[0])]
+                }
+                setCourseKeywordSetsState={setCourseKeywordSetsState}
+              />
+            ) : (
+              <Typography variant="h6">Select a school to configure</Typography>
+            )}
+            <Button onClick={handleDrawerClose} variant="contained" fullWidth>
+              {t('Close')}
+            </Button>
+          </div>
+        </Drawer>
+      )}
       <Dialog
         open={isDeleteDialogOpen}
         onClose={() => setIsDeleteDialogOpen(false)}
@@ -611,14 +604,15 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
         <DialogContent>
           <DialogContentText id="error-dialog-description">
             {t('Do you want to delete?')}
+            {/* TODO: show affected programs */}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => handleDeleteConfirm(false)} color="primary">
-            Yes
+            {t('Yes', { ns: 'common' })}
           </Button>
           <Button onClick={() => setIsDeleteDialogOpen(false)} color="primary">
-            Cancel
+            {t('Cancel', { ns: 'common' })}
           </Button>
         </DialogActions>
       </Dialog>

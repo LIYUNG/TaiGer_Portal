@@ -5,7 +5,7 @@ const {
 
 const programRequirementSchema = new Schema(
   {
-    programId: { type: ObjectId, ref: 'Program' },
+    programId: [{ type: ObjectId, ref: 'Program' }],
     program_categories: [
       {
         program_category: {

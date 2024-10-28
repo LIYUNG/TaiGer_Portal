@@ -17,7 +17,6 @@ from database.Psychology.PSY_sorter import PSY_sorter
 from database.Management.MGM_sorter import MGM_sorter
 from database.DataScience_BusinessIntelligence.DSBI_sorter import DSBI_sorter
 from database.TransportationEngineering.TE_sorter import TE_sorter
-from db import get_database
 
 file_path = os.path.realpath(__file__)
 file_path = os.path.dirname(file_path)

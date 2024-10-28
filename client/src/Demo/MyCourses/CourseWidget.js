@@ -15,7 +15,8 @@ import {
   DialogTitle,
   DialogContentText,
   DialogContent,
-  DialogActions
+  DialogActions,
+  Badge
 } from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
@@ -28,7 +29,8 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { is_TaiGer_role } from '../Utils/checking-functions';
 import {
   WidgetanalyzedFileDownload,
-  WidgetTranscriptanalyser
+  WidgetTranscriptanalyser,
+  WidgetTranscriptanalyserV2
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
@@ -154,6 +156,58 @@ export default function CourseWidget() {
         }));
       }
     );
+  };
+  const onAnalyseV2 = async () => {
+    if (statedata.study_group === '') {
+      alert('Please select study group');
+      return;
+    }
+    setStatedata((state) => ({
+      ...state,
+      isAnalysing: true
+    }));
+
+    try {
+      const resp = await WidgetTranscriptanalyserV2(
+        statedata.study_group,
+        statedata.analysis_language,
+        statedata.coursesdata,
+        []
+      );
+
+      const { data, success } = resp.data;
+      const { status } = resp;
+      if (success) {
+        setStatedata((state) => ({
+          ...state,
+          isLoaded: true,
+          analysis: data,
+          analysisSuccessModalWindowOpen: true,
+          success: success,
+          isAnalysing: false,
+          res_modal_status: status
+        }));
+      } else {
+        setStatedata((state) => ({
+          ...state,
+          isLoaded: true,
+          isAnalysing: false,
+          res_modal_status: status,
+          res_modal_message:
+            'Make sure that you updated your courses and select the right target group and language!'
+        }));
+      }
+    } catch (error) {
+      setStatedata((state) => ({
+        ...state,
+        isLoaded: true,
+        isAnalysing: false,
+        error,
+        res_modal_status: 500,
+        res_modal_message:
+          'Make sure that you updated your courses and select the right target group and language!'
+      }));
+    }
   };
 
   const onDownload = () => {
@@ -283,6 +337,37 @@ export default function CourseWidget() {
           Pre-Customer Course Analyser
         </Typography>
       </Breadcrumbs>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ my: 1 }}
+      >
+        <Typography variant="h6">
+          {t('Course Analyser', { ns: 'common' })}
+        </Typography>
+        <Box>
+          <Button
+            variant="outlined"
+            component={LinkDom}
+            to={`${DEMO.KEYWORDS_EDIT}`}
+            color="primary"
+            target="_blank"
+            sx={{ mr: 2 }}
+          >
+            {t('Edit Keywords', { ns: 'common' })}
+          </Button>
+          <Button
+            variant="contained"
+            component={LinkDom}
+            to={`${DEMO.CREATE_NEW_PROGRAM_ANALYSIS}`}
+            target="_blank"
+            color="primary"
+          >
+            {t('Create New Analysis', { ns: 'common' })}
+          </Button>
+        </Box>
+      </Box>
       <Card>
         <Typography sx={{ px: 2, pt: 2 }}>
           1. Please fill the courses.
@@ -361,6 +446,25 @@ export default function CourseWidget() {
             ? t('Analysing', { ns: 'courses' })
             : t('Analyse', { ns: 'courses' })}
         </Button>
+        <Badge badgeContent={'New'} color="error">
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={onAnalyseV2}
+            disabled={
+              statedata.isAnalysing ||
+              statedata.study_group === '' ||
+              statedata.analysis_language === ''
+            }
+            endIcon={
+              statedata.isAnalysing ? <CircularProgress size={24} /> : <></>
+            }
+          >
+            {statedata.isAnalysing
+              ? t('Analysing', { ns: 'courses' })
+              : t('Analyse V2', { ns: 'courses' })}
+          </Button>
+        </Badge>
         <br />
         <br />
         <Typography>

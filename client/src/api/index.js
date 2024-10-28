@@ -184,6 +184,17 @@ export const WidgetTranscriptanalyser = (
     courses,
     table_data_string_taiger_guided
   });
+export const WidgetTranscriptanalyserV2 = (
+  category,
+  language,
+  courses,
+  table_data_string_taiger_guided
+) =>
+  request.post(`/api/widgets/transcript/v2/${category}/${language}`, {
+    courses,
+    table_data_string_taiger_guided
+  });
+
 export const WidgetanalyzedFileDownload = (adminId) =>
   request.get(`/api/widgets/transcript/${adminId}`, {
     responseType: 'blob'
@@ -196,6 +207,12 @@ export const WidgetExportMessagePDF = (student_id) =>
 
 export const transcriptanalyser_test = (studentId, category, language) =>
   request.post(`/api/courses/transcript/${studentId}/${category}/${language}`);
+
+export const transcriptanalyser_testV2 = (studentId, category, language) =>
+  request.post(
+    `/api/courses/transcript/v2/${studentId}/${category}/${language}`
+  );
+
 export const analyzedFileDownload_test = (studentId) =>
   request.get(`/api/courses/transcript/${studentId}`, {
     responseType: 'blob'

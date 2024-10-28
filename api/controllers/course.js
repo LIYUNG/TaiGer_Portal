@@ -15,19 +15,10 @@ const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
 const { isNotArchiv, Role } = require('../constants');
 const { getTemporaryCredentials, callApiGateway } = require('../aws');
 const { getS3Object } = require('../aws/s3');
-
-// AWS configuration
-const roleToAssumeForCourseAnalyzerAPIG = isProd()
-  ? 'arn:aws:iam::669131042313:role/Prod-NA-LambdaStack-Prod--AuthorizedClientRoleProdN-8hih2AVix5Rp'
-  : 'arn:aws:iam::669131042313:role/Beta-FE-LambdaStack-Beta--AuthorizedClientRoleBetaF-3H8r1NC3e8lf'; // Replace with your role ARN
-
-const apiGatewayUrl = isProd()
-  ? 'https://prod.taigerconsultancy-portal.com/analyze'
-  : 'https://beta.taigerconsultancy-portal.com/analyze'; // Replace with your API Gateway URL
-
-const apiGatewayHelloUrl = isProd()
-  ? 'https://prod.taigerconsultancy-portal.com/hello'
-  : 'https://beta.taigerconsultancy-portal.com/hello'; // Replace with your API Gateway URL
+const {
+  roleToAssumeForCourseAnalyzerAPIG,
+  apiGatewayUrl
+} = require('../aws/constants');
 
 const getCourse = asyncHandler(async (req, res) => {
   const { studentId } = req.params;
@@ -336,7 +327,7 @@ const processTranscript_api_gatway = asyncHandler(async (req, res, next) => {
     courses.analysis.updatedAt = new Date();
     courses.save();
 
-    res.status(200).send({ success: true, data: response });
+    res.status(200).send({ success: true, data: courses.analysis });
   } catch (err) {
     logger.info(err);
     throw new ErrorResponse(500, 'Error occurs while analyzing courses');

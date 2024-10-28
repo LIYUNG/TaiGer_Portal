@@ -92,6 +92,7 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
             variant="contained"
             component={LinkDom}
             to={`${DEMO.CREATE_NEW_PROGRAM_ANALYSIS}`}
+            target="_blank"
             color="primary"
           >
             {t('Create New Analysis', { ns: 'common' })}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DownloadIcon from '@mui/icons-material/Download';
 import {
+  Badge,
   Box,
   Breadcrumbs,
   Button,
@@ -45,7 +46,8 @@ import {
   postMycourses,
   analyzedFileDownload_test,
   transcriptanalyser_test,
-  putMycourses
+  putMycourses,
+  transcriptanalyser_testV2
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
@@ -298,6 +300,58 @@ export default function MyCourses() {
       isAnalysing: true
     }));
     transcriptanalyser_test(
+      statedata.student._id.toString(),
+      statedata.study_group,
+      statedata.analysis_language
+    ).then(
+      (resp) => {
+        const { data, success } = resp.data;
+        const { status } = resp;
+        if (success) {
+          setStatedata((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            analysis: data,
+            analysisSuccessModalWindowOpen: true,
+            success: success,
+            isAnalysing: false,
+            res_modal_status: status
+          }));
+        } else {
+          setStatedata((prevState) => ({
+            ...prevState,
+            isLoaded: true,
+            isAnalysing: false,
+            res_modal_status: status,
+            res_modal_message:
+              'Make sure that you updated your courses and select the right target group and language!'
+          }));
+        }
+      },
+      (error) => {
+        setStatedata((prevState) => ({
+          ...prevState,
+          isLoaded: true,
+          isAnalysing: false,
+          error,
+          res_modal_status: 500,
+          res_modal_message:
+            'Make sure that you updated your courses and select the right target group and language!'
+        }));
+      }
+    );
+  };
+
+  const onAnalyseV2 = () => {
+    if (statedata.study_group === '') {
+      alert('Please select study group');
+      return;
+    }
+    setStatedata((prevState) => ({
+      ...prevState,
+      isAnalysing: true
+    }));
+    transcriptanalyser_testV2(
       statedata.student._id.toString(),
       statedata.study_group,
       statedata.analysis_language
@@ -713,7 +767,6 @@ export default function MyCourses() {
               </Grid>
               <Grid item xs={12}>
                 <Button
-                  fullWidth
                   color="primary"
                   variant="contained"
                   onClick={onAnalyse}
@@ -729,11 +782,36 @@ export default function MyCourses() {
                       <></>
                     )
                   }
+                  sx={{ mr: 2 }}
                 >
                   {statedata.isAnalysing
                     ? t('Analysing', { ns: 'courses' })
                     : t('Analyse', { ns: 'courses' })}
                 </Button>
+                <Badge badgeContent={'New'} color="error">
+                  <Button
+                    fullWidth
+                    color="primary"
+                    variant="contained"
+                    onClick={onAnalyseV2}
+                    disabled={
+                      statedata.isAnalysing ||
+                      statedata.study_group === '' ||
+                      statedata.analysis_language === ''
+                    }
+                    endIcon={
+                      statedata.isAnalysing ? (
+                        <CircularProgress size={24} />
+                      ) : (
+                        <></>
+                      )
+                    }
+                  >
+                    {statedata.isAnalysing
+                      ? t('Analysing', { ns: 'courses' })
+                      : t('Analyse V2', { ns: 'courses' })}
+                  </Button>
+                </Badge>
               </Grid>
             </Grid>
           </>

@@ -2,7 +2,12 @@ import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
 import {
   Box,
   Button,
+  CircularProgress,
   Collapse,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   IconButton,
   Paper,
   Table,
@@ -13,17 +18,54 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import { Link as LinkDom } from 'react-router-dom';
+import { Link as LinkDom, useNavigate } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+
 import React, { useState } from 'react';
 import DEMO from '../../../store/constant';
 import { useTranslation } from 'react-i18next';
-// TODO
+import { deleteProgramRequirement } from '../../../api';
+
 const ProgramRequirementsOverview = ({ programRequirements }) => {
   const { t } = useTranslation();
+  const [programRequirementsState, setProgramRequirementsState] =
+    useState(programRequirements);
   const [openRow, setOpenRow] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [requirementIdToBeDeleted, setRequirementIdToBeDeleted] = useState('');
+  const navigate = useNavigate();
 
   const handleRowClick = (index) => {
     setOpenRow(openRow === index ? null : index); // Toggle open/close
+  };
+
+  const handleRequirementEdit = (requirementId) => {
+    navigate(DEMO.EDIT_PROGRAM_ANALYSIS(requirementId));
+  };
+
+  const handleDeleteModal = (requirementId) => {
+    setDeleteModalOpen(!deleteModalOpen);
+    setRequirementIdToBeDeleted(requirementId);
+  };
+  const handleRequirementDelete = async () => {
+    setIsDeleting(true);
+    const resp = await deleteProgramRequirement(requirementIdToBeDeleted);
+    const { success } = resp.data;
+    if (!success) {
+      alert('Failed!');
+      setIsDeleting(false);
+    } else {
+      setProgramRequirementsState(
+        programRequirementsState.filter(
+          (r) => r._id !== requirementIdToBeDeleted
+        )
+      );
+      setRequirementIdToBeDeleted('');
+      setIsDeleting(false);
+      setDeleteModalOpen(false);
+    }
   };
   return (
     <>
@@ -42,7 +84,6 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
             component={LinkDom}
             to={`${DEMO.KEYWORDS_EDIT}`}
             color="primary"
-            disabled={true}
             sx={{ mr: 2 }}
           >
             {t('Edit Keywords', { ns: 'common' })}
@@ -51,8 +92,8 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
             variant="contained"
             component={LinkDom}
             to={`${DEMO.CREATE_NEW_PROGRAM_ANALYSIS}`}
+            target="_blank"
             color="primary"
-            disabled={true}
           >
             {t('Create New Analysis', { ns: 'common' })}
           </Button>
@@ -67,13 +108,11 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
               <TableCell>Program Name</TableCell>
               <TableCell>Degree</TableCell>
               <TableCell>Language</TableCell>
-              <TableCell>ML Required</TableCell>
-              <TableCell>RL Required</TableCell>
-              <TableCell>Essay Required</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {programRequirements.map((item, index) => (
+            {programRequirementsState?.map((item, index) => (
               <React.Fragment key={item._id}>
                 <TableRow>
                   <TableCell>
@@ -89,13 +128,18 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                       )}
                     </IconButton>
                   </TableCell>
-                  <TableCell>{item.programId.school}</TableCell>
-                  <TableCell>{item.programId.program_name}</TableCell>
-                  <TableCell>{item.programId.degree}</TableCell>
-                  <TableCell>{item.programId.lang}</TableCell>
-                  <TableCell>{item.programId.ml_required}</TableCell>
-                  <TableCell>{item.programId.rl_required}</TableCell>
-                  <TableCell>{item.programId.essay_required}</TableCell>
+                  <TableCell>{item.programId[0].school}</TableCell>
+                  <TableCell>{item.programId[0].program_name}</TableCell>
+                  <TableCell>{item.programId[0].degree}</TableCell>
+                  <TableCell>{item.programId[0].lang}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => handleRequirementEdit(item._id)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handleDeleteModal(item._id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
 
                 {/* Collapsible row for program categories */}
@@ -133,27 +177,31 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                                 </TableCell>
                                 <TableCell>{category.requiredECTS}</TableCell>
                                 <TableCell>
-                                  {category.keywordSets[0]?.keywords.en.join(
-                                    ', '
+                                  {category.keywordSets?.map((keywordSet) =>
+                                    keywordSet.keywords.en.join(', ')
                                   )}
                                 </TableCell>
                                 <TableCell>
-                                  {category.keywordSets[0]?.keywords.zh.join(
-                                    ', '
+                                  {category.keywordSets?.map((keywordSet) =>
+                                    keywordSet.keywords.zh.join(', ')
                                   )}
                                 </TableCell>
                                 <TableCell>
-                                  {category.keywordSets[0]?.antiKeywords.en.join(
-                                    ', '
+                                  {category.keywordSets?.map((keywordSet) =>
+                                    keywordSet.antiKeywords.en.join(', ')
                                   )}
                                 </TableCell>
                                 <TableCell>
-                                  {category.keywordSets[0]?.antiKeywords.zh.join(
-                                    ', '
+                                  {category.keywordSets?.map((keywordSet) =>
+                                    keywordSet.antiKeywords.zh.join(', ')
                                   )}
                                 </TableCell>
                                 <TableCell>
-                                  {category.keywordSets[0]?.description}
+                                  {category.keywordSets?.map(
+                                    (keywordSet, i) => (
+                                      <li key={i}>{keywordSet.description}</li>
+                                    )
+                                  )}
                                 </TableCell>
                               </TableRow>
                             ))}
@@ -168,6 +216,38 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
           </TableBody>
         </Table>
       </TableContainer>
+      <Dialog open={deleteModalOpen} onClose={setDeleteModalOpen} size="small">
+        <DialogTitle>{t('Attention')}</DialogTitle>
+        <DialogContent>
+          <Typography id="modal-modal-description" sx={{ my: 2 }}>
+            {t('Do you want to delete?')}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="secondary"
+            variant="contained"
+            disabled={isDeleting}
+            title="Undo"
+            sx={{ mr: 1 }}
+            onClick={() => handleRequirementDelete()}
+          >
+            {isDeleting ? (
+              <CircularProgress size="small" />
+            ) : (
+              t('Confirm', { ns: 'common' })
+            )}
+          </Button>
+          <Button
+            color="secondary"
+            variant="outlined"
+            title="Undo"
+            onClick={setDeleteModalOpen}
+          >
+            {t('Cancel', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

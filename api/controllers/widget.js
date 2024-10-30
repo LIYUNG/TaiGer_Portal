@@ -10,8 +10,59 @@ const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
 const { font } = require('../utils/NotoSansTC-VariableFont_wght-normal');
 const { Role } = require('../constants');
 const { getS3Object } = require('../aws/s3');
+const {
+  roleToAssumeForCourseAnalyzerAPIG,
+  apiGatewayUrl
+} = require('../aws/constants');
+const { callApiGateway, getTemporaryCredentials } = require('../aws');
 
 const student_name = 'PreCustomer';
+
+const WidgetProcessTranscriptV2 = asyncHandler(async (req, res, next) => {
+  const {
+    params: { category, language },
+    body: { courses, table_data_string_taiger_guided }
+  } = req;
+
+  const { Credentials } = await getTemporaryCredentials(
+    roleToAssumeForCourseAnalyzerAPIG
+  );
+
+  const stringified_courses = JSON.stringify(JSON.stringify(courses));
+  const stringified_courses_taiger_guided = JSON.stringify(
+    JSON.stringify(table_data_string_taiger_guided)
+  );
+  const studentId = req.user._id.toString();
+  try {
+    // TODO: replacing requirement_ids with data from frontend.
+    // TODO: also verify the id.
+    const response = await callApiGateway(Credentials, apiGatewayUrl, 'POST', {
+      courses: stringified_courses,
+      category,
+      student_id: studentId,
+      student_name,
+      language,
+      courses_taiger_guided: stringified_courses_taiger_guided,
+      requirement_ids: JSON.stringify([
+        '6716e505b5c65b932fda02a4',
+        '671ecb55015d01f7771f0fac'
+      ])
+    });
+
+    const metadata = {
+      analysis: { isAnalysed: false, path: '', updatedAt: new Date() }
+    };
+    metadata.analysis.isAnalysed = true;
+    metadata.analysis.path = path.join(
+      studentId,
+      `analysed_transcript_${student_name}.xlsx`
+    );
+
+    res.status(200).send({ success: true, data: metadata.analysis });
+  } catch (error) {
+    res.status(403).send({ message: error });
+  }
+});
 
 const WidgetProcessTranscript = asyncHandler(async (req, res, next) => {
   const {
@@ -177,6 +228,7 @@ const WidgetExportMessagePDF = asyncHandler(async (req, res, next) => {
 });
 
 module.exports = {
+  WidgetProcessTranscriptV2,
   WidgetProcessTranscript,
   WidgetdownloadXLSX,
   WidgetExportMessagePDF

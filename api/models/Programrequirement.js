@@ -2,10 +2,11 @@ const {
   Schema,
   Types: { ObjectId }
 } = require('mongoose');
+const { programRequirementAttributeSchema } = require('./common');
 
 const programRequirementSchema = new Schema(
   {
-    programId: { type: ObjectId, ref: 'Program' },
+    programId: [{ type: ObjectId, ref: 'Program' }],
     program_categories: [
       {
         program_category: {
@@ -25,6 +26,12 @@ const programRequirementSchema = new Schema(
           type: Number,
           default: 0
         }
+      }
+    ],
+    attributes: [
+      {
+        type: programRequirementAttributeSchema,
+        required: true
       }
     ],
     fpso: {

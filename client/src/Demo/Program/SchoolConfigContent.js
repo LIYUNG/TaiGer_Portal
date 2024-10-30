@@ -136,7 +136,6 @@ const SchoolConfigContent = ({ data }) => {
     const [attributes, setAttributes] = useState(props.data);
     const handleChange = async (e, school) => {
       e.preventDefault();
-      console.log(attributes);
       setAttributes({
         ...attributes,
         school,

@@ -2,21 +2,20 @@ import React, { Suspense } from 'react';
 import { Await, useLoaderData, Link as LinkDom } from 'react-router-dom';
 import { TabTitle } from '../../Utils/TabTitle';
 
-import CourseKeywordsOverview from './CourseKeywordsOverview';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 import Loading from '../../../components/Loading/Loading';
-import { appConfig } from '../../../config';
 import DEMO from '../../../store/constant';
+import { appConfig } from '../../../config';
 import { useTranslation } from 'react-i18next';
+import ProgramRequirementsNew from './ProgramRequirementsNew';
 
-function CourseKeywords() {
-  const { courseKeywordSets } = useLoaderData();
+function ProgramRequirementsEditIndex() {
   const { t } = useTranslation();
-
-  TabTitle('Course Keywords Edit');
+  const { programRequirement } = useLoaderData();
+  TabTitle('Program Requirement Edit');
 
   return (
-    <Box data-testid="course-keywords-component">
+    <Box data-testid="dashoboard_component">
       <Breadcrumbs aria-label="breadcrumb">
         <Link
           underline="hover"
@@ -43,13 +42,13 @@ function CourseKeywords() {
           {t('Program Requirements', { ns: 'common' })}
         </Link>
         <Typography color="text.primary">
-          {t('Keywords', { ns: 'common' })}
+          {t('Create', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
       <Suspense fallback={<Loading />}>
-        <Await resolve={courseKeywordSets}>
+        <Await resolve={programRequirement}>
           {(loadedData) => (
-            <CourseKeywordsOverview courseKeywordSets={loadedData} />
+            <ProgramRequirementsNew programsAndCourseKeywordSets={loadedData} />
           )}
         </Await>
       </Suspense>
@@ -57,4 +56,4 @@ function CourseKeywords() {
   );
 }
 
-export default CourseKeywords;
+export default ProgramRequirementsEditIndex;

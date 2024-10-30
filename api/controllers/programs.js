@@ -54,17 +54,6 @@ const getDistinctSchoolsAttributes = async (req, res) => {
   }
 };
 
-// Function to get distinct school names
-const getDistinctSchools = async (req, res) => {
-  try {
-    const schools = await req.db.model('Program').distinct('school');
-    logger.info('Distinct schools:', schools);
-  } catch (error) {
-    logger.error('Error fetching distinct schools:', error);
-    throw error;
-  }
-};
-
 const updateBatchSchoolAttributes = async (req, res) => {
   const fields = req.body;
   logger.info('Distinct schools:', fields);
@@ -385,6 +374,8 @@ const deleteProgram = asyncHandler(async (req, res) => {
     if (value === 1) {
       logger.info('cache key deleted successfully due to delete');
     }
+    // TODO:
+    // Remove programId from programRequirement programId.
   } else {
     logger.error('it can not be deleted!');
     logger.error('The following students have these programs!');

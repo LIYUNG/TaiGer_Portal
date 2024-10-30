@@ -1055,6 +1055,23 @@ export const ATTRIBUTES = [
   }
 ];
 
+export const PROGRAM_ANALYSIS_ATTRIBUTES = [
+  {
+    value: 'ee',
+    name: 'Electrical Engineering'
+  },
+  { value: 'cs', name: 'Computer Science' },
+
+  {
+    value: 'mgm',
+    name: 'Management'
+  },
+  {
+    value: 'phy',
+    name: 'Physics'
+  }
+];
+
 export const COLORS = [
   'primary',
   'secondary',
@@ -1539,6 +1556,83 @@ export const studentOverviewTableHeader = [
   'Portals',
   'Uni-Assist',
   'open/offer/reject'
+];
+
+export const col_keywords = [
+  {
+    accessorKey: 'categoryName', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
+    filterVariant: 'autocomplete',
+    filterFn: 'contains',
+    header: 'Category'
+  },
+  {
+    accessorKey: 'keywords_zh',
+    header: 'Keyword-ZH',
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.keywords_zh}
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'antiKeywords_zh',
+    header: 'Anti Keywords-ZH',
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.antiKeywords_zh}
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'keywords_en',
+    header: 'Keyword-EN',
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.keywords_en}
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'antiKeywords_en',
+    header: 'Anti Keywords-EN',
+    Cell: (params) => {
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+          }}
+        >
+          {params.row.original?.antiKeywords_en}
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: 'Last Update'
+  }
 ];
 
 export const c1_mrt = [

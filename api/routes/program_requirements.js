@@ -14,7 +14,8 @@ const {
   getProgramRequirement,
   createProgramRequirement,
   updateProgramRequirement,
-  deleteProgramRequirement
+  deleteProgramRequirement,
+  getDistinctProgramsAndKeywordSets
 } = require('../controllers/program_requirements');
 
 const router = Router();
@@ -31,13 +32,25 @@ router
   );
 
 router
-  .route('/:keywordsSetId')
+  .route('/new')
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
     createProgramRequirement
-  )
+  );
+
+router
+  .route('/programs-and-keywords')
+  .get(
+    filter_archiv_user,
+    GeneralPOSTRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent),
+    getDistinctProgramsAndKeywordSets
+  );
+
+router
+  .route('/:requirementId')
   .put(
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),

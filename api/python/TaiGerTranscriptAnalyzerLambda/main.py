@@ -22,7 +22,8 @@ from db import get_database
 file_path = os.path.realpath(__file__)
 file_path = os.path.dirname(file_path)
 
-def analyze_transcript(str_courses, category, student_id, student_name, language, str_courses_taiger_guided):
+
+def analyze_transcript(str_courses, category, student_id, student_name, language, str_courses_taiger_guided, requirement_ids="[]"):
     print("--------------------------")
     print("New Transcript Analyser")
     print("Python version:")
@@ -35,6 +36,9 @@ def analyze_transcript(str_courses, category, student_id, student_name, language
     courses_taiger_guided = json.loads(str_courses_taiger_guided)
     courses_taiger_guided_arr = json.loads(courses_taiger_guided)
     course_arr = course_arr + courses_taiger_guided_arr
+    requirement_ids_arr = json.loads(requirement_ids)
+    print(requirement_ids)
+    print("requirement_ids_arr", requirement_ids_arr)
 
     program_group_to_file_path = {
         'bio': '/database/Biology/BIO_Programs.xlsx',  # TODO

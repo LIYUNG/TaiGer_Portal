@@ -1,3 +1,4 @@
+import React, { useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -7,352 +8,392 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
+  Drawer,
+  Grid,
+  IconButton,
+  Paper,
   TextField,
-  Typography
+  Typography,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
-import React, { useState } from 'react';
+import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
-import { putKeywordSet } from '../../../api';
+import { Link as LinkDom } from 'react-router-dom';
+import { deleteKeywordSet, putKeywordSet } from '../../../api';
+import ExampleWithLocalizationProvider from '../../../components/MaterialReactTable';
+import { col_keywords } from '../../Utils/contants';
+import DEMO from '../../../store/constant';
 
 const CourseKeywordsOverview = ({ courseKeywordSets }) => {
-  const [keywordsZH, setKeywordsZH] = useState('');
-  const [antiKeywordsZH, setAntiKeywordsZH] = useState('');
-  const [keywordsEN, setKeywordsEN] = useState('');
-  const [antiKeywordsEN, setAntiKeywordsEN] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [courseKeywordSetsState, setCourseKeywordSetsState] = useState(
+    courseKeywordSets.map((courseKeywordSet) => ({
+      ...courseKeywordSet,
+      keywords_zh: courseKeywordSet.keywords?.zh?.join(', '),
+      keywords_en: courseKeywordSet.keywords?.en?.join(', '),
+      antiKeywords_zh: courseKeywordSet.antiKeywords?.zh?.join(', '),
+      antiKeywords_en: courseKeywordSet.antiKeywords?.en?.join(', ')
+    }))
+  );
+  const [itemToBeDeleted, setItemToBeDeleted] = useState({});
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [rowSelection, setRowSelection] = useState({});
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+
   const { t } = useTranslation();
 
-  const handleAddCourseKeyword = (lang, keyword) => {
-    if (selectedCategory.keywords[lang]?.includes(keywordsZH)) {
-      setErrorMessage('This keyword already exists in the list.');
-      setIsErrorDialogOpen(true); // Open error dialog
-      return;
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+    setRowSelection({});
+  };
+
+  const handleCategoryClick = (row) => {
+    setRowSelection(row);
+    setDrawerOpen(true); // Open the Drawer on small screens
+  };
+
+  const col = useMemo(() => col_keywords, [col_keywords]);
+
+  const handleDelete = async (data) => {
+    setIsDeleteDialogOpen(true);
+    setItemToBeDeleted(data);
+  };
+
+  const handleDeleteConfirm = async () => {
+    setIsDeleteDialogOpen;
+    setRowSelection({});
+    setCourseKeywordSetsState((prevState) =>
+      prevState.filter((item) => item._id !== itemToBeDeleted._id)
+    );
+    const resp = await deleteKeywordSet(itemToBeDeleted._id);
+    if (!resp.success) {
+      console.log('failed');
     }
-    if (keyword.trim()) {
+    setIsDeleteDialogOpen(false);
+    setItemToBeDeleted({});
+  };
+
+  const EditCard = (props) => {
+    const [selectedCategory, setSelectedCategory] = useState(props.data);
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [keywordsZH, setKeywordsZH] = useState('');
+    const [antiKeywordsZH, setAntiKeywordsZH] = useState('');
+    const [keywordsEN, setKeywordsEN] = useState('');
+    const [antiKeywordsEN, setAntiKeywordsEN] = useState('');
+    const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const handleAddCourseKeyword = (lang, keyword) => {
+      if (selectedCategory.keywords[lang]?.includes(keywordsZH)) {
+        setErrorMessage('This keyword already exists in the list.');
+        setIsErrorDialogOpen(true); // Open error dialog
+        return;
+      }
+      if (keyword.trim()) {
+        setSelectedCategory((prevCategory) => ({
+          ...prevCategory,
+          keywords: {
+            ...prevCategory.keywords,
+            [lang]: [...(prevCategory.keywords[lang] || []), keyword]
+          }
+        }));
+        if (lang === 'zh') {
+          setKeywordsZH('');
+        }
+        if (lang === 'en') {
+          setKeywordsEN('');
+        }
+      }
+    };
+
+    const handleAddCourseAntiKeyword = (lang, keyword) => {
+      if (selectedCategory.antiKeywords[lang]?.includes(antiKeywordsZH)) {
+        setErrorMessage('This keyword already exists in the list.');
+        setIsErrorDialogOpen(true); // Open error dialog
+        return;
+      }
+      if (keyword.trim()) {
+        setSelectedCategory((prevCategory) => ({
+          ...prevCategory,
+          antiKeywords: {
+            ...prevCategory.antiKeywords,
+            [lang]: [...(prevCategory.antiKeywords[lang] || []), keyword]
+          }
+        }));
+        if (lang === 'zh') {
+          setAntiKeywordsZH('');
+        }
+        if (lang === 'en') {
+          setAntiKeywordsEN('');
+        }
+      }
+    };
+
+    const handleDeleteCourseKeyword = (lang, type, keywordToDelete) => {
       setSelectedCategory((prevCategory) => ({
         ...prevCategory,
-        keywords: {
-          ...prevCategory.keywords,
-          [lang]: [...(prevCategory.keywords[lang] || []), keyword]
+        [type]: {
+          ...prevCategory[type],
+          [lang]: prevCategory[type][lang]?.filter(
+            (keyword) => keyword !== keywordToDelete
+          )
         }
       }));
-      if (lang === 'zh') {
-        setKeywordsZH('');
-      }
-      if (lang === 'en') {
-        setKeywordsEN('');
-      }
-    }
-  };
+    };
 
-  const handleAddCourseAntiKeyword = (lang, keyword) => {
-    if (selectedCategory.antiKeywords[lang]?.includes(antiKeywordsZH)) {
-      setErrorMessage('This keyword already exists in the list.');
-      setIsErrorDialogOpen(true); // Open error dialog
-      return;
-    }
-    if (keyword.trim()) {
+    const handleCategoryNameAndDescription = (e) => {
       setSelectedCategory((prevCategory) => ({
         ...prevCategory,
-        antiKeywords: {
-          ...prevCategory.antiKeywords,
-          [lang]: [...(prevCategory.antiKeywords[lang] || []), keyword]
-        }
+        [e.target.id]: e.target.value
       }));
-      if (lang === 'zh') {
-        setAntiKeywordsZH('');
+    };
+
+    const handleEditClick = () => {
+      setIsEditMode(!isEditMode);
+    };
+
+    const handleCancel = () => {
+      setIsEditMode(!isEditMode);
+      setSelectedCategory(props.data);
+    };
+
+    const handleSave = async () => {
+      props.setCourseKeywordSetsState((prevState) => {
+        // Check if the keywordSet object already exists in the state based on a unique key (e.g., id)
+        const index = prevState.findIndex(
+          (item) => item._id === selectedCategory._id
+        );
+
+        if (index !== -1) {
+          // If found, update the existing object
+          return prevState.map((item, i) =>
+            i === index
+              ? {
+                  ...item,
+                  ...selectedCategory,
+                  keywords_zh: selectedCategory.keywords?.zh?.join(', '),
+                  keywords_en: selectedCategory.keywords?.en?.join(', '),
+                  antiKeywords_zh:
+                    selectedCategory.antiKeywords?.zh?.join(', '),
+                  antiKeywords_en: selectedCategory.antiKeywords?.en?.join(', ')
+                }
+              : item
+          );
+        } else {
+          // If not found, add the new object to the array
+          return [
+            ...prevState,
+            {
+              ...selectedCategory,
+              keywords_zh: selectedCategory.keywords?.zh?.join(', '),
+              keywords_en: selectedCategory.keywords?.en?.join(', '),
+              antiKeywords_zh: selectedCategory.antiKeywords?.zh?.join(', '),
+              antiKeywords_en: selectedCategory.antiKeywords?.en?.join(', ')
+            }
+          ];
+        }
+      });
+      setIsEditMode(false);
+      const resp = await putKeywordSet(selectedCategory._id, selectedCategory);
+      const { success } = resp.data;
+      if (!success) {
+        console.log('warning');
       }
-      if (lang === 'en') {
-        setAntiKeywordsEN('');
-      }
-    }
-  };
+    };
 
-  const handleDeleteCourseKeyword = (lang, type, keywordToDelete) => {
-    setSelectedCategory((prevCategory) => ({
-      ...prevCategory,
-      [type]: {
-        ...prevCategory[type],
-        [lang]: prevCategory[type][lang]?.filter(
-          (keyword) => keyword !== keywordToDelete
-        )
-      }
-    }));
-  };
+    return isEditMode ? (
+      <Box>
+        <form onSubmit={(e) => handleSave(e)}>
+          <div style={{ marginBottom: '16px' }}>
+            <Typography variant="h6">Category Name:</Typography>
+            <TextField
+              value={selectedCategory.categoryName}
+              onChange={(e) => handleCategoryNameAndDescription(e)}
+              variant="outlined"
+              fullWidth
+              id="categoryName"
+              size="small"
+            />
+          </div>
 
-  const handleCategoryNameAndDescription = (e) => {
-    setSelectedCategory((prevCategory) => ({
-      ...prevCategory,
-      [e.target.id]: e.target.value
-    }));
-  };
-
-  const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
-  };
-
-  const handleSaveKeywordSet = async (e) => {
-    e.preventDefault();
-    const resp = await putKeywordSet(selectedCategory._id, selectedCategory);
-    const { success } = resp.data;
-    if (!success) {
-      console.log('warning');
-    }
-  };
-
-  return (
-    <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h6">Categories</Typography>
-        <Button variant="contained" color="primary">
-          Create New Keyword Set
-        </Button>
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          height: window.innerHeight - 160,
-          flexDirection: { xs: 'column', md: 'row' } // Responsive: column on small screens, row on medium and larger
-        }}
-      >
-        {/* Left sidebar */}
-
-        <Box
-          sx={{
-            minWidth: '290px',
-            width: { xs: '100%', md: '25%' }, // Full width on small screens, 25% width on medium+
-            borderRight: { md: '1px solid #ccc' }, // Add border only for medium and larger screens
-            borderBottom: { xs: '1px solid #ccc', md: 'none' }, // Bottom border for mobile instead of right border
-            overflowY: 'auto', // Makes the left sidebar scrollable
-            maxHeight: { xs: '200px', md: 'none' } // Control height on mobile for scrolling
-          }}
-        >
-          <List>
-            {courseKeywordSets.map((keywordSet) => (
-              <ListItem
-                key={keywordSet.categoryName}
-                sx={{ py: 0.5, px: 1 }} // Reduced vertical and horizontal padding
-              >
-                <ListItemButton
-                  onClick={() => handleCategoryClick(keywordSet)}
-                  sx={{ py: 0.5, px: 1 }} // Tighter padding for the button
-                >
-                  <ListItemText primary={keywordSet.categoryName} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-        {/* Right content */}
-        <Box
-          sx={{
-            p: 2,
-            flexGrow: 1,
-            overflowY: 'auto', // Makes the left sidebar scrollable
-            maxHeight: { xs: '200px', md: 'none' } // Control height on mobile for scrolling
-          }}
-        >
-          {selectedCategory ? (
-            <form onSubmit={(e) => handleSaveKeywordSet(e)}>
-              <div style={{ marginBottom: '16px' }}>
-                <Typography variant="h6">Category Name:</Typography>
-                <TextField
-                  value={selectedCategory.categoryName}
-                  onChange={(e) => handleCategoryNameAndDescription(e)}
-                  variant="outlined"
-                  fullWidth
-                  id="categoryName"
-                  size="small"
-                />
-              </div>
-
-              {/* Editable description */}
-              <div style={{ marginBottom: '16px' }}>
-                <Typography variant="body2" color="textSecondary">
-                  Description:
-                </Typography>
-                <TextField
-                  value={selectedCategory.description}
-                  onChange={(e) => handleCategoryNameAndDescription(e)}
-                  variant="outlined"
-                  fullWidth
-                  id="description"
-                  multiline
-                  rows={3}
-                  size="small"
-                />
-              </div>
-              <Box sx={{ width: '100%' }}>
-                {/* Add Keywords ZH */}
-                <Typography variant="body1">
-                  {t('Course Keywords (ZH)', { ns: 'common' })}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <TextField
-                    label="Add course keyword here..."
-                    variant="outlined"
-                    value={keywordsZH}
-                    onChange={(e) => setKeywordsZH(e.target.value)}
-                    fullWidth
-                    size="small"
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleAddCourseKeyword('zh', keywordsZH)}
-                    sx={{ ml: 2 }}
-                    size="small"
-                  >
-                    + Add Keywords (ZH)
-                  </Button>
-                </Box>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {selectedCategory?.keywords?.zh?.map((keyword, index) => (
-                    <Chip
-                      key={index}
-                      label={keyword}
-                      onDelete={() =>
-                        handleDeleteCourseKeyword('zh', 'keywords', keyword)
-                      }
-                      color="primary"
-                    />
-                  ))}
-                </Box>
-
-                {/* Add Anti-Keywords ZH */}
-                <Typography variant="body1">
-                  {t('Anti-Keywords (ZH)', { ns: 'common' })}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <TextField
-                    label="Add course anti-keyword here..."
-                    variant="outlined"
-                    value={antiKeywordsZH}
-                    onChange={(e) => setAntiKeywordsZH(e.target.value)}
-                    fullWidth
-                    size="small"
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() =>
-                      handleAddCourseAntiKeyword('zh', antiKeywordsZH)
-                    }
-                    sx={{ ml: 2 }}
-                    size="small"
-                  >
-                    + Add Anti-Keywords (ZH)
-                  </Button>
-                </Box>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {selectedCategory?.antiKeywords?.zh?.map((keyword, index) => (
-                    <Chip
-                      key={index}
-                      label={keyword}
-                      onDelete={() =>
-                        handleDeleteCourseKeyword('zh', 'antiKeywords', keyword)
-                      }
-                      color="secondary"
-                    />
-                  ))}
-                </Box>
-                {/* Add Keywords EN */}
-                <Typography variant="body1">
-                  {t('Course Keywords (EN)', { ns: 'common' })}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <TextField
-                    label="Add course keyword here..."
-                    variant="outlined"
-                    value={keywordsEN}
-                    onChange={(e) => setKeywordsEN(e.target.value)}
-                    fullWidth
-                    size="small"
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleAddCourseKeyword('en', keywordsEN)}
-                    sx={{ ml: 2 }}
-                    size="small"
-                  >
-                    + Add Keywords (EN)
-                  </Button>
-                </Box>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {selectedCategory?.keywords?.en?.map((keyword, index) => (
-                    <Chip
-                      key={index}
-                      label={keyword}
-                      onDelete={() =>
-                        handleDeleteCourseKeyword('en', 'keywords', keyword)
-                      }
-                      color="primary"
-                    />
-                  ))}
-                </Box>
-
-                {/* Add Anti-Keywords EN */}
-                <Typography variant="body1">
-                  {t('Anti-Keywords (EN)', { ns: 'common' })}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <TextField
-                    label="Add course anti-keyword here..."
-                    variant="outlined"
-                    value={antiKeywordsEN}
-                    onChange={(e) => setAntiKeywordsEN(e.target.value)}
-                    fullWidth
-                    size="small"
-                  />
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() =>
-                      handleAddCourseAntiKeyword('en', antiKeywordsEN)
-                    }
-                    sx={{ ml: 2 }}
-                    size="small"
-                  >
-                    + Add Anti-Keywords (EN)
-                  </Button>
-                </Box>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {selectedCategory?.antiKeywords?.en?.map((keyword, index) => (
-                    <Chip
-                      key={index}
-                      label={keyword}
-                      onDelete={() =>
-                        handleDeleteCourseKeyword('en', 'antiKeywords', keyword)
-                      }
-                      color="secondary"
-                    />
-                  ))}
-                </Box>
-                <Box>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 2 }}
-                  >
-                    {t('Save', { ns: 'common' })}
-                  </Button>
-                </Box>
-              </Box>
-            </form>
-          ) : (
-            <Typography variant="body1">
-              Select a category to manage keywords.
+          {/* Editable description */}
+          <div style={{ marginBottom: '16px' }}>
+            <Typography variant="body2" color="textSecondary">
+              Description:
             </Typography>
-          )}
-        </Box>
+            <TextField
+              value={selectedCategory.description}
+              onChange={(e) => handleCategoryNameAndDescription(e)}
+              variant="outlined"
+              fullWidth
+              id="description"
+              multiline
+              rows={3}
+              size="small"
+            />
+          </div>
+          <Box sx={{ width: '100%' }}>
+            {/* Add Keywords ZH */}
+            <Typography variant="body1">
+              {t('Course Keywords (ZH)', { ns: 'common' })}
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <TextField
+                label="Add course keyword here..."
+                variant="outlined"
+                value={keywordsZH}
+                onChange={(e) => {
+                  e.preventDefault();
+                  setKeywordsZH(e.target.value);
+                }}
+                fullWidth
+                size="small"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleAddCourseKeyword('zh', keywordsZH)}
+                sx={{ ml: 2 }}
+                size="small"
+              >
+                + Add (ZH)
+              </Button>
+            </Box>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              {selectedCategory?.keywords?.zh?.map((keyword, index) => (
+                <Chip
+                  key={index}
+                  label={keyword}
+                  onDelete={() =>
+                    handleDeleteCourseKeyword('zh', 'keywords', keyword)
+                  }
+                  color="primary"
+                />
+              ))}
+            </Box>
+
+            {/* Add Anti-Keywords ZH */}
+            <Typography variant="body1">
+              {t('Anti-Keywords (ZH)', { ns: 'common' })}
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <TextField
+                label="Add course anti-keyword here..."
+                variant="outlined"
+                value={antiKeywordsZH}
+                onChange={(e) => setAntiKeywordsZH(e.target.value)}
+                fullWidth
+                size="small"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleAddCourseAntiKeyword('zh', antiKeywordsZH)}
+                sx={{ ml: 2 }}
+                size="small"
+              >
+                + Add (ZH)
+              </Button>
+            </Box>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              {selectedCategory?.antiKeywords?.zh?.map((keyword, index) => (
+                <Chip
+                  key={index}
+                  label={keyword}
+                  onDelete={() =>
+                    handleDeleteCourseKeyword('zh', 'antiKeywords', keyword)
+                  }
+                  color="secondary"
+                />
+              ))}
+            </Box>
+            {/* Add Keywords EN */}
+            <Typography variant="body1">
+              {t('Course Keywords (EN)', { ns: 'common' })}
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <TextField
+                label="Add course keyword here..."
+                variant="outlined"
+                value={keywordsEN}
+                onChange={(e) => setKeywordsEN(e.target.value)}
+                fullWidth
+                size="small"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleAddCourseKeyword('en', keywordsEN)}
+                sx={{ ml: 2 }}
+                size="small"
+              >
+                + Add (EN)
+              </Button>
+            </Box>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              {selectedCategory?.keywords?.en?.map((keyword, index) => (
+                <Chip
+                  key={index}
+                  label={keyword}
+                  onDelete={() =>
+                    handleDeleteCourseKeyword('en', 'keywords', keyword)
+                  }
+                  color="primary"
+                />
+              ))}
+            </Box>
+
+            {/* Add Anti-Keywords EN */}
+            <Typography variant="body1">
+              {t('Anti-Keywords (EN)', { ns: 'common' })}
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <TextField
+                label="Add course anti-keyword here..."
+                variant="outlined"
+                value={antiKeywordsEN}
+                onChange={(e) => setAntiKeywordsEN(e.target.value)}
+                fullWidth
+                size="small"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleAddCourseAntiKeyword('en', antiKeywordsEN)}
+                sx={{ ml: 2 }}
+                size="small"
+              >
+                + Add (EN)
+              </Button>
+            </Box>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
+              {selectedCategory?.antiKeywords?.en?.map((keyword, index) => (
+                <Chip
+                  key={index}
+                  label={keyword}
+                  onDelete={() =>
+                    handleDeleteCourseKeyword('en', 'antiKeywords', keyword)
+                  }
+                  color="secondary"
+                />
+              ))}
+            </Box>
+            <Box display="flex" justifyContent="flex-end" gap={2}>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleCancel}
+              >
+                {t('Cancel', { ns: 'common' })}
+              </Button>
+              <Button variant="contained" color="primary" type="submit">
+                {t('Update', { ns: 'common' })}
+              </Button>
+            </Box>
+          </Box>
+        </form>
         <Dialog
           open={isErrorDialogOpen}
           onClose={() => setIsErrorDialogOpen(false)}
@@ -367,11 +408,214 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setIsErrorDialogOpen(false)} color="primary">
-              OK
+              {t('OK', { ns: 'common' })}
             </Button>
           </DialogActions>
         </Dialog>
       </Box>
+    ) : (
+      <Box>
+        <div style={{ marginBottom: '16px' }}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mb={2}
+          >
+            <Typography variant="h6">
+              {t('Category Name', { ns: 'common' })}:
+            </Typography>
+            <IconButton onClick={handleEditClick} size="small">
+              <EditIcon />
+            </IconButton>
+          </Box>
+          <TextField
+            value={selectedCategory.categoryName}
+            onChange={(e) => handleCategoryNameAndDescription(e)}
+            variant="outlined"
+            fullWidth
+            id="categoryName"
+            size="small"
+            InputProps={{
+              readOnly: true
+            }}
+          />
+        </div>
+        {/* Editable description */}
+        <div style={{ marginBottom: '16px' }}>
+          <Typography variant="body2" color="textSecondary">
+            {t('Description', { ns: 'common' })}:
+          </Typography>
+          <TextField
+            value={selectedCategory.description}
+            onChange={(e) => handleCategoryNameAndDescription(e)}
+            variant="outlined"
+            fullWidth
+            id="description"
+            multiline
+            rows={3}
+            size="small"
+            InputProps={{
+              readOnly: true
+            }}
+          />
+        </div>
+        <Box sx={{ width: '100%' }}>
+          {/* Add Keywords ZH */}
+          <Typography variant="body1">
+            {t('Course Keywords (ZH)', { ns: 'common' })}
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {selectedCategory?.keywords?.zh?.map((keyword, index) => (
+              <Chip key={index} label={keyword} color="primary" />
+            ))}
+          </Box>
+          {/* Add Anti-Keywords ZH */}
+          <Typography variant="body1">
+            {t('Anti-Keywords (ZH)', { ns: 'common' })}
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {selectedCategory?.antiKeywords?.zh?.map((keyword, index) => (
+              <Chip key={index} label={keyword} color="secondary" />
+            ))}
+          </Box>
+          {/* Add Keywords EN */}
+          <Typography variant="body1">
+            {t('Course Keywords (EN)', { ns: 'common' })}
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {selectedCategory?.keywords?.en?.map((keyword, index) => (
+              <Chip key={index} label={keyword} color="primary" />
+            ))}
+          </Box>
+          {/* Add Anti-Keywords EN */}
+          <Typography variant="body1">
+            {t('Anti-Keywords (EN)', { ns: 'common' })}
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {selectedCategory?.antiKeywords?.en?.map((keyword, index) => (
+              <Chip key={index} label={keyword} color="secondary" />
+            ))}
+          </Box>
+        </Box>
+      </Box>
+    );
+  };
+
+  const selectedARow =
+    Object.keys(rowSelection) && Object.keys(rowSelection)[0];
+  return (
+    <Box>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography variant="h6">Categories</Typography>
+        <Box>
+          <Button
+            variant="outlined"
+            color="primary"
+            disabled={!selectedARow}
+            onClick={() =>
+              handleDelete(
+                courseKeywordSetsState[parseInt(Object.keys(rowSelection)[0])]
+              )
+            }
+            sx={{ mr: 1 }}
+          >
+            {t('Delete', { ns: 'common' })}
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            component={LinkDom}
+            to={DEMO.KEYWORDS_NEW}
+          >
+            {t('Create', { ns: 'common' })}
+          </Button>
+        </Box>
+      </Box>
+
+      {/* Left sidebar */}
+      <Grid container spacing={2} sx={{ mt: 1 }}>
+        <Grid
+          item
+          xs={12}
+          sx={{ overflowY: 'auto' }} // Left side scroll
+          md={selectedARow ? 7 : 12}
+        >
+          <ExampleWithLocalizationProvider
+            data={courseKeywordSetsState}
+            col={col}
+            enableRowSelection={true}
+            enableMultiRowSelection={false}
+            muiTableBodyRowProps={({ row }) => ({
+              //add onClick to row to select upon clicking anywhere in the row
+              onClick: row.getToggleSelectedHandler(),
+              sx: { cursor: 'pointer' }
+            })}
+            onRowSelectionChange={(e) => handleCategoryClick(e)}
+            rowSelection={rowSelection}
+          />
+        </Grid>
+        {/* Right content */}
+        {/* Right side: Configuration panel */}
+        {!isSmallScreen && (
+          <Grid item xs={12} md={5} sx={{ overflowY: 'auto' }}>
+            <Paper style={{ padding: 16 }}>
+              {selectedARow && (
+                <EditCard
+                  data={
+                    courseKeywordSetsState[
+                      parseInt(Object.keys(rowSelection)[0])
+                    ]
+                  }
+                  setCourseKeywordSetsState={setCourseKeywordSetsState}
+                />
+              )}
+            </Paper>
+          </Grid>
+        )}
+      </Grid>
+      {/* Drawer for small screens */}
+      {isSmallScreen && (
+        <Drawer anchor="right" open={drawerOpen} onClose={handleDrawerClose}>
+          <div style={{ width: 300, padding: 16 }}>
+            {Object.keys(rowSelection) && Object.keys(rowSelection)[0] ? (
+              <EditCard
+                data={
+                  courseKeywordSetsState[parseInt(Object.keys(rowSelection)[0])]
+                }
+                setCourseKeywordSetsState={setCourseKeywordSetsState}
+              />
+            ) : (
+              <Typography variant="h6">Select a school to configure</Typography>
+            )}
+            <Button onClick={handleDrawerClose} variant="contained" fullWidth>
+              {t('Close')}
+            </Button>
+          </div>
+        </Drawer>
+      )}
+      <Dialog
+        open={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        aria-labelledby="error-dialog-title"
+        aria-describedby="error-dialog-description"
+      >
+        <DialogTitle id="error-dialog-title">Warning</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="error-dialog-description">
+            {t('Do you want to delete?')}
+            {/* TODO: show affected programs */}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleDeleteConfirm(false)} color="primary">
+            {t('Yes', { ns: 'common' })}
+          </Button>
+          <Button onClick={() => setIsDeleteDialogOpen(false)} color="primary">
+            {t('Cancel', { ns: 'common' })}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

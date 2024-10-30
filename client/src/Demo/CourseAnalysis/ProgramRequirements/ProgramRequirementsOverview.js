@@ -216,7 +216,11 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog open={deleteModalOpen} onClose={setDeleteModalOpen} size="small">
+      <Dialog
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        size="small"
+      >
         <DialogTitle>{t('Attention')}</DialogTitle>
         <DialogContent>
           <Typography id="modal-modal-description" sx={{ my: 2 }}>
@@ -242,7 +246,7 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
             color="secondary"
             variant="outlined"
             title="Undo"
-            onClick={setDeleteModalOpen}
+            onClick={() => setDeleteModalOpen(false)}
           >
             {t('Cancel', { ns: 'common' })}
           </Button>

@@ -34,13 +34,19 @@ const WidgetProcessTranscriptV2 = asyncHandler(async (req, res, next) => {
   );
   const studentId = req.user._id.toString();
   try {
+    // TODO: replacing requirement_ids with data from frontend.
+    // TODO: also verify the id.
     const response = await callApiGateway(Credentials, apiGatewayUrl, 'POST', {
       courses: stringified_courses,
       category,
       student_id: studentId,
       student_name,
       language,
-      courses_taiger_guided: stringified_courses_taiger_guided
+      courses_taiger_guided: stringified_courses_taiger_guided,
+      requirement_ids: JSON.stringify([
+        '6716e505b5c65b932fda02a4',
+        '671ecb55015d01f7771f0fac'
+      ])
     });
 
     const metadata = {

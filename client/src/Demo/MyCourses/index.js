@@ -788,17 +788,18 @@ export default function MyCourses() {
                     ? t('Analysing', { ns: 'courses' })
                     : t('Analyse', { ns: 'courses' })}
                 </Button>
-                <Badge badgeContent={'New'} color="error">
+                <Badge badgeContent={'Upcoming'} color="error">
                   <Button
                     fullWidth
                     color="primary"
                     variant="contained"
                     onClick={onAnalyseV2}
-                    disabled={
-                      statedata.isAnalysing ||
-                      statedata.study_group === '' ||
-                      statedata.analysis_language === ''
-                    }
+                    // disabled={
+                    //   statedata.isAnalysing ||
+                    //   statedata.study_group === '' ||
+                    //   statedata.analysis_language === ''
+                    // }
+                    disabled
                     endIcon={
                       statedata.isAnalysing ? (
                         <CircularProgress size={24} />

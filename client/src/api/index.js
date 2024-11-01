@@ -188,11 +188,11 @@ export const WidgetTranscriptanalyserV2 = (
   category,
   language,
   courses,
-  table_data_string_taiger_guided
+  requirementIds
 ) =>
   request.post(`/api/widgets/transcript/v2/${category}/${language}`, {
     courses,
-    table_data_string_taiger_guided
+    requirementIds
   });
 
 export const WidgetanalyzedFileDownload = (adminId) =>

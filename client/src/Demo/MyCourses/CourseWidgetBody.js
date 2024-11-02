@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -18,14 +18,17 @@ import {
   Badge,
   Tabs,
   Tab,
-  TextField
+  lighten,
+  RadioGroup,
+  FormControlLabel,
+  Radio
 } from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import 'react-datasheet-grid/dist/style.css';
 
-import { study_group } from '../Utils/contants';
+import { PROGRAM_ANALYSIS_ATTRIBUTES, study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { is_TaiGer_role } from '../Utils/checking-functions';
@@ -39,16 +42,198 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { a11yProps, CustomTabPanel } from '../../components/Tabs';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import {
+  MaterialReactTable,
+  MRT_GlobalFilterTextField,
+  MRT_ToggleFiltersButton,
+  useMaterialReactTable
+} from 'material-react-table';
 import CourseAnalysisConfirmDialog from './CourseAnalysisConfirmDialog';
+
+const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
+  const [language, setLanguage] = useState('zh'); // 'en' for English, 'zh' for 中文
+  const { t } = useTranslation();
+  const [rowSelection, setRowSelection] = useState({});
+  let [statedata, setStatedata] = useState({});
+  const setModalHide = () => {
+    setStatedata((state) => ({
+      ...state,
+      modalShowAssignWindow: false
+    }));
+  };
+
+  const onAnalyse = () => {
+    onAnalyseV2(
+      Object.keys(rowSelection)?.map((idx) => data[idx]?._id),
+      language
+    );
+  };
+
+  const setModalShow2 = () => {
+    setStatedata((state) => ({
+      ...state,
+      modalShowAssignWindow: true
+    }));
+  };
+
+  const handleLanguageChange = (event) => {
+    const newLanguage = event.target.value;
+    setLanguage(newLanguage);
+  };
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: 'program_name', //id is still required when using accessorFn instead of accessorKey
+        header: 'Program Name',
+        size: 450,
+        Cell: ({ renderedCellValue }) => (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1rem'
+            }}
+          >
+            {/* using renderedCellValue instead of cell.getValue() preserves filter match highlighting */}
+            <span>{renderedCellValue}</span>
+          </Box>
+        )
+      },
+      {
+        accessorKey: 'attributes', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
+        filterVariant: 'multi-select',
+        filterSelectOptions: PROGRAM_ANALYSIS_ATTRIBUTES.map(
+          (item) => item.value
+        ), //custom options list (as opposed to faceted list)
+        header: 'Attributes',
+        size: 90
+      },
+      {
+        accessorKey: 'country', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
+        enableClickToCopy: true,
+        filterVariant: 'autocomplete',
+        header: 'Country',
+        size: 90
+      },
+      {
+        accessorKey: 'updatedAt', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
+        enableClickToCopy: true,
+        header: 'updatedAt',
+        size: 90
+      }
+    ],
+    []
+  );
+
+  const table = useMaterialReactTable({
+    columns,
+    data, //data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
+    enableColumnFilterModes: true,
+    enableColumnOrdering: true,
+    enableColumnPinning: true,
+    enableFacetedValues: true,
+    enableRowSelection: true,
+    initialState: {
+      showColumnFilters: true,
+      showGlobalFilter: true,
+      columnPinning: {
+        left: ['mrt-row-expand', 'mrt-row-select']
+      }
+    },
+    muiTableBodyRowProps: ({ row }) => ({
+      //add onClick to row to select upon clicking anywhere in the row
+      onClick: row.getToggleSelectedHandler(),
+      sx: { cursor: 'pointer' }
+    }),
+    onRowSelectionChange: setRowSelection,
+    state: { rowSelection },
+    paginationDisplayMode: 'pages',
+    positionToolbarAlertBanner: 'bottom',
+    muiSearchTextFieldProps: {
+      size: 'small',
+      variant: 'outlined'
+    },
+    muiPaginationProps: {
+      color: 'secondary',
+      rowsPerPageOptions: [10, 20, 30],
+      shape: 'rounded',
+      variant: 'outlined'
+    },
+
+    renderTopToolbar: ({ table }) => {
+      return (
+        <Box
+          sx={(theme) => ({
+            backgroundColor: lighten(theme.palette.background.default, 0.05),
+            display: 'flex',
+            gap: '0.5rem',
+            p: '8px',
+            justifyContent: 'space-between'
+          })}
+        >
+          <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <MRT_GlobalFilterTextField table={table} />
+            <MRT_ToggleFiltersButton table={table} />
+          </Box>
+          <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <FormControl component="fieldset">
+              <RadioGroup
+                row
+                aria-label="language"
+                name="language"
+                value={language}
+                onChange={handleLanguageChange}
+              >
+                <FormControlLabel
+                  value="en"
+                  control={<Radio />}
+                  label="English"
+                />
+                <FormControlLabel value="zh" control={<Radio />} label="中文" />
+              </RadioGroup>
+            </FormControl>
+            <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={setModalShow2}
+                disabled={!Object.keys(rowSelection)?.length > 0}
+                endIcon={
+                  statedata.isAnalysing ? <CircularProgress size={24} /> : <></>
+                }
+              >
+                {statedata.isAnalysing
+                  ? t('Analysing', { ns: 'courses' })
+                  : t('Analyse V2', { ns: 'courses' })}
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      );
+    }
+  });
+
+  return (
+    <>
+      <MaterialReactTable table={table} />
+
+      <CourseAnalysisConfirmDialog
+        show={statedata.modalShowAssignWindow}
+        setModalHide={setModalHide}
+        data={Object.keys(rowSelection)?.map((idx) => data[idx])}
+        isButtonDisable={!Object.keys(rowSelection)?.length > 0}
+        onAnalyse={onAnalyse}
+      />
+    </>
+  );
+};
 
 export default function CourseWidgetBody({ programRequirements }) {
   const { user } = useAuth();
   const { student_id } = useParams();
   const { t } = useTranslation();
-
-  const [filters, setFilters] = useState({});
-  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
 
   let [statedata, setStatedata] = useState({
     error: '',
@@ -69,9 +254,7 @@ export default function CourseWidgetBody({ programRequirements }) {
     study_group: '',
     analysis_language: '',
     analyzed_course: '',
-    expand: true,
     isAnalysing: false,
-    isUpdating: false,
     isDownloading: false,
     res_status: 0,
     res_modal_status: 0,
@@ -170,69 +353,6 @@ export default function CourseWidgetBody({ programRequirements }) {
     );
   };
 
-  const setModalHide = () => {
-    setStatedata((state) => ({
-      ...state,
-      modalShowAssignWindow: false
-    }));
-  };
-
-  const setModalShow2 = () => {
-    setStatedata((state) => ({
-      ...state,
-      modalShowAssignWindow: true
-    }));
-  };
-
-  const onAnalyseV2 = async () => {
-    setStatedata((state) => ({
-      ...state,
-      isAnalysing: true
-    }));
-
-    try {
-      const resp = await WidgetTranscriptanalyserV2(
-        statedata.study_group,
-        statedata.analysis_language,
-        statedata.coursesdata,
-        rowSelectionModel
-      );
-
-      const { data, success } = resp.data;
-      const { status } = resp;
-      if (success) {
-        setStatedata((state) => ({
-          ...state,
-          isLoaded: true,
-          analysis: data,
-          analysisSuccessModalWindowOpen: true,
-          success: success,
-          isAnalysing: false,
-          res_modal_status: status
-        }));
-      } else {
-        setStatedata((state) => ({
-          ...state,
-          isLoaded: true,
-          isAnalysing: false,
-          res_modal_status: status,
-          res_modal_message:
-            'Make sure that you updated your courses and select the right target group and language!'
-        }));
-      }
-    } catch (error) {
-      setStatedata((state) => ({
-        ...state,
-        isLoaded: true,
-        isAnalysing: false,
-        error,
-        res_modal_status: 500,
-        res_modal_message:
-          'Make sure that you updated your courses and select the right target group and language!'
-      }));
-    }
-  };
-
   const onDownload = () => {
     setStatedata((state) => ({
       ...state,
@@ -302,81 +422,65 @@ export default function CourseWidgetBody({ programRequirements }) {
     );
   };
 
-  const handleFilterChange = (event, column) => {
-    event.preventDefault();
-    const { value } = event.target;
-    const searchParams = new URLSearchParams(window.location.search);
-    searchParams.set(column.field, value.toLowerCase());
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [column.field]: value.toLowerCase()
-    }));
-  };
-
   const transformedData = programRequirements.map((row) => {
     return {
       ...row, // Spread the original row object
       program_name: `${row.programId[0].school} ${row.programId[0].program_name} ${row.programId[0].degree}`,
       lang: `${row.programId[0].lang}`,
       degree: `${row.programId[0].degree}`,
+      attributes: `${row.attributes.map((item) => item.value).join('-')}`,
       country: `${row.programId[0].country}`,
       id: row._id // Map MongoDB _id to id property
       // other properties...
     };
   });
 
-  const filteredRows = transformedData.filter((row) => {
-    return Object.keys(filters).every((field) => {
-      const filterValue = filters[field];
-      return (
-        filterValue === '' ||
-        row[field]?.toString().toLowerCase().includes(filterValue)
+  const onAnalyseV2 = async (requirementIds, lang) => {
+    setStatedata((state) => ({
+      ...state,
+      isAnalysing: true
+    }));
+
+    try {
+      const resp = await WidgetTranscriptanalyserV2(
+        lang,
+        statedata.coursesdata,
+        requirementIds
       );
-    });
-  });
 
-  const programListColumn = [
-    {
-      field: 'program_name',
-      headerName: t('Program Name', { ns: 'common' }),
-      align: 'left',
-      headerAlign: 'left',
-      width: 450,
-      renderCell: (params) => {
-        const linkUrl = `${DEMO.PROGRAM_ANALYSIS}`;
-        return (
-          <Link
-            underline="hover"
-            to={linkUrl}
-            component={LinkDom}
-            target="_blank"
-          >
-            {params.value}
-          </Link>
-        );
+      const { data, success } = resp.data;
+      const { status } = resp;
+      if (success) {
+        setStatedata((state) => ({
+          ...state,
+          isLoaded: true,
+          analysis: data,
+          analysisSuccessModalWindowOpen: true,
+          success: success,
+          isAnalysing: false,
+          res_modal_status: status
+        }));
+      } else {
+        setStatedata((state) => ({
+          ...state,
+          isLoaded: true,
+          isAnalysing: false,
+          res_modal_status: status,
+          res_modal_message:
+            'Make sure that you updated your courses and select the right target group and language!'
+        }));
       }
-    },
-    {
-      field: 'country',
-      headerName: t('Country', { ns: 'common' }),
-      width: 80
-    },
-    { field: 'degree', headerName: t('Degree', { ns: 'common' }), width: 90 },
-    {
-      field: 'lang',
-      headerName: t('Language', { ns: 'common' }),
-      width: 90
-    },
-    {
-      field: 'updatedAt',
-      headerName: t('Last update', { ns: 'common' }),
-      width: 150
+    } catch (error) {
+      setStatedata((state) => ({
+        ...state,
+        isLoaded: true,
+        isAnalysing: false,
+        error,
+        res_modal_status: 500,
+        res_modal_message:
+          'Make sure that you updated your courses and select the right target group and language!'
+      }));
     }
-  ];
-
-  const stopPropagation = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
   };
 
   const closeanalysisSuccessModal = () => {
@@ -458,14 +562,11 @@ export default function CourseWidgetBody({ programRequirements }) {
       </Box>
       <Box>
         <Card sx={{ p: 2 }}>
-          <Typography sx={{ px: 2, pt: 2 }}>
-            1. Please fill the courses.
-          </Typography>
-          <Typography sx={{ px: 2 }}>2. Select study group</Typography>
-          <Typography sx={{ px: 2 }}>
+          <Typography sx={{ pt: 1 }}>1. Please fill the courses.</Typography>
+          <Typography>2. Select study group</Typography>
+          <Typography sx={{ mb: 1 }}>
             3. Select language. <b>Chinese</b> is more accurate.
           </Typography>
-          <br />
           <DataSheetGrid
             height={6000}
             style={{ minWidth: '450px' }}
@@ -479,7 +580,6 @@ export default function CourseWidgetBody({ programRequirements }) {
             columns={columns}
           />
           <br />
-          <br />
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs
               value={value}
@@ -488,11 +588,11 @@ export default function CourseWidgetBody({ programRequirements }) {
               scrollButtons="auto"
               aria-label="basic tabs example"
             >
-              <Tab label="Calender" {...a11yProps(0)} />
+              <Tab label="Default" {...a11yProps(0)} />
               <Tab
                 label={
-                  <Badge badgeContent={'New'} color="error">
-                    V2
+                  <Badge badgeContent={'V2'} color="error">
+                    New Analyzer
                   </Badge>
                 }
                 {...a11yProps(1)}
@@ -565,75 +665,15 @@ export default function CourseWidgetBody({ programRequirements }) {
               sx={{ my: 1 }}
             >
               <Typography variant="h6"></Typography>
-              <Box>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={setModalShow2}
-                  disabled={!rowSelectionModel.length > 0}
-                  endIcon={
-                    statedata.isAnalysing ? (
-                      <CircularProgress size={24} />
-                    ) : (
-                      <></>
-                    )
-                  }
-                >
-                  {statedata.isAnalysing
-                    ? t('Analysing', { ns: 'courses' })
-                    : t('Analyse V2', { ns: 'courses' })}
-                </Button>
-              </Box>
+              <Box></Box>
             </Box>
-            <div style={{ height: '50%', width: '100%' }}>
-              <DataGrid
-                columnHeaderHeight={130}
-                density="compact"
-                rows={filteredRows}
-                disableColumnFilter
-                disableColumnMenu
-                disableDensitySelector
-                columns={programListColumn.map((column) => ({
-                  ...column,
-                  renderHeader: () => (
-                    <Box>
-                      <Typography
-                        sx={{ my: 1 }}
-                      >{`${column.headerName}`}</Typography>
-                      <TextField
-                        size="small"
-                        type="text"
-                        placeholder={`${column.headerName}`}
-                        onClick={stopPropagation}
-                        value={filters[column.field] || ''}
-                        onChange={(event) => handleFilterChange(event, column)}
-                        sx={{ mb: 1 }}
-                      />
-                    </Box>
-                  )
-                }))}
-                initialState={{
-                  pagination: {
-                    paginationModel: { page: 0, pageSize: 20 }
-                  }
-                }}
-                keepNonExistentRowsSelected
-                onRowSelectionModelChange={(newRowSelectionModel) => {
-                  setRowSelectionModel(newRowSelectionModel);
-                }}
-                rowSelectionModel={rowSelectionModel}
-                pageSizeOptions={[10, 20, 50, 100]}
-                checkboxSelection
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true
-                  }
-                }}
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <ProgramRequirementsTable
+                data={transformedData}
+                onAnalyseV2={onAnalyseV2}
               />
-            </div>
+            </LocalizationProvider>
           </CustomTabPanel>
-
           <Typography>
             {statedata.analysis && statedata.analysis.isAnalysed ? (
               <>
@@ -654,11 +694,7 @@ export default function CourseWidgetBody({ programRequirements }) {
           </Typography>
         </Card>
       </Box>
-      <CourseAnalysisConfirmDialog
-        show={statedata.modalShowAssignWindow}
-        setModalHide={setModalHide}
-        onAnalyseV2={onAnalyseV2}
-      />
+
       <Dialog
         open={statedata.analysisSuccessModalWindowOpen}
         onClose={closeanalysisSuccessModal}

@@ -16,21 +16,25 @@ import {
 
 import { useTranslation } from 'react-i18next';
 
-function CourseAnalysisConfirmDialog(props) {
+function CourseAnalysisConfirmDialog({
+  show,
+  data,
+  isButtonDisable,
+  setModalHide,
+  onAnalyse
+}) {
   const { t } = useTranslation();
 
   return (
     <Dialog
-      open={props.show}
-      onClose={props.setModalHide}
+      open={show}
+      onClose={setModalHide}
       aria-labelledby="contained-modal-title-vcenter"
     >
       <DialogTitle>
         Analyse{' '}
-        {[].map((program_name, i) => (
-          <Typography key={i}>
-            <b>{program_name}</b>
-          </Typography>
+        {data.map((requirement, i) => (
+          <Typography key={i}>{requirement.program_name}</Typography>
         ))}
       </DialogTitle>
       <DialogContent>
@@ -48,20 +52,16 @@ function CourseAnalysisConfirmDialog(props) {
         <Button
           color="primary"
           variant="contained"
-          disabled={props.isButtonDisable}
-          onClick={(e) => props.onAnalyseV2(e)}
+          disabled={isButtonDisable}
+          onClick={(e) => onAnalyse(e)}
         >
-          {props.isButtonDisable ? (
+          {isButtonDisable ? (
             <CircularProgress />
           ) : (
-            t('Assign', { ns: 'common' })
+            t('Analyze', { ns: 'common' })
           )}
         </Button>
-        <Button
-          color="secondary"
-          variant="outlined"
-          onClick={props.setModalHide}
-        >
+        <Button color="secondary" variant="outlined" onClick={setModalHide}>
           {t('Cancel', { ns: 'common' })}
         </Button>
       </DialogActions>

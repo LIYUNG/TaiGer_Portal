@@ -20,7 +20,7 @@ const student_name = 'PreCustomer';
 
 const WidgetProcessTranscriptV2 = asyncHandler(async (req, res, next) => {
   const {
-    params: { category, language },
+    params: { language },
     body: { courses, requirementIds }
   } = req;
 
@@ -35,11 +35,10 @@ const WidgetProcessTranscriptV2 = asyncHandler(async (req, res, next) => {
     // TODO: also verify the id.
     const response = await callApiGateway(Credentials, apiGatewayUrl, 'POST', {
       courses: stringified_courses,
-      category,
       student_id: studentId,
       student_name,
       language,
-      courses_taiger_guided: '[]',
+      courses_taiger_guided: "'[]'",
       requirement_ids: JSON.stringify(requirementIds)
     });
 

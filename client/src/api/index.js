@@ -184,13 +184,8 @@ export const WidgetTranscriptanalyser = (
     courses,
     table_data_string_taiger_guided
   });
-export const WidgetTranscriptanalyserV2 = (
-  category,
-  language,
-  courses,
-  requirementIds
-) =>
-  request.post(`/api/widgets/transcript/v2/${category}/${language}`, {
+export const WidgetTranscriptanalyserV2 = (language, courses, requirementIds) =>
+  request.post(`/api/widgets/transcript/engine/v2/${language}`, {
     courses,
     requirementIds
   });

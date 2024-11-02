@@ -26,19 +26,19 @@ router
   );
 
 router
+  .route('/transcript/engine/v2/:language')
+  .post(
+    GeneralPOSTRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent),
+    WidgetProcessTranscriptV2
+  );
+
+router
   .route('/transcript/:category/:language')
   .post(
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
     WidgetProcessTranscript
-  );
-
-router
-  .route('/transcript/v2/:category/:language')
-  .post(
-    GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
-    WidgetProcessTranscriptV2
   );
 
 router

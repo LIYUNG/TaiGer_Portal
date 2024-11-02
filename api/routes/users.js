@@ -17,6 +17,7 @@ const {
   deleteUser,
   getUser
 } = require('../controllers/users');
+const { auditLog } = require('../utils/log/auditLog');
 
 const router = Router();
 
@@ -34,7 +35,8 @@ router
     filter_archiv_user,
     permit(Role.Admin),
     GeneralPOSTRequestRateLimiter,
-    addUser
+    addUser,
+    auditLog
   );
 
 router

@@ -568,7 +568,7 @@ export default function CourseWidgetBody({ programRequirements }) {
             3. Select language. <b>Chinese</b> is more accurate.
           </Typography>
           <DataSheetGrid
-            height={6000}
+            height={1000}
             style={{ minWidth: '450px' }}
             disableContextMenu={true}
             disableExpandSelection={false}

@@ -38,7 +38,7 @@ const WidgetProcessTranscriptV2 = asyncHandler(async (req, res, next) => {
       student_id: studentId,
       student_name,
       language,
-      courses_taiger_guided: "'[]'",
+      courses_taiger_guided: '"[]"',
       requirement_ids: JSON.stringify(requirementIds)
     });
 

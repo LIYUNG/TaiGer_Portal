@@ -83,18 +83,20 @@ const getProgramApplicationCounts = asyncHandler(async (req) => {
 
 // TODO: can flatten the result, so that frontend can render in table directly.
 const getAdmissions = asyncHandler(async (req, res) => {
-  const result = await getProgramApplicationCounts(req);
-  const students = await req.db
-    .model('Student')
-    .find()
-    .select(
-      '-applications.doc_modification_thread -applications.uni_assist -birthday -applying_program_count -profile -isAccountActivated -updatedAt -generaldocs_threads -taigerai -notification -academic_background'
-    )
-    .populate(
-      'agents editors',
-      'firstname lastname firstname_firstname lastname_lastname'
-    )
-    .populate('applications.programId', 'school program_name semester degree');
+  const [result, students] = await Promise.all([
+    getProgramApplicationCounts(req),
+    req.db
+      .model('Student')
+      .find()
+      .select(
+        '-applications.doc_modification_thread -applications.uni_assist -birthday -applying_program_count -profile -isAccountActivated -updatedAt -generaldocs_threads -taigerai -notification -academic_background'
+      )
+      .populate(
+        'agents editors',
+        'firstname lastname firstname_firstname lastname_lastname'
+      )
+      .populate('applications.programId', 'school program_name semester degree')
+  ]);
   res.status(200).send({ success: true, data: students, result });
 });
 

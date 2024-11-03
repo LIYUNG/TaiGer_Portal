@@ -111,11 +111,13 @@ const addUser = asyncHandler(async (req, res, next) => {
     changes: {
       before: null, // Before state
       after: {
-        firstname: newUser.firstname,
-        lastname: newUser.lastname,
-        firstname_chinese: newUser.firstname_chinese,
-        lastname_chinese: newUser.lastname_chinese,
-        email: newUser.email
+        newUser: {
+          firstname: newUser.firstname,
+          lastname: newUser.lastname,
+          firstname_chinese: newUser.firstname_chinese,
+          lastname_chinese: newUser.lastname_chinese,
+          email: newUser.email
+        }
       }
     }
   };

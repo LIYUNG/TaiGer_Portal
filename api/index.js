@@ -44,7 +44,8 @@ const {
 } = require('./utils/utils_function');
 const {
   // MongoDBDataBaseDailySnapshot,
-  MongoDBDataBaseDailySnapshotV2
+  MongoDBDataBaseDailySnapshotV2,
+  MongoDBDataPipelineDailySnapshot
 } = require('./utils/jobs');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
@@ -191,7 +192,8 @@ const launch = async () => {
     // launch https server
     // const job5 = schedule.scheduleJob(
     //   '40 * * * * *',
-    //   MongoDBDataBaseDailySnapshotV2
+    //   // MongoDBDataBaseDailySnapshotV2
+    //   MongoDBDataPipelineDailySnapshot
     // );
 
     if (

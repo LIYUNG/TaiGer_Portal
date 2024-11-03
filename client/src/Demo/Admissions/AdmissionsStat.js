@@ -23,7 +23,7 @@ function AdmissionsStat(props) {
     {
       field: 'school',
       headerName: 'School',
-      width: 250,
+      width: 300,
       renderCell: (params) => {
         const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.id)}`;
         return (
@@ -41,7 +41,7 @@ function AdmissionsStat(props) {
     {
       field: 'program_name',
       headerName: 'Program',
-      width: 250,
+      width: 300,
       renderCell: (params) => {
         const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.id)}`;
         return (
@@ -56,31 +56,31 @@ function AdmissionsStat(props) {
         );
       }
     },
-    { field: 'degree', headerName: 'Degree', width: 120 },
+    { field: 'degree', headerName: 'Degree', width: 100 },
     {
       field: 'semester',
       headerName: t('Semester', { ns: 'common' }),
-      width: 120
+      width: 100
     },
     {
       field: 'applicationCount',
       headerName: t('applicationCount', { ns: 'common' }),
-      width: 150
+      width: 100
     },
     {
       field: 'admissionCount',
-      headerName: t('admissionCount', { ns: 'common' }),
-      width: 120
+      headerName: t('Admission', { ns: 'common' }),
+      width: 100
     },
     {
       field: 'rejectionCount',
-      headerName: t('rejectionCount', { ns: 'common' }),
-      width: 120
+      headerName: t('Rejection', { ns: 'common' }),
+      width: 100
     },
     {
       field: 'pendingResultCount',
-      headerName: t('pendingResultCount', { ns: 'common' }),
-      width: 120
+      headerName: t('Pending Result', { ns: 'common' }),
+      width: 100
     }
   ];
   const memoizedColumns = useMemo(

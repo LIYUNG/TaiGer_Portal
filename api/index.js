@@ -22,7 +22,8 @@ const {
   COURSE_SELECTION_TASKS_REMINDER_DECEMBER_SCHEDULE,
   COURSE_SELECTION_TASKS_REMINDER_JULY_SCHEDULE,
   COURSE_SELECTION_TASKS_REMINDER_NOVEMBER_SCHEDULE,
-  AVERAGE_RESPONSE_TIME_CALCULATION_SCHEDULE
+  AVERAGE_RESPONSE_TIME_CALCULATION_SCHEDULE,
+  DAILY_TASKS_REMINDER_SCHEDULE2
 } = require('./config');
 
 const logger = require('./services/logger');
@@ -182,6 +183,11 @@ const launch = async () => {
     const job5 = schedule.scheduleJob(
       DAILY_TASKS_REMINDER_SCHEDULE,
       MongoDBDataBaseDailySnapshotV2
+    );
+
+    const job17 = schedule.scheduleJob(
+      DAILY_TASKS_REMINDER_SCHEDULE2,
+      MongoDBDataPipelineDailySnapshot
     );
     // launch http server
     app.listen(PORT, () => {

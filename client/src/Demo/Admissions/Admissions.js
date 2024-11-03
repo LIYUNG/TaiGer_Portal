@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, Navigate } from 'react-router-dom';
-import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Link, Tab, Tabs, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import AdmissionsTable from './AdmissionsTable';
@@ -12,14 +12,21 @@ import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
+import { a11yProps, CustomTabPanel } from '../../components/Tabs';
+import AdmissionsStat from './AdmissionsStat';
 
 function Admissions() {
   const { user } = useAuth();
+  const [value, setValue] = useState(0);
   const { t } = useTranslation();
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
   const [admissionsState, setAdmissionsState] = useState({
     error: '',
     isLoaded: false,
     students: [],
+    result: [],
     success: false,
     res_status: 0
   });
@@ -27,13 +34,14 @@ function Admissions() {
   useEffect(() => {
     getAdmissions().then(
       (resp) => {
-        const { data, success } = resp.data;
+        const { result, data, success } = resp.data;
         const { status } = resp;
         if (success) {
           setAdmissionsState((prevState) => ({
             ...prevState,
             isLoaded: true,
             students: data,
+            result,
             success: success,
             res_status: status
           }));
@@ -89,7 +97,32 @@ function Admissions() {
             {t(`${appConfig.companyName} Admissions`, { ns: 'common' })}
           </Typography>
         </Breadcrumbs>
-        <AdmissionsTable students={admissionsState.students} />
+        <Box>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            aria-label="basic tabs example"
+          >
+            <Tab
+              label={`${t('Admissions', {
+                ns: 'admissions'
+              })}`}
+              {...a11yProps(0)}
+            />
+            <Tab
+              label={`${t('Statistics', { ns: 'admissions' })}`}
+              {...a11yProps(1)}
+            />
+          </Tabs>
+        </Box>
+        <CustomTabPanel value={value} index={0}>
+          <AdmissionsTable students={admissionsState.students} />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={1}>
+          <AdmissionsStat result={admissionsState.result} />
+        </CustomTabPanel>
       </Box>
     );
   }

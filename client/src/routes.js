@@ -484,6 +484,7 @@ const routes = [
     path: '/internal/widgets/course-analyser',
     exact: true,
     name: 'Course Analyser',
+    loader: getProgramRequirementsLoader,
     Component: CoursesAnalysisWidget
   },
   {

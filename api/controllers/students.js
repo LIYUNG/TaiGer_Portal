@@ -589,221 +589,398 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     params: { studentId },
     body: agentsId // agentsId is json (or agentsId array with boolean)
   } = req;
-  const student = await req.db.model('Student').findById(studentId);
-  // TODO: data validation for studentId, agentsId
-  const agentsId_arr = Object.keys(agentsId);
-  let updated_agent_id = [];
-  let before_change_agent_arr = student.agents;
-  let to_be_informed_agents = [];
-  let updated_agent = [];
-  for (let i = 0; i < agentsId_arr.length; i += 1) {
-    if (agentsId[agentsId_arr[i]]) {
-      updated_agent_id.push(agentsId_arr[i]);
-      const agent = await req.db.model('Agent').findById(agentsId_arr[i]);
-      updated_agent.push({
-        firstname: agent.firstname,
-        lastname: agent.lastname,
-        email: agent.email
-      });
-      if (!before_change_agent_arr.includes(agentsId_arr[i])) {
-        to_be_informed_agents.push({
+
+  try {
+    // Data validation
+    if (!studentId || !agentsId || typeof agentsId !== 'object') {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Invalid input data.' });
+    }
+
+    // Fetch the student
+    const student = await req.db
+      .model('Student')
+      .findById(studentId)
+      .populate('agents', 'firstname lastname email')
+      .lean();
+    if (!student) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Student not found.' });
+    }
+
+    // Prepare arrays
+    const agentsIdArr = Object.keys(agentsId);
+    const updatedAgentIds = agentsIdArr.filter((agentId) => agentsId[agentId]);
+
+    // Fetch agents concurrently
+    const agents = await Promise.all(
+      updatedAgentIds.map((id) =>
+        req.db
+          .model('Agent')
+          .findById(id)
+          .select('firstname lastname email archiv')
+          .lean()
+      )
+    );
+
+    // Prepare data for updating
+    const beforeChangeAgentArr = student.agents;
+
+    // Create sets for easy comparison
+    const previousAgentSet = new Set(
+      beforeChangeAgentArr.map((agn) => agn._id.toString())
+    );
+    const newAgentSet = new Set(updatedAgentIds);
+
+    // Find newly added and removed agents
+    const addedAgents = agents.filter(
+      (agn) => !previousAgentSet.has(agn._id.toString())
+    );
+    const removedAgents = beforeChangeAgentArr.filter(
+      (agnt) => !newAgentSet.has(agnt._id.toString())
+    );
+
+    const toBeInformedAgents = [];
+    const updatedAgents = [];
+
+    agents.forEach((agent) => {
+      if (agent) {
+        updatedAgents.push({
           firstname: agent.firstname,
           lastname: agent.lastname,
-          archiv: agent.archiv,
           email: agent.email
         });
-      }
-    }
-  }
-
-  if (updated_agent_id.length > 0) {
-    student.notification.isRead_new_agent_assigned = false;
-  }
-  student.agents = updated_agent_id;
-  await student.save();
-
-  const student_upated = await req.db
-    .model('Student')
-    .findById(studentId)
-    .populate('applications.programId agents editors')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    )
-    .exec();
-  res.status(200).send({ success: true, data: student_upated });
-
-  // inform editor-lead
-  const Permission = req.db.model('Permission');
-  const permissions = await Permission.find({
-    canAssignAgents: true
-  })
-    .populate('user_id', 'firstname lastname email')
-    .lean();
-  const agentLeads = permissions
-    .map((permission) => permission.user_id)
-    ?.filter((taigerUser) => taigerUser._id.toString() !== user._id.toString());
-
-  for (const agentLead of agentLeads) {
-    if (isNotArchiv(student)) {
-      if (isNotArchiv(agentLead)) {
-        informAgentManagerNewStudentEmail(
-          {
-            firstname: agentLead.firstname,
-            lastname: agentLead.lastname,
-            address: agentLead.email
-          },
-          {
-            std_firstname: student.firstname,
-            std_lastname: student.lastname,
-            std_id: student._id.toString(),
-            agents: updated_agent
-          }
-        );
-      }
-    }
-  }
-
-  for (let i = 0; i < to_be_informed_agents.length; i += 1) {
-    if (isNotArchiv(student)) {
-      if (isNotArchiv(to_be_informed_agents[i])) {
-        informAgentNewStudentEmail(
-          {
-            firstname: to_be_informed_agents[i].firstname,
-            lastname: to_be_informed_agents[i].lastname,
-            address: to_be_informed_agents[i].email
-          },
-          {
-            std_firstname: student.firstname,
-            std_lastname: student.lastname,
-            std_id: student._id.toString()
-          }
-        );
-      }
-    }
-  }
-
-  if (updated_agent.length !== 0) {
-    if (isNotArchiv(student)) {
-      informStudentTheirAgentEmail(
-        {
-          firstname: student.firstname,
-          lastname: student.lastname,
-          address: student.email
-        },
-        {
-          agents: updated_agent
+        if (
+          !beforeChangeAgentArr
+            ?.map((agn) => agn._id.toString())
+            .includes(agent._id.toString())
+        ) {
+          toBeInformedAgents.push({
+            firstname: agent.firstname,
+            lastname: agent.lastname,
+            archiv: agent.archiv,
+            email: agent.email
+          });
         }
+      }
+    });
+
+    // Update student's agents
+    if (addedAgents.length > 0 || removedAgents.length > 0) {
+      // Log the changes here
+      logger.info('Agents updated:', {
+        added: addedAgents,
+        removed: removedAgents
+      });
+      await req.db.model('Student').findByIdAndUpdate(
+        studentId,
+        {
+          'notification.isRead_new_agent_assigned': false,
+          agents: updatedAgentIds
+        },
+        {}
       );
     }
+
+    // Populate the updated student data
+    const studentUpdated = await req.db
+      .model('Student')
+      .findById(studentId)
+      .populate('applications.programId agents editors')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
+      )
+      .lean() // Optional: Use lean for better performance
+      .exec();
+
+    res.status(200).json({ success: true, data: studentUpdated });
+
+    // inform editor-lead
+    const Permission = req.db.model('Permission');
+    const permissions = await Permission.find({
+      canAssignAgents: true
+    })
+      .populate('user_id', 'firstname lastname email')
+      .lean();
+    const agentLeads = permissions
+      .map((permission) => permission.user_id)
+      ?.filter(
+        (taigerUser) => taigerUser._id.toString() !== user._id.toString()
+      );
+
+    for (const agentLead of agentLeads) {
+      if (isNotArchiv(studentUpdated)) {
+        if (isNotArchiv(agentLead)) {
+          informAgentManagerNewStudentEmail(
+            {
+              firstname: agentLead.firstname,
+              lastname: agentLead.lastname,
+              address: agentLead.email
+            },
+            {
+              std_firstname: studentUpdated.firstname,
+              std_lastname: studentUpdated.lastname,
+              std_id: studentUpdated._id.toString(),
+              agents: updatedAgents
+            }
+          );
+        }
+      }
+    }
+
+    for (let i = 0; i < toBeInformedAgents.length; i += 1) {
+      if (isNotArchiv(studentUpdated)) {
+        if (isNotArchiv(toBeInformedAgents[i])) {
+          informAgentNewStudentEmail(
+            {
+              firstname: toBeInformedAgents[i].firstname,
+              lastname: toBeInformedAgents[i].lastname,
+              address: toBeInformedAgents[i].email
+            },
+            {
+              std_firstname: studentUpdated.firstname,
+              std_lastname: studentUpdated.lastname,
+              std_id: studentUpdated._id.toString()
+            }
+          );
+        }
+      }
+    }
+
+    if (updatedAgents.length !== 0) {
+      if (isNotArchiv(studentUpdated)) {
+        informStudentTheirAgentEmail(
+          {
+            firstname: studentUpdated.firstname,
+            lastname: studentUpdated.lastname,
+            address: studentUpdated.email
+          },
+          {
+            agents: updatedAgents
+          }
+        );
+      }
+    }
+
+    if (addedAgents.length > 0 || removedAgents.length > 0) {
+      req.audit = {
+        performedBy: user._id,
+        targetUserId: studentId, // Change this if you have a different target user ID
+        action: 'update', // Action performed
+        field: 'agents', // Field that was updated (if applicable)
+        changes: {
+          before: beforeChangeAgentArr, // Before state
+          after: {
+            added: addedAgents,
+            removed: removedAgents
+          }
+        }
+      };
+      next();
+    }
+  } catch (error) {
+    logger.error('Error updating agents:', error);
+    res.status(500).json({ success: false, message: 'Internal server error.' });
   }
-  next();
 });
 
 // () TODO email : agent better notification
 // () TODO email : student better notification
 const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   const {
+    user,
     params: { studentId },
     body: editorsId
   } = req;
-  const keys = Object.keys(editorsId);
-  const student = await req.db.model('Student').findById(studentId);
-  // TODO: data validation for studentId, editorsId
-  let updated_editor_id = [];
-  let before_change_editor_arr = student.editors;
-  let to_be_informed_editors = [];
-  let updated_editor = [];
-  for (let i = 0; i < keys.length; i += 1) {
-    if (editorsId[keys[i]]) {
-      updated_editor_id.push(keys[i]);
-      const editor = await req.db.model('Editor').findById(keys[i]);
-      updated_editor.push({
-        firstname: editor.firstname,
-        lastname: editor.lastname,
-        email: editor.email
-      });
-      if (!before_change_editor_arr.includes(keys[i])) {
-        to_be_informed_editors.push({
+  try {
+    // Data validation
+    if (!studentId || !editorsId || typeof editorsId !== 'object') {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Invalid input data.' });
+    }
+
+    // Fetch the student
+    const student = await req.db
+      .model('Student')
+      .findById(studentId)
+      .populate('editors', 'firstname lastname email')
+      .lean();
+    if (!student) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Student not found.' });
+    }
+
+    // Prepare arrays
+    const editorsIdArr = Object.keys(editorsId);
+    const updatedEditorIds = editorsIdArr.filter(
+      (agentId) => editorsId[agentId]
+    );
+
+    // Fetch editors concurrently
+    const editors = await Promise.all(
+      updatedEditorIds.map((id) =>
+        req.db
+          .model('Editor')
+          .findById(id)
+          .select('firstname lastname email archiv')
+          .lean()
+      )
+    );
+
+    // Prepare data for updating
+    const beforeChangeEditorArr = student.editors;
+
+    // Create sets for easy comparison
+    const previousEditorSet = new Set(
+      beforeChangeEditorArr.map((editr) => editr._id.toString())
+    );
+    const newEditorSet = new Set(updatedEditorIds);
+
+    // Find newly added and removed editors
+    const addedEditors = editors.filter(
+      (editr) => !previousEditorSet.has(editr._id.toString())
+    );
+    const removedEditors = beforeChangeEditorArr.filter(
+      (editrt) => !newEditorSet.has(editrt._id.toString())
+    );
+
+    const toBeInformedEditors = [];
+    const updatedEditors = [];
+
+    editors.forEach((editor) => {
+      if (editor) {
+        updatedEditors.push({
           firstname: editor.firstname,
           lastname: editor.lastname,
-          archiv: editor.archiv,
           email: editor.email
         });
-      }
-    }
-  }
-
-  student.notification.isRead_new_editor_assigned = false;
-  student.editors = updated_editor_id;
-  await student.save();
-
-  const student_upated = await req.db
-    .model('Student')
-    .findById(studentId)
-    .populate('applications.programId agents editors')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    )
-    .exec();
-
-  res.status(200).send({ success: true, data: student_upated });
-
-  for (let i = 0; i < to_be_informed_editors.length; i += 1) {
-    if (isNotArchiv(student)) {
-      if (isNotArchiv(to_be_informed_editors[i])) {
-        informEditorNewStudentEmail(
-          {
-            firstname: to_be_informed_editors[i].firstname,
-            lastname: to_be_informed_editors[i].lastname,
-            address: to_be_informed_editors[i].email
-          },
-          {
-            std_firstname: student.firstname,
-            std_lastname: student.lastname,
-            std_id: student._id.toString()
-          }
-        );
-      }
-    }
-  }
-  // TODO: inform Agent for assigning editor.
-  for (let i = 0; i < student_upated.agents.length; i += 1) {
-    if (isNotArchiv(student)) {
-      if (isNotArchiv(student_upated.agents[i])) {
-        informAgentStudentAssignedEmail(
-          {
-            firstname: student_upated.agents[i].firstname,
-            lastname: student_upated.agents[i].lastname,
-            address: student_upated.agents[i].email
-          },
-          {
-            std_firstname: student.firstname,
-            std_lastname: student.lastname,
-            std_id: student._id.toString(),
-            editors: student_upated.editors
-          }
-        );
-      }
-    }
-  }
-
-  if (updated_editor.length !== 0) {
-    if (isNotArchiv(student)) {
-      await informStudentTheirEditorEmail(
-        {
-          firstname: student.firstname,
-          lastname: student.lastname,
-          address: student.email
-        },
-        {
-          editors: updated_editor
+        if (
+          !beforeChangeEditorArr
+            ?.map((agn) => agn._id.toString())
+            .includes(editor._id.toString())
+        ) {
+          toBeInformedEditors.push({
+            firstname: editor.firstname,
+            lastname: editor.lastname,
+            archiv: editor.archiv,
+            email: editor.email
+          });
         }
+      }
+    });
+
+    // Update student's editors
+    if (addedEditors.length > 0 || removedEditors.length > 0) {
+      // Log the changes here
+      logger.info('Editors updated:', {
+        added: addedEditors,
+        removed: removedEditors
+      });
+      await req.db.model('Student').findByIdAndUpdate(
+        studentId,
+        {
+          'notification.isRead_new_agent_assigned': false,
+          editors: updatedEditorIds
+        },
+        {}
       );
     }
+
+    // Populate the updated student data
+    const studentUpdated = await req.db
+      .model('Student')
+      .findById(studentId)
+      .populate('applications.programId agents editors')
+      .populate(
+        'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        '-messages'
+      )
+      .lean() // Optional: Use lean for better performance
+      .exec();
+
+    res.status(200).json({ success: true, data: studentUpdated });
+
+    // -------------------------------------
+
+    for (let i = 0; i < toBeInformedEditors.length; i += 1) {
+      if (isNotArchiv(student)) {
+        if (isNotArchiv(toBeInformedEditors[i])) {
+          informEditorNewStudentEmail(
+            {
+              firstname: toBeInformedEditors[i].firstname,
+              lastname: toBeInformedEditors[i].lastname,
+              address: toBeInformedEditors[i].email
+            },
+            {
+              std_firstname: student.firstname,
+              std_lastname: student.lastname,
+              std_id: student._id.toString()
+            }
+          );
+        }
+      }
+    }
+    // TODO: inform Agent for assigning editor.
+    for (let i = 0; i < studentUpdated.agents.length; i += 1) {
+      if (isNotArchiv(student)) {
+        if (isNotArchiv(studentUpdated.agents[i])) {
+          informAgentStudentAssignedEmail(
+            {
+              firstname: studentUpdated.agents[i].firstname,
+              lastname: studentUpdated.agents[i].lastname,
+              address: studentUpdated.agents[i].email
+            },
+            {
+              std_firstname: student.firstname,
+              std_lastname: student.lastname,
+              std_id: student._id.toString(),
+              editors: studentUpdated.editors
+            }
+          );
+        }
+      }
+    }
+
+    if (updatedEditors.length !== 0) {
+      if (isNotArchiv(student)) {
+        await informStudentTheirEditorEmail(
+          {
+            firstname: student.firstname,
+            lastname: student.lastname,
+            address: student.email
+          },
+          {
+            editors: updatedEditors
+          }
+        );
+      }
+    }
+
+    if (addedEditors.length > 0 || removedEditors.length > 0) {
+      req.audit = {
+        performedBy: user._id,
+        targetUserId: studentId, // Change this if you have a different target user ID
+        action: 'update', // Action performed
+        field: 'editors', // Field that was updated (if applicable)
+        changes: {
+          before: beforeChangeEditorArr, // Before state
+          after: {
+            added: addedEditors,
+            removed: removedEditors
+          }
+        }
+      };
+      next();
+    }
+  } catch (error) {
+    logger.error('Error updating editors:', error);
+    res.status(500).json({ success: false, message: 'Internal server error.' });
   }
-  next();
 });
 
 const assignAttributesToStudent = asyncHandler(async (req, res, next) => {

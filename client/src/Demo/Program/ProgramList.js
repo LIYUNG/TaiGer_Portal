@@ -438,17 +438,16 @@ function ProgramList(props) {
             </Typography>
             {/* Button on the right */}
             <Box>
-              {rowSelectionModel.length > 0 && (
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={setModalShow2}
-                  startIcon={<PersonAddIcon />}
-                  sx={{ mr: 1 }}
-                >
-                  {t('Assign', { ns: 'common' })}
-                </Button>
-              )}
+              <Button
+                color="success"
+                variant="contained"
+                onClick={setModalShow2}
+                disabled={!rowSelectionModel.length > 0}
+                startIcon={<PersonAddIcon />}
+                sx={{ mr: 1 }}
+              >
+                {t('Assign', { ns: 'common' })}
+              </Button>
               <Button
                 variant="outlined"
                 color="primary"

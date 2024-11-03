@@ -56,7 +56,7 @@ function CourseAnalysisConfirmDialog({
           onClick={(e) => onAnalyse(e)}
         >
           {isButtonDisable ? (
-            <CircularProgress />
+            <CircularProgress size={24} />
           ) : (
             t('Analyze', { ns: 'common' })
           )}

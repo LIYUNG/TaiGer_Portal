@@ -54,6 +54,7 @@ import CourseAnalysisConfirmDialog from './CourseAnalysisConfirmDialog';
 
 const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
   const [language, setLanguage] = useState('zh'); // 'en' for English, 'zh' for 中文
+  const [isAnalysingV2, setIsAnalysingV2] = useState(false);
   const { t } = useTranslation();
   const [rowSelection, setRowSelection] = useState({});
   let [statedata, setStatedata] = useState({});
@@ -64,11 +65,13 @@ const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
     }));
   };
 
-  const onAnalyse = () => {
-    onAnalyseV2(
+  const onAnalyse = async () => {
+    setIsAnalysingV2(true);
+    await onAnalyseV2(
       Object.keys(rowSelection)?.map((idx) => data[idx]?._id),
       language
     );
+    setIsAnalysingV2(false);
   };
 
   const setModalShow2 = () => {
@@ -218,12 +221,13 @@ const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
   return (
     <>
       <MaterialReactTable table={table} />
-
       <CourseAnalysisConfirmDialog
         show={statedata.modalShowAssignWindow}
         setModalHide={setModalHide}
         data={Object.keys(rowSelection)?.map((idx) => data[idx])}
-        isButtonDisable={!Object.keys(rowSelection)?.length > 0}
+        isButtonDisable={
+          isAnalysingV2 || !Object.keys(rowSelection)?.length > 0
+        }
         onAnalyse={onAnalyse}
       />
     </>

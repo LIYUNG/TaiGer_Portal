@@ -18,12 +18,12 @@ import {
   Typography
 } from '@mui/material';
 
+import DEMO from '../../../store/constant';
+import { useAuth } from '../../AuthProvider';
 import {
   getLocalTime,
   getUTCTimezoneOffset
 } from '../../../Demo/Utils/contants';
-import DEMO from '../../../store/constant';
-import { useAuth } from '../../AuthProvider';
 
 export function CreateNewEventModal(props) {
   const { t } = useTranslation();
@@ -31,7 +31,23 @@ export function CreateNewEventModal(props) {
   const { user } = useAuth();
   const { available_termins } = props;
   const newEventTitle = '';
+  const getDate = (time) => {
+    const datePart = time.split('T')[0]; // "2024-11-14"
 
+    return datePart;
+  };
+  const getHour = (time) => {
+    const timePart = time.split('T')[1].split('+')[0]; // "00:00:00"
+
+    const hours = timePart.split(':')[0];
+    return hours;
+  };
+  const getMinute = (time) => {
+    const timePart = time.split('T')[1].split('+')[0]; // "00:00:00"
+
+    const minutes = timePart.split(':')[1];
+    return minutes;
+  };
   const handleCreateEvent = () => {
     // Create a new event object and add it to the events array
     const end_date = new Date(props.newEventStart);
@@ -61,9 +77,7 @@ export function CreateNewEventModal(props) {
           value={newEventDescription}
           placeholder="Description"
         />
-        <Typography variant="body1" sx={{ mt: 2 }}>
-          Time zone: {user.timezone}
-        </Typography>
+
         <span>
           If the time zone not matches, please go to{' '}
           <Link to={`${DEMO.PROFILE}`} component={LinkDom}>
@@ -71,7 +85,19 @@ export function CreateNewEventModal(props) {
           </Link>{' '}
           to update your time zone
         </span>
-        <br />
+        <Typography variant="body1" sx={{ mt: 2 }}>
+          Time zone: {user.timezone}
+          {available_termins[0] &&
+            ` ( UTC +${
+              getUTCTimezoneOffset(available_termins[0].start, user.timezone) /
+              60
+            } ) `}
+        </Typography>
+        <Typography variant="body1">
+          Date:{' '}
+          {available_termins[0] &&
+            getDate(getLocalTime(available_termins[0]?.start, user.timezone))}
+        </Typography>
         <FormControl fullWidth sx={{ my: 2 }}>
           <InputLabel id="time_slot">
             {t('Time Slot', { ns: 'common' })}
@@ -91,15 +117,20 @@ export function CreateNewEventModal(props) {
                   value={`${time_slot.start}`}
                   key={`${time_slot.start}`}
                 >
-                  {getLocalTime(time_slot.start, user.timezone)} UTC +
-                  {getUTCTimezoneOffset(time_slot.start, user.timezone) / 60}{' '}
-                  {user.timezone}
+                  {`${getHour(
+                    getLocalTime(time_slot.start, user.timezone)
+                  )}:${getMinute(
+                    getLocalTime(time_slot.start, user.timezone)
+                  )}`}
+                  {/* {getLocalTime(time_slot.start, user.timezone)} */}
+                  {/* {`UTC + ${
+                    getUTCTimezoneOffset(time_slot.start, user.timezone) / 60
+                  } `} */}
                 </MenuItem>
               ))}
           </Select>
         </FormControl>
-        <br />
-        <FormControl fullWidth sx={{ mb: 2 }}>
+        <FormControl fullWidth>
           <InputLabel id="Choose_Student">{t('Choose Student')}</InputLabel>
           <Select
             labelId="Choose_Student"

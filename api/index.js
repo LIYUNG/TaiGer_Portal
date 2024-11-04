@@ -22,8 +22,7 @@ const {
   COURSE_SELECTION_TASKS_REMINDER_DECEMBER_SCHEDULE,
   COURSE_SELECTION_TASKS_REMINDER_JULY_SCHEDULE,
   COURSE_SELECTION_TASKS_REMINDER_NOVEMBER_SCHEDULE,
-  AVERAGE_RESPONSE_TIME_CALCULATION_SCHEDULE,
-  DAILY_TASKS_REMINDER_SCHEDULE2
+  AVERAGE_RESPONSE_TIME_CALCULATION_SCHEDULE
 } = require('./config');
 
 const logger = require('./services/logger');
@@ -43,11 +42,6 @@ const {
   NoInterviewTrainerOrTrainingDateDailyReminderChecker,
   DailyInterviewSurveyChecker
 } = require('./utils/utils_function');
-// const {
-//   // MongoDBDataBaseDailySnapshot,
-//   MongoDBDataBaseDailySnapshotV2,
-//   MongoDBDataPipelineDailySnapshot
-// } = require('./utils/jobs');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
 // process.on('SIGINT', () => {
@@ -180,28 +174,11 @@ const launch = async () => {
   logger.info(`isDev : ${isDev()}`);
   let httpsOption;
   if (isProd()) {
-    // const job5 = schedule.scheduleJob(
-    //   DAILY_TASKS_REMINDER_SCHEDULE,
-    //   MongoDBDataBaseDailySnapshotV2
-    // );
-
-    // const job17 = schedule.scheduleJob(
-    //   DAILY_TASKS_REMINDER_SCHEDULE2,
-    //   MongoDBDataPipelineDailySnapshot
-    // );
     // launch http server
     app.listen(PORT, () => {
       logger.info(`Server running on port ${PORT}`);
     });
   } else {
-    // local development
-    // launch https server
-    // const job5 = schedule.scheduleJob(
-    //   '40 * * * * *',
-    //   // MongoDBDataBaseDailySnapshotV2
-    //   MongoDBDataPipelineDailySnapshot
-    // );
-
     if (
       fs.existsSync(HTTPS_KEY) &&
       fs.existsSync(HTTPS_CERT) &&

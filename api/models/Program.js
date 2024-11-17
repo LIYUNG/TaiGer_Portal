@@ -30,6 +30,12 @@ const programModule = {
     type: String,
     required: true
   },
+  programSubjects: [
+    {
+      type: String,
+      ref: 'ProgramSubject'
+    }
+  ],
   degree: {
     type: String
     // enum: Object.values(Degree),

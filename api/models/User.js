@@ -155,10 +155,17 @@ const UserSchema = new Schema(
         type: String,
         default: ''
       },
+      // To be deprecated -> read only in frontend
       target_application_field: {
         type: String,
         default: ''
       },
+      targetApplicationSubjects: [
+        {
+          type: String,
+          ref: 'ProgramSubject'
+        }
+      ],
       target_degree: {
         type: String,
         default: ''

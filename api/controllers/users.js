@@ -51,7 +51,7 @@ const hashToken = (token) =>
 //   }
 // });
 
-const addUser = asyncHandler(async (req, res) => {
+const addUser = asyncHandler(async (req, res, next) => {
   await fieldsValidation(
     checkUserFirstname,
     checkUserLastname,
@@ -66,6 +66,7 @@ const addUser = asyncHandler(async (req, res) => {
     email,
     applying_program_count
   } = req.body;
+  const { user } = req;
   const existUser = await req.db.model('User').findOne({ email });
   if (existUser) {
     logger.error('addUser: An account with this email address already exists');
@@ -79,7 +80,7 @@ const addUser = asyncHandler(async (req, res) => {
     length: 10,
     numbers: true
   });
-  const user = await req.db.model('Student').create({
+  const newUser = await req.db.model('Student').create({
     firstname_chinese,
     lastname_chinese,
     firstname,
@@ -92,7 +93,7 @@ const addUser = asyncHandler(async (req, res) => {
   const activationToken = generateRandomToken();
   await req.db
     .model('Token')
-    .create({ userId: user._id, value: hashToken(activationToken) });
+    .create({ userId: newUser._id, value: hashToken(activationToken) });
 
   const users = await req.db.model('User').find({}).lean();
   res.status(201).send({ success: true, data: users });
@@ -101,6 +102,27 @@ const addUser = asyncHandler(async (req, res) => {
     { firstname, lastname, address: email },
     { token: activationToken, password }
   );
+
+  req.audit = {
+    performedBy: user._id,
+    targetUserId: newUser._id, // Change this if you have a different target user ID
+    action: 'create', // Action performed
+    field: 'object', // Field that was updated (if applicable)
+    changes: {
+      before: null, // Before state
+      after: {
+        newUser: {
+          firstname: newUser.firstname,
+          lastname: newUser.lastname,
+          firstname_chinese: newUser.firstname_chinese,
+          lastname_chinese: newUser.lastname_chinese,
+          email: newUser.email
+        }
+      }
+    }
+  };
+
+  next();
 });
 
 const getUsers = asyncHandler(async (req, res) => {

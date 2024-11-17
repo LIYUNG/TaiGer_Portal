@@ -427,24 +427,54 @@ function ProgramList(props) {
         </>
       ) : (
         <>
-          <Button
-            size="small"
-            color="primary"
-            variant="contained"
-            onClick={onClickIsCreateApplicationMode}
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{ my: 1 }}
           >
-            {t('Add New Program')}
-          </Button>
-          {rowSelectionModel.length > 0 && (
-            <Button
-              size="small"
-              color="primary"
-              variant="contained"
-              onClick={setModalShow2}
-              startIcon={<PersonAddIcon />}
-            ></Button>
-          )}
-          <br />
+            <Typography variant="h6">
+              {t('Program List', { ns: 'common' })}
+            </Typography>
+            {/* Button on the right */}
+            <Box>
+              <Button
+                color="success"
+                variant="contained"
+                onClick={setModalShow2}
+                disabled={!rowSelectionModel.length > 0}
+                startIcon={<PersonAddIcon />}
+                sx={{ mr: 1 }}
+              >
+                {t('Assign', { ns: 'common' })}
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                component={LinkDom}
+                to={DEMO.PROGRAM_ANALYSIS}
+                sx={{ mr: 1 }}
+              >
+                {t('Program Requirements', { ns: 'common' })}
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                component={LinkDom}
+                to={DEMO.SCHOOL_CONFIG}
+                sx={{ mr: 1 }}
+              >
+                {t('School Configuration', { ns: 'common' })}
+              </Button>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={onClickIsCreateApplicationMode}
+              >
+                {t('Add New Program')}
+              </Button>
+            </Box>
+          </Box>
           <div style={{ height: '50%', width: '100%' }}>
             <DataGrid
               columnHeaderHeight={130}

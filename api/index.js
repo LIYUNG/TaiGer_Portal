@@ -42,10 +42,6 @@ const {
   NoInterviewTrainerOrTrainingDateDailyReminderChecker,
   DailyInterviewSurveyChecker
 } = require('./utils/utils_function');
-const {
-  // MongoDBDataBaseDailySnapshot,
-  MongoDBDataBaseDailySnapshotV2
-} = require('./utils/jobs');
 // const { UserS3GarbageCollector } = require('./controllers/users');
 
 // process.on('SIGINT', () => {
@@ -178,22 +174,11 @@ const launch = async () => {
   logger.info(`isDev : ${isDev()}`);
   let httpsOption;
   if (isProd()) {
-    const job5 = schedule.scheduleJob(
-      DAILY_TASKS_REMINDER_SCHEDULE,
-      MongoDBDataBaseDailySnapshotV2
-    );
     // launch http server
     app.listen(PORT, () => {
       logger.info(`Server running on port ${PORT}`);
     });
   } else {
-    // local development
-    // launch https server
-    // const job5 = schedule.scheduleJob(
-    //   '40 * * * * *',
-    //   MongoDBDataBaseDailySnapshotV2
-    // );
-
     if (
       fs.existsSync(HTTPS_KEY) &&
       fs.existsSync(HTTPS_CERT) &&

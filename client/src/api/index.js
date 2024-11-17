@@ -184,6 +184,12 @@ export const WidgetTranscriptanalyser = (
     courses,
     table_data_string_taiger_guided
   });
+export const WidgetTranscriptanalyserV2 = (language, courses, requirementIds) =>
+  request.post(`/api/widgets/transcript/engine/v2/${language}`, {
+    courses,
+    requirementIds
+  });
+
 export const WidgetanalyzedFileDownload = (adminId) =>
   request.get(`/api/widgets/transcript/${adminId}`, {
     responseType: 'blob'
@@ -196,10 +202,39 @@ export const WidgetExportMessagePDF = (student_id) =>
 
 export const transcriptanalyser_test = (studentId, category, language) =>
   request.post(`/api/courses/transcript/${studentId}/${category}/${language}`);
+
+export const transcriptanalyser_testV2 = (studentId, category, language) =>
+  request.post(
+    `/api/courses/transcript/v2/${studentId}/${category}/${language}`
+  );
+
 export const analyzedFileDownload_test = (studentId) =>
   request.get(`/api/courses/transcript/${studentId}`, {
     responseType: 'blob'
   });
+
+export const getCourseKeywordSets = () => request.get(`/api/course-keywords`);
+export const getCourseKeywordSet = (keywordsSetId) =>
+  request.get(`/api/course-keywords/${keywordsSetId}`);
+export const postKeywordSet = (keywordsSet) =>
+  request.post('/api/course-keywords/new', keywordsSet);
+export const putKeywordSet = (keywordsSetId, keywordsSet) =>
+  request.put(`/api/course-keywords/${keywordsSetId}`, keywordsSet);
+export const deleteKeywordSet = (keywordsSetId) =>
+  request.delete(`/api/course-keywords/${keywordsSetId}`);
+
+export const getProgramRequirements = () =>
+  request.get(`/api/program-requirements`);
+export const postProgramRequirements = (payload) =>
+  request.post(`/api/program-requirements/new`, payload);
+export const getProgramsAndCourseKeywordSets = () =>
+  request.get(`/api/program-requirements/programs-and-keywords`);
+export const getProgramRequirement = (programRequirementId) =>
+  request.get(`/api/program-requirements/${programRequirementId}`);
+export const putProgramRequirement = (programRequirementId, payload) =>
+  request.put(`/api/program-requirements/${programRequirementId}`, payload);
+export const deleteProgramRequirement = (programRequirementId) =>
+  request.delete(`/api/program-requirements/${programRequirementId}`);
 
 export const UpdateStudentApplications = (
   studentId,
@@ -312,6 +347,9 @@ export const deleteInternalDocumentation = (doc_id) =>
 // Program APIs
 export const getPrograms = () => request.get('/api/programs');
 export const getDistinctSchools = () => request.get('/api/programs/schools');
+export const updateSchoolAttributes = (schoolAttributes) =>
+  request.put('/api/programs/schools', schoolAttributes);
+
 export const getProgram = (programId) =>
   request.get(`/api/programs/${programId}`);
 

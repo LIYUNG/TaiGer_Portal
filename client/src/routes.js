@@ -13,10 +13,17 @@ import {
   getAllArchivedStudentsLoader,
   getAllComplaintTicketsLoader,
   getComplaintTicketLoader,
-  getDistinctSchoolsLoader
+  getDistinctSchoolsLoader,
+  getCourseKeywordSetsLoader,
+  getProgramRequirementsLoader,
+  getProgramsAndCourseKeywordSetsLoader,
+  getProgramRequirementLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
+import CourseKeywordsOverviewNew from './Demo/CourseAnalysis/CourseKeywordsEdit/CourseKeywordsNew';
+import ProgramRequirementsNewIndex from './Demo/CourseAnalysis/ProgramRequirements/ProgramRequirementsNewIndex';
+import ProgramRequirementsEditIndex from './Demo/CourseAnalysis/ProgramRequirements/ProgramRequirementsEditIndex';
 
 const CreateComplaintTicket = React.lazy(() =>
   import('./Demo/CustomerSupport/CreateTicket')
@@ -32,6 +39,14 @@ const InterviewResponseTable = React.lazy(() =>
 );
 
 const DashboardDefault = React.lazy(() => import('./Demo/Dashboard'));
+
+const CourseKeywordsEdit = React.lazy(() =>
+  import('./Demo/CourseAnalysis/CourseKeywordsEdit')
+);
+
+const ProgramRequirements = React.lazy(() =>
+  import('./Demo/CourseAnalysis/ProgramRequirements')
+);
 
 const AllArchivStudent = React.lazy(() =>
   import('./Demo/ArchivStudent/AllIndex')
@@ -229,6 +244,36 @@ const routes = [
     loader: combinedLoader,
     // loader: getStudentsLoader,
     element: <DashboardDefault />
+  },
+  {
+    path: '/courses/analysis/keywords',
+    errorElement: <DefaultErrorPage />,
+    loader: getCourseKeywordSetsLoader,
+    element: <CourseKeywordsEdit />
+  },
+  {
+    path: '/courses/analysis/keywords/new',
+    errorElement: <DefaultErrorPage />,
+    element: <CourseKeywordsOverviewNew />
+  },
+  {
+    path: '/courses/analysis/programs',
+    errorElement: <DefaultErrorPage />,
+    loader: getProgramRequirementsLoader,
+    // loader: getStudentsLoader,
+    element: <ProgramRequirements />
+  },
+  {
+    path: '/courses/analysis/programs/requirements/new', //TODO: create the page
+    errorElement: <DefaultErrorPage />,
+    loader: getProgramsAndCourseKeywordSetsLoader,
+    element: <ProgramRequirementsNewIndex />
+  },
+  {
+    path: '/courses/analysis/programs/requirements/:requirementId', //TODO: create the page
+    errorElement: <DefaultErrorPage />,
+    loader: getProgramRequirementLoader,
+    element: <ProgramRequirementsEditIndex />
   },
   {
     path: '/admissions-overview',
@@ -439,6 +484,7 @@ const routes = [
     path: '/internal/widgets/course-analyser',
     exact: true,
     name: 'Course Analyser',
+    loader: getProgramRequirementsLoader,
     Component: CoursesAnalysisWidget
   },
   {

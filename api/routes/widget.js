@@ -6,11 +6,11 @@ const {
 const { protect, permit } = require('../middlewares/auth');
 const { Role } = require('../constants');
 
-
 const {
   WidgetProcessTranscript,
   WidgetdownloadXLSX,
-  WidgetExportMessagePDF
+  WidgetExportMessagePDF,
+  WidgetProcessTranscriptV2
 } = require('../controllers/widget');
 
 const router = Router();
@@ -26,12 +26,21 @@ router
   );
 
 router
+  .route('/transcript/engine/v2/:language')
+  .post(
+    GeneralPOSTRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent),
+    WidgetProcessTranscriptV2
+  );
+
+router
   .route('/transcript/:category/:language')
   .post(
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
     WidgetProcessTranscript
   );
+
 router
   .route('/transcript/:adminId')
   .get(

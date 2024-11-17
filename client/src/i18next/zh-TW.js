@@ -267,6 +267,12 @@ export const translation_zh_TW = {
     'Download Center': '下載中心',
     'Contact Us': '聯絡我們',
     'Program List': '科系資料庫',
+    'School Configuration': '編輯院校',
+    'Is Private School': '為私立學校',
+    'Is Partner School': '為合作學校',
+    'School Type': '院校類型',
+    'Programs Count': '科系數量',
+    'Please Select': '請選擇',
     'User List': '使用者名單',
     Tools: '工具',
     'Course Analyser': '課程分析器',
@@ -310,6 +316,7 @@ export const translation_zh_TW = {
     Chat: '訊息',
     'Upload file': '上傳檔案',
     University: '大學',
+    'University of Applied Sciences': '應用科技大學',
     'Applications status updated successfully!': '申請狀態更新成功!',
     'Please update your applications results to the corresponding program in this page below':
       '請更新您的錄取結果以及錄取或拒絕信在本頁面下方給我們',
@@ -341,7 +348,11 @@ export const translation_zh_TW = {
     'Personal Data is updated successfully!': '個人資料更新成功！',
     'Office Hours time slots updated': 'Office Hours 更新成功',
     'Internal Documentation': '內部文檔',
-    'All Internal Documentations': '所有內部文檔'
+    'All Internal Documentations': '所有內部文檔',
+    'Program Requirements': '學程課程分析',
+    'Program Analysis Collection': '學程課程分析資料庫',
+    'Edit Keywords': '編輯關鍵字',
+    'Create New Analysis': '新增課程分析'
   },
   customerCenter: {
     'What is the purpose of the Customer Center?': '客服中心的目的是什麼？',

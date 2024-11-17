@@ -53,7 +53,6 @@ const ExcludeMenu = {
     'contact_us',
     'application_overivew',
     'user-list',
-    'tools-widgets',
     'academicsurvey',
     'my-courses',
     'customer-center-student'

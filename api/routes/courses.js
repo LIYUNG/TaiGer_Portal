@@ -31,17 +31,15 @@ const router = Router();
 router.use(protect);
 
 // TaiGer Transcript Analyser (Python Backend)
-router
-  .route('/transcript/test')
-  .get(
-    filter_archiv_user,
-    TranscriptAnalyserRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    multitenant_filter,
-    // InnerTaigerMultitenantFilter,
-    processTranscript_api_gatway,
-    logAccess
-  );
+router.route('/transcript/test').get(
+  filter_archiv_user,
+  TranscriptAnalyserRateLimiter,
+  permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+  multitenant_filter,
+  // InnerTaigerMultitenantFilter,
+  processTranscript_api_gatway,
+  logAccess
+);
 
 router
   .route('/:studentId')
@@ -80,6 +78,18 @@ router
   );
 
 // TaiGer Transcript Analyser:
+router
+  .route('/transcript/v2/:studentId/:category/:language')
+  .post(
+    filter_archiv_user,
+    TranscriptAnalyserRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    multitenant_filter,
+    InnerTaigerMultitenantFilter,
+    processTranscript_api_gatway,
+    logAccess
+  );
+
 router
   .route('/transcript/:studentId/:category/:language')
   .post(

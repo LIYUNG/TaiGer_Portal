@@ -52,6 +52,7 @@ const {
   permission_canAccessStudentDatabase_filter
 } = require('../middlewares/permission-filter');
 const { logAccess } = require('../utils/log/log');
+const { auditLog } = require('../utils/log/auditLog');
 
 const router = Router();
 
@@ -169,7 +170,7 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent),
     permission_canAssignAgent_filter,
     assignAgentToStudent,
-    logAccess
+    auditLog
   );
 
 router
@@ -180,7 +181,7 @@ router
     permit(Role.Admin, Role.Manager, Role.Editor),
     permission_canAssignEditor_filter,
     assignEditorToStudent,
-    logAccess
+    auditLog
   );
 
 router

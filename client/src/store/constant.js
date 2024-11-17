@@ -80,6 +80,14 @@ const DEMO = {
     return `/profile/${user_id}`;
   },
   PROGRAMS: '/programs',
+  SCHOOL_CONFIG: '/programs/config',
+  KEYWORDS_EDIT: '/courses/analysis/keywords',
+  KEYWORDS_NEW: '/courses/analysis/keywords/new',
+  CREATE_NEW_PROGRAM_ANALYSIS: '/courses/analysis/programs/requirements/new',
+  EDIT_PROGRAM_ANALYSIS: (requirementId) => {
+    return `/courses/analysis/programs/requirements/${requirementId}`;
+  },
+  PROGRAM_ANALYSIS: '/courses/analysis/programs',
   SINGLE_PROGRAM_LINK: (program_id) => {
     return `/programs/${program_id}`;
   },

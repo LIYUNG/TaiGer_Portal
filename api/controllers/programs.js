@@ -54,38 +54,32 @@ const getDistinctSchoolsAttributes = async (req, res) => {
   }
 };
 
-// Function to get distinct school names
-const getDistinctSchools = async (req, res) => {
-  try {
-    const schools = await req.db.model('Program').distinct('school');
-    logger.info('Distinct schools:', schools);
-  } catch (error) {
-    logger.error('Error fetching distinct schools:', error);
-    throw error;
-  }
-};
-
-const updateBatchSchoolAttribute = async (req, res) => {
+const updateBatchSchoolAttributes = async (req, res) => {
+  const fields = req.body;
+  logger.info('Distinct schools:', fields);
   try {
     const schools = await req.db.model('Program').updateMany(
       {
-        school: 'Anhalt University of Applied Sciences',
+        school: fields.school,
         $or: [
-          { isPrivateSchool: { $ne: false } },
-          { schoolType: { $ne: 'University' } },
-          { tags: { $ne: ['U15'] } }
+          { isPrivateSchool: { $ne: fields.isPrivateSchool } },
+          { schoolType: { $ne: fields.schoolType } },
+          { tags: { $ne: fields.tags } },
+          { country: { $ne: fields.country } }
         ]
       },
       {
         $set: {
-          isPrivateSchool: false,
-          schoolType: 'University',
-          tags: ['U15']
+          isPrivateSchool: fields.isPrivateSchool,
+          schoolType: fields.schoolType,
+          tags: fields.tags,
+          country: fields.country
         }
       },
       { upsert: false }
     );
-    logger.info('Distinct schools:', schools);
+    logger.info('Update school:', schools);
+    res.send({ success: true });
   } catch (error) {
     logger.error('Error fetching distinct schools:', error);
     throw error;
@@ -94,8 +88,6 @@ const updateBatchSchoolAttribute = async (req, res) => {
 
 const getPrograms = asyncHandler(async (req, res) => {
   // Option 1 : Cache version
-  // await getDistinctSchools(req, res);
-  await updateBatchSchoolAttribute(req, res);
   if (PROGRAMS_CACHE === 'true') {
     const value = two_weeks_cache.get(req.originalUrl);
     if (value === undefined) {
@@ -382,6 +374,8 @@ const deleteProgram = asyncHandler(async (req, res) => {
     if (value === 1) {
       logger.info('cache key deleted successfully due to delete');
     }
+    // TODO:
+    // Remove programId from programRequirement programId.
   } else {
     logger.error('it can not be deleted!');
     logger.error('The following students have these programs!');
@@ -400,7 +394,7 @@ const deleteProgram = asyncHandler(async (req, res) => {
 
 module.exports = {
   getDistinctSchoolsAttributes,
-  updateBatchSchoolAttribute,
+  updateBatchSchoolAttributes,
   getStudentsByProgram,
   getPrograms,
   getProgram,

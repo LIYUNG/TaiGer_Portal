@@ -26,7 +26,7 @@ router
   .get(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     getKeywordSets
   );
 
@@ -35,22 +35,22 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     createKeywordSet
   )
   .put(
     GeneralPUTRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     updateKeywordSet
   )
   .delete(
     GeneralDELETERequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     deleteKeywordSet
   )
   .get(
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     getKeywordSet
   );
 

@@ -22,6 +22,7 @@ import {
   is_TaiGer_Admin,
   is_TaiGer_Agent,
   is_TaiGer_Editor,
+  is_TaiGer_External,
   is_TaiGer_Guest,
   is_TaiGer_Manager,
   is_TaiGer_Student
@@ -35,6 +36,7 @@ import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import PrintIcon from '@mui/icons-material/Print';
 import ShareIcon from '@mui/icons-material/Share';
+import ExternalMainView from './ExternalDashboard/ExternalMainView';
 
 const actions = [
   { icon: <FileCopyIcon />, name: 'Copy' },
@@ -116,6 +118,14 @@ function DashboardBody({ studentAndEssays }) {
       )}
       {is_TaiGer_Editor(user) && (
         <EditorMainView
+          students={students}
+          updateStudentArchivStatus={updateStudentArchivStatus}
+          submitUpdateEditorlist={submitUpdateEditorlist}
+          essayDocumentThreads={essayDocumentThreads}
+        />
+      )}
+      {is_TaiGer_External(user) && (
+        <ExternalMainView
           students={students}
           updateStudentArchivStatus={updateStudentArchivStatus}
           submitUpdateEditorlist={submitUpdateEditorlist}

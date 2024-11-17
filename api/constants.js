@@ -68,6 +68,7 @@ const JITSI_MEET_INSTRUCTIONS_URL = new URL(
 const Role = {
   Admin: 'Admin',
   Manager: 'Manager',
+  External: 'External',
   Guest: 'Guest',
   Agent: 'Agent',
   Editor: 'Editor',

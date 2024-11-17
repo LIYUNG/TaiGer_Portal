@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 
 function UsersListSubpage(props) {
   const { t } = useTranslation();
-  const user_roles = ['Student', 'Editor', 'Agent'];
+  const user_roles = ['Student', 'Editor', 'Agent', 'External'];
   return (
     <Dialog open={props.show} onClose={props.setModalHide} centered>
       <DialogTitle>

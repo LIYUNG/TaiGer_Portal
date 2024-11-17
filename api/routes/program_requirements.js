@@ -27,7 +27,7 @@ router
   .get(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     getProgramRequirements
   );
 
@@ -36,7 +36,7 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     createProgramRequirement
   );
 
@@ -45,7 +45,7 @@ router
   .get(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     getDistinctProgramsAndKeywordSets
   );
 
@@ -53,17 +53,17 @@ router
   .route('/:requirementId')
   .put(
     GeneralPUTRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     updateProgramRequirement
   )
   .delete(
     GeneralDELETERequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     deleteProgramRequirement
   )
   .get(
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     getProgramRequirement
   );
 

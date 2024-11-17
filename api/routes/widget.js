@@ -29,7 +29,7 @@ router
   .route('/transcript/engine/v2/:language')
   .post(
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     WidgetProcessTranscriptV2
   );
 
@@ -37,7 +37,7 @@ router
   .route('/transcript/:category/:language')
   .post(
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     WidgetProcessTranscript
   );
 
@@ -45,7 +45,7 @@ router
   .route('/transcript/:adminId')
   .get(
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     WidgetdownloadXLSX
   );
 

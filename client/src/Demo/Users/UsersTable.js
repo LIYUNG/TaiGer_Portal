@@ -24,6 +24,7 @@ import {
   is_TaiGer_Admin,
   is_TaiGer_Agent,
   is_TaiGer_Editor,
+  is_TaiGer_External,
   is_TaiGer_Student
 } from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
@@ -157,6 +158,9 @@ function UsersTable() {
   const editor_list = userTableState.users.filter((usr) =>
     is_TaiGer_Editor(usr)
   );
+  const external_list = userTableState.users.filter((usr) =>
+    is_TaiGer_External(usr)
+  );
   const admin_list = userTableState.users.filter((usr) => is_TaiGer_Admin(usr));
 
   return (
@@ -215,9 +219,16 @@ function UsersTable() {
             {...a11yProps(2)}
           />
           <Tab
+            data-testid="users_table_page_external_tab"
+            label={`${t('External', { ns: 'common' })} (${
+              external_list.length
+            })`}
+            {...a11yProps(3)}
+          />
+          <Tab
             data-testid="users_table_page_admin_tab"
             label={`${t('Admin', { ns: 'common' })} (${admin_list.length})`}
-            {...a11yProps(3)}
+            {...a11yProps(4)}
           />
         </Tabs>
       </Box>
@@ -243,6 +254,13 @@ function UsersTable() {
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
+        <UsersList
+          success={userTableState.success}
+          isLoaded={userTableState.isLoaded}
+          users={external_list}
+        />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={4}>
         <UsersList
           success={userTableState.success}
           isLoaded={userTableState.isLoaded}

@@ -519,6 +519,30 @@ const Student = User.discriminator(
   Role.Student
 );
 
+const External = User.discriminator(
+  'External',
+  new Schema(
+    {
+      attribute: {
+        can_update_program_list: {
+          type: Boolean,
+          default: false
+        },
+        can_update_course_analysis: {
+          type: Boolean,
+          default: false
+        },
+        can_add_articles: {
+          type: Boolean,
+          default: false
+        }
+      }
+    },
+    options
+  ),
+  Role.External
+);
+
 const Manager = User.discriminator(
   'Manager',
   new Schema(
@@ -705,6 +729,7 @@ module.exports = {
   Guest,
   Student,
   Agent,
+  External,
   Editor,
   Manager,
   Admin

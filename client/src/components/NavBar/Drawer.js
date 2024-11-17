@@ -39,6 +39,21 @@ const ExcludeMenu = {
     'internal-document-database',
     'internal-docs'
   ],
+  External: [
+    'my-students',
+    'user-list',
+    'application_overivew',
+    'contact_us',
+    'all-students',
+    'academicsurvey',
+    'my-courses',
+    'teams_overview',
+    'internal-document-database',
+    'download',
+    'customer-center-student',
+    'docs',
+    'internal-docs'
+  ],
   Student: [
     'my-students',
     'user-list',

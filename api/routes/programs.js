@@ -37,13 +37,13 @@ router
   .get(
     filter_archiv_user,
     GetProgramListRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.External),
     getPrograms
   )
   .post(
     filter_archiv_user,
     PostProgramRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
     permission_canModifyProgramList_filter,
     createProgram
   );
@@ -53,13 +53,13 @@ router
   .get(
     filter_archiv_user,
     GetProgramListRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.External),
     getDistinctSchoolsAttributes
   )
   .put(
     filter_archiv_user,
     GetProgramListRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.External),
     updateBatchSchoolAttributes
   );
 
@@ -68,13 +68,20 @@ router
   .get(
     filter_archiv_user,
     GetProgramRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Agent,
+      Role.Editor,
+      Role.External,
+      Role.Student
+    ),
     getProgram
   )
   .put(
     filter_archiv_user,
     UpdateProgramRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
+    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.External),
     permission_canModifyProgramList_filter,
     updateProgram
   )
@@ -90,13 +97,20 @@ router
   .get(
     filter_archiv_user,
     GetProgramRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.External),
     getProgramChangeRequests
   )
   .post(
     filter_archiv_user,
     PostProgramRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Agent,
+      Role.Editor,
+      Role.External,
+      Role.Student
+    ),
     submitProgramChangeRequests
   );
 
@@ -105,7 +119,7 @@ router
   .post(
     filter_archiv_user,
     UpdateProgramRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.External),
     reviewProgramChangeRequest
   );
 

@@ -546,7 +546,7 @@ function SingleProgramView(props) {
                       </TableHead>
                       <TableBody>
                         {props.students
-                          .filter((student) =>
+                          ?.filter((student) =>
                             isApplicationOpen(student.application)
                           )
 
@@ -609,7 +609,7 @@ function SingleProgramView(props) {
                       </TableHead>
                       <TableBody>
                         {props.students
-                          .filter(
+                          ?.filter(
                             (student) => !isApplicationOpen(student.application)
                           )
 

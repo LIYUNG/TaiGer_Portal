@@ -11,7 +11,10 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 // Tested
 export const is_TaiGer_role = (user) =>
-  user?.role === 'Admin' || user?.role === 'Agent' || user?.role === 'Editor';
+  user?.role === 'Admin' ||
+  user?.role === 'Agent' ||
+  user?.role === 'Editor' ||
+  user?.role === 'External';
 
 // Tested
 export const is_TaiGer_AdminAgent = (user) =>
@@ -22,6 +25,8 @@ export const is_TaiGer_Admin = (user) => user?.role === 'Admin';
 
 // Tested
 export const is_TaiGer_Editor = (user) => user?.role === 'Editor';
+
+export const is_TaiGer_External = (user) => user?.role === 'External';
 
 // Tested
 export const is_TaiGer_Agent = (user) => user?.role === 'Agent';

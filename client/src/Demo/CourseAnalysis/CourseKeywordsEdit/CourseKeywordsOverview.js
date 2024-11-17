@@ -608,10 +608,10 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => handleDeleteConfirm(false)} color="primary">
+          <Button onClick={() => handleDeleteConfirm(false)} color="primary" variant='contained'>
             {t('Yes', { ns: 'common' })}
           </Button>
-          <Button onClick={() => setIsDeleteDialogOpen(false)} color="primary">
+          <Button onClick={() => setIsDeleteDialogOpen(false)} color="primary" variant='outlined'>
             {t('Cancel', { ns: 'common' })}
           </Button>
         </DialogActions>

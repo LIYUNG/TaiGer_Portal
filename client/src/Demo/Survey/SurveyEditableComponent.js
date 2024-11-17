@@ -4,6 +4,7 @@ import {
   Button,
   Breadcrumbs,
   Card,
+  Chip,
   Link,
   MenuItem,
   Select,
@@ -17,7 +18,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  OutlinedInput
 } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 import { Link as LinkDom } from 'react-router-dom';
@@ -105,6 +107,84 @@ const SurveyEditableComponent = (props) => {
       baseDocsflagOffcanvasButtonDisable: false,
       baseDocsflagOffcanvas: false
     }));
+  };
+
+  const names = [
+    'ACC-FIN',
+    'AG-FOR',
+    'ANA-PHYS',
+    'ANTH',
+    'ARCH',
+    'ARCH-BE',
+    'ART-DES',
+    'ARTH',
+    'BIO-SCI',
+    'BUS-MGMT',
+    'CHEM',
+    'CLAH',
+    'COMM-MEDIA',
+    'CSIS',
+    'DS-AI',
+    'DENT',
+    'DEV-STUD',
+    'EAR-MAR-SCI',
+    'ECON',
+    'EDU-TRAIN',
+    'CHEM-ENG',
+    'CIV-STR-ENG',
+    'ELEC-ENG',
+    'MECH-ENG',
+    'MIN-MIN-ENG',
+    'PETRO-ENG',
+    'ELL',
+    'ENV-SCI',
+    'GEO',
+    'GEOL',
+    'GEOPH',
+    'HIST',
+    'HOSP-MGMT',
+    'LAW',
+    'LIB-INFO',
+    'LING',
+    'MKT',
+    'MAT-SCI',
+    'MATH',
+    'MED',
+    'MOD-LANG',
+    'MUS',
+    'NURS',
+    'PERF-ART',
+    'PHARM',
+    'PHIL',
+    'PHYS-ASTRO',
+    'POL',
+    'PSYCH',
+    'SOC-POL',
+    'SOC',
+    'SPORT',
+    'STAT-OR',
+    'THEO',
+    'VET-SCI'
+  ];
+  const [personName, setPersonName] = React.useState([]);
+  const handleChangeTest = (event) => {
+    const {
+      target: { value }
+    } = event;
+    setPersonName(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value
+    );
+  };
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250
+      }
+    }
   };
 
   // const renderTooltipApplicationYear = (props) => (
@@ -1043,13 +1123,58 @@ const SurveyEditableComponent = (props) => {
               </Tooltip>
             </Grid>
             <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel id="target-application-subject-label">
+                  Target Application Subjects
+                </InputLabel>
+                <Select
+                  labelId="target-application-subject-label"
+                  id="target-application-subject"
+                  multiple
+                  value={personName}
+                  onChange={handleChangeTest}
+                  input={
+                    <OutlinedInput id="select-multiple-chip" label="Chip" />
+                  }
+                  renderValue={(selected) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {selected.map((value) => (
+                        <Chip key={value} label={value} variant="outlined" />
+                      ))}
+                    </Box>
+                  )}
+                  MenuProps={MenuProps}
+                >
+                  {names.map((name) => (
+                    <MenuItem key={name} value={name}>
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {/* <TextField
+                fullWidth
+                id="target-application-subject"
+                name="target-application-subject"
+                helperText={
+                  survey.application_preference?.target_application_field ===
+                    '' && 'Please provide the info.'
+                }
+                label={t('Target Application Subject')}
+                variant="outlined"
+                value={
+                  survey.application_preference?.target_application_field || ''
+                }
+                onChange={(e) => handleChangeApplicationPreference(e)}
+              /> */}
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <TextField
+                // To be deprecated
+                disabled
                 fullWidth
                 id="target_application_field"
                 name="target_application_field"
-                error={
-                  survey.application_preference?.target_application_field === ''
-                }
                 helperText={
                   survey.application_preference?.target_application_field ===
                     '' && 'Please provide the info.'

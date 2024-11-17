@@ -215,22 +215,27 @@ const getProgram = asyncHandler(async (req, res) => {
     if (
       user.role === Role.Admin ||
       user.role === Role.Agent ||
-      user.role === Role.Editor
+      user.role === Role.Editor ||
+      user.role === Role.External
     ) {
-      const students = await req.db
-        .model('Student')
-        .find({
-          applications: {
-            $elemMatch: {
-              programId: req.params.programId,
-              decided: 'O'
+      let students = [];
+
+      if (user.role !== Role.External) {
+        students = await req.db
+          .model('Student')
+          .find({
+            applications: {
+              $elemMatch: {
+                programId: req.params.programId,
+                decided: 'O'
+              }
             }
-          }
-        })
-        .populate('agents editors', 'firstname')
-        .select(
-          'firstname lastname applications application_preference.expected_application_date'
-        );
+          })
+          .populate('agents editors', 'firstname')
+          .select(
+            'firstname lastname applications application_preference.expected_application_date'
+          );
+      }
 
       const vc = await req.db
         .model('VC')
@@ -246,12 +251,16 @@ const getProgram = asyncHandler(async (req, res) => {
   } else if (
     user.role === Role.Admin ||
     user.role === Role.Agent ||
-    user.role === Role.Editor
+    user.role === Role.Editor ||
+    user.role === Role.External
   ) {
-    const students = await getStudentsByProgram(req, req.params.programId);
-    const program = await req.db
-      .model('Program')
-      .findById(req.params.programId);
+    let students = [];
+
+    let program = {};
+    if (user.role !== Role.External) {
+      students = await getStudentsByProgram(req, req.params.programId);
+    }
+    program = await req.db.model('Program').findById(req.params.programId);
     if (!program) {
       logger.error('getProgram: Invalid program id');
       throw new ErrorResponse(404, 'Program not found');

@@ -410,7 +410,7 @@ function SingleProgram() {
           uni_name={program.school}
           program_name={program.program_name}
           RemoveProgramHandler={RemoveProgramHandler}
-          program_id={program._id.toString()}
+          program_id={program._id?.toString()}
         />
         {singleProgramState.modalShowAssignWindow && (
           <ProgramListSubpage

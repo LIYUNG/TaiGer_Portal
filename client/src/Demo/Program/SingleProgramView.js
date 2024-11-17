@@ -29,7 +29,8 @@ import {
   is_TaiGer_role,
   isProgramWithdraw,
   isApplicationOpen,
-  LinkableNewlineText
+  LinkableNewlineText,
+  is_TaiGer_External
 } from '../Utils/checking-functions';
 import {
   IS_DEV,
@@ -464,18 +465,20 @@ function SingleProgramView(props) {
           )}
         </Grid>
         <Grid item xs={12} md={4}>
-          {is_TaiGer_AdminAgent(user) && (
+          {(is_TaiGer_AdminAgent(user) || is_TaiGer_External(user)) && (
             <Grid container spacing={1} alignItems="center">
-              <Grid item>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => props.setModalShow2()}
-                >
-                  {t('Assign', { ns: 'common' })}
-                </Button>
-              </Grid>
+              {is_TaiGer_AdminAgent(user) && (
+                <Grid item>
+                  <Button
+                    fullWidth
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => props.setModalShow2()}
+                  >
+                    {t('Assign', { ns: 'common' })}
+                  </Button>
+                </Grid>
+              )}
               <Grid item>
                 <Button
                   fullWidth
@@ -555,7 +558,7 @@ function SingleProgramView(props) {
                               <TableCell>
                                 <Link
                                   to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                    student._id.toString(),
+                                    student._id?.toString(),
                                     DEMO.PROFILE_HASH
                                   )}`}
                                   component={LinkDom}
@@ -567,7 +570,7 @@ function SingleProgramView(props) {
                                 {student.agents?.map((agent) => (
                                   <Link
                                     to={`${DEMO.TEAM_AGENT_LINK(
-                                      agent._id.toString()
+                                      agent._id?.toString()
                                     )}`}
                                     component={LinkDom}
                                     key={agent._id}
@@ -581,7 +584,7 @@ function SingleProgramView(props) {
                                 {student.editors?.map((editor) => (
                                   <Link
                                     to={`${DEMO.TEAM_EDITOR_LINK(
-                                      editor._id.toString()
+                                      editor._id?.toString()
                                     )}`}
                                     component={LinkDom}
                                     key={editor._id}
@@ -618,7 +621,7 @@ function SingleProgramView(props) {
                               <TableCell>
                                 <Link
                                   to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                    student._id.toString(),
+                                    student._id?.toString(),
                                     DEMO.PROFILE_HASH
                                   )}`}
                                   component={LinkDom}
@@ -673,7 +676,7 @@ function SingleProgramView(props) {
               <ProgramReport
                 uni_name={props.program.school}
                 program_name={props.program.program_name}
-                program_id={props.program._id.toString()}
+                program_id={props.program._id?.toString()}
               />
             </CardContent>
           </Card>

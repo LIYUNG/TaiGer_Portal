@@ -1,5 +1,6 @@
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
+const { updateProgramData } = require('./programs');
 const logger = require('../services/logger');
 
 const getProgramChangeRequests = asyncHandler(async (req, res) => {
@@ -44,10 +45,12 @@ const submitProgramChangeRequests = asyncHandler(async (req, res) => {
 
 const reviewProgramChangeRequest = asyncHandler(async (req, res) => {
   const { requestId } = req.params;
+  const { acceptedFields } = req.body;
   const { user } = req;
   const changeRequest = await req.db
     .model('ProgramChangeRequest')
     .findById(requestId);
+
   if (!changeRequest) {
     logger.error('updateProgramChangeRequest: Invalid request id');
     throw new ErrorResponse(404, 'ChangeRequest not found');
@@ -56,9 +59,28 @@ const reviewProgramChangeRequest = asyncHandler(async (req, res) => {
     logger.error('updateProgramChangeRequest: Request already reviewed');
     throw new ErrorResponse(400, 'Request already reviewed');
   }
+
   changeRequest.reviewedBy = user._id;
   changeRequest.reviewedAt = new Date();
-  await changeRequest.save();
+
+  // submit changes to program, and append changeRequestId (for edit history reference)
+  try {
+    await updateProgramData(req.db, user, changeRequest.programId, {
+      ...changeRequest.programChanges,
+      changeRequestId: changeRequest._id
+    });
+  } catch (error) {
+    logger.error('updateProgramChangeRequest: Error updating program');
+    throw new ErrorResponse(500, 'Error updating program');
+  }
+  // save change request changes after program is updated
+  try {
+    await changeRequest.save();
+  } catch (error) {
+    logger.error('updateProgramChangeRequest: Error saving change request');
+    throw new ErrorResponse(500, 'Error saving change request');
+  }
+
   res.send({ success: true, data: changeRequest });
 });
 

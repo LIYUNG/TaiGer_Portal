@@ -303,10 +303,7 @@ const createProgram = asyncHandler(async (req, res) => {
   return res.status(201).send({ success: true, data: program });
 });
 
-const updateProgram = asyncHandler(async (req, res) => {
-  const { user } = req;
-  const fields = req.body;
-
+const updateProgramData = async (db, user, programId, fields) => {
   fields.updatedAt = new Date();
   fields.whoupdated = `${user.firstname} ${user.lastname}`;
   const fields_root = { ...fields };
@@ -315,16 +312,16 @@ const updateProgram = asyncHandler(async (req, res) => {
   delete fields_root.application_start;
   delete fields_root.application_deadline;
 
-  const program = await req.db
+  const program = await db
     .model('Program')
-    .findOneAndUpdate({ _id: req.params.programId }, fields, {
+    .findOneAndUpdate({ _id: programId }, fields, {
       new: true
     });
 
   // Update same program but other semester common data
-  await req.db.model('Program').updateMany(
+  await db.model('Program').updateMany(
     {
-      _id: { $ne: req.params.programId },
+      _id: { $ne: programId },
       school: program.school,
       program_name: program.program_name,
       degree: program.degree
@@ -332,13 +329,27 @@ const updateProgram = asyncHandler(async (req, res) => {
     fields_root
   );
 
-  const vc = await req.db
+  const vc = await db
     .model('VC')
     .findOne({
-      docId: req.params.programId,
+      docId: programId,
       collectionName: 'Program'
     })
     .lean();
+
+  return { data: program, vc };
+};
+
+const updateProgram = asyncHandler(async (req, res) => {
+  const { user } = req;
+  const fields = req.body;
+
+  const resData = await updateProgramData(
+    req.db,
+    user,
+    req.params.programId,
+    fields
+  );
 
   // Delete cache key for image, pdf, docs, file here.
   const value = one_month_cache.del(req.originalUrl);
@@ -346,7 +357,7 @@ const updateProgram = asyncHandler(async (req, res) => {
     logger.info('cache key deleted successfully due to update');
   }
 
-  return res.status(200).send({ success: true, data: program, vc });
+  return res.status(200).send({ success: true, ...resData });
 });
 
 const deleteProgram = asyncHandler(async (req, res) => {
@@ -400,5 +411,6 @@ module.exports = {
   getProgram,
   createProgram,
   updateProgram,
+  updateProgramData,
   deleteProgram
 };

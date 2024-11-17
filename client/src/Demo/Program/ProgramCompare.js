@@ -193,12 +193,15 @@ const ProgramCompare = ({
   };
 
   const submitChanges = async () => {
-    const program = updateProgram({
-      _id: originalProgram._id,
-      ...delta,
-      changeRequestId: incomingChanges._id
-    });
-    const changeRequest = reviewProgramChangeRequests(incomingChanges._id);
+    // const program = updateProgram({
+    //   _id: originalProgram._id,
+    //   ...delta,
+    //   changeRequestId: incomingChanges._id
+    // });
+    const changeRequest = reviewProgramChangeRequests(
+      incomingChanges._id,
+      Object.keys(delta)
+    );
     await Promise.all([program, changeRequest]);
     if (typeof submitCallBack === 'function') {
       submitCallBack();

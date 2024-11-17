@@ -365,8 +365,8 @@ export const updateProgram = (program) =>
 export const getProgramChangeRequests = (programId) =>
   request.get(`/api/programs/${programId}/change-requests`);
 
-export const reviewProgramChangeRequests = (requestId) =>
-  request.post(`/api/programs/review-changes/${requestId}`);
+export const reviewProgramChangeRequests = (requestId, acceptedFields) =>
+  request.post(`/api/programs/review-changes/${requestId}`, acceptedFields);
 
 // Docs APIs
 export const deleteDoc = (id) => request.delete(`/api/docs/${id}`);

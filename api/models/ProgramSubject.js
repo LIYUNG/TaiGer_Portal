@@ -1,4 +1,4 @@
-const { Schema } = require('mongoose');
+const { model, Schema } = require('mongoose');
 
 const programSubjectSchema = new Schema({
   _id: {
@@ -15,4 +15,5 @@ const programSubjectSchema = new Schema({
 });
 
 programSubjectSchema.index({ _id: 1 }, { unique: true });
-module.exports = programSubjectSchema;
+const programSubject = model('ProgramSubject', programSubjectSchema);
+module.exports = { programSubject, programSubjectSchema };

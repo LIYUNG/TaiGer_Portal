@@ -10,7 +10,7 @@ const {
 } = require('./models/User');
 const { EventSchema } = require('./models/Event');
 const { documentThreadsSchema } = require('./models/Documentthread');
-const { ProgramSubjectSchema } = require('./models/ProgramSubject');
+const { programSubjectSchema } = require('./models/ProgramSubject');
 const { programSchema } = require('./models/Program');
 const { programChangeRequestSchema } = require('./models/ProgramChangeRequest');
 const { coursesSchema } = require('./models/Course');
@@ -116,7 +116,7 @@ const connectToDatabase = (tenant, uri = null) => {
     connection.model('User').discriminator('Guest', Guest.schema);
 
     connection.model('ProgramChangeRequest', programChangeRequestSchema);
-    connection.model('ProgramSubject', ProgramSubjectSchema);
+    connection.model('ProgramSubject', programSubjectSchema);
     connection.model('VC', versionControlSchema);
     applyProgramSchema(
       connection,

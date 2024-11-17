@@ -4,7 +4,6 @@ import {
   Button,
   Breadcrumbs,
   Card,
-  Chip,
   Link,
   MenuItem,
   Select,
@@ -18,8 +17,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
-  OutlinedInput
+  DialogActions
 } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 import { Link as LinkDom } from 'react-router-dom';
@@ -56,6 +54,7 @@ import {
   getNumberOfDays
 } from '../Utils/contants';
 import Banner from '../../components/Banner/Banner';
+import SearchableMultiSelect from '../../components/Input/searchableMuliselect';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
@@ -109,84 +108,6 @@ const SurveyEditableComponent = (props) => {
     }));
   };
 
-  const names = [
-    'ACC-FIN',
-    'AG-FOR',
-    'ANA-PHYS',
-    'ANTH',
-    'ARCH',
-    'ARCH-BE',
-    'ART-DES',
-    'ARTH',
-    'BIO-SCI',
-    'BUS-MGMT',
-    'CHEM',
-    'CLAH',
-    'COMM-MEDIA',
-    'CSIS',
-    'DS-AI',
-    'DENT',
-    'DEV-STUD',
-    'EAR-MAR-SCI',
-    'ECON',
-    'EDU-TRAIN',
-    'CHEM-ENG',
-    'CIV-STR-ENG',
-    'ELEC-ENG',
-    'MECH-ENG',
-    'MIN-MIN-ENG',
-    'PETRO-ENG',
-    'ELL',
-    'ENV-SCI',
-    'GEO',
-    'GEOL',
-    'GEOPH',
-    'HIST',
-    'HOSP-MGMT',
-    'LAW',
-    'LIB-INFO',
-    'LING',
-    'MKT',
-    'MAT-SCI',
-    'MATH',
-    'MED',
-    'MOD-LANG',
-    'MUS',
-    'NURS',
-    'PERF-ART',
-    'PHARM',
-    'PHIL',
-    'PHYS-ASTRO',
-    'POL',
-    'PSYCH',
-    'SOC-POL',
-    'SOC',
-    'SPORT',
-    'STAT-OR',
-    'THEO',
-    'VET-SCI'
-  ];
-  const [personName, setPersonName] = React.useState([]);
-  const handleChangeTest = (event) => {
-    const {
-      target: { value }
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
-    );
-  };
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250
-      }
-    }
-  };
-
   // const renderTooltipApplicationYear = (props) => (
   //   <Tooltip id="tooltip-disabled" {...props}>
   //     請填上預計申請入學年度，您的申請必須要在這個預計入學年度和預計入學學期前完成。各學校申請截止
@@ -221,7 +142,7 @@ const SurveyEditableComponent = (props) => {
         !check_application_preference_filled(
           survey.application_preference
         )) && (
-        <Card sx={{ padding: 2 }}>
+        <Card sx={{ display: 'none', padding: 2 }}>
           <Typography fontWeight="bold">
             {t('The followings information are still missing')}
           </Typography>
@@ -234,7 +155,7 @@ const SurveyEditableComponent = (props) => {
         </Card>
       )}
       {!check_languages_filled(survey.academic_background) && (
-        <Card sx={{ padding: 2 }}>
+        <Card sx={{ display: 'none', padding: 2 }}>
           <Typography fontWeight="bold">
             {t(
               'Your language skills and certificates information are still missing or not up-to-date'
@@ -311,7 +232,7 @@ const SurveyEditableComponent = (props) => {
         </Card>
       )}
       <Box>
-        <Card sx={{ mt: 2, padding: 2 }}>
+        <Card sx={{ display: 'none', mt: 2, padding: 2 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="h6">
@@ -1123,35 +1044,7 @@ const SurveyEditableComponent = (props) => {
               </Tooltip>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel id="target-application-subject-label">
-                  Target Application Subjects
-                </InputLabel>
-                <Select
-                  labelId="target-application-subject-label"
-                  id="target-application-subject"
-                  multiple
-                  value={personName}
-                  onChange={handleChangeTest}
-                  input={
-                    <OutlinedInput id="select-multiple-chip" label="Chip" />
-                  }
-                  renderValue={(selected) => (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                      {selected.map((value) => (
-                        <Chip key={value} label={value} variant="outlined" />
-                      ))}
-                    </Box>
-                  )}
-                  MenuProps={MenuProps}
-                >
-                  {names.map((name) => (
-                    <MenuItem key={name} value={name}>
-                      {name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <SearchableMultiSelect />
               {/* <TextField
                 fullWidth
                 id="target-application-subject"

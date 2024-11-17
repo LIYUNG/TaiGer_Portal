@@ -67,6 +67,7 @@ import { SurveyProvider } from '../../components/SurveyProvider';
 import ProgramDetailsComparisonTable from '../Program/ProgramDetailsComparisonTable';
 import StudentBriefOverview from '../Dashboard/MainViewTab/StudentBriefOverview.js/StudentBriefOverview';
 import ProgramLanguageNotMatchedBanner from '../../components/Banner/ProgramLanguageNotMatchedBanner';
+import Audit from '../Audit';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -77,7 +78,8 @@ CustomTabPanel.propTypes = {
 export const SingleStudentPageMainContent = ({
   survey_link,
   base_docs_link,
-  data
+  data,
+  audit
 }) => {
   const { user } = useAuth();
   const { t } = useTranslation();
@@ -465,6 +467,7 @@ export const SingleStudentPageMainContent = ({
                 {...a11yProps(6)}
               />
               <Tab label={t('Notes', { ns: 'common' })} {...a11yProps(7)} />
+              <Tab label={t('Audit', { ns: 'common' })} {...a11yProps(8)} />
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
@@ -598,6 +601,9 @@ export const SingleStudentPageMainContent = ({
             <br />
             <Notes student_id={singleStudentPage.student._id.toString()} />
           </CustomTabPanel>
+          <CustomTabPanel value={value} index={8}>
+            <Audit audit={audit} />
+          </CustomTabPanel>
         </>
       ) : (
         <>
@@ -618,13 +624,14 @@ export const SingleStudentPageMainContent = ({
 
 function SingleStudentPage() {
   const {
-    data: { survey_link, base_docs_link, data }
+    data: { survey_link, base_docs_link, data, audit }
   } = useLoaderData();
   return (
     <SingleStudentPageMainContent
       survey_link={survey_link}
       base_docs_link={base_docs_link}
       data={data}
+      audit={audit}
     />
   );
 }

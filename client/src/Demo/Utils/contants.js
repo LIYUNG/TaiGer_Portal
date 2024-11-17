@@ -774,7 +774,8 @@ export const SINGLE_STUDENT_TABS = {
   uniassist: 4,
   survey: 5,
   courses: 6,
-  notes: 7
+  notes: 7,
+  audit: 8
 };
 
 export const SINGLE_STUDENT_REVERSED_TABS = {
@@ -785,7 +786,8 @@ export const SINGLE_STUDENT_REVERSED_TABS = {
   4: 'uniassist',
   5: 'survey',
   6: 'courses',
-  7: 'notes'
+  7: 'notes',
+  8: 'audit'
 };
 
 export const spinner_style = {

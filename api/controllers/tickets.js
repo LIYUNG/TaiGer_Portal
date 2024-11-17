@@ -75,12 +75,20 @@ const createTicket = asyncHandler(async (req, res) => {
 
   res.status(201).send({ success: true, data: ticket });
 
-  const program = await req.db.model('Program').findById(new_ticket.program_id);
-  const student = await req.db
+  const programPromise = req.db
+    .model('Program')
+    .findById(new_ticket.program_id);
+  const studentPromise = req.db
     .model('Student')
     .findById(user._id.toString())
     .populate('agents', 'firstname lastname email')
     .exec();
+
+  const [program, student] = await Promise.all([
+    programPromise,
+    studentPromise
+  ]);
+
   for (let i = 0; i < student.agents.length; i += 1) {
     if (isNotArchiv(student)) {
       TicketCreatedAgentEmail(

@@ -714,12 +714,13 @@ const getAgents = asyncHandler(async (req, res, next) => {
 
 const getSingleAgent = asyncHandler(async (req, res, next) => {
   const { agent_id } = req.params;
-  const agent = await req.db
+
+  const agentPromise = req.db
     .model('Agent')
     .findById(agent_id)
     .select('firstname lastname');
   // query by agents field: student.agents include agent_id
-  const students = await req.db
+  const studentsPromise = req.db
     .model('Student')
     .find({
       agents: agent_id,
@@ -734,6 +735,9 @@ const getSingleAgent = asyncHandler(async (req, res, next) => {
     .select('-notification')
     .lean()
     .exec();
+
+  const [agent, students] = await Promise.all([agentPromise, studentsPromise]);
+
   res.status(200).send({ success: true, data: { students, agent } });
 });
 
@@ -789,12 +793,12 @@ const getEditors = asyncHandler(async (req, res, next) => {
 
 const getSingleEditor = asyncHandler(async (req, res, next) => {
   const { editor_id } = req.params;
-  const editor = await req.db
+  const editorPromise = req.db
     .model('Editor')
     .findById(editor_id)
     .select('firstname lastname');
   // query by agents field: student.editors include editor_id
-  const students = await req.db
+  const studentsPromise = req.db
     .model('Student')
     .find({
       editors: editor_id,
@@ -819,6 +823,11 @@ const getSingleEditor = asyncHandler(async (req, res, next) => {
       }
     })
     .select('-notification');
+
+  const [editor, students] = await Promise.all([
+    editorPromise,
+    studentsPromise
+  ]);
   res.status(200).send({ success: true, data: { students, editor } });
 });
 

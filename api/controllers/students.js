@@ -50,7 +50,7 @@ const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
     params: { studentId }
   } = req;
 
-  const student = await req.db
+  const studentPromise = req.db
     .model('Student')
     .findById(studentId)
     .populate('agents editors', 'firstname lastname email')
@@ -76,19 +76,35 @@ const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
     )
     .lean();
 
-  const student_new = add_portals_registered_status(student);
-  const base_docs_link = await req.db.model('Basedocumentationslink').find({
+  const base_docs_linkPromise = req.db.model('Basedocumentationslink').find({
     category: 'base-documents'
   });
-  const survey_link = await req.db.model('Basedocumentationslink').find({
+  const survey_linkPromise = req.db.model('Basedocumentationslink').find({
     category: 'survey'
   });
-
+  const auditPromise = req.db
+    .model('Audit')
+    .find({
+      targetUserId: studentId
+    })
+    .populate('performedBy targetUserId', 'firstname lastname role')
+    .sort({ createdAt: -1 });
+  const [student, base_docs_link, survey_link, audit] = await Promise.all([
+    studentPromise,
+    base_docs_linkPromise,
+    survey_linkPromise,
+    auditPromise
+  ]);
   // TODO: remove agent notfication for new documents upload
+  const student_new = add_portals_registered_status(student);
 
-  res
-    .status(200)
-    .send({ success: true, data: student_new, base_docs_link, survey_link });
+  res.status(200).send({
+    success: true,
+    data: student_new,
+    base_docs_link,
+    survey_link,
+    audit
+  });
   if (user.role === Role.Agent) {
     await req.db.model('Agent').findByIdAndUpdate(
       user._id.toString(),
@@ -139,15 +155,22 @@ const getAllArchivStudents = asyncHandler(async (req, res, next) => {
 });
 
 const getAllActiveStudents = asyncHandler(async (req, res, next) => {
-  const students = await fetchStudents(req, {
+  const studentsPromise = fetchStudents(req, {
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   });
-  const courses = await req.db
+
+  const coursesPromise = req.db
     .model('Course')
     .find()
     .select('-table_data_string')
     .lean();
+
   // Perform the join
+  const [students, courses] = await Promise.all([
+    studentsPromise,
+    coursesPromise
+  ]);
+
   const studentsWithCourse = students.map((student) => {
     const matchingItemB = courses.find(
       (course) => student._id.toString() === course.student_id.toString()
@@ -158,6 +181,7 @@ const getAllActiveStudents = asyncHandler(async (req, res, next) => {
       return { ...student };
     }
   });
+
   const students_new = [];
   for (let j = 0; j < studentsWithCourse.length; j += 1) {
     students_new.push(add_portals_registered_status(studentsWithCourse[j]));
@@ -177,14 +201,19 @@ const getStudents = asyncHandler(async (req, res, next) => {
   const { user } = req;
 
   if (user.role === Role.Admin) {
-    const students = await fetchStudents(req, {
+    const studentsPromise = fetchStudents(req, {
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     });
-    const courses = await req.db
+
+    const coursesPromise = req.db
       .model('Course')
       .find()
       .select('-table_data_string')
       .lean();
+    const [students, courses] = await Promise.all([
+      studentsPromise,
+      coursesPromise
+    ]);
     // Perform the join
     const studentsWithCourse = students.map((student) => {
       const matchingItemB = courses.find(
@@ -255,15 +284,21 @@ const getStudents = asyncHandler(async (req, res, next) => {
       notification: user.agent_notification
     });
   } else if (user.role === Role.Agent) {
-    const students = await fetchStudents(req, {
+    const studentsPromise = fetchStudents(req, {
       agents: user._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     });
-    const courses = await req.db
+    const coursesPromise = req.db
       .model('Course')
       .find()
       .select('-table_data_string')
       .lean();
+
+    const [students, courses] = await Promise.all([
+      studentsPromise,
+      coursesPromise
+    ]);
+
     // Perform the join
     const studentsWithCourse = students.map((student) => {
       const matchingItemB = courses.find(
@@ -310,7 +345,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
       res.status(200).send({ success: true, data: students });
     }
   } else if (user.role === Role.Student) {
-    const student = await req.db
+    const studentPromise = req.db
       .model('Student')
       .findById(user._id.toString())
       .populate('applications.programId')
@@ -323,7 +358,8 @@ const getStudents = asyncHandler(async (req, res, next) => {
         '-attributes +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
       )
       .lean();
-    const interviews = await req.db
+
+    const interviewsPromise = req.db
       .model('Interview')
       .find({
         student_id: user._id.toString()
@@ -331,6 +367,12 @@ const getStudents = asyncHandler(async (req, res, next) => {
       .populate('trainer_id', 'firstname lastname email')
       .populate('event_id')
       .lean();
+
+    const [student, interviews] = await Promise.all([
+      studentPromise,
+      interviewsPromise
+    ]);
+
     if (interviews) {
       for (let i = 0; i < student.applications?.length; i += 1) {
         if (
@@ -988,6 +1030,7 @@ const assignAttributesToStudent = asyncHandler(async (req, res, next) => {
     params: { studentId },
     body: attributesId
   } = req;
+
   await req.db
     .model('Student')
     .findByIdAndUpdate(studentId, { attributes: attributesId }, {});

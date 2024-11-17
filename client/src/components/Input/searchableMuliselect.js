@@ -63,7 +63,7 @@ const SearchableMultiSelect = () => {
   const [selectedValues, setSelectedValues] = useState([]);
 
   const handleChange = (event, newValue) => {
-    setSelectedValues(newValue); // Store selected options
+    setSelectedValues(newValue);
   };
 
   return (
@@ -71,14 +71,29 @@ const SearchableMultiSelect = () => {
       <Autocomplete
         multiple
         id="searchable-multi-select"
-        options={options} // Data to select from
-        value={selectedValues} // Currently selected options
-        onChange={handleChange} // Update selected values on change
-        disableCloseOnSelect // Keep the dropdown open after selecting
-        getOptionLabel={(option) => option} // Specify how the options should be rendered
+        options={options}
+        value={selectedValues}
+        onChange={handleChange}
+        disableCloseOnSelect
+        getOptionLabel={(option) => option}
         renderInput={(params) => (
           <TextField {...params} label="Select People" />
         )}
+        renderOption={(props, option) => {
+          const isSelected = selectedValues.includes(option);
+
+          return (
+            <li
+              {...props}
+              style={{
+                color: isSelected ? 'darkgrey' : 'inherit',
+                backgroundColor: isSelected ? 'lightgrey' : 'transparent'
+              }}
+            >
+              {option}
+            </li>
+          );
+        }}
         renderTags={(value, getTagProps) => (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
             {value.map((option, index) => (

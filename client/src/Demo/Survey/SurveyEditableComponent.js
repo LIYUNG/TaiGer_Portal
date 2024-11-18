@@ -60,11 +60,70 @@ import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import { useSurvey } from '../../components/SurveyProvider';
 
+const options = [
+  'ACC-FIN',
+  'AG-FOR',
+  'ANA-PHYS',
+  'ANTH',
+  'ARCH',
+  'ARCH-BE',
+  'ART-DES',
+  'ARTH',
+  'BIO-SCI',
+  'BUS-MGMT',
+  'CHEM',
+  'CLAH',
+  'COMM-MEDIA',
+  'CSIS',
+  'DS-AI',
+  'DENT',
+  'DEV-STUD',
+  'EAR-MAR-SCI',
+  'ECON',
+  'EDU-TRAIN',
+  'CHEM-ENG',
+  'CIV-STR-ENG',
+  'ELEC-ENG',
+  'MECH-ENG',
+  'MIN-MIN-ENG',
+  'PETRO-ENG',
+  'ELL',
+  'ENV-SCI',
+  'GEO',
+  'GEOL',
+  'GEOPH',
+  'HIST',
+  'HOSP-MGMT',
+  'LAW',
+  'LIB-INFO',
+  'LING',
+  'MKT',
+  'MAT-SCI',
+  'MATH',
+  'MED',
+  'MOD-LANG',
+  'MUS',
+  'NURS',
+  'PERF-ART',
+  'PHARM',
+  'PHIL',
+  'PHYS-ASTRO',
+  'POL',
+  'PSYCH',
+  'SOC-POL',
+  'SOC',
+  'SPORT',
+  'STAT-OR',
+  'THEO',
+  'VET-SCI'
+];
+
 const SurveyEditableComponent = (props) => {
   const {
     handleChangeAcademic,
     handleChangeLanguage,
     handleChangeApplicationPreference,
+    setApplicationPreferenceByField,
     handleAcademicBackgroundSubmit,
     handleSurveyLanguageSubmit,
     handleApplicationPreferenceSubmit,
@@ -72,6 +131,7 @@ const SurveyEditableComponent = (props) => {
     onChangeURL,
     survey
   } = useSurvey();
+
   const [surveyEditableComponentState, setSurveyEditableComponentState] =
     useState({
       baseDocsflagOffcanvas: false,
@@ -1044,7 +1104,15 @@ const SurveyEditableComponent = (props) => {
               </Tooltip>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <SearchableMultiSelect />
+              <SearchableMultiSelect
+                name="targetApplicationSubjects"
+                label="Select Subjects"
+                options={options}
+                value={survey.application_preference?.targetApplicationSubjects}
+                setValue={setApplicationPreferenceByField(
+                  'targetApplicationSubjects'
+                )}
+              />
               {/* <TextField
                 fullWidth
                 id="target-application-subject"

@@ -28,17 +28,27 @@ export const SurveyProvider = ({ children, value }) => {
     }));
   };
 
-  const handleChangeApplicationPreference = (e) => {
-    e.preventDefault();
+  const setApplicationPreference = (name, value) => {
     const application_preference_temp = {
       ...surveyState.application_preference
     };
-    application_preference_temp[e.target.name] = e.target.value;
+    application_preference_temp[name] = value;
     setSurveyState((prevState) => ({
       ...prevState,
       changed_application_preference: true,
       application_preference: application_preference_temp
     }));
+  };
+
+  const handleChangeApplicationPreference = (e) => {
+    e.preventDefault();
+    setApplicationPreference(e.target.name, e.target.value);
+  };
+
+  const setApplicationPreferenceByField = (name) => {
+    return (value) => {
+      setApplicationPreference(name, value);
+    };
   };
 
   const handleChangeLanguage = (e) => {
@@ -219,6 +229,7 @@ export const SurveyProvider = ({ children, value }) => {
     survey: surveyState,
     handleChangeAcademic,
     handleChangeApplicationPreference,
+    setApplicationPreferenceByField,
     handleChangeLanguage,
     handleAcademicBackgroundSubmit,
     handleSurveyLanguageSubmit,

@@ -1,90 +1,34 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Autocomplete, TextField, Chip, Box } from '@mui/material';
 
-const options = [
-  'ACC-FIN',
-  'AG-FOR',
-  'ANA-PHYS',
-  'ANTH',
-  'ARCH',
-  'ARCH-BE',
-  'ART-DES',
-  'ARTH',
-  'BIO-SCI',
-  'BUS-MGMT',
-  'CHEM',
-  'CLAH',
-  'COMM-MEDIA',
-  'CSIS',
-  'DS-AI',
-  'DENT',
-  'DEV-STUD',
-  'EAR-MAR-SCI',
-  'ECON',
-  'EDU-TRAIN',
-  'CHEM-ENG',
-  'CIV-STR-ENG',
-  'ELEC-ENG',
-  'MECH-ENG',
-  'MIN-MIN-ENG',
-  'PETRO-ENG',
-  'ELL',
-  'ENV-SCI',
-  'GEO',
-  'GEOL',
-  'GEOPH',
-  'HIST',
-  'HOSP-MGMT',
-  'LAW',
-  'LIB-INFO',
-  'LING',
-  'MKT',
-  'MAT-SCI',
-  'MATH',
-  'MED',
-  'MOD-LANG',
-  'MUS',
-  'NURS',
-  'PERF-ART',
-  'PHARM',
-  'PHIL',
-  'PHYS-ASTRO',
-  'POL',
-  'PSYCH',
-  'SOC-POL',
-  'SOC',
-  'SPORT',
-  'STAT-OR',
-  'THEO',
-  'VET-SCI'
-];
-
-const SearchableMultiSelect = () => {
-  const [selectedValues, setSelectedValues] = useState([]);
-
-  const handleChange = (event, newValue) => {
-    setSelectedValues(newValue);
-  };
-
+const SearchableMultiSelect = ({
+  options,
+  value = [],
+  setValue,
+  label = 'Select Options',
+  ...props
+}) => {
   return (
     <div>
       <Autocomplete
         multiple
         id="searchable-multi-select"
         options={options}
-        value={selectedValues}
-        onChange={handleChange}
+        value={value}
+        onChange={(e, newValue) => setValue(newValue)}
         disableCloseOnSelect
         getOptionLabel={(option) => option}
         renderInput={(params) => (
-          <TextField {...params} label="Select People" />
+          <TextField {...params} label={label || 'Select Options'} />
         )}
         renderOption={(props, option) => {
-          const isSelected = selectedValues.includes(option);
+          const { key, ...rest } = props;
+          const isSelected = value.includes(option);
 
           return (
             <li
-              {...props}
+              key={key}
+              {...rest}
               style={{
                 color: isSelected ? 'darkgrey' : 'inherit',
                 backgroundColor: isSelected ? 'lightgrey' : 'transparent'
@@ -96,16 +40,20 @@ const SearchableMultiSelect = () => {
         }}
         renderTags={(value, getTagProps) => (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-            {value.map((option, index) => (
-              <Chip
-                key={option}
-                label={option}
-                variant="outlined"
-                {...getTagProps({ index })}
-              />
-            ))}
+            {value.map((option, index) => {
+              const { key, ...tagProps } = getTagProps({ index });
+              return (
+                <Chip
+                  key={key}
+                  label={option}
+                  variant="outlined"
+                  {...tagProps}
+                />
+              );
+            })}
           </Box>
         )}
+        {...props}
       />
     </div>
   );

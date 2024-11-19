@@ -2281,277 +2281,277 @@ export const PROGRAM_SUBJECT_CATEGORIES = {
 export const PROGRAM_SUBJECTS = [
   {
     key: 'LING',
-    value: 'Linguistics',
+    label: 'Linguistics',
     category: 'AH'
   },
   {
     key: 'MUS',
-    value: 'Music',
+    label: 'Music',
     category: 'AH'
   },
   {
     key: 'THEO',
-    value: 'Theology, Divinity and Religious Studies',
+    label: 'Theology, Divinity and Religious Studies',
     category: 'AH'
   },
   {
     key: 'ARCH',
-    value: 'Archaeology',
+    label: 'Archaeology',
     category: 'AH'
   },
   {
     key: 'ARCH-BE',
-    value: 'Architecture and Built Environment',
+    label: 'Architecture and Built Environment',
     category: 'AH'
   },
   {
     key: 'ART-DES',
-    value: 'Art and Design',
+    label: 'Art and Design',
     category: 'AH'
   },
   {
     key: 'CLAH',
-    value: 'Classics and Ancient History',
+    label: 'Classics and Ancient History',
     category: 'AH'
   },
   {
     key: 'ELL',
-    value: 'English Language and Literature',
+    label: 'English Language and Literature',
     category: 'AH'
   },
   {
     key: 'HIST',
-    value: 'History',
+    label: 'History',
     category: 'AH'
   },
   {
     key: 'ARTH',
-    value: 'Art History',
+    label: 'Art History',
     category: 'AH'
   },
   {
     key: 'MOD-LANG',
-    value: 'Modern Languages',
+    label: 'Modern Languages',
     category: 'AH'
   },
   {
     key: 'PERF-ART',
-    value: 'Performing Arts',
+    label: 'Performing Arts',
     category: 'AH'
   },
   {
     key: 'PHIL',
-    value: 'Philosophy',
+    label: 'Philosophy',
     category: 'AH'
   },
   {
     key: 'CHEM-ENG',
-    value: 'Engineering - Chemical',
+    label: 'Engineering - Chemical',
     category: 'ET'
   },
   {
     key: 'CIV-STR-ENG',
-    value: 'Engineering - Civil and Structural',
+    label: 'Engineering - Civil and Structural',
     category: 'ET'
   },
   {
     key: 'CSIS',
-    value: 'Computer Science and Information Systems',
+    label: 'Computer Science and Information Systems',
     category: 'ET'
   },
   {
     key: 'DS-AI',
-    value: 'Data Science and Artificial Intelligence',
+    label: 'Data Science and Artificial Intelligence',
     category: 'ET'
   },
   {
     key: 'ELEC-ENG',
-    value: 'Engineering - Electrical and Electronic',
+    label: 'Engineering - Electrical and Electronic',
     category: 'ET'
   },
   {
     key: 'PETRO-ENG',
-    value: 'Engineering - Petroleum',
+    label: 'Engineering - Petroleum',
     category: 'ET'
   },
   {
     key: 'MECH-ENG',
-    value: 'Engineering - Mechanical',
+    label: 'Engineering - Mechanical',
     category: 'ET'
   },
   {
     key: 'MIN-MIN-ENG',
-    value: 'Engineering - Mineral and Mining',
+    label: 'Engineering - Mineral and Mining',
     category: 'ET'
   },
   {
     key: 'AG-FOR',
-    value: 'Agriculture and Forestry',
+    label: 'Agriculture and Forestry',
     category: 'LSM'
   },
   {
     key: 'ANA-PHYS',
-    value: 'Anatomy and Physiology',
+    label: 'Anatomy and Physiology',
     category: 'LSM'
   },
   {
     key: 'BIO-SCI',
-    value: 'Biological Sciences',
+    label: 'Biological Sciences',
     category: 'LSM'
   },
   {
     key: 'DENT',
-    value: 'Dentistry',
+    label: 'Dentistry',
     category: 'LSM'
   },
   {
     key: 'MED',
-    value: 'Medicine',
+    label: 'Medicine',
     category: 'LSM'
   },
   {
     key: 'NURS',
-    value: 'Nursing',
+    label: 'Nursing',
     category: 'LSM'
   },
   {
     key: 'PHARM',
-    value: 'Pharmacy and Pharmacology',
+    label: 'Pharmacy and Pharmacology',
     category: 'LSM'
   },
   {
     key: 'PSYCH',
-    value: 'Psychology',
+    label: 'Psychology',
     category: 'LSM'
   },
   {
     key: 'VET-SCI',
-    value: 'Veterinary Science',
+    label: 'Veterinary Science',
     category: 'LSM'
   },
   {
     key: 'CHEM',
-    value: 'Chemistry',
+    label: 'Chemistry',
     category: 'NS'
   },
   {
     key: 'EAR-MAR-SCI',
-    value: 'Earth and Marine Sciences',
+    label: 'Earth and Marine Sciences',
     category: 'NS'
   },
   {
     key: 'ENV-SCI',
-    value: 'Environmental Sciences',
+    label: 'Environmental Sciences',
     category: 'NS'
   },
   {
     key: 'GEO',
-    value: 'Geography',
+    label: 'Geography',
     category: 'NS'
   },
   {
     key: 'GEOL',
-    value: 'Geology',
+    label: 'Geology',
     category: 'NS'
   },
   {
     key: 'GEOPH',
-    value: 'Geophysics',
+    label: 'Geophysics',
     category: 'NS'
   },
   {
     key: 'MAT-SCI',
-    value: 'Materials Sciences',
+    label: 'Materials Sciences',
     category: 'NS'
   },
   {
     key: 'MATH',
-    value: 'Mathematics',
+    label: 'Mathematics',
     category: 'NS'
   },
   {
     key: 'PHYS-ASTRO',
-    value: 'Physics and Astronomy',
+    label: 'Physics and Astronomy',
     category: 'NS'
   },
   {
     key: 'ACC-FIN',
-    value: 'Accounting and Finance',
+    label: 'Accounting and Finance',
     category: 'SSM'
   },
   {
     key: 'ANTH',
-    value: 'Anthropology',
+    label: 'Anthropology',
     category: 'SSM'
   },
   {
     key: 'BUS-MGMT',
-    value: 'Business and Management Studies',
+    label: 'Business and Management Studies',
     category: 'SSM'
   },
   {
     key: 'COMM-MEDIA',
-    value: 'Communication and Media Studies',
+    label: 'Communication and Media Studies',
     category: 'SSM'
   },
   {
     key: 'DEV-STUD',
-    value: 'Development Studies',
+    label: 'Development Studies',
     category: 'SSM'
   },
   {
     key: 'ECON',
-    value: 'Economics and Econometrics',
+    label: 'Economics and Econometrics',
     category: 'SSM'
   },
   {
     key: 'EDU-TRAIN',
-    value: 'Education and Training',
+    label: 'Education and Training',
     category: 'SSM'
   },
   {
     key: 'HOSP-MGMT',
-    value: 'Hospitality and Leisure Management',
+    label: 'Hospitality and Leisure Management',
     category: 'SSM'
   },
   {
     key: 'LAW',
-    value: 'Law and Legal Studies',
+    label: 'Law and Legal Studies',
     category: 'SSM'
   },
   {
-    value: 'Library and Information Management',
+    label: 'Library and Information Management',
     key: 'LIB-INFO',
     category: 'SSM'
   },
   {
     key: 'MKT',
-    value: 'Marketing',
+    label: 'Marketing',
     category: 'SSM'
   },
   {
     key: 'POL',
-    value: 'Politics',
+    label: 'Politics',
     category: 'SSM'
   },
   {
     key: 'SOC-POL',
-    value: 'Social Policy and Administration',
+    label: 'Social Policy and Administration',
     category: 'SSM'
   },
   {
     key: 'SOC',
-    value: 'Sociology',
+    label: 'Sociology',
     category: 'SSM'
   },
   {
     key: 'SPORT',
-    value: 'Sports-Related Subjects',
+    label: 'Sports-Related Subjects',
     category: 'SSM'
   },
   {
     key: 'STAT-OR',
-    value: 'Statistics and Operational Research',
+    label: 'Statistics and Operational Research',
     category: 'SSM'
   }
 ];

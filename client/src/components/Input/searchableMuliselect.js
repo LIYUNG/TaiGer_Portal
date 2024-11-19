@@ -5,6 +5,7 @@ const SearchableMultiSelect = ({
   options,
   value = [],
   setValue,
+  chipColoring = {},
   label = 'Select Options',
   ...props
 }) => {
@@ -47,6 +48,7 @@ const SearchableMultiSelect = ({
                   key={key}
                   label={option}
                   variant="outlined"
+                  color={chipColoring[option] || 'primary'}
                   {...tagProps}
                 />
               );

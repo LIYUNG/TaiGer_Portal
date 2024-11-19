@@ -36,6 +36,9 @@ import {
   LANGUAGES_PREFERENCE_ARRAY_OPTIONS,
   SEMESTER_ARRAY_OPTIONS,
   TRI_STATE_OPTIONS,
+  // PROGRAM_SUBJECTS,
+  PROGRAM_SUBJECT_KEYS,
+  PROGRAM_SUBJECT_COLORS,
   convertDate
 } from '../Utils/contants';
 import {
@@ -59,64 +62,6 @@ import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import { useSurvey } from '../../components/SurveyProvider';
-
-const options = [
-  'ACC-FIN',
-  'AG-FOR',
-  'ANA-PHYS',
-  'ANTH',
-  'ARCH',
-  'ARCH-BE',
-  'ART-DES',
-  'ARTH',
-  'BIO-SCI',
-  'BUS-MGMT',
-  'CHEM',
-  'CLAH',
-  'COMM-MEDIA',
-  'CSIS',
-  'DS-AI',
-  'DENT',
-  'DEV-STUD',
-  'EAR-MAR-SCI',
-  'ECON',
-  'EDU-TRAIN',
-  'CHEM-ENG',
-  'CIV-STR-ENG',
-  'ELEC-ENG',
-  'MECH-ENG',
-  'MIN-MIN-ENG',
-  'PETRO-ENG',
-  'ELL',
-  'ENV-SCI',
-  'GEO',
-  'GEOL',
-  'GEOPH',
-  'HIST',
-  'HOSP-MGMT',
-  'LAW',
-  'LIB-INFO',
-  'LING',
-  'MKT',
-  'MAT-SCI',
-  'MATH',
-  'MED',
-  'MOD-LANG',
-  'MUS',
-  'NURS',
-  'PERF-ART',
-  'PHARM',
-  'PHIL',
-  'PHYS-ASTRO',
-  'POL',
-  'PSYCH',
-  'SOC-POL',
-  'SOC',
-  'SPORT',
-  'STAT-OR',
-  'THEO',
-  'VET-SCI'
-];
 
 const SurveyEditableComponent = (props) => {
   const {
@@ -1107,7 +1052,9 @@ const SurveyEditableComponent = (props) => {
               <SearchableMultiSelect
                 name="target-application-subjects"
                 label="Target Application Subjects"
-                options={options}
+                options={PROGRAM_SUBJECT_KEYS}
+                // optionLabel={}
+                chipColoring={PROGRAM_SUBJECT_COLORS}
                 value={survey.application_preference?.targetApplicationSubjects}
                 setValue={setApplicationPreferenceByField(
                   'targetApplicationSubjects'

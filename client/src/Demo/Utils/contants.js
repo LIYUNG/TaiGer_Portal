@@ -2254,3 +2254,316 @@ export const UserlistHeader = [
     prop: 'role'
   }
 ];
+
+export const PROGRAM_SUBJECT_CATEGORIES = {
+  SSM: {
+    categoryName: 'Social Sciences & Management',
+    color: 'primary'
+  },
+  NS: {
+    categoryName: 'Natural Sciences',
+    color: 'secondary'
+  },
+  LSM: {
+    categoryName: 'Life Sciences & Medicine',
+    color: 'primary'
+  },
+  ET: {
+    categoryName: 'Engineering and Technology',
+    color: 'secondary'
+  },
+  AH: {
+    categoryName: 'Arts & Humanities',
+    color: 'primary'
+  }
+};
+
+export const PROGRAM_SUBJECTS = [
+  {
+    key: 'LING',
+    value: 'Linguistics',
+    category: 'AH'
+  },
+  {
+    key: 'MUS',
+    value: 'Music',
+    category: 'AH'
+  },
+  {
+    key: 'THEO',
+    value: 'Theology, Divinity and Religious Studies',
+    category: 'AH'
+  },
+  {
+    key: 'ARCH',
+    value: 'Archaeology',
+    category: 'AH'
+  },
+  {
+    key: 'ARCH-BE',
+    value: 'Architecture and Built Environment',
+    category: 'AH'
+  },
+  {
+    key: 'ART-DES',
+    value: 'Art and Design',
+    category: 'AH'
+  },
+  {
+    key: 'CLAH',
+    value: 'Classics and Ancient History',
+    category: 'AH'
+  },
+  {
+    key: 'ELL',
+    value: 'English Language and Literature',
+    category: 'AH'
+  },
+  {
+    key: 'HIST',
+    value: 'History',
+    category: 'AH'
+  },
+  {
+    key: 'ARTH',
+    value: 'Art History',
+    category: 'AH'
+  },
+  {
+    key: 'MOD-LANG',
+    value: 'Modern Languages',
+    category: 'AH'
+  },
+  {
+    key: 'PERF-ART',
+    value: 'Performing Arts',
+    category: 'AH'
+  },
+  {
+    key: 'PHIL',
+    value: 'Philosophy',
+    category: 'AH'
+  },
+  {
+    key: 'CHEM-ENG',
+    value: 'Engineering - Chemical',
+    category: 'ET'
+  },
+  {
+    key: 'CIV-STR-ENG',
+    value: 'Engineering - Civil and Structural',
+    category: 'ET'
+  },
+  {
+    key: 'CSIS',
+    value: 'Computer Science and Information Systems',
+    category: 'ET'
+  },
+  {
+    key: 'DS-AI',
+    value: 'Data Science and Artificial Intelligence',
+    category: 'ET'
+  },
+  {
+    key: 'ELEC-ENG',
+    value: 'Engineering - Electrical and Electronic',
+    category: 'ET'
+  },
+  {
+    key: 'PETRO-ENG',
+    value: 'Engineering - Petroleum',
+    category: 'ET'
+  },
+  {
+    key: 'MECH-ENG',
+    value: 'Engineering - Mechanical',
+    category: 'ET'
+  },
+  {
+    key: 'MIN-MIN-ENG',
+    value: 'Engineering - Mineral and Mining',
+    category: 'ET'
+  },
+  {
+    key: 'AG-FOR',
+    value: 'Agriculture and Forestry',
+    category: 'LSM'
+  },
+  {
+    key: 'ANA-PHYS',
+    value: 'Anatomy and Physiology',
+    category: 'LSM'
+  },
+  {
+    key: 'BIO-SCI',
+    value: 'Biological Sciences',
+    category: 'LSM'
+  },
+  {
+    key: 'DENT',
+    value: 'Dentistry',
+    category: 'LSM'
+  },
+  {
+    key: 'MED',
+    value: 'Medicine',
+    category: 'LSM'
+  },
+  {
+    key: 'NURS',
+    value: 'Nursing',
+    category: 'LSM'
+  },
+  {
+    key: 'PHARM',
+    value: 'Pharmacy and Pharmacology',
+    category: 'LSM'
+  },
+  {
+    key: 'PSYCH',
+    value: 'Psychology',
+    category: 'LSM'
+  },
+  {
+    key: 'VET-SCI',
+    value: 'Veterinary Science',
+    category: 'LSM'
+  },
+  {
+    key: 'CHEM',
+    value: 'Chemistry',
+    category: 'NS'
+  },
+  {
+    key: 'EAR-MAR-SCI',
+    value: 'Earth and Marine Sciences',
+    category: 'NS'
+  },
+  {
+    key: 'ENV-SCI',
+    value: 'Environmental Sciences',
+    category: 'NS'
+  },
+  {
+    key: 'GEO',
+    value: 'Geography',
+    category: 'NS'
+  },
+  {
+    key: 'GEOL',
+    value: 'Geology',
+    category: 'NS'
+  },
+  {
+    key: 'GEOPH',
+    value: 'Geophysics',
+    category: 'NS'
+  },
+  {
+    key: 'MAT-SCI',
+    value: 'Materials Sciences',
+    category: 'NS'
+  },
+  {
+    key: 'MATH',
+    value: 'Mathematics',
+    category: 'NS'
+  },
+  {
+    key: 'PHYS-ASTRO',
+    value: 'Physics and Astronomy',
+    category: 'NS'
+  },
+  {
+    key: 'ACC-FIN',
+    value: 'Accounting and Finance',
+    category: 'SSM'
+  },
+  {
+    key: 'ANTH',
+    value: 'Anthropology',
+    category: 'SSM'
+  },
+  {
+    key: 'BUS-MGMT',
+    value: 'Business and Management Studies',
+    category: 'SSM'
+  },
+  {
+    key: 'COMM-MEDIA',
+    value: 'Communication and Media Studies',
+    category: 'SSM'
+  },
+  {
+    key: 'DEV-STUD',
+    value: 'Development Studies',
+    category: 'SSM'
+  },
+  {
+    key: 'ECON',
+    value: 'Economics and Econometrics',
+    category: 'SSM'
+  },
+  {
+    key: 'EDU-TRAIN',
+    value: 'Education and Training',
+    category: 'SSM'
+  },
+  {
+    key: 'HOSP-MGMT',
+    value: 'Hospitality and Leisure Management',
+    category: 'SSM'
+  },
+  {
+    key: 'LAW',
+    value: 'Law and Legal Studies',
+    category: 'SSM'
+  },
+  {
+    value: 'Library and Information Management',
+    key: 'LIB-INFO',
+    category: 'SSM'
+  },
+  {
+    key: 'MKT',
+    value: 'Marketing',
+    category: 'SSM'
+  },
+  {
+    key: 'POL',
+    value: 'Politics',
+    category: 'SSM'
+  },
+  {
+    key: 'SOC-POL',
+    value: 'Social Policy and Administration',
+    category: 'SSM'
+  },
+  {
+    key: 'SOC',
+    value: 'Sociology',
+    category: 'SSM'
+  },
+  {
+    key: 'SPORT',
+    value: 'Sports-Related Subjects',
+    category: 'SSM'
+  },
+  {
+    key: 'STAT-OR',
+    value: 'Statistics and Operational Research',
+    category: 'SSM'
+  }
+];
+
+export const PROGRAM_SUBJECT_COLORS = PROGRAM_SUBJECTS.reduce(
+  (acc, subject) => ({
+    ...acc,
+    [subject.key]: PROGRAM_SUBJECT_CATEGORIES[subject.category].color
+  }),
+  {}
+);
+
+export const PROGRAM_SUBJECT_KEYS = PROGRAM_SUBJECTS.map(
+  (subject) => subject.key
+);

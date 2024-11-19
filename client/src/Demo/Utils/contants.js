@@ -2564,6 +2564,14 @@ export const PROGRAM_SUBJECT_COLORS = PROGRAM_SUBJECTS.reduce(
   {}
 );
 
+export const PROGRAM_SUBJECT_KEY_LABEL = PROGRAM_SUBJECTS.reduce(
+  (acc, subject) => ({
+    ...acc,
+    [subject.key]: subject.label
+  }),
+  {}
+);
+
 export const PROGRAM_SUBJECT_KEYS = PROGRAM_SUBJECTS.map(
   (subject) => subject.key
 );

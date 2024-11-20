@@ -1,40 +1,74 @@
 import React from 'react';
 import { Autocomplete, TextField, Chip, Box } from '@mui/material';
 
+/**
+ * A searchable multi-select dropdown component built with Material-UI's Autocomplete.
+ * Supports single-column or multi-column data representation with customizable colors and labels.
+ *
+ * @component
+ * @param {Object|Array<string>} data - The data to populate the dropdown.
+ * - If an object, it should have a structure of `{ key: { label: string, color: string } }`.
+ *   - `key` is the value of the option.
+ *   - `label` is displayed as an additional column in the dropdown.
+ *   - `color` (optional) specifies the color of the Chip in the selected tags.
+ * - If an array, it should be a flat array of strings `[key1, key2, ...]`, which will be displayed in a single column.
+ * @param {Array<string>} value - The currently selected options.
+ * @param {Function} setValue - Callback to update the selected options.
+ *   - Function signature: `setValue(newValue: Array<string>) => void`.
+ * @param {string} [label='Select Options'] - The label for the input field.
+ * @param {Object} props - Additional props passed to the Material-UI `Autocomplete` component.
+ * @example
+ * // Example with object-based data
+ * const data = {
+ *   AMZN: { label: 'Amazon.com, Inc.', color: 'secondary' }
+ *   AKAM: { label: 'Akamai Technologies, Inc.', color: 'secondary' }
+ *   AAPL: { label: 'Apple Inc.', color: 'primary' },
+ *   GOOGL: { label: 'Alphabet Inc.', color: 'primary' },
+ *   META: { label: 'Meta Platforms, Inc.', color: 'primary' },
+ *   NVDA: { label: 'NVIDIA Corporation', color: 'secondary' }
+ * };
+ * const [selectedOptions, setSelectedOptions] = useState([]);
+ *
+ * <SearchableMultiSelect
+ *   data={data}
+ *   value={selectedOptions}
+ *   setValue={setSelectedOptions}
+ *   label="Choose Options"
+ * />
+ *
+ * @example
+ * // Example with array-based data
+ * const data = ['AMZN', 'AKAM', 'AAPL', 'GOOGL', 'META', 'NVDA'];
+ * const [selectedOptions, setSelectedOptions] = useState([]);
+ *
+ * <SearchableMultiSelect
+ *   data={data}
+ *   value={selectedOptions}
+ *   setValue={setSelectedOptions}
+ *   label="Select Items"
+ * />
+ */
 const SearchableMultiSelect = ({
   data,
-  value = [],
+  value,
   setValue,
   label = 'Select Options',
   ...props
 }) => {
-  // Map the selected value to corresponding keys
   const handleValueChange = (event, newValue) => {
-    setValue(
-      newValue.map((option) =>
-        typeof option === 'object' ? option.key : option
-      )
-    );
+    setValue(newValue);
   };
 
-  const options = Object.keys(data);
-
+  const options = Array.isArray(data) ? data : Object.keys(data);
   return (
     <div>
       <Autocomplete
         multiple
         id="searchable-multi-select"
         options={options}
-        value={options.filter((option) =>
-          value.includes(typeof option === 'object' ? option.key : option)
-        )}
+        value={options.filter((option) => value.includes(option))}
         onChange={handleValueChange}
         disableCloseOnSelect
-        getOptionLabel={(option) =>
-          typeof data instanceof Array
-            ? option
-            : data?.[option]?.label || option
-        }
         renderInput={(params) => (
           <TextField {...params} label={label || 'Select Options'} />
         )}
@@ -55,9 +89,7 @@ const SearchableMultiSelect = ({
                 gap: '16px'
               }}
             >
-              {!(typeof data instanceof Array) && (
-                <span>{data?.[option].label}</span>
-              )}
+              {!Array.isArray(data) && <span>{data?.[option].label}</span>}
               <span>{option}</span>
             </li>
           );
@@ -71,7 +103,7 @@ const SearchableMultiSelect = ({
                   key={key}
                   label={option}
                   color={
-                    typeof data instanceof Array
+                    Array.isArray(data)
                       ? 'primary'
                       : data?.[option].color || 'primary'
                   }

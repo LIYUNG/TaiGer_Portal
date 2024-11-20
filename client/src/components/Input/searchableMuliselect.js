@@ -47,8 +47,7 @@ const SearchableMultiSelect = ({
               key={key}
               {...rest}
               style={{
-                color: isSelected ? 'darkgrey' : 'inherit',
-                backgroundColor: isSelected ? 'lightgrey' : 'transparent',
+                fontWeight: isSelected ? 700 : 400,
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -56,12 +55,10 @@ const SearchableMultiSelect = ({
                 gap: '16px'
               }}
             >
-              <span>{option}</span>
               {!(typeof data instanceof Array) && (
-                <span style={{ fontSize: 'smaller', color: 'grey' }}>
-                  {data?.[option].label}
-                </span>
+                <span>{data?.[option].label}</span>
               )}
+              <span>{option}</span>
             </li>
           );
         }}
@@ -73,7 +70,6 @@ const SearchableMultiSelect = ({
                 <Chip
                   key={key}
                   label={option}
-                  variant="outlined"
                   color={
                     typeof data instanceof Array
                       ? 'primary'

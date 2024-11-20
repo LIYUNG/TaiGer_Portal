@@ -2258,7 +2258,7 @@ export const UserlistHeader = [
 export const PROGRAM_SUBJECT_CATEGORIES = {
   SSM: {
     categoryName: 'Social Sciences & Management',
-    color: 'primary'
+    color: 'success'
   },
   NS: {
     categoryName: 'Natural Sciences',
@@ -2266,7 +2266,7 @@ export const PROGRAM_SUBJECT_CATEGORIES = {
   },
   LSM: {
     categoryName: 'Life Sciences & Medicine',
-    color: 'primary'
+    color: 'success'
   },
   ET: {
     categoryName: 'Engineering and Technology',
@@ -2274,304 +2274,242 @@ export const PROGRAM_SUBJECT_CATEGORIES = {
   },
   AH: {
     categoryName: 'Arts & Humanities',
-    color: 'primary'
+    color: 'error'
   }
 };
 
-export const PROGRAM_SUBJECTS = [
-  {
-    key: 'LING',
+export const PROGRAM_SUBJECTS = {
+  LING: {
     label: 'Linguistics',
     category: 'AH'
   },
-  {
-    key: 'MUS',
+  MUS: {
     label: 'Music',
     category: 'AH'
   },
-  {
-    key: 'THEO',
+  THEO: {
     label: 'Theology, Divinity and Religious Studies',
     category: 'AH'
   },
-  {
-    key: 'ARCH',
+  ARCH: {
     label: 'Archaeology',
     category: 'AH'
   },
-  {
-    key: 'ARCH-BE',
+  'ARCH-BE': {
     label: 'Architecture and Built Environment',
     category: 'AH'
   },
-  {
-    key: 'ART-DES',
+  'ART-DES': {
     label: 'Art and Design',
     category: 'AH'
   },
-  {
-    key: 'CLAH',
+  CLAH: {
     label: 'Classics and Ancient History',
     category: 'AH'
   },
-  {
-    key: 'ELL',
+  ELL: {
     label: 'English Language and Literature',
     category: 'AH'
   },
-  {
-    key: 'HIST',
+  HIST: {
     label: 'History',
     category: 'AH'
   },
-  {
-    key: 'ARTH',
+  ARTH: {
     label: 'Art History',
     category: 'AH'
   },
-  {
-    key: 'MOD-LANG',
+  'MOD-LANG': {
     label: 'Modern Languages',
     category: 'AH'
   },
-  {
-    key: 'PERF-ART',
+  'PERF-ART': {
     label: 'Performing Arts',
     category: 'AH'
   },
-  {
-    key: 'PHIL',
+  PHIL: {
     label: 'Philosophy',
     category: 'AH'
   },
-  {
-    key: 'CHEM-ENG',
+  'CHEM-ENG': {
     label: 'Engineering - Chemical',
     category: 'ET'
   },
-  {
-    key: 'CIV-STR-ENG',
+  'CIV-STR-ENG': {
     label: 'Engineering - Civil and Structural',
     category: 'ET'
   },
-  {
-    key: 'CSIS',
+  CSIS: {
     label: 'Computer Science and Information Systems',
     category: 'ET'
   },
-  {
-    key: 'DS-AI',
+  'DS-AI': {
     label: 'Data Science and Artificial Intelligence',
     category: 'ET'
   },
-  {
-    key: 'ELEC-ENG',
+  'ELEC-ENG': {
     label: 'Engineering - Electrical and Electronic',
     category: 'ET'
   },
-  {
-    key: 'PETRO-ENG',
+  'PETRO-ENG': {
     label: 'Engineering - Petroleum',
     category: 'ET'
   },
-  {
-    key: 'MECH-ENG',
+  'MECH-ENG': {
     label: 'Engineering - Mechanical',
     category: 'ET'
   },
-  {
-    key: 'MIN-MIN-ENG',
+  'MIN-MIN-ENG': {
     label: 'Engineering - Mineral and Mining',
     category: 'ET'
   },
-  {
-    key: 'AG-FOR',
+  'AG-FOR': {
     label: 'Agriculture and Forestry',
     category: 'LSM'
   },
-  {
-    key: 'ANA-PHYS',
+  'ANA-PHYS': {
     label: 'Anatomy and Physiology',
     category: 'LSM'
   },
-  {
-    key: 'BIO-SCI',
+  'BIO-SCI': {
     label: 'Biological Sciences',
     category: 'LSM'
   },
-  {
-    key: 'DENT',
+  DENT: {
     label: 'Dentistry',
     category: 'LSM'
   },
-  {
-    key: 'MED',
+  MED: {
     label: 'Medicine',
     category: 'LSM'
   },
-  {
-    key: 'NURS',
+  NURS: {
     label: 'Nursing',
     category: 'LSM'
   },
-  {
-    key: 'PHARM',
+  PHARM: {
     label: 'Pharmacy and Pharmacology',
     category: 'LSM'
   },
-  {
-    key: 'PSYCH',
+  PSYCH: {
     label: 'Psychology',
     category: 'LSM'
   },
-  {
-    key: 'VET-SCI',
+  'VET-SCI': {
     label: 'Veterinary Science',
     category: 'LSM'
   },
-  {
-    key: 'CHEM',
+  CHEM: {
     label: 'Chemistry',
     category: 'NS'
   },
-  {
-    key: 'EAR-MAR-SCI',
+  'EAR-MAR-SCI': {
     label: 'Earth and Marine Sciences',
     category: 'NS'
   },
-  {
-    key: 'ENV-SCI',
+  'ENV-SCI': {
     label: 'Environmental Sciences',
     category: 'NS'
   },
-  {
-    key: 'GEO',
+  GEO: {
     label: 'Geography',
     category: 'NS'
   },
-  {
-    key: 'GEOL',
+  GEOL: {
     label: 'Geology',
     category: 'NS'
   },
-  {
-    key: 'GEOPH',
+  GEOPH: {
     label: 'Geophysics',
     category: 'NS'
   },
-  {
-    key: 'MAT-SCI',
+  'MAT-SCI': {
     label: 'Materials Sciences',
     category: 'NS'
   },
-  {
-    key: 'MATH',
+  MATH: {
     label: 'Mathematics',
     category: 'NS'
   },
-  {
-    key: 'PHYS-ASTRO',
+  'PHYS-ASTRO': {
     label: 'Physics and Astronomy',
     category: 'NS'
   },
-  {
-    key: 'ACC-FIN',
+  'ACC-FIN': {
     label: 'Accounting and Finance',
     category: 'SSM'
   },
-  {
-    key: 'ANTH',
+  ANTH: {
     label: 'Anthropology',
     category: 'SSM'
   },
-  {
-    key: 'BUS-MGMT',
+  'BUS-MGMT': {
     label: 'Business and Management Studies',
     category: 'SSM'
   },
-  {
-    key: 'COMM-MEDIA',
+  'COMM-MEDIA': {
     label: 'Communication and Media Studies',
     category: 'SSM'
   },
-  {
-    key: 'DEV-STUD',
+  'DEV-STUD': {
     label: 'Development Studies',
     category: 'SSM'
   },
-  {
-    key: 'ECON',
+  ECON: {
     label: 'Economics and Econometrics',
     category: 'SSM'
   },
-  {
-    key: 'EDU-TRAIN',
+  'EDU-TRAIN': {
     label: 'Education and Training',
     category: 'SSM'
   },
-  {
-    key: 'HOSP-MGMT',
+  'HOSP-MGMT': {
     label: 'Hospitality and Leisure Management',
     category: 'SSM'
   },
-  {
-    key: 'LAW',
+  LAW: {
     label: 'Law and Legal Studies',
     category: 'SSM'
   },
-  {
+  'LIB-INFO': {
     label: 'Library and Information Management',
-    key: 'LIB-INFO',
     category: 'SSM'
   },
-  {
-    key: 'MKT',
+  MKT: {
     label: 'Marketing',
     category: 'SSM'
   },
-  {
-    key: 'POL',
+  POL: {
     label: 'Politics',
     category: 'SSM'
   },
-  {
-    key: 'SOC-POL',
+  'SOC-POL': {
     label: 'Social Policy and Administration',
     category: 'SSM'
   },
-  {
-    key: 'SOC',
+  SOC: {
     label: 'Sociology',
     category: 'SSM'
   },
-  {
-    key: 'SPORT',
+  SPORT: {
     label: 'Sports-Related Subjects',
     category: 'SSM'
   },
-  {
-    key: 'STAT-OR',
+  'STAT-OR': {
     label: 'Statistics and Operational Research',
     category: 'SSM'
   }
-];
+};
 
-export const PROGRAM_SUBJECT_COLORS = PROGRAM_SUBJECTS.reduce(
-  (acc, subject) => ({
-    ...acc,
-    [subject.key]: PROGRAM_SUBJECT_CATEGORIES[subject.category].color
-  }),
-  {}
-);
-
-export const PROGRAM_SUBJECT_KEY_LABEL = PROGRAM_SUBJECTS.reduce(
-  (acc, subject) => ({
-    ...acc,
-    [subject.key]: subject.label
-  }),
-  {}
-);
-
-export const PROGRAM_SUBJECT_KEYS = PROGRAM_SUBJECTS.map(
-  (subject) => subject.key
+export const PROGRAM_SUBJECT_KEYS = Object.keys(PROGRAM_SUBJECTS);
+export const PROGRAM_SUBJECTS_DETAILED = Object.fromEntries(
+  Object.entries(PROGRAM_SUBJECTS).map(([key, value]) => [
+    key,
+    {
+      ...value,
+      color: PROGRAM_SUBJECT_CATEGORIES?.[value?.category]?.color ?? 'primary',
+      categoryName:
+        PROGRAM_SUBJECT_CATEGORIES?.[value?.category]?.categoryName ?? 'N/A'
+    }
+  ])
 );

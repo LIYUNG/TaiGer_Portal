@@ -36,9 +36,7 @@ import {
   LANGUAGES_PREFERENCE_ARRAY_OPTIONS,
   SEMESTER_ARRAY_OPTIONS,
   TRI_STATE_OPTIONS,
-  // PROGRAM_SUBJECTS,
-  PROGRAM_SUBJECT_KEYS,
-  PROGRAM_SUBJECT_COLORS,
+  PROGRAM_SUBJECTS_DETAILED,
   convertDate
 } from '../Utils/contants';
 import {
@@ -1052,9 +1050,7 @@ const SurveyEditableComponent = (props) => {
               <SearchableMultiSelect
                 name="target-application-subjects"
                 label="Target Application Subjects"
-                options={PROGRAM_SUBJECT_KEYS}
-                // optionLabel={}
-                chipColoring={PROGRAM_SUBJECT_COLORS}
+                data={PROGRAM_SUBJECTS_DETAILED}
                 value={survey.application_preference?.targetApplicationSubjects}
                 setValue={setApplicationPreferenceByField(
                   'targetApplicationSubjects'

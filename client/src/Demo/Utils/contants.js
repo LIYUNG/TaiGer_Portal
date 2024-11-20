@@ -945,7 +945,8 @@ export const program_fields_overview = [
   { name: 'Semester', prop: 'semester' },
   { name: 'Teaching Language', prop: 'lang' },
   { name: 'Website', prop: 'website' },
-  { name: 'Only for graduated applicant', prop: 'allowOnlyGraduatedApplicant' }
+  { name: 'Only for graduated applicant', prop: 'allowOnlyGraduatedApplicant' },
+  { name: 'Program Subject tags', prop: 'programSubjects' }
 ];
 
 export const english_test_hand_after = [

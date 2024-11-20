@@ -16,6 +16,7 @@ import {
   Checkbox
 } from '@mui/material';
 
+import SearchableMultiSelect from '../../components/Input/searchableMuliselect';
 import {
   isProgramValid,
   BINARY_STATE_ARRAY_OPTIONS,
@@ -25,7 +26,8 @@ import {
   SEMESTER_ARRAY_OPTIONS,
   UNI_ASSIST_ARRAY_OPTIONS,
   YES_NO_BOOLEAN_OPTIONS,
-  showFieldAlert
+  showFieldAlert,
+  PROGRAM_SUBJECTS_DETAILED
 } from '../Utils/contants';
 import { appConfig } from '../../config';
 import { is_TaiGer_Admin } from '../Utils/checking-functions';
@@ -79,6 +81,18 @@ function NewProgramEdit(props) {
       setIsResultsVisible(false);
     }
   };
+
+  const handleChangeByField = (field) => (value) => {
+    const newState = { ...programChanges };
+    if (value === initProgram[field] || (!initProgram[field] && !value)) {
+      delete newState[field];
+    } else {
+      newState[field] = value;
+    }
+    setProgramChanges(newState);
+    setIsChanged(Object.keys(newState).length > 0 ? true : false);
+  };
+
   const handleChange = (e) => {
     // e.preventDefault();
     console.log(e.target.value);
@@ -197,6 +211,20 @@ function NewProgramEdit(props) {
                 disableUnderline: true
               }}
               value={program.program_name || ''}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography variant="body1">
+              {t('Program Subject tags', { ns: 'common' })}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <SearchableMultiSelect
+              name="programSubjects"
+              label=" "
+              data={PROGRAM_SUBJECTS_DETAILED}
+              value={program?.programSubjects}
+              setValue={handleChangeByField('programSubjects')}
             />
           </Grid>
           <Grid item xs={12} md={6}>

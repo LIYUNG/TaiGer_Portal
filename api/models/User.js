@@ -9,6 +9,8 @@ const isEmail = require('validator/lib/isEmail');
 const { DocumentStatus, ManagerType, Role } = require('../constants');
 const { attributeSchema } = require('./common');
 
+const { PROGRAM_SUBJECT_KEYS } = require('../constants');
+
 const options = { discriminatorKey: 'role', timestamps: true };
 const UserSchema = new Schema(
   {
@@ -163,7 +165,7 @@ const UserSchema = new Schema(
       targetApplicationSubjects: [
         {
           type: String,
-          ref: 'ProgramSubject'
+          enum: PROGRAM_SUBJECT_KEYS
         }
       ],
       target_degree: {

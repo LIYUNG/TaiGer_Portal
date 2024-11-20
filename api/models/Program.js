@@ -2,6 +2,8 @@ const { model, Schema } = require('mongoose');
 const mongoose = require('mongoose');
 
 const { ObjectId } = Schema.Types;
+
+const { PROGRAM_SUBJECT_KEYS } = require('../constants');
 // const { handleProgramChanges } = require('../utils/modelHelper/programChange');
 
 // const Degree = {
@@ -33,7 +35,7 @@ const programModule = {
   programSubjects: [
     {
       type: String,
-      ref: 'ProgramSubject'
+      enum: PROGRAM_SUBJECT_KEYS
     }
   ],
   degree: {

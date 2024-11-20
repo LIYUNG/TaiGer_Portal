@@ -145,7 +145,7 @@ const SurveyEditableComponent = (props) => {
         !check_application_preference_filled(
           survey.application_preference
         )) && (
-        <Card sx={{ display: 'none', padding: 2 }}>
+        <Card sx={{ padding: 2 }}>
           <Typography fontWeight="bold">
             {t('The followings information are still missing')}
           </Typography>
@@ -158,7 +158,7 @@ const SurveyEditableComponent = (props) => {
         </Card>
       )}
       {!check_languages_filled(survey.academic_background) && (
-        <Card sx={{ display: 'none', padding: 2 }}>
+        <Card sx={{ padding: 2 }}>
           <Typography fontWeight="bold">
             {t(
               'Your language skills and certificates information are still missing or not up-to-date'
@@ -235,7 +235,7 @@ const SurveyEditableComponent = (props) => {
         </Card>
       )}
       <Box>
-        <Card sx={{ display: 'none', mt: 2, padding: 2 }}>
+        <Card sx={{ mt: 2, padding: 2 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="h6">

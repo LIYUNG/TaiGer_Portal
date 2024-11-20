@@ -115,6 +115,16 @@ const SearchableMultiSelect = ({
             })}
           </Box>
         )}
+        filterOptions={(options, { inputValue }) =>
+          options.filter((option) => {
+            const searchTarget = Array.isArray(data)
+              ? option
+              : option.concat(data?.[option]?.label || '');
+            return searchTarget
+              .toLowerCase()
+              .includes(inputValue.toLowerCase());
+          })
+        }
         {...props}
       />
     </div>

@@ -1128,21 +1128,6 @@ function NewProgramEdit(props) {
               value={program.fpso || ''}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography variant="body1">Group</Typography>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              size="small"
-              type="text"
-              id="study_group_flag"
-              name="study_group_flag"
-              placeholder="ee"
-              onChange={(e) => handleChange(e)}
-              value={program.study_group_flag || ''}
-            />
-          </Grid>
         </Grid>
         <Typography variant="body1">*: Must fill fields</Typography>
         <Button

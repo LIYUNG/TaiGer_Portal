@@ -205,9 +205,6 @@ const programModule = {
   tuition_fees: {
     type: String
   },
-  study_group_flag: {
-    type: String
-  },
   contact: {
     type: String
   },

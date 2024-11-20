@@ -148,7 +148,7 @@ export const mockSingleArchivStudentData = {
             essay_required: 'no',
             special_notes: '* working experience',
             website: 'https://www.uni-jena.de/en/msc-chemistry-materials',
-            study_group_flag: 'mtl',
+            programSubjects: ['CHEM', 'MAT-SCI'],
             country: 'de',
             deprecated: 'no',
             application_deadline: '07-15',
@@ -211,7 +211,7 @@ export const mockSingleArchivStudentData = {
             rl_required: '0',
             essay_required: 'no',
             website: 'Intro',
-            study_group_flag: 'mtl',
+            programSubjects: ['CHEM', 'MAT-SCI'],
             country: 'de',
             deprecated: 'no',
             application_deadline: '09-30',
@@ -265,7 +265,7 @@ export const mockSingleArchivStudentData = {
               '* The tuition fee (for the year spent at KTH) for non-EU/EEA/Swiss citizens studying this programme is SEK 155,000. Tuition fees for partner institutions differ.\\n* TOEFL: written 20\\n* IELTS: no less than 5.5\\n* Chemistry or a closely related subject corresponding to at least 50 ECTS credits.\\n* Mathematics, numerical analysis and computer science corresponding to at least 20 ECTS credits.',
             website:
               'https://www.kth.se/en/studies/master/polymer-technology/entry-requirements-polymer-technology-1.422912',
-            study_group_flag: 'mtl',
+            programSubjects: ['CHEM', 'MAT-SCI'],
             country: 'se',
             application_deadline: '01-15',
             application_portal_a:
@@ -365,7 +365,7 @@ export const mockSingleArchivStudentData = {
               '* Erforderlich ist ein mindestens sechswöchiges anerkanntes Industriepraktikum, das bis spätestens zum Beginn der Master-Thesis abgeschlossen sein muss.',
             website:
               'https://www.tu-darmstadt.de/studieren/studieninteressierte/studienangebot_studiengaenge/studiengang_183552.de.jsp',
-            study_group_flag: 'mtl',
+            programSubjects: ['CHEM', 'MAT-SCI'],
             country: 'de',
             deprecated: 'no',
             application_deadline: '07-15',
@@ -416,7 +416,7 @@ export const mockSingleArchivStudentData = {
               'MSc. Crystalline Materials 併到 Sustainable Materials底下\\nShould be taught in English',
             website:
               'https://www.studium.uni-freiburg.de/de/studienangebot/studienfaecher/info/403',
-            study_group_flag: 'mtl',
+            programSubjects: ['CHEM', 'MAT-SCI'],
             country: 'de',
             deprecated: 'no',
             application_deadline: '07-15',
@@ -475,7 +475,7 @@ export const mockSingleArchivStudentData = {
             testdaf: '-',
             ml_required: 'yes',
             rl_required: '2',
-            study_group_flag: 'mtl',
+            programSubjects: ['CHEM', 'MAT-SCI'],
             country: 'de',
             deprecated: 'no',
             application_deadline: '07-15',

@@ -37,6 +37,7 @@ export const translation_en = {
     Editor: 'Editor',
     Program: 'Program',
     Programs: 'Programs',
+    'Program Subject tags': 'Program Subject tags',
     'Days left': 'Days left',
     'First-/ Last Name': 'First-/ Last Name',
     Deadline: 'Deadline',
@@ -682,6 +683,7 @@ export const translation_en = {
     'Only German': 'Only German',
     'German and/or English': 'German-or-English',
     'Target Application Fields': 'Target Application Fields',
+    'Target Application Subjects': 'Target Application Subjects',
     'Read More': 'Read More'
   }
 };

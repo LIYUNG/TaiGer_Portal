@@ -1049,7 +1049,7 @@ const SurveyEditableComponent = (props) => {
             <Grid item xs={12} sm={6}>
               <SearchableMultiSelect
                 name="target-application-subjects"
-                label="Target Application Subjects"
+                label={t('Target Application Subjects')}
                 data={PROGRAM_SUBJECTS_DETAILED}
                 value={survey.application_preference?.targetApplicationSubjects}
                 setValue={setApplicationPreferenceByField(

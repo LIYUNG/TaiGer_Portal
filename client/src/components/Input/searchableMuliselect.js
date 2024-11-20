@@ -66,7 +66,7 @@ const SearchableMultiSelect = ({
         multiple
         id="searchable-multi-select"
         options={options}
-        value={options.filter((option) => value.includes(option))}
+        value={options.filter((option) => value?.includes(option))}
         onChange={handleValueChange}
         disableCloseOnSelect
         renderInput={(params) => (

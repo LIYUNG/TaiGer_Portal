@@ -66,12 +66,11 @@ const SearchableMultiSelect = ({
         multiple
         id="searchable-multi-select"
         options={options}
-        value={options.filter((option) => value?.includes(option))}
+        value={value}
         onChange={handleValueChange}
         disableCloseOnSelect
-        renderInput={(params) => (
-          <TextField {...params} label={label || 'Select Options'} />
-        )}
+        renderInput={(params) => <TextField {...params} label={label} />}
+        // customize dropdown options
         renderOption={(props, option) => {
           const { key, ...rest } = props;
           const isSelected = value.includes(option);
@@ -96,6 +95,7 @@ const SearchableMultiSelect = ({
             </li>
           );
         }}
+        // customize selected tags
         renderTags={(value, getTagProps) => (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
             {value.map((option, index) => {
@@ -115,6 +115,7 @@ const SearchableMultiSelect = ({
             })}
           </Box>
         )}
+        // search by option key or label
         filterOptions={(options, { inputValue }) =>
           options.filter((option) => {
             const searchTarget = Array.isArray(data)

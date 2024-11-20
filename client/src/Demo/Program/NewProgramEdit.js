@@ -221,7 +221,7 @@ function NewProgramEdit(props) {
           <Grid item xs={12} sm={6}>
             <SearchableMultiSelect
               name="programSubjects"
-              label=" "
+              label={null}
               data={PROGRAM_SUBJECTS_DETAILED}
               value={program?.programSubjects}
               setValue={handleChangeByField('programSubjects')}

@@ -10,7 +10,16 @@ import WarningIcon from '@mui/icons-material/Warning';
 import HelpIcon from '@mui/icons-material/Help';
 import RemoveIcon from '@mui/icons-material/Remove';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
-import { green, red, grey, orange } from '@mui/material/colors';
+import {
+  green,
+  red,
+  grey,
+  orange,
+  indigo,
+  teal,
+  blueGrey,
+  cyan
+} from '@mui/material/colors';
 import { Link, Tooltip, Chip } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import { appConfig } from '../../config';
@@ -2259,23 +2268,23 @@ export const UserlistHeader = [
 export const PROGRAM_SUBJECT_CATEGORIES = {
   SSM: {
     categoryName: 'Social Sciences & Management',
-    color: 'success'
+    color: indigo[300]
   },
   NS: {
     categoryName: 'Natural Sciences',
-    color: 'secondary'
+    color: teal[500]
   },
   LSM: {
     categoryName: 'Life Sciences & Medicine',
-    color: 'success'
+    color: red[400]
   },
   ET: {
     categoryName: 'Engineering and Technology',
-    color: 'secondary'
+    color: blueGrey[500]
   },
   AH: {
     categoryName: 'Arts & Humanities',
-    color: 'error'
+    color: cyan[500]
   }
 };
 

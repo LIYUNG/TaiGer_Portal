@@ -104,11 +104,11 @@ const SearchableMultiSelect = ({
                 <Chip
                   key={key}
                   label={option}
-                  color={
-                    Array.isArray(data)
+                  sx={{
+                    backgroundColor: Array.isArray(data)
                       ? 'primary'
-                      : data?.[option].color || 'primary'
-                  }
+                      : data?.[option]?.color || 'primary'
+                  }}
                   {...tagProps}
                 />
               );

@@ -73,7 +73,7 @@ const SearchableMultiSelect = ({
         // customize dropdown options
         renderOption={(props, option) => {
           const { key, ...rest } = props;
-          const isSelected = value.includes(option);
+          const isSelected = value?.includes(option);
 
           return (
             <li

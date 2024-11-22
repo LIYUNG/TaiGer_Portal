@@ -1,15 +1,15 @@
 {
-    "Add Admission Letter": "test",
+    "Add Admission Letter": "",
     "Add Rejection Letter": "",
-    "Admission": "",
+    "Admission": "Admission",
     "Admission Letter": "",
-    "Admissions": "",
-    "Attach Admission Letter or Admission Email pdf or Email screenshot": "",
+    "Admissions": "Admissions",
+    "Attach Admission Letter or Admission Email pdf or Email screenshot": "Attach Admission Letter or Admission Email pdf or Email screenshot",
     "Attach Rejection Letter or Admission Email pdf or Email screenshot": "",
-    "Not Closed Yet": "",
-    "Pending Result": "",
+    "Not Closed Yet": "Not Closed Yet",
+    "Pending Result": "Pending Result",
     "Rejection Letter": "",
-    "Rejections": "",
+    "Rejections": "Rejections",
     "Statistics": "",
-    "Your agents and editors will receive your application result notification.": ""
+    "Your agents and editors will receive your application result notification.": "Your agents and editors will receive your application result notification."
 }

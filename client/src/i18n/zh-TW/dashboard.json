@@ -1,11 +1,11 @@
 {
-    "Configure Attribute": "",
-    "Dashboard": "",
-    "Edit Agent": "",
-    "Edit Editor": "",
-    "No Agents Students": "",
-    "Please complete Profile so that your agent can understand your situation": "",
-    "Ready To Submit Tasks": "",
-    "Upcoming Applications": "",
-    "acctount_deactivated_text": ""
+    "Configure Attribute": "編輯特質",
+    "Dashboard": "主控台",
+    "Edit Agent": "編輯顧問",
+    "Edit Editor": "編輯寫手",
+    "No Agents Students": "無顧問之學生",
+    "Please complete Profile so that your agent can understand your situation": "請完成背景資料填寫，好讓您的顧問能掌握您的狀況",
+    "Ready To Submit Tasks": "資料完整，可以送出申請之學程",
+    "Upcoming Applications": "即將截止的申請",
+    "acctount_deactivated_text": "您的帳號已停用。若有任何疑問，請聯絡管理員 contact@taigerconsultancy.com"
 }

@@ -1,12 +1,20 @@
 import { appConfig } from '../config';
+import admissions from '../i18n/zh-TW/admissions.json';
+import auth from '../i18n/zh-TW/auth.json';
+import courses from '../i18n/zh-TW/courses.json';
+import cvmlrl from '../i18n/zh-TW/cvmlrl.json';
+import customerCenter from '../i18n/zh-TW/customerCenter.json';
+import dashboard from '../i18n/zh-TW/dashboard.json';
+import documents from '../i18n/zh-TW/documents.json';
+import interviews from '../i18n/zh-TW/interviews.json';
+import programList from '../i18n/zh-TW/programList.json';
+import uniassist from '../i18n/zh-TW/uniassist.json';
+import portalManagement from '../i18n/zh-TW/portalManagement.json';
+import survey from '../i18n/zh-TW/survey.json';
+import visa from '../i18n/zh-TW/visa.json';
 
 export const translation_zh_TW = {
-  auth: {
-    Login: '登入',
-    'Sign in': '登入',
-    'Sign up': '註冊',
-    'Last Login': '最近登入'
-  },
+  auth: auth,
   common: {
     announcement:
       '我們已更新的 email 通知系統至 no-reply@taigerconsultancy-portal.com. 請於日後接受討論邀請並加入日曆，往後任何會議邀請便會自動加入您的日曆，避免錯過忘記討論。',
@@ -354,53 +362,10 @@ export const translation_zh_TW = {
     'Edit Keywords': '編輯關鍵字',
     'Create New Analysis': '新增課程分析'
   },
-  customerCenter: {
-    'What is the purpose of the Customer Center?': '客服中心的目的是什麼？',
-    explanation_customer_center:
-      '客服中心設立目的在於學生對於和顧問，外籍編輯合作情況下有磨合上的問題，或是對於您的帳戶有使用上困難等問題，可以透過客服中心得到協助。',
-    'What can I expect for the support ticket?': '客服中心能給我什麼樣的支援？',
-    expectation_customer_center:
-      '當您提出了請求，您將會直接和主管經理溝通，主管經理會和您討論並了解您遇到的問題，並給您必要的幫助。由於您將直接和主管或是管理員聯繫，請務必確認在無法和顧問或是編輯溝通解決問題的情況下，再提出申請時，詳細描述您的狀況，顧問和編輯如何無法解決您的問題，方便主管經理解決您的問題。',
-    'My Agent or Editor did not reply me immediately, what can I do?':
-      '我的顧問或外籍編輯沒有立即回覆我，我該怎麼做？',
-    complaint_agents_editors:
-      '您的{{companyName}}專業顧問以及外籍編輯平時為位於歐洲或美國時區，並任職於頂尖外商，無法立即回覆您。但您的申請品質不會因此有所影響。除了 {{companyName}} Message外，請善用顧問提供的Office Hour或是和顧問約時間，整理好問題，一次討論。若您的申請很緊急或是必須要當下要立即得到解決，而顧問或編輯無法配合時間，始可利用客服中心得到幫助。',
-    'The quality of my CV, ML, RL or any other documents by the Editor is not as good as I expected. What can I do?':
-      '我收到的履歷、動機信、推薦信草稿或是小論文的品質並沒有讓我滿意，我該怎麼做？',
-    quality_cvmlrl_explanation: 'quality_cvmlrl_explanation',
-    'Add Ticket': '新增請求'
-  },
-  dashboard: {
-    Dashboard: '主控台',
-    'Upcoming Applications': '即將截止的申請',
-    'Ready To Submit Tasks': '資料完整，可以送出申請之學程',
-    'No Agents Students': '無顧問之學生',
-    'Edit Agent': '編輯顧問',
-    'Edit Editor': '編輯寫手',
-    'Configure Attribute': '編輯特質',
-    'Please complete Profile so that your agent can understand your situation':
-      '請完成背景資料填寫，好讓您的顧問能掌握您的狀況',
-    acctount_deactivated_text:
-      '您的帳號已停用。若有任何疑問，請聯絡管理員 contact@taigerconsultancy.com'
-  },
-  documents: {
-    confirmDocument:
-      '{{studentName}} {{studentNameZh}} 確認 {{docName}} 這份文件皆無用 AI 輔助完成，我同意此條款並對編修後的內容全權負責。',
-    notConfirmDocument:
-      '{{studentName}} {{studentNameZh}} 尚未確認 {{docName}} 這份文件皆無用 AI 輔助完成。',
-    Reject: '拒絕'
-  },
-  programList: {
-    'Create ticket': '新增問題回報',
-    Report: '回報',
-    'Resolve ticket': '解決問題',
-    'Delete ticket': '刪除問題',
-    'to the student': '給學生',
-    'Find in Google': 'Google 搜尋',
-    'Provide Feedback': '提供回饋',
-    'Program Assistant': '科系幫手',
-    'Program(s) assigned to student successfully!': '科系成功指派給學生！'
-  },
+  customerCenter: customerCenter,
+  dashboard: dashboard,
+  documents: documents,
+  programList: programList,
   logs: {
     'User Logs': '使用者紀錄'
   },
@@ -408,138 +373,14 @@ export const translation_zh_TW = {
     'Do you want to delete this ticket?': '您想刪除這個客服請求嗎？'
   },
   backgroundProfile: {},
-  admissions: {
-    'Attach Admission Letter or Admission Email pdf or Email screenshot':
-      '請夾帶錄取信 PDF 或是錄取 Email 通知存成 PDF 上傳',
-    'Attach Rejection Letter or Admission Email pdf or Email screenshot':
-      '請夾帶拒絕信 PDF 或是拒絕 Email 通知存成 PDF 上傳',
-    'Your agents and editors will receive your application result notification.':
-      '您的顧問與編輯將會收到您的申請結果通知。',
-    'Pending Result': '等待結果',
-    'Not Closed Yet': '尚未送出',
-    Admissions: '錄取',
-    Admission: '錄取',
-    Rejections: '拒絕'
-  },
-  cvmlrl: {
-    'cv-instructions':
-      '請填寫我們的模板並上傳至此處，方便我們獲取完整的訊息進行履歷的編修。',
-    'cv-requirements-1':
-      '1. 不要遺漏任何重要資訊，履歷上需覆蓋自高中起的所有時段，有任何找工作、準備留學考試、重考等等經歷都必須提及並解釋',
-    'cv-requirements-1.1': '履歷上忌諱有空白超過三格月以上時間',
-    'cv-requirements-2':
-      '2. 請不要只上傳pdf 檔案，我們需要word 檔案來幫助你編修',
-    'cv-reminder-1':
-      '請注意，若你決定不填寫我們的模板，而上傳你自己原有的英文履歷，請務必確認上述 1. 2. 點。',
-    'cv-reminder-2':
-      '如果你使用Canva編輯並生成履歷，請你將你的檔案編輯權限分享給我們，方便我們進行修改。根據經驗，您自行提供的CV易容易缺少資料，請交叉比對我們的模板和你現有的 CV，避免 Editor 因缺少資料而無法進行。',
-    'rl-requirements-1':
-      '1. 推薦人的 Email 必須是他們的機構 Email。 Gmail, Hotmail 等，學校通常不會接受。',
-    'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.':
-      'Note: 如果文件並沒有關閉並出現在這區，是因為申請已經送出。該文件可以安全地被關閉。'
-  },
-  courses: {
-    'Select Target Group': '選擇學群',
-    'Select language': '選擇語言',
-    Analysing: '分析中',
-    Analyse: '分析',
-    'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.':
-      '請完成我的修課，Agent 將會為您提供課程分析以及修課建議。',
-    'Course Analysis banner':
-      '此份課程分析僅供選課參考。請仔細看過每個向度所缺的課程，並對照學校之後學期是否有開期課程，抓出來，並和您的 Agent 討論。',
-    'Course Analysis description':
-      '在 General 頁面，為大略依照您主修向度做分類，其餘的 Tabs 為指標性學校的課程匹配度分析。你會看到每個學校會要求的向度會不一樣，每個向度會對應一個 Required_ECTS，代表你修的課程學分（經過 ECTS轉換 (1.5x 台灣學分)換算後），必須超過該向度的 Required_ECTS 才算達到該項度要求。若有缺少學分、向度，請參考每個 Program Tab 表格最右側，每個向度的 建議修課名單',
-    'After you updated the course table, please contact your agent for your course analysis.':
-      '在更新課表後，請聯絡您的顧問關於您的課程分析和選課建議',
-    'Courses analysed successfully!': '課程分析成功！',
-    'The student will receive an email notification and the analysed course URL link.':
-      '學生會收到 email 通知，並收到課程分析的連結。',
-    'Courses Analysis': '課程分析',
-    'Student should access the analysed page in their course page.':
-      '學生也可以在他們的填寫課程頁面找到課程分析連結。',
-    'Last analysis at': '最後分析於',
-    'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.':
-      '課程更新成功！您的顧問已被通知，並將會盡快為您分析您的課程匹配度。',
-    'View Online': '線上檢視',
-    'No analysis yet': '尚未分析',
-    'Please upload documents as soon as possible. The agent needs them to understand your academic background.':
-      '請盡速上傳各類成績單和證書等的文件。Agent才能了解你學術背。',
-    'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.':
-      '請務必更新你中英文姓名、生日資料。這會影響Editor為您正式文件準備。',
-    "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.":
-      '請參考Agent提供的Program，並到學校學程網站了解詳細資訊，於申請季開始前完成選校',
-    "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.":
-      '請到各學校網站辦理帳號並提供您的帳號密碼，方便Agent日後為您做送出前檢查',
-    'Please go to the Uni-Assist section, follow the instructions to complete':
-      '請至 Uni-Assist 專區，依照指示完成帳號申請，上傳文件，申請 VPD'
-  },
-  uniassist: {
-    'All document uploaded to Uni-Assist and paid, waiting for VPD':
-      '所有檔案已上傳到uni-assist並且已付款，等待 VPD 中',
-    'uni-assist full':
-      'Uni-Assist 會全權負責轉交申請給學校。您的檔案全部完成後請全部上傳到 Uni-Assist 以及 Program 繳費上傳處。此 Program 不需要VPD'
-  },
-  interviews: {
-    'Please arrange a meeting': '請討論訓練時間',
-    Interviewer: '學校面試官',
-    'Interview Training Time': '面試訓練時間',
-    'Training Time': '訓練時間',
-    'All Interviews': '所有面試',
-    'My Interviews': '我的面試',
-    'Training Request': '訓練請求',
-    'Create Interview Training': '新增面試訓練',
-    'Interview duration': '面試長度',
-    'Interview program': '面試科系',
-    'In case programs not shown, make sure the programs are submitted.':
-      '若科系未顯示，請確認該申請是否已送出。',
-    'Interview Training Meeting Link': '面試訓練會議連結',
-    'Please provide received interview information':
-      '請提供您收到學校面試之資訊',
-    'Please provide interview information (invitation email, reading assignment, etc.) so your interviewer trainer can prepare the training for you.':
-      '請提供校方給的面試資訊 (面試邀請 Email、閱讀作業、問題集等。若有pdf附件等，請先在新增此面試訓練請求後，方可上傳)。您的面試訓練官才能準備好您的面試訓練',
-    'If you did not receive an interview invitation from the university. Please do not request the training.':
-      '如果您未收到學校的面試邀請，請勿新增面試訓練要求',
-    'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).':
-      '如果您之前已與我們的面試訓練官進行過面試練習，除非有特殊要求（如閱讀特定書報等），否則請勿再次申請面試訓練。',
-    'Interview Training Survey': '面試訓練回饋問卷',
-    '1. not agree    5. strongly aggree': '1. 非常不同意    5. 非常同意',
-    'Kindly share your experience of our interview training by rating the following statements.':
-      '請分享您參加我們面試訓練的經驗，並對以下陳述進行評分。',
-    'The interview training materials provided beforehand were beneficial for my official interview.':
-      '提前提供的面試訓練資料對我的正式面試很有幫助。',
-    'The interview training significantly helped me to conduct the official interview.':
-      '面試訓練對我進行正式面試有很大幫助。',
-    'The interview trainer was friendly and helped me feel less nervous.':
-      '面試訓練官十分友好並能幫助我減少緊張感。',
-    'Please provide the interview questions to {{brandName}}':
-      '請提供面試問題給 {{brandName}}',
-    'Please provide the interview training feedback to {{brandName}}':
-      '請提供面試訓練回饋給 {{brandName}}',
-    'Do you want to submit the interview survey?':
-      '您確定要送出面試訓練回饋問卷嗎？',
-    'After submission you can not change the survey anymore.':
-      '問卷送出後，您將無法再更改',
-    'Save draft': '暫存草稿'
-  },
-  portalManagement: {
-    'Update portal credentials successfully': '帳號密碼更新成功'
-  },
-  survey: {
-    'Please complete My Survey so that your agent can understand your situation':
-      '請完成問卷，您的Agent才能了解您的狀況',
-    'Expected English Test Date': '預計英語考試日期',
-    'University (Bachelor degree)': '大學 (學士學位)',
-    'Second degree (Another Bachelor or Master)': '第二學位 (另一個學士或碩士)',
-    'If you want to change this, please contact your agent.':
-      '如果您想更改此欄位，請和您的顧問討論',
-    'Agent fill': '顧問填寫',
-    'Practical Experience': '實習或工作經驗',
-    'Other wish': '其他需求'
-  },
-  visa: {
-    'Please consider working on visa, if you decide the offer.':
-      '若您決定欲就讀的科系，請至儘速至該國使館處理簽證。請先讀完左側說明連結再與顧問討論。'
-  },
+  admissions: admissions,
+  cvmlrl: cvmlrl,
+  courses: courses,
+  uniassist: uniassist,
+  interviews: interviews,
+  portalManagement: portalManagement,
+  survey: survey,
+  visa: visa,
   translation: {
     'No Editors Students': '無編輯之學生',
     'Interview Time': '面試時間',

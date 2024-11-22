@@ -1,12 +1,20 @@
 import { appConfig } from '../config';
+import admissions from '../i18n/en/admissions.json';
+import auth from '../i18n/en/auth.json';
+import courses from '../i18n/en/courses.json';
+import cvmlrl from '../i18n/en/cvmlrl.json';
+import customerCenter from '../i18n/en/customerCenter.json';
+import dashboard from '../i18n/en/dashboard.json';
+import documents from '../i18n/en/documents.json';
+import interviews from '../i18n/en/interviews.json';
+import programList from '../i18n/en/programList.json';
+import uniassist from '../i18n/en/uniassist.json';
+import portalManagement from '../i18n/en/portalManagement.json';
+import survey from '../i18n/en/survey.json';
+import visa from '../i18n/en/visa.json';
 
 export const translation_en = {
-  auth: {
-    Login: 'Login',
-    'Sign in': 'Sign in',
-    'Sign up': 'Sign up',
-    'Last Login': 'Last Login'
-  },
+  auth: auth,
   common: {
     announcement:
       'We migrate our notification email to no-reply@taigerconsultancy-portal.com. Please Add to Calendar for the invitation in the future so that you will not miss the time.',
@@ -351,56 +359,10 @@ export const translation_en = {
     'Edit Keywords': 'Edit Keywords',
     'Create New Analysis': 'Create New Analysis'
   },
-  customerCenter: {
-    'What is the purpose of the Customer Center?':
-      'What is the purpose of the Customer Center?',
-    explanation_customer_center:
-      'The purpose of the customer service center is to assist students with any issues they may encounter when working with agents or editors, as well as any difficulties they may experience using the portal. The customer center is here to provide support.',
-    'What can I expect for the support ticket?':
-      'What can I expect for the support ticket?',
-    expectation_customer_center:
-      "When you submit a request, you will communicate directly with a manager. They will discuss and understand the issues you are facing and provide you with the necessary assistance. Since you will be in direct contact with a supervisor or administrator, please ensure that you only submit a request after you've been unable to resolve the issue with your consultant or editor. Be sure to provide a detailed description of your situation to facilitate the resolution of your problem.",
-    'My Agent or Editor did not reply me immediately, what can I do?':
-      'My Agent or Editor did not reply me immediately, what can I do?',
-    complaint_agents_editors:
-      'Your {{companyName}} professional consultant and foreign editor are usually based in European or U.S. time zones and work for top international companies, so they may not be able to respond to you immediately. However, the quality of your application will not be affected. Besides using the {{companyName}} Message system, please make good use of the Office Hours provided by your consultant or schedule a meeting to discuss all your questions at once. If your request is urgent or requires immediate resolution and your consultant or editor is unable to accommodate your timing, you may seek assistance from the customer center.',
-    'The quality of my CV, ML, RL or any other documents by the Editor is not as good as I expected. What can I do?':
-      'The quality of my CV, ML, RL or any other documents by the Editor is not as good as I expected. What can I do?',
-    quality_cvmlrl_explanation: 'quality_cvmlrl_explanation',
-    'Add Ticket': 'Add Ticket'
-  },
-  dashboard: {
-    Dashboard: 'Dashboard',
-    'Upcoming Applications': 'Upcoming Applications',
-    'Ready To Submit Tasks': 'Ready To Submit Tasks',
-    'No Agents Students': 'No Agents Students',
-    'Edit Agent': 'Edit Agent',
-    'Edit Editor': 'Edit Editor',
-    'Configure Attribute': 'Configure Attribute',
-    'Please complete Profile so that your agent can understand your situation':
-      'Please complete Profile so that your agent can understand your situation',
-    acctount_deactivated_text:
-      'Your account is deactivated. If you have any question, please contact the administrator: contact@taigerconsultancy.com'
-  },
-  documents: {
-    confirmDocument:
-      '{{studentName}} {{studentNameZh}} confirms that {{docName}} was completed without the assistance of AI. I agree to this term and take full responsibility for the edited content.',
-    notConfirmDocument:
-      '{{studentName}} {{studentNameZh}} did not confirm that {{docName}} was completed without the assistance of AI.',
-    Reject: 'Reject'
-  },
-  programList: {
-    'Create ticket': 'Create ticket',
-    'Resolve ticket': 'Resolve ticket',
-    Report: 'Report',
-    'Delete ticket': 'Delete ticket',
-    'to the student': 'to the student',
-    'Find in Google': 'Find in Google',
-    'Provide Feedback': 'Provide Feedback',
-    'Program Assistant': 'Program Assistant',
-    'Program(s) assigned to student successfully!':
-      'Program(s) assigned to student successfully!'
-  },
+  customerCenter: customerCenter,
+  dashboard: dashboard,
+  documents: documents,
+  programList: programList,
   logs: {
     'User Logs': 'User Logs'
   },
@@ -408,142 +370,14 @@ export const translation_en = {
     'Do you want to delete this ticket?': 'Do you want to delete this ticket?'
   },
   backgroundProfile: {},
-  admissions: {
-    'Attach Admission Letter or Admission Email pdf or Email screenshot':
-      'Attach Admission Letter or Admission Email pdf or Email screenshot',
-    'Attach Rejection Letter or Rejection Email pdf or Email screenshot':
-      'Attach Rejection Letter or Rejection Email pdf or Email screenshot',
-    'Your agents and editors will receive your application result notification.':
-      'Your agents and editors will receive your application result notification.',
-    'Pending Result': 'Pending Result',
-    'Not Closed Yet': 'Not Closed Yet',
-    Admissions: 'Admissions',
-    Admission: 'Admission',
-    Rejections: 'Rejections'
-  },
-  cvmlrl: {
-    'cv-instructions':
-      'Please fill out our template and upload it here in order to facilitate us obtaining complete information for CV editing.',
-    'cv-requirements-1':
-      '1. Do not omit any important information; the CV should cover all periods since high school, including any job searches, preparation for study abroad exams, retakes, etc., and provide explanations where necessary.',
-    'cv-requirements-1.1':
-      'In a CV, it is advisable to avoid any gaps exceeding three months.',
-    'cv-requirements-2':
-      '2. Please do not upload only a PDF file; we need a Word file to assist you with editing.',
-    'cv-reminder-1':
-      'Please note that if you decide not to fill out our template and upload your own original English CV, please ensure the 1. 2. points above.',
-    'cv-reminder-2':
-      'If you use Canva to edit and generate your resume, please share editing permissions with us to facilitate modifications. Based on experience, CVs provided by oneself tend to lack information. Please cross-reference our template with your existing CV to avoid Editors being unable to proceed due to missing information.',
-    'rl-requirements-1':
-      '1. The Email of the referee should be their institute. Gmail, Hotmail etc. are not acceptable.',
-    'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.':
-      'Note: if the documents are not closed but locate here, it is becaue the applications are already submitted. The documents can safely closed eventually.'
-  },
-  courses: {
-    'Select Target Group': 'Select Target Group',
-    'Select language': 'Select language',
-    Analysing: 'Analysing',
-    Analyse: 'Analyse',
-    'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.':
-      'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.',
-    'Course Analysis banner':
-      'The course analysis provided is for reference purposes only. Please carefully review the courses missing in each category and cross-reference whether your university offers those courses in the upcoming semesters. Once you have identified them, discuss with your Agent.',
-    'Course Analysis description':
-      'On the General page, courses are roughly categorized according to your major category, while the remaining tabs provide an analysis of the curriculum match for benchmark programs. You will notice that each school has different requirements for the major course category, and each category corresponds to a Required_ECTS, which represents the credits you need to complete for the courses (ECTS轉換, 1.5 times the credits in Taiwan). You must exceed the Required_ECTS for a specific category to meet the degree requirements. If there are any deficiencies of credits in any categories, please refer to the rightmost column of each Program Tab table for the 建議修課 for each category.',
-    'After you updated the course table, please contact your agent for your course analysis.':
-      'After you updated the course table, please contact your agent for your course analysis.',
-    'Courses analysed successfully!': 'Courses analysed successfully!',
-    'The student will receive an email notification and the analysed course URL link.':
-      'The student will receive an email notification and the analysed course URL link.',
-    'Courses Analysis': 'Courses Analysis',
-    'Student should access the analysed page in their course page.':
-      'Student should access the analysed page in their course page.',
-    'Last analysis at': 'Last analysis at',
-    'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.':
-      'Update transcript successfully! Your agent will be notified and will analyse your courses as soon as possible.',
-    'View Online': 'View Online',
-    'No analysis yet': 'No analysis yet',
-
-    'Please upload documents as soon as possible. The agent needs them to understand your academic background.':
-      'Please upload documents as soon as possible. The agent needs them to understand your academic background.',
-    'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.':
-      'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.',
-    "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.":
-      "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.",
-    "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.":
-      "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.",
-    'Please go to the Uni-Assist section, follow the instructions to complete':
-      'Please go to the Uni-Assist section, follow the instructions to complete the account registration, upload documents, and apply for the VPD (Vorprüfungsdokumentation).'
-  },
-  interviews: {
-    'Please arrange a meeting': 'Please arrange a meeting',
-    Interviewer: 'Interviewer',
-    'Interview Training Time': 'Interview Training Time',
-    'Training Time': 'Training Time',
-    'My Interviews': 'My Interviews',
-    'All Interviews': 'All Interviews',
-    'Training Request': 'Training Request',
-    'Create Interview Training': 'Create Interview Training',
-    'Interview duration': 'Interview duration',
-    'Interview program': 'Interview program',
-    'In case programs not shown, make sure the programs are submitted.':
-      'In case programs not shown, make sure the programs are submitted.',
-    'Interview Training Meeting Link': 'Interview Training Meeting Link',
-    'Please provide received interview information':
-      'Please provide received interview information',
-    'Please provide interview information (invitation email, reading assignment, etc.) so your interviewer trainer can prepare the training for you.':
-      'Please provide interview information (invitation email, reading assignment, etc.) so your interviewer trainer can prepare the training for you.',
-    'If you did not receive an interview invitation from the university. Please do not request the training.':
-      'If you did not receive an interview invitation from the university. Please do not request the training.',
-    'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).':
-      'If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).',
-    'Interview Training Survey': 'Interview Training Survey',
-    '1. not agree    5. strongly aggree': '1. not agree    5. strongly aggree',
-    'Kindly share your experience of our interview training by rating the following statements.':
-      'Kindly share your experience of our interview training by rating the following statements.',
-    'The interview training materials provided beforehand were beneficial for my official interview.':
-      'The interview training materials provided beforehand were beneficial for my official interview.',
-    'The interview training significantly helped me to conduct the official interview.':
-      'The interview training significantly helped me to conduct the official interview.',
-    'The interview trainer was friendly and helped me feel less nervous.':
-      'The interview trainer was friendly and helped me feel less nervous.',
-    'Please provide the interview questions to {{brandName}}':
-      'Please provide the interview questions to {{brandName}}',
-    'Please provide the interview training feedback to {{brandName}}':
-      'Please provide the interview training feedback to {{brandName}}',
-    'Do you want to submit the interview survey?':
-      'Do you want to submit the interview survey?',
-    'After submission you can not change the survey anymore.':
-      'After submission you can not change the survey anymore.',
-    'Save draft': 'Save draft'
-  },
-  uniassist: {
-    'All document uploaded to Uni-Assist and paid, waiting for VPD':
-      'All document uploaded to Uni-Assist and paid, waiting for VPD',
-    'uni-assist full':
-      'This is uni-assit full-responsible application. Please apply this program via uni-assist when your documents are finished. You do not need VPD.'
-  },
-  portalManagement: {
-    'Update portal credentials successfully':
-      'Update portal credentials successfully'
-  },
-  survey: {
-    'Please complete My Survey so that your agent can understand your situation':
-      'Please complete My Survey so that your agent can understand your situation',
-    'Expected English Test Date': 'Expected English Test Date',
-    'University (Bachelor degree)': 'University (Bachelor degree)',
-    'Second degree (Another Bachelor or Master)':
-      'Second degree (Another Bachelor or Master)',
-    'If you want to change this, please contact your agent.':
-      'If you want to change this, please contact your agent.',
-    'Agent fill': 'Agent fill',
-    'Practical Experience': 'Practical Experience',
-    'Other wish': 'Other wish'
-  },
-  visa: {
-    'Please consider working on visa, if you decide the offer.':
-      'Please consider working on visa, if you decide the offer.'
-  },
+  admissions: admissions,
+  cvmlrl: cvmlrl,
+  courses: courses,
+  interviews: interviews,
+  uniassist: uniassist,
+  portalManagement: portalManagement,
+  survey: survey,
+  visa: visa,
   translation: {
     'No Editors Students': 'No Editors Students',
     'Interview Time': 'Interview Time',

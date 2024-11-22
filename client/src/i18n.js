@@ -6,7 +6,21 @@ i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     resources: translation_resources,
-    ns: ['dashboard', 'translation'],
+    ns: [
+      'admissions',
+      'auth',
+      'documents',
+      'translation',
+      'interviews',
+      'common',
+      'dashboard',
+      'cvmlrl',
+      'tickets',
+      'customerCenter',
+      'Note',
+      'courses',
+      'survey'
+    ],
     defaultNS: 'translation',
     debug: true,
     fallbackLng: 'en', // language to use, more information here: https://www.i18next.com/overview/configuration-options#languages-namespaces-resources

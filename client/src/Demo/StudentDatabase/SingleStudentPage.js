@@ -65,7 +65,7 @@ import { useAuth } from '../../components/AuthProvider';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { SurveyProvider } from '../../components/SurveyProvider';
 import ProgramDetailsComparisonTable from '../Program/ProgramDetailsComparisonTable';
-import StudentBriefOverview from '../Dashboard/MainViewTab/StudentBriefOverview.js/StudentBriefOverview';
+import StudentBriefOverview from '../Dashboard/MainViewTab/StudentBriefOverview/StudentBriefOverview';
 import ProgramLanguageNotMatchedBanner from '../../components/Banner/ProgramLanguageNotMatchedBanner';
 import Audit from '../Audit';
 

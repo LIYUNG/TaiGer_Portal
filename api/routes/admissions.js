@@ -13,9 +13,6 @@ const {
   permission_canAccessStudentDatabase_filter
 } = require('../middlewares/permission-filter');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
-const {
-  InnerTaigerMultitenantFilter
-} = require('../middlewares/InnerTaigerMultitenantFilter');
 
 const router = Router();
 router.use(protect);
@@ -52,5 +49,4 @@ router
     getAdmissionsYear
   );
 
-router.use(protect);
 module.exports = router;

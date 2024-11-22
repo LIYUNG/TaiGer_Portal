@@ -43,7 +43,7 @@ import {
 import { getStatistics } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
-import ProgramListVisualization from './ProgramListVisualization.js';
+import ProgramListVisualization from './ProgramListVisualization/index';
 import { appConfig } from '../../../config';
 import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
@@ -52,10 +52,10 @@ import {
   INTERNAL_DASHBOARD_REVERSED_TABS,
   INTERNAL_DASHBOARD_TABS
 } from '../../Utils/contants.js';
-import SingleBarChart from '../../../components/Charts/SingleBarChart.js';
-import VerticalDistributionBarCharts from '../../../components/Charts/VerticalDistributionBarChart.js';
-import VerticalSingleBarChart from '../../../components/Charts/VerticalSingleChart.js';
-import ExampleWithLocalizationProvider from '../../../components/MaterialReactTable/index.js';
+import SingleBarChart from '../../../components/Charts/SingleBarChart';
+import VerticalDistributionBarCharts from '../../../components/Charts/VerticalDistributionBarChart';
+import VerticalSingleBarChart from '../../../components/Charts/VerticalSingleChart';
+import ExampleWithLocalizationProvider from '../../../components/MaterialReactTable/index';
 
 function groupByMonth(data) {
   return data.reduce((acc, { createdAt }) => {

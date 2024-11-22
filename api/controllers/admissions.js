@@ -1,4 +1,3 @@
-const async = require('async');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
@@ -77,7 +76,7 @@ const getProgramApplicationCounts = asyncHandler(async (req) => {
     return result; // Result will contain programId, count, and populated programDetails
   } catch (error) {
     logger.error('Error fetching program application counts:', error);
-    throw error;
+    throw new ErrorResponse(404, 'Error fetching program application counts');
   }
 });
 

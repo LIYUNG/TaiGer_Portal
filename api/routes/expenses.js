@@ -25,5 +25,4 @@ router
     getExpense
   );
 
-router.use(protect);
 module.exports = router;

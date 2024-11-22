@@ -27,5 +27,4 @@ router
     updateStudentNotes
   );
 
-router.use(protect);
 module.exports = router;

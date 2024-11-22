@@ -58,7 +58,6 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
   // const { _id } = student;
   let student_id;
   if (user.role === Role.Student || user.role === Role.Guest) {
-    // eslint-disable-next-line no-underscore-dangle
     student_id = user._id.toString();
   } else {
     student_id = studentId;

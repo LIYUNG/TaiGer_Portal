@@ -68,5 +68,4 @@ router
     processProgramListAi
   );
 
-router.use(protect);
 module.exports = router;

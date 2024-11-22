@@ -142,11 +142,11 @@ const getMessageFileInTicket = asyncHandler(async (req, res) => {
     }
     res.attachment(fileKey);
     return res.end(response);
-  } else {
-    logger.info('ticket file cache hit');
-    res.attachment(fileKey);
-    return res.end(value);
   }
+
+  logger.info('ticket file cache hit');
+  res.attachment(fileKey);
+  return res.end(value);
 });
 
 // (O) notification email works

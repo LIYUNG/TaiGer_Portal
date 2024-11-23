@@ -9,6 +9,8 @@ const isEmail = require('validator/lib/isEmail');
 const { DocumentStatus, ManagerType, Role } = require('../constants');
 const { attributeSchema } = require('./common');
 
+const { PROGRAM_SUBJECT_KEYS } = require('../constants');
+
 const options = { discriminatorKey: 'role', timestamps: true };
 const UserSchema = new Schema(
   {
@@ -155,10 +157,17 @@ const UserSchema = new Schema(
         type: String,
         default: ''
       },
+      // To be deprecated -> read only in frontend
       target_application_field: {
         type: String,
         default: ''
       },
+      targetApplicationSubjects: [
+        {
+          type: String,
+          enum: PROGRAM_SUBJECT_KEYS
+        }
+      ],
       target_degree: {
         type: String,
         default: ''

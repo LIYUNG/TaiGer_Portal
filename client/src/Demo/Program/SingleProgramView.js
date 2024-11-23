@@ -370,11 +370,6 @@ function SingleProgramView(props) {
                     <Grid item xs={12} md={4}>
                       <Typography>{t('Group', { ns: 'common' })}</Typography>
                     </Grid>
-                    <Grid item xs={12} md={8}>
-                      <Typography>
-                        {props?.program?.study_group_flag || ''}
-                      </Typography>
-                    </Grid>
                   </>
                 )}
               </Grid>

@@ -96,7 +96,7 @@ const getPrograms = asyncHandler(async (req, res) => {
         .model('Program')
         .find({ isArchiv: { $ne: true } })
         .select(
-          '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated'
+          '-tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated'
         );
       const success = two_weeks_cache.set(req.originalUrl, programs);
       if (success) {
@@ -111,7 +111,7 @@ const getPrograms = asyncHandler(async (req, res) => {
       .model('Program')
       .find({ isArchiv: { $ne: true } })
       .select(
-        '-study_group_flag -tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated'
+        '-tuition_fees -website -special_notes -comments -optionalDocuments -requiredDocuments -uni_assist -daad_link -ml_required -ml_requirements -rl_required -essay_required -essay_requirements -application_portal_a -application_portal_b -fpso -program_duration -deprecated'
       );
     res.send({ success: true, data: programs });
   }

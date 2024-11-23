@@ -36,6 +36,7 @@ import {
   LANGUAGES_PREFERENCE_ARRAY_OPTIONS,
   SEMESTER_ARRAY_OPTIONS,
   TRI_STATE_OPTIONS,
+  PROGRAM_SUBJECTS_DETAILED,
   convertDate
 } from '../Utils/contants';
 import {
@@ -54,6 +55,7 @@ import {
   getNumberOfDays
 } from '../Utils/contants';
 import Banner from '../../components/Banner/Banner';
+import SearchableMultiSelect from '../../components/Input/searchableMuliselect';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
@@ -64,6 +66,7 @@ const SurveyEditableComponent = (props) => {
     handleChangeAcademic,
     handleChangeLanguage,
     handleChangeApplicationPreference,
+    setApplicationPreferenceByField,
     handleAcademicBackgroundSubmit,
     handleSurveyLanguageSubmit,
     handleApplicationPreferenceSubmit,
@@ -71,6 +74,7 @@ const SurveyEditableComponent = (props) => {
     onChangeURL,
     survey
   } = useSurvey();
+
   const [surveyEditableComponentState, setSurveyEditableComponentState] =
     useState({
       baseDocsflagOffcanvas: false,
@@ -1043,26 +1047,40 @@ const SurveyEditableComponent = (props) => {
               </Tooltip>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                id="target_application_field"
-                name="target_application_field"
-                error={
-                  survey.application_preference?.target_application_field === ''
-                }
-                helperText={
-                  survey.application_preference?.target_application_field ===
-                    '' && 'Please provide the info.'
-                }
-                label={t('Target Application Fields')}
-                variant="outlined"
-                placeholder="Data Science, Comupter Science, etc. (max. 40 characters)"
-                value={
-                  survey.application_preference?.target_application_field || ''
-                }
-                onChange={(e) => handleChangeApplicationPreference(e)}
+              <SearchableMultiSelect
+                name="target-application-subjects"
+                label={t('Target Application Subjects')}
+                data={PROGRAM_SUBJECTS_DETAILED}
+                value={survey.application_preference?.targetApplicationSubjects}
+                setValue={setApplicationPreferenceByField(
+                  'targetApplicationSubjects'
+                )}
               />
             </Grid>
+            {survey.application_preference?.target_application_field != '' && (
+              // To be deprecated, only show if not empty
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  disabled
+                  fullWidth
+                  id="target_application_field"
+                  name="target_application_field"
+                  helperText={
+                    survey.application_preference?.target_application_field ===
+                      '' && 'Please provide the info.'
+                  }
+                  label={t('Target Application Fields')}
+                  variant="outlined"
+                  placeholder="Data Science, Comupter Science, etc. (max. 40 characters)"
+                  value={
+                    survey.application_preference?.target_application_field ||
+                    ''
+                  }
+                  onChange={(e) => handleChangeApplicationPreference(e)}
+                />
+              </Grid>
+            )}
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth

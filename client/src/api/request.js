@@ -5,7 +5,11 @@ export const BASE_URL =
     ? process.env.REACT_APP_DEV_URL
     : process.env.REACT_APP_PROD_URL;
 
-const tenantId = process.env.REACT_APP_TENANT_ID || 'TaiGer';
+const tenantId =
+  process.env.NODE_ENV === 'development'
+    ? process.env.REACT_APP_DEV_TENANT_ID
+    : process.env.REACT_APP_TENANT_ID;
+
 const request = axios.create({
   baseURL: BASE_URL,
   headers: {

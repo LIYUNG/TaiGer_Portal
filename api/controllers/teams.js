@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const { is_TaiGer_Agent } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
@@ -7,7 +8,6 @@ const logger = require('../services/logger');
 const { getStudentsByProgram } = require('./programs');
 const { findStudentDeltaGet } = require('../utils/modelHelper/programChange');
 const { getPermission } = require('../utils/queryFunctions');
-const { ObjectId } = require('mongodb');
 const { GenerateResponseTimeByStudent } = require('./response_time');
 const { numStudentYearDistribution } = require('../utils/utils_function');
 const { one_day_cache } = require('../cache/node-cache');
@@ -841,7 +841,7 @@ const getArchivStudents = asyncHandler(async (req, res) => {
       .populate('agents editors', 'firstname lastname')
       .exec();
     res.status(200).send({ success: true, data: students });
-  } else if (user.role === Role.Agent) {
+  } else if (is_TaiGer_Agent(user)) {
     const students = await req.db
       .model('Student')
       .find({

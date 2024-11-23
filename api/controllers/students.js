@@ -1,5 +1,4 @@
-const path = require('path');
-const async = require('async');
+const { is_TaiGer_Agent } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
@@ -105,7 +104,7 @@ const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
     survey_link,
     audit
   });
-  if (user.role === Role.Agent) {
+  if (is_TaiGer_Agent(user)) {
     await req.db.model('Agent').findByIdAndUpdate(
       user._id.toString(),
       {
@@ -283,7 +282,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
       data: students_new,
       notification: user.agent_notification
     });
-  } else if (user.role === Role.Agent) {
+  } else if (is_TaiGer_Agent(user)) {
     const studentsPromise = fetchStudents(req, {
       agents: user._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -430,7 +429,7 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
       .select('firstname firstname_chinese lastname lastname_chinese profile')
       .lean();
     res.status(200).send({ success: true, data: students, base_docs_link: {} });
-  } else if (user.role === Role.Agent) {
+  } else if (is_TaiGer_Agent(user)) {
     const students = await req.db
       .model('Student')
       .find({
@@ -530,7 +529,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
       });
 
       res.status(200).send({ success: true, data: students });
-    } else if (user.role === Role.Agent) {
+    } else if (is_TaiGer_Agent(user)) {
       const permissions = await getPermission(req, user);
       if (permissions && permissions.canAssignAgents) {
         const students = await req.db
@@ -594,7 +593,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
         .populate('applications.programId agents editors')
         .lean();
       res.status(200).send({ success: true, data: students });
-    } else if (user.role === Role.Agent) {
+    } else if (is_TaiGer_Agent(user)) {
       const students = await req.db
         .model('Student')
         .find({

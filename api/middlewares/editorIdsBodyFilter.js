@@ -1,5 +1,6 @@
+const { is_TaiGer_Agent, is_TaiGer_Editor } = require('@taiger-common/core');
+
 const { ErrorResponse } = require('../common/errors');
-const { Role } = require('../constants');
 const { asyncHandler } = require('./error-handler');
 
 const editorIdsBodyFilter = asyncHandler(async (req, res, next) => {
@@ -9,7 +10,7 @@ const editorIdsBodyFilter = asyncHandler(async (req, res, next) => {
     body: editorsId
   } = req;
 
-  if (user.role === Role.Agent || user.role === Role.Editor) {
+  if (is_TaiGer_Agent(user) || is_TaiGer_Editor(user)) {
     const thread = await req.db
       .model('Documentthread')
       .findById(messagesThreadId)

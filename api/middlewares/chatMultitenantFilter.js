@@ -1,7 +1,7 @@
+const { is_TaiGer_Editor, is_TaiGer_Agent } = require('@taiger-common/core');
+
 const { ten_minutes_cache } = require('../cache/node-cache');
 const { ErrorResponse } = require('../common/errors');
-const { Role } = require('../constants');
-
 const logger = require('../services/logger');
 const { getPermission } = require('../utils/queryFunctions');
 const { asyncHandler } = require('./error-handler');
@@ -11,7 +11,7 @@ const chatMultitenantFilter = asyncHandler(async (req, res, next) => {
     user,
     params: { studentId }
   } = req;
-  if (user.role === Role.Editor || user.role === Role.Agent) {
+  if (is_TaiGer_Editor(user) || is_TaiGer_Agent(user)) {
     let cachedStudent = ten_minutes_cache.get(
       `/chatMultitenantFilter/students/${studentId}`
     );

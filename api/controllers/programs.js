@@ -5,6 +5,7 @@ const logger = require('../services/logger');
 const { one_month_cache } = require('../cache/node-cache');
 const { two_weeks_cache } = require('../cache/node-cache');
 const { PROGRAMS_CACHE } = require('../config');
+const { is_TaiGer_Agent } = require('@taiger-common/core');
 
 const getDistinctSchoolsAttributes = async (req, res) => {
   try {
@@ -179,7 +180,7 @@ const getProgram = asyncHandler(async (req, res) => {
       }
       if (
         user.role === Role.Admin ||
-        user.role === Role.Agent ||
+        is_TaiGer_Agent(user) ||
         user.role === Role.Editor
       ) {
         const students = await req.db
@@ -214,7 +215,7 @@ const getProgram = asyncHandler(async (req, res) => {
 
     if (
       user.role === Role.Admin ||
-      user.role === Role.Agent ||
+      is_TaiGer_Agent(user) ||
       user.role === Role.Editor ||
       user.role === Role.External
     ) {
@@ -250,7 +251,7 @@ const getProgram = asyncHandler(async (req, res) => {
     }
   } else if (
     user.role === Role.Admin ||
-    user.role === Role.Agent ||
+    is_TaiGer_Agent(user) ||
     user.role === Role.Editor ||
     user.role === Role.External
   ) {

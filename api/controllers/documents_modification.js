@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const async = require('async');
 const path = require('path');
+const { is_TaiGer_Agent } = require('@taiger-common/core');
+
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { one_month_cache } = require('../cache/node-cache');
@@ -268,7 +270,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       )
       .lean();
     res.status(200).send({ success: true, data: students });
-  } else if (user.role === Role.Agent) {
+  } else if (is_TaiGer_Agent(user)) {
     const students = await req.db
       .model('Student')
       .find({
@@ -662,7 +664,7 @@ const getMessages = asyncHandler(async (req, res) => {
   let conflict_list = [];
   if (
     user.role === Role.Admin ||
-    user.role === Role.Agent ||
+    is_TaiGer_Agent(user) ||
     user.role === Role.Editor
   ) {
     conflict_list = await req.db
@@ -1158,7 +1160,7 @@ const postMessages = asyncHandler(async (req, res) => {
     }
   }
 
-  if (user.role === Role.Agent || user.role === Role.Admin) {
+  if (is_TaiGer_Agent(user) || user.role === Role.Admin) {
     // Inform Editor
     const Essay_Writer_Scope = Object.keys(ESSAY_WRITER_SCOPE);
     if (Essay_Writer_Scope.includes(document_thread.file_type)) {

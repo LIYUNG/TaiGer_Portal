@@ -1,6 +1,6 @@
-const { ErrorResponse } = require('../common/errors');
-const { Role } = require('../constants');
+const { is_TaiGer_Editor, is_TaiGer_Agent } = require('@taiger-common/core');
 
+const { ErrorResponse } = require('../common/errors');
 const {
   getPermission,
   getCachedStudentPermission
@@ -12,7 +12,7 @@ const InnerTaigerMultitenantFilter = asyncHandler(async (req, res, next) => {
     user,
     params: { studentId }
   } = req;
-  if (user.role === Role.Editor || user.role === Role.Agent) {
+  if (is_TaiGer_Editor(user) || is_TaiGer_Agent(user)) {
     const permissions = await getPermission(req, user);
 
     const student = await getCachedStudentPermission(req, studentId);

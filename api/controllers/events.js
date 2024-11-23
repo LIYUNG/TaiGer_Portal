@@ -1,4 +1,4 @@
-// const path = require('path');
+const { is_TaiGer_Agent } = require('@taiger-common/core');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role } = require('../constants');
@@ -142,7 +142,7 @@ const getEvents = asyncHandler(async (req, res, next) => {
     .select('firstname lastname email selfIntroduction officehours timezone');
   let students = [];
 
-  if (user.role === Role.Agent) {
+  if (is_TaiGer_Agent(user)) {
     events = await req.db
       .model('Event')
       .find({
@@ -185,7 +185,7 @@ const getActiveEventsNumber = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (
     user.role === Role.Student ||
-    user.role === Role.Agent ||
+    is_TaiGer_Agent(user) ||
     user.role === Role.Admin
   ) {
     const futureEvents = await req.db
@@ -455,7 +455,7 @@ const confirmEvent = asyncHandler(async (req, res, next) => {
         meetingInvitation(receiver, user, event);
       });
     }
-    if (user.role === Role.Agent) {
+    if (is_TaiGer_Agent(user)) {
       event.requester_id.forEach((requester) => {
         meetingInvitation(requester, user, event);
       });
@@ -477,7 +477,7 @@ const updateEvent = asyncHandler(async (req, res, next) => {
       updated_event.isConfirmedRequester = true;
       updated_event.isConfirmedReceiver = false;
     }
-    if (user.role === Role.Agent) {
+    if (is_TaiGer_Agent(user)) {
       updated_event.isConfirmedRequester = false;
       updated_event.isConfirmedReceiver = true;
     }
@@ -547,7 +547,7 @@ const deleteEvent = asyncHandler(async (req, res, next) => {
         hasEvents: events.length !== 0
       });
       MeetingCancelledReminder(user, toBeDeletedEvent);
-    } else if (user.role === Role.Agent) {
+    } else if (is_TaiGer_Agent(user)) {
       events = await req.db
         .model('Event')
         .find({

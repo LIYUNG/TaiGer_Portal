@@ -1,5 +1,10 @@
+const {
+  is_TaiGer_Agent,
+  is_TaiGer_Editor,
+  is_TaiGer_Student
+} = require('@taiger-common/core');
+
 const { ErrorResponse } = require('../common/errors');
-const { Role } = require('../constants');
 const { asyncHandler } = require('./error-handler');
 
 const event_multitenant_filter = asyncHandler(async (req, res, next) => {
@@ -7,7 +12,7 @@ const event_multitenant_filter = asyncHandler(async (req, res, next) => {
     user,
     params: { event_id }
   } = req;
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     const event = await req.db.model('Event').findById(event_id).lean();
     const containsObjectId = event?.requester_id.some((objectId) =>
       objectId.equals(user._id)
@@ -19,7 +24,7 @@ const event_multitenant_filter = asyncHandler(async (req, res, next) => {
     }
   }
 
-  if (user.role === Role.Agent || user.role === Role.Editor) {
+  if (is_TaiGer_Agent(user) || is_TaiGer_Editor(user)) {
     const event = await req.db.model('Event').findById(event_id).lean();
     const containsObjectId = event?.receiver_id.some((objectId) =>
       objectId.equals(user._id)

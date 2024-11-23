@@ -1,5 +1,10 @@
+const {
+  is_TaiGer_Agent,
+  is_TaiGer_Editor,
+  is_TaiGer_Admin
+} = require('@taiger-common/core');
+
 const { ErrorResponse } = require('../common/errors');
-const { Role } = require('../constants');
 const logger = require('../services/logger');
 const { getPermission } = require('../utils/queryFunctions');
 const { asyncHandler } = require('./error-handler');
@@ -9,7 +14,7 @@ const permission_canAssignEditor_filter = asyncHandler(
     const { user } = req;
     const cachedPermission = await getPermission(req, user);
 
-    if (user.role === Role.Admin || cachedPermission?.canAssignEditors) {
+    if (is_TaiGer_Admin(user) || cachedPermission?.canAssignEditors) {
       next();
     } else {
       logger.warn('permissions denied: permission_canAssignEditor_filter');
@@ -22,7 +27,7 @@ const permission_canAssignAgent_filter = asyncHandler(
   async (req, res, next) => {
     const { user } = req;
     const cachedPermission = await getPermission(req, user);
-    if (user.role === Role.Admin || cachedPermission?.canAssignAgents) {
+    if (is_TaiGer_Admin(user) || cachedPermission?.canAssignAgents) {
       next();
     } else {
       logger.warn('permissions denied: permission_canAssignAgent_filter');
@@ -33,7 +38,7 @@ const permission_canAssignAgent_filter = asyncHandler(
 
 const permission_canModifyDocs_filter = asyncHandler(async (req, res, next) => {
   const { user } = req;
-  if (user.role === Role.Agent || user.role === Role.Editor) {
+  if (is_TaiGer_Agent(user) || is_TaiGer_Editor(user)) {
     const cachedPermission = await getPermission(req, user);
     if (!cachedPermission?.canModifyDocumentation) {
       logger.warn('permissions denied: permission_canModifyDocs_filter');
@@ -48,7 +53,7 @@ const permission_canModifyDocs_filter = asyncHandler(async (req, res, next) => {
 const permission_canAccessStudentDatabase_filter = asyncHandler(
   async (req, res, next) => {
     const { user } = req;
-    if (user.role === Role.Agent || user.role === Role.Editor) {
+    if (is_TaiGer_Agent(user) || is_TaiGer_Editor(user)) {
       const cachedPermission = await getPermission(req, user);
       if (!cachedPermission?.canAccessStudentDatabase) {
         logger.warn(
@@ -89,7 +94,7 @@ const permission_canUseTaiGerAI_filter = asyncHandler(
 const permission_canModifyProgramList_filter = asyncHandler(
   async (req, res, next) => {
     const { user } = req;
-    if (user.role === Role.Agent) {
+    if (is_TaiGer_Agent(user)) {
       const permission = await getPermission(req, user);
       if (!permission?.canModifyProgramList) {
         logger.warn(
@@ -107,7 +112,7 @@ const permission_canModifyProgramList_filter = asyncHandler(
 const permission_canModifyTicketList_filter = asyncHandler(
   async (req, res, next) => {
     const { user } = req;
-    if (user.role === Role.Agent) {
+    if (is_TaiGer_Agent(user)) {
       const permission = await getPermission(req, user);
       if (!permission?.canModifyTicketList) {
         logger.warn(
@@ -124,7 +129,7 @@ const permission_canModifyTicketList_filter = asyncHandler(
 
 const permission_canModifyComplaintList_filter = async (req, res, next) => {
   const { user } = req;
-  if (user.role === Role.Agent) {
+  if (is_TaiGer_Agent(user)) {
     const permission = await getPermission(req, user);
     if (!permission?.canModifyTicketList) {
       logger.warn('permissions denied: permission_canModifyTicketList_filter');

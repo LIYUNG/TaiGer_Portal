@@ -1,5 +1,11 @@
+const {
+  is_TaiGer_Editor,
+  is_TaiGer_Agent,
+  is_TaiGer_Student,
+  is_TaiGer_Guest
+} = require('@taiger-common/core');
+
 const { ErrorResponse } = require('../common/errors');
-const { Role } = require('../constants');
 const { getPermission } = require('../utils/queryFunctions');
 const { asyncHandler } = require('./error-handler');
 
@@ -8,7 +14,7 @@ const interviewMultitenantFilter = asyncHandler(async (req, res, next) => {
     user,
     params: { interview_id }
   } = req;
-  if (user.role === Role.Editor || user.role === Role.Agent) {
+  if (is_TaiGer_Editor(user) || is_TaiGer_Agent(user)) {
     const permissions = await getPermission(req, user);
 
     const interview = await req.db
@@ -35,7 +41,7 @@ const interviewMultitenantFilter = asyncHandler(async (req, res, next) => {
       );
     }
   }
-  if (user.role === Role.Student || user.role === Role.Guest) {
+  if (is_TaiGer_Student(user) || is_TaiGer_Guest(user)) {
     const interview = await req.db
       .model('Interview')
       .findById(interview_id)
@@ -59,7 +65,7 @@ const interviewMultitenantReadOnlyFilter = asyncHandler(
       params: { interview_id }
     } = req;
 
-    if (user.role === Role.Student || user.role === Role.Guest) {
+    if (is_TaiGer_Student(user) || is_TaiGer_Guest(user)) {
       const interview = await req.db.model('Interview').findById(interview_id);
       if (
         interview?.student_id?.toString() &&

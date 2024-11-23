@@ -3,6 +3,7 @@ const { TENANT_SHORT_NAME } = require('../constants/common');
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
 const { Role } = require('../constants');
+const { is_TaiGer_Agent } = require('@taiger-common/core');
 
 const getExpenses = asyncHandler(async (req, res) => {
   const studentsWithExpenses = await req.db.model('Student').aggregate([
@@ -47,7 +48,7 @@ const getExpense = asyncHandler(async (req, res) => {
   // res.status(200).send({ success: true, data: expense });
 
   // query by agents field: student.agents include agent_id
-  if (the_user.role === Role.Agent) {
+  if (is_TaiGer_Agent(the_user)) {
     const students = await req.db
       .model('Student')
       .find({

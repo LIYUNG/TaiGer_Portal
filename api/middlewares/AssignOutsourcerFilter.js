@@ -1,6 +1,6 @@
-const { ErrorResponse } = require('../common/errors');
-const { Role } = require('../constants');
+const { is_TaiGer_Editor, is_TaiGer_Agent } = require('@taiger-common/core');
 
+const { ErrorResponse } = require('../common/errors');
 const { getPermission } = require('../utils/queryFunctions');
 const { asyncHandler } = require('./error-handler');
 
@@ -11,7 +11,7 @@ const AssignOutsourcerFilter = asyncHandler(async (req, res, next) => {
     user,
     params: { messagesThreadId }
   } = req;
-  if (user.role === Role.Editor || user.role === Role.Agent) {
+  if (is_TaiGer_Editor(user) || is_TaiGer_Agent(user)) {
     const permissions = await getPermission(req, user);
     let outsourcer_allowed_modify = false;
     let studentId_temp = '';

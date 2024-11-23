@@ -1,6 +1,7 @@
 const async = require('async');
 const { ObjectId } = require('mongodb');
 const path = require('path');
+const { is_TaiGer_Agent } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
@@ -56,7 +57,7 @@ const getSearchUserMessages = asyncHandler(async (req, res, next) => {
   const permissions = await getPermission(req, user);
   if (
     user.role === Role.Admin ||
-    (user.role === Role.Agent && permissions?.canAccessAllChat)
+    (is_TaiGer_Agent(user) && permissions?.canAccessAllChat)
   ) {
     const students = await req.db
       .model('Student')
@@ -220,7 +221,7 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
   const permissions = await getPermission(req, user);
   if (
     user.role === Role.Admin ||
-    (user.role === Role.Agent && permissions?.canAccessAllChat)
+    (is_TaiGer_Agent(user) && permissions?.canAccessAllChat)
   ) {
     const students = await req.db
       .model('Student')
@@ -326,7 +327,7 @@ const getMyMessages = asyncHandler(async (req, res, next) => {
 
   if (
     user.role === Role.Admin ||
-    (user.role === Role.Agent && permissions?.canAccessAllChat)
+    (is_TaiGer_Agent(user) && permissions?.canAccessAllChat)
   ) {
     const students = await req.db
       .model('Student')

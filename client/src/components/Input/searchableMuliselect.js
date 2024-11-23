@@ -115,17 +115,26 @@ const SearchableMultiSelect = ({
             })}
           </Box>
         )}
-        // search by option key or label
-        filterOptions={(options, { inputValue }) =>
-          options.filter((option) => {
-            const searchTarget = Array.isArray(data)
+        // filter dropdown options based on search input -> display selected options first
+        filterOptions={(options, { inputValue }) => {
+          const searchString = inputValue.toLowerCase();
+          const getSearchTarget = (option) =>
+            Array.isArray(data)
               ? option
               : option.concat(data?.[option]?.label || '');
-            return searchTarget
-              .toLowerCase()
-              .includes(inputValue.toLowerCase());
-          })
-        }
+
+          const filteredSelected = value.filter((option) => {
+            return getSearchTarget(option).toLowerCase().includes(searchString);
+          });
+
+          const filteredUnselected = options.filter(
+            (option) =>
+              !value.includes(option) &&
+              getSearchTarget(option).toLowerCase().includes(searchString)
+          );
+
+          return [...filteredSelected, ...filteredUnselected];
+        }}
         {...props}
       />
     </div>

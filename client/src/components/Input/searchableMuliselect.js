@@ -121,17 +121,21 @@ const SearchableMultiSelect = ({
           const getSearchTarget = (option) =>
             Array.isArray(data)
               ? option
-              : option.concat(data?.[option]?.label || '');
+              : option?.concat(data?.[option]?.label || '');
 
-          const filteredSelected = value.filter((option) => {
-            return getSearchTarget(option).toLowerCase().includes(searchString);
-          });
+          const filteredSelected =
+            value?.filter((option) => {
+              return getSearchTarget(option)
+                ?.toLowerCase()
+                .includes(searchString);
+            }) || [];
 
-          const filteredUnselected = options.filter(
-            (option) =>
-              !value.includes(option) &&
-              getSearchTarget(option).toLowerCase().includes(searchString)
-          );
+          const filteredUnselected =
+            options?.filter(
+              (option) =>
+                !value?.includes(option) &&
+                getSearchTarget(option).toLowerCase().includes(searchString)
+            ) || [];
 
           return [...filteredSelected, ...filteredUnselected];
         }}

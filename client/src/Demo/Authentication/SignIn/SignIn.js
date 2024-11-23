@@ -78,6 +78,7 @@ export default function SignIn() {
       } catch (err) {
         // TODO: handle error
         alert('Server is busy! Please try in 5 minutes later.');
+        console.error(err);
         setButtondisable(false);
       }
     }

@@ -4,9 +4,9 @@ import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AssignEssayWritersPage from './AssignEssayWritersPage';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import DEMO from '../../../store/constant';
-import { is_TaiGer_role } from '../../Utils/checking-functions';
 import { useAuth } from '../../../components/AuthProvider';
 import { appConfig } from '../../../config';
 

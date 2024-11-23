@@ -17,9 +17,9 @@ import {
   Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_Admin, is_TaiGer_role } from '@taiger-common/core';
 
 import ErrorPage from '../Utils/ErrorPage';
-import { is_TaiGer_Admin, is_TaiGer_role } from '../Utils/checking-functions';
 import { getTeamMembers, updateUserPermission } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';

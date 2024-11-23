@@ -13,6 +13,7 @@ import {
   Breadcrumbs
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_Student, is_TaiGer_role } from '@taiger-common/core';
 
 import MessageList from './MessageList';
 import CommunicationThreadEditor from './CommunicationThreadEditor';
@@ -26,13 +27,7 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import {
-  is_TaiGer_Student,
-  is_TaiGer_role,
-  readDOCX,
-  readPDF,
-  readXLSX
-} from '../Utils/checking-functions';
+import { readDOCX, readPDF, readXLSX } from '../Utils/checking-functions';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';

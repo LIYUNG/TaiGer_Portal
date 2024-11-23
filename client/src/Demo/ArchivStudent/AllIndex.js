@@ -2,9 +2,9 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { Link as LinkDom, useLoaderData } from 'react-router-dom';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';

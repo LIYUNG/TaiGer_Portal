@@ -1,9 +1,9 @@
 import React from 'react';
 import { Navigate, useLoaderData } from 'react-router-dom';
 import { Box } from '@mui/material';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import SurveyComponent from './SurveyComponent';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';

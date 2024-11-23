@@ -1,13 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { is_TaiGer_Guest, is_TaiGer_Student } from '@taiger-common/core';
 
 import DEMO from '../../../../store/constant';
 import { convertDate } from '../../../Utils/contants';
 import {
   application_deadline_calculator,
-  GetCVDeadline,
-  is_TaiGer_Guest,
-  is_TaiGer_Student
+  GetCVDeadline
 } from '../../../Utils/checking-functions';
 import { useAuth } from '../../../../App/layout/AuthProvider';
 

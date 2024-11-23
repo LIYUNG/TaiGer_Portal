@@ -10,9 +10,9 @@ import {
   Typography
 } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import EditEssayWritersSubpage from '../StudDocsOverview/EditEssayWritersSubpage';
-import { is_TaiGer_role } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 

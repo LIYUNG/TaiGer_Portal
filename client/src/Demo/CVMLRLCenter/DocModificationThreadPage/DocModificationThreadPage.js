@@ -31,6 +31,11 @@ import {
   DialogActions
 } from '@mui/material';
 import { pdfjs } from 'react-pdf'; // Library for rendering PDFs
+import {
+  is_TaiGer_AdminAgent,
+  is_TaiGer_Student,
+  is_TaiGer_role
+} from '@taiger-common/core';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 import DocThreadEditor from '../../../components/Message/DocThreadEditor';
@@ -42,9 +47,6 @@ import {
   FILE_TYPE_E,
   LinkableNewlineText,
   getRequirement,
-  is_TaiGer_AdminAgent,
-  is_TaiGer_Student,
-  is_TaiGer_role,
   readDOCX,
   readPDF,
   readXLSX,

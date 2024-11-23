@@ -26,19 +26,20 @@ import {
 
 import { Link as LinkDom } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
-
 import { useTranslation } from 'react-i18next';
-
 import {
   is_TaiGer_role,
+  is_TaiGer_Student,
+  is_TaiGer_Admin
+} from '@taiger-common/core';
+
+import {
   isProgramNotSelectedEnough,
   is_num_Program_Not_specified,
   is_program_ml_rl_essay_ready,
   is_the_uni_assist_vpd_uploaded,
   isCVFinished,
   application_deadline_calculator,
-  is_TaiGer_Student,
-  is_TaiGer_Admin,
   isProgramSubmitted,
   isProgramDecided,
   isProgramAdmitted

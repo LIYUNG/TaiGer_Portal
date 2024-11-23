@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
 import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/material';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import ApplicationOverviewTabs from '../ApplicantsOverview/ApplicationOverviewTabs';
 import ErrorPage from '../Utils/ErrorPage';
 import { getAgent } from '../../api';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';

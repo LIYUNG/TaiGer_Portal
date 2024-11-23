@@ -26,7 +26,7 @@ import {
   is_TaiGer_Editor,
   is_TaiGer_External,
   is_TaiGer_Student
-} from '../Utils/checking-functions';
+} from '@taiger-common/core';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';

@@ -23,14 +23,14 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import LaunchIcon from '@mui/icons-material/Launch';
-
-import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 import {
   is_TaiGer_Admin,
   is_TaiGer_AdminAgent,
   is_TaiGer_Editor,
   is_TaiGer_Student
-} from '../Utils/checking-functions';
+} from '@taiger-common/core';
+
+import OffcanvasBaseDocument from '../../components/Offcanvas/OffcanvasBaseDocument';
 import {
   FILE_DONT_CARE_SYMBOL,
   FILE_MISSING_SYMBOL,

@@ -18,6 +18,11 @@ import PersonIcon from '@mui/icons-material/Person';
 import CheckIcon from '@mui/icons-material/Check';
 import EmailIcon from '@mui/icons-material/Email';
 import EventIcon from '@mui/icons-material/Event';
+import {
+  is_TaiGer_Agent,
+  is_TaiGer_Student,
+  is_TaiGer_role
+} from '@taiger-common/core';
 
 import {
   DECISION_STATUS_E,
@@ -28,11 +33,6 @@ import {
   isInTheFuture,
   showTimezoneOffset
 } from '../../../Demo/Utils/contants';
-import {
-  is_TaiGer_Agent,
-  is_TaiGer_Student,
-  is_TaiGer_role
-} from '../../../Demo/Utils/checking-functions';
 import DEMO from '../../../store/constant';
 import EventDateComponent from '../../DateComponent';
 import { useAuth } from '../../AuthProvider';

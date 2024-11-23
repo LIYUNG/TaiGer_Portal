@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Alert } from '@mui/material';
 import { Navigate } from 'react-router-dom';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import DocPageView from './DocPageView';
 import DocPageEdit from './DocPageEdit';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {

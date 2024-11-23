@@ -7,8 +7,8 @@ import {
   useLoaderData
 } from 'react-router-dom';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { is_TaiGer_role } from '@taiger-common/core';
 
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import { TabTitle } from '../Utils/TabTitle';
 import { useAuth } from '../../components/AuthProvider';
 import DEMO from '../../store/constant';

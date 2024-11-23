@@ -2,9 +2,10 @@ import React from 'react';
 import { Breadcrumbs, Link, Typography, Box } from '@mui/material';
 import { Navigate, Link as LinkDom, useLoaderData } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_Student, is_TaiGer_role } from '@taiger-common/core';
 
 import ApplicationOverviewTabs from './ApplicationOverviewTabs';
-import { is_TaiGer_Student, is_TaiGer_role } from '../Utils/checking-functions';
+
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';

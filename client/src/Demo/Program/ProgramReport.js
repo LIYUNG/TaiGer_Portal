@@ -7,6 +7,7 @@ import {
   Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import {
   createProgramReport,
@@ -17,10 +18,7 @@ import {
 import { convertDate } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ProgramReportModal from './ProgramReportModal';
-import {
-  LinkableNewlineText,
-  is_TaiGer_role
-} from '../Utils/checking-functions';
+import { LinkableNewlineText } from '../Utils/checking-functions';
 import ProgramReportUpdateModal from './ProgramReportUpdateModal';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import ProgramReportDeleteModal from './ProgramReportDeleteModal';

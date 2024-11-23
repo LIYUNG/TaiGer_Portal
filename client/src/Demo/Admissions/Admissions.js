@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, Navigate } from 'react-router-dom';
 import { Box, Breadcrumbs, Link, Tab, Tabs, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import AdmissionsTable from './AdmissionsTable';
 import ErrorPage from '../Utils/ErrorPage';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import { getAdmissions } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';

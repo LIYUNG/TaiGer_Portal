@@ -1,11 +1,11 @@
 import React from 'react';
 import { Navigate, useLoaderData } from 'react-router-dom';
 import { Box } from '@mui/material';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import AssignAgentsPage from './AssignAgentsPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import DEMO from '../../../store/constant';
-import { is_TaiGer_role } from '../../Utils/checking-functions';
 import { useAuth } from '../../../components/AuthProvider';
 import useStudents from '../../../hooks/useStudents';
 

@@ -14,13 +14,13 @@ import TimezoneSelect from 'react-timezone-select';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import Select from 'react-select';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_Student } from '@taiger-common/core';
 
 import { time_slots } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { getAgentProfile } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import { is_TaiGer_Student } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';

@@ -6,9 +6,9 @@ import {
   Await
 } from 'react-router-dom';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import { TabTitle } from '../Utils/TabTitle';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import StudentOverviewTable from '../../components/StudentOverviewTable';
 import { useAuth } from '../../components/AuthProvider';

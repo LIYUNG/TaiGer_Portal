@@ -8,12 +8,12 @@ import {
   Link,
   Typography
 } from '@mui/material';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import ErrorPage from '../Utils/ErrorPage';
 import { getExpense } from '../../api';
 import {
   frequencyDistribution,
-  is_TaiGer_role,
   programs_refactor
 } from '../Utils/checking-functions';
 import { TabTitle } from '../Utils/TabTitle';

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, useParams, Link as LinkDom } from 'react-router-dom';
 import { Box, Breadcrumbs, Card, Link, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_Admin } from '@taiger-common/core';
 
 import {
   getLast180DaysObject,
@@ -9,7 +10,6 @@ import {
   transformObjectToArray
 } from '../../Utils/contants';
 import ErrorPage from '../../Utils/ErrorPage';
-import { is_TaiGer_Admin } from '../../Utils/checking-functions';
 import { getUserLog } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';

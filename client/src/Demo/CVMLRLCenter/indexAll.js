@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, Navigate } from 'react-router-dom';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import CVMLRLDashboard from './CVMLRLDashboard';
 import ErrorPage from '../Utils/ErrorPage';
 import { getAllCVMLRLOverview } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';

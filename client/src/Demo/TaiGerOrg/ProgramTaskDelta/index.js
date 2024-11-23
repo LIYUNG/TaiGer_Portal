@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import { TabTitle } from '../../Utils/TabTitle';
 import TabProgramTaskDelta from '../../Dashboard/MainViewTab/ProgramTaskDelta/TabProgramTaskDelta';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { getApplicationTaskDeltas } from '../../../api';
-import { is_TaiGer_role } from '../../Utils/checking-functions';
 import DEMO from '../../../store/constant';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
 import { useAuth } from '../../../components/AuthProvider';

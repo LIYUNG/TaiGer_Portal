@@ -14,15 +14,16 @@ import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-
-import EditorSimple from '../../components/EditorJs/EditorSimple';
-import { useAuth } from '../../components/AuthProvider';
-import { CVMLRL_DOC_PRECHECK_STATUS_E, stringAvatar } from '../Utils/contants';
 import {
   is_TaiGer_Agent,
   is_TaiGer_Student,
   is_TaiGer_role
-} from '../Utils/checking-functions';
+} from '@taiger-common/core';
+
+import EditorSimple from '../../components/EditorJs/EditorSimple';
+import { useAuth } from '../../components/AuthProvider';
+import { CVMLRL_DOC_PRECHECK_STATUS_E, stringAvatar } from '../Utils/contants';
+
 import { TaiGerChatAssistant } from '../../api';
 import { useParams } from 'react-router-dom';
 import { appConfig } from '../../config';

@@ -28,14 +28,14 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { prepQuestions, convertDate } from '../../Utils/contants';
 import {
   LinkableNewlineText,
-  getRequirement,
-  is_TaiGer_role
+  getRequirement
 } from '../../Utils/checking-functions';
 import {
   cvmlrlAi2,

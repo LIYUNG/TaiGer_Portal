@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import SingleDocEdit from './SingleDocEdit';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 
 import {

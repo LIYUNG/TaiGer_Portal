@@ -11,13 +11,11 @@ import {
 import { useTranslation } from 'react-i18next';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CloseIcon from '@mui/icons-material/Close';
+import { is_TaiGer_Editor, is_TaiGer_Student } from '@taiger-common/core';
 
 import { BASE_URL } from '../../api/request';
 import FilePreview from '../../components/FilePreview/FilePreview';
-import {
-  is_TaiGer_Editor,
-  is_TaiGer_Student
-} from '../Utils/checking-functions';
+
 import { useAuth } from '../../components/AuthProvider';
 
 function AcceptProfileFileModel(props) {

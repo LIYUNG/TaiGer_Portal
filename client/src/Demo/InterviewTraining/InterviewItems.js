@@ -27,11 +27,9 @@ import {
   DialogActions
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { is_TaiGer_role } from '@taiger-common/core';
 
-import {
-  LinkableNewlineText,
-  is_TaiGer_role
-} from '../Utils/checking-functions';
+import { LinkableNewlineText } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import {
   addInterviewTrainingDateTime,
@@ -540,18 +538,10 @@ function InterviewItems(props) {
           </List>
         </DialogContent>
         <DialogActions>
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={updateTrainer}
-          >
+          <Button color="primary" variant="contained" onClick={updateTrainer}>
             {t('Assign', { ns: 'common' })}
           </Button>
-          <Button
-            color="secondary"
-            variant="contained"
-            onClick={toggleModal}
-          >
+          <Button color="secondary" variant="contained" onClick={toggleModal}>
             {t('Close', { ns: 'common' })}
           </Button>
         </DialogActions>

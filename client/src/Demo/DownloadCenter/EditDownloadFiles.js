@@ -11,9 +11,9 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_Admin } from '@taiger-common/core';
 
 import { BASE_URL } from '../../api/request';
-import { is_TaiGer_Admin } from '../Utils/checking-functions';
 import { templatelist } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 

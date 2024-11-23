@@ -31,6 +31,7 @@ import TimezoneSelect from 'react-timezone-select';
 import { useTranslation } from 'react-i18next';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import { is_TaiGer_Agent } from '@taiger-common/core';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
@@ -39,10 +40,7 @@ import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { updatePersonalData, updateOfficehours, getUser } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
-import {
-  is_TaiGer_Agent,
-  is_personal_data_filled
-} from '../Utils/checking-functions';
+import { is_personal_data_filled } from '../Utils/checking-functions';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';

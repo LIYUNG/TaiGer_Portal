@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom } from 'react-router-dom';
 import { Box, Breadcrumbs, Card, Link, Typography } from '@mui/material';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import BaseDocument_StudentView from './BaseDocument_StudentView';
 import { SYMBOL_EXPLANATION } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 
 import { getStudentsAndDocLinks } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';

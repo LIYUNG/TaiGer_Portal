@@ -14,11 +14,10 @@ import {
 
 import { Link as LinkDom, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_role, is_TaiGer_Student } from '@taiger-common/core';
 
-import { is_TaiGer_role, is_TaiGer_Student } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import ProgramList from '../Program/ProgramList';

@@ -7,10 +7,7 @@ import {
   postEvent,
   updateEvent
 } from '../api';
-import {
-  is_TaiGer_Agent,
-  is_TaiGer_Student
-} from '../Demo/Utils/checking-functions';
+import { is_TaiGer_Agent, is_TaiGer_Student } from '@taiger-common/core';
 import { useAuth } from '../components/AuthProvider';
 import { getUTCWithDST, time_slots } from '../Demo/Utils/contants';
 

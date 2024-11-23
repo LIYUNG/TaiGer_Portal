@@ -10,11 +10,11 @@ import {
   Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_Admin } from '@taiger-common/core';
 
 import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
-import { is_TaiGer_Admin } from '../../../Utils/checking-functions';
 
 function NoAgentsStudentsCard(props) {
   const { user } = useAuth();

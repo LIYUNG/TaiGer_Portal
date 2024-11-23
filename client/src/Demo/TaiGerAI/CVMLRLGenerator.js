@@ -11,8 +11,8 @@ import {
 import { Navigate, Link as LinkDom } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { is_TaiGer_role } from '@taiger-common/core';
 
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import { TaiGerAiGeneral2 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';

@@ -17,7 +17,7 @@ import {
   is_TaiGer_Agent,
   is_TaiGer_Editor,
   is_TaiGer_Student
-} from '../Utils/checking-functions';
+} from '@taiger-common/core';
 
 function User(props) {
   const [anchorEl, setAnchorEl] = useState(null);

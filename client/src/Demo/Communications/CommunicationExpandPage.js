@@ -23,6 +23,8 @@ import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { is_TaiGer_role } from '@taiger-common/core';
+
 import MessageList from './MessageList';
 import CommunicationThreadEditor from './CommunicationThreadEditor';
 import ErrorPage from '../Utils/ErrorPage';
@@ -36,12 +38,7 @@ import {
 } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import {
-  is_TaiGer_role,
-  readDOCX,
-  readPDF,
-  readXLSX
-} from '../Utils/checking-functions';
+import { readDOCX, readPDF, readXLSX } from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { stringAvatar } from '../Utils/contants';

@@ -19,11 +19,11 @@ import {
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import {
   isProgramDecided,
-  isProgramSubmitted,
-  is_TaiGer_role
+  isProgramSubmitted
 } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -199,8 +199,7 @@ function AddInterview() {
           (interview) =>
             interview.program_id._id.toString() ===
               application.programId._id.toString() &&
-            interview.student_id._id.toString() ===
-              student._id.toString()
+            interview.student_id._id.toString() === student._id.toString()
         )
     )
     .map((application) => {
@@ -364,7 +363,10 @@ function AddInterview() {
                   {t('Interview program', { ns: 'interviews' })}
                 </Typography>
                 <Typography variant="body2">
-                  {t('In case programs not shown, make sure the programs are submitted.', { ns: 'interviews' })}
+                  {t(
+                    'In case programs not shown, make sure the programs are submitted.',
+                    { ns: 'interviews' }
+                  )}
                 </Typography>
               </TableCell>
               <TableCell>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Alert, Button, Card, Grid, Link, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom } from 'react-router-dom';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import ManualFilesList from './ManualFilesList';
 import ToggleableUploadFileForm from './ToggleableUploadFileForm';
@@ -10,7 +11,6 @@ import {
   file_category_const,
   getMissingDocs,
   getExtraDocs,
-  is_TaiGer_role,
   is_program_closed,
   is_program_ml_rl_essay_finished
 } from '../Utils/checking-functions';

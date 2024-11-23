@@ -20,13 +20,13 @@ import { Navigate, Link as LinkDom } from 'react-router-dom';
 import CheckIcon from '@mui/icons-material/Check';
 import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import { isInTheFuture } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { TabTitle } from '../Utils/TabTitle';
 import MyCalendar from '../../components/Calendar/components/Calendar';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import EventConfirmationCard from '../../components/Calendar/components/EventConfirmationCard';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';

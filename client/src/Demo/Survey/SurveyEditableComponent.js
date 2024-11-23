@@ -22,6 +22,7 @@ import {
 import LinkIcon from '@mui/icons-material/Link';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_Admin, is_TaiGer_Student } from '@taiger-common/core';
 
 import {
   BACHELOR_GRADUATE_STATUS_OPTIONS,
@@ -43,8 +44,6 @@ import {
   check_academic_background_filled,
   check_languages_filled,
   check_application_preference_filled,
-  is_TaiGer_Admin,
-  is_TaiGer_Student,
   Bayerische_Formel,
   MissingSurveyFieldsListArray
 } from '../Utils/checking-functions';

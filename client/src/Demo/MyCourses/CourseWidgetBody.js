@@ -27,11 +27,11 @@ import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import 'react-datasheet-grid/dist/style.css';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import { PROGRAM_ANALYSIS_ATTRIBUTES, study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import {
   WidgetanalyzedFileDownload,
   WidgetTranscriptanalyser,

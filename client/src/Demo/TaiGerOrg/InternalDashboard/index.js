@@ -31,13 +31,13 @@ import { useTranslation } from 'react-i18next';
 import { BarChart as MuiBarChart } from '@mui/x-charts/BarChart';
 import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek';
+import { is_TaiGer_role } from '@taiger-common/core';
 dayjs.extend(isoWeek);
 
 import ErrorPage from '../../Utils/ErrorPage';
 import {
   isProgramDecided,
   isProgramSubmitted,
-  is_TaiGer_role,
   open_tasks_with_editors
 } from '../../Utils/checking-functions';
 import { getStatistics } from '../../../api';

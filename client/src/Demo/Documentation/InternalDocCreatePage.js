@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
+import { is_TaiGer_AdminAgent, is_TaiGer_role } from '@taiger-common/core';
 
 import DocumentsListItems from './DocumentsListItems';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
@@ -27,10 +28,6 @@ import {
   valid_internal_categories,
   internal_documentation_categories
 } from '../Utils/contants';
-import {
-  is_TaiGer_AdminAgent,
-  is_TaiGer_role
-} from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import {
   getAllInternalDocumentations,

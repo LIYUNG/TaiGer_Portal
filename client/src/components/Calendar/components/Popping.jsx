@@ -13,6 +13,7 @@ import {
   Select,
   TextField
 } from '@mui/material';
+import { is_TaiGer_Agent, is_TaiGer_Student } from '@taiger-common/core';
 
 import '../style/model.scss';
 import {
@@ -20,10 +21,7 @@ import {
   convertDate,
   showTimezoneOffset
 } from '../../../Demo/Utils/contants';
-import {
-  is_TaiGer_Agent,
-  is_TaiGer_Student
-} from '../../../Demo/Utils/checking-functions';
+
 import { useTranslation } from 'react-i18next';
 
 const Popping = ({

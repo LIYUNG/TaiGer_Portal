@@ -23,8 +23,8 @@ import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { is_TaiGer_Student } from '@taiger-common/core';
 
-import { is_TaiGer_Student } from '../../Demo/Utils/checking-functions';
 import { BASE_URL } from '../../../src/api/request';
 import EditorSimple from '../EditorJs/EditorSimple';
 // import Output from 'editorjs-react-renderer';

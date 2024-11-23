@@ -19,14 +19,11 @@ import {
   TextField,
   Typography
 } from '@mui/material';
+import { is_TaiGer_AdminAgent, is_TaiGer_role } from '@taiger-common/core';
 
 import DocumentsListItems from './DocumentsListItems';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 import { valid_categories, documentation_categories } from '../Utils/contants';
-import {
-  is_TaiGer_AdminAgent,
-  is_TaiGer_role
-} from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 

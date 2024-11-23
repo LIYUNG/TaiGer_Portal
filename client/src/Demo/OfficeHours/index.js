@@ -27,6 +27,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { is_TaiGer_Student } from '@taiger-common/core';
 
 import {
   getNextDayDate,
@@ -43,7 +44,6 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import Banner from '../../components/Banner/Banner';
 import { TabTitle } from '../Utils/TabTitle';
 import MyCalendar from '../../components/Calendar/components/Calendar';
-import { is_TaiGer_Student } from '../Utils/checking-functions';
 
 import EventConfirmationCard from '../../components/Calendar/components/EventConfirmationCard';
 import DEMO from '../../store/constant';

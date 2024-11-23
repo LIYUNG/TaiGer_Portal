@@ -1,20 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { getQueryPublicResults, getQueryResults } from '../../../api';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_role } from '@taiger-common/core';
+import SearchIcon from '@mui/icons-material/Search';
+import { Box } from '@mui/material';
 
+import { getQueryPublicResults, getQueryResults } from '../../../api';
 import ModalMain from '../../../Demo/Utils/ModalHandler/ModalMain';
 import './search.css';
-import { is_TaiGer_role } from '../../../Demo/Utils/checking-functions';
 import { useAuth } from '../../AuthProvider';
-import SearchIcon from '@mui/icons-material/Search';
 import {
   Role,
   Search,
   SearchIconWrapper,
   StyledInputBase
 } from '../../../Demo/Utils/contants';
-import { Box } from '@mui/material';
 import DEMO from '../../../store/constant';
 
 const NavSearch = () => {

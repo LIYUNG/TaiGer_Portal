@@ -11,12 +11,12 @@ import {
   Bar,
   ResponsiveContainer
 } from 'recharts';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import ErrorPage from '../../../Utils/ErrorPage';
 import ModalMain from '../../../Utils/ModalHandler/ModalMain';
 import { getPrograms } from '../../../../api';
 import DEMO from '../../../../store/constant';
-import { is_TaiGer_role } from '../../../Utils/checking-functions';
 import { appConfig } from '../../../../config';
 import { useAuth } from '../../../../components/AuthProvider';
 import Loading from '../../../../components/Loading/Loading';

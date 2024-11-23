@@ -39,7 +39,7 @@ import {
   is_TaiGer_AdminAgent,
   is_TaiGer_Guest,
   is_TaiGer_role
-} from '../Utils/checking-functions';
+} from '@taiger-common/core';
 
 import {
   getMycourses,

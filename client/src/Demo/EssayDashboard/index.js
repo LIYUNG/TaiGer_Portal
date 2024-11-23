@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import ErrorPage from '../Utils/ErrorPage';
 import { getAllCVMLRLOverview, putThreadFavorite } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import {
   file_category_const,
-  is_TaiGer_role,
   open_tasks,
   toogleItemInArray
 } from '../Utils/checking-functions';

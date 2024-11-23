@@ -8,6 +8,7 @@ import {
   Link,
   Typography
 } from '@mui/material';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import CVMLRLOverview from '../CVMLRLCenter/CVMLRLOverview';
 import ErrorPage from '../Utils/ErrorPage';
@@ -16,7 +17,6 @@ import {
   AGENT_SUPPORT_DOCUMENTS_A,
   FILE_TYPE_E,
   frequencyDistribution,
-  is_TaiGer_role,
   open_essays_tasks,
   open_tasks_with_editors
 } from '../Utils/checking-functions';

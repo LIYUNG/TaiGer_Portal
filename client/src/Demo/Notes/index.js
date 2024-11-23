@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Box } from '@mui/material';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import NotesCard from './NotesCard';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import { getStudentNotes } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';

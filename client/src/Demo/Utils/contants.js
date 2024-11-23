@@ -25,7 +25,7 @@ import { Link, Tooltip, Chip } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
-import { is_TaiGer_Student } from './checking-functions';
+import { is_TaiGer_Student } from '@taiger-common/core';
 import { useTranslation } from 'react-i18next';
 
 export const IS_DEV =

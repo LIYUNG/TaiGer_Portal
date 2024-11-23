@@ -21,6 +21,12 @@ import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import MailIcon from '@mui/icons-material/Mail';
 import { Avatar, Link, Tooltip, useMediaQuery } from '@mui/material';
+import {
+  is_TaiGer_Agent,
+  is_TaiGer_Editor,
+  is_TaiGer_Student,
+  is_TaiGer_role
+} from '@taiger-common/core';
 
 import {
   getActiveEventsNumber,
@@ -29,12 +35,7 @@ import {
 import { appConfig } from '../../config';
 import { useAuth } from '../AuthProvider';
 import NavSearch from './NavSearch';
-import {
-  is_TaiGer_Agent,
-  is_TaiGer_Editor,
-  is_TaiGer_Student,
-  is_TaiGer_role
-} from '../../Demo/Utils/checking-functions';
+
 import ChatList from '../ChatList';
 import { stringAvatar } from '../../Demo/Utils/contants';
 import Loading from '../Loading/Loading';

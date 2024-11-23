@@ -19,15 +19,16 @@ import {
   DialogActions,
   useTheme
 } from '@mui/material';
+import {
+  is_TaiGer_Student,
+  is_TaiGer_Editor,
+  is_TaiGer_role
+} from '@taiger-common/core';
 
 import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
-import {
-  is_TaiGer_Editor,
-  is_TaiGer_role,
-  is_User_Archived
-} from '../../../Utils/checking-functions';
-import { is_TaiGer_Student } from '../../../Utils/checking-functions';
+import { is_User_Archived } from '../../../Utils/checking-functions';
+
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 import EditAttributesSubpage from '../StudDocsOverview/EditAttributesSubpage';

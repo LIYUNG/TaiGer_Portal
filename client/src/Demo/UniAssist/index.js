@@ -3,16 +3,14 @@ import { Navigate, Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Breadcrumbs, Link, Typography, Card } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
+import { is_TaiGer_Student } from '@taiger-common/core';
 
 import UniAssistListCard from './UniAssistListCard';
 import ErrorPage from '../Utils/ErrorPage';
 import { getStudentUniAssist } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import {
-  check_student_needs_uni_assist,
-  is_TaiGer_Student
-} from '../Utils/checking-functions';
+import { check_student_needs_uni_assist } from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';

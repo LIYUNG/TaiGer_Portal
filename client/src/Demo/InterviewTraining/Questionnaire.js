@@ -20,6 +20,8 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useParams } from 'react-router-dom';
+import { is_TaiGer_role } from '@taiger-common/core';
+
 import {
   getInterview,
   getInterviewSurvey,
@@ -29,7 +31,6 @@ import Loading from '../../components/Loading/Loading';
 import ErrorPage from '../Utils/ErrorPage';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
 import { TopBar } from '../../components/TopBar/TopBar';
 const Questionnaire = () => {

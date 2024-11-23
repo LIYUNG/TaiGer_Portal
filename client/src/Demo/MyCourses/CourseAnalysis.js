@@ -14,6 +14,7 @@ import * as XLSX from 'xlsx/xlsx.mjs';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useNavigate, useParams } from 'react-router-dom';
 import 'react-datasheet-grid/dist/style.css';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import { convertDate } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -27,7 +28,6 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 
 export default function CourseAnalysis() {
   const { admin_id, student_id } = useParams();

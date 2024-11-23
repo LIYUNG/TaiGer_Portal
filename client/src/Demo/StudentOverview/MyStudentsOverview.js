@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link as LinkDom, useLoaderData } from 'react-router-dom';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import { TabTitle } from '../Utils/TabTitle';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import { Navigate } from 'react-router-dom';
 import DEMO from '../../store/constant';
 import StudentOverviewTable from '../../components/StudentOverviewTable';

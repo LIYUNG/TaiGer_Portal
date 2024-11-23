@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Card, Breadcrumbs, Link, Typography } from '@mui/material';
+import { is_TaiGer_Editor, is_TaiGer_role } from '@taiger-common/core';
 
 import CVMLRLOverview from './CVMLRLOverview';
 import ErrorPage from '../Utils/ErrorPage';
@@ -14,8 +15,6 @@ import { TabTitle } from '../Utils/TabTitle';
 import {
   AGENT_SUPPORT_DOCUMENTS_A,
   FILE_TYPE_E,
-  is_TaiGer_Editor,
-  is_TaiGer_role,
   open_essays_tasks,
   open_tasks,
   toogleItemInArray

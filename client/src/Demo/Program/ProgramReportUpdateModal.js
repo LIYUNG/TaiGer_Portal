@@ -9,8 +9,8 @@ import {
   Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_role } from '@taiger-common/core';
 
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
 
 function ProgramReportUpdateModal(props) {

@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import ProgramListSubpage from './ProgramListSubpage';
 import ErrorPage from '../Utils/ErrorPage';
@@ -25,7 +26,6 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import ProgramListSingleStudentAssignSubpage from './ProgramListSingleStudentAssignSubpage';
 import NewProgramEdit from './NewProgramEdit';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';

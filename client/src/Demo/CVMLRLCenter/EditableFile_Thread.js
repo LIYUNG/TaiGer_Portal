@@ -13,9 +13,14 @@ import CheckIcon from '@mui/icons-material/Check';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ReplayIcon from '@mui/icons-material/Replay';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_role } from '@taiger-common/core';
 
-import { is_TaiGer_role, latestReplyInfo } from '../Utils/checking-functions';
-import { FILE_OK_SYMBOL, FILE_MISSING_SYMBOL, convertDate } from '../Utils/contants';
+import { latestReplyInfo } from '../Utils/checking-functions';
+import {
+  FILE_OK_SYMBOL,
+  FILE_MISSING_SYMBOL,
+  convertDate
+} from '../Utils/contants';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 

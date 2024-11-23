@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import {
   assignProgramToStudent,
@@ -26,7 +27,6 @@ import ProgramDeleteWarning from './ProgramDeleteWarning';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { TabTitle } from '../Utils/TabTitle';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import { deleteProgram } from '../../api';
 import ProgramListSubpage from './ProgramListSubpage';
 import DEMO from '../../store/constant';

@@ -25,10 +25,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from '@mui/icons-material/Download';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_AdminAgent } from '@taiger-common/core';
 
 import { BASE_URL } from '../../api/request';
 import {
-  is_TaiGer_AdminAgent,
   DocumentStatus,
   check_student_needs_uni_assist,
   isProgramDecided

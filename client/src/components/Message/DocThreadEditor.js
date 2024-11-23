@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SendIcon from '@mui/icons-material/Send';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import EditorSimple from '../EditorJs/EditorSimple';
 import {
@@ -13,7 +14,6 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { CVMLRL_DOC_PRECHECK_STATUS_E } from '../../Demo/Utils/contants';
-import { is_TaiGer_role } from '../../Demo/Utils/checking-functions';
 import { useAuth } from '../AuthProvider';
 
 function DocThreadEditor(props) {

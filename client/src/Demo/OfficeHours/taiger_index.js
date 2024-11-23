@@ -27,6 +27,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import moment from 'moment-timezone';
 import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
+import { is_TaiGer_Agent } from '@taiger-common/core';
 
 import {
   getNextDayDate,
@@ -40,7 +41,6 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 import { TabTitle } from '../Utils/TabTitle';
 import MyCalendar from '../../components/Calendar/components/Calendar';
-import { is_TaiGer_Agent } from '../Utils/checking-functions';
 import EventConfirmationCard from '../../components/Calendar/components/EventConfirmationCard';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';

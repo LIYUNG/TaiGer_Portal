@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, Navigate, useParams } from 'react-router-dom';
 import { Box, Breadcrumbs, Card, Link, Typography } from '@mui/material';
+import { is_TaiGer_Admin } from '@taiger-common/core';
 
 import {
   getLast180DaysObject,
@@ -8,8 +9,6 @@ import {
   transformObjectToArray
 } from '../../Utils/contants';
 import ErrorPage from '../../Utils/ErrorPage';
-import { is_TaiGer_Admin } from '../../Utils/checking-functions';
-
 import { getUsersLog } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';

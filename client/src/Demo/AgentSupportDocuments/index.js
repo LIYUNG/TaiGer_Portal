@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, Navigate } from 'react-router-dom';
 import { Box, Card, Breadcrumbs, Link, Typography } from '@mui/material';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import CVMLRLOverview from '../CVMLRLCenter/CVMLRLOverview';
 import ErrorPage from '../Utils/ErrorPage';
@@ -8,7 +9,6 @@ import { getCVMLRLOverview, putThreadFavorite } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import {
   AGENT_SUPPORT_DOCUMENTS_A,
-  is_TaiGer_role,
   open_tasks,
   toogleItemInArray
 } from '../Utils/checking-functions';

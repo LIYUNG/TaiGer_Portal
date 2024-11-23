@@ -21,15 +21,13 @@ import {
   DialogContent,
   DialogActions
 } from '@mui/material';
+import { is_TaiGer_Editor, is_TaiGer_role } from '@taiger-common/core';
+
 import InventoryIcon from '@mui/icons-material/Inventory';
 import ReplayIcon from '@mui/icons-material/Replay';
 import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
 import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
-import {
-  is_TaiGer_Editor,
-  is_TaiGer_role,
-  is_User_Archived
-} from '../../../Utils/checking-functions';
+import { is_User_Archived } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 import EditAttributesSubpage from '../StudDocsOverview/EditAttributesSubpage';

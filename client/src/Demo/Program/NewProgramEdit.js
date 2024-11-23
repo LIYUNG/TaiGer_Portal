@@ -15,6 +15,7 @@ import {
   FormControlLabel,
   Checkbox
 } from '@mui/material';
+import { is_TaiGer_Admin } from '@taiger-common/core';
 
 import SearchableMultiSelect from '../../components/Input/searchableMuliselect';
 import {
@@ -30,7 +31,6 @@ import {
   PROGRAM_SUBJECTS_DETAILED
 } from '../Utils/contants';
 import { appConfig } from '../../config';
-import { is_TaiGer_Admin } from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
 
 function NewProgramEdit(props) {

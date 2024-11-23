@@ -15,6 +15,7 @@ import {
   DialogActions
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -31,7 +32,6 @@ import DEMO from '../../store/constant';
 import Loading from '../../components/Loading/Loading';
 import { INTERVIEW_STATUS_E, stringAvatar } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
-import { is_TaiGer_role } from '../Utils/checking-functions';
 import { TopBar } from '../../components/TopBar/TopBar';
 import { appConfig } from '../../config';
 import MessageList from '../../components/Message/MessageList';

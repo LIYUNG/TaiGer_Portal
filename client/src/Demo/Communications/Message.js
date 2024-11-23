@@ -28,6 +28,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
 // import { Link as LinkDom } from 'react-router-dom';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { is_TaiGer_Student } from '@taiger-common/core';
 
 // import Output from 'editorjs-react-renderer';
 import EditorSimple from '../../components/EditorJs/EditorSimple';
@@ -35,7 +36,6 @@ import { stringAvatar, convertDate } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { IgnoreMessage } from '../../api/index';
-import { is_TaiGer_Student } from '../Utils/checking-functions';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 import { BASE_URL } from '../../api/request';
 import FilePreview from '../../components/FilePreview/FilePreview';

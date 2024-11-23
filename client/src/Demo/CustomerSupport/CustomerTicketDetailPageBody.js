@@ -23,6 +23,8 @@ import {
   Card,
   CircularProgress
 } from '@mui/material';
+import { is_TaiGer_role } from '@taiger-common/core';
+
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import {
@@ -35,12 +37,7 @@ import MessageList from '../../components/Message/MessageList';
 import { stringAvatar } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import DocThreadEditor from '../../components/Message/DocThreadEditor';
-import {
-  is_TaiGer_role,
-  readDOCX,
-  readPDF,
-  readXLSX
-} from '../Utils/checking-functions';
+import { readDOCX, readPDF, readXLSX } from '../Utils/checking-functions';
 import { TopBar } from '../../components/TopBar/TopBar';
 
 function CustomerTicketDetailPageBody({ complaintTicket }) {

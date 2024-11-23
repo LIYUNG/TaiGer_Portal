@@ -9,6 +9,15 @@ import {
 } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import {
+  is_TaiGer_Admin,
+  is_TaiGer_Agent,
+  is_TaiGer_Editor,
+  is_TaiGer_External,
+  is_TaiGer_Guest,
+  is_TaiGer_Manager,
+  is_TaiGer_Student
+} from '@taiger-common/core';
 
 import AdminMainView from './AdminDashboard/AdminMainView';
 import AgentMainView from './AgentDashboard/AgentMainView';
@@ -18,15 +27,6 @@ import StudentDashboard from './StudentDashboard/StudentDashboard';
 import GuestDashboard from './GuestDashboard/GuestDashboard';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { TabTitle } from '../Utils/TabTitle';
-import {
-  is_TaiGer_Admin,
-  is_TaiGer_Agent,
-  is_TaiGer_Editor,
-  is_TaiGer_External,
-  is_TaiGer_Guest,
-  is_TaiGer_Manager,
-  is_TaiGer_Student
-} from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';

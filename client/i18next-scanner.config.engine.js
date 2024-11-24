@@ -15,7 +15,7 @@ module.exports = {
       list: ['i18next.t', 't'],
       extensions: ['.js', '.jsx']
     },
-    removeUnusedKeys: true,
+    removeUnusedKeys: false,
 
     // Create and update files `en.json`, `fr.json`, `es.json`
     lngs: ['en', 'zh-TW'],
@@ -24,21 +24,22 @@ module.exports = {
       // The namespace I use
       'admissions',
       'auth',
+      'common',
+      'courses',
+      'customerCenter',
+      'cvmlrl',
+      'dashboard',
       'documents',
-      'translation',
+      'error',
       'interviews',
+      'logs',
+      'Note',
       'programList',
       'portalManagement',
-      'uniassist',
-      'logs',
-      'common',
-      'dashboard',
-      'cvmlrl',
       'tickets',
-      'customerCenter',
-      'Note',
-      'courses',
+      'translation',
       'survey',
+      'uniassist',
       'visa'
     ],
 

@@ -846,9 +846,9 @@ function DocModificationThreadPage() {
                 <Typography variant="body1">
                   {docModificationThreadPageState.thread.file_type === 'CV'
                     ? t('cv-instructions', { ns: 'cvmlrl' })
-                    : t(
-                        `Please fill our ${appConfig.companyName} template and attach the filled template and reply in English in this discussion. Any process question`
-                      )}
+                    : t('please-fill-template', {
+                        tenant: appConfig.companyName
+                      })}
                   :
                 </Typography>
                 <LinkDom to={`${DEMO.CV_ML_RL_DOCS_LINK}`}>

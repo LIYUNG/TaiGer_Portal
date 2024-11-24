@@ -4,10 +4,7 @@ import PropTypes from 'prop-types';
 import { Navigate, Link as LinkDom, useLocation } from 'react-router-dom';
 import { Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import dayjs from 'dayjs';
-import isoWeek from 'dayjs/plugin/isoWeek';
 import { is_TaiGer_role } from '@taiger-common/core';
-dayjs.extend(isoWeek);
 
 import ErrorPage from '../../Utils/ErrorPage';
 

@@ -11,7 +11,11 @@ import {
   Bar,
   ResponsiveContainer
 } from 'recharts';
+
 import dayjs from 'dayjs';
+import isoWeek from 'dayjs/plugin/isoWeek';
+dayjs.extend(isoWeek);
+
 import { LineChart } from '@mui/x-charts/LineChart';
 
 import SingleBarChart from '../../../components/Charts/SingleBarChart';

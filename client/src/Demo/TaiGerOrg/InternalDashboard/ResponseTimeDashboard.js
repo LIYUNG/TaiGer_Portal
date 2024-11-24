@@ -54,11 +54,11 @@ const StudentResponseTimeChart = ({ studentResponseTime }) => {
   );
 };
 
-const ResponseTimeDashboard = (
+const ResponseTimeDashboard = ({
   studentResponseTimeLookupTable,
   normalizedResults,
   memoizedColumnsMrt
-) => {
+}) => {
   <Grid container spacing={2}>
     <Grid item xs={12}>
       <Typography variant="h6">Student Response Time</Typography>

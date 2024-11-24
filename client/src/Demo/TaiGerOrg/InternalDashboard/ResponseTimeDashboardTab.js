@@ -54,7 +54,7 @@ const StudentResponseTimeChart = ({ studentResponseTime }) => {
   );
 };
 
-const ResponseTimeDashboard = ({
+const ResponseTimeDashboardTab = ({
   studentResponseTimeLookupTable,
   normalizedResults,
   memoizedColumnsMrt
@@ -78,4 +78,4 @@ const ResponseTimeDashboard = ({
   </Grid>;
 };
 
-export default ResponseTimeDashboard;
+export default ResponseTimeDashboardTab;

@@ -21,10 +21,10 @@ import {
   INTERNAL_DASHBOARD_TABS
 } from '../../Utils/contants.js';
 
-import OverviewDashboard from './OverviewDashboard.js';
+import OverviewDashboardTab from './OverviewDashboardTab.js';
 import AgentDashboard from './AgentDashboard';
-import KPIDashboard from './KPIDashboard';
-import ResponseTimeDashboard from './ResponseTimeDashboard';
+import KPIDashboardTab from './KPIDashboardTab.js';
+import ResponseTimeDashboardTab from './ResponseTimeDashboardTab.js';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -361,7 +361,7 @@ function InternalDashboard() {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <OverviewDashboard
+        <OverviewDashboardTab
           studentDetails={students_details}
           agentData={agents_data}
           editorData={editors_data}
@@ -377,7 +377,7 @@ function InternalDashboard() {
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <KPIDashboard
+        <KPIDashboardTab
           CVdataWithDuration={CVdataWithDuration}
           MLdataWithDuration={MLdataWithDuration}
           RLdataWithDuration={RLdataWithDuration}
@@ -387,7 +387,7 @@ function InternalDashboard() {
         <ProgramListVisualization user={user} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
-        <ResponseTimeDashboard
+        <ResponseTimeDashboardTab
           studentResponseTimeLookupTable={studentResponseTimeLookupTable}
           normalizedResults={normalizedResults}
           memoizedColumnsMrt={memoizedColumnsMrt}

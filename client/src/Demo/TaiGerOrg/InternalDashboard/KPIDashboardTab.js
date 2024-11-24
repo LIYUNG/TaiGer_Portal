@@ -12,7 +12,7 @@ import {
   Label
 } from 'recharts';
 
-const KPIDashboard = ({
+const KPIDashboardTab = ({
   CVdataWithDuration,
   MLdataWithDuration,
   RLdataWithDuration
@@ -131,4 +131,4 @@ const KPIDashboard = ({
   );
 };
 
-export default KPIDashboard;
+export default KPIDashboardTab;

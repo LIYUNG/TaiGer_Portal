@@ -64,7 +64,7 @@ const cat = [
   'SUPPLEMENTARY_FORM'
 ];
 
-const OverviewDashboard = ({
+const OverviewDashboardTab = ({
   studentDetails,
   agentData,
   editorData,
@@ -354,4 +354,4 @@ const OverviewDashboard = ({
   );
 };
 
-export default OverviewDashboard;
+export default OverviewDashboardTab;

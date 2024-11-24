@@ -55,7 +55,8 @@ import {
 import SingleBarChart from '../../../components/Charts/SingleBarChart';
 import VerticalDistributionBarCharts from '../../../components/Charts/VerticalDistributionBarChart';
 import VerticalSingleBarChart from '../../../components/Charts/VerticalSingleChart';
-import ExampleWithLocalizationProvider from '../../../components/MaterialReactTable/index';
+
+import ResponseTimeDashboard from './ResponseTimeDashboard.js';
 
 function groupByMonth(data) {
   return data.reduce((acc, { createdAt }) => {
@@ -141,44 +142,6 @@ const AgentBarCharts = ({ agentDistr }) => {
         width={400}
       />
     </Box>
-  );
-};
-
-// TODO: to be moved to single student
-const StudentResponseTimeChart = ({ studentResponseTime }) => {
-  const fileTypes = ['CV', 'ML', 'RL', 'Essay', 'Messages', 'Agent Support'];
-
-  const chartData = fileTypes.map((type) => ({
-    name: type,
-    ResponseTime:
-      parseFloat(studentResponseTime.intervalGroup[type]?.toFixed(2)) || 0
-  }));
-
-  return (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart
-        data={chartData}
-        margin={{
-          top: 20,
-          right: 30,
-          left: 20,
-          bottom: 5
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis>
-          <Label
-            value={`${studentResponseTime.student?.firstname} ${studentResponseTime.student?.lastname}`}
-            angle={-90}
-            position="insideLeft"
-          />
-        </YAxis>
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="ResponseTime" fill="#8884d8" />
-      </BarChart>
-    </ResponsiveContainer>
   );
 };
 
@@ -911,25 +874,11 @@ function InternalDashboard() {
         <ProgramListVisualization user={user} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h6">Student Response Time</Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <ExampleWithLocalizationProvider
-              data={normalizedResults}
-              col={memoizedColumnsMrt}
-            />
-          </Grid>
-          {false &&
-            studentResponseTimeLookupTable.map((studentResponseTime, idx) => (
-              <Grid item xs={12} md={4} key={idx}>
-                <StudentResponseTimeChart
-                  studentResponseTime={studentResponseTime}
-                />
-              </Grid>
-            ))}
-        </Grid>
+        <ResponseTimeDashboard
+          studentResponseTimeLookupTable={studentResponseTimeLookupTable}
+          normalizedResults={normalizedResults}
+          memoizedColumnsMrt={memoizedColumnsMrt}
+        />
       </CustomTabPanel>
     </Box>
   );

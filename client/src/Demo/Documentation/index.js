@@ -16,10 +16,12 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
+import { useTranslation } from 'react-i18next';
 
 function Documentation(props) {
   const { category } = useParams();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [documentationState, setDocumentationState] = useState({
     error: '',
     isLoaded: false,
@@ -184,6 +186,9 @@ function Documentation(props) {
         >
           {appConfig.companyName}
         </Link>
+        <Typography color="text.primary">
+          {t('Documentation', { ns: 'common' })}
+        </Typography>
         <Typography color="text.primary">{category_name}</Typography>
       </Breadcrumbs>
       {documentationState.isEdit ? (

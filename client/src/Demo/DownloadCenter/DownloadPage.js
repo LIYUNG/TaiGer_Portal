@@ -19,9 +19,11 @@ import DEMO from '../../store/constant';
 import Banner from '../../components/Banner/Banner';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
+import { useTranslation } from 'react-i18next';
 
 function DownloadPage() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [downloadPageState, setDownloadPageState] = useState({
     error: '',
     file: '',
@@ -188,7 +190,7 @@ function DownloadPage() {
   ) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  TabTitle('Download Center');
+  TabTitle(t('Download Center', { ns: 'common' }));
   const { res_status, isLoaded, res_modal_status, res_modal_message } =
     downloadPageState;
 
@@ -218,7 +220,9 @@ function DownloadPage() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">Download</Typography>
+        <Typography color="text.primary">
+          {t('Download Center', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       <Box>
         <Card>

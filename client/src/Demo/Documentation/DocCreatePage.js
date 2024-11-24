@@ -298,7 +298,10 @@ function DocCreatePage(props) {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          {t('All Documentations', { ns: 'common' })}
+          {t('Docs Database', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('Public Docs Database', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
 
@@ -334,7 +337,6 @@ function DocCreatePage(props) {
               onChange={(e) => handleChange_doc_title(e)}
               sx={{ mt: 1 }}
             />
-
             <DocumentsListItemsEditor
               category={DocCreatePageState.category}
               doc_title={DocCreatePageState.doc_title}

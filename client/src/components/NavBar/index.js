@@ -23,9 +23,9 @@ import MailIcon from '@mui/icons-material/Mail';
 import { Avatar, Link, Tooltip, useMediaQuery } from '@mui/material';
 import {
   is_TaiGer_Agent,
+  is_TaiGer_Admin,
   is_TaiGer_Editor,
-  is_TaiGer_Student,
-  is_TaiGer_role
+  is_TaiGer_Student
 } from '@taiger-common/core';
 
 import {
@@ -434,7 +434,9 @@ function NavBar(props) {
               {appConfig.companyName}
             </Link>
           </Typography>
-          {is_TaiGer_role(user) && <NavSearch />}
+          {(is_TaiGer_Agent(user) ||
+            is_TaiGer_Editor(user) ||
+            is_TaiGer_Admin(user)) && <NavSearch />}
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) && (

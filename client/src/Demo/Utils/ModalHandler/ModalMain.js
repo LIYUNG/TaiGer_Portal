@@ -39,12 +39,7 @@ function ModalMain(props) {
         </DialogActions>
       </Dialog>
       <Dialog
-        open={
-          res_modal_status === 403 ||
-          res_modal_status === 404 ||
-          res_modal_status === 413 ||
-          res_modal_status === 415
-        }
+        open={[403, 404, 413, 415].includes(res_modal_status)}
         onClose={props.ConfirmError}
       >
         <DialogTitle>{t('Error')}</DialogTitle>

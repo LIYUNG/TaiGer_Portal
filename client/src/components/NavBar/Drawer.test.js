@@ -65,7 +65,7 @@ describe('CustomDrawer Component', () => {
       'Tools'
     );
     expect(screen.getByTestId('navbar_drawer_component')).not.toHaveTextContent(
-      'Docs Database'
+      'Public Docs'
     );
     expect(screen.getByTestId('navbar_drawer_component')).not.toHaveTextContent(
       'Internal Docs'

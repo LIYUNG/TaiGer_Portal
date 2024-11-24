@@ -37,7 +37,7 @@ function Contact() {
   ) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  TabTitle('Contact Us');
+  TabTitle(t('Contact Us', { ns: 'common' }));
 
   const your_editors = contactState.students[0].editors ? (
     contactState.students[0].editors.map((editor, i) => (
@@ -83,7 +83,9 @@ function Contact() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">{t('Contact Us')}</Typography>
+        <Typography color="text.primary">
+          {t('Contact Us', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       <Typography sx={{ my: 2 }}>Your {appConfig.companyName} Team</Typography>
       <Card>

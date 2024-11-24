@@ -70,7 +70,7 @@ function ProgramUpdateStatusTable(props) {
     },
     {
       field: 'updatedAt',
-      headerName: t('Last updated', { ns: 'common' }),
+      headerName: t('Last update', { ns: 'common' }),
       width: 150
     }
   ];

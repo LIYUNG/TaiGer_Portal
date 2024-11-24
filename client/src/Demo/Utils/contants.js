@@ -1352,7 +1352,7 @@ export const HIG_SCHOOL_TRI_STATE_OPTIONS = [
   { value: '-', label: '-' },
   { value: 'Yes', label: 'Yes' },
   { value: 'No', label: 'No' },
-  { value: 'pending', label: 'In progress' }
+  { value: 'pending', label: 'In Progress' }
 ];
 
 export const TRI_STATE_OPTIONS = [

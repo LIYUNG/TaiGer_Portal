@@ -1,7 +1,7 @@
 {
     "After you updated the course table, please contact your agent for your course analysis.": "在更新課表後，請聯絡您的顧問關於您的課程分析和選課建議",
     "Analyse": "分析",
-    "Analyse V2": "",
+    "Analyse V2": "Analyse V2",
     "Analysing": "分析中",
     "Course Analysis banner": "此份課程分析僅供選課參考。請仔細看過每個向度所缺的課程，並對照學校之後學期是否有開期課程，抓出來，並和您的 Agent 討論。",
     "Course Analysis description": "在 General 頁面，為大略依照您主修向度做分類，其餘的 Tabs 為指標性學校的課程匹配度分析。你會看到每個學校會要求的向度會不一樣，每個向度會對應一個 Required_ECTS，代表你修的課程學分（經過 ECTS轉換 (1.5x 台灣學分)換算後），必須超過該向度的 Required_ECTS 才算達到該項度要求。若有缺少學分、向度，請參考每個 Program Tab 表格最右側，每個向度的 建議修課名單",
@@ -15,7 +15,7 @@
     "Please go to the Uni-Assist section, follow the instructions to complete": "請至 Uni-Assist 專區，依照指示完成帳號申請，上傳文件，申請 VPD",
     "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.": "請參考Agent提供的Program，並到學校學程網站了解詳細資訊，於申請季開始前完成選校",
     "Please upload documents as soon as possible. The agent needs them to understand your academic background.": "請盡速上傳各類成績單和證書等的文件。Agent才能了解你學術背。",
-    "Select Category": "",
+    "Select Category": "Select Category",
     "Select Target Group": "選擇學群",
     "Select language": "選擇語言",
     "Student should access the analysed page in their course page.": "學生也可以在他們的填寫課程頁面找到課程分析連結。",

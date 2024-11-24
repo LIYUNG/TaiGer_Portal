@@ -352,7 +352,7 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
-              {t('Application Deadline', { ns: 'common' })} (MM-DD) *
+              {t('Application Deadline (MM-DD)', { ns: 'common' })} *
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>

@@ -420,7 +420,7 @@ function CommunicationSinglePage() {
                 </Link>
               )}
               <Typography color="text.primary">
-                {t('Messege', { ns: 'common' })}
+                {t('Message', { ns: 'common' })}
               </Typography>
             </Breadcrumbs>
           </Grid>

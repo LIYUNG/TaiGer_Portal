@@ -600,18 +600,28 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
         aria-labelledby="error-dialog-title"
         aria-describedby="error-dialog-description"
       >
-        <DialogTitle id="error-dialog-title">Warning</DialogTitle>
+        <DialogTitle id="error-dialog-title">
+          {t('Warning', { ns: 'common' })}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="error-dialog-description">
-            {t('Do you want to delete?')}
+            {t('Do you want to delete')}
             {/* TODO: show affected programs */}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => handleDeleteConfirm(false)} color="primary" variant='contained'>
+          <Button
+            onClick={() => handleDeleteConfirm(false)}
+            color="primary"
+            variant="contained"
+          >
             {t('Yes', { ns: 'common' })}
           </Button>
-          <Button onClick={() => setIsDeleteDialogOpen(false)} color="primary" variant='outlined'>
+          <Button
+            onClick={() => setIsDeleteDialogOpen(false)}
+            color="primary"
+            variant="outlined"
+          >
             {t('Cancel', { ns: 'common' })}
           </Button>
         </DialogActions>

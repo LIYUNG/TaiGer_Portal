@@ -221,10 +221,10 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
         onClose={() => setDeleteModalOpen(false)}
         size="small"
       >
-        <DialogTitle>{t('Attention')}</DialogTitle>
+        <DialogTitle>{t('Attention', { ns: 'common' })}</DialogTitle>
         <DialogContent>
           <Typography id="modal-modal-description" sx={{ my: 2 }}>
-            {t('Do you want to delete?')}
+            {t('Do you want to delete')}
           </Typography>
         </DialogContent>
         <DialogActions>

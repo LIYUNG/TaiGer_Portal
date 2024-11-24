@@ -549,7 +549,7 @@ function EditorDocsProgress(props) {
               </Typography>
             ) : (
               <Typography fontWeight="bold">
-                {t('In progress', { ns: 'common' })}
+                {t('In Progress', { ns: 'common' })}
               </Typography>
             )}
           </Grid>

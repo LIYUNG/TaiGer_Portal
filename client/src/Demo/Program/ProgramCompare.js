@@ -229,7 +229,7 @@ const ProgramCompare = ({
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>{t('Field')}</TableCell>
+              <TableCell>{t('Field', { ns: 'common' })}</TableCell>
               <TableCell style={{ width: '45%' }}>{t('Original')}</TableCell>
               <TableCell></TableCell>
               <TableCell style={{ width: '45%' }}>{t('Changed to')}</TableCell>

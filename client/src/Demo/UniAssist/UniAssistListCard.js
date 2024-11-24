@@ -806,7 +806,7 @@ function UniAssistListCard(props) {
       >
         <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
         <DialogContent>
-          <DialogContentText>{t('Do you want to delete?')}</DialogContentText>
+          <DialogContentText>{t('Do you want to delete')}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button

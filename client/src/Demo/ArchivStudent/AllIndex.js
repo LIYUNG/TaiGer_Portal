@@ -36,7 +36,7 @@ function AllArchivStudents() {
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  TabTitle('All 2Archiv Students');
+  TabTitle(t('All Archived Students', { ns: 'common' }));
 
   return (
     <Box>

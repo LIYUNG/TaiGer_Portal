@@ -279,7 +279,7 @@ function InternalDocCreatePage(props) {
       />
     ));
   };
-  TabTitle('Internal Docs Database');
+  TabTitle(t('Internal Docs Database', { ns: 'common' }));
   return (
     <Box>
       <Breadcrumbs aria-label="breadcrumb">
@@ -292,7 +292,10 @@ function InternalDocCreatePage(props) {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          {t('All Internal Documentations', { ns: 'common' })}
+          {t('Docs Database', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('Internal Docs Database', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
       <Grid container spacing={2}>

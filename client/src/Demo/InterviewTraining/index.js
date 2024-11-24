@@ -284,37 +284,47 @@ function InterviewTraining() {
           {t('All Students', { ns: 'common' })}
         </Typography>
         <Typography color="text.primary">
+          {t('Interview Center', { ns: 'common' })}
+        </Typography>
+      </Breadcrumbs>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ my: 1 }}
+      >
+        <Typography variant="h6">
           {is_TaiGer_role(user)
             ? t('All Interviews', { ns: 'interviews' })
             : t('My Interviews', { ns: 'interviews' })}
         </Typography>
-      </Breadcrumbs>
-      {!is_TaiGer_role(user) &&
-        interviewTrainingState.available_interview_request_programs?.length >
-          0 && (
-          <Button
-            fullWidth
-            size="small"
-            variant="contained"
-            color="primary"
-            onClick={handleClick}
-            sx={{ my: 1 }}
-          >
-            {t('Add', { ns: 'common' })}
-          </Button>
-        )}
-      {is_TaiGer_role(user) && (
-        <Button
-          fullWidth
-          size="small"
-          variant="contained"
-          color="primary"
-          onClick={handleClick}
-          sx={{ my: 1 }}
-        >
-          {t('Add', { ns: 'common' })}
-        </Button>
-      )}
+        {/* Button on the right */}
+        <Box>
+          {!is_TaiGer_role(user) &&
+            interviewTrainingState.available_interview_request_programs
+              ?.length > 0 && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleClick}
+                sx={{ my: 1 }}
+              >
+                {t('Add', { ns: 'common' })}
+              </Button>
+            )}
+          {is_TaiGer_role(user) && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleClick}
+              sx={{ my: 1 }}
+            >
+              {t('Add', { ns: 'common' })}
+            </Button>
+          )}
+        </Box>
+      </Box>
+
       <MuiDataGrid rows={rows} columns={memoizedColumns} />
     </Box>
   );

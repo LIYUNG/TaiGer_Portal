@@ -51,7 +51,7 @@ let application_overview = [
   },
   {
     id: 'cvmlrl-overview',
-    title: 'CV ML RL Overview',
+    title: 'CV/ML/RL Center',
     type: 'item',
     url: '/cv-ml-rl-center',
     classes: 'nav-item',
@@ -98,7 +98,7 @@ if (appConfig.interviewEnable) {
 let all_students_nestedList = [
   {
     id: 'all-application-overview',
-    title: 'All Application Overview',
+    title: 'All Students Applications Overview',
     type: 'item',
     url: '/all-students-applications',
     icon: <AssignmentTurnedInOutlinedIcon />
@@ -144,14 +144,14 @@ let all_students_nestedList = [
   },
   {
     id: 'all-students-overview',
-    title: 'Student Overview',
+    title: 'All Active Student Overview',
     type: 'item',
     url: '/students-overview/all',
     icon: <GroupOutlinedIcon />
   },
   {
     id: 'internal_program_conflict',
-    title: 'Program Conflict',
+    title: 'Program Conflicts',
     type: 'item',
     icon: <AssignmentLateOutlinedIcon />,
     url: '/internal/program-conflict'
@@ -187,7 +187,7 @@ all_students_nestedList = [
   ...all_students_nestedList,
   {
     id: 'archiv-student',
-    title: 'Archiv Students',
+    title: 'All Archived Students',
     type: 'item',
     icon: <ArchiveOutlinedIcon />,
     url: '/archiv/students/all'
@@ -269,7 +269,7 @@ documentations_nestedList = [
 let taiger_teams_items = [
   {
     id: 'teams_member_permission',
-    title: 'Permissions',
+    title: 'Permissions Management',
     type: 'item',
     icon: <VpnKeyIcon />,
     url: '/teams/permissions'
@@ -355,7 +355,7 @@ export const MenuSidebar = [
       },
       {
         id: 'my-students-overview',
-        title: 'Student Overview',
+        title: 'My Active Student Overview',
         type: 'item',
         url: '/students-overview',
         classes: 'nav-item',
@@ -363,7 +363,7 @@ export const MenuSidebar = [
       },
       {
         id: 'agent-support-documents',
-        title: 'Agent Support',
+        title: 'Agent Support Documents',
         type: 'item',
         url: '/agent-support-documents',
         icon: <BorderColorIcon />,
@@ -380,7 +380,7 @@ export const MenuSidebar = [
       },
       {
         id: 'archiv-student',
-        title: 'Archiv Students',
+        title: 'My Archived Students',
         type: 'item',
         icon: <ArchiveOutlinedIcon />,
         url: '/archiv/students'
@@ -498,7 +498,7 @@ export const MenuSidebar = [
     children: [
       {
         id: 'documents-creation',
-        title: 'Docs Database',
+        title: 'Public Docs Database',
         type: 'item',
         url: '/internal/database/public-docs',
         icon: <StorageIcon />,

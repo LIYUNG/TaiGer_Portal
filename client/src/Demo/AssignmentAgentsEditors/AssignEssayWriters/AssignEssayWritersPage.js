@@ -116,7 +116,7 @@ function AssignEssayWritersPage(props) {
         />
       )}
       <Card sx={{ p: 2 }}>
-        <Typography variant="h6">{t('No Writers Essays')}</Typography>
+        <Typography variant="h6">{t('No Essay Writer')}</Typography>
         <TableContainer style={{ overflowX: 'auto' }}>
           <Table size="small">
             <TableHead>

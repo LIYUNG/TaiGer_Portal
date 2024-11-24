@@ -59,23 +59,27 @@ const ResponseTimeDashboardTab = ({
   normalizedResults,
   memoizedColumnsMrt
 }) => {
-  <Grid container spacing={2}>
-    <Grid item xs={12}>
-      <Typography variant="h6">Student Response Time</Typography>
+  return (
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Typography variant="h6">Student Response Time</Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <ExampleWithLocalizationProvider
+          data={normalizedResults}
+          col={memoizedColumnsMrt}
+        />
+      </Grid>
+      {false &&
+        studentResponseTimeLookupTable.map((studentResponseTime, idx) => (
+          <Grid item xs={12} md={4} key={idx}>
+            <StudentResponseTimeChart
+              studentResponseTime={studentResponseTime}
+            />
+          </Grid>
+        ))}
     </Grid>
-    <Grid item xs={12}>
-      <ExampleWithLocalizationProvider
-        data={normalizedResults}
-        col={memoizedColumnsMrt}
-      />
-    </Grid>
-    {false &&
-      studentResponseTimeLookupTable.map((studentResponseTime, idx) => (
-        <Grid item xs={12} md={4} key={idx}>
-          <StudentResponseTimeChart studentResponseTime={studentResponseTime} />
-        </Grid>
-      ))}
-  </Grid>;
+  );
 };
 
 export default ResponseTimeDashboardTab;

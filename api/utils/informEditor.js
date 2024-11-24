@@ -65,7 +65,7 @@ const informNoEditor = asyncHandler(async (req, student) => {
     .findByIdAndUpdate(student._id, { needEditor: true }, {});
 
   // inform active-agent
-  for (let agent of agents) {
+  for (const agent of agents) {
     if (isArchiv(agent)) {
       continue;
     }
@@ -95,7 +95,7 @@ const informNoEditor = asyncHandler(async (req, student) => {
   }
   const editorLeads = permissions.map((permission) => permission.user_id);
 
-  for (let editorLead of editorLeads) {
+  for (const editorLead of editorLeads) {
     await sendAssignEditorReminderEmail(
       {
         firstname: editorLead.firstname,
@@ -157,7 +157,7 @@ const informOnSurveyUpdate = asyncHandler(async (req, user, survey, thread) => {
       }
     } else {
       // Inform Editor
-      for (let editor of editors) {
+      for (const editor of editors) {
         if (isArchiv(editor)) {
           continue;
         }

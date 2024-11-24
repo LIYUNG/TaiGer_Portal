@@ -281,7 +281,7 @@ const profile_list = {
   Second_Degree_Certificate: 'Second Degree Certificate/Enrolment',
   Second_Degree_Transcript: 'Second Degree Transcript',
   Englisch_Certificate: 'TOEFL or IELTS',
-  German_Certificate: 'TestDaF or Goethe-A1-C1',
+  German_Certificate: 'TestDaF or Goethe B2/C1',
   GRE: 'GRE',
   GMAT: 'GMAT',
   ECTS_Conversion: 'ECTS Conversion',

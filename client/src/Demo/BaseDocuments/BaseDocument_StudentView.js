@@ -4,11 +4,7 @@ import { Box, Button, IconButton, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import {
-  profile_wtih_doc_link_list,
-  profile_list,
-  SYMBOL_EXPLANATION
-} from '../Utils/contants';
+import { profile_list, SYMBOL_EXPLANATION } from '../Utils/contants';
 import {
   uploadforstudent,
   updateProfileDocumentStatus,
@@ -24,6 +20,72 @@ import MyDocumentCard from './MyDocumentCard';
 function BaseDocument_StudentView(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const profile_wtih_doc_link_list = {
+    High_School_Diploma: {
+      name: t('High School Diploma', { ns: 'common' }),
+      link: ''
+    },
+    High_School_Transcript: {
+      name: t('High School Transcript', { ns: 'common' }),
+      link: ''
+    },
+    University_Entrance_Examination_GSAT: {
+      name: t('GSAT/SAT/TVE/IB Test', { ns: 'common' }),
+      link: ''
+    },
+    Bachelor_Certificate: {
+      name: t('Bachelor Certificate/Enrolment', { ns: 'common' }),
+      link: ''
+    },
+    Bachelor_Transcript: {
+      name: t('Bachelor Transcript', { ns: 'common' }),
+      link: ''
+    },
+    Second_Degree_Certificate: {
+      name: t('Second Degree Certificate/Enrolment', { ns: 'common' }),
+      link: ''
+    },
+    Second_Degree_Transcript: {
+      name: t('Second Degree Transcript', { ns: 'common' }),
+      link: ''
+    },
+    Englisch_Certificate: {
+      name: t('TOEFL or IELTS', { ns: 'common' }),
+      link: ''
+    },
+    German_Certificate: {
+      name: t('TestDaF or Goethe B2/C1', { ns: 'common' }),
+      link: ''
+    },
+    GRE: { name: t('GRE', { ns: 'common' }), link: '' },
+    GMAT: { name: t('GMAT', { ns: 'common' }), link: '' },
+    ECTS_Conversion: {
+      name: t('ECTS Conversion', { ns: 'common' }),
+      link: ''
+    },
+    Course_Description: {
+      name: t('Course Description', { ns: 'common' }),
+      link: ''
+    },
+    Internship: {
+      name: t('Internship Certificate', { ns: 'common' }),
+      link: ''
+    },
+    Employment_Certificate: {
+      name: t('Employment Certificate', { ns: 'common' }),
+      link: ''
+    },
+    Exchange_Student_Certificate: {
+      name: t('Exchange Student Certificate', { ns: 'common' }),
+      link: ''
+    },
+    Passport_Photo: {
+      name: t('Formal Profile Photo', { ns: 'common' }),
+      link: ''
+    },
+    Passport: { name: t('Passport Copy', { ns: 'common' }), link: '' },
+    Others: { name: t('Others', { ns: 'common' }), link: '' }
+  };
   const [baseDocumentStudentViewState, setBaseDocumentStudentViewState] =
     useState({
       error: '',

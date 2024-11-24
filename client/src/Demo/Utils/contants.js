@@ -2066,37 +2066,6 @@ export const programstatuslist = [
   }
 ];
 
-export const profile_wtih_doc_link_list = {
-  High_School_Diploma: { name: 'High School Diploma', link: '' },
-  High_School_Transcript: { name: 'High School Transcript', link: '' },
-  University_Entrance_Examination_GSAT: {
-    name: 'GSAT/SAT/TVE/IB Test',
-    link: ''
-  },
-  Bachelor_Certificate: { name: 'Bachelor Certificate/Enrolment', link: '' },
-  Bachelor_Transcript: { name: 'Bachelor Transcript', link: '' },
-  Second_Degree_Certificate: {
-    name: 'Second Degree Certificate/Enrolment',
-    link: ''
-  },
-  Second_Degree_Transcript: { name: 'Second Degree Transcript', link: '' },
-  Englisch_Certificate: { name: 'TOEFL or IELTS', link: '' },
-  German_Certificate: { name: 'TestDaF or Goethe B2/C1', link: '' },
-  GRE: { name: 'GRE', link: '' },
-  GMAT: { name: 'GMAT', link: '' },
-  ECTS_Conversion: { name: 'ECTS Conversion', link: '' },
-  Course_Description: { name: 'Course Description', link: '' },
-  Internship: { name: 'Internship Certificate', link: '' },
-  Employment_Certificate: { name: 'Employment Certificate', link: '' },
-  Exchange_Student_Certificate: {
-    name: 'Exchange Student Certificate',
-    link: ''
-  },
-  Passport_Photo: { name: 'Formal Profile Photo', link: '' },
-  Passport: { name: 'Passport Copy', link: '' },
-  Others: { name: 'Others', link: '' }
-};
-
 export const profile_list = {
   High_School_Diploma: 'High School Diploma',
   High_School_Transcript: 'High School Transcript',
@@ -2106,7 +2075,7 @@ export const profile_list = {
   Second_Degree_Certificate: 'Second Degree Certificate/Enrolment',
   Second_Degree_Transcript: 'Second Degree Transcript',
   Englisch_Certificate: 'TOEFL or IELTS',
-  German_Certificate: 'TestDaF or Goethe-A1-C1',
+  German_Certificate: 'TestDaF or Goethe B2/C1',
   GRE: 'GRE',
   GMAT: 'GMAT',
   ECTS_Conversion: 'ECTS Conversion',

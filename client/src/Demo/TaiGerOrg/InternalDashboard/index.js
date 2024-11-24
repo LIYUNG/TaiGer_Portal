@@ -23,9 +23,7 @@ import {
   YAxis,
   Bar,
   Cell,
-  ResponsiveContainer,
-  Legend,
-  Label
+  ResponsiveContainer
 } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import { BarChart as MuiBarChart } from '@mui/x-charts/BarChart';
@@ -56,6 +54,7 @@ import SingleBarChart from '../../../components/Charts/SingleBarChart';
 import VerticalDistributionBarCharts from '../../../components/Charts/VerticalDistributionBarChart';
 import VerticalSingleBarChart from '../../../components/Charts/VerticalSingleChart';
 
+import KPIDashboard from './KPIDashboard';
 import ResponseTimeDashboard from './ResponseTimeDashboard';
 
 function groupByMonth(data) {
@@ -759,116 +758,11 @@ function InternalDashboard() {
         </Grid>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={4}>
-            <Card sx={{ p: 2 }}>
-              <Typography>Closed CV KPI</Typography>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={CVdataWithDuration}
-                  margin={{
-                    top: 20,
-                    right: 0,
-                    left: 0,
-                    bottom: 5
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="name"
-                    angle={270}
-                    dx={0}
-                    dy={25}
-                    minTickGap={-200}
-                    axisLine={false}
-                  />
-                  <YAxis>
-                    <Label
-                      value="Duration (days)"
-                      angle={-90}
-                      position="insideLeft"
-                    />
-                  </YAxis>
-                  <Tooltip labelStyle={{ color: 'black' }} />
-                  <Legend />
-                  <Bar dataKey="duration" fill="#8884d8" />
-                </BarChart>
-              </ResponsiveContainer>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Card sx={{ p: 2 }}>
-              <Typography>Closed ML KPI</Typography>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={MLdataWithDuration}
-                  margin={{
-                    top: 20,
-                    right: 0,
-                    left: 0,
-                    bottom: 5
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="name"
-                    angle={270}
-                    dx={0}
-                    dy={25}
-                    minTickGap={-200}
-                    axisLine={false}
-                  />
-                  <YAxis>
-                    <Label
-                      value="Duration (days)"
-                      angle={-90}
-                      position="insideLeft"
-                    />
-                  </YAxis>
-                  <Tooltip labelStyle={{ color: 'black' }} />
-                  <Legend />
-                  <Bar dataKey="duration" fill="#8884d8" />
-                </BarChart>
-              </ResponsiveContainer>
-            </Card>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Card sx={{ p: 2 }}>
-              <Typography>Closed RL KPI</Typography>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={RLdataWithDuration}
-                  margin={{
-                    top: 20,
-                    right: 0,
-                    left: 0,
-                    bottom: 5
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="name"
-                    angle={270}
-                    dx={0}
-                    dy={25}
-                    minTickGap={-200}
-                    axisLine={false}
-                  />
-                  <YAxis>
-                    <Label
-                      value="Duration (days)"
-                      angle={-90}
-                      position="insideLeft"
-                    />
-                  </YAxis>
-                  <Tooltip labelStyle={{ color: 'black' }} />
-                  <Legend />
-                  <Bar dataKey="duration" fill="#8884d8" />
-                </BarChart>
-              </ResponsiveContainer>
-            </Card>
-          </Grid>
-        </Grid>
+        <KPIDashboard
+          CVdataWithDuration={CVdataWithDuration}
+          MLdataWithDuration={MLdataWithDuration}
+          RLdataWithDuration={RLdataWithDuration}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
         <ProgramListVisualization user={user} />

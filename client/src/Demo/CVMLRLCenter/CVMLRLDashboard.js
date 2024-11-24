@@ -220,19 +220,27 @@ function CVMLRLDashboard(props) {
           aria-label="basic tabs example"
         >
           <Tab
-            label={`In Progress (${cvmlrl_active_tasks?.length || 0})`}
+            label={`${t('In Progress', { ns: 'common' })} (${
+              cvmlrl_active_tasks?.length || 0
+            })`}
             {...a11yProps(0)}
           />
           <Tab
-            label={`No Input (${cvmlrl_idle_tasks?.length || 0})`}
+            label={`${t('No Input', { ns: 'common' })} (${
+              cvmlrl_idle_tasks?.length || 0
+            })`}
             {...a11yProps(1)}
           />
           <Tab
-            label={`Closed (${cvmlrl_closed_v2?.length || 0})`}
+            label={`${t('Closed', { ns: 'common' })} (${
+              cvmlrl_closed_v2?.length || 0
+            })`}
             {...a11yProps(2)}
           />
           <Tab
-            label={`All (${cvmlrl_all_v2?.length || 0})`}
+            label={`${t('All', { ns: 'common' })} (${
+              cvmlrl_all_v2?.length || 0
+            })`}
             {...a11yProps(2)}
           />
         </Tabs>

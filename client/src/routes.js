@@ -284,7 +284,7 @@ const routes = [
   {
     path: '/archiv/students',
     exact: true,
-    name: 'Archiv Students',
+    name: 'My Archived Students',
     Component: ArchivStudent
   },
   {
@@ -627,7 +627,7 @@ const routes = [
   {
     path: '/teams/agents/archiv/:user_id',
     exact: true,
-    name: 'Archiv Students',
+    name: 'Archived Students',
     Component: ArchivStudent
   },
   {
@@ -639,7 +639,7 @@ const routes = [
   {
     path: '/teams/editors/archiv/:user_id',
     exact: true,
-    name: 'Archiv Students',
+    name: 'Archived Students',
     Component: ArchivStudent
   },
   {

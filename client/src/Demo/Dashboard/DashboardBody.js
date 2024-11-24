@@ -86,7 +86,7 @@ function DashboardBody({ studentAndEssays }) {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          {t('Dashboard', { ns: 'dashboard' })}
+          {t('Dashboard', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
       {is_TaiGer_Admin(user) && (

@@ -553,7 +553,9 @@ export const MissingSurveyFieldsListArray = ({
       missingFields.push('Target Degree Programs');
     }
     if (application_preference.considered_privat_universities === '-') {
-      missingFields.push('Considering private universities');
+      missingFields.push(
+        'Considering private universities? (Tuition Fee: ~15000 EURO/year)'
+      );
     }
     if (application_preference.application_outside_germany === '-') {
       missingFields.push('Considering universities outside Germany?');

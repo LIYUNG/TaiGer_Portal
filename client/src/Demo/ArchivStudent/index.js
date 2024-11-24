@@ -132,7 +132,7 @@ function ArchivStudents() {
             {appConfig.companyName}
           </Link>
           <Typography color="text.primary">
-            {t('My Archived Students')}{' '}
+            {t('My Archived Students', { ns: 'common' })}{' '}
             {` (${archivStudentsState.students.length})`}
           </Typography>
         </Breadcrumbs>

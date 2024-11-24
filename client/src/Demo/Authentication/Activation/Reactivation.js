@@ -34,7 +34,7 @@ export default function Reactivation(props) {
         <>
           <Typography>{t('Confirmation Email sent')}</Typography>
           <Typography>
-            {t(' The new activation link is sent to the following address:')}
+            {t('The new activation link is sent to the following address:')}
           </Typography>
           <Typography>{props.email}</Typography>
         </>

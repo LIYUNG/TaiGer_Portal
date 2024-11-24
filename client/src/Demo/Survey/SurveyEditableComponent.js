@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import {
   Box,
   Button,
-  Breadcrumbs,
   Card,
-  Link,
   MenuItem,
   Select,
   TextField,
@@ -20,7 +18,6 @@ import {
   DialogActions
 } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
-import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { is_TaiGer_Admin, is_TaiGer_Student } from '@taiger-common/core';
 
@@ -56,8 +53,6 @@ import {
 import Banner from '../../components/Banner/Banner';
 import SearchableMultiSelect from '../../components/Input/searchableMuliselect';
 import { useAuth } from '../../components/AuthProvider';
-import { appConfig } from '../../config';
-import DEMO from '../../store/constant';
 import { useSurvey } from '../../components/SurveyProvider';
 
 const SurveyEditableComponent = (props) => {
@@ -125,21 +120,6 @@ const SurveyEditableComponent = (props) => {
   // );
   return (
     <Box>
-      {is_TaiGer_Student(user) && (
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link
-            underline="hover"
-            color="inherit"
-            component={LinkDom}
-            to={`${DEMO.DASHBOARD_LINK}`}
-          >
-            {appConfig.companyName}
-          </Link>
-          <Typography color="text.primary">
-            {t('Profile', { ns: 'common' })}
-          </Typography>
-        </Breadcrumbs>
-      )}
       {(!check_academic_background_filled(survey.academic_background) ||
         !check_application_preference_filled(
           survey.application_preference

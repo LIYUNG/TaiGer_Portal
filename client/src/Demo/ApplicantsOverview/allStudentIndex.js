@@ -34,7 +34,7 @@ function AllApplicantsOverview() {
                   {t('All Students', { ns: 'common' })}
                 </Typography>
                 <Typography color="text.primary">
-                  {t('All Students Applications Overview')}
+                  {t('All Students Applications Overview', { ns: 'common' })}
                 </Typography>
               </Breadcrumbs>
               <ApplicationOverviewTabs students={loadedData} />

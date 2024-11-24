@@ -209,7 +209,9 @@ function OfficeHours() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">Office Hours</Typography>
+        <Typography color="text.primary">
+          {t('Office Hours', { ns: 'interviews' })}
+        </Typography>
       </Breadcrumbs>
       {hasEvents ? (
         <>
@@ -218,7 +220,7 @@ function OfficeHours() {
             variant="contained"
             onClick={switchCalendarAndMyBookedEvents}
           >
-            Book an Office Hour
+            {t('Book an Office Hour', { ns: 'interviews' })}
           </Button>
           {events?.filter(
             (event) =>

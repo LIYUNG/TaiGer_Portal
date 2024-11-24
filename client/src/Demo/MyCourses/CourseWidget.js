@@ -44,7 +44,10 @@ export default function CourseWidget() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          {t('Pre-Customer Course Analyser', { ns: 'common' })}
+          {t('Tools', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('Course Analyser', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
       <Suspense fallback={<Loading />}>

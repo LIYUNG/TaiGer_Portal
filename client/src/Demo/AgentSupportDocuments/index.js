@@ -119,7 +119,7 @@ function index() {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
   const { res_status, isLoaded, open_tasks_arr } = indexState;
-  TabTitle('Agent Support Documents', { ns: 'common' });
+  TabTitle(t('Agent Support Documents', { ns: 'common' }), { ns: 'common' });
   if (!isLoaded && !indexState.students) {
     return <Loading />;
   }

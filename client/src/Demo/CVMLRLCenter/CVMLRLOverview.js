@@ -273,23 +273,33 @@ function CVMLRLOverview(props) {
           aria-label="basic tabs example"
         >
           <Tab
-            label={`TODO (${props.new_message_tasks?.length || 0}) `}
+            label={`${t('TODO', { ns: 'common' })} (${
+              props.new_message_tasks?.length || 0
+            }) `}
             {...a11yProps(0)}
           />
           <Tab
-            label={`My Favorites (${props.fav_message_tasks?.length || 0})`}
+            label={`${t('My Favorites', { ns: 'common' })} (${
+              props.fav_message_tasks?.length || 0
+            })`}
             {...a11yProps(1)}
           />
           <Tab
-            label={`FOLLOW UP (${props.followup_tasks?.length || 0})`}
+            label={`${t('Follow up', { ns: 'common' })} (${
+              props.followup_tasks?.length || 0
+            })`}
             {...a11yProps(2)}
           />
           <Tab
-            label={`NO ACTION (${props.pending_progress_tasks?.length || 0})`}
+            label={`${t('No Action', { ns: 'common' })} (${
+              props.pending_progress_tasks?.length || 0
+            })`}
             {...a11yProps(3)}
           />
           <Tab
-            label={`CLOSED (${props.closed_tasks?.length || 0})`}
+            label={`${t('Closed', { ns: 'common' })} (${
+              props.closed_tasks?.length || 0
+            })`}
             {...a11yProps(4)}
           />
         </Tabs>

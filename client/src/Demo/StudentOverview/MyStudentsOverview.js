@@ -36,7 +36,7 @@ function MyStudentsOverview() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          {t('My Active Student Overview')} (
+          {t('My Active Student Overview', { ns: 'common' })} (
           {
             students?.filter(
               (student) =>

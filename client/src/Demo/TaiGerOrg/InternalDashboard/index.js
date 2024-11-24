@@ -56,7 +56,7 @@ import SingleBarChart from '../../../components/Charts/SingleBarChart';
 import VerticalDistributionBarCharts from '../../../components/Charts/VerticalDistributionBarChart';
 import VerticalSingleBarChart from '../../../components/Charts/VerticalSingleChart';
 
-import ResponseTimeDashboard from './ResponseTimeDashboard.js';
+import ResponseTimeDashboard from './ResponseTimeDashboard';
 
 function groupByMonth(data) {
   return data.reduce((acc, { createdAt }) => {

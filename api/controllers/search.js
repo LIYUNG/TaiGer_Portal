@@ -36,7 +36,7 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
   //   const regex = new RegExp(searchTerms.join('|'), 'i');
 
   // Use the regular expression pattern in the query
-  const students = await req.db
+  const studentsPromise = req.db
     .model('User')
     .find(
       {
@@ -50,7 +50,7 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
     .select('firstname lastname firstname_chinese lastname_chinese role')
     .lean();
 
-  const documentations = await req.db
+  const documentationsPromise = req.db
     .model('Documentation')
     .find(
       { $text: { $search: req.query.q } },
@@ -61,7 +61,7 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
     .select('title')
     .lean();
 
-  const internaldocs = await req.db
+  const internaldocsPromise = req.db
     .model('Internaldoc')
     .find(
       { $text: { $search: req.query.q } },
@@ -72,7 +72,7 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
     .select('title internal')
     .lean();
 
-  const programs = await req.db
+  const programsPromise = req.db
     .model('Program')
     .find(
       { $text: { $search: req.query.q }, isArchiv: { $ne: true } },
@@ -86,6 +86,12 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
 
   // TODO: search for student
   // search thread, cv ml rl, public doc,
+  const [students, documentations, internaldocs, programs] = await Promise.all([
+    studentsPromise,
+    documentationsPromise,
+    internaldocsPromise,
+    programsPromise
+  ]);
 
   res.status(200).send({
     success: true,

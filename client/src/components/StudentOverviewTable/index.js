@@ -41,8 +41,10 @@ import {
 } from '../../Demo/Utils/checking-functions';
 import DEMO from '../../store/constant';
 import { green, grey } from '@mui/material/colors';
+import { useTranslation } from 'react-i18next';
 
 function StudentOverviewTable(props) {
+  const { t } = useTranslation();
   const tranform = (students) => {
     const transformedStudents = [];
     if (!students) {
@@ -236,7 +238,7 @@ function StudentOverviewTable(props) {
   const column = [
     {
       field: 'firstname_lastname',
-      headerName: 'First-/ Last Name',
+      headerName: t('First-/ Last Name', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       width: 150,
@@ -262,21 +264,21 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'year_semester',
-      headerName: 'Target Year /Semester',
+      headerName: t('Target Year /Semester', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       width: 100
     },
     {
       field: 'target_degree',
-      headerName: 'Target Degree',
+      headerName: t('Target Degree', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       width: 80
     },
     {
       field: 'agents_joined',
-      headerName: 'Agents',
+      headerName: t('Agents', { ns: 'common' }),
       width: 80,
       renderCell: (params) => {
         return params.row.agents?.map((agent) => (
@@ -295,7 +297,7 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'editors_joined',
-      headerName: 'Editors',
+      headerName: t('Editors', { ns: 'common' }),
       width: 80,
       renderCell: (params) => {
         return params.row.editors?.map((editor) => (
@@ -314,12 +316,12 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'isGraduated',
-      headerName: 'Graduated',
+      headerName: t('Graduated', { ns: 'common' }),
       width: 70
     },
     {
       field: 'program_selection',
-      headerName: 'Program Selection',
+      headerName: t('Program Selection', { ns: 'common' }),
       width: 100,
       renderCell: (params) => {
         return (
@@ -348,7 +350,7 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'application',
-      headerName: 'Application',
+      headerName: t('Application', { ns: 'common' }),
       width: 100,
       renderCell: (params) => {
         return (
@@ -390,27 +392,27 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'nextProgram',
-      headerName: 'Next Program to apply',
+      headerName: t('Next Program to apply', { ns: 'common' }),
       width: 100
     },
     {
       field: 'nextProgramDeadline',
-      headerName: 'Next Program deadline',
+      headerName: t('Next Program deadline', { ns: 'common' }),
       width: 100
     },
     {
       field: 'nextProgramDayleft',
-      headerName: 'Next Program Days left',
+      headerName: t('Next Program Days left', { ns: 'common' }),
       width: 70
     },
     {
       field: 'nextProgramStatus',
-      headerName: 'Next Program status',
+      headerName: t('Next Program status', { ns: 'common' }),
       width: 70
     },
     {
       field: 'survey',
-      headerName: 'Survey',
+      headerName: t('Survey', { ns: 'common' }),
       width: 100,
       renderCell: (params) => {
         return (
@@ -429,7 +431,7 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'basedocument',
-      headerName: 'Documents',
+      headerName: t('Documents', { ns: 'common' }),
       width: 100,
       renderCell: (params) => {
         return (
@@ -447,7 +449,7 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'Language',
-      headerName: 'Language',
+      headerName: t('Language', { ns: 'common' }),
       width: 100,
       renderCell: (params) => {
         return !isLanguageInfoComplete(params.row.academic_background) ? (
@@ -538,7 +540,7 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'courseAnalysis',
-      headerName: 'Course Analysis',
+      headerName: t('Course Analysis', { ns: 'common' }),
       width: 100,
       renderCell: (params) => {
         return (
@@ -553,7 +555,7 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'CV',
-      headerName: 'CV',
+      headerName: t('CV', { ns: 'common' }),
       width: 100,
       renderCell: (params) => {
         return (
@@ -571,7 +573,7 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'ML',
-      headerName: 'ML',
+      headerName: t('ML', { ns: 'common' }),
       width: 80,
       renderCell: (params) => {
         return (
@@ -590,7 +592,7 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'RL',
-      headerName: 'RL',
+      headerName: t('RL', { ns: 'common' }),
       width: 80,
       renderCell: (params) => {
         return (
@@ -608,7 +610,7 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'Essay',
-      headerName: 'Essay',
+      headerName: t('Essay', { ns: 'common' }),
       width: 80,
       renderCell: (params) => {
         return (
@@ -626,7 +628,7 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'Portals',
-      headerName: 'Portals',
+      headerName: t('Portals', { ns: 'common' }),
       width: 100,
       renderCell: (params) => {
         return (
@@ -641,7 +643,7 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'uniassist',
-      headerName: 'Uni-Assist',
+      headerName: t('Uni-Assist', { ns: 'common' }),
       width: 100,
       renderCell: (params) => {
         return (
@@ -659,7 +661,7 @@ function StudentOverviewTable(props) {
     },
     {
       field: 'openofferreject',
-      headerName: 'open/offer/reject',
+      headerName: t('open/offer/reject', { ns: 'common' }),
       width: 100,
       renderCell: (params) => {
         return (

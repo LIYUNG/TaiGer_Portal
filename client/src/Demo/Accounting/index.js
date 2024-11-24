@@ -10,9 +10,11 @@ import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
+import { useTranslation } from 'react-i18next';
 
 function Accounting() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [accountingState, setAccountingState] = useState({
     error: '',
     role: '',
@@ -87,10 +89,23 @@ function Accounting() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">Accounting</Typography>
+        <Typography color="text.primary">
+          {t('tenant-team', { ns: 'common', tenant: appConfig.companyName })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('tenant-accounting', {
+            ns: 'common',
+            tenant: appConfig.companyName
+          })}
+        </Typography>
       </Breadcrumbs>
       <Card>
-        <Typography variant="h5">Agent:</Typography>
+        <Typography variant="h5">
+          {t('Agents', {
+            ns: 'common'
+          })}
+          :
+        </Typography>
         {agents.map((agent, i) => (
           <Typography fontWeight="bold" key={i}>
             <LinkDom
@@ -100,7 +115,12 @@ function Accounting() {
             </LinkDom>
           </Typography>
         ))}
-        <Typography variant="h5">Editor:</Typography>
+        <Typography variant="h5">
+          {t('Editors', {
+            ns: 'common'
+          })}
+          :
+        </Typography>
         {editors.map((editor, i) => (
           <Typography fontWeight="bold" key={i}>
             <Link to={`${DEMO.ACCOUNTING_USER_ID_LINK(editor._id.toString())}`}>

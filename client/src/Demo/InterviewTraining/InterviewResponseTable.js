@@ -138,14 +138,14 @@ function InterviewResponseTable() {
   const column = [
     {
       field: 'status',
-      headerName: 'Status',
+      headerName: t('Status', { ns: 'interviews' }),
       align: 'left',
       headerAlign: 'left',
       width: 100
     },
     {
       field: 'firstname_lastname',
-      headerName: 'First-/ Last Name',
+      headerName: t('First-/ Last Name', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       width: 200,
@@ -171,7 +171,7 @@ function InterviewResponseTable() {
     },
     {
       field: 'trainer_id',
-      headerName: `Trainer`,
+      headerName: t('Trainer', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       minWidth: 100,
@@ -195,7 +195,7 @@ function InterviewResponseTable() {
     },
     {
       field: 'interview_date',
-      headerName: t('Interview Time'),
+      headerName: t('Interview Time', { ns: 'interviews' }),
       align: 'left',
       headerAlign: 'left',
       width: 100,
@@ -208,7 +208,7 @@ function InterviewResponseTable() {
     },
     {
       field: 'program_name',
-      headerName: 'Interview',
+      headerName: t('Interview', { ns: 'interviews' }),
       align: 'left',
       headerAlign: 'left',
       width: 400,

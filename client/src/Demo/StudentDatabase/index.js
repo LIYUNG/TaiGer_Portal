@@ -10,9 +10,11 @@ import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import useStudents from '../../hooks/useStudents';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
+import { useTranslation } from 'react-i18next';
 
 function StudentDatabase() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const {
     data: { data: fetchedAllStudents }
   } = useLoaderData();
@@ -46,7 +48,10 @@ function StudentDatabase() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          Students Database ({students?.length})
+          {t('All Students', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('Students Database', { ns: 'common' })} ({students?.length})
         </Typography>
       </Breadcrumbs>
       <Box>

@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Tooltip } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { useTranslation } from 'react-i18next';
 
 export const MuiDataGrid = (props) => {
-  const { t } = useTranslation();
   const [filters, setFilters] = useState({});
   const handleFilterChange = (event, column) => {
     const { value } = event.target;
@@ -53,19 +51,14 @@ export const MuiDataGrid = (props) => {
           ...column,
           renderHeader: () => (
             <Box>
-              <Tooltip
-                title={`${t(`${column.headerName}`, { ns: 'common' })}`}
-                key={column.headerName}
-              >
-                <Typography sx={{ my: 1 }}>
-                  {t(`${column.headerName}`, { ns: 'common' })}
-                </Typography>
+              <Tooltip title={column.headerName} key={column.headerName}>
+                <Typography sx={{ my: 1 }}>{column.headerName}</Typography>
               </Tooltip>
               <TextField
                 fullWidth
                 size="small"
                 type="text"
-                placeholder={t(`${column.headerName}`, { ns: 'common' })}
+                placeholder={column.headerName}
                 onClick={stopPropagation}
                 value={filters[column.field] || ''}
                 onChange={(event) => handleFilterChange(event, column)}

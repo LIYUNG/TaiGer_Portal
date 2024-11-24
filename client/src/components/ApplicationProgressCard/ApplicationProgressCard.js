@@ -257,8 +257,8 @@ export default function ApplicationProgressCard(props) {
                   sx={{ my: 1 }}
                 >
                   {application.admission === 'O'
-                    ? t('Add Admission Letter', { ns: 'admissions' })
-                    : t('Add Rejection Letter', { ns: 'admissions' })}
+                    ? t('upload-admission-letter', { ns: 'admissions' })
+                    : t('upload-rejection-letter', { ns: 'admissions' })}
                 </Button>
               )}
           </Typography>
@@ -302,7 +302,7 @@ export default function ApplicationProgressCard(props) {
                           target="_blank"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          Arrange a training
+                          {t('arrange-a-training', { ns: 'interviews' })}
                         </Link>
                       </Typography>
                     </Typography>

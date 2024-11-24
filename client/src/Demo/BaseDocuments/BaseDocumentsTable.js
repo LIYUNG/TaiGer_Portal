@@ -194,7 +194,7 @@ export function BaseDocumentsTable(props) {
   const baseDocumentColumnsWithoutName = profileArray.map((basdDoc) => {
     return {
       field: basdDoc[0],
-      headerName: basdDoc[1],
+      headerName: t(basdDoc[1], { ns: 'common' }),
       minWidth: 100,
       renderCell: (params) => {
         if (params.value?.status === DocumentStatus.Uploaded) {
@@ -262,7 +262,7 @@ export function BaseDocumentsTable(props) {
   const baseDocumentColumns = [
     {
       field: 'studentName',
-      headerName: 'First / Last Name',
+      headerName: t('First / Last Name', { ns: 'common' }),
       minWidth: 100,
       renderCell: (params) => {
         const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
@@ -286,7 +286,7 @@ export function BaseDocumentsTable(props) {
     },
     {
       field: 'agents',
-      headerName: 'Agents',
+      headerName: t('Agents', { ns: 'common' }),
       minWidth: 100,
       renderCell: (params) => {
         return params.value?.map((agent) => (

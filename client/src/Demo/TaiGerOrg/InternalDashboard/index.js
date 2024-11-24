@@ -592,7 +592,16 @@ function InternalDashboard() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          {appConfig.companyName} Dashboard
+          {t('tenant-team', {
+            ns: 'common',
+            tenant: appConfig.companyName
+          })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('tenant-dashboard', {
+            ns: 'common',
+            tenant: appConfig.companyName
+          })}
         </Typography>
       </Breadcrumbs>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

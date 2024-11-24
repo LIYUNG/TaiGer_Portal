@@ -100,7 +100,7 @@ function AdmissionsTable(props) {
   const admisstionTableColumns = [
     {
       field: 'first_name_chinese',
-      headerName: 'First Name Chinese',
+      headerName: t('First Name Chinese', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       width: 80,
@@ -123,7 +123,7 @@ function AdmissionsTable(props) {
     },
     {
       field: 'last_name_chinese',
-      headerName: 'Last Name Chinese',
+      headerName: t('Last Name Chinese', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       width: 80,
@@ -146,7 +146,7 @@ function AdmissionsTable(props) {
     },
     {
       field: 'name',
-      headerName: 'Name',
+      headerName: t('Name', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       width: 150,
@@ -169,7 +169,7 @@ function AdmissionsTable(props) {
     },
     {
       field: 'email',
-      headerName: 'Email',
+      headerName: t('Email', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       width: 150,
@@ -192,17 +192,17 @@ function AdmissionsTable(props) {
     },
     {
       field: 'agents',
-      headerName: 'Agents',
+      headerName: t('Agents', { ns: 'common' }),
       width: 100
     },
     {
       field: 'editors',
-      headerName: 'Editors',
+      headerName: t('Editors', { ns: 'common' }),
       width: 100
     },
     {
       field: 'school',
-      headerName: 'School',
+      headerName: t('School', { ns: 'common' }),
       width: 250,
       renderCell: (params) => {
         const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.program_id)}`;
@@ -220,7 +220,7 @@ function AdmissionsTable(props) {
     },
     {
       field: 'program_name',
-      headerName: 'Program',
+      headerName: t('Program', { ns: 'common' }),
       width: 250,
       renderCell: (params) => {
         const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.program_id)}`;
@@ -236,20 +236,24 @@ function AdmissionsTable(props) {
         );
       }
     },
-    { field: 'degree', headerName: 'Degree', width: 120 },
+    {
+      field: 'degree',
+      headerName: t('Degree', { ns: 'common' }),
+      width: 120
+    },
     {
       field: 'application_year',
-      headerName: 'Application Year',
+      headerName: t('Application Year', { ns: 'common' }),
       width: 120
     },
     {
       field: 'semester',
-      headerName: 'Semester',
+      headerName: t('Semester', { ns: 'common' }),
       width: 120
     },
     {
       field: 'admission_file_path',
-      headerName: 'Admission Letter',
+      headerName: t('Admission Letter', { ns: 'common' }),
       width: 150,
       renderCell: (params) => {
         const linkUrl = `${BASE_URL}/api/admissions/${params.row.admission_file_path?.replace(
@@ -265,9 +269,9 @@ function AdmissionsTable(props) {
           >
             {params.row.admission_file_path !== '' &&
               (params.row.admission === 'O'
-                ? 'Admission Letter'
+                ? t('Admission Letter', { ns: 'common' })
                 : params.row.admission === 'X'
-                ? 'Rejection Letter'
+                ? t('Rejection Letter', { ns: 'common' })
                 : '')}
           </Link>
         );
@@ -275,7 +279,7 @@ function AdmissionsTable(props) {
     },
     {
       field: 'finalEnrolment',
-      headerName: 'Decision',
+      headerName: t('Decision', { ns: 'common' }),
       width: 150
     }
   ];

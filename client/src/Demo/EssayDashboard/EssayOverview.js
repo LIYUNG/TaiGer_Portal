@@ -79,7 +79,7 @@ function EssayOverview(props) {
   const essay_dashboard_table_column = [
     {
       field: 'firstname_lastname',
-      headerName: 'First-, Last Name',
+      headerName: t('First-, Last Name', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       width: 150,
@@ -116,7 +116,7 @@ function EssayOverview(props) {
     },
     {
       field: 'outsourced_user_id',
-      headerName: 'Essay Writer',
+      headerName: t('Essay Writer', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       minWidth: 120,
@@ -139,7 +139,7 @@ function EssayOverview(props) {
     },
     {
       field: 'editors',
-      headerName: 'Editors',
+      headerName: t('Editors', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       minWidth: 120,
@@ -160,17 +160,17 @@ function EssayOverview(props) {
     },
     {
       field: 'deadline',
-      headerName: 'Deadline',
+      headerName: t('Deadline', { ns: 'common' }),
       minWidth: 100
     },
     {
       field: 'days_left',
-      headerName: 'Days left',
+      headerName: t('Days left', { ns: 'common' }),
       minWidth: 80
     },
     {
       field: 'document_name',
-      headerName: 'Document name',
+      headerName: t('Document name', { ns: 'common' }),
       minWidth: 380,
       renderCell: (params) => {
         const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
@@ -210,27 +210,27 @@ function EssayOverview(props) {
     },
     {
       field: 'aged_days',
-      headerName: 'Aged days',
+      headerName: t('Aged days', { ns: 'common' }),
       minWidth: 80
     },
     {
       field: 'number_input_from_editors',
-      headerName: 'Editor Feedback (#Messages/#Files)',
+      headerName: t('Editor Feedback (#Messages/#Files)', { ns: 'common' }),
       minWidth: 80
     },
     {
       field: 'number_input_from_student',
-      headerName: 'Student Feedback (#Messages/#Files)',
+      headerName: t('Student Feedback (#Messages/#Files)', { ns: 'common' }),
       minWidth: 80
     },
     {
       field: 'latest_reply',
-      headerName: 'Latest Reply',
+      headerName: t('Latest Reply', { ns: 'common' }),
       minWidth: 100
     },
     {
       field: 'updatedAt',
-      headerName: 'Last Update',
+      headerName: t('Last Update', { ns: 'common' }),
       minWidth: 100
     }
   ];

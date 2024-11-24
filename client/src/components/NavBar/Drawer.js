@@ -163,7 +163,10 @@ export const CustomDrawer = (props) => {
               >
                 <ListItemIcon>{menuItem.icon}</ListItemIcon>
                 <ListItemText
-                  primary={t(`${menuItem.title}`, { ns: 'common' })}
+                  primary={t(`${menuItem.title}`, {
+                    ns: 'common',
+                    tenant: menuItem?.tenant
+                  })}
                 />
                 {menuItemOpen[menuItem.id] ? <ExpandLess /> : <ExpandMore />}
               </ListItemButton>
@@ -188,7 +191,8 @@ export const CustomDrawer = (props) => {
                         <ListItemIcon>{subMenuItem.icon}</ListItemIcon>
                         <ListItemText
                           primary={t(`${subMenuItem.title}`, {
-                            ns: 'common'
+                            ns: 'common',
+                            tenant: `${subMenuItem?.tenant}`
                           })}
                         />
                       </ListItemButton>
@@ -206,7 +210,8 @@ export const CustomDrawer = (props) => {
                 <ListItemIcon>{menuItem.icon}</ListItemIcon>
                 <ListItemText
                   primary={t(`${menuItem.title}`, {
-                    ns: 'common'
+                    ns: 'common',
+                    tenant: `${menuItem?.tenant}`
                   })}
                 />
               </ListItemButton>

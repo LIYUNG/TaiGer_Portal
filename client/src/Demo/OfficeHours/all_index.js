@@ -126,7 +126,12 @@ function AllOfficeHours() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">All Events</Typography>
+        <Typography color="text.primary">
+          {t('All Students', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('All Events', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       {hasEvents ? (
         <>

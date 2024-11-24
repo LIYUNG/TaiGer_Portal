@@ -44,6 +44,9 @@ function CustomerSupportBody({ complaintTickets }) {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
+          {t('All Students', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
           {t('Customer Center', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>

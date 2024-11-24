@@ -130,7 +130,7 @@ function AddUserModal(props) {
           }
           onClick={(e) => AddUserSubmit(e, addUserModal.user_information)}
         >
-          {props.isLoaded ? t('Add User') : t('Loading')}
+          {props.isLoaded ? t('add-user') : t('Loading')}
         </Button>
         <Button
           color="secondary"

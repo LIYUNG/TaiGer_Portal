@@ -7,6 +7,8 @@
     "If you did not receive an interview invitation from the university. Please do not request the training.": "If you did not receive an interview invitation from the university. Please do not request the training.",
     "If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).": "If you have previously practiced interviews with our interview training officer, please do not request another interview training unless there are special requirements for the new interview (such as reading specific articles or books).",
     "In case programs not shown, make sure the programs are submitted.": "In case programs not shown, make sure the programs are submitted.",
+    "Interview": "",
+    "Interview Time": "",
     "Interview Training Meeting Link": "Interview Training Meeting Link",
     "Interview Training Survey": "Interview Training Survey",
     "Interview Training Time": "Interview Training Time",
@@ -21,9 +23,11 @@
     "Please provide the interview questions to {{brandName}}": "Please provide the interview questions to {{brandName}}",
     "Please provide the interview training feedback to {{brandName}}": "Please provide the interview training feedback to {{brandName}}",
     "Save draft": "Save draft",
+    "Status": "",
     "The interview trainer was friendly and helped me feel less nervous.": "The interview trainer was friendly and helped me feel less nervous.",
     "The interview training materials provided beforehand were beneficial for my official interview.": "The interview training materials provided beforehand were beneficial for my official interview.",
     "The interview training significantly helped me to conduct the official interview.": "The interview training significantly helped me to conduct the official interview.",
     "Training Request": "Training Request",
-    "Training Time": "Training Time"
+    "Training Time": "Training Time",
+    "arrange-a-training": "Arrange a training"
 }

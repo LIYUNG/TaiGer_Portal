@@ -94,7 +94,10 @@ function Admissions() {
             {t('All Students', { ns: 'common' })}
           </Typography>
           <Typography color="text.primary">
-            {t(`${appConfig.companyName} Admissions`, { ns: 'common' })}
+            {t('tenant-admissions', {
+              ns: 'common',
+              tenant: appConfig.companyName
+            })}
           </Typography>
         </Breadcrumbs>
         <Box>

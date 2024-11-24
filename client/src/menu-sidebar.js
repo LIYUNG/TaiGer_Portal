@@ -165,7 +165,8 @@ let all_students_nestedList = [
   },
   {
     id: 'admissions_overview',
-    title: `${appConfig.companyName} Admissions`,
+    title: 'tenant-admissions',
+    tenant: appConfig.companyName,
     type: 'item',
     icon: <EmojiEventsOutlinedIcon />,
     url: '/admissions-overview'
@@ -275,7 +276,8 @@ let taiger_teams_items = [
   },
   {
     id: 'teams_member',
-    title: `${appConfig.companyName} Members`,
+    title: 'tenant-members',
+    tenant: appConfig.companyName,
     type: 'item',
     icon: <SupervisorAccountIcon />,
     url: '/teams/members'
@@ -304,14 +306,16 @@ taiger_teams_items = [
   },
   {
     id: 'internal_dashboard',
-    title: `${appConfig.companyName} Dashboard`,
+    title: 'tenant-dashboard',
+    tenant: `${appConfig.companyName}`,
     type: 'item',
     icon: <BarChartIcon />,
     url: '/dashboard/internal'
   },
   {
     id: 'internal_accounting',
-    title: `${appConfig.companyName} Accounting`,
+    title: 'tenant-accounting',
+    tenant: `${appConfig.companyName}`,
     type: 'item',
     icon: <EuroIcon />,
     url: '/internal/accounting'
@@ -470,7 +474,8 @@ export const MenuSidebar = [
   },
   {
     id: 'teams_overview',
-    title: `${appConfig.companyName} Teams`,
+    title: 'tenant-team',
+    tenant: `${appConfig.companyName}`,
     type: 'collapse',
     classes: 'nav-item',
     icon: <Diversity3Icon />,

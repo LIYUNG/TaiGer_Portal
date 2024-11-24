@@ -11,9 +11,11 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import useStudents from '../../hooks/useStudents';
+import { useTranslation } from 'react-i18next';
 
 function AllArchivStudents() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const {
     data: { data: initStudents }
   } = useLoaderData();
@@ -48,7 +50,11 @@ function AllArchivStudents() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          All Archived Students {` (${students.length})`}
+          {t('All Students', { ns: 'common' })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('All Archived Students', { ns: 'common' })}
+          {` (${students.length})`}
         </Typography>
       </Breadcrumbs>
       <Box sx={{ mt: 2 }}>

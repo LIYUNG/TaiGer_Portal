@@ -22,7 +22,7 @@ function AdmissionsStat(props) {
   const admisstionStatColumns = [
     {
       field: 'school',
-      headerName: 'School',
+      headerName: t('School', { ns: 'common' }),
       width: 300,
       renderCell: (params) => {
         const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.id)}`;
@@ -40,7 +40,7 @@ function AdmissionsStat(props) {
     },
     {
       field: 'program_name',
-      headerName: 'Program',
+      headerName: t('Program', { ns: 'common' }),
       width: 300,
       renderCell: (params) => {
         const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.id)}`;

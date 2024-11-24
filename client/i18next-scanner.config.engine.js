@@ -58,6 +58,17 @@ module.exports = {
 
     nsSeparator: false, // namespace separator
     keySeparator: false, // key separator
+    customParser: (code, file) => {
+      const keys = [];
+      // Match patterns like `t(subMenuItem.title)` and extract the variable
+      const regex = /t\(([^)]+)\)/g;
+      let match;
+      while ((match = regex.exec(code)) !== null) {
+        keys.push(match[1].replace(/["'`]/g, '').trim()); // Strip quotes or spaces
+      }
+      return keys;
+    },
+    allowDynamicKeys: true,
     interpolation: {
       prefix: '{{',
       suffix: '}}'

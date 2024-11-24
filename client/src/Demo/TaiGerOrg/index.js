@@ -407,7 +407,12 @@ function TaiGerOrg() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">Permissions Management</Typography>
+        <Typography color="text.primary">
+          {t('tenant-team', { ns: 'common', tenant: appConfig.companyName })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('Permissions Management', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       <Card>
         {is_TaiGer_Admin(user) && (

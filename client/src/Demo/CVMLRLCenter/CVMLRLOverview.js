@@ -65,10 +65,38 @@ function CVMLRLOverview(props) {
     return <Loading />;
   }
 
+  const commonColumn = [
+    {
+      field: 'aged_days',
+      headerName: 'Aged days',
+      minWidth: 80
+    },
+    {
+      field: 'number_input_from_editors',
+      headerName: t('Editor Feedback (#Messages/#Files)', { ns: 'common' }),
+      width: 80
+    },
+    {
+      field: 'number_input_from_student',
+      headerName: t('Student Feedback (#Messages/#Files)', { ns: 'common' }),
+      width: 80
+    },
+    {
+      field: 'latest_reply',
+      headerName: t('Latest Reply', { ns: 'common' }),
+      width: 100
+    },
+    {
+      field: 'updatedAt',
+      headerName: t('Last Update', { ns: 'common' }),
+      width: 100
+    }
+  ];
+
   const c2 = [
     {
       field: 'firstname_lastname',
-      headerName: 'First-, Last Name',
+      headerName: t('First-, Last Name', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       minWidth: 200,
@@ -105,22 +133,22 @@ function CVMLRLOverview(props) {
     },
     {
       field: 'deadline',
-      headerName: 'Deadline',
+      headerName: t('Deadline', { ns: 'common' }),
       minWidth: 100
     },
     {
       field: 'days_left',
-      headerName: 'Days left',
+      headerName: t('Days left', { ns: 'common' }),
       minWidth: 80
     },
     {
       field: 'lang',
-      headerName: 'Program Language',
+      headerName: t('Program Language', { ns: 'common' }),
       minWidth: 80
     },
     {
       field: 'document_name',
-      headerName: 'Document name',
+      headerName: t('Document name', { ns: 'common' }),
       minWidth: 380,
       renderCell: (params) => {
         const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
@@ -159,45 +187,17 @@ function CVMLRLOverview(props) {
         );
       }
     },
-    {
-      field: 'aged_days',
-      headerName: 'Aged days',
-      minWidth: 80
-    },
-    {
-      field: 'number_input_from_editors',
-      headerName: 'Editor Feedback (#Messages/#Files)',
-      minWidth: 80
-    },
-    {
-      field: 'number_input_from_student',
-      headerName: 'Student Feedback (#Messages/#Files)',
-      minWidth: 80
-    },
-    {
-      field: 'latest_reply',
-      headerName: 'Latest Reply',
-      minWidth: 100
-    },
-    {
-      field: 'updatedAt',
-      headerName: 'Last Update',
-      minWidth: 100
-    }
+    ...commonColumn
   ];
 
   const c2Student = [
     {
       field: 'firstname_lastname',
-      headerName: 'First-, Last Name',
+      headerName: t('First-, Last Name', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
-      width: 150,
+      width: 200,
       renderCell: (params) => {
-        const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-          params.row.student_id,
-          DEMO.PROFILE_HASH
-        )}`;
         return (
           <>
             <IconButton
@@ -211,33 +211,25 @@ function CVMLRLOverview(props) {
                 />
               )}
             </IconButton>
-            <Link
-              underline="hover"
-              to={linkUrl}
-              component={LinkDom}
-              target="_blank"
-              title={params.value}
-            >
-              {params.value}
-            </Link>
+            <span title={params.value}>{params.value}</span>
           </>
         );
       }
     },
     {
       field: 'deadline',
-      headerName: 'Deadline',
-      width: 100
+      headerName: t('Deadline', { ns: 'common' }),
+      width: 120
     },
     {
       field: 'days_left',
-      headerName: 'Days left',
+      headerName: t('Days left', { ns: 'common' }),
       width: 80
     },
     {
       field: 'document_name',
-      headerName: 'Document name',
-      width: 380,
+      headerName: t('Document name', { ns: 'common' }),
+      width: 450,
       renderCell: (params) => {
         const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
           params.row.thread_id
@@ -257,31 +249,7 @@ function CVMLRLOverview(props) {
         );
       }
     },
-    {
-      field: 'aged_days',
-      headerName: 'Aged days',
-      width: 80
-    },
-    {
-      field: 'number_input_from_editors',
-      headerName: 'Editor Feedback (#Messages/#Files)',
-      width: 80
-    },
-    {
-      field: 'number_input_from_student',
-      headerName: 'Student Feedback (#Messages/#Files)',
-      width: 80
-    },
-    {
-      field: 'latest_reply',
-      headerName: 'Latest Reply',
-      width: 100
-    },
-    {
-      field: 'updatedAt',
-      headerName: 'Last Update',
-      width: 100
-    }
+    ...commonColumn
   ];
 
   const memoizedColumns = is_TaiGer_role(user) ? c2 : c2Student;

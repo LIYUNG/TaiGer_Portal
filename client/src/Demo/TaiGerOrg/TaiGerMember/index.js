@@ -108,7 +108,10 @@ function TaiGerMember() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          {appConfig.companyName} Team Member
+          {t('tenant-team', { ns: 'common', tenant: appConfig.companyName })}
+        </Typography>
+        <Typography color="text.primary">
+          {t('tenant-members', { ns: 'common', tenant: appConfig.companyName })}
         </Typography>
       </Breadcrumbs>
       <Card>

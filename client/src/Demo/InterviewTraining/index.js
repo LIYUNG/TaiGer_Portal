@@ -135,14 +135,14 @@ function InterviewTraining() {
   const column = [
     {
       field: 'status',
-      headerName: 'Status',
+      headerName: t('Status', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       width: 100
     },
     {
       field: 'firstname_lastname',
-      headerName: 'First-/ Last Name',
+      headerName: t('First-/ Last Name', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       width: 200,
@@ -168,7 +168,7 @@ function InterviewTraining() {
     },
     {
       field: 'trainer_id',
-      headerName: `Trainer`,
+      headerName: t('Trainer', { ns: 'common' }),
       align: 'left',
       headerAlign: 'left',
       minWidth: 100,
@@ -192,7 +192,7 @@ function InterviewTraining() {
     },
     {
       field: 'interview_date',
-      headerName: t('Interview Time'),
+      headerName: t('Interview Time', { ns: 'interviews' }),
       align: 'left',
       headerAlign: 'left',
       width: 100,
@@ -205,7 +205,7 @@ function InterviewTraining() {
     },
     {
       field: 'program_name',
-      headerName: 'Interview',
+      headerName: t('Interview', { ns: 'interviews' }),
       align: 'left',
       headerAlign: 'left',
       width: 400,
@@ -280,6 +280,9 @@ function InterviewTraining() {
         >
           {appConfig.companyName}
         </Link>
+        <Typography color="text.primary">
+          {t('All Students', { ns: 'common' })}
+        </Typography>
         <Typography color="text.primary">
           {is_TaiGer_role(user)
             ? t('All Interviews', { ns: 'interviews' })

@@ -318,7 +318,7 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
-              GPA Requirement (German system)
+              {t('GPA Requirement (German system)', { ns: 'common' })}
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>

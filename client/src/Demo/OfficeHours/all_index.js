@@ -130,7 +130,7 @@ function AllOfficeHours() {
           {t('All Students', { ns: 'common' })}
         </Typography>
         <Typography color="text.primary">
-          {t('All Events', { ns: 'common' })}
+          {t('Calendar Events', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
       {hasEvents ? (

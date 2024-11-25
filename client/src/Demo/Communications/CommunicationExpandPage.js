@@ -148,7 +148,7 @@ function CommunicationExpandPage() {
           setCommunicationExpandPageState((prevState) => ({
             ...prevState,
             success,
-            thread: data.reverse(),
+            thread: data,
             upperThread: [],
             messagesLoaded: true,
             isLoaded: true,
@@ -212,7 +212,7 @@ function CommunicationExpandPage() {
             ...prevState,
             success,
             upperThread: [
-              ...data.reverse(),
+              ...data,
               ...communicationExpandPageState.upperThread
             ],
             messagesLoaded: true,

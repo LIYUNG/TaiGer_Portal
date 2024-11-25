@@ -16,7 +16,8 @@ import {
   getCourseKeywordSets,
   getProgramRequirement,
   getProgramRequirements,
-  getProgramsAndCourseKeywordSets
+  getProgramsAndCourseKeywordSets,
+  getCommunicationThread
 } from '.';
 
 export async function getStudentsLoader() {
@@ -46,6 +47,24 @@ export async function getAllActiveEssaysLoader() {
   }
 }
 
+// 
+
+export async function CommunicationThreadLoader({ params }) {
+  const student_id = params.student_id;
+  const response = await getCommunicationThread(student_id);
+  if (response.status >= 400) {
+    throw json({ message: response.statusText }, { status: response.status });
+  } else {
+    return response.data;
+  }
+}
+
+export function getCommunicationThreadLoader({ params }) {
+  return defer({ data: CommunicationThreadLoader({ params }) });
+}
+
+// 
+
 export async function ComplaintTicketLoader({ params }) {
   const complaintTicketId = params.complaintTicketId;
   const response = await getComplaintsTicket(complaintTicketId);
@@ -60,6 +79,8 @@ export function getComplaintTicketLoader({ params }) {
   return defer({ complaintTicket: ComplaintTicketLoader({ params }) });
 }
 
+// 
+
 export async function AllComplaintTicketsLoader() {
   const response = await getComplaintsTickets();
   if (response.status >= 400) {
@@ -72,6 +93,8 @@ export async function AllComplaintTicketsLoader() {
 export function getAllComplaintTicketsLoader() {
   return defer({ complaintTickets: AllComplaintTicketsLoader() });
 }
+
+// 
 
 export async function AllActiveStudentsLoader() {
   const response = await getAllActiveStudents();

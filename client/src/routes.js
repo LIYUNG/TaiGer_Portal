@@ -17,7 +17,8 @@ import {
   getCourseKeywordSetsLoader,
   getProgramRequirementsLoader,
   getProgramsAndCourseKeywordSetsLoader,
-  getProgramRequirementLoader
+  getProgramRequirementLoader,
+  getCommunicationThreadLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
@@ -737,9 +738,9 @@ if (appConfig.meetingEnable) {
 if (appConfig.messengerEnable) {
   routes.push({
     path: '/communications/std/:student_id',
-    exact: true,
-    name: 'My Chat',
-    Component: CommunicationSinglePage
+    errorElement: <DefaultErrorPage />,
+    loader: getCommunicationThreadLoader,
+    element: <CommunicationSinglePage />
   });
   routes.push({
     path: '/communications/t/:student_id',

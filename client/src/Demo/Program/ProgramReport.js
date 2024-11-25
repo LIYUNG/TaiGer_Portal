@@ -7,7 +7,11 @@ import {
   Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { is_TaiGer_role } from '@taiger-common/core';
+import {
+  is_TaiGer_AdminAgent,
+  is_TaiGer_Editor,
+  is_TaiGer_role
+} from '@taiger-common/core';
 
 import {
   createProgramReport,
@@ -272,7 +276,7 @@ function ProgramReport(props) {
             <LinkableNewlineText text={ticket.feedback} />
           </Typography>
         </Grid>
-        {is_TaiGer_role(user) && (
+        {(is_TaiGer_AdminAgent(user) || is_TaiGer_Editor(user)) && (
           <Grid item xs={12}>
             <Typography>
               {t('Reqested by')}:{' '}
@@ -303,7 +307,11 @@ function ProgramReport(props) {
             size="small"
             color="secondary"
             variant="contained"
-            disabled={ticket.status === 'resolved'}
+            disabled={
+              ticket.status === 'resolved' ||
+              (!is_TaiGer_role(user) &&
+                ticket.requester_id?.toString() !== user._id?.toString())
+            }
             onClick={() => handleReportDeleteClick(ticket)}
           >
             {t('Delete', { ns: 'common' })}

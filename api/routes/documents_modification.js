@@ -138,7 +138,14 @@ router
   .route('/essays/all')
   .get(
     getMessagesRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Agent,
+      Role.Editor,
+      Role.Student,
+      Role.External
+    ),
     getAllActiveEssays,
     logAccess
   );
@@ -156,7 +163,7 @@ router
     logAccess
   );
 
-  router
+router
   .route('/:messagesThreadId/:messageId/:ignoreMessageState/ignored')
   .put(
     filter_archiv_user,

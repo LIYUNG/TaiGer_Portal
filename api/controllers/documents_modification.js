@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const async = require('async');
 const path = require('path');
-const { is_TaiGer_Agent } = require('@taiger-common/core');
+const { is_TaiGer_Agent, is_TaiGer_External } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
@@ -2046,6 +2046,8 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
         }
       }
       res.status(200).send({ success: true, data: matchingDocuments });
+    } else if (is_TaiGer_External(user)) {
+      res.status(200).send({ success: true, data: [] });
     } else {
       const essayDocumentThreads = await req.db
         .model('Documentthread')

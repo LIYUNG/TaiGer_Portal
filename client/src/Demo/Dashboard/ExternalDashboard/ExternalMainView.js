@@ -7,6 +7,7 @@ import {
 } from '../../Utils/checking-functions';
 
 import { useTranslation } from 'react-i18next';
+import ProgramReportCard from '../../Program/ProgramReportCard';
 
 function ExternalMainView(props) {
   const { t } = useTranslation();
@@ -40,6 +41,9 @@ function ExternalMainView(props) {
               {t('Coming soon', { ns: 'common' })}
             </Typography>
           </Card>
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <ProgramReportCard />
         </Grid>
       </Grid>
     </>

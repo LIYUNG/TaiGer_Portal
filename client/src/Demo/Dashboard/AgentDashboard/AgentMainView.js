@@ -158,7 +158,7 @@ function AgentMainView(props) {
             )
           )}
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12} sm={6}>
           <Card>
             <Alert severity="error">
               <Typography>
@@ -176,6 +176,13 @@ function AgentMainView(props) {
                         onClick={() => handleCollapse(idx)}
                       >
                         <TableCell>
+                          {progressBarCounter(
+                            application.student,
+                            application.application
+                          )}
+                          %
+                        </TableCell>
+                        <TableCell>
                           <Link
                             underline="hover"
                             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
@@ -191,13 +198,6 @@ function AgentMainView(props) {
                           {application.application_deadline}
                         </TableCell>
                         <TableCell>{application.school}</TableCell>
-                        <TableCell>
-                          {progressBarCounter(
-                            application.student,
-                            application.application
-                          )}
-                          %
-                        </TableCell>
                         <TableCell>{application.program_name}</TableCell>
                       </TableRow>
                       {agentMainViewState.collapsedRows[idx] && (
@@ -217,37 +217,37 @@ function AgentMainView(props) {
             </div>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={12}>
-          <ProgramReportCard />
-        </Grid>
         {is_any_programs_ready_to_submit(myStudents) && (
           <Grid item sm={12} md={6}>
             <ReadyToSubmitTasksCard students={students} user={user} />
           </Grid>
         )}
         {appConfig.vpdEnable && is_any_vpd_missing(myStudents) && (
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} md={4}>
             <VPDToSubmitTasksCard students={students} user={user} />
           </Grid>
         )}
+        <Grid item xs={12} sm={6} md={4}>
+          <ProgramReportCard />
+        </Grid>
         {is_any_base_documents_uploaded(myStudents) && (
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} md={4}>
             <BaseDocumentCheckingTable students={students} />
           </Grid>
         )}
         {isAnyCVNotAssigned(myStudents) && (
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6} md={3}>
             <CVAssignTasksCard students={students} user={user} />
           </Grid>
         )}
         <NoProgramStudentTable students={students} />
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={6} md={3}>
           <ProgramSpecificDocumentCheckCard students={students} />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={6} md={3}>
           <NoEnoughDecidedProgramsTasksCard students={students} user={user} />
         </Grid>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12} md={12}>
           <Card>
             <TabStudBackgroundDashboard
               students={students}

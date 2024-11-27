@@ -51,6 +51,21 @@ export const SurveyProvider = ({ children, value }) => {
     };
   };
 
+  const handleTestDate = (name, newValue) => {
+    const language_temp = {
+      ...surveyState.academic_background.language
+    };
+    language_temp[name] = newValue;
+    setSurveyState((prevState) => ({
+      ...prevState,
+      changed_language: true,
+      academic_background: {
+        ...prevState.academic_background,
+        language: language_temp
+      }
+    }));
+  };
+
   const handleChangeLanguage = (e) => {
     e.preventDefault();
     const language_temp = {
@@ -230,6 +245,7 @@ export const SurveyProvider = ({ children, value }) => {
     handleChangeAcademic,
     handleChangeApplicationPreference,
     setApplicationPreferenceByField,
+    handleTestDate,
     handleChangeLanguage,
     handleAcademicBackgroundSubmit,
     handleSurveyLanguageSubmit,

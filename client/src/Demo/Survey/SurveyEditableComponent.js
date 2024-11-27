@@ -1333,6 +1333,7 @@ const SurveyEditableComponent = (props) => {
                           : t('English Test Date')
                       }
                       name="english_test_date"
+                      format="D. MMM. YYYY"
                       value={dayjs(
                         survey.academic_background?.language
                           ?.english_test_date || ''
@@ -1553,6 +1554,7 @@ const SurveyEditableComponent = (props) => {
                           : t('German Test Date')
                       }
                       name="german_test_date"
+                      format="D. MMM. YYYY"
                       value={dayjs(
                         survey.academic_background?.language
                           ?.german_test_date || ''
@@ -1654,6 +1656,7 @@ const SurveyEditableComponent = (props) => {
                           : t('GRE Test Date')
                       }
                       name="gre_test_date"
+                      format="D. MMM. YYYY"
                       value={dayjs(
                         survey.academic_background?.language?.gre_test_date ||
                           ''
@@ -1760,6 +1763,7 @@ const SurveyEditableComponent = (props) => {
                           : t('GMAT Test Date')
                       }
                       name="gmat_test_date"
+                      format="D. MMM. YYYY"
                       value={dayjs(
                         survey.academic_background?.language?.gmat_test_date ||
                           ''

@@ -873,6 +873,8 @@ export const isInTheFuture = (end) => {
   return now < date;
 };
 
+export const twoYearsInDays = 730; // days
+
 export const getNumberOfDays = (start, end) => {
   const date1 = new Date(start);
   const date2 = new Date(end);

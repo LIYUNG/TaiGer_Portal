@@ -266,6 +266,7 @@
     "School": "學校",
     "School Configuration": "編輯院校",
     "School Type": "院校類型",
+    "School tags": "學校標籤",
     "Search": "搜尋",
     "Second Degree Certificate/Enrolment": "第二學位證明",
     "Second Degree Transcript": "第二學位成績單",
@@ -351,6 +352,7 @@
     "You": "你",
     "announcement": "我們已更新的 email 通知系統至 no-reply@taigerconsultancy-portal.com. 請於日後接受討論邀請並加入日曆，往後任何會議邀請便會自動加入您的日曆，避免錯過忘記討論。",
     "applicationCount": "申請間數",
+    "english-certificate-expired-before-application-deadlines": "英語語言檢定在以下申請截止前已過期：",
     "open/offer/reject": "未送出/錄取/拒絕",
     "tenant-accounting": "{{tenant}} 會計",
     "tenant-admissions": "{{tenant}} 榜單",
@@ -360,5 +362,6 @@
     "timeDays": "{{days}}天",
     "timeHours": "{{hours}}小時",
     "timeMinutes": "{{minutes}}分鐘",
-    "timeWeeks": "{{weeks}}週"
+    "timeWeeks": "{{weeks}}週",
+    "valid-only-two-years": "有效兩年"
 }

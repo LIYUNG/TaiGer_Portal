@@ -266,6 +266,7 @@
     "School": "School",
     "School Configuration": "School Configuration",
     "School Type": "School Type",
+    "School tags": "School tags",
     "Search": "Search",
     "Second Degree Certificate/Enrolment": "Second Degree Certificate/Enrolment",
     "Second Degree Transcript": "Second Degree Transcript",
@@ -351,6 +352,7 @@
     "You": "You",
     "announcement": "We migrate our notification email to no-reply@taigerconsultancy-portal.com. Please Add to Calendar for the invitation in the future so that you will not miss the time.",
     "applicationCount": "Application Count",
+    "english-certificate-expired-before-application-deadlines": "English certificate will be expired before the following application deadline:",
     "open/offer/reject": "open/offer/reject",
     "tenant-accounting": "{{tenant}} Accounting",
     "tenant-admissions": "{{tenant}} Admissions",
@@ -360,5 +362,6 @@
     "timeDays": "{{days}}d",
     "timeHours": "{{hours}}h",
     "timeMinutes": "{{minutes}}m",
-    "timeWeeks": "{{weeks}}w"
+    "timeWeeks": "{{weeks}}w",
+    "valid-only-two-years": "valid only 2 years"
 }

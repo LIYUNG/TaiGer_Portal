@@ -25,6 +25,7 @@ import OverviewDashboardTab from './OverviewDashboardTab.js';
 import AgentDashboard from './AgentDashboard';
 import KPIDashboardTab from './KPIDashboardTab.js';
 import ResponseTimeDashboardTab from './ResponseTimeDashboardTab.js';
+import { calculateDuration } from '../../Utils/checking-functions.js';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -240,12 +241,6 @@ function InternalDashboard() {
     return normalizedResult;
   });
 
-  const calculateDuration = (start, end) => {
-    const startTime = new Date(start).getTime();
-    const endTime = new Date(end).getTime();
-    const duration = (endTime - startTime) / 86400000; // Duration in days
-    return duration;
-  };
   const refactor_finished_cv_docs = finished_docs
     .filter(
       (doc) =>

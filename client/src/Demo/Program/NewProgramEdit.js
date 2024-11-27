@@ -28,7 +28,8 @@ import {
   UNI_ASSIST_ARRAY_OPTIONS,
   YES_NO_BOOLEAN_OPTIONS,
   showFieldAlert,
-  PROGRAM_SUBJECTS_DETAILED
+  PROGRAM_SUBJECTS_DETAILED,
+  SCHOOL_TAGS_DETAILED
 } from '../Utils/contants';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
@@ -1111,6 +1112,20 @@ function NewProgramEdit(props) {
               placeholder="https://...."
               onChange={(e) => handleChange(e)}
               value={program.tuition_fees || ''}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography variant="body1">
+              {t('School tags', { ns: 'common' })}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <SearchableMultiSelect
+              name="tags"
+              label={null}
+              data={SCHOOL_TAGS_DETAILED}
+              value={program?.tags}
+              setValue={handleChangeByField('tags')}
             />
           </Grid>
           <Grid item xs={12} md={6}>

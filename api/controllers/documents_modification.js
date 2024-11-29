@@ -1853,7 +1853,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
   const essayDocumentThreads = await req.db
     .model('Documentthread')
     .findById(messagesThreadId)
-    .populate('student_id outsourced_user_id')
+    .populate('student_id outsourced_user_id', 'firstname lastname email role archiv')
     .populate({
       path: 'student_id',
       populate: {

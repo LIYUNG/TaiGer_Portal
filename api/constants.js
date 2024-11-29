@@ -1289,6 +1289,11 @@ const missing_academic_background = (student, user) => {
     if (student.academic_background.language.english_isPassed === '-') {
       missing_background_fields += '<li><b>English passed?</b></li>';
     }
+    if (student.academic_background.language.english_isPassed === 'O') {
+      if (student.academic_background.language.english_test_date === '') {
+        missing_background_fields += '<li>English Test Date missing.</li>';
+      }
+    }
     if (student.academic_background.language.english_isPassed === 'X') {
       if (student.academic_background.language.english_certificate === '') {
         missing_background_fields += '<li>English Certificate?</li>';

@@ -67,6 +67,7 @@ const { editorIdsBodyFilter } = require('../middlewares/editorIdsBodyFilter');
 const {
   AssignOutsourcerFilter
 } = require('../middlewares/AssignOutsourcerFilter');
+const { auditLog } = require('../utils/log/auditLog');
 
 const router = Router();
 
@@ -160,7 +161,7 @@ router
     editorIdsBodyFilter,
     doc_thread_ops_validator,
     assignEssayWritersToEssayTask,
-    logAccess
+    auditLog
   );
 
 router

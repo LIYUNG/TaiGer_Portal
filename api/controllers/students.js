@@ -87,6 +87,14 @@ const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
       targetUserId: studentId
     })
     .populate('performedBy targetUserId', 'firstname lastname role')
+    .populate({
+      path: 'targetDocumentThreadId',
+      select: 'program_id file_type',
+      populate: {
+        path: 'program_id',
+        select: 'school program_name degree semester'
+      }
+    })
     .sort({ createdAt: -1 });
   const [student, base_docs_link, survey_link, audit] = await Promise.all([
     studentPromise,
@@ -861,7 +869,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     // Prepare arrays
     const editorsIdArr = Object.keys(editorsId);
     const updatedEditorIds = editorsIdArr.filter(
-      (agentId) => editorsId[agentId]
+      (editorId) => editorsId[editorId]
     );
 
     // Fetch editors concurrently

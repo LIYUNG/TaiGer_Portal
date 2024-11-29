@@ -4,7 +4,7 @@ const auditSchema = new Schema(
   {
     performedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     targetUserId: { type: Schema.Types.ObjectId, ref: 'User' },
-    targetDocumentThreadId: { type: Schema.Types.ObjectId, ref: 'User' },
+    targetDocumentThreadId: { type: Schema.Types.ObjectId, ref: 'Documentthread' },
     action: String, // 'create', 'update', etc.
     field: String, // Field that was updated
     changes: {

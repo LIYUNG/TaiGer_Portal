@@ -157,9 +157,9 @@ const SurveyEditableComponent = (props) => {
               new Date()
             ) > 1 ? (
             <li>{t('English Passed ? (IELTS 6.5 / TOEFL 88)')}</li>
-          ) : survey.academic_background?.language?.english_isPassed === 'X' &&
+          ) : survey.academic_background?.language?.english_isPassed !== '--' &&
             survey.academic_background?.language?.english_test_date === '' ? (
-            <li>English Test Date missing !</li>
+            <li>{t('English Test Date missing !')}</li>
           ) : (
             <></>
           )}

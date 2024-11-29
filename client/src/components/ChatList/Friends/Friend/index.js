@@ -45,7 +45,7 @@ const friend = (props) => {
       `${DEMO.COMMUNICATIONS_TAIGER_MODE_LINK(props.data?._id?.toString())}`
     );
   };
-
+  
   return (
     <MenuItem
       onClick={handleToChat}
@@ -116,7 +116,10 @@ const friend = (props) => {
             }}
           >
             <Typography variant="body2">
-              {props.data?.latestCommunication?.user_id !== props.activeId && (
+              {(
+                props.data?.latestCommunication?.user_id === props.data?.latestCommunication?.student_id 
+                && (props.data?.latestCommunication?.ignore_message !== true)
+              ) && (
                 <FiberManualRecordIcon
                   fontSize="small"
                   title="Not Reply Yet"

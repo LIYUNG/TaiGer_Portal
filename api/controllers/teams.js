@@ -639,6 +639,7 @@ const getStatistics = asyncHandler(async (req, res) => {
     const agents_data = [];
     agents_raw_data.forEach((agent, i) => {
       agents_data.push({
+        ...agent,
         key: `${agent.firstname}`,
         student_num_no_offer: agent.student_num_no_offer,
         student_num_with_offer: agent.student_num_with_offer,

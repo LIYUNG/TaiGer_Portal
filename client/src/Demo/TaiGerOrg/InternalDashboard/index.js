@@ -74,7 +74,7 @@ function InternalDashboard() {
           documents,
           students_years_pair,
           students_details,
-          studentResponseTimeLookupTable,
+          studentAvgResponseTime,
           activeStudentGeneralTasks,
           activeStudentTasks,
           agentStudentDistribution
@@ -96,7 +96,7 @@ function InternalDashboard() {
             students_details,
             success: success,
             res_status: status,
-            studentResponseTimeLookupTable
+            studentAvgResponseTime
           }));
         } else {
           setInternalDashboardState((prevState) => ({
@@ -131,7 +131,7 @@ function InternalDashboard() {
     students,
     students_years_pair,
     students_details,
-    studentResponseTimeLookupTable
+    studentAvgResponseTime
   } = internalDashboardState;
 
   if (!isLoaded && !students && !documents) {
@@ -290,7 +290,7 @@ function InternalDashboard() {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
         <ResponseTimeDashboardTab
-          studentResponseTimeLookupTable={studentResponseTimeLookupTable}
+          studentAvgResponseTime={studentAvgResponseTime}
         />
       </CustomTabPanel>
     </Box>

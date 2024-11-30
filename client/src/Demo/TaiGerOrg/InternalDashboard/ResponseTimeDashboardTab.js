@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { Typography, Grid } from '@mui/material';
+import { Box, Link, Typography, Grid } from '@mui/material';
+import { Link as LinkDom } from 'react-router-dom';
 
 import {
   BarChart,
@@ -15,6 +16,18 @@ import {
 } from 'recharts';
 
 import ExampleWithLocalizationProvider from '../../../components/MaterialReactTable/index';
+import DEMO from '../../../store/constant';
+
+const fileTypes = [
+  'communication',
+  'CV',
+  'ML',
+  'RL_A',
+  'RL_B',
+  'RL_C',
+  'Essay',
+  'Supplementary_Form'
+];
 
 // TODO: to be moved to single student
 const StudentResponseTimeChart = ({ studentResponseTime }) => {
@@ -54,11 +67,94 @@ const StudentResponseTimeChart = ({ studentResponseTime }) => {
   );
 };
 
-const ResponseTimeDashboardTab = ({
-  studentResponseTimeLookupTable,
-  normalizedResults,
-  memoizedColumnsMrt
-}) => {
+const responseTimeColumn = [
+  {
+    accessorKey: 'name', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
+    filterVariant: 'autocomplete',
+    filterFn: 'contains',
+    header: 'First-, Last Name',
+    size: 150,
+    Cell: (params) => {
+      const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+        params.row.original.id,
+        DEMO.PROFILE_HASH
+      )}`;
+      return (
+        <Box
+          sx={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
+            // textOverflow: 'ellipsis'
+          }}
+        >
+          <Link
+            underline="hover"
+            to={linkUrl}
+            component={LinkDom}
+            target="_blank"
+            title={params.row.original.name}
+          >
+            {`${params.row.original.name}`}
+          </Link>
+        </Box>
+      );
+    }
+  },
+  {
+    accessorKey: 'communication',
+    header: 'Message',
+    size: 120
+  },
+  {
+    accessorKey: 'CV',
+    header: 'CV',
+    size: 120
+  },
+  {
+    accessorKey: 'ML',
+    header: 'ML',
+    size: 120
+  },
+  {
+    accessorKey: 'RL_A',
+    header: 'RL_A',
+    size: 120
+  },
+  {
+    accessorKey: 'RL_B',
+    header: 'RL_B',
+    size: 120
+  },
+  {
+    accessorKey: 'RL_C',
+    header: 'RL_C',
+    size: 120
+  },
+  {
+    accessorKey: 'Essay',
+    header: 'Essay',
+    size: 120
+  },
+  {
+    accessorKey: 'Supplementary_Form',
+    header: 'Supplementary_Form',
+    size: 120
+  }
+];
+
+const ResponseTimeDashboardTab = ({ studentResponseTimeLookupTable }) => {
+  const memoizedColumnsMrt = useMemo(
+    () => responseTimeColumn,
+    [responseTimeColumn]
+  );
+  const normalizedResults = studentResponseTimeLookupTable.map((result) => {
+    const normalizedResult = { ...result };
+    fileTypes.forEach((key) => {
+      normalizedResult[key] = result[key] !== undefined ? result[key] : 0; // Set missing keys to null or undefined
+    });
+    return normalizedResult;
+  });
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>

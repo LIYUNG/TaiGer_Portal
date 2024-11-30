@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs, Tab, Box, Typography, Breadcrumbs } from '@mui/material';
 import PropTypes from 'prop-types';
 import { Navigate, Link as LinkDom, useLocation } from 'react-router-dom';
@@ -31,100 +31,11 @@ CustomTabPanel.propTypes = {
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired
 };
-const fileTypes2 = [
-  'communication',
-  'CV',
-  'ML',
-  'RL_A',
-  'RL_B',
-  'RL_C',
-  'Essay',
-  'Supplementary_Form'
-];
 
-const responseTimeColumn = [
-  {
-    accessorKey: 'name', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
-    filterVariant: 'autocomplete',
-    filterFn: 'contains',
-    header: 'First-, Last Name',
-    size: 150,
-    Cell: (params) => {
-      const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-        params.row.original.id,
-        DEMO.PROFILE_HASH
-      )}`;
-      return (
-        <Box
-          sx={{
-            whiteSpace: 'nowrap',
-            overflow: 'hidden'
-            // textOverflow: 'ellipsis'
-          }}
-        >
-          <Link
-            underline="hover"
-            to={linkUrl}
-            component={LinkDom}
-            target="_blank"
-            title={params.row.original.name}
-          >
-            {`${params.row.original.name}`}
-          </Link>
-        </Box>
-      );
-    }
-  },
-  {
-    accessorKey: 'communication',
-    header: 'Message',
-    size: 120
-  },
-  {
-    accessorKey: 'CV',
-    header: 'CV',
-    size: 120
-  },
-  {
-    accessorKey: 'ML',
-    header: 'ML',
-    size: 120
-  },
-  {
-    accessorKey: 'RL_A',
-    header: 'RL_A',
-    size: 120
-  },
-  {
-    accessorKey: 'RL_B',
-    header: 'RL_B',
-    size: 120
-  },
-  {
-    accessorKey: 'RL_C',
-    header: 'RL_C',
-    size: 120
-  },
-  {
-    accessorKey: 'Essay',
-    header: 'Essay',
-    size: 120
-  },
-  {
-    accessorKey: 'Supplementary_Form',
-    header: 'Supplementary_Form',
-    size: 120
-  }
-];
 function InternalDashboard() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { hash } = useLocation();
-
-  const memoizedColumnsMrt = useMemo(
-    () => responseTimeColumn,
-    [responseTimeColumn]
-  );
 
   const [internalDashboardState, setInternalDashboardState] = useState({
     error: '',
@@ -230,15 +141,6 @@ function InternalDashboard() {
   if (res_status >= 400) {
     return <ErrorPage res_status={res_status} />;
   }
-
-  // Normalize data by ensuring each object has all keys
-  const normalizedResults = studentResponseTimeLookupTable.map((result) => {
-    const normalizedResult = { ...result };
-    fileTypes2.forEach((key) => {
-      normalizedResult[key] = result[key] !== undefined ? result[key] : 0; // Set missing keys to null or undefined
-    });
-    return normalizedResult;
-  });
 
   const calculateDuration = (start, end) => {
     const startTime = new Date(start).getTime();
@@ -389,8 +291,6 @@ function InternalDashboard() {
       <CustomTabPanel value={value} index={4}>
         <ResponseTimeDashboardTab
           studentResponseTimeLookupTable={studentResponseTimeLookupTable}
-          normalizedResults={normalizedResults}
-          memoizedColumnsMrt={memoizedColumnsMrt}
         />
       </CustomTabPanel>
     </Box>

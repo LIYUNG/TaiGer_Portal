@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const async = require('async');
 const path = require('path');
+const pdf = require('pdf-parse');
+const mammoth = require('mammoth');
 const { is_TaiGer_Agent, is_TaiGer_External } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
@@ -615,6 +617,73 @@ const putThreadFavorite = asyncHandler(async (req, res, next) => {
   });
 });
 
+const patternMatched = async (fileBuffer, extension, patterns) => {
+  for (const pattern of patterns) {
+    if (extension === 'pdf') {
+      const data = await pdf(fileBuffer);
+      if (data.text.toLowerCase().includes(pattern.toLowerCase())) {
+        return true;
+      }
+    } else if (extension === 'docx') {
+      const result = await mammoth.extractRawText({ buffer: fileBuffer });
+      if (result.value.toLowerCase().includes(pattern.toLowerCase())) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
+const checkDocumentPattern = asyncHandler(async (req, res) => {
+  const {
+    params: { messagesThreadId }
+  } = req;
+
+  const document_thread = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId)
+    .lean();
+  if (!document_thread) {
+    logger.error('checkDocumentPattern: thread not found!');
+    throw new ErrorResponse(404, 'Thread Id not found');
+  }
+
+  // TODO:
+  // Step 1
+  // Get last CV keys
+  const documentKeys = document_thread.messages
+    .filter((message) => message.file?.length > 0)
+    .map((message) => message.file);
+  if (documentKeys?.length === 0) {
+    return true;
+  }
+  const latestFiles = documentKeys[documentKeys.length - 1];
+  // Step 2
+  // fetch CV pdf
+  const dataArray = await Promise.all(
+    latestFiles.map((file) => getS3Object(AWS_S3_BUCKET_NAME, file.path))
+  );
+
+  // Convert each data into a Buffer
+  const buffers = dataArray.map((data) => Buffer.from(data));
+
+  // Step 3
+  // find if keywords exist in the pdf / docx
+  let idx = 0;
+  for (const buffer of buffers) {
+    const extension = latestFiles[idx].name.split('.').pop().toLowerCase();
+    const patterns = ['- present', '– present', '- now', '– now'];
+    if (await patternMatched(buffer, extension, patterns)) {
+      return true;
+    }
+    idx += 1;
+  }
+  // Step 4
+  // fals if no found.
+  return false;
+});
+
 const getMessages = asyncHandler(async (req, res) => {
   const {
     user,
@@ -633,6 +702,8 @@ const getMessages = asyncHandler(async (req, res) => {
     .lean()
     .exec();
 
+  const result = await checkDocumentPattern(req);
+  console.log(`result: ${result}`);
   const agents = await req.db
     .model('Agent')
     .find({
@@ -1853,7 +1924,10 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
   const essayDocumentThreads = await req.db
     .model('Documentthread')
     .findById(messagesThreadId)
-    .populate('student_id outsourced_user_id', 'firstname lastname email role archiv')
+    .populate(
+      'student_id outsourced_user_id',
+      'firstname lastname email role archiv'
+    )
     .populate({
       path: 'student_id',
       populate: {

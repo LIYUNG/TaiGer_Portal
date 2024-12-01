@@ -1,4 +1,4 @@
-const { is_TaiGer_Agent } = require('@taiger-common/core');
+const { is_TaiGer_Agent, is_TaiGer_External } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
@@ -87,6 +87,14 @@ const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
       targetUserId: studentId
     })
     .populate('performedBy targetUserId', 'firstname lastname role')
+    .populate({
+      path: 'targetDocumentThreadId',
+      select: 'program_id file_type',
+      populate: {
+        path: 'program_id',
+        select: 'school program_name degree semester'
+      }
+    })
     .sort({ createdAt: -1 });
   const [student, base_docs_link, survey_link, audit] = await Promise.all([
     studentPromise,
@@ -343,6 +351,8 @@ const getStudents = asyncHandler(async (req, res, next) => {
 
       res.status(200).send({ success: true, data: students });
     }
+  } else if (is_TaiGer_External(user)) {
+    res.status(200).send({ success: true, data: [] });
   } else if (user.role === Role.Student) {
     const studentPromise = req.db
       .model('Student')
@@ -859,7 +869,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     // Prepare arrays
     const editorsIdArr = Object.keys(editorsId);
     const updatedEditorIds = editorsIdArr.filter(
-      (agentId) => editorsId[agentId]
+      (editorId) => editorsId[editorId]
     );
 
     // Fetch editors concurrently

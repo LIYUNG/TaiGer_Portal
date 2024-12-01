@@ -67,6 +67,7 @@ const { editorIdsBodyFilter } = require('../middlewares/editorIdsBodyFilter');
 const {
   AssignOutsourcerFilter
 } = require('../middlewares/AssignOutsourcerFilter');
+const { auditLog } = require('../utils/log/auditLog');
 
 const router = Router();
 
@@ -138,7 +139,14 @@ router
   .route('/essays/all')
   .get(
     getMessagesRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Agent,
+      Role.Editor,
+      Role.Student,
+      Role.External
+    ),
     getAllActiveEssays,
     logAccess
   );
@@ -153,10 +161,10 @@ router
     editorIdsBodyFilter,
     doc_thread_ops_validator,
     assignEssayWritersToEssayTask,
-    logAccess
+    auditLog
   );
 
-  router
+router
   .route('/:messagesThreadId/:messageId/:ignoreMessageState/ignored')
   .put(
     filter_archiv_user,

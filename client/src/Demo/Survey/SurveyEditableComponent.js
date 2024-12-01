@@ -20,6 +20,10 @@ import {
 import LinkIcon from '@mui/icons-material/Link';
 import { useTranslation } from 'react-i18next';
 import { is_TaiGer_Admin, is_TaiGer_Student } from '@taiger-common/core';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import dayjs from 'dayjs';
 
 import {
   BACHELOR_GRADUATE_STATUS_OPTIONS,
@@ -58,6 +62,7 @@ import { useSurvey } from '../../components/SurveyProvider';
 const SurveyEditableComponent = (props) => {
   const {
     handleChangeAcademic,
+    handleTestDate,
     handleChangeLanguage,
     handleChangeApplicationPreference,
     setApplicationPreferenceByField,
@@ -152,9 +157,9 @@ const SurveyEditableComponent = (props) => {
               new Date()
             ) > 1 ? (
             <li>{t('English Passed ? (IELTS 6.5 / TOEFL 88)')}</li>
-          ) : survey.academic_background?.language?.english_isPassed === 'X' &&
+          ) : survey.academic_background?.language?.english_isPassed !== '--' &&
             survey.academic_background?.language?.english_test_date === '' ? (
-            <li>English Test Date missing !</li>
+            <li>{t('English Test Date missing !')}</li>
           ) : (
             <></>
           )}
@@ -1258,7 +1263,7 @@ const SurveyEditableComponent = (props) => {
                 />
               )}
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
                 error={
@@ -1277,6 +1282,7 @@ const SurveyEditableComponent = (props) => {
                 }
                 label={t('English Passed ? (IELTS 6.5 / TOEFL 88)')}
                 onChange={handleChangeLanguage}
+                sx={{ mt: 1 }}
               >
                 {IS_PASSED_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -1285,11 +1291,12 @@ const SurveyEditableComponent = (props) => {
                 ))}
               </TextField>
             </Grid>
-            {(survey?.academic_background?.language?.english_isPassed === 'O' ||
-              survey?.academic_background?.language?.english_isPassed ===
-                'X') && (
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
+            <Grid item xs={12} sm={4}>
+              {(survey?.academic_background?.language?.english_isPassed ===
+                'O' ||
+                survey?.academic_background?.language?.english_isPassed ===
+                  'X') && (
+                <FormControl fullWidth sx={{ mt: 1 }}>
                   <InputLabel id="english_certificate">
                     {t('English Certificate')}
                   </InputLabel>
@@ -1310,177 +1317,171 @@ const SurveyEditableComponent = (props) => {
                     ))}
                   </Select>
                 </FormControl>
-              </Grid>
-            )}
+              )}
+            </Grid>
+            <Grid item xs={12} lg={4} sx={{ mb: 2 }}>
+              {['O', 'X'].includes(
+                survey?.academic_background?.language?.english_isPassed
+              ) && (
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={['DatePicker']}>
+                    <DatePicker
+                      label={
+                        survey?.academic_background?.language
+                          ?.english_isPassed === 'X'
+                          ? t('Expected English Test Date')
+                          : t('English Test Date')
+                      }
+                      name="english_test_date"
+                      format="D. MMM. YYYY"
+                      value={dayjs(
+                        survey.academic_background?.language
+                          ?.english_test_date || ''
+                      )}
+                      onChange={(newValue) =>
+                        handleTestDate('english_test_date', newValue)
+                      }
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              )}
+            </Grid>
             {survey?.academic_background?.language?.english_isPassed ===
               'O' && (
-              <Grid item xs={12} sm={4}>
-                <TextField
-                  fullWidth
-                  id="english_score"
-                  name="english_score"
-                  label="Overall"
-                  type="number"
-                  placeholder={`${
-                    survey.academic_background.language.english_certificate ===
-                    'IELTS'
-                      ? '6.5'
-                      : '92'
-                  } `}
-                  value={
-                    survey.academic_background?.language?.english_score || ''
-                  }
-                  disabled={
-                    survey.academic_background.language &&
-                    survey.academic_background.language.english_certificate ===
-                      'No'
-                      ? true
-                      : false
-                  }
-                  onChange={(e) => handleChangeLanguage(e)}
-                />
-              </Grid>
+              <>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    id="english_score"
+                    name="english_score"
+                    label="Overall"
+                    type="number"
+                    placeholder={`${
+                      survey.academic_background.language
+                        .english_certificate === 'IELTS'
+                        ? '6.5'
+                        : '92'
+                    } `}
+                    value={
+                      survey.academic_background?.language?.english_score || ''
+                    }
+                    disabled={
+                      survey.academic_background.language &&
+                      survey.academic_background.language
+                        .english_certificate === 'No'
+                        ? true
+                        : false
+                    }
+                    onChange={(e) => handleChangeLanguage(e)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={2}>
+                  <TextField
+                    fullWidth
+                    id="english_score_reading"
+                    name="english_score_reading"
+                    label="Reading"
+                    type="number"
+                    placeholder={`${
+                      survey.academic_background.language
+                        .english_certificate === 'IELTS'
+                        ? '6.5'
+                        : '21'
+                    } `}
+                    value={
+                      survey.academic_background?.language
+                        ?.english_score_reading || ''
+                    }
+                    disabled={
+                      survey.academic_background?.language
+                        ?.english_certificate === 'No'
+                        ? true
+                        : false
+                    }
+                    onChange={(e) => handleChangeLanguage(e)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={2}>
+                  <TextField
+                    fullWidth
+                    id="english_score_listening"
+                    name="english_score_listening"
+                    label="Listening"
+                    type="number"
+                    placeholder={`${
+                      survey.academic_background.language
+                        .english_certificate === 'IELTS'
+                        ? '6.5'
+                        : '21'
+                    } `}
+                    value={
+                      survey.academic_background?.language
+                        ?.english_score_listening || ''
+                    }
+                    disabled={
+                      survey.academic_background?.language
+                        ?.english_certificate === 'No'
+                        ? true
+                        : false
+                    }
+                    onChange={(e) => handleChangeLanguage(e)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={2}>
+                  <TextField
+                    fullWidth
+                    id="english_score_writing"
+                    name="english_score_writing"
+                    label="Writing"
+                    type="number"
+                    placeholder={`${
+                      survey.academic_background.language
+                        .english_certificate === 'IELTS'
+                        ? '6.5'
+                        : '21'
+                    } `}
+                    value={
+                      survey.academic_background?.language
+                        ?.english_score_writing || ''
+                    }
+                    disabled={
+                      survey.academic_background?.language
+                        ?.english_certificate === 'No'
+                        ? true
+                        : false
+                    }
+                    onChange={(e) => handleChangeLanguage(e)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={2}>
+                  <TextField
+                    fullWidth
+                    id="english_score_speaking"
+                    name="english_score_speaking"
+                    label="Speaking"
+                    type="number"
+                    placeholder={`${
+                      survey.academic_background.language
+                        .english_certificate === 'IELTS'
+                        ? '6.5'
+                        : '21'
+                    } `}
+                    value={
+                      survey.academic_background?.language
+                        ?.english_score_speaking || ''
+                    }
+                    disabled={
+                      survey.academic_background?.language
+                        ?.english_certificate === 'No'
+                        ? true
+                        : false
+                    }
+                    onChange={(e) => handleChangeLanguage(e)}
+                  />
+                </Grid>
+              </>
             )}
-            {survey?.academic_background?.language?.english_isPassed ===
-              'O' && (
-              <Grid item xs={12} sm={2}>
-                <TextField
-                  fullWidth
-                  id="english_score_reading"
-                  name="english_score_reading"
-                  label="Reading"
-                  type="number"
-                  placeholder={`${
-                    survey.academic_background.language.english_certificate ===
-                    'IELTS'
-                      ? '6.5'
-                      : '21'
-                  } `}
-                  value={
-                    survey.academic_background?.language
-                      ?.english_score_reading || ''
-                  }
-                  disabled={
-                    survey.academic_background?.language
-                      ?.english_certificate === 'No'
-                      ? true
-                      : false
-                  }
-                  onChange={(e) => handleChangeLanguage(e)}
-                />
-              </Grid>
-            )}
-            {survey?.academic_background?.language?.english_isPassed ===
-              'O' && (
-              <Grid item xs={12} sm={2}>
-                <TextField
-                  fullWidth
-                  id="english_score_listening"
-                  name="english_score_listening"
-                  label="Listening"
-                  type="number"
-                  placeholder={`${
-                    survey.academic_background.language.english_certificate ===
-                    'IELTS'
-                      ? '6.5'
-                      : '21'
-                  } `}
-                  value={
-                    survey.academic_background?.language
-                      ?.english_score_listening || ''
-                  }
-                  disabled={
-                    survey.academic_background?.language
-                      ?.english_certificate === 'No'
-                      ? true
-                      : false
-                  }
-                  onChange={(e) => handleChangeLanguage(e)}
-                />
-              </Grid>
-            )}
-            {survey?.academic_background?.language?.english_isPassed ===
-              'O' && (
-              <Grid item xs={12} sm={2}>
-                <TextField
-                  fullWidth
-                  id="english_score_writing"
-                  name="english_score_writing"
-                  label="Writing"
-                  type="number"
-                  placeholder={`${
-                    survey.academic_background.language.english_certificate ===
-                    'IELTS'
-                      ? '6.5'
-                      : '21'
-                  } `}
-                  value={
-                    survey.academic_background?.language
-                      ?.english_score_writing || ''
-                  }
-                  disabled={
-                    survey.academic_background?.language
-                      ?.english_certificate === 'No'
-                      ? true
-                      : false
-                  }
-                  onChange={(e) => handleChangeLanguage(e)}
-                />
-              </Grid>
-            )}
-            {survey?.academic_background?.language?.english_isPassed ===
-              'O' && (
-              <Grid item xs={12} sm={2}>
-                <TextField
-                  fullWidth
-                  id="english_score_speaking"
-                  name="english_score_speaking"
-                  label="Speaking"
-                  type="number"
-                  placeholder={`${
-                    survey.academic_background.language.english_certificate ===
-                    'IELTS'
-                      ? '6.5'
-                      : '21'
-                  } `}
-                  value={
-                    survey.academic_background?.language
-                      ?.english_score_speaking || ''
-                  }
-                  disabled={
-                    survey.academic_background?.language
-                      ?.english_certificate === 'No'
-                      ? true
-                      : false
-                  }
-                  onChange={(e) => handleChangeLanguage(e)}
-                />
-              </Grid>
-            )}
-            {survey?.academic_background?.language?.english_isPassed ===
-              'X' && (
-              <Grid item xs={12} lg={12} sx={{ mb: 2 }}>
-                <TextField
-                  fullWidth
-                  id="english_test_date"
-                  name="english_test_date"
-                  label={t('Expected English Test Date')}
-                  type="date"
-                  value={
-                    survey.academic_background?.language?.english_test_date ||
-                    ''
-                  }
-                  disabled={
-                    survey.academic_background?.language
-                      ?.english_certificate === 'No'
-                      ? true
-                      : false
-                  }
-                  onChange={(e) => handleChangeLanguage(e)}
-                />
-              </Grid>
-            )}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
                 labelid="german_isPassed"
@@ -1499,6 +1500,7 @@ const SurveyEditableComponent = (props) => {
                   'German Passed ? (Set Not need if applying English taught programs.)'
                 )}
                 onChange={handleChangeLanguage}
+                sx={{ mt: 1 }}
               >
                 {IS_PASSED_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -1510,8 +1512,8 @@ const SurveyEditableComponent = (props) => {
             {(survey?.academic_background?.language?.german_isPassed === 'O' ||
               survey?.academic_background?.language?.german_isPassed ===
                 'X') && (
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
+              <Grid item xs={12} sm={4}>
+                <FormControl fullWidth sx={{ mt: 1 }}>
                   <InputLabel id="german_certificate">
                     {t('German Certificate')}
                   </InputLabel>
@@ -1538,10 +1540,37 @@ const SurveyEditableComponent = (props) => {
                 </FormControl>
               </Grid>
             )}
-            {survey?.academic_background?.language?.german_isPassed === 'O' && (
-              <Grid item xs={12} sm={12}>
+            <Grid item xs={12} sm={4}>
+              {['O', 'X'].includes(
+                survey?.academic_background?.language?.german_isPassed
+              ) && (
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={['DatePicker']}>
+                    <DatePicker
+                      label={
+                        survey?.academic_background?.language
+                          ?.german_isPassed === 'X'
+                          ? t('Expected German Test Date')
+                          : t('German Test Date')
+                      }
+                      name="german_test_date"
+                      format="D. MMM. YYYY"
+                      value={dayjs(
+                        survey.academic_background?.language
+                          ?.german_test_date || ''
+                      )}
+                      onChange={(newValue) =>
+                        handleTestDate('german_test_date', newValue)
+                      }
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              )}
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              {survey?.academic_background?.language?.german_isPassed ===
+                'O' && (
                 <TextField
-                  fullWidth
                   id="german_score"
                   name="german_score"
                   label={t('German Test Score')}
@@ -1557,24 +1586,9 @@ const SurveyEditableComponent = (props) => {
                   }
                   onChange={(e) => handleChangeLanguage(e)}
                 />
-              </Grid>
-            )}
-            {survey?.academic_background?.language?.german_isPassed === 'X' && (
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  fullWidth
-                  id="german_test_date"
-                  name="german_test_date"
-                  label={t('Expected German Test Date')}
-                  type="date"
-                  value={
-                    survey.academic_background?.language?.german_test_date || ''
-                  }
-                  onChange={(e) => handleChangeLanguage(e)}
-                />
-              </Grid>
-            )}
-            <Grid item xs={12} sm={6}>
+              )}
+            </Grid>
+            <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
                 error={
@@ -1591,6 +1605,7 @@ const SurveyEditableComponent = (props) => {
                 value={survey.academic_background?.language?.gre_isPassed}
                 label="GRE Test ? (At least V145 Q160 )"
                 onChange={handleChangeLanguage}
+                sx={{ mt: 1 }}
               >
                 {IS_PASSED_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -1599,10 +1614,10 @@ const SurveyEditableComponent = (props) => {
                 ))}
               </TextField>
             </Grid>
-            {(survey.academic_background?.language?.gre_isPassed === 'O' ||
-              survey.academic_background?.language?.gre_isPassed === 'X') && (
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
+            <Grid item xs={12} sm={4}>
+              {(survey.academic_background?.language?.gre_isPassed === 'O' ||
+                survey.academic_background?.language?.gre_isPassed === 'X') && (
+                <FormControl fullWidth sx={{ mt: 1 }}>
                   <InputLabel id="gre_certificate">{t('GRE Test')}</InputLabel>
                   <Select
                     id="gre_certificate"
@@ -1625,9 +1640,35 @@ const SurveyEditableComponent = (props) => {
                     ))}
                   </Select>
                 </FormControl>
-              </Grid>
-            )}
-
+              )}
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              {['O', 'X'].includes(
+                survey.academic_background?.language.gre_isPassed
+              ) && (
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={['DatePicker']}>
+                    <DatePicker
+                      label={
+                        survey.academic_background?.language.gre_isPassed ===
+                        'X'
+                          ? t('Expected GRE Test Date')
+                          : t('GRE Test Date')
+                      }
+                      name="gre_test_date"
+                      format="D. MMM. YYYY"
+                      value={dayjs(
+                        survey.academic_background?.language?.gre_test_date ||
+                          ''
+                      )}
+                      onChange={(newValue) =>
+                        handleTestDate('gre_test_date', newValue)
+                      }
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              )}
+            </Grid>
             {survey.academic_background?.language?.gre_isPassed === 'O' &&
               survey.academic_background?.language?.gre_certificate !== '' && (
                 <Grid item xs={12} sm={12}>
@@ -1651,22 +1692,8 @@ const SurveyEditableComponent = (props) => {
                   />
                 </Grid>
               )}
-            {survey.academic_background?.language.gre_isPassed === 'X' && (
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  fullWidth
-                  type="date"
-                  name="gre_test_date"
-                  label={t('Expected GRE Test Date')}
-                  value={
-                    survey.academic_background?.language?.gre_test_date || ''
-                  }
-                  placeholder="Date of GRE General/Subject Test"
-                  onChange={(e) => handleChangeLanguage(e)}
-                />
-              </Grid>
-            )}
-            <Grid item xs={12} sm={6}>
+
+            <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
                 select
@@ -1683,6 +1710,7 @@ const SurveyEditableComponent = (props) => {
                 value={survey.academic_background?.language?.gmat_isPassed}
                 label="GMAT Test ? (At least 600 )"
                 onChange={handleChangeLanguage}
+                sx={{ mt: 1 }}
               >
                 {IS_PASSED_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -1693,8 +1721,8 @@ const SurveyEditableComponent = (props) => {
             </Grid>
             {(survey.academic_background?.language?.gmat_isPassed === 'O' ||
               survey.academic_background?.language?.gmat_isPassed === 'X') && (
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
+              <Grid item xs={12} sm={4}>
+                <FormControl fullWidth sx={{ mt: 1 }}>
                   <InputLabel id="gmat_certificate">
                     {t('GMAT Test')}
                   </InputLabel>
@@ -1721,9 +1749,36 @@ const SurveyEditableComponent = (props) => {
                 </FormControl>
               </Grid>
             )}
+            <Grid item xs={12} sm={4}>
+              {['O', 'X'].includes(
+                survey.academic_background?.language?.gmat_isPassed
+              ) && (
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={['DatePicker']}>
+                    <DatePicker
+                      label={
+                        survey.academic_background?.language?.gmat_isPassed ===
+                        'X'
+                          ? t('Expected GMAT Test Date')
+                          : t('GMAT Test Date')
+                      }
+                      name="gmat_test_date"
+                      format="D. MMM. YYYY"
+                      value={dayjs(
+                        survey.academic_background?.language?.gmat_test_date ||
+                          ''
+                      )}
+                      onChange={(newValue) =>
+                        handleTestDate('gmat_test_date', newValue)
+                      }
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              )}
+            </Grid>
             {survey.academic_background?.language?.gmat_isPassed === 'O' &&
               survey.academic_background?.language?.gmat_certificate !== '' && (
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={12}>
                   <TextField
                     fullWidth
                     id="gmat_score"
@@ -1744,20 +1799,6 @@ const SurveyEditableComponent = (props) => {
                   />
                 </Grid>
               )}
-            {survey.academic_background?.language?.gmat_isPassed === 'X' && (
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  id="gmat_test_date"
-                  name="gmat_test_date"
-                  label={t('Expected Test Date')}
-                  type="date"
-                  value={
-                    survey.academic_background?.language?.gmat_test_date || ''
-                  }
-                  onChange={(e) => handleChangeLanguage(e)}
-                />
-              </Grid>
-            )}
           </Grid>
           <Box>
             <Typography variant="body2" sx={{ mt: 2 }}>

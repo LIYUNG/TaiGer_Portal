@@ -68,6 +68,7 @@ router
       Role.Agent,
       Role.Editor,
       Role.Student,
+      Role.External,
       Role.Guest
     ),
     permission_canAccessStudentDatabase_filter,

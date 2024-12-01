@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const async = require('async');
 const path = require('path');
-const { is_TaiGer_Agent } = require('@taiger-common/core');
+const { is_TaiGer_Agent, is_TaiGer_External } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
@@ -1838,14 +1838,22 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
 
 const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
   const {
+    user,
     params: { messagesThreadId },
     body: editorsId
   } = req;
-  const keys = Object.keys(editorsId);
+
+  // Data validation
+  if (!messagesThreadId || !editorsId || typeof editorsId !== 'object') {
+    return res
+      .status(400)
+      .json({ success: false, message: 'Invalid input data.' });
+  }
+
   const essayDocumentThreads = await req.db
     .model('Documentthread')
     .findById(messagesThreadId)
-    .populate('student_id')
+    .populate('student_id outsourced_user_id', 'firstname lastname email role archiv')
     .populate({
       path: 'student_id',
       populate: {
@@ -1857,34 +1865,63 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
       'program_id',
       'school program_name degree semester application_deadline'
     )
-    .select('-messages');
-  // TODO: data validation for studentId, editorsId
-  let updated_essay_writer_id = [];
-  let before_change_essay_writer_arr = essayDocumentThreads.outsourced_user_id;
-  let to_be_informed_essay_writer = [];
-  let updated_editor = [];
-  for (let i = 0; i < keys.length; i += 1) {
-    if (editorsId[keys[i]]) {
-      updated_essay_writer_id.push(keys[i]);
+    .select('-messages')
+    .lean();
 
-      const editor = await req.db.model('Editor').findById(keys[i]);
-      updated_editor.push({
+  if (!essayDocumentThreads) {
+    return res
+      .status(404)
+      .json({ success: false, message: 'Essay thread not found.' });
+  }
+  const editorsIdArr = Object.keys(editorsId);
+  const updatedEditorIds = editorsIdArr.filter(
+    (editorId) => editorsId[editorId]
+  );
+
+  // Fetch editors concurrently
+  const editors = await Promise.all(
+    updatedEditorIds.map((id) =>
+      req.db
+        .model('Editor')
+        .findById(id)
+        .select('firstname lastname email archiv')
+        .lean()
+    )
+  );
+
+  // Prepare data for updating
+  const beforeChangeEditorArr = essayDocumentThreads.outsourced_user_id;
+
+  // Create sets for easy comparison
+  const previousEditorSet = new Set(
+    beforeChangeEditorArr.map((editr) => editr._id.toString())
+  );
+  const newEditorSet = new Set(updatedEditorIds);
+
+  // Find newly added and removed editors
+  const addedEditors = editors.filter(
+    (editr) => !previousEditorSet.has(editr._id.toString())
+  );
+  const removedEditors = beforeChangeEditorArr.filter(
+    (editrt) => !newEditorSet.has(editrt._id.toString())
+  );
+
+  const toBeInformedEditors = [];
+  const updatedEditors = [];
+
+  editors.forEach((editor) => {
+    if (editor) {
+      updatedEditors.push({
         firstname: editor.firstname,
         lastname: editor.lastname,
         email: editor.email
       });
       if (
-        before_change_essay_writer_arr &&
-        !before_change_essay_writer_arr.includes(keys[i])
+        !beforeChangeEditorArr
+          ?.map((agn) => agn._id.toString())
+          .includes(editor._id.toString())
       ) {
-        to_be_informed_essay_writer.push({
-          firstname: editor.firstname,
-          lastname: editor.lastname,
-          archiv: editor.archiv,
-          email: editor.email
-        });
-      } else if (!before_change_essay_writer_arr) {
-        to_be_informed_essay_writer.push({
+        toBeInformedEditors.push({
           firstname: editor.firstname,
           lastname: editor.lastname,
           archiv: editor.archiv,
@@ -1892,12 +1929,23 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
         });
       }
     }
+  });
+
+  // Update student's thread essay writers
+  if (addedEditors.length > 0 || removedEditors.length > 0) {
+    // Log the changes here
+    logger.info('Essay Writer updated:', {
+      added: addedEditors,
+      removed: removedEditors
+    });
+    await req.db.model('Documentthread').findByIdAndUpdate(
+      messagesThreadId,
+      {
+        outsourced_user_id: updatedEditorIds
+      },
+      {}
+    );
   }
-  // student.notification.isRead_new_editor_assigned = false;
-  // Update the outsourced_user_id field for each document
-  essayDocumentThreads.outsourced_user_id = updated_essay_writer_id;
-  // Save the changes to the document
-  await essayDocumentThreads.save();
 
   const studentId = essayDocumentThreads.student_id;
   const student = await req.db.model('Student').findById(studentId);
@@ -1929,14 +1977,14 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
     .lean();
   res.status(200).send({ success: true, data: essayDocumentThreads_Updated });
 
-  for (let i = 0; i < to_be_informed_essay_writer.length; i += 1) {
+  for (let i = 0; i < toBeInformedEditors.length; i += 1) {
     if (isNotArchiv(student)) {
-      if (isNotArchiv(to_be_informed_essay_writer[i])) {
+      if (isNotArchiv(toBeInformedEditors[i])) {
         await informEssayWriterNewEssayEmail(
           {
-            firstname: to_be_informed_essay_writer[i].firstname,
-            lastname: to_be_informed_essay_writer[i].lastname,
-            address: to_be_informed_essay_writer[i].email
+            firstname: toBeInformedEditors[i].firstname,
+            lastname: toBeInformedEditors[i].lastname,
+            address: toBeInformedEditors[i].email
           },
           {
             std_firstname: student.firstname,
@@ -1966,7 +2014,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
             std_id: student._id.toString(),
             thread_id: essayDocumentThreads._id.toString(),
             file_type: essayDocumentThreads.file_type,
-            essay_writers: to_be_informed_essay_writer,
+            essay_writers: toBeInformedEditors,
             program: essayDocumentThreads.program_id
           }
         );
@@ -1974,7 +2022,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
     }
   }
 
-  if (updated_editor.length !== 0) {
+  if (updatedEditors.length !== 0) {
     if (isNotArchiv(student)) {
       await informStudentTheirEssayWriterEmail(
         {
@@ -1986,11 +2034,27 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
           program: essayDocumentThreads.program_id,
           thread_id: essayDocumentThreads._id.toString(),
           file_type: essayDocumentThreads.file_type,
-          editors: updated_editor
+          editors: updatedEditors
         }
       );
     }
   }
+
+  req.audit = {
+    performedBy: user._id,
+    targetUserId: student._id, // Change this if you have a different target user ID
+    targetDocumentThreadId: messagesThreadId,
+    action: 'update', // Action performed
+    field: 'essay writer', // Field that was updated (if applicable)
+    changes: {
+      before: beforeChangeEditorArr, // Before state
+      after: {
+        added: addedEditors,
+        removed: removedEditors
+      }
+    }
+  };
+
   next();
 });
 
@@ -2046,6 +2110,8 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
         }
       }
       res.status(200).send({ success: true, data: matchingDocuments });
+    } else if (is_TaiGer_External(user)) {
+      res.status(200).send({ success: true, data: [] });
     } else {
       const essayDocumentThreads = await req.db
         .model('Documentthread')

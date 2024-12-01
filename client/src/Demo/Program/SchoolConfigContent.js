@@ -14,9 +14,13 @@ import {
 } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 import ExampleWithLocalizationProvider from '../../components/MaterialReactTable';
-import { COUNTRIES_ARRAY_OPTIONS } from '../Utils/contants';
+import {
+  COUNTRIES_ARRAY_OPTIONS,
+  SCHOOL_TAGS_DETAILED
+} from '../Utils/contants';
 import { useTranslation } from 'react-i18next';
 import { updateSchoolAttributes } from '../../api';
+import SearchableMultiSelect from '../../components/Input/searchableMuliselect';
 
 const SchoolConfigContent = ({ data }) => {
   const c1_mrt = [
@@ -143,6 +147,20 @@ const SchoolConfigContent = ({ data }) => {
       });
     };
 
+    const handleChangeByField = (field, school) => (value) => {
+      const newState = { ...school };
+      if (value === school[field] || (!school[field] && !value)) {
+        delete newState[field];
+      } else {
+        newState[field] = value;
+      }
+      setAttributes({
+        ...attributes,
+        school,
+        [field]: value
+      });
+    };
+
     const handleSave = async () => {
       props.setDistinctSchoolsState((prevState) => {
         // Check if the attributes object already exists in the state based on a unique key (e.g., id)
@@ -251,6 +269,13 @@ const SchoolConfigContent = ({ data }) => {
               </MenuItem>
             </Select>
           </FormControl>
+          <SearchableMultiSelect
+            name="tags"
+            label={null}
+            data={SCHOOL_TAGS_DETAILED}
+            value={attributes.tags ?? []}
+            setValue={handleChangeByField('tags', props.data.school)}
+          />
           {/* Additional configuration details go here */}
           <Button variant="contained" color="primary" type="submit">
             {t('Update', { ns: 'common' })}

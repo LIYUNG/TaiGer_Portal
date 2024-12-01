@@ -5,7 +5,12 @@ import { Link as LinkDom } from 'react-router-dom';
 import JSZip from 'jszip';
 import * as XLSX from 'xlsx';
 
-import { getNumberOfDays, convertDate, profile_list } from './contants';
+import {
+  getNumberOfDays,
+  convertDate,
+  profile_list,
+  twoYearsInDays
+} from './contants';
 import { pdfjs } from 'react-pdf';
 import { is_TaiGer_Agent, is_TaiGer_Editor } from '@taiger-common/core';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
@@ -204,6 +209,13 @@ export const check_if_there_is_german_language_info = (academic_background) => {
   }
 
   return true;
+};
+
+export const calculateDuration = (start, end) => {
+  const startTime = new Date(start).getTime();
+  const endTime = new Date(end).getTime();
+  const duration = (endTime - startTime) / 86400000; // Duration in days
+  return duration;
 };
 
 //Testd
@@ -1407,6 +1419,35 @@ export const isLanguageNotMatchedInAnyProgram = (student) => {
   return false;
 };
 
+export const isEnglishCertificateExpiredBeforeDeadline = (student) => {
+  const { applications, academic_background } = student;
+
+  if (!applications) {
+    return false;
+  }
+
+  for (let app of applications) {
+    if (!isProgramDecided(app)) {
+      continue;
+    }
+
+    if (isProgramSubmitted(app)) {
+      continue;
+    }
+
+    if (
+      getNumberOfDays(
+        academic_background.language.english_test_date,
+        application_deadline_calculator(student, app)
+      ) > twoYearsInDays
+    ) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 export const languageNotMatchedPrograms = (student) => {
   return student.applications?.filter(
     (app) =>
@@ -1415,6 +1456,19 @@ export const languageNotMatchedPrograms = (student) => {
         check_english_language_Notneeded(student.academic_background)) ||
         (app.programId.lang?.toLowerCase().includes('german') &&
           check_german_language_Notneeded(student.academic_background)))
+  );
+};
+
+export const englishCertificatedExpiredBeforeTheseProgramDeadlines = (
+  student
+) => {
+  return student.applications?.filter(
+    (app) =>
+      isProgramDecided(app) &&
+      getNumberOfDays(
+        student.academic_background.language.english_test_date,
+        application_deadline_calculator(student, app)
+      ) > twoYearsInDays
   );
 };
 

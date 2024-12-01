@@ -1,10 +1,8 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link as LinkDom, Navigate, useParams } from 'react-router-dom';
 import {
   Avatar,
   Box,
-  Card,
-  Button,
   Grid,
   Typography,
   ListItem,
@@ -17,7 +15,6 @@ import {
   Link,
   Stack,
   Tooltip
-  // MenuItem
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -25,25 +22,16 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { is_TaiGer_role } from '@taiger-common/core';
 
-import MessageList from './MessageList';
-import CommunicationThreadEditor from './CommunicationThreadEditor';
-import ErrorPage from '../Utils/ErrorPage';
-import ModalMain from '../Utils/ModalHandler/ModalMain';
-import {
-  getCommunicationThread,
-  postCommunicationThread,
-  deleteAMessageInCommunicationThread,
-  loadCommunicationThread,
-  WidgetExportMessagePDF
-} from '../../api';
+import { getCommunicationThread, WidgetExportMessagePDF } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
-import { readDOCX, readPDF, readXLSX } from '../Utils/checking-functions';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { stringAvatar } from '../Utils/contants';
 import MemoizedEmbeddedChatList from '../../components/EmbeddedChatList';
 import { FetchStudentLayer } from '../StudentDatabase/FetchStudentLayer';
+import CommunicationExpandPageMessagesComponent from './CommunicationExpandPageMessagesComponent';
+import ErrorPage from '../Utils/ErrorPage';
 
 const StudentDetailModal = ({
   open,
@@ -81,7 +69,6 @@ function CommunicationExpandPage() {
   const { t } = useTranslation();
   const theme = useTheme();
   const ismobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [checkResult, setCheckResult] = useState([]);
 
   const [communicationExpandPageState, setCommunicationExpandPageState] =
     useState({
@@ -90,8 +77,6 @@ function CommunicationExpandPage() {
       messagesLoaded: false,
       thread: null,
       count: 1,
-      upperThread: [],
-      buttonDisabled: false,
       editorState: {},
       files: [],
       expand: true,
@@ -115,19 +100,6 @@ function CommunicationExpandPage() {
       scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight;
     }
   };
-  const [windowInnerWidth, setWindowInnerWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowInnerWidth(window.innerWidth);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [windowInnerWidth]);
 
   useEffect(() => {
     if (!student_id) {
@@ -148,16 +120,12 @@ function CommunicationExpandPage() {
           setCommunicationExpandPageState((prevState) => ({
             ...prevState,
             success,
-            thread: data.reverse(),
-            upperThread: [],
+            thread: data,
             messagesLoaded: true,
             isLoaded: true,
             count: prevState.count + 1,
             student_id: student_id,
             student,
-            // accordionKeys: new Array(data.length)
-            //   .fill()
-            //   .map((x, i) => i) // to expand all
             accordionKeys: new Array(data.length)
               .fill()
               .map((x, i) => (i >= data.length - 2 ? i : -1)), // only expand latest 2
@@ -186,259 +154,6 @@ function CommunicationExpandPage() {
       }
     );
   }, [student_id]);
-
-  const ConfirmError = () => {
-    setCommunicationExpandPageState((prevState) => ({
-      ...prevState,
-      res_modal_status: 0,
-      res_modal_message: ''
-    }));
-  };
-
-  const handleLoadMessages = () => {
-    setCommunicationExpandPageState((prevState) => ({
-      ...prevState,
-      loadButtonDisabled: true
-    }));
-    loadCommunicationThread(
-      student_id,
-      communicationExpandPageState.pageNumber + 1
-    ).then(
-      (resp) => {
-        const { success, data, student } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setCommunicationExpandPageState((prevState) => ({
-            ...prevState,
-            success,
-            upperThread: [
-              ...data.reverse(),
-              ...communicationExpandPageState.upperThread
-            ],
-            messagesLoaded: true,
-            count: prevState.count + 1,
-            student,
-            pageNumber: communicationExpandPageState.pageNumber + 1,
-            uppderaccordionKeys: [
-              ...new Array(
-                communicationExpandPageState.uppderaccordionKeys.length
-              )
-                .fill()
-                .map((x, i) => i),
-              ...new Array(data.length)
-                .fill()
-                .map((x, i) =>
-                  communicationExpandPageState.uppderaccordionKeys !== -1
-                    ? i +
-                      communicationExpandPageState.uppderaccordionKeys.length
-                    : -1
-                )
-            ],
-            loadButtonDisabled: data.length === 0 ? true : false,
-            res_status: status
-          }));
-        } else {
-          setCommunicationExpandPageState((prevState) => ({
-            ...prevState,
-            count: prevState.count + 1,
-            messagesLoaded: true,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setCommunicationExpandPageState((prevState) => ({
-          ...prevState,
-          count: prevState.count + 1,
-          messagesLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
-  };
-
-  const onFileChange = (e) => {
-    e.preventDefault();
-    const file_num = e.target.files.length;
-    if (file_num <= 3) {
-      if (!e.target.files) {
-        return;
-      }
-      if (!is_TaiGer_role(user)) {
-        setCommunicationExpandPageState((prevState) => ({
-          ...prevState,
-          files: Array.from(e.target.files)
-        }));
-        return;
-      }
-      // Ensure a file is selected
-      // TODO: make array
-      const checkPromises = Array.from(e.target.files).map((file) => {
-        const extension = file.name.split('.').pop().toLowerCase();
-        const studentName = communicationExpandPageState.student.firstname;
-
-        if (extension === 'pdf') {
-          return readPDF(file, studentName);
-        } else if (extension === 'docx') {
-          return readDOCX(file, studentName);
-        } else if (extension === 'xlsx') {
-          return readXLSX(file, studentName);
-        } else {
-          return Promise.resolve({});
-        }
-      });
-      Promise.all(checkPromises)
-        .then((results) => {
-          setCheckResult(results);
-          setCommunicationExpandPageState((prevState) => ({
-            ...prevState,
-            files: Array.from(e.target.files)
-          }));
-        })
-        .catch((error) => {
-          setCommunicationExpandPageState((prevState) => ({
-            ...prevState,
-            res_modal_message: error,
-            res_modal_status: 500
-          }));
-        });
-    } else {
-      setCommunicationExpandPageState((prevState) => ({
-        ...prevState,
-        res_modal_message: 'You can only select up to 3 files.',
-        res_modal_status: 423
-      }));
-    }
-  };
-
-  const handleClickSave = (e, editorState) => {
-    e.preventDefault();
-    setCommunicationExpandPageState((prevState) => ({
-      ...prevState,
-      buttonDisabled: true
-    }));
-    var message = JSON.stringify(editorState);
-    const formData = new FormData();
-
-    if (communicationExpandPageState.files) {
-      communicationExpandPageState.files.forEach((file) => {
-        formData.append('files', file);
-      });
-    }
-
-    formData.append('message', message);
-
-    postCommunicationThread(
-      communicationExpandPageState.student._id.toString(),
-      formData
-    ).then(
-      (resp) => {
-        const { success, data } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setCommunicationExpandPageState((prevState) => ({
-            ...prevState,
-            success,
-            count: prevState.count + 1,
-            editorState: {},
-            thread: [...communicationExpandPageState.thread, ...data],
-            files: [],
-            messagesLoaded: true,
-            buttonDisabled: false,
-            accordionKeys: [
-              ...communicationExpandPageState.accordionKeys,
-              communicationExpandPageState.accordionKeys.length
-            ],
-            res_modal_status: status
-          }));
-        } else {
-          // TODO: what if data is oversize? data type not match?
-          const { message } = resp.data;
-          setCommunicationExpandPageState((prevState) => ({
-            ...prevState,
-            messagesLoaded: true,
-            count: prevState.count + 1,
-            buttonDisabled: false,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setCommunicationExpandPageState((prevState) => ({
-          ...prevState,
-          messagesLoaded: true,
-          error,
-          count: prevState.count + 1,
-          res_modal_status: 500,
-          res_modal_message: error
-        }));
-      }
-    );
-  };
-
-  const onDeleteSingleMessage = (e, message_id) => {
-    e.preventDefault();
-    setCommunicationExpandPageState((prevState) => ({
-      ...prevState,
-      messagesLoaded: false
-    }));
-    deleteAMessageInCommunicationThread(student_id, message_id).then(
-      (resp) => {
-        const { success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          const new_messages = [...communicationExpandPageState.thread];
-          let idx = new_messages.findIndex(
-            (message) => message._id.toString() === message_id
-          );
-          if (idx !== -1) {
-            new_messages.splice(idx, 1);
-          }
-          const new_upper_messages = [
-            ...communicationExpandPageState.upperThread
-          ];
-          let idx2 = new_upper_messages.findIndex(
-            (message) => message._id.toString() === message_id
-          );
-          if (idx2 !== -1) {
-            new_upper_messages.splice(idx2, 1);
-          }
-          setCommunicationExpandPageState((prevState) => ({
-            ...prevState,
-            success,
-            messagesLoaded: true,
-            count: prevState.count + 1,
-            upperThread: new_upper_messages,
-            thread: new_messages,
-            buttonDisabled: false,
-            res_modal_status: status
-          }));
-        } else {
-          // TODO: what if data is oversize? data type not match?
-          const { message } = resp.data;
-          setCommunicationExpandPageState((prevState) => ({
-            ...prevState,
-            messagesLoaded: true,
-            buttonDisabled: false,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setCommunicationExpandPageState((prevState) => ({
-          ...prevState,
-          messagesLoaded: true,
-          count: prevState.count + 1,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
-        }));
-      }
-    );
-  };
 
   const handleDrawerOpen = (e) => {
     e.stopPropagation();
@@ -494,13 +209,8 @@ function CommunicationExpandPage() {
 
   const dropdownId = 'primary-student-modal';
 
-  const {
-    messagesLoaded,
-    isLoaded,
-    res_status,
-    res_modal_status,
-    res_modal_message
-  } = communicationExpandPageState;
+  const { messagesLoaded, student, isLoaded, res_status } =
+    communicationExpandPageState;
 
   if (!isLoaded && !communicationExpandPageState.thread) {
     return <Loading />;
@@ -510,21 +220,10 @@ function CommunicationExpandPage() {
     return <ErrorPage res_status={res_status} />;
   }
 
-  const student_name = `${communicationExpandPageState.student.firstname} ${
-    communicationExpandPageState.student.lastname
-  } ${
-    communicationExpandPageState.student.firstname_chinese
-      ? communicationExpandPageState.student.firstname_chinese
-      : ''
-  } ${
-    communicationExpandPageState.student.lastname_chinese
-      ? communicationExpandPageState.student.lastname_chinese
-      : ''
-  }`;
-  const student_name_english = `${communicationExpandPageState.student.firstname} ${communicationExpandPageState.student.lastname}`;
-  // const template_input = JSON.parse(
-  //   `{"time":1689452160435,"blocks":[{"id":"WHsFbpmWmH","type":"paragraph","data":{"text":"<b>我的問題：</b>"}},{"id":"F8K_f07R8l","type":"paragraph","data":{"text":"&lt;Example&gt; 我想選課，不知道下學期要選什麼"}},{"id":"yYUL0bYWSB","type":"paragraph","data":{"text":"<b>我想和顧問討論</b>："}},{"id":"wJu56jmAKC","type":"paragraph","data":{"text":"&lt;Example&gt; 課程符合度最佳化"}}],"version":"2.27.2"}`
-  // );
+  const student_name = `${student.firstname} ${student.lastname} ${
+    student.firstname_chinese ? student.firstname_chinese : ''
+  } ${student.lastname_chinese ? student.lastname_chinese : ''}`;
+  const student_name_english = `${student.firstname} ${student.lastname}`;
 
   TabTitle(`${student_name}`);
   if (!is_TaiGer_role(user)) {
@@ -688,105 +387,11 @@ function CommunicationExpandPage() {
                   }}
                   ref={scrollableRef}
                 >
-                  <Fragment>
-                    <Grid container>
-                      <Grid item xs={12}>
-                        <Button
-                          fullWidth
-                          color="secondary"
-                          variant="outlined"
-                          onClick={handleLoadMessages}
-                          disabled={
-                            communicationExpandPageState.loadButtonDisabled
-                          }
-                          size="small"
-                          sx={{ my: 1 }}
-                        >
-                          {t('Load')}
-                        </Button>
-                      </Grid>
-                      <Grid item xs={12}>
-                        {communicationExpandPageState.upperThread.length >
-                          0 && (
-                          <MessageList
-                            accordionKeys={
-                              communicationExpandPageState.uppderaccordionKeys
-                            }
-                            student_id={communicationExpandPageState.student._id.toString()}
-                            isUpperMessagList={true}
-                            thread={communicationExpandPageState.upperThread}
-                            isLoaded={communicationExpandPageState.isLoaded}
-                            user={user}
-                            onDeleteSingleMessage={onDeleteSingleMessage}
-                            isTaiGerView={true}
-                          />
-                        )}
-                        <MessageList
-                          accordionKeys={
-                            communicationExpandPageState.accordionKeys
-                          }
-                          student_id={communicationExpandPageState.student._id.toString()}
-                          isUpperMessagList={false}
-                          thread={communicationExpandPageState.thread}
-                          isLoaded={communicationExpandPageState.isLoaded}
-                          user={user}
-                          onDeleteSingleMessage={onDeleteSingleMessage}
-                          isTaiGerView={true}
-                        />
-                        {communicationExpandPageState.student.archiv !==
-                        true ? (
-                          <Card>
-                            <Grid container spacing={2}>
-                              <Grid item xs={12}>
-                                <Card
-                                  sx={{
-                                    padding: 2,
-                                    ...(!ismobile && {
-                                      maxWidth: windowInnerWidth - 664 + 32
-                                    }),
-                                    pt: 2,
-                                    '& .MuiAvatar-root': {
-                                      width: 32,
-                                      height: 32,
-                                      ml: -0.5,
-                                      mr: 1
-                                    }
-                                  }}
-                                >
-                                  <CommunicationThreadEditor
-                                    thread={communicationExpandPageState.thread}
-                                    buttonDisabled={
-                                      communicationExpandPageState.buttonDisabled
-                                    }
-                                    editorState={
-                                      communicationExpandPageState.editorState
-                                    }
-                                    files={communicationExpandPageState.files}
-                                    onFileChange={onFileChange}
-                                    checkResult={checkResult}
-                                    handleClickSave={handleClickSave}
-                                  />
-                                </Card>
-                              </Grid>
-                            </Grid>
-                          </Card>
-                        ) : (
-                          <Card>
-                            {t(
-                              'The service is finished. Therefore, it is readonly.'
-                            )}
-                          </Card>
-                        )}
-                        {res_modal_status >= 400 && (
-                          <ModalMain
-                            ConfirmError={ConfirmError}
-                            res_modal_status={res_modal_status}
-                            res_modal_message={res_modal_message}
-                          />
-                        )}
-                      </Grid>
-                    </Grid>
-                  </Fragment>
+                  <CommunicationExpandPageMessagesComponent
+                    student={communicationExpandPageState.student}
+                    data={communicationExpandPageState.thread}
+                    student_id={student_id}
+                  />
                 </div>
               </div>
             ) : (

@@ -115,24 +115,22 @@ function ProgramReportCard() {
     </TableRow>
   ));
   return (
-    <Card>
+    <Card style={{ height: '40vh', overflow: 'auto' }}>
       <Alert severity="error">
         <Typography>
           {t('Program Update Request', { ns: 'common' })}:
         </Typography>
       </Alert>
-      <div className="card-scrollable-body">
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>idx</TableCell>
-              <TableCell>program</TableCell>
-              <TableCell>description</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>{tickets}</TableBody>
-        </Table>
-      </div>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell>idx</TableCell>
+            <TableCell>program</TableCell>
+            <TableCell>description</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>{tickets}</TableBody>
+      </Table>
     </Card>
   );
 }

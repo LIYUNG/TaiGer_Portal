@@ -466,7 +466,13 @@ const loadMessages = asyncHandler(async (req, res, next) => {
 
   // Multitenant-filter: Check student can only access their own thread!!!!
 
-  res.status(200).send({ success: true, data: communication_thread, student });
+  res
+    .status(200)
+    .send({
+      success: true,
+      data: [...communication_thread].reverse(),
+      student
+    });
   next();
 });
 
@@ -505,7 +511,9 @@ const getMessages = asyncHandler(async (req, res, next) => {
       await lastElement.save();
     }
   }
-  res.status(200).send({ success: true, data: communication_thread, student });
+  res
+    .status(200)
+    .send({ success: true, data: [...communication_thread].reverse(), student });
   next();
 });
 

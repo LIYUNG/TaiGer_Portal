@@ -23,7 +23,8 @@ import {
   Alert,
   TableContainer,
   IconButton,
-  ListItem
+  ListItem,
+  Grid
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -67,6 +68,7 @@ import ProgramDetailsComparisonTable from '../Program/ProgramDetailsComparisonTa
 import StudentBriefOverview from '../Dashboard/MainViewTab/StudentBriefOverview/StudentBriefOverview';
 import ProgramLanguageNotMatchedBanner from '../../components/Banner/ProgramLanguageNotMatchedBanner';
 import Audit from '../Audit';
+import EnglishCertificateExpiredBeforeDeadlineBanner from '../../components/Banner/EnglishCertificateExpiredBeforeDeadlineBanner';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -419,10 +421,17 @@ export const SingleStudentPageMainContent = ({
                 </ListItem>
               ))}
             </Card>
-          )}{' '}
-          <ProgramLanguageNotMatchedBanner
-            student={singleStudentPage.student}
-          />
+          )}
+          <Grid container spacing={0} sx={{ mt: 0 }}>
+            <Grid item xs={12} md={12}>
+              <ProgramLanguageNotMatchedBanner
+                student={singleStudentPage.student}
+              />
+            </Grid>
+            <EnglishCertificateExpiredBeforeDeadlineBanner
+              student={singleStudentPage.student}
+            />
+          </Grid>
           <Box
             sx={{
               my: 1,

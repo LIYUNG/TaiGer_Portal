@@ -64,6 +64,7 @@ const updateBatchSchoolAttributes = async (req, res) => {
         school: fields.school,
         $or: [
           { isPrivateSchool: { $ne: fields.isPrivateSchool } },
+          { isPartnerSchool: { $ne: fields.isPartnerSchool } },
           { schoolType: { $ne: fields.schoolType } },
           { tags: { $ne: fields.tags } },
           { country: { $ne: fields.country } }
@@ -72,6 +73,7 @@ const updateBatchSchoolAttributes = async (req, res) => {
       {
         $set: {
           isPrivateSchool: fields.isPrivateSchool,
+          isPartnerSchool: fields.isPartnerSchool,
           schoolType: fields.schoolType,
           tags: fields.tags,
           country: fields.country

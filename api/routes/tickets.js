@@ -9,7 +9,6 @@ const {
 const { protect, permit } = require('../middlewares/auth');
 const { Role } = require('../constants');
 
-
 const {
   getTickets,
   getTicket,
@@ -31,13 +30,20 @@ router
   .get(
     filter_archiv_user,
     GetTicketListRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Agent,
+      Role.Editor,
+      Role.Student,
+      Role.External
+    ),
     getTickets
   )
   .post(
     filter_archiv_user,
     PostTicketRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Student, Role.External),
     // permission_canModifyTicketList_filter,
     createTicket
   );
@@ -47,20 +53,41 @@ router
   .get(
     filter_archiv_user,
     GetTicketRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Agent,
+      Role.Editor,
+      Role.Student,
+      Role.External
+    ),
     getTicket
   )
   .put(
     filter_archiv_user,
     UpdateTicketRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Editor,
+      Role.Agent,
+      Role.Student,
+      Role.External
+    ),
     // permission_canModifyTicketList_filter,
     updateTicket
   )
   .delete(
     filter_archiv_user,
     DeleteTicketRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
+    permit(
+      Role.Admin,
+      Role.Manager,
+      Role.Editor,
+      Role.Agent,
+      Role.Student,
+      Role.External
+    ),
     // permission_canModifyTicketList_filter,
     deleteTicket
   );

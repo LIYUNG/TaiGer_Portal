@@ -1,66 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { Link as LinkDom } from 'react-router-dom';
 import {
   Box,
   Typography,
-  CircularProgress,
   TableContainer,
   Table,
   TableHead,
   TableRow,
   TableCell,
-  TableBody
+  TableBody,
+  Link
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import ErrorPage from '../Utils/ErrorPage';
-import { TabTitle } from '../Utils/TabTitle';
-import { useAuth } from '../../components/AuthProvider';
 import { convertDate } from '../Utils/contants';
+import DEMO from '../../store/constant';
 
 function Audit({ audit }) {
   const { t } = useTranslation();
-  const { user } = useAuth();
-
-  const [auditState, setAuditState] = useState({
-    error: '',
-    isLoaded: false,
-    data: null,
-    user: {},
-    changed_personaldata: false,
-    personaldata: {
-      firstname: user.firstname,
-      firstname_chinese: user.firstname_chinese,
-      lastname: user.lastname,
-      lastname_chinese: user.lastname_chinese,
-      birthday: user.birthday
-    },
-    credentials: {
-      current_password: '',
-      new_password: '',
-      new_password_again: ''
-    },
-    updatecredentialconfirmed: false,
-    res_status: 0,
-    res_modal_message: '',
-    res_modal_status: 0
-  });
-
-  useEffect(() => {
-    setAuditState({
-      ...auditState,
-      isLoaded: true
-    });
-  }, []);
-
-  const { res_status, isLoaded } = auditState;
-  TabTitle('Audit');
-  if (!isLoaded) {
-    return <CircularProgress />;
-  }
-
-  if (res_status >= 400) {
-    return <ErrorPage res_status={res_status} />;
-  }
 
   return (
     <Box>
@@ -74,6 +31,7 @@ function Audit({ audit }) {
                 <TableCell>{t('Action', { ns: 'common' })}</TableCell>
                 <TableCell>{t('Field', { ns: 'common' })}</TableCell>
                 <TableCell>{t('Changes', { ns: 'common' })}</TableCell>
+                <TableCell>{t('Resources', { ns: 'common' })}</TableCell>
                 <TableCell>{t('Time', { ns: 'common' })}</TableCell>
               </TableRow>
             </TableHead>
@@ -85,7 +43,13 @@ function Audit({ audit }) {
                 const removedUsers = record?.changes?.after?.removed
                   ?.map((user) => `${user.firstname} ${user.lastname}`)
                   .join(', ');
-
+                const program_name =
+                  record?.targetDocumentThreadId &&
+                  `${record?.targetDocumentThreadId?.file_type} - ${record?.targetDocumentThreadId?.program_id?.school}
+                          ${record?.targetDocumentThreadId?.program_id?.program_name}
+                          ${record?.targetDocumentThreadId?.program_id?.degree}
+                          ${record?.targetDocumentThreadId?.program_id?.semester}
+                          `;
                 return (
                   <TableRow key={record._id}>
                     <TableCell>{`${record?.performedBy?.firstname} ${record?.performedBy?.lastname}`}</TableCell>
@@ -94,6 +58,21 @@ function Audit({ audit }) {
                     <TableCell>
                       {addedUsers && `+ ${addedUsers}`}
                       {removedUsers && ` - ${removedUsers}`}
+                    </TableCell>
+                    <TableCell>
+                      {record?.targetDocumentThreadId ? (
+                        <Link
+                          to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                            record?.targetDocumentThreadId._id?.toString()
+                          )}
+                          component={LinkDom}
+                          target="_blank"
+                        >
+                          {program_name}
+                        </Link>
+                      ) : (
+                        <></>
+                      )}
                     </TableCell>
                     <TableCell>{convertDate(record.createdAt)}</TableCell>
                   </TableRow>

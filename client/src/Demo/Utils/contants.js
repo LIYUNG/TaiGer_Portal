@@ -873,6 +873,8 @@ export const isInTheFuture = (end) => {
   return now < date;
 };
 
+export const twoYearsInDays = 730; // days
+
 export const getNumberOfDays = (start, end) => {
   const date1 = new Date(start);
   const date2 = new Date(end);
@@ -958,7 +960,8 @@ export const program_fields_overview = [
   { name: 'Teaching Language', prop: 'lang' },
   { name: 'Website', prop: 'website' },
   { name: 'Only for graduated applicant', prop: 'allowOnlyGraduatedApplicant' },
-  { name: 'Program Subject tags', prop: 'programSubjects' }
+  { name: 'Program Subject tags', prop: 'programSubjects' },
+  { name: 'Tags', prop: 'tags' }
 ];
 
 export const english_test_hand_after = [
@@ -2269,6 +2272,55 @@ export const PROGRAM_SUBJECTS_DETAILED = Object.fromEntries(
       color: PROGRAM_SUBJECT_CATEGORIES?.[value?.category]?.color ?? 'primary',
       categoryName:
         PROGRAM_SUBJECT_CATEGORIES?.[value?.category]?.categoryName ?? 'N/A'
+    }
+  ])
+);
+
+export const SCHOOL_TAGS = {
+  U15: {
+    label: 'U15',
+    category: 'U15'
+  },
+  TU9: {
+    label: 'TU9 German Universities of Technology',
+    category: 'TU9'
+  },
+  EUROTECH: {
+    label: 'EuroTech Universities Alliance',
+    category: 'EUROTECH'
+  },
+  GERMAN_ELITE: {
+    label: 'German Excellence Initiative',
+    category: 'Exzellenzinitiative'
+  },
+  TIME: {
+    label: 'Top International Managers in Engineering',
+    category: 'TIME'
+  },
+  TOP50: {
+    label: 'QS Top 50 Universities',
+    category: 'TOP50'
+  },
+  TOP100: {
+    label: 'QS Top 100 Universities',
+    category: 'TOP100'
+  },
+  TOP150: {
+    label: 'QS Top 150 Universities',
+    category: 'TOP150'
+  },
+  TOP500: {
+    label: 'QS Top 500 Universities',
+    category: 'TOP500'
+  }
+};
+
+export const SCHOOL_TAG_KEYS = Object.keys(SCHOOL_TAGS);
+export const SCHOOL_TAGS_DETAILED = Object.fromEntries(
+  Object.entries(SCHOOL_TAGS).map(([key, value]) => [
+    key,
+    {
+      ...value
     }
   ])
 );

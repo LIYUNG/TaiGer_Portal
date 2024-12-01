@@ -17,6 +17,7 @@ import AdminTasks from '../MainViewTab/AdminTasks/index';
 import useStudents from '../../../hooks/useStudents';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
+import ProgramReportCard from '../../Program/ProgramReportCard';
 
 function AdminMainView(props) {
   const { t } = useTranslation();
@@ -52,8 +53,8 @@ function AdminMainView(props) {
   return (
     <>
       <Grid container spacing={2} sx={{ mt: 0 }}>
-        <Grid item xs={12} md={6}>
-          <Card>
+        <Grid item xs={12} md={4}>
+          <Card style={{ height: '40vh', overflow: 'auto' }}>
             <Typography variant="h6">
               <Alert severity="warning">
                 Admin {t('To Do Tasks', { ns: 'common' })}:
@@ -70,7 +71,10 @@ function AdminMainView(props) {
             </Table>
           </Card>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sm={4}>
+          <ProgramReportCard />
+        </Grid>
+        <Grid item xs={12} md={4}>
           <Card sx={{ p: 2 }}>
             <Typography>Comming soon</Typography>
           </Card>

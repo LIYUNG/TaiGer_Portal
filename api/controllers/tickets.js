@@ -1,3 +1,4 @@
+const { is_TaiGer_role } = require('@taiger-common/core');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
@@ -22,12 +23,12 @@ const getTickets = asyncHandler(async (req, res) => {
   if (status) {
     query.status = status;
   }
-  if (user.role === Role.Student) {
+  if (is_TaiGer_role(user)) {
     const tickets = await req.db
       .model('Ticket')
       .find(query)
       .populate('program_id', 'school program_name degree')
-      .select('-requester_id')
+      .populate('requester_id', 'firstname lastname email')
       .sort({ createdAt: -1 });
     res.send({ success: true, data: tickets });
   } else {
@@ -35,7 +36,6 @@ const getTickets = asyncHandler(async (req, res) => {
       .model('Ticket')
       .find(query)
       .populate('program_id', 'school program_name degree')
-      .populate('requester_id', 'firstname lastname email')
       .sort({ createdAt: -1 });
     res.send({ success: true, data: tickets });
   }

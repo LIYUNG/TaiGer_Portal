@@ -121,8 +121,6 @@ const ResponseTimeDashboardTab = ({
   editors
 }) => {
   const [viewMode, setViewMode] = useState('agents');
-  // const threadTypes =
-  //   viewMode === 'agents' ? agentThreadTypes : editorThreadTypes;
 
   return (
     <Grid container spacing={2}>
@@ -153,21 +151,6 @@ const ResponseTimeDashboardTab = ({
         teamMembers={viewMode === 'agents' ? agents : editors}
         teamType={viewMode}
       />
-      {/* {threadTypes.map((fileType) => {
-        const chartData = responseTimeToChartData(
-          studentAvgResponseTime,
-          fileType
-        );
-        if (!chartData || chartData?.length === 0) return null;
-        return (
-          <Grid item key={fileType} xs={12}>
-            <Typography variant="h4" sx={{ m: 3 }}>
-              {fileType}
-            </Typography>
-            <ResponseTimeBarChart chartData={chartData} />
-          </Grid>
-        );
-      })} */}
     </Grid>
   );
 };

@@ -11,7 +11,7 @@ import ErrorPage from '../../Utils/ErrorPage';
 import { getStatistics } from '../../../api';
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
-import ProgramListVisualization from './ProgramListVisualization/index';
+
 import { appConfig } from '../../../config';
 import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
@@ -21,11 +21,12 @@ import {
   INTERNAL_DASHBOARD_TABS
 } from '../../Utils/contants.js';
 
-import OverviewDashboardTab from './OverviewDashboardTab.js';
+import OverviewDashboardTab from './OverviewDashboardTab';
 import AgentDashboard from './AgentDashboard';
-import KPIDashboardTab from './KPIDashboardTab.js';
-import ResponseTimeDashboardTab from './ResponseTimeDashboardTab.js';
-import { calculateDuration } from '../../Utils/checking-functions.js';
+import KPIDashboardTab from './KPIDashboardTab';
+import ProgramListDashboardTab from './ProgramListDashboardTab';
+import ResponseTimeDashboardTab from './ResponseTimeDashboardTab';
+import { calculateDuration } from '../../Utils/checking-functions';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -75,6 +76,7 @@ function InternalDashboard() {
           documents,
           students_years_pair,
           students_details,
+          programListStats,
           studentAvgResponseTime,
           activeStudentGeneralTasks,
           activeStudentTasks,
@@ -97,6 +99,7 @@ function InternalDashboard() {
             students_details,
             success: success,
             res_status: status,
+            programListStats,
             studentAvgResponseTime
           }));
         } else {
@@ -132,8 +135,11 @@ function InternalDashboard() {
     students,
     students_years_pair,
     students_details,
+    programListStats,
     studentAvgResponseTime
   } = internalDashboardState;
+
+  console.log('programListStats: ', programListStats);
 
   if (!isLoaded && !students && !documents) {
     return <Loading />;
@@ -281,7 +287,7 @@ function InternalDashboard() {
         />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
-        <ProgramListVisualization user={user} />
+        <ProgramListDashboardTab data={programListStats} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}>
         <ResponseTimeDashboardTab

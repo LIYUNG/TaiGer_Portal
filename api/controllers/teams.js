@@ -542,11 +542,55 @@ const getStatistics = asyncHandler(async (req, res) => {
       }
     ];
 
-    const studentAvgResponseTimePromise = await req.db
+    const studentAvgResponseTimePromise = req.db
       .model('ResponseTime')
       .aggregate(studentAvgResponseTimePipeline);
     const activeStudentGeneralTasksPromise = getGeneralTasks(req);
-    const activeStudentTasksPromise = await getDecidedApplicationsTasks(req);
+    const activeStudentTasksPromise = getDecidedApplicationsTasks(req);
+
+    const programListStatsPipeline = [
+      {
+        $facet: {
+          countryCount: [
+            { $group: { _id: '$country', count: { $sum: 1 } } },
+            { $project: { _id: 0, country: '$_id', count: 1 } }
+          ],
+          whoupdatedCount: [
+            { $group: { _id: '$whoupdated', count: { $sum: 1 } } },
+            { $project: { _id: 0, whoupdated: '$_id', count: 1 } }
+          ],
+          schoolCount: [
+            { $group: { _id: '$school', count: { $sum: 1 } } },
+            { $project: { _id: 0, school: '$_id', count: 1 } }
+          ],
+          langCount: [
+            { $group: { _id: '$lang', count: { $sum: 1 } } },
+            { $project: { _id: 0, lang: '$_id', count: 1 } }
+          ],
+          degreeCount: [
+            { $group: { _id: '$degree', count: { $sum: 1 } } },
+            { $project: { _id: 0, degree: '$_id', count: 1 } }
+          ],
+          updatedAtCount: [
+            {
+              $group: {
+                _id: {
+                  $dateToString: { format: '%Y-%m-%d', date: '$updatedAt' }
+                },
+                count: { $sum: 1 }
+              }
+            },
+            { $project: { _id: 0, updatedAt: '$_id', count: 1 } },
+            { $sort: { updatedAt: 1 } }
+          ]
+        }
+      }
+    ];
+
+    const programListStatsPromise = req.db
+      .model('Program')
+      .aggregate(programListStatsPipeline);
+
     const [
       agents_raw_data,
       editors_raw_data,
@@ -557,6 +601,7 @@ const getStatistics = asyncHandler(async (req, res) => {
       studentAvgResponseTime,
       activeStudentGeneralTasks,
       activeStudentTasks,
+      programListStats,
       ...agentsStudentsDistribution
     ] = await Promise.all([
       agentsPromises,
@@ -568,6 +613,7 @@ const getStatistics = asyncHandler(async (req, res) => {
       studentAvgResponseTimePromise,
       activeStudentGeneralTasksPromise,
       activeStudentTasksPromise,
+      programListStatsPromise,
       ...agents.map((agent) => getAgentStudentDistData(req, agent))
     ]);
 
@@ -665,6 +711,7 @@ const getStatistics = asyncHandler(async (req, res) => {
       activeStudentGeneralTasks,
       activeStudentTasks,
       agentStudentDistribution: mergedResults,
+      programListStats: programListStats?.[0], // unwrap single element pipeline
       studentAvgResponseTime
     };
     res.status(200).send(returnBody);

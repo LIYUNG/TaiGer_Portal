@@ -48,6 +48,44 @@ const responseTimeToChartData = (responseTime, threadType) => {
     }));
 };
 
+const calculateAveragesByType = (data) => {
+  const avgByType = data.reduce((acc, item) => {
+    for (const [key, value] of Object.entries(item.avgByType)) {
+      if (!acc[key]) {
+        acc[key] = { sum: 0, count: 0 };
+      }
+      acc[key].sum += value;
+      acc[key].count += 1;
+    }
+    return acc;
+  }, {});
+
+  return Object.fromEntries(
+    Object.entries(avgByType).map(([key, { sum, count }]) => [key, sum / count])
+  );
+};
+
+const getAssigneeStats = (studentAvgResponseTime, assigneeType) => {
+  const groupStats = studentAvgResponseTime.reduce((acc, student) => {
+    const userId = student?.[assigneeType]?.[0];
+    if (!userId) return acc;
+    if (!acc[userId]) {
+      acc[userId] = [];
+    }
+    acc[userId].push(student);
+    return acc;
+  }, {});
+
+  const averages = Object.fromEntries(
+    Object.entries(groupStats).map(([key, array]) => [
+      key,
+      calculateAveragesByType(array)
+    ])
+  );
+
+  return averages;
+};
+
 const ResponseTimeDashboardTab = ({
   studentAvgResponseTime,
   agents,
@@ -57,28 +95,12 @@ const ResponseTimeDashboardTab = ({
   const threadTypes =
     viewMode === 'agent' ? agentThreadTypes : editorThreadTypes;
 
-  const agentsStats = studentAvgResponseTime.reduce((acc, student) => {
-    const agentId = student?.agents?.[0];
-    if (!agentId) return acc;
-    if (!acc[agentId]) {
-      acc[agentId] = [];
-    }
-    acc[agentId].push(student);
-    return acc;
-  }, {});
+  // group student stats by first agent/editor (main assignee)
+  const agentsStats = getAssigneeStats(studentAvgResponseTime, 'agents');
+  const editorsStats = getAssigneeStats(studentAvgResponseTime, 'editors');
 
-  const editorsStats = studentAvgResponseTime.reduce((acc, student) => {
-    const editorId = student?.editors?.[0];
-    if (!editorId) return acc;
-    if (!acc[editorId]) {
-      acc[editorId] = [];
-    }
-    acc[editorId].push(student);
-    return acc;
-  }, {});
-
-  console.log(agents, editors);
-  console.log(agentsStats, editorsStats);
+  console.log('1. ', agents, editors);
+  console.log('2. ', agentsStats, editorsStats);
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>

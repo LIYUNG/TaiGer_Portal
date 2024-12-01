@@ -461,6 +461,9 @@ const getStatistics = asyncHandler(async (req, res) => {
     const studentsPromise = req.db
       .model('Student')
       .find()
+      .select(
+        'firstname lastname applications application_preference generaldocs_threads editors agents createdAt'
+      )
       .populate('agents editors', 'firstname lastname')
       .populate('applications.programId')
       .populate(

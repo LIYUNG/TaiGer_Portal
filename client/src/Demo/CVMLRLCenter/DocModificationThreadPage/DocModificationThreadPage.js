@@ -27,7 +27,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText
+  DialogContentText,
+  Stack
 } from '@mui/material';
 import { pdfjs } from 'react-pdf'; // Library for rendering PDFs
 import {
@@ -699,52 +700,64 @@ function DocModificationThreadPage() {
   return (
     <Box>
       {!isLoaded && <Loading />}
-      {docModificationThreadPageState.thread?.file_type === 'Essay' &&
-        (originAuthorConfirmed ? (
-          <Box className="sticky-top">
-            <Typography variant="body1">
-              <CheckCircleIcon
-                size={18}
-                style={{ color: green[500] }}
-                title="Agree"
-              />
-              &nbsp;
-              {t('confirmDocument', {
-                ns: 'documents',
-                studentName: student_name,
-                studentNameZh: student_name_zh,
-                docName
-              })}
-              &nbsp;
-              <span
-                onClick={() => setOpenOriginAuthorModal(!openOriginAuthorModal)}
-                style={{ color: theme.palette.primary.main, cursor: 'pointer' }}
-              >
-                {t('Read More')}
-              </span>
-            </Typography>
-          </Box>
-        ) : (
-          <Box className="sticky-top">
-            <Typography variant="body1">
-              <HelpIcon size={18} style={{ color: grey[400] }} />
-              &nbsp;
-              {t('notConfirmDocument', {
-                ns: 'documents',
-                studentName: student_name,
-                studentNameZh: student_name_zh,
-                docName
-              })}{' '}
-              &nbsp;
-              <span
-                onClick={() => setOpenOriginAuthorModal(!openOriginAuthorModal)}
-                style={{ color: theme.palette.primary.main, cursor: 'pointer' }}
-              >
-                {t('Read More')}
-              </span>
-            </Typography>
-          </Box>
-        ))}
+      {docModificationThreadPageState.thread?.file_type === 'Essay' && (
+        <Box className="sticky-top">
+          <Stack direction="row" alignItems="center" spacing={1}>
+            {originAuthorConfirmed ? (
+              <>
+                <CheckCircleIcon
+                  size={18}
+                  style={{ color: green[500] }}
+                  title="Agree"
+                />
+                <Typography variant="body1">
+                  {t('confirmDocument', {
+                    ns: 'documents',
+                    studentName: student_name,
+                    studentNameZh: student_name_zh,
+                    docName
+                  })}
+                  <span
+                    onClick={() =>
+                      setOpenOriginAuthorModal(!openOriginAuthorModal)
+                    }
+                    style={{
+                      color: theme.palette.primary.main,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {t('Read More')}
+                  </span>
+                </Typography>
+              </>
+            ) : (
+              <>
+                <HelpIcon size={18} style={{ color: grey[400] }} />
+                <Typography variant="body1">
+                  {t('notConfirmDocument', {
+                    ns: 'documents',
+                    studentName: student_name,
+                    studentNameZh: student_name_zh,
+                    docName
+                  })}
+                  &nbsp;
+                  <span
+                    onClick={() =>
+                      setOpenOriginAuthorModal(!openOriginAuthorModal)
+                    }
+                    style={{
+                      color: theme.palette.primary.main,
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {t('Read More')}
+                  </span>
+                </Typography>
+              </>
+            )}
+          </Stack>
+        </Box>
+      )}
       {/* TODO */}
       {false && <button onClick={generatePDF}>Generate PDF</button>}
       <Breadcrumbs aria-label="breadcrumb">
@@ -769,7 +782,7 @@ function DocModificationThreadPage() {
         </Link>
         <Typography variant="body1" color="text.primary">
           {docName}
-          {' Discussion thread'}
+          {t('discussion-thread', { ns: 'common' })}
         </Typography>
         <span style={{ float: 'right' }}>
           <Button
@@ -1235,7 +1248,7 @@ function DocModificationThreadPage() {
             </b>
           </Typography>
           {docModificationThreadPageState.thread.isFinalVersion ? (
-            <Typography>This discussion thread is close.</Typography>
+            <Typography>{t('thread-close')}</Typography>
           ) : (
             <DocThreadEditor
               thread={docModificationThreadPageState.thread}
@@ -1305,56 +1318,32 @@ function DocModificationThreadPage() {
         <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {' '}
             <Typography variant="body1" sx={{ my: 2 }}>
-              各位同學您好， <br />
-              今年開始德國學校已大量使用人工智慧技術來檢測申請文件(小論文/大論文/作業等等的內容)。為了確保台德學生的權益，我們需要向大家說明幾項重要事情。我們協助您撰寫小論文的過程中，我們會提出明確的寫作建議，包括內容走向、文章結構和文獻使用等建議。我們的目標是指導您完成一篇具有高質量的文章，以符合學校的申請要求。
-              在撰寫過程中，我們首先會對您的文章內容提出指導方向，但請注意，我們的指導僅限於內文走向架構以及撰寫大原則，並不包括「重寫」或「編譯」。且內容草稿完成後，我們的外籍顧問將進行第二階段的潤稿，我們外籍顧問僅對您的英文進行修改。在此步驟中，我們將專注於英文文法的修訂，而不涉及文字重組或整篇文章重新論述或全篇改寫。
-              請放心，我們的英文編修過程將使用word文檔中的reviewing
-              mode修訂功能，以便您隨時查看修訂情況。我們建議您仔細審閱每一處修訂，並自行決定是否接受或拒絕修訂。如果您勾選「接受」英文編修建議，代表學生已同意此建議並對編修後的內容全權負責。
-              然而，請注意，儘管我們致力於提供最優質的服務，但我們無法保證學校或其他機構不會對您的文章提出抄襲或是使用人工智慧技術的質疑。若因為任何原因導致您的文章不符合學校的標準，本公司不對相關事件負責。
-              感謝您對我們的信任和合作。如果您有任何疑問或需要進一步的幫助，請隨時與我們聯繫。我們期待與您共同完成優秀的小論文。
+              {t('hello-students', {
+                ns: 'common',
+                tenant: appConfig.companyName
+              })}
             </Typography>
-            <Typography variant="body1">
-              Dear TaiGer customers,
-              <br />
-              Recently, some universities in Germany have begun using artificial
-              intelligence technology to assess the writing of essays. In order
-              to ensure the cooperation agreement between TaiGer Consultancy Ltd
-              and our students, we would like to highlight some important
-              matters to our esteemed customers. Our goal is to guide you in
-              producing a high-quality essay that meets your expectations and
-              requirements. This process of assisting you in writing essays
-              consists of 2 steps: 1. In the first step, we will provide
-              profound suggestions on aspects such as content direction, essay
-              structure, and academic writing style incl. use of references.
-              However, please note that our guidance is limited to the direction
-              of the content and overarching principles, and does not include
-              rewriting or compilation. 2. After the completion of the essay,
-              our foreign consultants will proceed to the second step, which
-              involves editing the English text. During this step, we will focus
-              on revising English grammar, without involving any text
-              restructuring or complete rewriting. Rest assured, our English
-              editing process will utilize the reviewing mode feature in Word
-              documents, allowing you to track revisions at any time. We
-              recommend carefully reviewing each revision and deciding whether
-              to accept or reject them. We would be honored if you accept our
-              professional English editing suggestions. Please be aware that
-              while we strive to provide the highest quality service, we cannot
-              guarantee that schools or other institutions will not raise
-              objections regarding plagiarism or the use of artificial
-              intelligence technology in your essay. If for any reason your
-              essay does not meet the standards of the school, we cannot be held
-              responsible, and we ask for your understanding. Thank you for your
-              trust and cooperation. If you have any questions or need further
-              assistance, please feel free to contact us. We look forward to
-              working with you to produce outstanding essays. Sincerely, TaiGer
-              Consultancy Ltd.
+            <Typography variant="body1" sx={{ my: 2 }}>
+              {t('essay-responsibility-declaration-content', {
+                ns: 'common',
+                tenant: appConfig.companyFullName
+              })}
+            </Typography>
+            <Typography variant="body1" sx={{ my: 2 }}>
+              {t('essay-responsibility-declaration-signature', {
+                ns: 'common',
+                tenant: appConfig.companyFullName
+              })}
             </Typography>
           </DialogContentText>
           {is_TaiGer_Student(user) && (
             <FormControlLabel
-              label={`我 (${student_name} ${student_name_zh}) 確認 ${docName} 這份文件皆無用 AI 輔助完成，我同意此條款並對編修後的內容全權負責。`}
+              label={`${t('i-declare-without-help-of-ai', {
+                ns: 'common',
+                studentFullName: `${student_name} ${student_name_zh}`,
+                docName: docName
+              })}`}
               sx={{ my: 2 }}
               control={
                 <Checkbox

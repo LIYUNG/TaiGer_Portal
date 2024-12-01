@@ -14,6 +14,7 @@ import {
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'; // Example icon from Material UI
 import { getCheckDocumentPatternIsPassed } from '../../../api';
 import { Stack } from '@mui/system';
+import { useTranslation } from 'react-i18next';
 
 const DocumentCheckingResultModal = ({
   open,
@@ -26,6 +27,7 @@ const DocumentCheckingResultModal = ({
   student_name,
   docName
 }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [reason, setReason] = useState('');
   const [acknowledge, setAcknowledge] = useState(false);
@@ -101,12 +103,14 @@ const DocumentCheckingResultModal = ({
                       looks like safe to close.
                     </Typography>
                     <Typography id="proceed-dialog-description">
-                      Do you want to proceed to close this?
+                      {t('proceed-close')}
                     </Typography>
                   </Fragment>
                 ) : (
                   <Fragment>
-                    <Typography variant="h6">Gap detected</Typography>
+                    <Typography variant="h6">
+                      {t('gap-detected')}
+                    </Typography>
                     <Typography variant="body1" sx={{ my: 2 }}>
                       The latest {`${student_name} ${docName} `}
                       did not contain pattern and very likely has <b>gap</b>:

@@ -41,10 +41,10 @@ const ResponseTimeBarChart = ({ chartData }) => {
 
 const responseTimeToChartData = (responseTime, threadType) => {
   return responseTime
-    ?.filter((student) => student?.avgByType?.[threadType])
-    ?.map((student) => ({
-      name: student?.name,
-      duration: student?.avgByType?.[threadType]
+    ?.filter((user) => user?.avgByType?.[threadType])
+    ?.map((user) => ({
+      name: user?.name,
+      duration: user?.avgByType?.[threadType]
     }));
 };
 
@@ -65,9 +65,9 @@ const calculateAveragesByType = (data) => {
   );
 };
 
-const getAssigneeStats = (studentAvgResponseTime, assigneeType) => {
+const getTeamStats = (studentAvgResponseTime, teamType) => {
   const groupStats = studentAvgResponseTime.reduce((acc, student) => {
-    const userId = student?.[assigneeType]?.[0];
+    const userId = student?.[teamType]?.[0];
     if (!userId) return acc;
     if (!acc[userId]) {
       acc[userId] = [];
@@ -79,11 +79,40 @@ const getAssigneeStats = (studentAvgResponseTime, assigneeType) => {
   const averages = Object.fromEntries(
     Object.entries(groupStats).map(([key, array]) => [
       key,
-      calculateAveragesByType(array)
+      { avgByType: calculateAveragesByType(array) }
     ])
   );
 
   return averages;
+};
+
+const TeamOverview = ({ studentAvgResponseTime, teamMembers, teamType }) => {
+  const teamStats = getTeamStats(studentAvgResponseTime, teamType);
+  Object.keys(teamStats).forEach((userId) => {
+    teamStats[userId].name = teamMembers?.[userId]?.firstname || userId;
+  });
+
+  const teamData = Object.values(teamStats).flat();
+  const threadTypes =
+    teamType === 'agents' ? agentThreadTypes : editorThreadTypes;
+
+  return (
+    <>
+      {threadTypes.map((fileType) => {
+        const chartData = responseTimeToChartData(teamData, fileType);
+        console.log('chartData', chartData);
+        if (!chartData || chartData?.length === 0) return null;
+        return (
+          <Grid item key={fileType} xs={12}>
+            <Typography variant="h4" sx={{ m: 3 }}>
+              {fileType}
+            </Typography>
+            <ResponseTimeBarChart chartData={chartData} />
+          </Grid>
+        );
+      })}
+    </>
+  );
 };
 
 const ResponseTimeDashboardTab = ({
@@ -91,16 +120,10 @@ const ResponseTimeDashboardTab = ({
   agents,
   editors
 }) => {
-  const [viewMode, setViewMode] = useState('agent');
-  const threadTypes =
-    viewMode === 'agent' ? agentThreadTypes : editorThreadTypes;
+  const [viewMode, setViewMode] = useState('agents');
+  // const threadTypes =
+  //   viewMode === 'agents' ? agentThreadTypes : editorThreadTypes;
 
-  // group student stats by first agent/editor (main assignee)
-  const agentsStats = getAssigneeStats(studentAvgResponseTime, 'agents');
-  const editorsStats = getAssigneeStats(studentAvgResponseTime, 'editors');
-
-  console.log('1. ', agents, editors);
-  console.log('2. ', agentsStats, editorsStats);
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -111,21 +134,26 @@ const ResponseTimeDashboardTab = ({
             style={{ marginBottom: '20px' }}
           >
             <Button
-              onClick={() => setViewMode('agent')}
-              variant={viewMode === 'agent' ? 'contained' : 'outlined'}
+              onClick={() => setViewMode('agents')}
+              variant={viewMode === 'agents' ? 'contained' : 'outlined'}
             >
               Agent View
             </Button>
             <Button
-              onClick={() => setViewMode('editor')}
-              variant={viewMode === 'editor' ? 'contained' : 'outlined'}
+              onClick={() => setViewMode('editors')}
+              variant={viewMode === 'editors' ? 'contained' : 'outlined'}
             >
               Editor View
             </Button>
           </ButtonGroup>
         </Card>
       </Grid>
-      {threadTypes.map((fileType) => {
+      <TeamOverview
+        studentAvgResponseTime={studentAvgResponseTime}
+        teamMembers={viewMode === 'agents' ? agents : editors}
+        teamType={viewMode}
+      />
+      {/* {threadTypes.map((fileType) => {
         const chartData = responseTimeToChartData(
           studentAvgResponseTime,
           fileType
@@ -139,7 +167,7 @@ const ResponseTimeDashboardTab = ({
             <ResponseTimeBarChart chartData={chartData} />
           </Grid>
         );
-      })}
+      })} */}
     </Grid>
   );
 };

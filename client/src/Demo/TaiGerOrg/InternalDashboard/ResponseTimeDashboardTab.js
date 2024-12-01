@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Button, ButtonGroup, Grid, Typography } from '@mui/material';
+import { Button, ButtonGroup, Card, Grid, Typography } from '@mui/material';
 
 import {
   BarChart,
@@ -27,7 +27,6 @@ const ResponseTimeBarChart = ({ chartData }) => {
           angle={-90}
           textAnchor="end"
           interval={0}
-          padding="no-gap"
           tick={{ fontSize: 'small' }}
         />
         <YAxis>
@@ -49,32 +48,60 @@ const responseTimeToChartData = (responseTime, threadType) => {
     }));
 };
 
-const ResponseTimeDashboardTab = ({ studentAvgResponseTime }) => {
+const ResponseTimeDashboardTab = ({
+  studentAvgResponseTime,
+  agents,
+  editors
+}) => {
   const [viewMode, setViewMode] = useState('agent');
   const threadTypes =
     viewMode === 'agent' ? agentThreadTypes : editorThreadTypes;
 
+  const agentsStats = studentAvgResponseTime.reduce((acc, student) => {
+    const agentId = student?.agents?.[0];
+    if (!agentId) return acc;
+    if (!acc[agentId]) {
+      acc[agentId] = [];
+    }
+    acc[agentId].push(student);
+    return acc;
+  }, {});
+
+  const editorsStats = studentAvgResponseTime.reduce((acc, student) => {
+    const editorId = student?.editors?.[0];
+    if (!editorId) return acc;
+    if (!acc[editorId]) {
+      acc[editorId] = [];
+    }
+    acc[editorId].push(student);
+    return acc;
+  }, {});
+
+  console.log(agents, editors);
+  console.log(agentsStats, editorsStats);
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <ButtonGroup
-          variant="contained"
-          aria-label="outlined primary button group"
-          style={{ marginBottom: '20px' }}
-        >
-          <Button
-            onClick={() => setViewMode('agent')}
-            variant={viewMode === 'agent' ? 'contained' : 'outlined'}
+        <Card sx={{ p: 2 }}>
+          <ButtonGroup
+            variant="contained"
+            aria-label="outlined primary button group"
+            style={{ marginBottom: '20px' }}
           >
-            Agent View
-          </Button>
-          <Button
-            onClick={() => setViewMode('editor')}
-            variant={viewMode === 'editor' ? 'contained' : 'outlined'}
-          >
-            Editor View
-          </Button>
-        </ButtonGroup>
+            <Button
+              onClick={() => setViewMode('agent')}
+              variant={viewMode === 'agent' ? 'contained' : 'outlined'}
+            >
+              Agent View
+            </Button>
+            <Button
+              onClick={() => setViewMode('editor')}
+              variant={viewMode === 'editor' ? 'contained' : 'outlined'}
+            >
+              Editor View
+            </Button>
+          </ButtonGroup>
+        </Card>
       </Grid>
       {threadTypes.map((fileType) => {
         const chartData = responseTimeToChartData(
@@ -84,7 +111,9 @@ const ResponseTimeDashboardTab = ({ studentAvgResponseTime }) => {
         if (!chartData || chartData?.length === 0) return null;
         return (
           <Grid item key={fileType} xs={12}>
-            <Typography>{fileType}</Typography>
+            <Typography variant="h4" sx={{ m: 3 }}>
+              {fileType}
+            </Typography>
             <ResponseTimeBarChart chartData={chartData} />
           </Grid>
         );

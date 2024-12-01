@@ -291,6 +291,20 @@ function InternalDashboard() {
       <CustomTabPanel value={value} index={4}>
         <ResponseTimeDashboardTab
           studentAvgResponseTime={studentAvgResponseTime}
+          agents={agents_data.reduce((acc, agent) => {
+            acc[agent._id] = {
+              firstname: agent.firstname,
+              lastname: agent.lastname
+            };
+            return acc;
+          }, {})}
+          editors={editors_data.reduce((acc, editor) => {
+            acc[editor._id] = {
+              firstname: editor.firstname,
+              lastname: editor.lastname
+            };
+            return acc;
+          }, {})}
         />
       </CustomTabPanel>
     </Box>

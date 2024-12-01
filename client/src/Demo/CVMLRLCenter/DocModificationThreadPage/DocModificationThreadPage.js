@@ -27,8 +27,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
-  DialogActions
+  DialogContentText
 } from '@mui/material';
 import { pdfjs } from 'react-pdf'; // Library for rendering PDFs
 import {
@@ -71,6 +70,7 @@ import Loading from '../../../components/Loading/Loading';
 import EditEssayWritersSubpage from '../../Dashboard/MainViewTab/StudDocsOverview/EditEssayWritersSubpage';
 import { TopBar } from '../../../components/TopBar/TopBar';
 import MessageList from '../../../components/Message/MessageList';
+import DocumentCheckingResultModal from './DocumentCheckingResultModal';
 
 function DocModificationThreadPage() {
   const { user } = useAuth();
@@ -1420,48 +1420,17 @@ function DocModificationThreadPage() {
           )}
         </DialogContent>
       </Dialog>
-      <Dialog
+      <DocumentCheckingResultModal
         open={docModificationThreadPageState.SetAsFinalFileModel}
+        thread_id={docModificationThreadPageState.thread._id}
+        file_type={docModificationThreadPageState.thread.file_type}
+        isFinalVersion={docModificationThreadPageState.thread.isFinalVersion}
         onClose={closeSetAsFinalFileModelWindow}
-      >
-        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Do you want to set{' '}
-            <b>
-              {student_name} {docName}
-            </b>{' '}
-            as{' '}
-            <b>
-              {docModificationThreadPageState.thread.isFinalVersion
-                ? 'open'
-                : 'final'}
-            </b>
-            ?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            color="primary"
-            variant="contained"
-            disabled={!isLoaded || !isSubmissionLoaded}
-            onClick={(e) => ConfirmSetAsFinalFileHandler(e)}
-          >
-            {isSubmissionLoaded ? (
-              t('Yes', { ns: 'common' })
-            ) : (
-              <CircularProgress />
-            )}
-          </Button>
-          <Button
-            color="secondary"
-            variant="outlined"
-            onClick={closeSetAsFinalFileModelWindow}
-          >
-            {t('No', { ns: 'common' })}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        title={t('Warning', { ns: 'common' })}
+        onConfirm={(e) => ConfirmSetAsFinalFileHandler(e)}
+        student_name={student_name}
+        docName={docName}
+      />
       {is_TaiGer_role(user) &&
         docModificationThreadPageState.showEditorPage && (
           <EditEssayWritersSubpage

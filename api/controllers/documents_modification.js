@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const async = require('async');
 const path = require('path');
-const pdf = require('pdf-parse');
-const mammoth = require('mammoth');
 const { is_TaiGer_Agent, is_TaiGer_External } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
@@ -33,7 +31,8 @@ const {
   CVDeadline_Calculator,
   EDITOR_SCOPE,
   ESSAY_WRITER_SCOPE,
-  Role
+  Role,
+  CV_MUST_HAVE_PATTERNS
 } = require('../constants');
 const {
   informEssayWriterNewEssayEmail,
@@ -48,7 +47,10 @@ const {
   createApplicationThread,
   emptyS3Directory
 } = require('../utils/modelHelper/versionControl');
-const { threadS3GarbageCollector } = require('../utils/utils_function');
+const {
+  threadS3GarbageCollector,
+  patternMatched
+} = require('../utils/utils_function');
 const { getS3Object } = require('../aws/s3');
 
 const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
@@ -617,29 +619,17 @@ const putThreadFavorite = asyncHandler(async (req, res, next) => {
   });
 });
 
-const patternMatched = async (fileBuffer, extension, patterns) => {
-  for (const pattern of patterns) {
-    if (extension === 'pdf') {
-      const data = await pdf(fileBuffer);
-      if (data.text.toLowerCase().includes(pattern.toLowerCase())) {
-        return true;
-      }
-    } else if (extension === 'docx') {
-      const result = await mammoth.extractRawText({ buffer: fileBuffer });
-      if (result.value.toLowerCase().includes(pattern.toLowerCase())) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-};
-
 const checkDocumentPattern = asyncHandler(async (req, res) => {
   const {
-    params: { messagesThreadId }
+    params: { messagesThreadId, file_type }
   } = req;
-
+  // don't check non-CV doc at the moment
+  if (file_type !== 'CV') {
+    return res.status(200).send({
+      success: true,
+      isPassed: true
+    });
+  }
   const document_thread = await req.db
     .model('Documentthread')
     .findById(messagesThreadId)
@@ -649,39 +639,57 @@ const checkDocumentPattern = asyncHandler(async (req, res) => {
     throw new ErrorResponse(404, 'Thread Id not found');
   }
 
-  // TODO:
   // Step 1
   // Get last CV keys
   const documentKeys = document_thread.messages
     .filter((message) => message.file?.length > 0)
     .map((message) => message.file);
   if (documentKeys?.length === 0) {
-    return true;
+    return res.status(200).send({
+      success: true,
+      isPassed: true
+    });
   }
   const latestFiles = documentKeys[documentKeys.length - 1];
   // Step 2
   // fetch CV pdf
-  const dataArray = await Promise.all(
-    latestFiles.map((file) => getS3Object(AWS_S3_BUCKET_NAME, file.path))
-  );
+  try {
+    const dataArray = await Promise.all(
+      latestFiles.map((file) => getS3Object(AWS_S3_BUCKET_NAME, file.path))
+    );
 
-  // Convert each data into a Buffer
-  const buffers = dataArray.map((data) => Buffer.from(data));
+    // Convert each data into a Buffer
+    const buffers = dataArray.map((data) => Buffer.from(data));
 
-  // Step 3
-  // find if keywords exist in the pdf / docx
-  let idx = 0;
-  for (const buffer of buffers) {
-    const extension = latestFiles[idx].name.split('.').pop().toLowerCase();
-    const patterns = ['- present', '– present', '- now', '– now'];
-    if (await patternMatched(buffer, extension, patterns)) {
-      return true;
+    // Step 3
+    // find if keywords exist in the pdf / docx
+    let idx = 0;
+
+    for (const buffer of buffers) {
+      const extension = latestFiles[idx].name.split('.').pop().toLowerCase();
+      if (await patternMatched(buffer, extension, CV_MUST_HAVE_PATTERNS)) {
+        return res.status(200).send({
+          success: true,
+          isPassed: true
+        });
+      }
+      idx += 1;
     }
-    idx += 1;
+    // Step 4
+    // fals if no found.
+    res.status(200).send({
+      success: true,
+      isPassed: false,
+      reason: `${CV_MUST_HAVE_PATTERNS.map((pattern) => `"${pattern}"`).join(
+        ', '
+      )}`
+    });
+  } catch (e) {
+    res.status(200).send({
+      success: true,
+      isPassed: false
+    });
   }
-  // Step 4
-  // fals if no found.
-  return false;
 });
 
 const getMessages = asyncHandler(async (req, res) => {
@@ -702,8 +710,6 @@ const getMessages = asyncHandler(async (req, res) => {
     .lean()
     .exec();
 
-  const result = await checkDocumentPattern(req);
-  console.log(`result: ${result}`);
   const agents = await req.db
     .model('Agent')
     .find({
@@ -2265,6 +2271,7 @@ module.exports = {
   postMessages,
   putThreadFavorite,
   putOriginAuthorConfirmedByStudent,
+  checkDocumentPattern,
   SetStatusMessagesThread,
   handleDeleteGeneralThread,
   handleDeleteProgramThread,

@@ -785,7 +785,7 @@ export const application_deadline_calculator = (student, application) => {
   if (isProgramWithdraw(application)) {
     return 'WITHDRAW';
   }
-  const { application_deadline, semester } = application.programId;
+  const { application_deadline, semester } = application?.programId || {};
 
   if (!application_deadline) {
     return 'No Data';
@@ -1576,11 +1576,11 @@ const prepGeneralTask = (student, thread) => {
   const { CVDeadline, daysLeftMin } = GetCVDeadline(student);
   return {
     ...prepTask(student, thread),
-    thread_id: thread.doc_thread_id._id.toString(),
+    thread_id: thread.doc_thread_id?._id.toString(),
     deadline: CVDeadline,
     lang: '',
     show: true,
-    document_name: `${thread.doc_thread_id.file_type}`,
+    document_name: `${thread.doc_thread_id?.file_type}`,
     days_left: daysLeftMin
   };
 };
@@ -1620,11 +1620,11 @@ const prepApplicationTask = (student, application, thread) => {
   return {
     ...prepTask(student, thread),
     thread_id: thread.doc_thread_id?._id.toString(),
-    program_id: application.programId._id.toString(),
+    program_id: application.programId?._id.toString(),
     deadline: application_deadline_calculator(student, application),
     show: isProgramDecided(application) ? true : false,
-    document_name: `${thread.doc_thread_id?.file_type} - ${application.programId.school} - ${application.programId.degree} -${application.programId.program_name}`,
-    lang: `${application.programId.lang}`,
+    document_name: `${thread?.doc_thread_id?.file_type} - ${application?.programId?.school} - ${application?.programId?.degree} -${application?.programId?.program_name}`,
+    lang: `${application?.programId?.lang}`,
     days_left:
       getNumberOfDays(
         new Date(),

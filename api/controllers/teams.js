@@ -420,6 +420,14 @@ const getEditorData = asyncHandler(async (req, editor) => {
   return editorData;
 });
 
+const getResponseTimeByStudent = asyncHandler(async (req, res) => {
+  const studentId = req.params.studentId;
+  const responseTimeRecords = await req.db
+    .model('ResponseTime')
+    .find({ student_id: studentId });
+  res.status(200).send({ success: true, data: responseTimeRecords });
+});
+
 const getStatistics = asyncHandler(async (req, res) => {
   const cacheKey = 'internalDashboard';
   const value = one_day_cache.get(cacheKey);
@@ -948,6 +956,7 @@ module.exports = {
   getTeamMembers,
   getStatistics,
   getAgents,
+  getResponseTimeByStudent,
   getSingleAgent,
   putAgentProfile,
   getAgentProfile,

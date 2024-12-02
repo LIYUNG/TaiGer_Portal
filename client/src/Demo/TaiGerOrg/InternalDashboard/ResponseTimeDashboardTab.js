@@ -171,6 +171,10 @@ const ResponseTimeDashboardTab = ({
     setAssignee(userId);
   };
 
+  const assigneeName = (viewMode === 'agents' ? agents : editors)?.[assignee]
+    ?.firstname;
+  console.log(assigneeName);
+
   return (
     <Grid container spacing={2}>
       {assignee && (
@@ -180,6 +184,9 @@ const ResponseTimeDashboardTab = ({
               <Button onClick={() => setAssignee(null)} color="primary">
                 <KeyboardReturnIcon sx={{ mr: 1 }} /> Return
               </Button>
+              {(viewMode === 'agents' ? 'Agent' : 'Editor') +
+                ' Overview - ' +
+                assigneeName}
             </Box>
           </Grid>
           <MemberOverview

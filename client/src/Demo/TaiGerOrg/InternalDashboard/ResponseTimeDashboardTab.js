@@ -16,11 +16,17 @@ const editorThreadTypes = ['CV', 'ML', 'RL_A', 'RL_B', 'RL_C', 'Essay'];
 const agentThreadTypes = ['communication', 'Supplementary_Form'];
 
 const ResponseTimeBarChart = ({ chartData }) => {
+  const handleClick = (e) => {
+    const index = e.activeTooltipIndex;
+    console.log(index, chartData[index]);
+  };
+
   return (
     <ResponsiveContainer width="100%" height={400}>
       <BarChart
         data={chartData}
         margin={{ top: 20, right: 30, left: 20, bottom: 110 }}
+        onClick={handleClick}
       >
         <XAxis
           dataKey="name"
@@ -43,6 +49,7 @@ const responseTimeToChartData = (responseTime, threadType) => {
   return responseTime
     ?.filter((user) => user?.avgByType?.[threadType])
     ?.map((user) => ({
+      userId: user?._id,
       name: user?.name,
       duration: user?.avgByType?.[threadType]
     }));
@@ -89,6 +96,7 @@ const getTeamStats = (studentAvgResponseTime, teamType) => {
 const TeamOverview = ({ studentAvgResponseTime, teamMembers, teamType }) => {
   const teamStats = getTeamStats(studentAvgResponseTime, teamType);
   Object.keys(teamStats).forEach((userId) => {
+    teamStats[userId]._id = userId;
     teamStats[userId].name = teamMembers?.[userId]?.firstname || userId;
   });
 

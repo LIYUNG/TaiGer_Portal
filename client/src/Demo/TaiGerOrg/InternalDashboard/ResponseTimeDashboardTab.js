@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { Button, ButtonGroup, Card, Grid, Typography } from '@mui/material';
+import { Button, ButtonGroup, Box, Grid, Typography } from '@mui/material';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 
 import {
   BarChart,
@@ -15,18 +16,13 @@ import {
 const editorThreadTypes = ['CV', 'ML', 'RL_A', 'RL_B', 'RL_C', 'Essay'];
 const agentThreadTypes = ['communication', 'Supplementary_Form'];
 
-const ResponseTimeBarChart = ({ chartData }) => {
-  const handleClick = (e) => {
-    const index = e.activeTooltipIndex;
-    console.log(index, chartData[index]);
-  };
-
+const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
   return (
     <ResponsiveContainer width="100%" height={400}>
       <BarChart
         data={chartData}
         margin={{ top: 20, right: 30, left: 20, bottom: 110 }}
-        onClick={handleClick}
+        onClick={onBarClick}
       >
         <XAxis
           dataKey="name"
@@ -93,7 +89,12 @@ const getTeamStats = (studentAvgResponseTime, teamType) => {
   return averages;
 };
 
-const TeamOverview = ({ studentAvgResponseTime, teamMembers, teamType }) => {
+const TeamOverview = ({
+  studentAvgResponseTime,
+  teamMembers,
+  teamType,
+  onBarClick
+}) => {
   const teamStats = getTeamStats(studentAvgResponseTime, teamType);
   Object.keys(teamStats).forEach((userId) => {
     teamStats[userId]._id = userId;
@@ -111,7 +112,35 @@ const TeamOverview = ({ studentAvgResponseTime, teamMembers, teamType }) => {
         if (!chartData || chartData?.length === 0) return null;
         return (
           <Grid item key={fileType} xs={12}>
-            <Typography variant="h4" sx={{ m: 3 }}>
+            <Typography variant="h4" sx={{ mb: 3 }}>
+              {fileType}
+            </Typography>
+            <ResponseTimeBarChart
+              chartData={chartData}
+              onBarClick={onBarClick}
+            />
+          </Grid>
+        );
+      })}
+    </>
+  );
+};
+
+const MemberOverview = ({ studentAvgResponseTime, memberId, teamType }) => {
+  const memberStats = studentAvgResponseTime?.filter(
+    (student) => student?.[teamType]?.[0] === memberId
+  );
+  const threadTypes =
+    teamType === 'agents' ? agentThreadTypes : editorThreadTypes;
+
+  return (
+    <>
+      {threadTypes.map((fileType) => {
+        const chartData = responseTimeToChartData(memberStats, fileType);
+        if (!chartData || chartData?.length === 0) return null;
+        return (
+          <Grid item key={fileType} xs={12}>
+            <Typography variant="h4" sx={{ mb: 3 }}>
               {fileType}
             </Typography>
             <ResponseTimeBarChart chartData={chartData} />
@@ -128,36 +157,69 @@ const ResponseTimeDashboardTab = ({
   editors
 }) => {
   const [viewMode, setViewMode] = useState('agents');
+  const [assignee, setAssignee] = useState(null);
+
+  useEffect(() => {
+    setAssignee(null);
+  }, []);
+  // const [student, setStudent] = useState(null);
+
+  const onBarClick = (e) => {
+    const index = e.activeTooltipIndex;
+    const userId = e.activePayload?.[0]?.payload.userId;
+    console.log(index, userId);
+    setAssignee(userId);
+  };
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <Card sx={{ p: 2 }}>
-          <ButtonGroup
-            variant="contained"
-            aria-label="outlined primary button group"
-            style={{ marginBottom: '20px' }}
-          >
-            <Button
-              onClick={() => setViewMode('agents')}
-              variant={viewMode === 'agents' ? 'contained' : 'outlined'}
-            >
-              Agent View
-            </Button>
-            <Button
-              onClick={() => setViewMode('editors')}
-              variant={viewMode === 'editors' ? 'contained' : 'outlined'}
-            >
-              Editor View
-            </Button>
-          </ButtonGroup>
-        </Card>
-      </Grid>
-      <TeamOverview
-        studentAvgResponseTime={studentAvgResponseTime}
-        teamMembers={viewMode === 'agents' ? agents : editors}
-        teamType={viewMode}
-      />
+      {assignee && (
+        <>
+          <Grid item xs={12}>
+            <Box sx={{ p: 2 }}>
+              <Button onClick={() => setAssignee(null)} color="primary">
+                <KeyboardReturnIcon sx={{ mr: 1 }} /> Return
+              </Button>
+            </Box>
+          </Grid>
+          <MemberOverview
+            studentAvgResponseTime={studentAvgResponseTime}
+            memberId={assignee}
+            teamType={viewMode}
+          />
+        </>
+      )}
+      {!assignee && (
+        <>
+          <Grid item xs={12}>
+            <Box sx={{ p: 2 }}>
+              <ButtonGroup
+                variant="contained"
+                aria-label="outlined primary button group"
+              >
+                <Button
+                  onClick={() => setViewMode('agents')}
+                  variant={viewMode === 'agents' ? 'contained' : 'outlined'}
+                >
+                  Agent View
+                </Button>
+                <Button
+                  onClick={() => setViewMode('editors')}
+                  variant={viewMode === 'editors' ? 'contained' : 'outlined'}
+                >
+                  Editor View
+                </Button>
+              </ButtonGroup>
+            </Box>
+          </Grid>
+          <TeamOverview
+            studentAvgResponseTime={studentAvgResponseTime}
+            teamMembers={viewMode === 'agents' ? agents : editors}
+            teamType={viewMode}
+            onBarClick={onBarClick}
+          />
+        </>
+      )}
     </Grid>
   );
 };

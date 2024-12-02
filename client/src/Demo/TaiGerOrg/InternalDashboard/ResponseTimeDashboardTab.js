@@ -199,7 +199,11 @@ const ResponseTimeDashboardTab = ({
         <>
           <Grid item xs={12}>
             <Box sx={{ p: 2 }}>
-              <Button onClick={() => setMember(null)} color="primary">
+              <Button
+                sx={{ mr: 1 }}
+                onClick={() => setMember(null)}
+                color="primary"
+              >
                 <KeyboardReturnIcon sx={{ mr: 1 }} /> Return
               </Button>
               {`${teamTypeLabel} Overview - ${memberName}`}

@@ -100,7 +100,6 @@ const TeamOverview = ({ studentAvgResponseTime, teamMembers, teamType }) => {
     <>
       {threadTypes.map((fileType) => {
         const chartData = responseTimeToChartData(teamData, fileType);
-        console.log('chartData', chartData);
         if (!chartData || chartData?.length === 0) return null;
         return (
           <Grid item key={fileType} xs={12}>

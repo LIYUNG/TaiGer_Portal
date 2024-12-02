@@ -139,8 +139,6 @@ function InternalDashboard() {
     studentAvgResponseTime
   } = internalDashboardState;
 
-  console.log('programListStats: ', programListStats);
-
   if (!isLoaded && !students && !documents) {
     return <Loading />;
   }

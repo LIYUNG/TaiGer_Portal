@@ -36,7 +36,6 @@ function ProgramDistributionChart({ data, x_key }) {
 }
 
 const ProgramListDashboardTab = ({ data }) => {
-  console.log(data.countryCount);
   return (
     <>
       <Card sx={{ p: 2 }}>

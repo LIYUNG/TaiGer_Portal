@@ -32,7 +32,12 @@ const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
           tick={{ fontSize: 'small' }}
         />
         <YAxis>
-          <Label value="Duration (days)" angle={-90} position="insideLeft" />
+          <Label
+            value="Average duration (days)"
+            angle={-90}
+            position="insideEnd"
+            dx={-15}
+          />
         </YAxis>
         <Tooltip labelStyle={{ color: 'black' }} />
         <Bar dataKey="duration" fill="#8884d8" />

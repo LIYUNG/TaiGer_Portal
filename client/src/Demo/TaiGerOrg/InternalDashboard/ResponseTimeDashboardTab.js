@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
-import { Button, ButtonGroup, Box, Grid, Typography } from '@mui/material';
+import {
+  Button,
+  ButtonGroup,
+  Box,
+  Card,
+  CardHeader,
+  CardContent,
+  Grid
+} from '@mui/material';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 
 import {
@@ -15,6 +23,16 @@ import {
 
 const editorThreadTypes = ['CV', 'ML', 'RL_A', 'RL_B', 'RL_C', 'Essay'];
 const agentThreadTypes = ['communication', 'Supplementary_Form'];
+
+const responseTimeToChartData = (responseTime, threadType) => {
+  return responseTime
+    ?.filter((user) => user?.avgByType?.[threadType])
+    ?.map((user) => ({
+      userId: user?._id,
+      name: user?.name,
+      duration: Number(user?.avgByType?.[threadType]?.toFixed(2))
+    }));
+};
 
 const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
   return (
@@ -36,7 +54,7 @@ const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
             value="Average duration (days)"
             angle={-90}
             position="insideEnd"
-            dx={-15}
+            dx={-20}
           />
         </YAxis>
         <Tooltip labelStyle={{ color: 'black' }} />
@@ -46,14 +64,41 @@ const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
   );
 };
 
-const responseTimeToChartData = (responseTime, threadType) => {
-  return responseTime
-    ?.filter((user) => user?.avgByType?.[threadType])
-    ?.map((user) => ({
-      userId: user?._id,
-      name: user?.name,
-      duration: user?.avgByType?.[threadType]
-    }));
+const ChartOverview = ({ data, teamType, onBarClick }) => {
+  const threadTypes =
+    teamType === 'agents' ? agentThreadTypes : editorThreadTypes;
+
+  return (
+    <>
+      {threadTypes.map((fileType) => {
+        const chartData = responseTimeToChartData(data, fileType);
+        if (!chartData || chartData?.length === 0) return null;
+        const totalDuration = chartData.reduce(
+          (sum, item) => sum + item.duration,
+          0
+        );
+        const averageDuration = totalDuration / chartData.length;
+        return (
+          <Grid item key={fileType} xs={12}>
+            <Card>
+              <CardHeader
+                title={`${fileType} Response Times`}
+                subheader={`Average response time: ${averageDuration.toFixed(
+                  2
+                )} days`}
+              />
+              <CardContent>
+                <ResponseTimeBarChart
+                  chartData={chartData}
+                  onBarClick={onBarClick}
+                />
+              </CardContent>
+            </Card>
+          </Grid>
+        );
+      })}
+    </>
+  );
 };
 
 const calculateAveragesByType = (data) => {
@@ -107,27 +152,13 @@ const TeamOverview = ({
   });
 
   const teamData = Object.values(teamStats).flat();
-  const threadTypes =
-    teamType === 'agents' ? agentThreadTypes : editorThreadTypes;
 
   return (
-    <>
-      {threadTypes.map((fileType) => {
-        const chartData = responseTimeToChartData(teamData, fileType);
-        if (!chartData || chartData?.length === 0) return null;
-        return (
-          <Grid item key={fileType} xs={12}>
-            <Typography variant="h4" sx={{ mb: 3 }}>
-              {fileType}
-            </Typography>
-            <ResponseTimeBarChart
-              chartData={chartData}
-              onBarClick={onBarClick}
-            />
-          </Grid>
-        );
-      })}
-    </>
+    <ChartOverview
+      data={teamData}
+      teamType={teamType}
+      onBarClick={onBarClick}
+    />
   );
 };
 
@@ -135,25 +166,7 @@ const MemberOverview = ({ studentAvgResponseTime, memberId, teamType }) => {
   const memberStats = studentAvgResponseTime?.filter(
     (student) => student?.[teamType]?.[0] === memberId
   );
-  const threadTypes =
-    teamType === 'agents' ? agentThreadTypes : editorThreadTypes;
-
-  return (
-    <>
-      {threadTypes.map((fileType) => {
-        const chartData = responseTimeToChartData(memberStats, fileType);
-        if (!chartData || chartData?.length === 0) return null;
-        return (
-          <Grid item key={fileType} xs={12}>
-            <Typography variant="h4" sx={{ mb: 3 }}>
-              {fileType}
-            </Typography>
-            <ResponseTimeBarChart chartData={chartData} />
-          </Grid>
-        );
-      })}
-    </>
-  );
+  return <ChartOverview data={memberStats} teamType={teamType} />;
 };
 
 const ResponseTimeDashboardTab = ({
@@ -162,46 +175,44 @@ const ResponseTimeDashboardTab = ({
   editors
 }) => {
   const [viewMode, setViewMode] = useState('agents');
-  const [assignee, setAssignee] = useState(null);
+  const [member, setMember] = useState(null);
+
+  const teams = { agents: agents, editors: editors };
+  const teamTypeLabel = viewMode === 'agents' ? 'Agent' : 'Editor';
 
   useEffect(() => {
-    setAssignee(null);
-  }, []);
+    setMember(null);
+  }, [viewMode]);
   // const [student, setStudent] = useState(null);
 
   const onBarClick = (e) => {
-    const index = e.activeTooltipIndex;
+    // const index = e.activeTooltipIndex;
     const userId = e.activePayload?.[0]?.payload.userId;
-    console.log(index, userId);
-    setAssignee(userId);
+    setMember(userId);
   };
 
-  const assigneeName = (viewMode === 'agents' ? agents : editors)?.[assignee]
-    ?.firstname;
-  console.log(assigneeName);
+  const memberName = teams?.[viewMode]?.[member]?.firstname;
 
   return (
     <Grid container spacing={2}>
-      {assignee && (
+      {member && (
         <>
           <Grid item xs={12}>
             <Box sx={{ p: 2 }}>
-              <Button onClick={() => setAssignee(null)} color="primary">
+              <Button onClick={() => setMember(null)} color="primary">
                 <KeyboardReturnIcon sx={{ mr: 1 }} /> Return
               </Button>
-              {(viewMode === 'agents' ? 'Agent' : 'Editor') +
-                ' Overview - ' +
-                assigneeName}
+              {`${teamTypeLabel} Overview - ${memberName}`}
             </Box>
           </Grid>
           <MemberOverview
             studentAvgResponseTime={studentAvgResponseTime}
-            memberId={assignee}
+            memberId={member}
             teamType={viewMode}
           />
         </>
       )}
-      {!assignee && (
+      {!member && (
         <>
           <Grid item xs={12}>
             <Box sx={{ p: 2 }}>
@@ -226,7 +237,7 @@ const ResponseTimeDashboardTab = ({
           </Grid>
           <TeamOverview
             studentAvgResponseTime={studentAvgResponseTime}
-            teamMembers={viewMode === 'agents' ? agents : editors}
+            teamMembers={teams?.[viewMode]}
             teamType={viewMode}
             onBarClick={onBarClick}
           />

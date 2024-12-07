@@ -50,6 +50,13 @@ function Audit({ audit }) {
                           ${record?.targetDocumentThreadId?.program_id?.degree}
                           ${record?.targetDocumentThreadId?.program_id?.semester}
                           `;
+                const interview_name =
+                  record?.interviewThreadId &&
+                  `Interview - ${record?.interviewThreadId?.program_id?.school}
+                          ${record?.interviewThreadId?.program_id?.program_name}
+                          ${record?.interviewThreadId?.program_id?.degree}
+                          ${record?.interviewThreadId?.program_id?.semester}
+                          `;
                 return (
                   <TableRow key={record._id}>
                     <TableCell>{`${record?.performedBy?.firstname} ${record?.performedBy?.lastname}`}</TableCell>
@@ -60,7 +67,7 @@ function Audit({ audit }) {
                       {removedUsers && ` - ${removedUsers}`}
                     </TableCell>
                     <TableCell>
-                      {record?.targetDocumentThreadId ? (
+                      {record?.targetDocumentThreadId && (
                         <Link
                           to={DEMO.DOCUMENT_MODIFICATION_LINK(
                             record?.targetDocumentThreadId._id?.toString()
@@ -70,8 +77,17 @@ function Audit({ audit }) {
                         >
                           {program_name}
                         </Link>
-                      ) : (
-                        <></>
+                      )}
+                      {record?.interviewThreadId && (
+                        <Link
+                          to={DEMO.INTERVIEW_SINGLE_LINK(
+                            record?.interviewThreadId._id?.toString()
+                          )}
+                          component={LinkDom}
+                          target="_blank"
+                        >
+                          {interview_name}
+                        </Link>
                       )}
                     </TableCell>
                     <TableCell>{convertDate(record.createdAt)}</TableCell>

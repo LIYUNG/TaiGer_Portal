@@ -49,7 +49,8 @@ const {
 } = require('../utils/modelHelper/versionControl');
 const {
   threadS3GarbageCollector,
-  patternMatched
+  patternMatched,
+  userChangesHelperFunction
 } = require('../utils/utils_function');
 const { getS3Object } = require('../aws/s3');
 
@@ -1953,63 +1954,18 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
       .status(404)
       .json({ success: false, message: 'Essay thread not found.' });
   }
-  const editorsIdArr = Object.keys(editorsId);
-  const updatedEditorIds = editorsIdArr.filter(
-    (editorId) => editorsId[editorId]
+
+  const {
+    addedUsers: addedEditors,
+    removedUsers: removedEditors,
+    updatedUsers: updatedEditors,
+    toBeInformedUsers: toBeInformedEditors,
+    updatedUserIds: updatedEditorIds
+  } = await userChangesHelperFunction(
+    req,
+    editorsId,
+    essayDocumentThreads.outsourced_user_id
   );
-
-  // Fetch editors concurrently
-  const editors = await Promise.all(
-    updatedEditorIds.map((id) =>
-      req.db
-        .model('Editor')
-        .findById(id)
-        .select('firstname lastname email archiv')
-        .lean()
-    )
-  );
-
-  // Prepare data for updating
-  const beforeChangeEditorArr = essayDocumentThreads.outsourced_user_id;
-
-  // Create sets for easy comparison
-  const previousEditorSet = new Set(
-    beforeChangeEditorArr.map((editr) => editr._id.toString())
-  );
-  const newEditorSet = new Set(updatedEditorIds);
-
-  // Find newly added and removed editors
-  const addedEditors = editors.filter(
-    (editr) => !previousEditorSet.has(editr._id.toString())
-  );
-  const removedEditors = beforeChangeEditorArr.filter(
-    (editrt) => !newEditorSet.has(editrt._id.toString())
-  );
-
-  const toBeInformedEditors = [];
-  const updatedEditors = [];
-
-  editors.forEach((editor) => {
-    if (editor) {
-      updatedEditors.push({
-        firstname: editor.firstname,
-        lastname: editor.lastname,
-        email: editor.email
-      });
-      if (
-        !beforeChangeEditorArr
-          ?.map((agn) => agn._id.toString())
-          .includes(editor._id.toString())
-      ) {
-        toBeInformedEditors.push({
-          firstname: editor.firstname,
-          lastname: editor.lastname,
-          archiv: editor.archiv,
-          email: editor.email
-        });
-      }
-    }
-  });
 
   // Update student's thread essay writers
   if (addedEditors.length > 0 || removedEditors.length > 0) {
@@ -2127,7 +2083,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
     action: 'update', // Action performed
     field: 'essay writer', // Field that was updated (if applicable)
     changes: {
-      before: beforeChangeEditorArr, // Before state
+      before: essayDocumentThreads.outsourced_user_id, // Before state
       after: {
         added: addedEditors,
         removed: removedEditors

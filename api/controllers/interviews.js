@@ -19,6 +19,7 @@ const { addMessageInThread } = require('../utils/informEditor');
 const { isNotArchiv } = require('../constants');
 const { getPermission } = require('../utils/queryFunctions');
 const { emptyS3Directory } = require('../utils/modelHelper/versionControl');
+const { userChangesHelperFunction } = require('../utils/utils_function');
 
 const PrecheckInterview = asyncHandler(async (req, interview_id) => {
   const precheck_interview = await req.db
@@ -371,7 +372,7 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
   }
 });
 
-const updateInterview = asyncHandler(async (req, res) => {
+const updateInterview = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { interview_id }
@@ -385,21 +386,50 @@ const updateInterview = asyncHandler(async (req, res) => {
   delete payload.thread_id;
   delete payload.program_id;
   delete payload.student_id;
+  // Step 1: Fetch the current state (before update)
+  const beforeUpdate = await req.db
+    .model('Interview')
+    .findById(interview_id)
+    .populate('student_id trainer_id', 'firstname lastname email archiv')
+    .populate('program_id', 'school program_name degree semester')
+    .populate('thread_id event_id')
+    .lean();
+
+  if (!beforeUpdate) {
+    return res.status(404).json({ error: 'Interview not found' });
+  }
 
   const interview = await req.db
     .model('Interview')
     .findByIdAndUpdate(interview_id, payload, {
       new: true
     })
-    .populate('student_id trainer_id', 'firstname lastname email archiv')
+    .populate('student_id trainer_id', 'firstname lastname email archiv role')
     .populate('program_id', 'school program_name degree semester')
     .populate('thread_id event_id')
     .lean();
+
+  if (!interview) {
+    return res.status(500).json({ error: 'Failed to update interview' });
+  }
+  const trainerObj = {};
+  payload.trainer_id?.forEach((id) => {
+    trainerObj[id] = true;
+  });
+
+  const {
+    addedUsers: addedInterviewers,
+    removedUsers: removedInterviewers,
+    updatedUsers: updatedInterviewers,
+    toBeInformedUsers: toBeInformedInterviewers,
+    updatedUserIds: updatedInterviewerIds
+  } = await userChangesHelperFunction(req, trainerObj, beforeUpdate.trainer_id);
+
   if (payload.isClosed === true || payload.isClosed === false) {
     await req.db
       .model('Documentthread')
       .findByIdAndUpdate(
-        interview.thread_id._id.toString(),
+        interview.thread_id?._id.toString(),
         { isFinalVersion: payload.isClosed },
         {}
       );
@@ -444,6 +474,23 @@ const updateInterview = asyncHandler(async (req, res) => {
       );
     }
   }
+  // Step 4: Call auditLog to record the changes
+
+  req.audit = {
+    performedBy: user._id,
+    targetUserId: interview.student_id._id, // Change this if you have a different target user ID
+    interviewThreadId: interview._id,
+    action: 'update', // Action performed
+    field: 'interview trainer', // Field that was updated (if applicable)
+    changes: {
+      before: interview.trainer_id, // Before state
+      after: {
+        added: addedInterviewers,
+        removed: removedInterviewers
+      }
+    }
+  };
+  next();
 });
 
 const getInterviewSurvey = asyncHandler(async (req, res) => {

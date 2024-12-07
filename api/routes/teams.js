@@ -7,6 +7,7 @@ const { Role } = require('../constants');
 const {
   getTeamMembers,
   getStatistics,
+  getResponseTimeByStudent,
   getArchivStudents,
   getSingleAgent,
   getSingleEditor
@@ -29,6 +30,18 @@ router
     GeneralGETRequestRateLimiter,
     permission_canAccessStudentDatabase_filter,
     getStatistics
+  );
+
+router
+  .route('/')
+  .get(filter_archiv_user, GeneralGETRequestRateLimiter, getTeamMembers);
+router
+  .route('/response-time/:studentId')
+  .get(
+    filter_archiv_user,
+    GeneralGETRequestRateLimiter,
+    permission_canAccessStudentDatabase_filter,
+    getResponseTimeByStudent
   );
 
 router

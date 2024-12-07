@@ -420,6 +420,14 @@ const getEditorData = asyncHandler(async (req, editor) => {
   return editorData;
 });
 
+const getResponseTimeByStudent = asyncHandler(async (req, res) => {
+  const studentId = req.params.studentId;
+  const responseTimeRecords = await req.db
+    .model('ResponseTime')
+    .find({ student_id: studentId });
+  res.status(200).send({ success: true, data: responseTimeRecords });
+});
+
 const getStatistics = asyncHandler(async (req, res) => {
   const cacheKey = 'internalDashboard';
   const value = one_day_cache.get(cacheKey);
@@ -461,6 +469,9 @@ const getStatistics = asyncHandler(async (req, res) => {
     const studentsPromise = req.db
       .model('Student')
       .find()
+      .select(
+        'firstname lastname applications application_preference generaldocs_threads editors agents createdAt'
+      )
       .populate('agents editors', 'firstname lastname')
       .populate('applications.programId')
       .populate(
@@ -480,78 +491,114 @@ const getStatistics = asyncHandler(async (req, res) => {
     // TODO: get MLs, RLs, etc. individual response time and thread_id>> will be used to query intervals collection.
     // const studentResponseTimeLookupTablePromise =
     //   GenerateResponseTimeByStudent();
-    // TOOD: multiple ML/ RL should be averaged. This output will be used for overview table.
-    const studentResponseTimeLookupTablePromise2 = await req.db
-      .model('ResponseTime')
-      .aggregate([
-        {
-          $group: {
-            _id: '$student_id',
-            intervalGroup: {
-              $push: {
-                k: '$interval_type',
-                v: '$intervalAvg'
-              }
-            }
-          }
-        },
-        {
-          $lookup: {
-            from: 'users', // the collection name in MongoDB
-            localField: '_id',
-            foreignField: '_id',
-            as: 'student'
-          }
-        },
-        {
-          $unwind: '$student'
-        },
-        // {
-        //   $lookup: {
-        //     from: 'users', // Assuming this is the collection name for Program documents
-        //     localField: 'student.agents',
-        //     foreignField: '_id',
-        //     as: 'agents'
-        //   }
-        // },
-        {
-          $project: {
-            _id: 0,
-            id: '$_id',
-            student: {
-              _id: '$_id',
-              // agents: '$agents',
-              lastname_chinese: '$student.lastname_chinese',
-              firstname_chinese: '$student.firstname_chinese',
-              name: {
-                $concat: ['$student.firstname', ' ', '$student.lastname']
-              }
-            },
-            intervalGroup: {
-              $arrayToObject: '$intervalGroup'
-            }
-          }
-        },
-        {
-          $replaceRoot: {
-            newRoot: {
-              $mergeObjects: [
-                {
-                  id: '$id',
-                  student_id: '$id',
-                  // agents: '$agents',
-                  lastname_chinese: '$student.lastname_chinese',
-                  firstname_chinese: '$student.firstname_chinese',
-                  name: '$student.name'
-                },
-                '$intervalGroup'
-              ]
+
+    const studentAvgResponseTimePipeline = [
+      // group by student and document type and calculate the average response time per document type
+      {
+        $group: {
+          _id: {
+            student_id: '$student_id',
+            interval_type: '$interval_type'
+          },
+          typeAvg: { $avg: '$intervalAvg' }
+        }
+      },
+      // unwrap the _id object -> which is used for grouping (student_id, interval_type)
+      {
+        $replaceRoot: { newRoot: { $mergeObjects: ['$_id', '$$ROOT'] } }
+      },
+      // group by student to create a array of all averages per document type
+      {
+        $group: {
+          _id: '$student_id',
+          avgByType: {
+            $push: {
+              k: '$interval_type',
+              v: '$typeAvg'
             }
           }
         }
-      ]);
+      },
+      // lookup student details (name, agents, editors)
+      {
+        $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'student'
+        }
+      },
+      // unwrap the student data, spreading the details to the root level
+      {
+        $unwind: '$student'
+      },
+      // select only the relevant fields for the output
+      {
+        $project: {
+          _id: 1,
+          agents: '$student.agents',
+          editors: '$student.editors',
+          lastname_chinese: '$student.lastname_chinese',
+          firstname_chinese: '$student.firstname_chinese',
+          name: {
+            $concat: ['$student.firstname', ' ', '$student.lastname']
+          },
+          avgByType: {
+            $arrayToObject: '$avgByType'
+          }
+        }
+      }
+    ];
+
+    const studentAvgResponseTimePromise = req.db
+      .model('ResponseTime')
+      .aggregate(studentAvgResponseTimePipeline);
     const activeStudentGeneralTasksPromise = getGeneralTasks(req);
-    const activeStudentTasksPromise = await getDecidedApplicationsTasks(req);
+    const activeStudentTasksPromise = getDecidedApplicationsTasks(req);
+
+    const programListStatsPipeline = [
+      {
+        $facet: {
+          countryCount: [
+            { $group: { _id: '$country', count: { $sum: 1 } } },
+            { $project: { _id: 0, country: '$_id', count: 1 } }
+          ],
+          whoupdatedCount: [
+            { $group: { _id: '$whoupdated', count: { $sum: 1 } } },
+            { $project: { _id: 0, whoupdated: '$_id', count: 1 } }
+          ],
+          schoolCount: [
+            { $group: { _id: '$school', count: { $sum: 1 } } },
+            { $project: { _id: 0, school: '$_id', count: 1 } }
+          ],
+          langCount: [
+            { $group: { _id: '$lang', count: { $sum: 1 } } },
+            { $project: { _id: 0, lang: '$_id', count: 1 } }
+          ],
+          degreeCount: [
+            { $group: { _id: '$degree', count: { $sum: 1 } } },
+            { $project: { _id: 0, degree: '$_id', count: 1 } }
+          ],
+          updatedAtCount: [
+            {
+              $group: {
+                _id: {
+                  $dateToString: { format: '%Y-%m-%d', date: '$updatedAt' }
+                },
+                count: { $sum: 1 }
+              }
+            },
+            { $project: { _id: 0, updatedAt: '$_id', count: 1 } },
+            { $sort: { updatedAt: 1 } }
+          ]
+        }
+      }
+    ];
+
+    const programListStatsPromise = req.db
+      .model('Program')
+      .aggregate(programListStatsPipeline);
+
     const [
       agents_raw_data,
       editors_raw_data,
@@ -559,9 +606,10 @@ const getStatistics = asyncHandler(async (req, res) => {
       finishedDocs,
       students,
       archivCount,
-      studentResponseTimeLookupTable,
+      studentAvgResponseTime,
       activeStudentGeneralTasks,
       activeStudentTasks,
+      programListStats,
       ...agentsStudentsDistribution
     ] = await Promise.all([
       agentsPromises,
@@ -570,9 +618,10 @@ const getStatistics = asyncHandler(async (req, res) => {
       finDocsPromise,
       studentsPromise,
       archivCountPromise,
-      studentResponseTimeLookupTablePromise2,
+      studentAvgResponseTimePromise,
       activeStudentGeneralTasksPromise,
       activeStudentTasksPromise,
+      programListStatsPromise,
       ...agents.map((agent) => getAgentStudentDistData(req, agent))
     ]);
 
@@ -647,6 +696,7 @@ const getStatistics = asyncHandler(async (req, res) => {
     const agents_data = [];
     agents_raw_data.forEach((agent, i) => {
       agents_data.push({
+        ...agent,
         key: `${agent.firstname}`,
         student_num_no_offer: agent.student_num_no_offer,
         student_num_with_offer: agent.student_num_with_offer,
@@ -669,7 +719,8 @@ const getStatistics = asyncHandler(async (req, res) => {
       activeStudentGeneralTasks,
       activeStudentTasks,
       agentStudentDistribution: mergedResults,
-      studentResponseTimeLookupTable
+      programListStats: programListStats?.[0], // unwrap single element pipeline
+      studentAvgResponseTime
     };
     res.status(200).send(returnBody);
     const success = one_day_cache.set(cacheKey, returnBody);
@@ -905,6 +956,7 @@ module.exports = {
   getTeamMembers,
   getStatistics,
   getAgents,
+  getResponseTimeByStudent,
   getSingleAgent,
   putAgentProfile,
   getAgentProfile,

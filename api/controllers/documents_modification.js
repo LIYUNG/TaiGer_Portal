@@ -31,7 +31,8 @@ const {
   CVDeadline_Calculator,
   EDITOR_SCOPE,
   ESSAY_WRITER_SCOPE,
-  Role
+  Role,
+  CV_MUST_HAVE_PATTERNS
 } = require('../constants');
 const {
   informEssayWriterNewEssayEmail,
@@ -46,7 +47,10 @@ const {
   createApplicationThread,
   emptyS3Directory
 } = require('../utils/modelHelper/versionControl');
-const { threadS3GarbageCollector } = require('../utils/utils_function');
+const {
+  threadS3GarbageCollector,
+  patternMatched
+} = require('../utils/utils_function');
 const { getS3Object } = require('../aws/s3');
 
 const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
@@ -613,6 +617,79 @@ const putThreadFavorite = asyncHandler(async (req, res, next) => {
   res.status(200).send({
     success: true
   });
+});
+
+const checkDocumentPattern = asyncHandler(async (req, res) => {
+  const {
+    params: { messagesThreadId, file_type }
+  } = req;
+  // don't check non-CV doc at the moment
+  if (file_type !== 'CV') {
+    return res.status(200).send({
+      success: true,
+      isPassed: true
+    });
+  }
+  const document_thread = await req.db
+    .model('Documentthread')
+    .findById(messagesThreadId)
+    .lean();
+  if (!document_thread) {
+    logger.error('checkDocumentPattern: thread not found!');
+    throw new ErrorResponse(404, 'Thread Id not found');
+  }
+
+  // Step 1
+  // Get last CV keys
+  const documentKeys = document_thread.messages
+    .filter((message) => message.file?.length > 0)
+    .map((message) => message.file);
+  if (documentKeys?.length === 0) {
+    return res.status(200).send({
+      success: true,
+      isPassed: true
+    });
+  }
+  const latestFiles = documentKeys[documentKeys.length - 1];
+  // Step 2
+  // fetch CV pdf
+  try {
+    const dataArray = await Promise.all(
+      latestFiles.map((file) => getS3Object(AWS_S3_BUCKET_NAME, file.path))
+    );
+
+    // Convert each data into a Buffer
+    const buffers = dataArray.map((data) => Buffer.from(data));
+
+    // Step 3
+    // find if keywords exist in the pdf / docx
+    let idx = 0;
+
+    for (const buffer of buffers) {
+      const extension = latestFiles[idx].name.split('.').pop().toLowerCase();
+      if (await patternMatched(buffer, extension, CV_MUST_HAVE_PATTERNS)) {
+        return res.status(200).send({
+          success: true,
+          isPassed: true
+        });
+      }
+      idx += 1;
+    }
+    // Step 4
+    // fals if no found.
+    res.status(200).send({
+      success: true,
+      isPassed: false,
+      reason: `${CV_MUST_HAVE_PATTERNS.map((pattern) => `"${pattern}"`).join(
+        ', '
+      )}`
+    });
+  } catch (e) {
+    res.status(200).send({
+      success: true,
+      isPassed: false
+    });
+  }
 });
 
 const getMessages = asyncHandler(async (req, res) => {
@@ -1853,7 +1930,10 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
   const essayDocumentThreads = await req.db
     .model('Documentthread')
     .findById(messagesThreadId)
-    .populate('student_id outsourced_user_id', 'firstname lastname email role archiv')
+    .populate(
+      'student_id outsourced_user_id',
+      'firstname lastname email role archiv'
+    )
     .populate({
       path: 'student_id',
       populate: {
@@ -2191,6 +2271,7 @@ module.exports = {
   postMessages,
   putThreadFavorite,
   putOriginAuthorConfirmedByStudent,
+  checkDocumentPattern,
   SetStatusMessagesThread,
   handleDeleteGeneralThread,
   handleDeleteProgramThread,

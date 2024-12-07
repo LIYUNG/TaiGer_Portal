@@ -241,8 +241,11 @@
     "Your timezone local time": "Your timezone local time",
     "add-user": "Add User",
     "created at": "created at",
+    "gap-detected": "CV gap detected!",
     "please-fill-template": "Please fill our {{tenant}} template and attach the filled template and reply in English in this discussion. Any process question",
+    "proceed-close": "Do you want to proceed to close this?",
     "something-went-wrong": "Oops! Something went wrong.",
+    "thread-close": "This discussion thread is close.",
     "updated at": "updated at",
     "名 (中文)": "名 (中文)",
     "姓 (中文)": "姓 (中文)"

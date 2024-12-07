@@ -45,6 +45,7 @@ import {
 } from '../../api';
 import DEMO from '../../store/constant';
 import Loading from '../../components/Loading/Loading';
+// import DocumentCheckingResultModal from './DocModificationThreadPage/DocumentCheckingResultModal';
 
 function EditorDocsProgress(props) {
   const { t } = useTranslation();
@@ -738,6 +739,17 @@ function EditorDocsProgress(props) {
           </Button>
         </DialogActions>
       </Dialog>
+      {/* <DocumentCheckingResultModal
+        open={editorDocsProgressState.SetAsFinalFileModel}
+        thread_id={editorDocsProgressState.doc_thread_id}
+        file_type={editorDocsProgressState.thread.file_type}
+        isFinalVersion={editorDocsProgressState.isFinal}
+        onClose={closeSetAsFinalFileModelWindow}
+        title={t('Warning', { ns: 'common' })}
+        onConfirm={(e) => ConfirmSetAsFinalFileHandler(e)}
+        student_name={editorDocsProgressState.student_name}
+        docName={editorDocsProgressState.docName}
+      /> */}
       <Dialog
         open={editorDocsProgressState.SetAsFinalFileModel}
         onClose={closeSetAsFinalFileModelWindow}

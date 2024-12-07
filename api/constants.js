@@ -1659,18 +1659,16 @@ const PROGRAM_SUBJECT_CATEGORIES = {
   }
 };
 
+const CV_MUST_HAVE_PATTERNS = [
+  '- present',
+  '– present',
+  '- now',
+  '– now',
+  'til now',
+  'til present'
+];
+
 const PROGRAM_SUBJECT_KEYS = Object.keys(PROGRAM_SUBJECTS);
-const PROGRAM_SUBJECTS_DETAILED = Object.fromEntries(
-  Object.entries(PROGRAM_SUBJECTS).map(([key, value]) => [
-    key,
-    {
-      ...value,
-      color: PROGRAM_SUBJECT_CATEGORIES?.[value?.category]?.color ?? 'primary',
-      categoryName:
-        PROGRAM_SUBJECT_CATEGORIES?.[value?.category]?.categoryName ?? 'N/A'
-    }
-  ])
-);
 
 module.exports = {
   Role,
@@ -1750,5 +1748,6 @@ module.exports = {
   SPLIT_LINE,
   ENGLISH_BELOW,
   CONTACT_AGENT,
+  CV_MUST_HAVE_PATTERNS,
   PROGRAM_SUBJECT_KEYS
 };

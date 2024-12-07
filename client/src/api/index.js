@@ -269,6 +269,9 @@ export const deleteProgramSpecificFileThread = (
     `/api/document-threads/${documentsthreadId}/${programId}/${studentId}`
   );
 
+export const getCheckDocumentPatternIsPassed = (thread_id, file_type) =>
+  request.get(`/api/document-threads/pattern/check/${thread_id}/${file_type}`);
+
 export const getAllCVMLRLOverview = () =>
   request.get(`/api/document-threads/overview/all`);
 

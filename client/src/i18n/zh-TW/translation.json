@@ -241,8 +241,11 @@
     "Your timezone local time": "您所在時區時間",
     "add-user": "新增使用者",
     "created at": "建立於",
+    "gap-detected": "偵測到履歷空白",
     "please-fill-template": "請填好我們 {{tenant}} 模板並上傳填好的模板至此，併用英語和您的編輯討論",
+    "proceed-close": "您想要繼續關閉此討論串嗎？",
     "something-went-wrong": "哀呀，錯誤！",
+    "thread-close": "此討論串已關閉。",
     "updated at": "更新於",
     "名 (中文)": "名 (中文)",
     "姓 (中文)": "姓 (中文)"

@@ -1,5 +1,7 @@
 const path = require('path');
 const async = require('async');
+const mammoth = require('mammoth');
+const PdfParse = require('pdf-parse');
 const {
   sendAssignEditorReminderEmail,
   MeetingReminderEmail,
@@ -1091,6 +1093,7 @@ const CreateIntervalMessageOperation = (student_id, msg1, msg2) => {
     message_2_id: msg2._id,
     interval_type: 'communication',
     interval: intervalValue,
+    intervalStartAt: msg1.createdAt,
     updatedAt: new Date()
   };
 
@@ -1174,6 +1177,7 @@ const CreateIntervalOperation = (thread, msg1, msg2) => {
     message_2_id: msg2._id,
     interval_type: thread.file_type,
     interval: intervalValue,
+    intervalStartAt: msg1.createdAt,
     updatedAt: new Date()
   };
 
@@ -1318,6 +1322,27 @@ const GroupIntervals = asyncHandler(async (req) => {
     return null;
   }
 });
+
+const patternMatched = async (fileBuffer, extension, patterns) => {
+  const lowerCasePatterns = patterns.map((pattern) => pattern.toLowerCase());
+  const extractText = async () => {
+    let data = null;
+    if (extension === 'pdf') {
+      const result = await PdfParse(fileBuffer);
+      data = result.text.toLowerCase();
+    } else if (extension === 'docx') {
+      const result = await mammoth.extractRawText({ buffer: fileBuffer });
+      data = result.value.toLowerCase();
+    }
+
+    return data;
+  };
+
+  const text = await extractText();
+  if (!text) return false; // Early return if text extraction failed
+
+  return lowerCasePatterns.some((pattern) => text.includes(pattern));
+};
 
 const CalculateAverageResponseTimeAndSave = asyncHandler(async (req) => {
   const [studentGroupInterval, documentThreadGroupInterval] =
@@ -1520,5 +1545,6 @@ module.exports = {
   UnconfirmedMeetingDailyReminderChecker,
   DailyCalculateAverageResponseTime,
   DailyInterviewSurveyChecker,
+  patternMatched,
   NoInterviewTrainerOrTrainingDateDailyReminderChecker
 };

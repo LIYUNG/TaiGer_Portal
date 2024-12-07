@@ -1,15 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import {
-  Button,
-  Tabs,
-  Tab,
-  Box,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions
-} from '@mui/material';
+import { Tabs, Tab, Box, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
@@ -20,7 +10,6 @@ import {
 } from '../Utils/checking-functions';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-import { SetFileAsFinal } from '../../api';
 import Banner from '../../components/Banner/Banner';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import Loading from '../../components/Loading/Loading';
@@ -54,112 +43,6 @@ function CVMLRLDashboard(props) {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-  };
-  const closeSetAsFinalFileModelWindow = () => {
-    setCVMLRLDashboardState((prevState) => ({
-      ...prevState,
-      SetAsFinalFileModel: false
-    }));
-  };
-  const ConfirmSetAsFinalFileHandler = () => {
-    setCVMLRLDashboardState((prevState) => ({
-      ...prevState,
-      isLoaded: false // false to reload everything
-    }));
-    SetFileAsFinal(
-      cVMLRLDashboardState.doc_thread_id,
-      cVMLRLDashboardState.student_id,
-      cVMLRLDashboardState.program_id
-    ).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          let temp_students = [...cVMLRLDashboardState.students];
-          let student_temp_idx = temp_students.findIndex(
-            (student) =>
-              student._id.toString() === cVMLRLDashboardState.student_id
-          );
-          if (cVMLRLDashboardState.program_id) {
-            let application_idx = temp_students[
-              student_temp_idx
-            ].applications.findIndex(
-              (application) =>
-                application.programId._id.toString() ===
-                cVMLRLDashboardState.program_id
-            );
-
-            let thread_idx = temp_students[student_temp_idx].applications[
-              application_idx
-            ].doc_modification_thread.findIndex(
-              (thread) =>
-                thread.doc_thread_id._id.toString() ===
-                cVMLRLDashboardState.doc_thread_id
-            );
-
-            temp_students[student_temp_idx].applications[
-              application_idx
-            ].doc_modification_thread[thread_idx].isFinalVersion =
-              data.isFinalVersion;
-
-            temp_students[student_temp_idx].applications[
-              application_idx
-            ].doc_modification_thread[thread_idx].updatedAt = data.updatedAt;
-            temp_students[student_temp_idx].applications[
-              application_idx
-            ].doc_modification_thread[thread_idx].doc_thread_id.updatedAt =
-              data.updatedAt;
-          } else {
-            let general_doc_idx = temp_students[
-              student_temp_idx
-            ].generaldocs_threads.findIndex(
-              (thread) =>
-                thread.doc_thread_id._id.toString() ===
-                cVMLRLDashboardState.doc_thread_id
-            );
-            temp_students[student_temp_idx].generaldocs_threads[
-              general_doc_idx
-            ].isFinalVersion = data.isFinalVersion;
-
-            temp_students[student_temp_idx].generaldocs_threads[
-              general_doc_idx
-            ].updatedAt = data.updatedAt;
-
-            temp_students[student_temp_idx].generaldocs_threads[
-              general_doc_idx
-            ].doc_thread_id.updatedAt = data.updatedAt;
-          }
-
-          setCVMLRLDashboardState((prevState) => ({
-            ...prevState,
-            docName: '',
-            isLoaded: true,
-            students: temp_students,
-            success: success,
-            SetAsFinalFileModel: false,
-            isFinalVersion: false,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setCVMLRLDashboardState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setCVMLRLDashboardState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
-        }));
-      }
-    );
   };
 
   const ConfirmError = () => {
@@ -317,29 +200,6 @@ function CVMLRLDashboard(props) {
           col={memoizedColumnsMrt}
         />
       </CustomTabPanel>
-      <Dialog
-        open={cVMLRLDashboardState.SetAsFinalFileModel}
-        onClose={closeSetAsFinalFileModelWindow}
-        aria-labelledby="contained-modal-title-vcenter"
-      >
-        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
-        <DialogContent>
-          Do you want to set {cVMLRLDashboardState.docName} as{' '}
-          {cVMLRLDashboardState.isFinalVersion ? 'open' : 'final'} for student?
-        </DialogContent>
-        <DialogActions>
-          <Button
-            variant="contained"
-            disabled={!isLoaded}
-            onClick={ConfirmSetAsFinalFileHandler}
-          >
-            {t('Yes', { ns: 'common' })}
-          </Button>
-          <Button onClick={closeSetAsFinalFileModelWindow}>
-            {t('No', { ns: 'common' })}
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 }

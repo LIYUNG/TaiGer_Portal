@@ -51,7 +51,8 @@ const {
   getAllActiveEssays,
   putOriginAuthorConfirmedByStudent,
   putThreadFavorite,
-  IgnoreMessageInDocumentThread
+  IgnoreMessageInDocumentThread,
+  checkDocumentPattern
 } = require('../controllers/documents_modification');
 const {
   docThreadMultitenant_filter,
@@ -72,6 +73,14 @@ const { auditLog } = require('../utils/log/auditLog');
 const router = Router();
 
 router.use(protect);
+
+router
+  .route('/pattern/check/:messagesThreadId/:file_type')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    checkDocumentPattern
+  );
 
 router
   .route('/overview/all')

@@ -1130,6 +1130,7 @@ export const sortProgramFields = (a, b) => {
 
 export const convertDate_ux_friendly = (date) => {
   // let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
+
   const { t } = useTranslation();
   const currentDate = new Date();
   const input_date_point = new Date(date);
@@ -1143,6 +1144,9 @@ export const convertDate_ux_friendly = (date) => {
   const weeks = Math.floor(days / 7);
 
   let timeDisplay;
+  if (!date) {
+    return '-';
+  }
   if (minutes < 60) {
     timeDisplay = t('timeMinutes', { ns: 'common', minutes });
   } else if (hours < 24) {

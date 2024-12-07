@@ -486,7 +486,7 @@ const getMessages = asyncHandler(async (req, res, next) => {
     .model('Student')
     .findById(studentId)
     .select(
-      'firstname lastname firstname_chinese lastname_chinese agents archiv'
+      'firstname lastname firstname_chinese lastname_chinese agents lastLoginAt archiv'
     )
     .populate('agents', 'firstname lastname email role');
   if (!student) {

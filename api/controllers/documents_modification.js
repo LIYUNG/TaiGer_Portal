@@ -1505,7 +1505,7 @@ const putOriginAuthorConfirmedByStudent = asyncHandler(async (req, res) => {
 
 // (O) notification student email works
 // (O) notification agent email works
-const SetStatusMessagesThread = asyncHandler(async (req, res) => {
+const SetStatusMessagesThread = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { messagesThreadId, studentId },
@@ -1531,7 +1531,9 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     logger.error('SetStatusMessagesThread: Invalid student id');
     throw new ErrorResponse(404, 'Student not found');
   }
-  logger.info('program_id ', program_id);
+
+  let isFinalVersionBefore;
+  let isFinalVersionAfter;
   if (program_id) {
     const student_application = student.applications.find(
       (application) => application.programId._id.toString() === program_id
@@ -1548,13 +1550,13 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
       logger.error('SetStatusMessagesThread: application thread not found');
       throw new ErrorResponse(404, 'Thread not found');
     }
-
+    isFinalVersionBefore = application_thread.isFinalVersion;
     application_thread.isFinalVersion = !application_thread.isFinalVersion;
     application_thread.updatedAt = new Date();
     document_thread.isFinalVersion = application_thread.isFinalVersion;
+    isFinalVersionAfter = application_thread.isFinalVersion;
     document_thread.updatedAt = new Date();
-    await document_thread.save();
-    await student.save();
+    await Promise.all([document_thread.save(), student.save()]);
 
     res.status(200).send({
       success: true,
@@ -1636,12 +1638,14 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
       logger.error('SetStatusMessagesThread: generaldoc thread not found');
       throw new ErrorResponse(404, 'Thread not found');
     }
+    isFinalVersionBefore = generaldocs_thread.isFinalVersion;
     generaldocs_thread.isFinalVersion = !generaldocs_thread.isFinalVersion;
     generaldocs_thread.updatedAt = new Date();
     document_thread.isFinalVersion = generaldocs_thread.isFinalVersion;
+    isFinalVersionAfter = document_thread.isFinalVersion;
     document_thread.updatedAt = new Date();
-    await document_thread.save();
-    await student.save();
+    await Promise.all([document_thread.save(), student.save()]);
+
     res.status(200).send({
       success: true,
       data: {
@@ -1709,6 +1713,20 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
       }
     }
   }
+
+  req.audit = {
+    performedBy: user._id,
+    targetUserId: student._id, // Change this if you have a different target user ID
+    targetDocumentThreadId: messagesThreadId,
+    action: 'update', // Action performed
+    field: 'status', // Field that was updated (if applicable)
+    changes: {
+      before: isFinalVersionBefore, // Before state
+      after: isFinalVersionAfter
+    }
+  };
+
+  next();
 });
 
 const deleteGeneralThread = asyncHandler(async (req, studentId, threadId) => {

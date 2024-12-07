@@ -5,6 +5,8 @@ const auditLog = asyncHandler(async (req) => {
   try {
     const { user, audit } = req;
 
+    if (!audit) return;
+
     const newAuditLog = {
       performedBy: user._id,
       targetUserId: audit.targetUserId, // Change this if you have a different target user ID

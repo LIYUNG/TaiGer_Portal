@@ -31,55 +31,64 @@ const PrecheckInterview = asyncHandler(async (req, interview_id) => {
   }
 });
 
-const InterviewCancelledReminder = asyncHandler(
-  async (user, receiver, meeting_event, cc) => {
-    InterviewCancelledReminderEmail(
-      {
-        id: receiver._id.toString(),
-        firstname: receiver.firstname,
-        lastname: receiver.lastname,
-        address: receiver.email
-      },
-      {
-        taiger_user: user,
-        role: user.role,
-        meeting_time: meeting_event.start,
-        student_id: user._id.toString(),
-        event: meeting_event,
-        event_title:
-          user.role === Role.Student
-            ? `${user.firstname} ${user.lastname}`
-            : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
-        isUpdatingEvent: false,
-        cc
-      }
-    );
-  }
-);
+const InterviewCancelledReminder = async (
+  user,
+  receiver,
+  meeting_event,
+  cc
+) => {
+  InterviewCancelledReminderEmail(
+    {
+      id: receiver._id.toString(),
+      firstname: receiver.firstname,
+      lastname: receiver.lastname,
+      address: receiver.email
+    },
+    {
+      taiger_user: user,
+      role: user.role,
+      meeting_time: meeting_event.start,
+      student_id: user._id.toString(),
+      event: meeting_event,
+      event_title:
+        user.role === Role.Student
+          ? `${user.firstname} ${user.lastname}`
+          : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
+      isUpdatingEvent: false,
+      cc
+    }
+  );
+};
 
-const InterviewTrainingInvitation = asyncHandler(
-  async (receiver, user, event, interview_id, program, isUpdatingEvent, cc) => {
-    await sendInterviewConfirmationEmail(
-      {
-        id: receiver._id.toString(),
-        firstname: receiver.firstname,
-        lastname: receiver.lastname,
-        address: receiver.email
-      },
-      {
-        taiger_user: user,
-        meeting_time: event.start, // Replace with the actual meeting time
-        student_id: user._id.toString(),
-        meeting_link: event.meetingLink,
-        isUpdatingEvent,
-        event,
-        interview_id,
-        program,
-        cc
-      }
-    );
-  }
-);
+const InterviewTrainingInvitation = async (
+  receiver,
+  user,
+  event,
+  interview_id,
+  program,
+  isUpdatingEvent,
+  cc
+) => {
+  sendInterviewConfirmationEmail(
+    {
+      id: receiver._id.toString(),
+      firstname: receiver.firstname,
+      lastname: receiver.lastname,
+      address: receiver.email
+    },
+    {
+      taiger_user: user,
+      meeting_time: event.start, // Replace with the actual meeting time
+      student_id: user._id.toString(),
+      meeting_link: event.meetingLink,
+      isUpdatingEvent,
+      event,
+      interview_id,
+      program,
+      cc
+    }
+  );
+};
 
 const getAllInterviews = asyncHandler(async (req, res) => {
   const interviews = await req.db
@@ -227,7 +236,7 @@ const deleteInterview = asyncHandler(async (req, res) => {
     emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
     // Delete event
     if (interview.event_id) {
-      // TODO: send delete event email
+      // send delete event email
       const toBeDeletedEvent = await req.db
         .model('Event')
         .findByIdAndDelete(interview.event_id)
@@ -334,7 +343,8 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
     const interview_tmep = await req.db
       .model('Interview')
       .findById(interview_id)
-      .populate('program_id');
+      .populate('program_id')
+      .lean();
     // inform agent for confirmed training date
     const student_temp = await req.db
       .model('Student')
@@ -473,23 +483,35 @@ const updateInterview = asyncHandler(async (req, res, next) => {
         { interview, isClosed: payload.isClosed, user }
       );
     }
-  }
-  // Step 4: Call auditLog to record the changes
-
-  req.audit = {
-    performedBy: user._id,
-    targetUserId: interview.student_id._id, // Change this if you have a different target user ID
-    interviewThreadId: interview._id,
-    action: 'update', // Action performed
-    field: 'interview trainer', // Field that was updated (if applicable)
-    changes: {
-      before: interview.trainer_id, // Before state
-      after: {
-        added: addedInterviewers,
-        removed: removedInterviewers
+    req.audit = {
+      performedBy: user._id,
+      targetUserId: interview.student_id._id, // Change this if you have a different target user ID
+      interviewThreadId: interview._id,
+      action: 'update', // Action performed
+      field: 'status', // Field that was updated (if applicable)
+      changes: {
+        before: beforeUpdate.isClosed, // Before state
+        after: payload.isClosed
       }
-    }
-  };
+    };
+  }
+  if ('trainer_id' in payload) {
+    req.audit = {
+      performedBy: user._id,
+      targetUserId: interview.student_id._id, // Change this if you have a different target user ID
+      interviewThreadId: interview._id,
+      action: 'update', // Action performed
+      field: 'interview trainer', // Field that was updated (if applicable)
+      changes: {
+        before: interview.trainer_id, // Before state
+        after: {
+          added: addedInterviewers,
+          removed: removedInterviewers
+        }
+      }
+    };
+  }
+
   next();
 });
 

@@ -29,6 +29,10 @@ const intervalSchema = new Schema({
     type: Number,
     required: true
   },
+  intervalStartAt: {
+    type: Date,
+    required: true
+  },
   updatedAt: {
     type: Date,
     default: Date.now,

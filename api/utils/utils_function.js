@@ -1093,6 +1093,7 @@ const CreateIntervalMessageOperation = (student_id, msg1, msg2) => {
     message_2_id: msg2._id,
     interval_type: 'communication',
     interval: intervalValue,
+    intervalStartAt: msg1.createdAt,
     updatedAt: new Date()
   };
 
@@ -1176,6 +1177,7 @@ const CreateIntervalOperation = (thread, msg1, msg2) => {
     message_2_id: msg2._id,
     interval_type: thread.file_type,
     interval: intervalValue,
+    intervalStartAt: msg1.createdAt,
     updatedAt: new Date()
   };
 

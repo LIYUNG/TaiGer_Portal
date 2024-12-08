@@ -420,6 +420,15 @@ const getEditorData = asyncHandler(async (req, editor) => {
   return editorData;
 });
 
+const getResponseIntervalByStudent = asyncHandler(async (req, res) => {
+  const studentId = req.params.studentId;
+  const responseIntervalRecords = await req.db
+    .model('Interval')
+    .find({ student_id: studentId })
+    .select('-updatedAt -_id');
+  res.status(200).send({ success: true, data: responseIntervalRecords });
+});
+
 const getResponseTimeByStudent = asyncHandler(async (req, res) => {
   const studentId = req.params.studentId;
   const responseTimeRecords = await req.db
@@ -956,6 +965,7 @@ module.exports = {
   getTeamMembers,
   getStatistics,
   getAgents,
+  getResponseIntervalByStudent,
   getResponseTimeByStudent,
   getSingleAgent,
   putAgentProfile,

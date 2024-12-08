@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link as LinkDom, useParams } from 'react-router-dom';
+import { Link as LinkDom, useLocation, useParams } from 'react-router-dom';
 import {
   Card,
   Link,
@@ -12,7 +12,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
-  DialogActions
+  DialogActions,
+  Tabs,
+  Tab
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { is_TaiGer_role } from '@taiger-common/core';
@@ -30,17 +32,27 @@ import { TabTitle } from '../Utils/TabTitle';
 import InterviewItems from './InterviewItems';
 import DEMO from '../../store/constant';
 import Loading from '../../components/Loading/Loading';
-import { INTERVIEW_STATUS_E, stringAvatar } from '../Utils/contants';
+import {
+  INTERVIEW_STATUS_E,
+  stringAvatar,
+  THREAD_REVERSED_TABS,
+  THREAD_TABS
+} from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import { TopBar } from '../../components/TopBar/TopBar';
 import { appConfig } from '../../config';
 import MessageList from '../../components/Message/MessageList';
 import DocThreadEditor from '../../components/Message/DocThreadEditor';
+import { a11yProps, CustomTabPanel } from '../../components/Tabs';
+import Audit from '../Audit';
 
 function SingleInterview() {
   const { interview_id } = useParams();
   const { user } = useAuth();
   const { t } = useTranslation();
+  const { hash } = useLocation();
+  const [value, setValue] = useState(THREAD_TABS[hash.replace('#', '')] || 0);
+
   const [singleInterviewState, setSingleInterviewState] = useState({
     error: '',
     file: null,
@@ -53,6 +65,7 @@ function SingleInterview() {
     isDeleteSuccessful: false,
     isDeleting: false,
     interview: {},
+    interviewAuditLog: [],
     editorDescriptionState: null,
     editorInputState: null,
     res_status: 0,
@@ -63,7 +76,7 @@ function SingleInterview() {
   useEffect(() => {
     getInterview(interview_id).then(
       (resp) => {
-        const { data, success, questionsNum } = resp.data;
+        const { data, success, questionsNum, interviewAuditLog } = resp.data;
         const { status } = resp;
         if (!data) {
           setSingleInterviewState((prevState) => ({
@@ -84,6 +97,7 @@ function SingleInterview() {
             ...prevState,
             isLoaded: true,
             interview: data,
+            interviewAuditLog,
             editorDescriptionState: initialEditorState,
             editorInputState: { time: new Date(), blocks: [] },
             questionsNum,
@@ -211,7 +225,7 @@ function SingleInterview() {
 
     // formData.append('files', singleInterviewState.file);
     formData.append('message', message);
-
+    console.log(singleInterviewState.interview);
     SubmitMessageWithAttachment(
       singleInterviewState.interview?.thread_id?._id.toString(),
       singleInterviewState.interview?.student_id?._id.toString(),
@@ -294,6 +308,11 @@ function SingleInterview() {
       ...prevState,
       SetDeleteDocModel: false
     }));
+  };
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    window.location.hash = THREAD_REVERSED_TABS[newValue];
   };
 
   const handleAsFinalFile = (interview_id) => {
@@ -397,6 +416,7 @@ function SingleInterview() {
     isSubmissionLoaded,
     isLoaded,
     questionsNum,
+    interviewAuditLog,
     res_modal_status,
     res_modal_message
   } = singleInterviewState;
@@ -443,103 +463,126 @@ function SingleInterview() {
       {interview ? (
         <>
           {interview.isClosed && <TopBar />}
-          <InterviewItems
-            expanded={true}
-            interview={interview}
-            questionsNum={questionsNum}
-            openDeleteDocModalWindow={openDeleteDocModalWindow}
-          />
-          <MessageList
-            documentsthreadId={interview.thread_id?._id?.toString()}
-            accordionKeys={accordionKeys}
-            singleExpandtHandler={singleExpandtHandler}
-            thread={interview.thread_id}
-            isLoaded={true}
-            user={user}
-            onDeleteSingleMessage={onDeleteSingleMessage}
-            apiPrefix={'/api/document-threads'}
-          />
-          {user.archiv !== true ? (
-            <Card
-              sx={{
-                p: 2,
-                overflowWrap: 'break-word', // Add this line
-                maxWidth: window.innerWidth - 64,
-                marginTop: '1px',
-                '& .MuiAvatar-root': {
-                  width: 32,
-                  height: 32,
-                  ml: -0.5,
-                  mr: 1
-                }
-              }}
-            >
-              <Avatar {...stringAvatar(`${user.firstname} ${user.lastname}`)} />
-              <Typography
-                variant="body1"
-                sx={{ mt: 1 }}
-                style={{ marginLeft: '10px', flex: 1 }}
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            indicatorColor="primary"
+            aria-label="basic tabs example"
+          >
+            <Tab
+              label={t('discussion-thread', { ns: 'common' })}
+              {...a11yProps(0)}
+            />
+            <Tab label={t('Audit', { ns: 'common' })} {...a11yProps(1)} />
+          </Tabs>
+          <CustomTabPanel value={value} index={0}>
+            <InterviewItems
+              expanded={true}
+              interview={interview}
+              questionsNum={questionsNum}
+              interviewAuditLog={interviewAuditLog}
+              openDeleteDocModalWindow={openDeleteDocModalWindow}
+            />
+            <MessageList
+              documentsthreadId={interview.thread_id?._id?.toString()}
+              accordionKeys={accordionKeys}
+              singleExpandtHandler={singleExpandtHandler}
+              thread={interview.thread_id}
+              isLoaded={true}
+              user={user}
+              onDeleteSingleMessage={onDeleteSingleMessage}
+              apiPrefix={'/api/document-threads'}
+            />
+            {user.archiv !== true ? (
+              <Card
+                sx={{
+                  p: 2,
+                  overflowWrap: 'break-word', // Add this line
+                  maxWidth: window.innerWidth - 64,
+                  marginTop: '1px',
+                  '& .MuiAvatar-root': {
+                    width: 32,
+                    height: 32,
+                    ml: -0.5,
+                    mr: 1
+                  }
+                }}
               >
-                <b>
-                  {user.firstname} {user.lastname}
-                </b>
-              </Typography>
-              {interview.isClosed ? (
-                <Typography>This interview is closed.</Typography>
-              ) : (
-                <DocThreadEditor
-                  thread={interview.thread_id}
-                  buttonDisabled={singleInterviewState.buttonDisabled}
-                  // buttonDisabled={false}
-                  editorState={singleInterviewState.editorInputState}
-                  handleClickSave={handleClickSave}
-                  file={singleInterviewState.file}
-                  onFileChange={onFileChange}
-                  checkResult={[]}
+                <Avatar
+                  {...stringAvatar(`${user.firstname} ${user.lastname}`)}
                 />
-              )}
-              {is_TaiGer_role(user) &&
-                (!singleInterviewState.interview.isClosed ? (
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color="success"
-                    onClick={() =>
-                      handleAsFinalFile(interview?._id?.toString())
-                    }
-                    sx={{ mt: 2 }}
-                  >
-                    {isSubmissionLoaded ? (
-                      t('Mark as finished')
-                    ) : (
-                      <CircularProgress size={24} />
-                    )}
-                  </Button>
+                <Typography
+                  variant="body1"
+                  sx={{ mt: 1 }}
+                  style={{ marginLeft: '10px', flex: 1 }}
+                >
+                  <b>
+                    {user.firstname} {user.lastname}
+                  </b>
+                </Typography>
+                {interview.isClosed ? (
+                  <Typography>This interview is closed.</Typography>
                 ) : (
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    color="secondary"
-                    onClick={() =>
-                      handleAsFinalFile(interview?._id?.toString())
-                    }
-                    sx={{ mt: 2 }}
-                  >
-                    {isSubmissionLoaded ? (
-                      t('Mark as open')
-                    ) : (
-                      <CircularProgress size={24} />
-                    )}
-                  </Button>
-                ))}
-            </Card>
-          ) : (
-            <Card>
-              <Typography>
-                Your service is finished. Therefore, you are in read only mode.
-              </Typography>
-            </Card>
-          )}
+                  <DocThreadEditor
+                    thread={interview.thread_id}
+                    buttonDisabled={singleInterviewState.buttonDisabled}
+                    // buttonDisabled={false}
+                    editorState={singleInterviewState.editorInputState}
+                    handleClickSave={handleClickSave}
+                    file={singleInterviewState.file}
+                    onFileChange={onFileChange}
+                    checkResult={[]}
+                  />
+                )}
+                {is_TaiGer_role(user) &&
+                  (!singleInterviewState.interview.isClosed ? (
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      color="success"
+                      onClick={() =>
+                        handleAsFinalFile(interview?._id?.toString())
+                      }
+                      sx={{ mt: 2 }}
+                    >
+                      {isSubmissionLoaded ? (
+                        t('Mark as finished')
+                      ) : (
+                        <CircularProgress size={24} />
+                      )}
+                    </Button>
+                  ) : (
+                    <Button
+                      fullWidth
+                      variant="outlined"
+                      color="secondary"
+                      onClick={() =>
+                        handleAsFinalFile(interview?._id?.toString())
+                      }
+                      sx={{ mt: 2 }}
+                    >
+                      {isSubmissionLoaded ? (
+                        t('Mark as open')
+                      ) : (
+                        <CircularProgress size={24} />
+                      )}
+                    </Button>
+                  ))}
+              </Card>
+            ) : (
+              <Card>
+                <Typography>
+                  Your service is finished. Therefore, you are in read only
+                  mode.
+                </Typography>
+              </Card>
+            )}
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={1}>
+            <Audit audit={interviewAuditLog} />
+          </CustomTabPanel>
         </>
       ) : isDeleteSuccessful ? (
         <Card sx={{ p: 1 }}>

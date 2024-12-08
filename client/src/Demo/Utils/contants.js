@@ -776,6 +776,16 @@ export const INTERNAL_DASHBOARD_REVERSED_TABS = {
   4: 'responseTime'
 };
 
+export const THREAD_TABS = {
+  communication: 0,
+  audit: 1
+};
+
+export const THREAD_REVERSED_TABS = {
+  0: 'communication',
+  1: 'audit'
+};
+
 export const SINGLE_STUDENT_TABS = {
   applications: 0,
   profile: 1,

@@ -32,7 +32,11 @@ const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
       xAxis={[
         {
           data: chartData.map((item) => item.name),
-          scaleType: 'band'
+          scaleType: 'band',
+          tickLabelStyle: {
+            angle: -90,
+            textAnchor: 'end'
+          }
         }
       ]}
       yAxis={[{ label: 'Average duration (days)' }]}

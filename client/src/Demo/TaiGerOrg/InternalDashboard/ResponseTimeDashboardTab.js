@@ -9,17 +9,8 @@ import {
   CardContent,
   Grid
 } from '@mui/material';
+import { BarChart } from '@mui/x-charts/BarChart';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
-
-import {
-  BarChart,
-  Tooltip,
-  XAxis,
-  YAxis,
-  Bar,
-  ResponsiveContainer,
-  Label
-} from 'recharts';
 
 const editorThreadTypes = ['CV', 'ML', 'RL_A', 'RL_B', 'RL_C', 'Essay'];
 const agentThreadTypes = ['communication', 'Supplementary_Form'];
@@ -36,31 +27,22 @@ const responseTimeToChartData = (responseTime, threadType) => {
 
 const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
   return (
-    <ResponsiveContainer width="100%" height={400}>
-      <BarChart
-        data={chartData}
-        margin={{ top: 20, right: 30, left: 20, bottom: 110 }}
-        onClick={onBarClick}
-      >
-        <XAxis
-          dataKey="name"
-          angle={-90}
-          textAnchor="end"
-          interval={0}
-          tick={{ fontSize: 'small' }}
-        />
-        <YAxis>
-          <Label
-            value="Average duration (days)"
-            angle={-90}
-            position="insideEnd"
-            dx={-20}
-          />
-        </YAxis>
-        <Tooltip labelStyle={{ color: 'black' }} />
-        <Bar dataKey="duration" fill="#8884d8" />
-      </BarChart>
-    </ResponsiveContainer>
+    <BarChart
+      series={[{ data: chartData.map((item) => item.duration) }]}
+      xAxis={[
+        {
+          data: chartData.map((item) => item.name),
+          scaleType: 'band'
+        }
+      ]}
+      yAxis={[{ label: 'Average duration (days)' }]}
+      height={400}
+      margin={{ top: 20, right: 30, left: 50, bottom: 110 }}
+      onClick={onBarClick}
+      onItemClick={(event, barItemIdentifier) =>
+        onBarClick(chartData[barItemIdentifier.dataIndex]?.userId)
+      }
+    ></BarChart>
   );
 };
 
@@ -162,11 +144,22 @@ const TeamOverview = ({
   );
 };
 
-const MemberOverview = ({ studentAvgResponseTime, memberId, teamType }) => {
+const MemberOverview = ({
+  studentAvgResponseTime,
+  memberId,
+  teamType,
+  onBarClick
+}) => {
   const memberStats = studentAvgResponseTime?.filter(
     (student) => student?.[teamType]?.[0] === memberId
   );
-  return <ChartOverview data={memberStats} teamType={teamType} />;
+  return (
+    <ChartOverview
+      data={memberStats}
+      teamType={teamType}
+      onBarClick={onBarClick}
+    />
+  );
 };
 
 const ResponseTimeDashboardTab = ({
@@ -183,11 +176,11 @@ const ResponseTimeDashboardTab = ({
   useEffect(() => {
     setMember(null);
   }, [viewMode]);
-  // const [student, setStudent] = useState(null);
 
-  const onBarClick = (e) => {
-    // const index = e.activeTooltipIndex;
-    const userId = e.activePayload?.[0]?.payload.userId;
+  const onBarClick = (userId) => {
+    if (!teams?.[viewMode]?.[userId]) {
+      return;
+    }
     setMember(userId);
   };
 
@@ -213,6 +206,7 @@ const ResponseTimeDashboardTab = ({
             studentAvgResponseTime={studentAvgResponseTime}
             memberId={member}
             teamType={viewMode}
+            onBarClick={onBarClick}
           />
         </>
       )}

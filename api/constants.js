@@ -1666,6 +1666,8 @@ const CV_MUST_HAVE_PATTERNS = [
   '– current',
   '- now',
   '– now',
+  '- jetzt',
+  '– jetzt',
   'til now',
   'til present'
 ];

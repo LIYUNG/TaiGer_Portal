@@ -194,19 +194,37 @@ const getInterview = asyncHandler(async (req, res) => {
       logger.info('getInterview: this interview is not found!');
       throw new ErrorResponse(404, 'this interview is not found!');
     }
+    const interviewAuditLogPromise = req.db
+      .model('Audit')
+      .find({
+        interviewThreadId: interview_id
+      })
+      .populate('performedBy targetUserId', 'firstname lastname role')
+      .populate({
+        path: 'targetDocumentThreadId interviewThreadId',
+        select: 'program_id file_type',
+        populate: {
+          path: 'program_id',
+          select: 'school program_name degree semester'
+        }
+      })
+      .sort({ createdAt: -1 });
 
-    const interviewsSurveys = await req.db
+    const questionsNumPromise = req.db
       .model('InterviewSurveyResponse')
-      .find()
-      .populate('interview_id')
-      .lean();
+      .countDocuments({ 'interview_id.program_id': interview.program_id?._id });
 
-    const num = interviewsSurveys.filter(
-      (survey) =>
-        survey.interview_id.program_id.toString() ===
-        interview.program_id?._id?.toString()
-    )?.length;
-    res.status(200).send({ success: true, data: interview, questionsNum: num });
+    const [interviewAuditLog, questionsNum] = await Promise.all([
+      interviewAuditLogPromise,
+      questionsNumPromise
+    ]);
+
+    res.status(200).send({
+      success: true,
+      data: interview,
+      questionsNum,
+      interviewAuditLog
+    });
   } catch (e) {
     logger.error(`getInterview: ${e.message}`);
     throw new ErrorResponse(404, 'this interview is not found!');

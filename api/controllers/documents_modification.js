@@ -710,23 +710,44 @@ const getMessages = asyncHandler(async (req, res) => {
     .populate('outsourced_user_id', 'firstname lastname role')
     .lean()
     .exec();
-
-  const agents = await req.db
+  const threadAuditLogPromise = req.db
+    .model('Audit')
+    .find({
+      targetDocumentThreadId: messagesThreadId
+    })
+    .populate('performedBy targetUserId', 'firstname lastname role')
+    .populate({
+      path: 'targetDocumentThreadId interviewThreadId',
+      select: 'program_id file_type',
+      populate: {
+        path: 'program_id',
+        select: 'school program_name degree semester'
+      }
+    })
+    .sort({ createdAt: -1 });
+  const agentsPromise = req.db
     .model('Agent')
     .find({
       _id: document_thread.student_id.agents
     })
     .select('firstname lastname');
-  const editors = await req.db
+  const editorsPromise = req.db
     .model('Editor')
     .find({
       _id: document_thread.student_id.editors
     })
     .select('firstname lastname');
-  const student = await req.db
+  const studentPromise = req.db
     .model('Student')
     .findById(document_thread.student_id._id.toString())
     .populate('applications.programId');
+  const [agents, editors, student, threadAuditLog] = await Promise.all([
+    agentsPromise,
+    editorsPromise,
+    studentPromise,
+    threadAuditLogPromise
+  ]);
+
   let deadline = 'x';
   if (General_Docs.includes(document_thread.file_type)) {
     deadline = CVDeadline_Calculator(student);
@@ -763,11 +784,13 @@ const getMessages = asyncHandler(async (req, res) => {
         'firstname lastname applications application_preference.expected_application_date'
       );
   }
+
   res.status(200).send({
     success: true,
     data: document_thread,
     agents,
     editors,
+    threadAuditLog,
     deadline,
     conflict_list
   });

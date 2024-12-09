@@ -68,10 +68,11 @@ const getTeamStats = (studentAvgResponseTime, teamType) => {
 const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
   return (
     <BarChart
-      series={[{ data: chartData.map((item) => item.duration) }]}
+      dataset={chartData}
+      series={[{ dataKey: 'duration' }]}
       xAxis={[
         {
-          data: chartData.map((item) => item.name),
+          dataKey: 'name',
           scaleType: 'band',
           tickLabelStyle: {
             angle: -90,

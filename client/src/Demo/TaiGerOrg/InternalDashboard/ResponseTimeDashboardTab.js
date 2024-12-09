@@ -9,8 +9,10 @@ import {
   CardContent,
   Grid
 } from '@mui/material';
-import { BarChart } from '@mui/x-charts/BarChart';
+import { BarChart, LineChart } from '@mui/x-charts';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+
+const { getResponseIntervalByStudent } = require('../../../api');
 
 const editorThreadTypes = ['CV', 'ML', 'RL_A', 'RL_B', 'RL_C', 'Essay'];
 const agentThreadTypes = ['communication', 'Supplementary_Form'];
@@ -166,6 +168,64 @@ const MemberOverview = ({
   );
 };
 
+const StudentOverview = ({ studentId }) => {
+  const [studentIntervals, setStudentIntervals] = useState('error');
+  useEffect(() => {
+    if (!studentId) return;
+    getResponseIntervalByStudent(studentId).then((res) => {
+      if (res?.status === 200) {
+        const { data } = res.data;
+
+        const timeData = data
+          ?.map((item) => ({
+            ...item,
+            intervalStartAt: new Date(item.intervalStartAt)
+          }))
+          ?.sort((a, b) => a.intervalStartAt - b.intervalStartAt);
+
+        const xData = timeData.map((item) => item.intervalStartAt);
+        const yData = timeData.map((item) => Number(item.interval.toFixed(2)));
+        const chartData = { x: xData, y: yData };
+        setStudentIntervals(chartData);
+      } else {
+        setStudentIntervals('error');
+      }
+    });
+  }, [studentId]);
+
+  return (
+    <>
+      {studentIntervals?.x && studentIntervals?.y && (
+        <Grid item xs={12}>
+          <Card>
+            <CardHeader
+              title={`${studentId} Response Times`}
+              subheader={`Average response time: averageDuration.toFixed(2) days`}
+            />
+            <CardContent>
+              <LineChart
+                xAxis={[
+                  {
+                    data: studentIntervals?.x,
+                    scaleType: 'time'
+                  }
+                ]}
+                series={[
+                  {
+                    data: studentIntervals?.y
+                  }
+                ]}
+                width={500}
+                height={300}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+      )}
+    </>
+  );
+};
+
 const ResponseTimeDashboardTab = ({
   studentAvgResponseTime,
   agents,
@@ -173,12 +233,14 @@ const ResponseTimeDashboardTab = ({
 }) => {
   const [viewMode, setViewMode] = useState('agents');
   const [member, setMember] = useState(null);
+  const [student, setStudent] = useState('6366287a94358b085b0fccf7');
 
   const teams = { agents: agents, editors: editors };
   const teamTypeLabel = viewMode === 'agents' ? 'Agent' : 'Editor';
 
   useEffect(() => {
     setMember(null);
+    setStudent('6366287a94358b085b0fccf7');
   }, [viewMode]);
 
   const onBarClick = (userId) => {
@@ -192,29 +254,7 @@ const ResponseTimeDashboardTab = ({
 
   return (
     <Grid container spacing={2}>
-      {member && (
-        <>
-          <Grid item xs={12}>
-            <Box sx={{ p: 2 }}>
-              <Button
-                sx={{ mr: 1 }}
-                onClick={() => setMember(null)}
-                color="primary"
-              >
-                <KeyboardReturnIcon sx={{ mr: 1 }} /> Return
-              </Button>
-              {`${teamTypeLabel} Overview - ${memberName}`}
-            </Box>
-          </Grid>
-          <MemberOverview
-            studentAvgResponseTime={studentAvgResponseTime}
-            memberId={member}
-            teamType={viewMode}
-            onBarClick={onBarClick}
-          />
-        </>
-      )}
-      {!member && (
+      {!member && !student && (
         <>
           <Grid item xs={12}>
             <Box sx={{ p: 2 }}>
@@ -244,6 +284,43 @@ const ResponseTimeDashboardTab = ({
             onBarClick={onBarClick}
           />
         </>
+      )}
+      {member && !student && (
+        <>
+          <Grid item xs={12}>
+            <Box sx={{ p: 2 }}>
+              <Button
+                sx={{ mr: 1 }}
+                onClick={() => setMember(null)}
+                color="primary"
+              >
+                <KeyboardReturnIcon sx={{ mr: 1 }} /> Return
+              </Button>
+              {`${teamTypeLabel} Overview - ${memberName}`}
+            </Box>
+          </Grid>
+          <MemberOverview
+            studentAvgResponseTime={studentAvgResponseTime}
+            memberId={member}
+            teamType={viewMode}
+            onBarClick={onBarClick}
+          />
+        </>
+      )}
+      {student && (
+        <Grid item xs={12}>
+          <Box sx={{ p: 2 }}>
+            <Button
+              sx={{ mr: 1 }}
+              onClick={() => setMember(null)}
+              color="primary"
+            >
+              <KeyboardReturnIcon sx={{ mr: 1 }} /> Return
+            </Button>
+            {`Student Overview - ${memberName}`}
+          </Box>
+          <StudentOverview studentId={student} />
+        </Grid>
       )}
     </Grid>
   );

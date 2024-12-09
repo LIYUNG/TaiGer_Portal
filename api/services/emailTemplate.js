@@ -99,13 +99,11 @@ const htmlContent = (message) => `
             style={{ textDecoration: 'none' }}
           >
             <img
-            class="img-radius"
-            src="${TENANT_PORTAL_LINK}assets/images/taiger_logo.png"
-            alt="TaiGer Logo"
-            style="width: 75px; height: 75px; border-radius: 50%;"
+            src="${TENANT_PORTAL_LINK}assets/logo-new/Taiger_LT_C_H_EN-3.svg"
+            alt="TaiGer"
+            style=" max-height: 100px;"
             />
           </a>
-        <h1>${TENANT_NAME}</h1>
     </div>
     <div class="content">
       ${message}

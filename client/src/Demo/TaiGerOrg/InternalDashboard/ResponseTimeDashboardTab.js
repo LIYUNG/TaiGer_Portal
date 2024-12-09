@@ -106,22 +106,20 @@ const ChartOverview = ({ data, teamType, onBarClick }) => {
         );
         const averageDuration = totalDuration / chartData.length;
         return (
-          <>
-            <Card>
-              <CardHeader
-                title={`${fileType} Response Times`}
-                subheader={`Average response time: ${averageDuration.toFixed(
-                  2
-                )} days`}
+          <Card key={fileType}>
+            <CardHeader
+              title={`${fileType} Response Times`}
+              subheader={`Average response time: ${averageDuration.toFixed(
+                2
+              )} days`}
+            />
+            <CardContent>
+              <ResponseTimeBarChart
+                chartData={chartData}
+                onBarClick={onBarClick}
               />
-              <CardContent>
-                <ResponseTimeBarChart
-                  chartData={chartData}
-                  onBarClick={onBarClick}
-                />
-              </CardContent>
-            </Card>
-          </>
+            </CardContent>
+          </Card>
         );
       })}
     </>
@@ -176,33 +174,30 @@ const StudentOverview = ({ studentId }) => {
     getResponseIntervalByStudent(studentId).then((res) => {
       if (res?.status === 200) {
         const { data } = res.data;
-
-        const timeData = data
+        const convertedDate = data
           ?.map((item) => ({
             ...item,
             intervalStartAt: new Date(item.intervalStartAt)
           }))
           ?.sort((a, b) => a.intervalStartAt - b.intervalStartAt);
 
-        const xData = timeData.map((item) => item.intervalStartAt);
-        const yData = timeData.map((item) => Number(item.interval.toFixed(2)));
-        const chartData = { x: xData, y: yData };
-        setStudentIntervals(chartData);
+        setStudentIntervals(convertedDate);
       } else {
         setStudentIntervals('error');
       }
     });
   }, [studentId]);
 
-  const sumDuration = studentIntervals?.y?.reduce(
-    (accumulator, currentValue) => accumulator + currentValue,
-    0
-  );
-  const averageDuration = sumDuration / studentIntervals?.y?.length;
+  // const sumDuration = studentIntervals?.y?.reduce(
+  //   (accumulator, currentValue) => accumulator + currentValue,
+  //   0
+  // );
+  // const averageDuration = sumDuration / studentIntervals?.y?.length;
+  const averageDuration = 0.015555;
 
   return (
     <>
-      {studentIntervals?.x && studentIntervals?.y && (
+      {studentIntervals != 'error' && (
         <>
           <Card>
             <CardHeader
@@ -213,18 +208,15 @@ const StudentOverview = ({ studentId }) => {
             />
             <CardContent>
               <LineChart
+                dataset={studentIntervals}
+                series={[{ dataKey: 'interval' }]}
                 xAxis={[
                   {
-                    data: studentIntervals?.x,
+                    dataKey: 'intervalStartAt',
                     scaleType: 'time'
                   }
                 ]}
                 yAxis={[{ label: 'Duration (days)' }]}
-                series={[
-                  {
-                    data: studentIntervals?.y
-                  }
-                ]}
                 height={400}
               />
             </CardContent>

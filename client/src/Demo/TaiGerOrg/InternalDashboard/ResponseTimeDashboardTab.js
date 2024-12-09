@@ -193,6 +193,12 @@ const StudentOverview = ({ studentId }) => {
     });
   }, [studentId]);
 
+  const sumDuration = studentIntervals?.y?.reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0
+  );
+  const averageDuration = sumDuration / studentIntervals?.y?.length;
+
   return (
     <>
       {studentIntervals?.x && studentIntervals?.y && (
@@ -200,7 +206,9 @@ const StudentOverview = ({ studentId }) => {
           <Card>
             <CardHeader
               title={`${studentId} Response Times`}
-              subheader={`Average response time: averageDuration.toFixed(2) days`}
+              subheader={`Average response time: ${averageDuration.toFixed(
+                2
+              )} days`}
             />
             <CardContent>
               <LineChart

@@ -28,7 +28,7 @@ export default function Footer() {
 
     if (selectedLanguage === language) return;
 
-    if (['en', 'zh-TW'].includes(selectedLanguage)) {
+    if (['en', 'zh-CN', 'zh-TW'].includes(selectedLanguage)) {
       i18n.changeLanguage(selectedLanguage);
       localStorage.setItem('locale', selectedLanguage);
       setLanguage(selectedLanguage);
@@ -95,7 +95,10 @@ export default function Footer() {
                     <ListItemText>English</ListItemText>
                   </MenuItem>
                   <MenuItem value="zh-TW">
-                    <ListItemText>中文</ListItemText>
+                    <ListItemText>繁體中文</ListItemText>
+                  </MenuItem>
+                  <MenuItem value="zh-CN">
+                    <ListItemText>简体中文</ListItemText>
                   </MenuItem>
                 </Select>
               </FormControl>

@@ -8,6 +8,6 @@ import { translation_zh_TW } from './zh-TW';
 
 export const translation_resources = {
   en: translation_en,
-  'zh-CV': translation_zh_CN,
+  'zh-CN': translation_zh_CN,
   'zh-TW': translation_zh_TW
 };

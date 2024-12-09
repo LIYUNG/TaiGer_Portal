@@ -27,6 +27,44 @@ const responseTimeToChartData = (responseTime, threadType) => {
     }));
 };
 
+const calculateAveragesByType = (data) => {
+  const avgByType = data.reduce((acc, item) => {
+    for (const [key, value] of Object.entries(item.avgByType)) {
+      if (!acc[key]) {
+        acc[key] = { sum: 0, count: 0 };
+      }
+      acc[key].sum += value;
+      acc[key].count += 1;
+    }
+    return acc;
+  }, {});
+
+  return Object.fromEntries(
+    Object.entries(avgByType).map(([key, { sum, count }]) => [key, sum / count])
+  );
+};
+
+const getTeamStats = (studentAvgResponseTime, teamType) => {
+  const groupStats = studentAvgResponseTime.reduce((acc, student) => {
+    const userId = student?.[teamType]?.[0];
+    if (!userId) return acc;
+    if (!acc[userId]) {
+      acc[userId] = [];
+    }
+    acc[userId].push(student);
+    return acc;
+  }, {});
+
+  const averages = Object.fromEntries(
+    Object.entries(groupStats).map(([key, array]) => [
+      key,
+      { avgByType: calculateAveragesByType(array) }
+    ])
+  );
+
+  return averages;
+};
+
 const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
   return (
     <BarChart
@@ -87,44 +125,6 @@ const ChartOverview = ({ data, teamType, onBarClick }) => {
       })}
     </>
   );
-};
-
-const calculateAveragesByType = (data) => {
-  const avgByType = data.reduce((acc, item) => {
-    for (const [key, value] of Object.entries(item.avgByType)) {
-      if (!acc[key]) {
-        acc[key] = { sum: 0, count: 0 };
-      }
-      acc[key].sum += value;
-      acc[key].count += 1;
-    }
-    return acc;
-  }, {});
-
-  return Object.fromEntries(
-    Object.entries(avgByType).map(([key, { sum, count }]) => [key, sum / count])
-  );
-};
-
-const getTeamStats = (studentAvgResponseTime, teamType) => {
-  const groupStats = studentAvgResponseTime.reduce((acc, student) => {
-    const userId = student?.[teamType]?.[0];
-    if (!userId) return acc;
-    if (!acc[userId]) {
-      acc[userId] = [];
-    }
-    acc[userId].push(student);
-    return acc;
-  }, {});
-
-  const averages = Object.fromEntries(
-    Object.entries(groupStats).map(([key, array]) => [
-      key,
-      { avgByType: calculateAveragesByType(array) }
-    ])
-  );
-
-  return averages;
 };
 
 const TeamOverview = ({

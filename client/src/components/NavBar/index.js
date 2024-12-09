@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as LinkDom, Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import MuiAppBar from '@mui/material/AppBar';
@@ -20,7 +20,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import MailIcon from '@mui/icons-material/Mail';
-import { Avatar, Link, Tooltip, useMediaQuery } from '@mui/material';
+import { Avatar, Tooltip, useMediaQuery } from '@mui/material';
 import {
   is_TaiGer_Agent,
   is_TaiGer_Admin,
@@ -98,6 +98,9 @@ function NavBar(props) {
   const { user, isAuthenticated, isLoaded, logout } = useAuth();
   const theme = useTheme();
   const ismobile = useMediaQuery(theme.breakpoints.down('md'));
+  const logoLink = ismobile
+    ? `${appConfig.logoSmallNoText}.svg`
+    : `${appConfig.darkLogoSmall}.svg`;
   const [open, setOpen] = useState(ismobile ? false : true);
   const [navState, setNavState] = useState({
     listOpen: false,
@@ -420,20 +423,17 @@ function NavBar(props) {
             aria-label="open drawer"
             onClick={(e) => handleDrawerOpen(e)}
             edge="start"
-            sx={{ mr: 2, ...(!ismobile && open && { display: 'none' }) }}
+            sx={{ ...(!ismobile && open && { display: 'none' }) }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            <Link
-              underline="none"
-              color="inherit"
-              component={LinkDom}
-              to={`${DEMO.DASHBOARD_LINK}`}
-            >
-              {appConfig.companyName}
-            </Link>
-          </Typography>
+          <img
+            src={logoLink}
+            alt="Logo"
+            style={{ maxHeight: '48px', marginRight: 2 }}
+            href={`${DEMO.DASHBOARD_LINK}`}
+          />
+
           {(is_TaiGer_Agent(user) ||
             is_TaiGer_Editor(user) ||
             is_TaiGer_Admin(user)) && <NavSearch />}

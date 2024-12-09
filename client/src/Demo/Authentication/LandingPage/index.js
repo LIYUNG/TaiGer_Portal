@@ -9,9 +9,15 @@ import Paper from '@mui/material/Paper';
 import DEMO from '../../../store/constant';
 import { appConfig } from '../../../config';
 import Footer from '../../../components/Footer/Footer';
-import { Avatar } from '@mui/material';
+import { useTheme } from '@mui/material';
 
 const LandingPage = () => {
+  const theme = useTheme();
+  const mode = theme.palette.mode;
+  const logoLink =
+    mode === 'dark'
+      ? `${appConfig.LoginPageDarkLogo}.svg`
+      : `${appConfig.LoginPageLightLogo}.svg`;
   return (
     <div>
       <AppBar position="static">
@@ -33,16 +39,7 @@ const LandingPage = () => {
             alignItems: 'center'
           }}
         >
-          <Avatar
-            alt="TaiGer"
-            src={appConfig.LoginPageLogo}
-            sx={{
-              width: 150,
-              height: 150,
-              borderRadius: '50%',
-              margin: '1px'
-            }}
-          />
+          <img src={logoLink} alt="Logo" style={{ maxWidth: '100%' }} />
           <Typography
             component="h2"
             variant="h3"

@@ -57,7 +57,7 @@ const friend = (props) => {
           ? theme.palette.background.secondary
           : theme.palette.info.main, // Set your desired background color
         '&:hover': {
-          backgroundColor: '#a0a0a0' // Set a different color on hover if needed
+          backgroundColor: theme.palette.action.hover // Set a different color on hover if needed
         }
       }}
       title={`${
@@ -116,16 +116,15 @@ const friend = (props) => {
             }}
           >
             <Typography variant="body2">
-              {(
-                props.data?.latestCommunication?.user_id === props.data?.latestCommunication?.student_id 
-                && (props.data?.latestCommunication?.ignore_message !== true)
-              ) && (
-                <FiberManualRecordIcon
-                  fontSize="small"
-                  title="Not Reply Yet"
-                  style={{ marginLeft: '4px' }}
-                />
-              )}
+              {props.data?.latestCommunication?.user_id ===
+                props.data?.latestCommunication?.student_id &&
+                props.data?.latestCommunication?.ignore_message !== true && (
+                  <FiberManualRecordIcon
+                    fontSize="small"
+                    title="Not Reply Yet"
+                    style={{ marginLeft: '4px' }}
+                  />
+                )}
             </Typography>
           </Box>
         </Grid>

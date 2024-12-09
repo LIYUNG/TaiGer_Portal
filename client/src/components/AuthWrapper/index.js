@@ -1,9 +1,16 @@
 import React from 'react';
-import { Avatar, Box, Container, CssBaseline } from '@mui/material';
+import { Box, Container, CssBaseline, useTheme } from '@mui/material';
 import Footer from '../Footer/Footer';
 import { appConfig } from '../../config';
 
 export default function AuthWrapper({ children }) {
+  const theme = useTheme();
+  const mode = theme.palette.mode;
+  const logoLink =
+    mode === 'dark'
+      ? `${appConfig.LoginPageDarkLogo}.svg`
+      : `${appConfig.LoginPageLightLogo}.svg`;
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -15,16 +22,17 @@ export default function AuthWrapper({ children }) {
           alignItems: 'center'
         }}
       >
-        <Avatar
+        <img src={logoLink} alt="Logo" style={{ maxWidth: '100%' }} />
+        {/* <Avatar
           alt="TaiGer"
-          src={appConfig.LoginPageLogo}
+          src={appConfig.LoginPageDarkLogo}
           sx={{
             width: 150,
             height: 150,
             borderRadius: '50%',
             margin: '1px'
           }}
-        />
+        /> */}
         {children}
       </Box>
       <Footer />

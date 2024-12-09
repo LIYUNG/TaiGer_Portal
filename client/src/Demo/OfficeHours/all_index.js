@@ -170,7 +170,7 @@ function AllOfficeHours() {
                 }
               />
             ))}
-          <Card>
+          <Card sx={{ p: 2 }}>
             <Typography variant="h6">
               {t('Upcoming', { ns: 'common' })}
             </Typography>
@@ -208,7 +208,9 @@ function AllOfficeHours() {
               : t('No upcoming event', { ns: 'common' })}
           </Card>
           <Card>
-            <Typography variant="h6">{t('Past', { ns: 'common' })}</Typography>
+            <Typography variant="h6" sx={{ p: 2 }}>
+              {t('Past', { ns: 'common' })}
+            </Typography>
             {_.reverse(
               _.sortBy(
                 events?.filter((event) => !isInTheFuture(event.end)),

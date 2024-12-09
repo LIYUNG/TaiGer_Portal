@@ -1,22 +1,47 @@
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
 let themeLight = createTheme({
-  // Light mode theme configuration
   palette: {
+    mode: 'light',
     primary: {
-      main: '#3f51b5'
+      main: '#1a73e8', // Google Blue
+      contrastText: '#ffffff'
     },
     secondary: {
-      main: '#f50057'
+      main: '#fbbc04', // Google Yellow
+      contrastText: '#ffffff'
+    },
+    background: {
+      default: '#ffffff', // Pure white background
+      paper: '#f8f9fa' // Light gray for cards and dialogs
     },
     text: {
-      primary: '#000000', // Set the primary text color to black
-      secondary: '#46505A'
+      primary: '#202124', // Google dark gray for main text
+      secondary: '#5f6368' // Medium gray for secondary text
     },
     action: {
-      active: '#001E3C'
+      active: '#1a73e8', // Matches primary color for active items
+      hover: 'rgba(26, 115, 232, 0.1)', // Light hover effect
+      selected: 'rgba(26, 115, 232, 0.2)' // Subtle selection effect
     },
-    mode: 'light'
+    divider: '#dadce0' // Light gray divider
+  },
+  typography: {
+    fontFamily: "'Roboto', 'Arial', sans-serif",
+    h1: {
+      fontSize: '2.25rem',
+      fontWeight: 500
+    },
+    h2: {
+      fontSize: '2rem',
+      fontWeight: 500
+    },
+    button: {
+      textTransform: 'none' // Avoid all caps for buttons
+    }
+  },
+  shape: {
+    borderRadius: 8 // Subtle rounded corners for cards and buttons
   }
 });
 themeLight = responsiveFontSizes(themeLight);

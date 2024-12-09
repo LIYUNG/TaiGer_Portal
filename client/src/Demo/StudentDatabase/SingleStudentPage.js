@@ -335,7 +335,7 @@ export const SingleStudentPageMainContent = ({
               component={LinkDom}
               to={`${DEMO.STUDENT_DATABASE_LINK}`}
             >
-              {t('Student Database', { ns: 'common' })}
+              {t('Students Database', { ns: 'common' })}
             </Link>
             <Typography color="text.primary">
               {t('Student', { ns: 'common' })}{' '}
@@ -399,7 +399,7 @@ export const SingleStudentPageMainContent = ({
           {needGraduatedApplicantsButStudentNotGraduated(
             singleStudentPage.student
           ) && (
-            <Card sx={{ border: '4px solid red' }}>
+            <Card sx={{ border: '4px solid red', borderRadius: 2 }}>
               <Alert severity="warning">
                 {t('Programs below are only for graduated applicants', {
                   ns: 'common'

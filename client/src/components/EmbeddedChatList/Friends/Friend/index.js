@@ -49,7 +49,7 @@ const friend = (props) => {
           props.activeId
         )
           ? theme.palette.background.default
-          : theme.palette.primary.dark, // Set your desired background color
+          : theme.palette.action.disabled, // Set your desired background color
         '&:hover': {
           backgroundColor: theme.palette.action.hover // Set a different color on hover if needed
         },

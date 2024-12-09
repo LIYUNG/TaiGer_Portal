@@ -233,21 +233,24 @@ const ResponseTimeDashboardTab = ({
 }) => {
   const [viewMode, setViewMode] = useState('agents');
   const [member, setMember] = useState(null);
-  const [student, setStudent] = useState('6366287a94358b085b0fccf7');
+  const [student, setStudent] = useState(null);
 
   const teams = { agents: agents, editors: editors };
   const teamTypeLabel = viewMode === 'agents' ? 'Agent' : 'Editor';
 
   useEffect(() => {
     setMember(null);
-    setStudent('6366287a94358b085b0fccf7');
+    setStudent(null);
   }, [viewMode]);
 
-  const onBarClick = (userId) => {
+  const onBarClickLayer1 = (userId) => {
     if (!teams?.[viewMode]?.[userId]) {
       return;
     }
     setMember(userId);
+  };
+  const onBarClickLayer2 = (userId) => {
+    setStudent(userId);
   };
 
   const memberName = teams?.[viewMode]?.[member]?.firstname;
@@ -282,7 +285,7 @@ const ResponseTimeDashboardTab = ({
               studentAvgResponseTime={studentAvgResponseTime}
               teamMembers={teams?.[viewMode]}
               teamType={viewMode}
-              onBarClick={onBarClick}
+              onBarClick={onBarClickLayer1}
             />
           </Grid>
         </>
@@ -306,7 +309,7 @@ const ResponseTimeDashboardTab = ({
               studentAvgResponseTime={studentAvgResponseTime}
               memberId={member}
               teamType={viewMode}
-              onBarClick={onBarClick}
+              onBarClick={onBarClickLayer2}
             />
           </Grid>
         </>
@@ -316,7 +319,7 @@ const ResponseTimeDashboardTab = ({
           <Box sx={{ p: 2 }}>
             <Button
               sx={{ mr: 1 }}
-              onClick={() => setMember(null)}
+              onClick={() => setStudent(null)}
               color="primary"
             >
               <KeyboardReturnIcon sx={{ mr: 1 }} /> Return

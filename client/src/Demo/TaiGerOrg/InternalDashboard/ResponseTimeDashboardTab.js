@@ -105,7 +105,7 @@ const ChartOverview = ({ data, teamType, onBarClick }) => {
         );
         const averageDuration = totalDuration / chartData.length;
         return (
-          <Grid item key={fileType} xs={12}>
+          <>
             <Card>
               <CardHeader
                 title={`${fileType} Response Times`}
@@ -120,7 +120,7 @@ const ChartOverview = ({ data, teamType, onBarClick }) => {
                 />
               </CardContent>
             </Card>
-          </Grid>
+          </>
         );
       })}
     </>
@@ -196,7 +196,7 @@ const StudentOverview = ({ studentId }) => {
   return (
     <>
       {studentIntervals?.x && studentIntervals?.y && (
-        <Grid item xs={12}>
+        <>
           <Card>
             <CardHeader
               title={`${studentId} Response Times`}
@@ -220,7 +220,7 @@ const StudentOverview = ({ studentId }) => {
               />
             </CardContent>
           </Card>
-        </Grid>
+        </>
       )}
     </>
   );
@@ -277,12 +277,14 @@ const ResponseTimeDashboardTab = ({
               </ButtonGroup>
             </Box>
           </Grid>
-          <TeamOverview
-            studentAvgResponseTime={studentAvgResponseTime}
-            teamMembers={teams?.[viewMode]}
-            teamType={viewMode}
-            onBarClick={onBarClick}
-          />
+          <Grid item xs={12}>
+            <TeamOverview
+              studentAvgResponseTime={studentAvgResponseTime}
+              teamMembers={teams?.[viewMode]}
+              teamType={viewMode}
+              onBarClick={onBarClick}
+            />
+          </Grid>
         </>
       )}
       {member && !student && (
@@ -299,12 +301,14 @@ const ResponseTimeDashboardTab = ({
               {`${teamTypeLabel} Overview - ${memberName}`}
             </Box>
           </Grid>
-          <MemberOverview
-            studentAvgResponseTime={studentAvgResponseTime}
-            memberId={member}
-            teamType={viewMode}
-            onBarClick={onBarClick}
-          />
+          <Grid item xs={12}>
+            <MemberOverview
+              studentAvgResponseTime={studentAvgResponseTime}
+              memberId={member}
+              teamType={viewMode}
+              onBarClick={onBarClick}
+            />
+          </Grid>
         </>
       )}
       {student && (
@@ -319,7 +323,9 @@ const ResponseTimeDashboardTab = ({
             </Button>
             {`Student Overview - ${memberName}`}
           </Box>
-          <StudentOverview studentId={student} />
+          <Grid item xs={12}>
+            <StudentOverview studentId={student} />
+          </Grid>
         </Grid>
       )}
     </Grid>

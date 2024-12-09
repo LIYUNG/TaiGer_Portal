@@ -1419,6 +1419,10 @@ export const isLanguageNotMatchedInAnyProgram = (student) => {
   return false;
 };
 
+export const isEnglishProgram = (application) => {
+  return application?.programId?.lang?.toLowerCase().includes('english');
+};
+
 export const isEnglishCertificateExpiredBeforeDeadline = (student) => {
   const { applications, academic_background } = student;
 
@@ -1432,6 +1436,9 @@ export const isEnglishCertificateExpiredBeforeDeadline = (student) => {
     }
 
     if (isProgramSubmitted(app)) {
+      continue;
+    }
+    if (!isEnglishProgram(app)) {
       continue;
     }
 
@@ -1465,6 +1472,7 @@ export const englishCertificatedExpiredBeforeTheseProgramDeadlines = (
   return student.applications?.filter(
     (app) =>
       isProgramDecided(app) &&
+      isEnglishProgram(app) &&
       getNumberOfDays(
         student.academic_background.language.english_test_date,
         application_deadline_calculator(student, app)

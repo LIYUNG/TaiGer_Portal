@@ -48,7 +48,7 @@ const actions = [
 function DashboardBody({ studentAndEssays }) {
   const { user } = useAuth();
   const {
-    data: { data: fetchedStudents, isCoursesFilled, notification },
+    data: { data: fetchedStudents, isCoursesFilled, notification, auditLog },
     essays: { data: essayDocumentThreads }
   } = studentAndEssays;
 
@@ -96,6 +96,7 @@ function DashboardBody({ studentAndEssays }) {
           submitUpdateEditorlist={submitUpdateEditorlist}
           submitUpdateAttributeslist={submitUpdateAttributeslist}
           essayDocumentThreads={essayDocumentThreads}
+          auditLog={auditLog}
         />
       )}
       {is_TaiGer_Manager(user) && (

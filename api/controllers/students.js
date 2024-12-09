@@ -214,15 +214,29 @@ const getStudents = asyncHandler(async (req, res, next) => {
     const studentsPromise = fetchStudents(req, {
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     });
-
+    const auditLogPromise = req.db
+      .model('Audit')
+      .find()
+      .populate('performedBy targetUserId', 'firstname lastname role')
+      .populate({
+        path: 'targetDocumentThreadId interviewThreadId',
+        select: 'program_id file_type',
+        populate: {
+          path: 'program_id',
+          select: 'school program_name degree semester'
+        }
+      })
+      .limit(20)
+      .sort({ createdAt: -1 });
     const coursesPromise = req.db
       .model('Course')
       .find()
       .select('-table_data_string')
       .lean();
-    const [students, courses] = await Promise.all([
+    const [students, courses, auditLog] = await Promise.all([
       studentsPromise,
-      coursesPromise
+      coursesPromise,
+      auditLogPromise
     ]);
     // Perform the join
     const studentsWithCourse = students.map((student) => {
@@ -239,7 +253,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
     for (let j = 0; j < studentsWithCourse.length; j += 1) {
       students_new.push(add_portals_registered_status(studentsWithCourse[j]));
     }
-    res.status(200).send({ success: true, data: students_new });
+    res.status(200).send({ success: true, data: students_new, auditLog });
   } else if (user.role === Role.Manager) {
     let students = [];
     // TODO: depends on manager type
@@ -309,6 +323,22 @@ const getStudents = asyncHandler(async (req, res, next) => {
       coursesPromise
     ]);
 
+    // TODO: only my students
+    // const auditLog = await req.db
+    //   .model('Audit')
+    //   .find({ student_id: { $in: students.map((std) => std._id) } })
+    //   .populate('performedBy targetUserId', 'firstname lastname role')
+    //   .populate({
+    //     path: 'targetDocumentThreadId interviewThreadId',
+    //     select: 'program_id file_type',
+    //     populate: {
+    //       path: 'program_id',
+    //       select: 'school program_name degree semester'
+    //     }
+    //   })
+    //   .limit(20)
+    //   .sort({ createdAt: -1 });
+
     // Perform the join
     const studentsWithCourse = students.map((student) => {
       const matchingItemB = courses.find(
@@ -327,6 +357,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
     res.status(200).send({
       success: true,
       data: students_new,
+      // auditLog,
       notification: user.agent_notification
     });
   } else if (user.role === Role.Editor) {

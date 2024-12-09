@@ -224,7 +224,17 @@ const programModule = {
   tags: [
     {
       type: String,
-      enum: ['TU9', 'U15']
+      enum: [
+        'TU9',
+        'U15',
+        'EUROTECH',
+        'Exzellenzinitiative',
+        'TOP50',
+        'TIME',
+        'TOP100',
+        'TOP150',
+        'TOP500'
+      ]
     }
   ],
   url: String,

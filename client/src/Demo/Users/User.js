@@ -65,7 +65,7 @@ function User(props) {
                     )
                   }
                 >
-                  Set User as...
+                  {t('Set User as', { ns: 'common' })}
                 </MenuItem>
                 <MenuItem
                   onClick={() =>

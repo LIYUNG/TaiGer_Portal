@@ -141,7 +141,7 @@ function UsersTable() {
   if (!is_TaiGer_Admin(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
-  TabTitle('User List');
+  TabTitle(t('User List', { ns: 'common' }));
   const { res_modal_message, res_modal_status, res_status, isLoaded } =
     userTableState;
 
@@ -181,7 +181,9 @@ function UsersTable() {
         >
           {appConfig.companyName}
         </Link>
-        <Typography color="text.primary">{t('User List')}</Typography>
+        <Typography color="text.primary">
+          {t('User List', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
       <Button
         fullWidth

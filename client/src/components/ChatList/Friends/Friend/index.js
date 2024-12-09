@@ -45,7 +45,7 @@ const friend = (props) => {
       `${DEMO.COMMUNICATIONS_TAIGER_MODE_LINK(props.data?._id?.toString())}`
     );
   };
-  
+
   return (
     <MenuItem
       onClick={handleToChat}
@@ -71,7 +71,6 @@ const friend = (props) => {
           <Avatar
             alt={`${props.data.firstname} ${props.data.lastname}`}
             {...stringAvatar(`${props.data.firstname} ${props.data.lastname}`)}
-            // src={props.data.profilePicture} // Add the path to the profile picture
           />
           <Box
             style={{

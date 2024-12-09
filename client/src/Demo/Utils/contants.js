@@ -776,6 +776,16 @@ export const INTERNAL_DASHBOARD_REVERSED_TABS = {
   4: 'responseTime'
 };
 
+export const THREAD_TABS = {
+  communication: 0,
+  audit: 1
+};
+
+export const THREAD_REVERSED_TABS = {
+  0: 'communication',
+  1: 'audit'
+};
+
 export const SINGLE_STUDENT_TABS = {
   applications: 0,
   profile: 1,
@@ -857,10 +867,25 @@ export const stringToColor = (str) => {
 
   return color;
 };
+
+const getBrightness = (hexColor) => {
+  const r = parseInt(hexColor.slice(1, 3), 16);
+  const g = parseInt(hexColor.slice(3, 5), 16);
+  const b = parseInt(hexColor.slice(5, 7), 16);
+  // Brightness formula
+  return (r * 299 + g * 587 + b * 114) / 1000;
+};
+
 export const stringAvatar = (name) => {
+  const backgroundColor = stringToColor(name);
+
+  const textColor =
+    getBrightness(backgroundColor) < 128 ? '#FFFFFF' : '#000000'; // Determine contrasting text color
+
   return {
     sx: {
-      bgcolor: stringToColor(name)
+      bgcolor: backgroundColor,
+      color: textColor
     },
     children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`
   };
@@ -1130,6 +1155,7 @@ export const sortProgramFields = (a, b) => {
 
 export const convertDate_ux_friendly = (date) => {
   // let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
+
   const { t } = useTranslation();
   const currentDate = new Date();
   const input_date_point = new Date(date);
@@ -1143,6 +1169,9 @@ export const convertDate_ux_friendly = (date) => {
   const weeks = Math.floor(days / 7);
 
   let timeDisplay;
+  if (!date) {
+    return '-';
+  }
   if (minutes < 60) {
     timeDisplay = t('timeMinutes', { ns: 'common', minutes });
   } else if (hours < 24) {

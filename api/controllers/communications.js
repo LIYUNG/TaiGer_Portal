@@ -466,13 +466,11 @@ const loadMessages = asyncHandler(async (req, res, next) => {
 
   // Multitenant-filter: Check student can only access their own thread!!!!
 
-  res
-    .status(200)
-    .send({
-      success: true,
-      data: [...communication_thread].reverse(),
-      student
-    });
+  res.status(200).send({
+    success: true,
+    data: [...communication_thread].reverse(),
+    student
+  });
   next();
 });
 
@@ -486,7 +484,7 @@ const getMessages = asyncHandler(async (req, res, next) => {
     .model('Student')
     .findById(studentId)
     .select(
-      'firstname lastname firstname_chinese lastname_chinese agents archiv'
+      'firstname lastname firstname_chinese lastname_chinese agents lastLoginAt archiv'
     )
     .populate('agents', 'firstname lastname email role');
   if (!student) {
@@ -511,9 +509,11 @@ const getMessages = asyncHandler(async (req, res, next) => {
       await lastElement.save();
     }
   }
-  res
-    .status(200)
-    .send({ success: true, data: [...communication_thread].reverse(), student });
+  res.status(200).send({
+    success: true,
+    data: [...communication_thread].reverse(),
+    student
+  });
   next();
 });
 

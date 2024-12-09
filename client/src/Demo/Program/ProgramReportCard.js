@@ -125,8 +125,8 @@ function ProgramReportCard() {
         <TableHead>
           <TableRow>
             <TableCell>idx</TableCell>
-            <TableCell>program</TableCell>
-            <TableCell>description</TableCell>
+            <TableCell>{t('Program', { ns: 'common' })}</TableCell>
+            <TableCell>{t('Description', { ns: 'common' })}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>{tickets}</TableBody>

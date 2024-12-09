@@ -196,7 +196,7 @@ function StudentsAgentEditor(props) {
       <TableRow
         style={{
           backgroundColor:
-            props.student.archiv === true ? theme.palette.secondary.main : ''
+            props.student.archiv === true ? theme.palette.primary.main : ''
         }}
         title={props.student.archiv === true ? 'Closed' : 'Open'}
       >

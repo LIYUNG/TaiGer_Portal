@@ -18,6 +18,7 @@ import useStudents from '../../../hooks/useStudents';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import ProgramReportCard from '../../Program/ProgramReportCard';
+import Audit from '../../Audit';
 
 function AdminMainView(props) {
   const { t } = useTranslation();
@@ -75,8 +76,8 @@ function AdminMainView(props) {
           <ProgramReportCard />
         </Grid>
         <Grid item xs={12} md={4}>
-          <Card sx={{ p: 2 }}>
-            <Typography>Comming soon</Typography>
+          <Card style={{ height: '40vh', overflow: 'auto' }}>
+            <Audit audit={[]} />
           </Card>
         </Grid>
         <Grid item xs={12}>

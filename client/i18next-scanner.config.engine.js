@@ -18,7 +18,7 @@ module.exports = {
     removeUnusedKeys: true,
 
     // Create and update files `en.json`, `fr.json`, `es.json`
-    lngs: ['en', 'zh-TW'],
+    lngs: ['en', 'zh-CN', 'zh-TW'],
 
     ns: [
       // The namespace I use

@@ -37,18 +37,33 @@ function Audit({ audit }) {
             </TableHead>
             <TableBody>
               {audit?.map((record) => {
+                const isStatusChanged = record?.field === 'status';
                 const addedUsers = record?.changes?.after?.added
                   ?.map((user) => `${user.firstname} ${user.lastname}`)
                   .join(', ');
                 const removedUsers = record?.changes?.after?.removed
                   ?.map((user) => `${user.firstname} ${user.lastname}`)
                   .join(', ');
-                const program_name =
-                  record?.targetDocumentThreadId &&
-                  `${record?.targetDocumentThreadId?.file_type} - ${record?.targetDocumentThreadId?.program_id?.school}
+                const program_name = record?.targetDocumentThreadId?.program_id
+                  ? ` - ${record?.targetDocumentThreadId?.program_id?.school}
                           ${record?.targetDocumentThreadId?.program_id?.program_name}
                           ${record?.targetDocumentThreadId?.program_id?.degree}
                           ${record?.targetDocumentThreadId?.program_id?.semester}
+                          `
+                  : record?.interviewThreadId?.program_id
+                  ? ` - ${record?.interviewThreadId?.program_id?.school}
+                          ${record?.interviewThreadId?.program_id?.program_name}
+                          ${record?.interviewThreadId?.program_id?.degree}
+                          ${record?.interviewThreadId?.program_id?.semester}
+                          `
+                  : '';
+                const fileName =
+                  record?.targetDocumentThreadId &&
+                  `${record?.targetDocumentThreadId?.file_type}${program_name}
+                          `;
+                const interview_name =
+                  record?.interviewThreadId &&
+                  `Interview${program_name}
                           `;
                 return (
                   <TableRow key={record._id}>
@@ -56,11 +71,13 @@ function Audit({ audit }) {
                     <TableCell>{record.action}</TableCell>
                     <TableCell>{record.field}</TableCell>
                     <TableCell>
-                      {addedUsers && `+ ${addedUsers}`}
-                      {removedUsers && ` - ${removedUsers}`}
+                      {isStatusChanged
+                        ? `${record?.changes?.after ? 'Closed' : 'Open'}`
+                        : `${addedUsers && `+ ${addedUsers}`}
+                      ${removedUsers && ` - ${removedUsers}`}`}
                     </TableCell>
                     <TableCell>
-                      {record?.targetDocumentThreadId ? (
+                      {record?.targetDocumentThreadId && (
                         <Link
                           to={DEMO.DOCUMENT_MODIFICATION_LINK(
                             record?.targetDocumentThreadId._id?.toString()
@@ -68,10 +85,19 @@ function Audit({ audit }) {
                           component={LinkDom}
                           target="_blank"
                         >
-                          {program_name}
+                          {fileName}
                         </Link>
-                      ) : (
-                        <></>
+                      )}
+                      {record?.interviewThreadId && (
+                        <Link
+                          to={DEMO.INTERVIEW_SINGLE_LINK(
+                            record?.interviewThreadId._id?.toString()
+                          )}
+                          component={LinkDom}
+                          target="_blank"
+                        >
+                          {interview_name}
+                        </Link>
                       )}
                     </TableCell>
                     <TableCell>{convertDate(record.createdAt)}</TableCell>

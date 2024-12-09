@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link as LinkDom, useParams } from 'react-router-dom';
+import { Link as LinkDom, useLocation, useParams } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import DownloadIcon from '@mui/icons-material/Download';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -28,7 +28,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
-  Stack
+  Stack,
+  Tabs,
+  Tab
 } from '@mui/material';
 import { pdfjs } from 'react-pdf'; // Library for rendering PDFs
 import {
@@ -41,7 +43,12 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/b
 import DocThreadEditor from '../../../components/Message/DocThreadEditor';
 import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
-import { stringAvatar, templatelist } from '../../Utils/contants';
+import {
+  stringAvatar,
+  templatelist,
+  THREAD_REVERSED_TABS,
+  THREAD_TABS
+} from '../../Utils/contants';
 import {
   AGENT_SUPPORT_DOCUMENTS_A,
   FILE_TYPE_E,
@@ -72,6 +79,8 @@ import EditEssayWritersSubpage from '../../Dashboard/MainViewTab/StudDocsOvervie
 import { TopBar } from '../../../components/TopBar/TopBar';
 import MessageList from '../../../components/Message/MessageList';
 import DocumentCheckingResultModal from './DocumentCheckingResultModal';
+import { a11yProps, CustomTabPanel } from '../../../components/Tabs';
+import Audit from '../../Audit';
 
 function DocModificationThreadPage() {
   const { user } = useAuth();
@@ -102,6 +111,8 @@ function DocModificationThreadPage() {
       res_modal_message: ''
     });
   const [checkResult, setCheckResult] = useState([]);
+  const { hash } = useLocation();
+  const [value, setValue] = useState(THREAD_TABS[hash.replace('#', '')] || 0);
   const [openOriginAuthorModal, setOpenOriginAuthorModal] = useState(false);
   const [originAuthorConfirmed, setOriginAuthorConfirmed] = useState(false);
   const [originAuthorCheckboxConfirmed, setOriginAuthorCheckboxConfirmed] =
@@ -110,8 +121,15 @@ function DocModificationThreadPage() {
     const fetchData = async () => {
       try {
         const resp = await getMessagThread(documentsthreadId);
-        const { success, data, editors, agents, deadline, conflict_list } =
-          resp.data;
+        const {
+          success,
+          data,
+          editors,
+          agents,
+          threadAuditLog,
+          deadline,
+          conflict_list
+        } = resp.data;
         const { status } = resp;
         if (success) {
           setOriginAuthorConfirmed(
@@ -122,6 +140,7 @@ function DocModificationThreadPage() {
             ...prevState,
             success,
             thread: data,
+            threadAuditLog,
             editors,
             agents,
             deadline,
@@ -163,6 +182,11 @@ function DocModificationThreadPage() {
       ...prevState,
       SetAsFinalFileModel: false
     }));
+  };
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    window.location.hash = THREAD_REVERSED_TABS[newValue];
   };
 
   const onFileChange = (e) => {
@@ -648,6 +672,7 @@ function DocModificationThreadPage() {
     isFilesListOpen,
     isSubmissionLoaded,
     conflict_list,
+    threadAuditLog,
     res_status,
     res_modal_status,
     res_modal_message
@@ -833,478 +858,502 @@ function DocModificationThreadPage() {
         </DialogContent>
       </Dialog>
       {docModificationThreadPageState.thread.isFinalVersion && <TopBar />}
-      <Card sx={{ p: 2 }}>
-        <Grid container spacing={2}>
-          <Grid item md={widths[0]}>
-            <Typography variant="h6" fontWeight="bold">
-              {t('Instructions')}
-              <IconButton
-                onClick={() =>
-                  handleFavoriteToggle(
-                    docModificationThreadPageState.thread._id
-                  )
-                }
-              >
-                {docModificationThreadPageState.thread.flag_by_user_id?.includes(
-                  user._id.toString()
-                ) ? (
-                  <StarRoundedIcon />
-                ) : (
-                  <StarBorderRoundedIcon />
-                )}
-              </IconButton>
-            </Typography>
-            {template_obj ? (
-              <>
-                <Typography variant="body1">
-                  {docModificationThreadPageState.thread.file_type === 'CV'
-                    ? t('cv-instructions', { ns: 'cvmlrl' })
-                    : t('please-fill-template', {
-                        tenant: appConfig.companyName
-                      })}
-                  :
-                </Typography>
-                <LinkDom to={`${DEMO.CV_ML_RL_DOCS_LINK}`}>
-                  <Button size="small" variant="contained" color="info">
-                    {t('Read More')}
-                  </Button>
-                </LinkDom>
-                <Typography variant="body1">
-                  {t('Download template')}:{' '}
-                  {template_obj ? (
-                    template_obj.prop.includes('RL') ||
-                    template_obj.alias.includes('Recommendation') ? (
-                      <b>
-                        {t('Professor')}：
-                        <a
-                          href={`${BASE_URL}/api/account/files/template/${'RL_academic_survey_lock'}`}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <Button
-                            variant="contained"
-                            size="small"
-                            color="secondary"
-                            startIcon={<DownloadIcon />}
-                          >
-                            {t('Download', { ns: 'common' })}
-                          </Button>
-                        </a>
-                        {t('Supervisor')}：
-                        <a
-                          href={`${BASE_URL}/api/account/files/template/${`RL_employer_survey_lock`}`}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <Button
-                            variant="contained"
-                            size="small"
-                            color="secondary"
-                            startIcon={<DownloadIcon />}
-                          >
-                            {t('Download', { ns: 'common' })}
-                          </Button>
-                        </a>
-                      </b>
-                    ) : (
-                      <b>
-                        <a
-                          href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <Button
-                            variant="contained"
-                            size="small"
-                            color="secondary"
-                            startIcon={<DownloadIcon />}
-                          >
-                            {t('Download', { ns: 'common' })}
-                          </Button>
-                        </a>
-                        <br />
-                        {is_TaiGer_role(user) && (
-                          <>
-                            <LinkDom
-                              to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
-                                docModificationThreadPageState.documentsthreadId
-                              )}`}
-                            >
-                              <Button
-                                color="secondary"
-                                variant="contained"
-                                sx={{ my: 2 }}
-                              >
-                                Editor Helper
-                              </Button>
-                            </LinkDom>
-                          </>
-                        )}
-                      </b>
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        variant="scrollable"
+        scrollButtons="auto"
+        indicatorColor="primary"
+        aria-label="basic tabs example"
+      >
+        <Tab
+          label={t('discussion-thread', { ns: 'common' })}
+          {...a11yProps(0)}
+        />
+        <Tab label={t('Audit', { ns: 'common' })} {...a11yProps(1)} />
+      </Tabs>
+      <CustomTabPanel value={value} index={0}>
+        <Card sx={{ p: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item md={widths[0]}>
+              <Typography variant="h6" fontWeight="bold">
+                {t('Instructions')}
+                <IconButton
+                  onClick={() =>
+                    handleFavoriteToggle(
+                      docModificationThreadPageState.thread._id
                     )
+                  }
+                >
+                  {docModificationThreadPageState.thread.flag_by_user_id?.includes(
+                    user._id.toString()
+                  ) ? (
+                    <StarRoundedIcon />
                   ) : (
-                    <>Not available</>
+                    <StarBorderRoundedIcon />
                   )}
-                </Typography>
-              </>
-            ) : (
-              <>
-                <Typography>
-                  {docModificationThreadPageState.thread.file_type ===
-                  'Portfolio'
-                    ? 'Please upload the portfolio in Microsoft Word form here so that your Editor can help you for the text modification'
-                    : docModificationThreadPageState.thread.file_type ===
-                      'Supplementary_Form'
-                    ? '請填好這個 program 的 Supplementory Form，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
-                    : docModificationThreadPageState.thread.file_type ===
-                      'Curriculum_Analysis'
-                    ? '請填好這個 program 的 Curriculum Analysis，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
-                    : '-'}
-                </Typography>
-              </>
-            )}
-            <Box sx={{ display: 'flex' }}>
-              <Typography variant="body1" fontWeight="bold">
-                {t('Requirements')}:
+                </IconButton>
               </Typography>
-              &nbsp;
-              {is_TaiGer_AdminAgent(user) &&
-                docModificationThreadPageState.thread.program_id && (
-                  <Link
-                    underline="hover"
-                    to={`${DEMO.SINGLE_PROGRAM_LINK(
-                      docModificationThreadPageState.thread.program_id._id.toString()
-                    )}`}
-                    component={LinkDom}
-                    target="_blank"
-                  >
-                    [{t('Update', { ns: 'common' })}]
-                  </Link>
-                )}
-            </Box>
-            {docModificationThreadPageState.thread.program_id ? (
-              <>
-                <LinkableNewlineText
-                  text={getRequirement(docModificationThreadPageState.thread)}
-                />
-              </>
-            ) : (
-              <>
-                {docModificationThreadPageState.thread.file_type === 'CV' ? (
-                  <>
-                    <Typography>
-                      {t('cv-requirements-1', { ns: 'cvmlrl' })}
-                      {` `}
-                      <b>{t('cv-requirements-1.1', { ns: 'cvmlrl' })}</b>
-                    </Typography>
-                    <Typography>
-                      {t('cv-requirements-2', { ns: 'cvmlrl' })}
-                    </Typography>
-                    <Typography>
-                      {t('cv-reminder-1', { ns: 'cvmlrl' })}
-                    </Typography>
-                    <Typography>
-                      {t('cv-reminder-2', { ns: 'cvmlrl' })}
-                    </Typography>
-                  </>
-                ) : template_obj?.prop.includes('RL') ||
-                  template_obj?.alias.includes('Recommendation') ? (
-                  <>
-                    <Typography>
-                      {t('rl-requirements-1', { ns: 'cvmlrl' })}
-                    </Typography>
-                  </>
-                ) : (
-                  <>
-                    <Typography>{t('No', { ns: 'common' })}</Typography>
-                  </>
-                )}
-              </>
-            )}
-          </Grid>
-          <Grid item md={widths[1]}>
-            <Typography variant="body1" fontWeight="bold">
-              {t('Agent', { ns: 'common' })}:
-            </Typography>
-            {docModificationThreadPageState.agents.map((agent, i) => (
-              <Typography key={i}>
-                {is_TaiGer_role(user) ? (
-                  <Link
-                    underline="hover"
-                    component={LinkDom}
-                    to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
-                    target="_blank"
-                  >
-                    {agent.firstname} {agent.lastname}
-                  </Link>
-                ) : (
-                  <>
-                    {agent.firstname} {agent.lastname}
-                  </>
-                )}
-              </Typography>
-            ))}
-            <Typography variant="body1" fontWeight="bold">
-              {docModificationThreadPageState.thread.file_type === 'Essay'
-                ? t('Essay Writer', { ns: 'common' })
-                : t('Editor', { ns: 'common' })}
-              :
-            </Typography>
-            {[
-              ...AGENT_SUPPORT_DOCUMENTS_A,
-              FILE_TYPE_E.essay_required
-            ].includes(docModificationThreadPageState.thread.file_type) &&
-              (docModificationThreadPageState.thread?.outsourced_user_id
-                ?.length > 0 ? (
-                docModificationThreadPageState.thread?.outsourced_user_id?.map(
-                  (outsourcer) => (
-                    <Typography key={outsourcer._id}>
-                      {is_TaiGer_role(user) ? (
-                        <Link
-                          underline="hover"
-                          component={LinkDom}
-                          to={`${DEMO.TEAM_EDITOR_LINK(
-                            outsourcer._id.toString()
-                          )}`}
-                          target="_blank"
-                        >
-                          {outsourcer.firstname} {outsourcer.lastname}
-                        </Link>
+              {template_obj ? (
+                <>
+                  <Typography variant="body1">
+                    {docModificationThreadPageState.thread.file_type === 'CV'
+                      ? t('cv-instructions', { ns: 'cvmlrl' })
+                      : t('please-fill-template', {
+                          tenant: appConfig.companyName
+                        })}
+                    :
+                  </Typography>
+                  <LinkDom to={`${DEMO.CV_ML_RL_DOCS_LINK}`}>
+                    <Button size="small" variant="contained" color="info">
+                      {t('Read More')}
+                    </Button>
+                  </LinkDom>
+                  <Typography variant="body1">
+                    {t('Download template')}:{' '}
+                    {template_obj ? (
+                      template_obj.prop.includes('RL') ||
+                      template_obj.alias.includes('Recommendation') ? (
+                        <b>
+                          {t('Professor')}：
+                          <a
+                            href={`${BASE_URL}/api/account/files/template/${'RL_academic_survey_lock'}`}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <Button
+                              variant="contained"
+                              size="small"
+                              color="secondary"
+                              startIcon={<DownloadIcon />}
+                            >
+                              {t('Download', { ns: 'common' })}
+                            </Button>
+                          </a>
+                          {t('Supervisor')}：
+                          <a
+                            href={`${BASE_URL}/api/account/files/template/${`RL_employer_survey_lock`}`}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <Button
+                              variant="contained"
+                              size="small"
+                              color="secondary"
+                              startIcon={<DownloadIcon />}
+                            >
+                              {t('Download', { ns: 'common' })}
+                            </Button>
+                          </a>
+                        </b>
                       ) : (
-                        <>
-                          {outsourcer.firstname} {outsourcer.lastname}
-                        </>
-                      )}
-                    </Typography>
-                  )
-                )
+                        <b>
+                          <a
+                            href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <Button
+                              variant="contained"
+                              size="small"
+                              color="secondary"
+                              startIcon={<DownloadIcon />}
+                            >
+                              {t('Download', { ns: 'common' })}
+                            </Button>
+                          </a>
+                          <br />
+                          {is_TaiGer_role(user) && (
+                            <>
+                              <LinkDom
+                                to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
+                                  docModificationThreadPageState.documentsthreadId
+                                )}`}
+                              >
+                                <Button
+                                  color="secondary"
+                                  variant="contained"
+                                  sx={{ my: 2 }}
+                                >
+                                  Editor Helper
+                                </Button>
+                              </LinkDom>
+                            </>
+                          )}
+                        </b>
+                      )
+                    ) : (
+                      <>Not available</>
+                    )}
+                  </Typography>
+                </>
               ) : (
-                <Typography>
-                  {[...AGENT_SUPPORT_DOCUMENTS_A].includes(
-                    docModificationThreadPageState.thread.file_type
-                  )
-                    ? 'If needed, editor can be added'
-                    : 'To Be Assigned'}
+                <>
+                  <Typography>
+                    {docModificationThreadPageState.thread.file_type ===
+                    'Portfolio'
+                      ? 'Please upload the portfolio in Microsoft Word form here so that your Editor can help you for the text modification'
+                      : docModificationThreadPageState.thread.file_type ===
+                        'Supplementary_Form'
+                      ? '請填好這個 program 的 Supplementory Form，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
+                      : docModificationThreadPageState.thread.file_type ===
+                        'Curriculum_Analysis'
+                      ? '請填好這個 program 的 Curriculum Analysis，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
+                      : '-'}
+                  </Typography>
+                </>
+              )}
+              <Box sx={{ display: 'flex' }}>
+                <Typography variant="body1" fontWeight="bold">
+                  {t('Requirements')}:
                 </Typography>
-              ))}
-            {![
-              ...AGENT_SUPPORT_DOCUMENTS_A,
-              FILE_TYPE_E.essay_required
-            ].includes(docModificationThreadPageState.thread.file_type) &&
-              docModificationThreadPageState.editors.map((editor, i) => (
+                &nbsp;
+                {is_TaiGer_AdminAgent(user) &&
+                  docModificationThreadPageState.thread.program_id && (
+                    <Link
+                      underline="hover"
+                      to={`${DEMO.SINGLE_PROGRAM_LINK(
+                        docModificationThreadPageState.thread.program_id._id.toString()
+                      )}`}
+                      component={LinkDom}
+                      target="_blank"
+                    >
+                      [{t('Update', { ns: 'common' })}]
+                    </Link>
+                  )}
+              </Box>
+              {docModificationThreadPageState.thread.program_id ? (
+                <>
+                  <LinkableNewlineText
+                    text={getRequirement(docModificationThreadPageState.thread)}
+                  />
+                </>
+              ) : (
+                <>
+                  {docModificationThreadPageState.thread.file_type === 'CV' ? (
+                    <>
+                      <Typography>
+                        {t('cv-requirements-1', { ns: 'cvmlrl' })}
+                        {` `}
+                        <b>{t('cv-requirements-1.1', { ns: 'cvmlrl' })}</b>
+                      </Typography>
+                      <Typography>
+                        {t('cv-requirements-2', { ns: 'cvmlrl' })}
+                      </Typography>
+                      <Typography>
+                        {t('cv-reminder-1', { ns: 'cvmlrl' })}
+                      </Typography>
+                      <Typography>
+                        {t('cv-reminder-2', { ns: 'cvmlrl' })}
+                      </Typography>
+                    </>
+                  ) : template_obj?.prop.includes('RL') ||
+                    template_obj?.alias.includes('Recommendation') ? (
+                    <>
+                      <Typography>
+                        {t('rl-requirements-1', { ns: 'cvmlrl' })}
+                      </Typography>
+                    </>
+                  ) : (
+                    <>
+                      <Typography>{t('No', { ns: 'common' })}</Typography>
+                    </>
+                  )}
+                </>
+              )}
+            </Grid>
+            <Grid item md={widths[1]}>
+              <Typography variant="body1" fontWeight="bold">
+                {t('Agent', { ns: 'common' })}:
+              </Typography>
+              {docModificationThreadPageState.agents.map((agent, i) => (
                 <Typography key={i}>
                   {is_TaiGer_role(user) ? (
                     <Link
                       underline="hover"
                       component={LinkDom}
-                      to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+                      to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
                       target="_blank"
                     >
-                      {editor.firstname} {editor.lastname}
+                      {agent.firstname} {agent.lastname}
                     </Link>
                   ) : (
                     <>
-                      {editor.firstname} {editor.lastname}
+                      {agent.firstname} {agent.lastname}
                     </>
                   )}
                 </Typography>
               ))}
-            {is_TaiGer_role(user) &&
-              [
+              <Typography variant="body1" fontWeight="bold">
+                {docModificationThreadPageState.thread.file_type === 'Essay'
+                  ? t('Essay Writer', { ns: 'common' })
+                  : t('Editor', { ns: 'common' })}
+                :
+              </Typography>
+              {[
                 ...AGENT_SUPPORT_DOCUMENTS_A,
                 FILE_TYPE_E.essay_required
-              ].includes(docModificationThreadPageState.thread.file_type) && (
-                <Button
-                  size="small"
-                  color="primary"
-                  variant="contained"
-                  onClick={startEditingEditor}
-                >
-                  {docModificationThreadPageState.thread.file_type === 'Essay'
-                    ? t('Add Essay Writer')
-                    : t('Add Editor')}
-                </Button>
-              )}
-            {docModificationThreadPageState.thread.program_id && (
-              <>
-                <Typography variant="body1" fontWeight="bold">
-                  {t('Semester', { ns: 'common' })}:
-                </Typography>
-                <Typography>
-                  {docModificationThreadPageState.thread.program_id.semester}
-                </Typography>
-                <Typography variant="body1" fontWeight="bold">
-                  {t('Program Language', { ns: 'common' })}:
-                </Typography>
-                <Typography>
-                  {docModificationThreadPageState.thread.program_id.lang}
-                </Typography>
-              </>
-            )}
-
-            <Typography variant="body1">
-              <b>{t('Deadline', { ns: 'common' })}:</b>
-              {is_TaiGer_AdminAgent(user) &&
-                docModificationThreadPageState.thread.program_id && (
-                  <Link
-                    underline="hover"
-                    component={LinkDom}
-                    to={`${DEMO.SINGLE_PROGRAM_LINK(
-                      docModificationThreadPageState.thread.program_id._id.toString()
-                    )}`}
-                    target="_blank"
+              ].includes(docModificationThreadPageState.thread.file_type) &&
+                (docModificationThreadPageState.thread?.outsourced_user_id
+                  ?.length > 0 ? (
+                  docModificationThreadPageState.thread?.outsourced_user_id?.map(
+                    (outsourcer) => (
+                      <Typography key={outsourcer._id}>
+                        {is_TaiGer_role(user) ? (
+                          <Link
+                            underline="hover"
+                            component={LinkDom}
+                            to={`${DEMO.TEAM_EDITOR_LINK(
+                              outsourcer._id.toString()
+                            )}`}
+                            target="_blank"
+                          >
+                            {outsourcer.firstname} {outsourcer.lastname}
+                          </Link>
+                        ) : (
+                          <>
+                            {outsourcer.firstname} {outsourcer.lastname}
+                          </>
+                        )}
+                      </Typography>
+                    )
+                  )
+                ) : (
+                  <Typography>
+                    {[...AGENT_SUPPORT_DOCUMENTS_A].includes(
+                      docModificationThreadPageState.thread.file_type
+                    )
+                      ? 'If needed, editor can be added'
+                      : 'To Be Assigned'}
+                  </Typography>
+                ))}
+              {![
+                ...AGENT_SUPPORT_DOCUMENTS_A,
+                FILE_TYPE_E.essay_required
+              ].includes(docModificationThreadPageState.thread.file_type) &&
+                docModificationThreadPageState.editors.map((editor, i) => (
+                  <Typography key={i}>
+                    {is_TaiGer_role(user) ? (
+                      <Link
+                        underline="hover"
+                        component={LinkDom}
+                        to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+                        target="_blank"
+                      >
+                        {editor.firstname} {editor.lastname}
+                      </Link>
+                    ) : (
+                      <>
+                        {editor.firstname} {editor.lastname}
+                      </>
+                    )}
+                  </Typography>
+                ))}
+              {is_TaiGer_role(user) &&
+                [
+                  ...AGENT_SUPPORT_DOCUMENTS_A,
+                  FILE_TYPE_E.essay_required
+                ].includes(docModificationThreadPageState.thread.file_type) && (
+                  <Button
+                    size="small"
+                    color="primary"
+                    variant="contained"
+                    onClick={startEditingEditor}
                   >
-                    {' '}
-                    [Update]
-                  </Link>
+                    {docModificationThreadPageState.thread.file_type === 'Essay'
+                      ? t('Add Essay Writer')
+                      : t('Add Editor')}
+                  </Button>
                 )}
-            </Typography>
-            <Typography variant="string">
-              {docModificationThreadPageState.deadline}
-            </Typography>
-          </Grid>
-          {docModificationThreadPageState.thread.file_type === 'CV' ? (
-            <Grid item md={widths[2]}>
-              <Typography variant="h6">
-                <b>Profile photo:</b>
-                <img
-                  src={`${BASE_URL}/api/students/${docModificationThreadPageState.thread.student_id._id}/files/Passport_Photo`}
-                  height="100%"
-                  width="100%"
-                />
+              {docModificationThreadPageState.thread.program_id && (
+                <>
+                  <Typography variant="body1" fontWeight="bold">
+                    {t('Semester', { ns: 'common' })}:
+                  </Typography>
+                  <Typography>
+                    {docModificationThreadPageState.thread.program_id.semester}
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold">
+                    {t('Program Language', { ns: 'common' })}:
+                  </Typography>
+                  <Typography>
+                    {docModificationThreadPageState.thread.program_id.lang}
+                  </Typography>
+                </>
+              )}
+
+              <Typography variant="body1">
+                <b>{t('Deadline', { ns: 'common' })}:</b>
+                {is_TaiGer_AdminAgent(user) &&
+                  docModificationThreadPageState.thread.program_id && (
+                    <Link
+                      underline="hover"
+                      component={LinkDom}
+                      to={`${DEMO.SINGLE_PROGRAM_LINK(
+                        docModificationThreadPageState.thread.program_id._id.toString()
+                      )}`}
+                      target="_blank"
+                    >
+                      {' '}
+                      [Update]
+                    </Link>
+                  )}
               </Typography>
-              <Typography>
-                If image not shown, please go to{' '}
-                <Link
-                  underline="hover"
-                  to="/base-documents"
-                  component={LinkDom}
-                >
-                  <b>Base Documents</b>
-                  <LaunchIcon fontSize="small" />
-                </Link>
-                and upload the Passport Photo.
+              <Typography variant="string">
+                {docModificationThreadPageState.deadline}
               </Typography>
             </Grid>
-          ) : (
-            !is_TaiGer_Student(user) && (
+            {docModificationThreadPageState.thread.file_type === 'CV' ? (
               <Grid item md={widths[2]}>
-                <Typography variant="body1">{t('Conflict')}:</Typography>
-                {conflict_list.length === 0
-                  ? 'None'
-                  : conflict_list.map((conflict_student, j) => (
-                      <Typography key={j}>
-                        <LinkDom
-                          to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                            conflict_student._id.toString(),
-                            DEMO.CVMLRL_HASH
-                          )}`}
-                        >
-                          <b>
-                            {conflict_student.firstname}{' '}
-                            {conflict_student.lastname}
-                          </b>
-                        </LinkDom>
-                      </Typography>
-                    ))}
+                <Typography variant="h6">
+                  <b>Profile photo:</b>
+                  <img
+                    src={`${BASE_URL}/api/students/${docModificationThreadPageState.thread.student_id._id}/files/Passport_Photo`}
+                    height="100%"
+                    width="100%"
+                  />
+                </Typography>
+                <Typography>
+                  If image not shown, please go to{' '}
+                  <Link
+                    underline="hover"
+                    to="/base-documents"
+                    component={LinkDom}
+                  >
+                    <b>Base Documents</b>
+                    <LaunchIcon fontSize="small" />
+                  </Link>
+                  and upload the Passport Photo.
+                </Typography>
               </Grid>
-            )
-          )}
-        </Grid>
-      </Card>
-      <MessageList
-        documentsthreadId={docModificationThreadPageState.documentsthreadId}
-        accordionKeys={docModificationThreadPageState.accordionKeys}
-        singleExpandtHandler={singleExpandtHandler}
-        thread={docModificationThreadPageState.thread}
-        isLoaded={docModificationThreadPageState.isLoaded}
-        user={user}
-        onDeleteSingleMessage={onDeleteSingleMessage}
-        apiPrefix={'/api/document-threads'}
-      />
-      {user.archiv !== true ? (
-        <Card
-          sx={{
-            p: 2,
-            overflowWrap: 'break-word', // Add this line
-            maxWidth: window.innerWidth - 64,
-            marginTop: '1px',
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1
-            }
-          }}
-        >
-          <Avatar {...stringAvatar(`${user.firstname} ${user.lastname}`)} />
-          <Typography
-            variant="body1"
-            sx={{ mt: 1 }}
-            style={{ marginLeft: '10px', flex: 1 }}
-          >
-            <b>
-              {user.firstname} {user.lastname}
-            </b>
-          </Typography>
-          {docModificationThreadPageState.thread.isFinalVersion ? (
-            <Typography>{t('thread-close')}</Typography>
-          ) : (
-            <DocThreadEditor
-              thread={docModificationThreadPageState.thread}
-              buttonDisabled={docModificationThreadPageState.buttonDisabled}
-              doc_title={'docModificationThreadPageState.doc_title'}
-              editorState={docModificationThreadPageState.editorState}
-              handleClickSave={handleClickSave}
-              file={docModificationThreadPageState.file}
-              onFileChange={onFileChange}
-              checkResult={checkResult}
-            />
-          )}
-        </Card>
-      ) : (
-        <Card>
-          <Typography>
-            Your service is finished. Therefore, you are in read only mode.
-          </Typography>
-        </Card>
-      )}
-      {is_TaiGer_role(user) &&
-        (!docModificationThreadPageState.thread.isFinalVersion ? (
-          <Button
-            fullWidth
-            variant="contained"
-            color="success"
-            onClick={() =>
-              handleAsFinalFile(
-                docModificationThreadPageState.thread._id,
-                docModificationThreadPageState.thread.student_id._id,
-                docModificationThreadPageState.thread.program_id,
-                docModificationThreadPageState.thread.isFinalVersion
+            ) : (
+              !is_TaiGer_Student(user) && (
+                <Grid item md={widths[2]}>
+                  <Typography variant="body1">{t('Conflict')}:</Typography>
+                  {conflict_list.length === 0
+                    ? 'None'
+                    : conflict_list.map((conflict_student, j) => (
+                        <Typography key={j}>
+                          <LinkDom
+                            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                              conflict_student._id.toString(),
+                              DEMO.CVMLRL_HASH
+                            )}`}
+                          >
+                            <b>
+                              {conflict_student.firstname}{' '}
+                              {conflict_student.lastname}
+                            </b>
+                          </LinkDom>
+                        </Typography>
+                      ))}
+                </Grid>
               )
-            }
-            sx={{ mt: 2 }}
+            )}
+          </Grid>
+        </Card>
+        <MessageList
+          documentsthreadId={docModificationThreadPageState.documentsthreadId}
+          accordionKeys={docModificationThreadPageState.accordionKeys}
+          singleExpandtHandler={singleExpandtHandler}
+          thread={docModificationThreadPageState.thread}
+          isLoaded={docModificationThreadPageState.isLoaded}
+          user={user}
+          onDeleteSingleMessage={onDeleteSingleMessage}
+          apiPrefix={'/api/document-threads'}
+        />
+        {user.archiv !== true ? (
+          <Card
+            sx={{
+              p: 2,
+              overflowWrap: 'break-word', // Add this line
+              maxWidth: window.innerWidth - 64,
+              marginTop: '1px',
+              '& .MuiAvatar-root': {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1
+              }
+            }}
           >
-            {isSubmissionLoaded ? t('Mark as finished') : <CircularProgress />}
-          </Button>
+            <Avatar {...stringAvatar(`${user.firstname} ${user.lastname}`)} />
+            <Typography
+              variant="body1"
+              sx={{ mt: 1 }}
+              style={{ marginLeft: '10px', flex: 1 }}
+            >
+              <b>
+                {user.firstname} {user.lastname}
+              </b>
+            </Typography>
+            {docModificationThreadPageState.thread.isFinalVersion ? (
+              <Typography>{t('thread-close')}</Typography>
+            ) : (
+              <DocThreadEditor
+                thread={docModificationThreadPageState.thread}
+                buttonDisabled={docModificationThreadPageState.buttonDisabled}
+                doc_title={'docModificationThreadPageState.doc_title'}
+                editorState={docModificationThreadPageState.editorState}
+                handleClickSave={handleClickSave}
+                file={docModificationThreadPageState.file}
+                onFileChange={onFileChange}
+                checkResult={checkResult}
+              />
+            )}
+          </Card>
         ) : (
-          <Button
-            fullWidth
-            variant="outlined"
-            color="secondary"
-            onClick={() =>
-              handleAsFinalFile(
-                docModificationThreadPageState.thread._id,
-                docModificationThreadPageState.thread.student_id._id,
-                docModificationThreadPageState.thread.program_id,
-                docModificationThreadPageState.thread.isFinalVersion
-              )
-            }
-            sx={{ mt: 2 }}
-          >
-            {isSubmissionLoaded ? t('Mark as open') : <CircularProgress />}
-          </Button>
-        ))}
+          <Card>
+            <Typography>
+              Your service is finished. Therefore, you are in read only mode.
+            </Typography>
+          </Card>
+        )}
+        {is_TaiGer_role(user) &&
+          (!docModificationThreadPageState.thread.isFinalVersion ? (
+            <Button
+              fullWidth
+              variant="contained"
+              color="success"
+              onClick={() =>
+                handleAsFinalFile(
+                  docModificationThreadPageState.thread._id,
+                  docModificationThreadPageState.thread.student_id._id,
+                  docModificationThreadPageState.thread.program_id,
+                  docModificationThreadPageState.thread.isFinalVersion
+                )
+              }
+              sx={{ mt: 2 }}
+            >
+              {isSubmissionLoaded ? (
+                t('Mark as finished')
+              ) : (
+                <CircularProgress />
+              )}
+            </Button>
+          ) : (
+            <Button
+              fullWidth
+              variant="outlined"
+              color="secondary"
+              onClick={() =>
+                handleAsFinalFile(
+                  docModificationThreadPageState.thread._id,
+                  docModificationThreadPageState.thread.student_id._id,
+                  docModificationThreadPageState.thread.program_id,
+                  docModificationThreadPageState.thread.isFinalVersion
+                )
+              }
+              sx={{ mt: 2 }}
+            >
+              {isSubmissionLoaded ? t('Mark as open') : <CircularProgress />}
+            </Button>
+          ))}
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={1}>
+        <Audit audit={threadAuditLog} />
+      </CustomTabPanel>
+
       <Dialog
         open={
           (docModificationThreadPageState.thread.file_type === 'Essay' &&

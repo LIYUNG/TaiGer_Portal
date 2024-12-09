@@ -27,7 +27,11 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
-import { stringAvatar } from '../Utils/contants';
+import {
+  convertDate,
+  convertDate_ux_friendly,
+  stringAvatar
+} from '../Utils/contants';
 import MemoizedEmbeddedChatList from '../../components/EmbeddedChatList';
 import { FetchStudentLayer } from '../StudentDatabase/FetchStudentLayer';
 import CommunicationExpandPageMessagesComponent from './CommunicationExpandPageMessagesComponent';
@@ -62,6 +66,28 @@ const StudentDetailModal = ({
   </Menu>
 );
 const MemorizedStudentDetailModal = React.memo(StudentDetailModal);
+
+const LastLoginTime = ({ date }) => {
+  const [view, setView] = useState(false);
+  const { t } = useTranslation();
+  const LastLoginRelativeTime = ({ date }) => {
+    return <>{convertDate_ux_friendly(date)}</>;
+  };
+
+  const LastLoginAbsoluteTime = ({ date }) => {
+    return <>{convertDate(date)}</>;
+  };
+
+  return (
+    <Box onClick={() => setView(!view)} title={t('Last Login', { ns: 'auth' })}>
+      {view ? (
+        <LastLoginAbsoluteTime date={date} />
+      ) : (
+        <LastLoginRelativeTime date={date} />
+      )}
+    </Box>
+  );
+};
 
 function CommunicationExpandPage() {
   const { student_id } = useParams();
@@ -319,8 +345,9 @@ function CommunicationExpandPage() {
                 direction="row"
                 justifyContent="flex-end"
                 alignItems="center"
-                spacing={1}
+                spacing={0}
               >
+                <LastLoginTime date={student.lastLoginAt} />
                 <Tooltip title={t('Export messages', { ns: 'common' })}>
                   <IconButton
                     color="inherit"

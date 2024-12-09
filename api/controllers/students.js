@@ -3,7 +3,10 @@ const { is_TaiGer_Agent, is_TaiGer_External } = require('@taiger-common/core');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { Role } = require('../constants');
-const { add_portals_registered_status } = require('../utils/utils_function');
+const {
+  add_portals_registered_status,
+  userChangesHelperFunction
+} = require('../utils/utils_function');
 const logger = require('../services/logger');
 
 const {
@@ -88,7 +91,7 @@ const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
     })
     .populate('performedBy targetUserId', 'firstname lastname role')
     .populate({
-      path: 'targetDocumentThreadId',
+      path: 'targetDocumentThreadId interviewThreadId',
       select: 'program_id file_type',
       populate: {
         path: 'program_id',
@@ -611,8 +614,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
           archiv: true
         })
         .populate('applications.programId agents editors')
-        .lean()
-        .exec();
+        .lean();
 
       res.status(200).send({ success: true, data: students });
     } else if (user.role === Role.Editor) {
@@ -653,7 +655,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     const student = await req.db
       .model('Student')
       .findById(studentId)
-      .populate('agents', 'firstname lastname email')
+      .populate('agents', 'firstname lastname email archiv role')
       .lean();
     if (!student) {
       return res
@@ -662,61 +664,13 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
     }
 
     // Prepare arrays
-    const agentsIdArr = Object.keys(agentsId);
-    const updatedAgentIds = agentsIdArr.filter((agentId) => agentsId[agentId]);
-
-    // Fetch agents concurrently
-    const agents = await Promise.all(
-      updatedAgentIds.map((id) =>
-        req.db
-          .model('Agent')
-          .findById(id)
-          .select('firstname lastname email archiv')
-          .lean()
-      )
-    );
-
-    // Prepare data for updating
-    const beforeChangeAgentArr = student.agents;
-
-    // Create sets for easy comparison
-    const previousAgentSet = new Set(
-      beforeChangeAgentArr.map((agn) => agn._id.toString())
-    );
-    const newAgentSet = new Set(updatedAgentIds);
-
-    // Find newly added and removed agents
-    const addedAgents = agents.filter(
-      (agn) => !previousAgentSet.has(agn._id.toString())
-    );
-    const removedAgents = beforeChangeAgentArr.filter(
-      (agnt) => !newAgentSet.has(agnt._id.toString())
-    );
-
-    const toBeInformedAgents = [];
-    const updatedAgents = [];
-
-    agents.forEach((agent) => {
-      if (agent) {
-        updatedAgents.push({
-          firstname: agent.firstname,
-          lastname: agent.lastname,
-          email: agent.email
-        });
-        if (
-          !beforeChangeAgentArr
-            ?.map((agn) => agn._id.toString())
-            .includes(agent._id.toString())
-        ) {
-          toBeInformedAgents.push({
-            firstname: agent.firstname,
-            lastname: agent.lastname,
-            archiv: agent.archiv,
-            email: agent.email
-          });
-        }
-      }
-    });
+    const {
+      addedUsers: addedAgents,
+      removedUsers: removedAgents,
+      updatedUsers: updatedAgents,
+      toBeInformedUsers: toBeInformedAgents,
+      updatedUserIds: updatedAgentIds
+    } = await userChangesHelperFunction(req, agentsId, student.agents);
 
     // Update student's agents
     if (addedAgents.length > 0 || removedAgents.length > 0) {
@@ -823,7 +777,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
         action: 'update', // Action performed
         field: 'agents', // Field that was updated (if applicable)
         changes: {
-          before: beforeChangeAgentArr, // Before state
+          before: student.agents, // Before state
           after: {
             added: addedAgents,
             removed: removedAgents
@@ -838,8 +792,6 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
   }
 });
 
-// () TODO email : agent better notification
-// () TODO email : student better notification
 const assignEditorToStudent = asyncHandler(async (req, res, next) => {
   const {
     user,
@@ -867,63 +819,13 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
     }
 
     // Prepare arrays
-    const editorsIdArr = Object.keys(editorsId);
-    const updatedEditorIds = editorsIdArr.filter(
-      (editorId) => editorsId[editorId]
-    );
-
-    // Fetch editors concurrently
-    const editors = await Promise.all(
-      updatedEditorIds.map((id) =>
-        req.db
-          .model('Editor')
-          .findById(id)
-          .select('firstname lastname email archiv')
-          .lean()
-      )
-    );
-
-    // Prepare data for updating
-    const beforeChangeEditorArr = student.editors;
-
-    // Create sets for easy comparison
-    const previousEditorSet = new Set(
-      beforeChangeEditorArr.map((editr) => editr._id.toString())
-    );
-    const newEditorSet = new Set(updatedEditorIds);
-
-    // Find newly added and removed editors
-    const addedEditors = editors.filter(
-      (editr) => !previousEditorSet.has(editr._id.toString())
-    );
-    const removedEditors = beforeChangeEditorArr.filter(
-      (editrt) => !newEditorSet.has(editrt._id.toString())
-    );
-
-    const toBeInformedEditors = [];
-    const updatedEditors = [];
-
-    editors.forEach((editor) => {
-      if (editor) {
-        updatedEditors.push({
-          firstname: editor.firstname,
-          lastname: editor.lastname,
-          email: editor.email
-        });
-        if (
-          !beforeChangeEditorArr
-            ?.map((agn) => agn._id.toString())
-            .includes(editor._id.toString())
-        ) {
-          toBeInformedEditors.push({
-            firstname: editor.firstname,
-            lastname: editor.lastname,
-            archiv: editor.archiv,
-            email: editor.email
-          });
-        }
-      }
-    });
+    const {
+      addedUsers: addedEditors,
+      removedUsers: removedEditors,
+      updatedUsers: updatedEditors,
+      toBeInformedUsers: toBeInformedEditors,
+      updatedUserIds: updatedEditorIds
+    } = await userChangesHelperFunction(req, editorsId, student.editors);
 
     // Update student's editors
     if (addedEditors.length > 0 || removedEditors.length > 0) {
@@ -1019,7 +921,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
         action: 'update', // Action performed
         field: 'editors', // Field that was updated (if applicable)
         changes: {
-          before: beforeChangeEditorArr, // Before state
+          before: student.editors, // Before state
           after: {
             added: addedEditors,
             removed: removedEditors
@@ -1101,7 +1003,7 @@ const getStudentApplications = asyncHandler(async (req, res, next) => {
     .populate('applications.programId', 'school program_name degree semester');
   if (!student) {
     logger.error('getStudentApplications: no such student');
-    throw new ErrorResponse(404, `getStudentApplications: no such student`);
+    throw new ErrorResponse(404, 'getStudentApplications: no such student');
   }
   res.status(201).send({ success: true, data: student.applications });
 });

@@ -1662,8 +1662,12 @@ const PROGRAM_SUBJECT_CATEGORIES = {
 const CV_MUST_HAVE_PATTERNS = [
   '- present',
   '– present',
+  '- current',
+  '– current',
   '- now',
   '– now',
+  '- jetzt',
+  '– jetzt',
   'til now',
   'til present'
 ];

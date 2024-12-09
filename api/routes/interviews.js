@@ -28,6 +28,7 @@ const {
 const {
   InnerTaigerMultitenantFilter
 } = require('../middlewares/InnerTaigerMultitenantFilter');
+const { auditLog } = require('../utils/log/auditLog');
 
 const router = Router();
 
@@ -72,7 +73,8 @@ router
     InterviewPUTRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     interviewMultitenantFilter,
-    updateInterview
+    updateInterview,
+    auditLog
   )
   .delete(
     filter_archiv_user,

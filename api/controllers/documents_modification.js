@@ -49,7 +49,8 @@ const {
 } = require('../utils/modelHelper/versionControl');
 const {
   threadS3GarbageCollector,
-  patternMatched
+  patternMatched,
+  userChangesHelperFunction
 } = require('../utils/utils_function');
 const { getS3Object } = require('../aws/s3');
 
@@ -709,23 +710,44 @@ const getMessages = asyncHandler(async (req, res) => {
     .populate('outsourced_user_id', 'firstname lastname role')
     .lean()
     .exec();
-
-  const agents = await req.db
+  const threadAuditLogPromise = req.db
+    .model('Audit')
+    .find({
+      targetDocumentThreadId: messagesThreadId
+    })
+    .populate('performedBy targetUserId', 'firstname lastname role')
+    .populate({
+      path: 'targetDocumentThreadId interviewThreadId',
+      select: 'program_id file_type',
+      populate: {
+        path: 'program_id',
+        select: 'school program_name degree semester'
+      }
+    })
+    .sort({ createdAt: -1 });
+  const agentsPromise = req.db
     .model('Agent')
     .find({
       _id: document_thread.student_id.agents
     })
     .select('firstname lastname');
-  const editors = await req.db
+  const editorsPromise = req.db
     .model('Editor')
     .find({
       _id: document_thread.student_id.editors
     })
     .select('firstname lastname');
-  const student = await req.db
+  const studentPromise = req.db
     .model('Student')
     .findById(document_thread.student_id._id.toString())
     .populate('applications.programId');
+  const [agents, editors, student, threadAuditLog] = await Promise.all([
+    agentsPromise,
+    editorsPromise,
+    studentPromise,
+    threadAuditLogPromise
+  ]);
+
   let deadline = 'x';
   if (General_Docs.includes(document_thread.file_type)) {
     deadline = CVDeadline_Calculator(student);
@@ -762,11 +784,13 @@ const getMessages = asyncHandler(async (req, res) => {
         'firstname lastname applications application_preference.expected_application_date'
       );
   }
+
   res.status(200).send({
     success: true,
     data: document_thread,
     agents,
     editors,
+    threadAuditLog,
     deadline,
     conflict_list
   });
@@ -1504,7 +1528,7 @@ const putOriginAuthorConfirmedByStudent = asyncHandler(async (req, res) => {
 
 // (O) notification student email works
 // (O) notification agent email works
-const SetStatusMessagesThread = asyncHandler(async (req, res) => {
+const SetStatusMessagesThread = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { messagesThreadId, studentId },
@@ -1530,7 +1554,9 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
     logger.error('SetStatusMessagesThread: Invalid student id');
     throw new ErrorResponse(404, 'Student not found');
   }
-  logger.info('program_id ', program_id);
+
+  let isFinalVersionBefore;
+  let isFinalVersionAfter;
   if (program_id) {
     const student_application = student.applications.find(
       (application) => application.programId._id.toString() === program_id
@@ -1547,13 +1573,13 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
       logger.error('SetStatusMessagesThread: application thread not found');
       throw new ErrorResponse(404, 'Thread not found');
     }
-
+    isFinalVersionBefore = application_thread.isFinalVersion;
     application_thread.isFinalVersion = !application_thread.isFinalVersion;
     application_thread.updatedAt = new Date();
     document_thread.isFinalVersion = application_thread.isFinalVersion;
+    isFinalVersionAfter = application_thread.isFinalVersion;
     document_thread.updatedAt = new Date();
-    await document_thread.save();
-    await student.save();
+    await Promise.all([document_thread.save(), student.save()]);
 
     res.status(200).send({
       success: true,
@@ -1635,12 +1661,14 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
       logger.error('SetStatusMessagesThread: generaldoc thread not found');
       throw new ErrorResponse(404, 'Thread not found');
     }
+    isFinalVersionBefore = generaldocs_thread.isFinalVersion;
     generaldocs_thread.isFinalVersion = !generaldocs_thread.isFinalVersion;
     generaldocs_thread.updatedAt = new Date();
     document_thread.isFinalVersion = generaldocs_thread.isFinalVersion;
+    isFinalVersionAfter = document_thread.isFinalVersion;
     document_thread.updatedAt = new Date();
-    await document_thread.save();
-    await student.save();
+    await Promise.all([document_thread.save(), student.save()]);
+
     res.status(200).send({
       success: true,
       data: {
@@ -1708,6 +1736,20 @@ const SetStatusMessagesThread = asyncHandler(async (req, res) => {
       }
     }
   }
+
+  req.audit = {
+    performedBy: user._id,
+    targetUserId: student._id, // Change this if you have a different target user ID
+    targetDocumentThreadId: messagesThreadId,
+    action: 'update', // Action performed
+    field: 'status', // Field that was updated (if applicable)
+    changes: {
+      before: isFinalVersionBefore, // Before state
+      after: isFinalVersionAfter
+    }
+  };
+
+  next();
 });
 
 const deleteGeneralThread = asyncHandler(async (req, studentId, threadId) => {
@@ -1953,63 +1995,18 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
       .status(404)
       .json({ success: false, message: 'Essay thread not found.' });
   }
-  const editorsIdArr = Object.keys(editorsId);
-  const updatedEditorIds = editorsIdArr.filter(
-    (editorId) => editorsId[editorId]
+
+  const {
+    addedUsers: addedEditors,
+    removedUsers: removedEditors,
+    updatedUsers: updatedEditors,
+    toBeInformedUsers: toBeInformedEditors,
+    updatedUserIds: updatedEditorIds
+  } = await userChangesHelperFunction(
+    req,
+    editorsId,
+    essayDocumentThreads.outsourced_user_id
   );
-
-  // Fetch editors concurrently
-  const editors = await Promise.all(
-    updatedEditorIds.map((id) =>
-      req.db
-        .model('Editor')
-        .findById(id)
-        .select('firstname lastname email archiv')
-        .lean()
-    )
-  );
-
-  // Prepare data for updating
-  const beforeChangeEditorArr = essayDocumentThreads.outsourced_user_id;
-
-  // Create sets for easy comparison
-  const previousEditorSet = new Set(
-    beforeChangeEditorArr.map((editr) => editr._id.toString())
-  );
-  const newEditorSet = new Set(updatedEditorIds);
-
-  // Find newly added and removed editors
-  const addedEditors = editors.filter(
-    (editr) => !previousEditorSet.has(editr._id.toString())
-  );
-  const removedEditors = beforeChangeEditorArr.filter(
-    (editrt) => !newEditorSet.has(editrt._id.toString())
-  );
-
-  const toBeInformedEditors = [];
-  const updatedEditors = [];
-
-  editors.forEach((editor) => {
-    if (editor) {
-      updatedEditors.push({
-        firstname: editor.firstname,
-        lastname: editor.lastname,
-        email: editor.email
-      });
-      if (
-        !beforeChangeEditorArr
-          ?.map((agn) => agn._id.toString())
-          .includes(editor._id.toString())
-      ) {
-        toBeInformedEditors.push({
-          firstname: editor.firstname,
-          lastname: editor.lastname,
-          archiv: editor.archiv,
-          email: editor.email
-        });
-      }
-    }
-  });
 
   // Update student's thread essay writers
   if (addedEditors.length > 0 || removedEditors.length > 0) {
@@ -2127,7 +2124,7 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
     action: 'update', // Action performed
     field: 'essay writer', // Field that was updated (if applicable)
     changes: {
-      before: beforeChangeEditorArr, // Before state
+      before: essayDocumentThreads.outsourced_user_id, // Before state
       after: {
         added: addedEditors,
         removed: removedEditors

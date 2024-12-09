@@ -123,6 +123,7 @@ function CommunicationExpandPageMessagesComponent({ data, student }) {
                 <Grid item xs={12}>
                   <Card
                     sx={{
+                      borderRadius: 2,
                       padding: 2,
                       ...(!ismobile && {
                         maxWidth: windowInnerWidth - 664 + 32

@@ -22,7 +22,6 @@ import { useTranslation } from 'react-i18next';
 import { is_TaiGer_Admin, is_TaiGer_Student } from '@taiger-common/core';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
 
 import {
@@ -1324,25 +1323,23 @@ const SurveyEditableComponent = (props) => {
                 survey?.academic_background?.language?.english_isPassed
               ) && (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={['DatePicker']}>
-                    <DatePicker
-                      label={
-                        survey?.academic_background?.language
-                          ?.english_isPassed === 'X'
-                          ? t('Expected English Test Date')
-                          : t('English Test Date')
-                      }
-                      name="english_test_date"
-                      format="D. MMM. YYYY"
-                      value={dayjs(
-                        survey.academic_background?.language
-                          ?.english_test_date || ''
-                      )}
-                      onChange={(newValue) =>
-                        handleTestDate('english_test_date', newValue)
-                      }
-                    />
-                  </DemoContainer>
+                  <DatePicker
+                    label={
+                      survey?.academic_background?.language
+                        ?.english_isPassed === 'X'
+                        ? t('Expected English Test Date')
+                        : t('English Test Date')
+                    }
+                    name="english_test_date"
+                    format="D. MMM. YYYY"
+                    value={dayjs(
+                      survey.academic_background?.language?.english_test_date ||
+                        ''
+                    )}
+                    onChange={(newValue) =>
+                      handleTestDate('english_test_date', newValue)
+                    }
+                  />
                 </LocalizationProvider>
               )}
             </Grid>
@@ -1545,25 +1542,23 @@ const SurveyEditableComponent = (props) => {
                 survey?.academic_background?.language?.german_isPassed
               ) && (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={['DatePicker']}>
-                    <DatePicker
-                      label={
-                        survey?.academic_background?.language
-                          ?.german_isPassed === 'X'
-                          ? t('Expected German Test Date')
-                          : t('German Test Date')
-                      }
-                      name="german_test_date"
-                      format="D. MMM. YYYY"
-                      value={dayjs(
-                        survey.academic_background?.language
-                          ?.german_test_date || ''
-                      )}
-                      onChange={(newValue) =>
-                        handleTestDate('german_test_date', newValue)
-                      }
-                    />
-                  </DemoContainer>
+                  <DatePicker
+                    label={
+                      survey?.academic_background?.language?.german_isPassed ===
+                      'X'
+                        ? t('Expected German Test Date')
+                        : t('German Test Date')
+                    }
+                    name="german_test_date"
+                    format="D. MMM. YYYY"
+                    value={dayjs(
+                      survey.academic_background?.language?.german_test_date ||
+                        ''
+                    )}
+                    onChange={(newValue) =>
+                      handleTestDate('german_test_date', newValue)
+                    }
+                  />
                 </LocalizationProvider>
               )}
             </Grid>
@@ -1647,25 +1642,21 @@ const SurveyEditableComponent = (props) => {
                 survey.academic_background?.language.gre_isPassed
               ) && (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={['DatePicker']}>
-                    <DatePicker
-                      label={
-                        survey.academic_background?.language.gre_isPassed ===
-                        'X'
-                          ? t('Expected GRE Test Date')
-                          : t('GRE Test Date')
-                      }
-                      name="gre_test_date"
-                      format="D. MMM. YYYY"
-                      value={dayjs(
-                        survey.academic_background?.language?.gre_test_date ||
-                          ''
-                      )}
-                      onChange={(newValue) =>
-                        handleTestDate('gre_test_date', newValue)
-                      }
-                    />
-                  </DemoContainer>
+                  <DatePicker
+                    label={
+                      survey.academic_background?.language.gre_isPassed === 'X'
+                        ? t('Expected GRE Test Date')
+                        : t('GRE Test Date')
+                    }
+                    name="gre_test_date"
+                    format="D. MMM. YYYY"
+                    value={dayjs(
+                      survey.academic_background?.language?.gre_test_date || ''
+                    )}
+                    onChange={(newValue) =>
+                      handleTestDate('gre_test_date', newValue)
+                    }
+                  />
                 </LocalizationProvider>
               )}
             </Grid>
@@ -1754,25 +1745,22 @@ const SurveyEditableComponent = (props) => {
                 survey.academic_background?.language?.gmat_isPassed
               ) && (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={['DatePicker']}>
-                    <DatePicker
-                      label={
-                        survey.academic_background?.language?.gmat_isPassed ===
-                        'X'
-                          ? t('Expected GMAT Test Date')
-                          : t('GMAT Test Date')
-                      }
-                      name="gmat_test_date"
-                      format="D. MMM. YYYY"
-                      value={dayjs(
-                        survey.academic_background?.language?.gmat_test_date ||
-                          ''
-                      )}
-                      onChange={(newValue) =>
-                        handleTestDate('gmat_test_date', newValue)
-                      }
-                    />
-                  </DemoContainer>
+                  <DatePicker
+                    label={
+                      survey.academic_background?.language?.gmat_isPassed ===
+                      'X'
+                        ? t('Expected GMAT Test Date')
+                        : t('GMAT Test Date')
+                    }
+                    name="gmat_test_date"
+                    format="D. MMM. YYYY"
+                    value={dayjs(
+                      survey.academic_background?.language?.gmat_test_date || ''
+                    )}
+                    onChange={(newValue) =>
+                      handleTestDate('gmat_test_date', newValue)
+                    }
+                  />
                 </LocalizationProvider>
               )}
             </Grid>

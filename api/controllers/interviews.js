@@ -19,6 +19,7 @@ const { addMessageInThread } = require('../utils/informEditor');
 const { isNotArchiv } = require('../constants');
 const { getPermission } = require('../utils/queryFunctions');
 const { emptyS3Directory } = require('../utils/modelHelper/versionControl');
+const { userChangesHelperFunction } = require('../utils/utils_function');
 
 const PrecheckInterview = asyncHandler(async (req, interview_id) => {
   const precheck_interview = await req.db
@@ -30,55 +31,64 @@ const PrecheckInterview = asyncHandler(async (req, interview_id) => {
   }
 });
 
-const InterviewCancelledReminder = asyncHandler(
-  async (user, receiver, meeting_event, cc) => {
-    InterviewCancelledReminderEmail(
-      {
-        id: receiver._id.toString(),
-        firstname: receiver.firstname,
-        lastname: receiver.lastname,
-        address: receiver.email
-      },
-      {
-        taiger_user: user,
-        role: user.role,
-        meeting_time: meeting_event.start,
-        student_id: user._id.toString(),
-        event: meeting_event,
-        event_title:
-          user.role === Role.Student
-            ? `${user.firstname} ${user.lastname}`
-            : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
-        isUpdatingEvent: false,
-        cc
-      }
-    );
-  }
-);
+const InterviewCancelledReminder = async (
+  user,
+  receiver,
+  meeting_event,
+  cc
+) => {
+  InterviewCancelledReminderEmail(
+    {
+      id: receiver._id.toString(),
+      firstname: receiver.firstname,
+      lastname: receiver.lastname,
+      address: receiver.email
+    },
+    {
+      taiger_user: user,
+      role: user.role,
+      meeting_time: meeting_event.start,
+      student_id: user._id.toString(),
+      event: meeting_event,
+      event_title:
+        user.role === Role.Student
+          ? `${user.firstname} ${user.lastname}`
+          : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
+      isUpdatingEvent: false,
+      cc
+    }
+  );
+};
 
-const InterviewTrainingInvitation = asyncHandler(
-  async (receiver, user, event, interview_id, program, isUpdatingEvent, cc) => {
-    await sendInterviewConfirmationEmail(
-      {
-        id: receiver._id.toString(),
-        firstname: receiver.firstname,
-        lastname: receiver.lastname,
-        address: receiver.email
-      },
-      {
-        taiger_user: user,
-        meeting_time: event.start, // Replace with the actual meeting time
-        student_id: user._id.toString(),
-        meeting_link: event.meetingLink,
-        isUpdatingEvent,
-        event,
-        interview_id,
-        program,
-        cc
-      }
-    );
-  }
-);
+const InterviewTrainingInvitation = async (
+  receiver,
+  user,
+  event,
+  interview_id,
+  program,
+  isUpdatingEvent,
+  cc
+) => {
+  sendInterviewConfirmationEmail(
+    {
+      id: receiver._id.toString(),
+      firstname: receiver.firstname,
+      lastname: receiver.lastname,
+      address: receiver.email
+    },
+    {
+      taiger_user: user,
+      meeting_time: event.start, // Replace with the actual meeting time
+      student_id: user._id.toString(),
+      meeting_link: event.meetingLink,
+      isUpdatingEvent,
+      event,
+      interview_id,
+      program,
+      cc
+    }
+  );
+};
 
 const getAllInterviews = asyncHandler(async (req, res) => {
   const interviews = await req.db
@@ -184,19 +194,37 @@ const getInterview = asyncHandler(async (req, res) => {
       logger.info('getInterview: this interview is not found!');
       throw new ErrorResponse(404, 'this interview is not found!');
     }
+    const interviewAuditLogPromise = req.db
+      .model('Audit')
+      .find({
+        interviewThreadId: interview_id
+      })
+      .populate('performedBy targetUserId', 'firstname lastname role')
+      .populate({
+        path: 'targetDocumentThreadId interviewThreadId',
+        select: 'program_id file_type',
+        populate: {
+          path: 'program_id',
+          select: 'school program_name degree semester'
+        }
+      })
+      .sort({ createdAt: -1 });
 
-    const interviewsSurveys = await req.db
+    const questionsNumPromise = req.db
       .model('InterviewSurveyResponse')
-      .find()
-      .populate('interview_id')
-      .lean();
+      .countDocuments({ 'interview_id.program_id': interview.program_id?._id });
 
-    const num = interviewsSurveys.filter(
-      (survey) =>
-        survey.interview_id.program_id.toString() ===
-        interview.program_id?._id?.toString()
-    )?.length;
-    res.status(200).send({ success: true, data: interview, questionsNum: num });
+    const [interviewAuditLog, questionsNum] = await Promise.all([
+      interviewAuditLogPromise,
+      questionsNumPromise
+    ]);
+
+    res.status(200).send({
+      success: true,
+      data: interview,
+      questionsNum,
+      interviewAuditLog
+    });
   } catch (e) {
     logger.error(`getInterview: ${e.message}`);
     throw new ErrorResponse(404, 'this interview is not found!');
@@ -226,7 +254,7 @@ const deleteInterview = asyncHandler(async (req, res) => {
     emptyS3Directory(AWS_S3_BUCKET_NAME, directory);
     // Delete event
     if (interview.event_id) {
-      // TODO: send delete event email
+      // send delete event email
       const toBeDeletedEvent = await req.db
         .model('Event')
         .findByIdAndDelete(interview.event_id)
@@ -333,7 +361,8 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
     const interview_tmep = await req.db
       .model('Interview')
       .findById(interview_id)
-      .populate('program_id');
+      .populate('program_id')
+      .lean();
     // inform agent for confirmed training date
     const student_temp = await req.db
       .model('Student')
@@ -371,7 +400,7 @@ const addInterviewTrainingDateTime = asyncHandler(async (req, res, next) => {
   }
 });
 
-const updateInterview = asyncHandler(async (req, res) => {
+const updateInterview = asyncHandler(async (req, res, next) => {
   const {
     user,
     params: { interview_id }
@@ -385,21 +414,50 @@ const updateInterview = asyncHandler(async (req, res) => {
   delete payload.thread_id;
   delete payload.program_id;
   delete payload.student_id;
+  // Step 1: Fetch the current state (before update)
+  const beforeUpdate = await req.db
+    .model('Interview')
+    .findById(interview_id)
+    .populate('student_id trainer_id', 'firstname lastname email archiv')
+    .populate('program_id', 'school program_name degree semester')
+    .populate('thread_id event_id')
+    .lean();
+
+  if (!beforeUpdate) {
+    return res.status(404).json({ error: 'Interview not found' });
+  }
 
   const interview = await req.db
     .model('Interview')
     .findByIdAndUpdate(interview_id, payload, {
       new: true
     })
-    .populate('student_id trainer_id', 'firstname lastname email archiv')
+    .populate('student_id trainer_id', 'firstname lastname email archiv role')
     .populate('program_id', 'school program_name degree semester')
     .populate('thread_id event_id')
     .lean();
+
+  if (!interview) {
+    return res.status(500).json({ error: 'Failed to update interview' });
+  }
+  const trainerObj = {};
+  payload.trainer_id?.forEach((id) => {
+    trainerObj[id] = true;
+  });
+
+  const {
+    addedUsers: addedInterviewers,
+    removedUsers: removedInterviewers,
+    updatedUsers: updatedInterviewers,
+    toBeInformedUsers: toBeInformedInterviewers,
+    updatedUserIds: updatedInterviewerIds
+  } = await userChangesHelperFunction(req, trainerObj, beforeUpdate.trainer_id);
+
   if (payload.isClosed === true || payload.isClosed === false) {
     await req.db
       .model('Documentthread')
       .findByIdAndUpdate(
-        interview.thread_id._id.toString(),
+        interview.thread_id?._id.toString(),
         { isFinalVersion: payload.isClosed },
         {}
       );
@@ -443,7 +501,36 @@ const updateInterview = asyncHandler(async (req, res) => {
         { interview, isClosed: payload.isClosed, user }
       );
     }
+    req.audit = {
+      performedBy: user._id,
+      targetUserId: interview.student_id._id, // Change this if you have a different target user ID
+      interviewThreadId: interview._id,
+      action: 'update', // Action performed
+      field: 'status', // Field that was updated (if applicable)
+      changes: {
+        before: beforeUpdate.isClosed, // Before state
+        after: payload.isClosed
+      }
+    };
   }
+  if ('trainer_id' in payload) {
+    req.audit = {
+      performedBy: user._id,
+      targetUserId: interview.student_id._id, // Change this if you have a different target user ID
+      interviewThreadId: interview._id,
+      action: 'update', // Action performed
+      field: 'interview trainer', // Field that was updated (if applicable)
+      changes: {
+        before: interview.trainer_id, // Before state
+        after: {
+          added: addedInterviewers,
+          removed: removedInterviewers
+        }
+      }
+    };
+  }
+
+  next();
 });
 
 const getInterviewSurvey = asyncHandler(async (req, res) => {

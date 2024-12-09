@@ -213,7 +213,8 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     InnerTaigerMultitenantFilter,
-    SetStatusMessagesThread
+    SetStatusMessagesThread,
+    auditLog
   )
   .post(
     filter_archiv_user,

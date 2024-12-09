@@ -1532,6 +1532,74 @@ const NoInterviewTrainerOrTrainingDateDailyReminderChecker = asyncHandler(
   }
 );
 
+const userChangesHelperFunction = async (req, newUserIds, existingUsers) => {
+  const newUserIdsArr = Object.keys(newUserIds);
+  const updatedUserIds = newUserIdsArr.filter(
+    (editorId) => newUserIds[editorId]
+  );
+
+  // Fetch editors concurrently
+  const users = await Promise.all(
+    updatedUserIds.map((id) =>
+      req.db
+        .model('User')
+        .findById(id)
+        .select('firstname lastname email archiv')
+        .lean()
+    )
+  );
+
+  // Prepare data for updating
+  const beforeChangeUsersArr = existingUsers;
+
+  // Create sets for easy comparison
+  const previousEditorSet = new Set(
+    beforeChangeUsersArr.map((usr) => usr._id.toString())
+  );
+  const newEditorSet = new Set(updatedUserIds);
+
+  // Find newly added and removed editors
+  const addedUsers = users.filter(
+    (usr) => !previousEditorSet.has(usr._id.toString())
+  );
+  const removedUsers = beforeChangeUsersArr.filter(
+    (usr) => !newEditorSet.has(usr._id.toString())
+  );
+
+  const toBeInformedUsers = [];
+  const updatedUsers = [];
+
+  users.forEach((usr) => {
+    if (usr) {
+      updatedUsers.push({
+        firstname: usr.firstname,
+        lastname: usr.lastname,
+        email: usr.email
+      });
+      if (
+        !beforeChangeUsersArr
+          ?.map((user) => user._id.toString())
+          .includes(usr._id.toString())
+      ) {
+        toBeInformedUsers.push({
+          firstname: usr.firstname,
+          lastname: usr.lastname,
+          archiv: usr.archiv,
+          email: usr.email
+        });
+      }
+    }
+  });
+
+  return {
+    addedUsers,
+    removedUsers,
+    updatedUsers,
+    toBeInformedUsers,
+    updatedUserIds
+  };
+};
+
 module.exports = {
   threadS3GarbageCollector,
   TasksReminderEmails,
@@ -1546,5 +1614,6 @@ module.exports = {
   DailyCalculateAverageResponseTime,
   DailyInterviewSurveyChecker,
   patternMatched,
-  NoInterviewTrainerOrTrainingDateDailyReminderChecker
+  NoInterviewTrainerOrTrainingDateDailyReminderChecker,
+  userChangesHelperFunction
 };

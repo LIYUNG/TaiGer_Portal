@@ -25,7 +25,7 @@ function SchoolConfig() {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
 
-  TabTitle('Student Database');
+  TabTitle(t('School Configuration', { ns: 'common' }));
   return (
     <Box data-testid="school_config">
       <Suspense fallback={<Loading />}>

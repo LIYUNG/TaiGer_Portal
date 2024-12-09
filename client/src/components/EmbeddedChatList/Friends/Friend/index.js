@@ -45,15 +45,18 @@ const friend = (props) => {
     <ListItem
       key={props.data?._id?.toString()}
       sx={{
-        // height: '70px',
         backgroundColor: props.data?.latestCommunication?.readBy.includes(
           props.activeId
         )
-          ? theme.palette.background.secondary
-          : theme.palette.info.main, // Set your desired background color
+          ? theme.palette.background.default
+          : theme.palette.action.disabled, // Set your desired background color
         '&:hover': {
-          backgroundColor: '#a0a0a0' // Set a different color on hover if needed
-        }
+          backgroundColor: theme.palette.action.hover // Set a different color on hover if needed
+        },
+        transition: 'background-color 0.3s ease-in-out', // Smooth color transitions
+        color: props.data?.latestCommunication?.readBy.includes(props.activeId)
+          ? theme.palette.text.primary // Regular text for read messages
+          : theme.palette.text.secondary // Secondary text color for unread messages
       }}
       disablePadding
     >
@@ -110,16 +113,15 @@ const friend = (props) => {
           />
           <ListItemSecondaryAction>
             <IconButton edge="end">
-              {(
-                props.data?.latestCommunication?.user_id === props.data?.latestCommunication?.student_id 
-                && (props.data?.latestCommunication?.ignore_message !== true)
-              ) && (
-                <FiberManualRecordIcon
-                  fontSize="small"
-                  title="Not Reply Yet"
-                  style={{ marginLeft: '4px' }}
-                />
-              )}
+              {props.data?.latestCommunication?.user_id ===
+                props.data?.latestCommunication?.student_id &&
+                props.data?.latestCommunication?.ignore_message !== true && (
+                  <FiberManualRecordIcon
+                    fontSize="small"
+                    title="Not Reply Yet"
+                    style={{ marginLeft: '4px' }}
+                  />
+                )}
             </IconButton>
           </ListItemSecondaryAction>
         </ListItemIcon>

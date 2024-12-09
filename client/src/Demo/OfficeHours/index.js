@@ -249,7 +249,7 @@ function OfficeHours() {
                 }
               />
             ))}
-          <Card>
+          <Card sx={{ p: 2 }}>
             <Box>
               <Typography variant="h6">
                 {t('Upcoming', { ns: 'common' })}
@@ -291,7 +291,9 @@ function OfficeHours() {
             </Box>
           </Card>
           <Card>
-            <Typography variant="h6">{t('Past', { ns: 'common' })}</Typography>
+            <Typography variant="h6" sx={{ p: 2 }}>
+              {t('Past', { ns: 'common' })}
+            </Typography>
             <Typography>
               {_.reverse(
                 _.sortBy(

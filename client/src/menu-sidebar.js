@@ -194,7 +194,7 @@ all_students_nestedList = [
   },
   {
     id: 'prev_students_database',
-    title: 'Student Database',
+    title: 'Students Database',
     type: 'item',
     url: '/student-database',
     classes: 'nav-item',

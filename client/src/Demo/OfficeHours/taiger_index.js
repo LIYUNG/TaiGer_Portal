@@ -222,7 +222,7 @@ function TaiGerOfficeHours() {
                 }
               />
             ))}
-          <Card>
+          <Card sx={{ p: 2 }}>
             <Typography variant="h6">
               {t('Upcoming', { ns: 'common' })}
             </Typography>
@@ -262,7 +262,9 @@ function TaiGerOfficeHours() {
             </Box>
           </Card>
           <Card>
-            <Typography variant="h6">{t('Past', { ns: 'common' })}</Typography>
+            <Typography variant="h6" sx={{ p: 2 }}>
+              {t('Past', { ns: 'common' })}
+            </Typography>
             <Box>
               {_.reverse(
                 _.sortBy(

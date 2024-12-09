@@ -1,0 +1,5 @@
+{
+    "Reject": "拒绝",
+    "confirmDocument": "{{studentName}} {{studentNameZh}} 确认 {{docName}} 这份文件皆无用 AI 辅助完成，我同意此条款并对编修后的内容全权负责。",
+    "notConfirmDocument": "{{studentName}} {{studentNameZh}} 尚未确认 {{docName}} 这份文件皆无用 AI 辅助完成。"
+}

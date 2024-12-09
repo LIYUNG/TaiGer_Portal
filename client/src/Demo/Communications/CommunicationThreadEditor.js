@@ -162,7 +162,7 @@ function CommunicationThreadEditor(props) {
             >
               <Button
                 variant="outlined"
-                color="secondary"
+                color="primary"
                 startIcon={<SendIcon />}
               >
                 {t('Send', { ns: 'common' })}
@@ -170,21 +170,14 @@ function CommunicationThreadEditor(props) {
             </Tooltip>
           </>
         ) : (
-          <Tooltip
-            title={t(
-              'Please write some text to improve the communication and understanding.'
-            )}
-            placement="top"
+          <Button
+            color="primary"
+            variant="contained"
+            startIcon={<SendIcon />}
+            onClick={(e) => props.handleClickSave(e, statedata.editorState)}
           >
-            <Button
-              color="primary"
-              variant="contained"
-              startIcon={<SendIcon />}
-              onClick={(e) => props.handleClickSave(e, statedata.editorState)}
-            >
-              {t('Send', { ns: 'common' })}
-            </Button>
-          </Tooltip>
+            {t('Send', { ns: 'common' })}
+          </Button>
         )}
         {props.showCancelButton && (
           <Button

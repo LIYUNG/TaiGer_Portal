@@ -35,7 +35,7 @@ function StudentDatabase() {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
 
-  TabTitle('Student Database');
+  TabTitle(t('Students Database', { ns: 'common' }));
   return (
     <Box data-testid="student_datdabase">
       <Breadcrumbs aria-label="breadcrumb">

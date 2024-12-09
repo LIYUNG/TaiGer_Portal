@@ -226,6 +226,7 @@ function CommunicationSinglePageBody({ loadedData }) {
             <Grid item xs={12}>
               <Card
                 sx={{
+                  borderRadius: 2,
                   padding: 2,
                   maxWidth: window.innerWidth - 64,
                   pt: 2,

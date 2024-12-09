@@ -614,8 +614,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
           archiv: true
         })
         .populate('applications.programId agents editors')
-        .lean()
-        .exec();
+        .lean();
 
       res.status(200).send({ success: true, data: students });
     } else if (user.role === Role.Editor) {
@@ -1004,7 +1003,7 @@ const getStudentApplications = asyncHandler(async (req, res, next) => {
     .populate('applications.programId', 'school program_name degree semester');
   if (!student) {
     logger.error('getStudentApplications: no such student');
-    throw new ErrorResponse(404, `getStudentApplications: no such student`);
+    throw new ErrorResponse(404, 'getStudentApplications: no such student');
   }
   res.status(201).send({ success: true, data: student.applications });
 });

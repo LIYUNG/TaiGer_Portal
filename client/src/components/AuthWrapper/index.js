@@ -23,16 +23,6 @@ export default function AuthWrapper({ children }) {
         }}
       >
         <img src={logoLink} alt="Logo" style={{ maxWidth: '100%' }} />
-        {/* <Avatar
-          alt="TaiGer"
-          src={appConfig.LoginPageDarkLogo}
-          sx={{
-            width: 150,
-            height: 150,
-            borderRadius: '50%',
-            margin: '1px'
-          }}
-        /> */}
         {children}
       </Box>
       <Footer />

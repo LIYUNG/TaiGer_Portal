@@ -86,19 +86,28 @@ const getQueryResults = asyncHandler(async (req, res, next) => {
 
   // TODO: search for student
   // search thread, cv ml rl, public doc,
-  const [students, documentations, internaldocs, programs] = await Promise.all([
-    studentsPromise,
-    documentationsPromise,
-    internaldocsPromise,
-    programsPromise
-  ]);
+  try {
+    const [students, documentations, internaldocs, programs] =
+      await Promise.all([
+        studentsPromise,
+        documentationsPromise,
+        internaldocsPromise,
+        programsPromise
+      ]);
 
-  res.status(200).send({
-    success: true,
-    data: students
-      .concat(documentations, internaldocs, programs)
-      .sort((a, b) => b.score - a.score)
-  });
+    res.status(200).send({
+      success: true,
+      data: students
+        .concat(documentations, internaldocs, programs)
+        .sort((a, b) => b.score - a.score)
+    });
+  } catch (e) {
+    logger.error(e);
+    res.status(200).send({
+      success: true,
+      data: []
+    });
+  }
 });
 
 const getQueryStudentsResults = asyncHandler(async (req, res, next) => {

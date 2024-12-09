@@ -1,0 +1,11 @@
+{
+    "Add Ticket": "新增请求",
+    "My Agent or Editor did not reply me immediately, what can I do?": "我的顾问或外籍编辑没有立即回覆我，我该怎么做？",
+    "The quality of my CV, ML, RL or any other documents by the Editor is not as good as I expected. What can I do?": "我收到的履历、动机信、推荐信草稿或是小论文的品质并没有让我满意，我该怎么做？",
+    "What can I expect for the support ticket?": "客服中心能给我什么样的支援？",
+    "What is the purpose of the Customer Center?": "客服中心的目的是什么？",
+    "complaint_agents_editors": "您的{{companyName}}专业顾问以及外籍编辑平时为位于欧洲或美国时区，并任职于顶尖外商，无法立即回覆您。但您的申请品质不会因此有所影响。除了{ {companyName}} Message外，请善用顾问提供的Office Hour或是和顾问约时间，整理好问题，一次讨论。若您的申请很紧急或是必须要当下要立即得到解决，而顾问或编辑无法配合时间，始可利用客服中心得到帮助。",
+    "expectation_customer_center": "当您提出了请求，您将会直接和主管经理沟通，主管经理会和您讨论并了解您遇到的问题，并给您必要的帮助。由于您将直接和主管或是管理员联系，请务必确认在无法和顾问或是编辑沟通解决问题的情况下，再提出申请时，详细描述您的状况，顾问和编辑如何无法解决您的问题，方便主管经理解决您的问题。",
+    "explanation_customer_center": "客服中心设立目的在于学生对于和顾问，外籍编辑合作情况下有磨合上的问题，或是对于您的帐户有使用上困难等问题，可以透过客服中心得到协助。",
+    "quality_cvmlrl_explanation": "quality_cvmlrl_explanation"
+}

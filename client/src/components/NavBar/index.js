@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, Link as LinkDom } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import MuiAppBar from '@mui/material/AppBar';
@@ -20,7 +20,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import MailIcon from '@mui/icons-material/Mail';
-import { Avatar, Tooltip, useMediaQuery } from '@mui/material';
+import { Avatar, Link, Tooltip, useMediaQuery } from '@mui/material';
 import {
   is_TaiGer_Agent,
   is_TaiGer_Admin,
@@ -427,13 +427,17 @@ function NavBar(props) {
           >
             <MenuIcon />
           </IconButton>
-          <img
-            src={logoLink}
-            alt="Logo"
-            style={{ maxHeight: '48px', marginRight: 2 }}
-            href={`${DEMO.DASHBOARD_LINK}`}
-          />
-
+          <Link
+            component={LinkDom}
+            to={DEMO.DASHBOARD_LINK}
+            style={{ textDecoration: 'none' }}
+          >
+            <img
+              src={logoLink}
+              alt="Logo"
+              style={{ maxHeight: '48px', marginRight: '2px' }}
+            />
+          </Link>
           {(is_TaiGer_Agent(user) ||
             is_TaiGer_Editor(user) ||
             is_TaiGer_Admin(user)) && <NavSearch />}

@@ -45,15 +45,18 @@ const friend = (props) => {
     <ListItem
       key={props.data?._id?.toString()}
       sx={{
-        // height: '70px',
         backgroundColor: props.data?.latestCommunication?.readBy.includes(
           props.activeId
         )
-          ? theme.palette.background.secondary
-          : theme.palette.info.main, // Set your desired background color
+          ? theme.palette.background.default
+          : theme.palette.primary.dark, // Set your desired background color
         '&:hover': {
           backgroundColor: theme.palette.action.hover // Set a different color on hover if needed
-        }
+        },
+        transition: 'background-color 0.3s ease-in-out', // Smooth color transitions
+        color: props.data?.latestCommunication?.readBy.includes(props.activeId)
+          ? theme.palette.text.primary // Regular text for read messages
+          : theme.palette.text.secondary // Secondary text color for unread messages
       }}
       disablePadding
     >

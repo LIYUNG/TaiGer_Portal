@@ -210,13 +210,13 @@ const StudentOverview = ({ studentId }) => {
                     scaleType: 'time'
                   }
                 ]}
+                yAxis={[{ label: 'Duration (days)' }]}
                 series={[
                   {
                     data: studentIntervals?.y
                   }
                 ]}
-                width={500}
-                height={300}
+                height={400}
               />
             </CardContent>
           </Card>

@@ -92,7 +92,10 @@ const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
       margin={{ top: 20, right: 30, left: 50, bottom: 110 }}
       onClick={onBarClick}
       onItemClick={(event, barItemIdentifier) =>
-        onBarClick(chartData[barItemIdentifier.dataIndex]?.userId)
+        onBarClick({
+          userId: chartData[barItemIdentifier.dataIndex]?.userId,
+          name: chartData[barItemIdentifier.dataIndex]?.name
+        })
       }
     ></BarChart>
   );
@@ -142,6 +145,7 @@ const TeamOverview = ({
   });
 
   const teamData = Object.values(teamStats).flat();
+  console.log('teamData: ', teamData);
 
   return (
     <ChartOverview
@@ -240,17 +244,17 @@ const ResponseTimeDashboardTab = ({
     setStudent(null);
   }, [viewMode]);
 
-  const onBarClickLayer1 = (userId) => {
+  const onBarClickLayer1 = ({ userId, name }) => {
     if (!teams?.[viewMode]?.[userId]) {
       return;
     }
-    setMember(userId);
+    setMember({ userId, name });
   };
-  const onBarClickLayer2 = (userId) => {
-    setStudent(userId);
+  const onBarClickLayer2 = ({ userId, name }) => {
+    setStudent({ userId, name });
   };
 
-  const memberName = teams?.[viewMode]?.[member]?.firstname;
+  // const memberName = teams?.[viewMode]?.[member]?.firstname;
 
   return (
     <Grid container spacing={2}>
@@ -298,13 +302,13 @@ const ResponseTimeDashboardTab = ({
               >
                 <KeyboardReturnIcon sx={{ mr: 1 }} /> Return
               </Button>
-              {`${teamTypeLabel} Overview - ${memberName}`}
+              {`${teamTypeLabel} Overview - ${member?.name}`}
             </Box>
           </Grid>
           <Grid item xs={12}>
             <MemberOverview
               studentAvgResponseTime={studentAvgResponseTime}
-              memberId={member}
+              memberId={member?.userId}
               teamType={viewMode}
               onBarClick={onBarClickLayer2}
             />
@@ -321,10 +325,10 @@ const ResponseTimeDashboardTab = ({
             >
               <KeyboardReturnIcon sx={{ mr: 1 }} /> Return
             </Button>
-            {`Student Overview - ${memberName}`}
+            {`Student Overview - ${student?.name}`}
           </Box>
           <Grid item xs={12}>
-            <StudentOverview studentId={student} />
+            <StudentOverview studentId={student?.userId} />
           </Grid>
         </Grid>
       )}

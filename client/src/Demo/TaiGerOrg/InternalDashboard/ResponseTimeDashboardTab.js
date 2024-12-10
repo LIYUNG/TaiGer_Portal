@@ -145,7 +145,6 @@ const TeamOverview = ({
   });
 
   const teamData = Object.values(teamStats).flat();
-  console.log('teamData: ', teamData);
 
   return (
     <ChartOverview

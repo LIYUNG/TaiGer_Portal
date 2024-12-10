@@ -24,7 +24,6 @@ const {
 } = require('../services/email');
 const logger = require('../services/logger');
 const {
-  getNumberOfDays,
   General_Docs,
   application_deadline_calculator,
   isNotArchiv,

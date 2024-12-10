@@ -23,6 +23,7 @@ import { is_TaiGer_Admin, is_TaiGer_Student } from '@taiger-common/core';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
+import { differenceInDays } from 'date-fns';
 
 import {
   BACHELOR_GRADUATE_STATUS_OPTIONS,
@@ -49,8 +50,7 @@ import {
 } from '../Utils/checking-functions';
 import {
   APPLICATION_YEARS_FUTURE,
-  EXPECTATION_APPLICATION_YEARS,
-  getNumberOfDays
+  EXPECTATION_APPLICATION_YEARS
 } from '../Utils/contants';
 import Banner from '../../components/Banner/Banner';
 import SearchableMultiSelect from '../../components/Input/searchableMuliselect';
@@ -150,9 +150,9 @@ const SurveyEditableComponent = (props) => {
           !survey.academic_background?.language?.english_isPassed ? (
             <li>{t('Do you need English Test')}?</li>
           ) : survey.academic_background?.language?.english_isPassed === 'X' &&
-            getNumberOfDays(
-              survey.academic_background?.language?.english_test_date,
-              new Date()
+            differenceInDays(
+              new Date(),
+              survey.academic_background?.language?.english_test_date
             ) > 1 ? (
             <li>{t('English Passed ? (IELTS 6.5 / TOEFL 88)')}</li>
           ) : survey.academic_background?.language?.english_isPassed !== '--' &&
@@ -169,9 +169,9 @@ const SurveyEditableComponent = (props) => {
               )}
             </li>
           ) : survey.academic_background?.language?.german_isPassed === 'X' &&
-            getNumberOfDays(
-              survey.academic_background?.language?.german_test_date,
-              new Date()
+            differenceInDays(
+              new Date(),
+              survey.academic_background?.language?.german_test_date
             ) > 1 ? (
             <li>
               {t(
@@ -188,9 +188,9 @@ const SurveyEditableComponent = (props) => {
           !survey.academic_background?.language?.gre_isPassed ? (
             <li>{t('Do you need GRE Test')}</li>
           ) : survey.academic_background?.language?.gre_isPassed === 'X' &&
-            getNumberOfDays(
-              survey.academic_background?.language?.gre_test_date,
-              new Date()
+            differenceInDays(
+              new Date(),
+              survey.academic_background?.language?.gre_test_date
             ) > 1 ? (
             <li>{t('GRE Test passed ?')}</li>
           ) : survey.academic_background?.language?.gre_isPassed === 'X' &&
@@ -203,9 +203,9 @@ const SurveyEditableComponent = (props) => {
           !survey.academic_background?.language?.gmat_isPassed ? (
             <li>{t('Do you need GMAT Test')}?</li>
           ) : survey.academic_background?.language?.gmat_isPassed === 'X' &&
-            getNumberOfDays(
-              survey.academic_background?.language?.gmat_test_date,
-              new Date()
+            differenceInDays(
+              new Date(),
+              survey.academic_background?.language?.gmat_test_date
             ) > 1 ? (
             <li>{t('GMAT Test passed ?')}</li>
           ) : survey.academic_background?.language?.gmat_isPassed === 'X' &&

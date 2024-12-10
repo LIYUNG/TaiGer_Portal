@@ -4,12 +4,9 @@ import { Link, Typography } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import JSZip from 'jszip';
 import * as XLSX from 'xlsx';
+import { differenceInDays } from 'date-fns';
 
-import {
-  getNumberOfDays,
-  convertDate,
-  twoYearsInDays
-} from './contants';
+import { convertDate, twoYearsInDays } from './contants';
 import { pdfjs } from 'react-pdf';
 import {
   is_TaiGer_Agent,
@@ -355,13 +352,13 @@ export const needUpdateCourseSelection = (student) => {
   }
 
   // necessary if courses or analysis expired 39 daays and is studying
-  const course_aged_days = getNumberOfDays(
-    student.courses.updatedAt,
-    new Date()
+  const course_aged_days = differenceInDays(
+    new Date(),
+    student.courses.updatedAt
   );
-  const analyse_aged_days = getNumberOfDays(
-    student.courses.analysis?.updatedAt,
-    new Date()
+  const analyse_aged_days = differenceInDays(
+    new Date(),
+    student.courses.analysis?.updatedAt
   );
   // TODO: only check when june, july, november, december,
   const currentDate = new Date();
@@ -435,23 +432,23 @@ export const check_languages_filled = (academic_background) => {
   const today = new Date();
   if (
     (academic_background.language.english_isPassed === 'X' &&
-      getNumberOfDays(academic_background.language.english_test_date, today) >
+      differenceInDays(today, academic_background.language.english_test_date) >
         1) ||
     (academic_background.language.english_isPassed === 'X' &&
       academic_background.language.english_test_date === '') ||
     (academic_background.language.german_isPassed === 'X' &&
-      getNumberOfDays(academic_background.language.german_test_date, today) >
+      differenceInDays(today, academic_background.language.german_test_date) >
         1) ||
     (academic_background.language.german_isPassed === 'X' &&
       academic_background.language.german_test_date === '') ||
     (academic_background.language.gre_isPassed === 'X' &&
       parseInt(
-        getNumberOfDays(academic_background.language.gre_test_date, today)
+        differenceInDays(today, academic_background.language.gre_test_date)
       ) > 1) ||
     (academic_background.language.gre_isPassed === 'X' &&
       academic_background.language.gre_test_date === '') ||
     (academic_background.language.gmat_isPassed === 'X' &&
-      getNumberOfDays(academic_background.language.gmat_test_date, today) >
+      differenceInDays(today, academic_background.language.gmat_test_date) >
         1) ||
     (academic_background.language.gmat_isPassed === 'X' &&
       academic_background.language.gmat_test_date === '')
@@ -859,7 +856,7 @@ export const GetCVDeadline = (student) => {
         daysLeftRollingMin = '-';
         CVDeadlineRolling = applicationDeadline;
       }
-      const daysLeft = getNumberOfDays(today, applicationDeadline);
+      const daysLeft = differenceInDays(applicationDeadline, today);
       if (daysLeft < daysLeftMin) {
         daysLeftMin = daysLeft;
         CVDeadline = applicationDeadline;
@@ -1446,9 +1443,9 @@ export const isEnglishCertificateExpiredBeforeDeadline = (student) => {
     }
 
     if (
-      getNumberOfDays(
-        academic_background.language.english_test_date,
-        application_deadline_calculator(student, app)
+      differenceInDays(
+        application_deadline_calculator(student, app),
+        academic_background.language.english_test_date
       ) > twoYearsInDays
     ) {
       return true;
@@ -1476,9 +1473,9 @@ export const englishCertificatedExpiredBeforeTheseProgramDeadlines = (
     (app) =>
       isProgramDecided(app) &&
       isEnglishProgram(app) &&
-      getNumberOfDays(
-        student.academic_background.language.english_test_date,
-        application_deadline_calculator(student, app)
+      differenceInDays(
+        application_deadline_calculator(student, app),
+        student.academic_background.language.english_test_date
       ) > twoYearsInDays
   );
 };
@@ -1599,7 +1596,7 @@ const prepEssayTaskThread = (student, thread) => {
     outsourced_user_id: thread?.outsourced_user_id,
     flag_by_user_id: thread?.flag_by_user_id,
     file_type: thread.file_type,
-    aged_days: getNumberOfDays(thread.updatedAt, new Date()),
+    aged_days: differenceInDays(new Date(), thread.updatedAt),
     latest_reply: latestReplyInfo(thread),
     updatedAt: convertDate(thread.updatedAt),
     number_input_from_student: getNumberOfFilesByStudent(
@@ -1622,7 +1619,7 @@ const prepTask = (student, thread) => {
     isFinalVersion: thread.isFinalVersion,
     outsourced_user_id: thread.doc_thread_id?.outsourced_user_id,
     file_type: thread.doc_thread_id?.file_type,
-    aged_days: getNumberOfDays(thread.doc_thread_id?.updatedAt, new Date()),
+    aged_days: differenceInDays(new Date(), thread.doc_thread_id?.updatedAt),
     latest_reply: latestReplyInfo(thread.doc_thread_id),
     updatedAt: convertDate(thread.doc_thread_id?.updatedAt),
     number_input_from_student: getNumberOfFilesByStudent(
@@ -1671,11 +1668,11 @@ const prepEssayTask = (essay, user) => {
         : true,
     document_name: `${essay.file_type} - ${essay.program_id.school} - ${essay.program_id.degree} -${essay.program_id.program_name}`,
     days_left:
-      getNumberOfDays(
-        new Date(),
+      differenceInDays(
         application_deadline_calculator(essay.student_id, {
           programId: essay.program_id
-        })
+        }),
+        new Date()
       ) || '-'
   };
 };
@@ -1691,9 +1688,9 @@ const prepApplicationTask = (student, application, thread) => {
     document_name: `${thread?.doc_thread_id?.file_type} - ${application?.programId?.school} - ${application?.programId?.degree} -${application?.programId?.program_name}`,
     lang: `${application?.programId?.lang}`,
     days_left:
-      getNumberOfDays(
-        new Date(),
-        application_deadline_calculator(student, application)
+      differenceInDays(
+        application_deadline_calculator(student, application),
+        new Date()
       ) || '-'
   };
 };
@@ -1830,7 +1827,7 @@ export const programs_refactor = (students) => {
         const is_program_submitted = isProgramSubmitted(application);
         const is_program_decided = isProgramDecided(application);
         const deadline = application_deadline_calculator(student, application);
-        const days_left = getNumberOfDays(new Date(), deadline) || '-';
+        const days_left = differenceInDays(deadline, new Date()) || '-';
         const base_docs = isProgramSubmitted(application)
           ? '-'
           : isMissingBaseDocs
@@ -2021,7 +2018,7 @@ export const frequencyDistribution = (tasks) => {
     Object.entries(map).filter(
       ([key, value]) =>
         ((value.show !== 0 || value.potentials !== 0) &&
-          getNumberOfDays(new Date(), key) < 365) ||
+          differenceInDays(key, new Date()) < 365) ||
         key.includes('Rolling')
     )
   );

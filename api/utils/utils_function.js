@@ -102,10 +102,7 @@ const threadS3GarbageCollector = async (
         }
         if (!file_found) {
           // if until last message_a still not found, add the Key to the delete list
-          // Delete only older than 2 week
-          // if (getNumberOfDays(Obj.LastModified, temp_date) > 14) {
           deleteParams.Delete.Objects.push({ Key: Obj.Key });
-          // }
         }
       });
     }
@@ -129,10 +126,7 @@ const threadS3GarbageCollector = async (
         }
         if (!file_found) {
           // if until last message_a still not found, add the Key to the delete list
-          // Delete only older than 2 week
-          // if (getNumberOfDays(Obj2.LastModified, temp_date) > 14) {
           delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
-          // }
         }
       });
     }

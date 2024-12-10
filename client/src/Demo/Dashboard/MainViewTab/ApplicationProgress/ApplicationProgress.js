@@ -2,11 +2,12 @@ import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { Link, TableCell, TableRow, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { differenceInDays } from 'date-fns';
+
 import {
   ADMISSION_STATUS_E,
   DECISION_STATUS_E,
-  SUBMISSION_STATUS_E,
-  getNumberOfDays
+  SUBMISSION_STATUS_E
 } from '../../../Utils/contants';
 import {
   application_deadline_calculator,
@@ -247,9 +248,9 @@ function ApplicationProgress(props) {
           {isProgramSubmitted(application)
             ? '-'
             : application.programId.application_deadline
-            ? getNumberOfDays(
-                today,
-                application_deadline_calculator(props.student, application)
+            ? differenceInDays(
+                application_deadline_calculator(props.student, application),
+                today
               )
             : '-'}
         </TableCell>

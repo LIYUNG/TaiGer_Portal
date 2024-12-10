@@ -32,6 +32,7 @@ import {
   is_TaiGer_Student,
   is_TaiGer_Admin
 } from '@taiger-common/core';
+import { differenceInDays } from 'date-fns';
 
 import {
   isProgramNotSelectedEnough,
@@ -48,7 +49,6 @@ import OverlayButton from '../../components/Overlay/OverlayButton';
 import Banner from '../../components/Banner/Banner';
 import {
   IS_SUBMITTED_STATE_OPTIONS,
-  getNumberOfDays,
   programstatuslist
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -548,12 +548,12 @@ function StudentApplicationsTableTemplate(props) {
                 {isProgramSubmitted(application)
                   ? '-'
                   : application.programId.application_deadline
-                  ? getNumberOfDays(
-                      today,
+                  ? differenceInDays(
                       application_deadline_calculator(
                         props.student,
                         application
-                      )
+                      ),
+                      today
                     )
                   : '-'}
               </Typography>

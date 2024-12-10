@@ -1,4 +1,5 @@
 const { PROGRAM_SUBJECTS, ProfileNameType } = require('@taiger-common/core');
+const { differenceInDays } = require('date-fns');
 
 const { ORIGIN, ESCALATION_DEADLINE_DAYS_TRIGGER } = require('./config');
 const {
@@ -9,6 +10,7 @@ const {
   TENANT_MEDIUM_LINK,
   TENANT_LINKEDIN_LINK
 } = require('./constants/common');
+
 const ACCOUNT_ACTIVATION_URL = new URL('/account/activation', ORIGIN).href;
 const RESEND_ACTIVATION_URL = new URL('/account/resend-activation', ORIGIN)
   .href;
@@ -122,22 +124,6 @@ const CheckListStatus = {
   Processing: 'processing',
   Finished: 'finished',
   NotNeeded: 'notneeded'
-};
-
-const getNumberOfDays = (start, end) => {
-  const date1 = new Date(start);
-  const date2 = new Date(end);
-
-  // One day in milliseconds
-  const oneDay = 1000 * 60 * 60 * 24;
-
-  // Calculating the time difference between two dates
-  const diffInTime = date2.getTime() - date1.getTime();
-
-  // Calculating the no. of days between two dates
-  const diffInDays = Math.round(diffInTime / oneDay);
-
-  return diffInDays;
 };
 
 const isNotArchiv = (user) => {
@@ -280,9 +266,9 @@ const is_deadline_within30days_needed = (student) => {
     return false;
   }
   for (let k = 0; k < student.applications.length; k += 1) {
-    const day_diff = getNumberOfDays(
-      today,
-      application_deadline_calculator(student, student.applications[k])
+    const day_diff = differenceInDays(
+      application_deadline_calculator(student, student.applications[k]),
+      today
     );
     // TODO: should pack all thread due soon in a student email,
     // not multiple email for 1 student  for daily reminder.
@@ -316,13 +302,13 @@ const needUpdateCourseSelection = (student) => {
     return true;
   }
   // necessary if courses or analysis expired 39 daays and is studying
-  const course_aged_days = getNumberOfDays(
-    student.courses[0].updatedAt,
-    new Date()
+  const course_aged_days = differenceInDays(
+    new Date(),
+    student.courses[0].updatedAt
   );
-  const analyse_aged_days = getNumberOfDays(
-    student.courses[0].analysis?.updatedAt,
-    new Date()
+  const analyse_aged_days = differenceInDays(
+    new Date(),
+    student.courses[0].analysis?.updatedAt
   );
   const trigger_days = 1;
   if (course_aged_days > trigger_days || analyse_aged_days > trigger_days) {
@@ -437,9 +423,9 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
 const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
   const today = new Date();
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
-    const day_diff = getNumberOfDays(
-      student.generaldocs_threads[i].updatedAt,
-      today
+    const day_diff = differenceInDays(
+      today,
+      student.generaldocs_threads[i].updatedAt
     );
     if (user.role === Role.Editor) {
       if (
@@ -476,10 +462,10 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
         j < student.applications[i].doc_modification_thread.length;
         j += 1
       ) {
-        const day_diff_2 = getNumberOfDays(
+        const day_diff_2 = differenceInDays(
+          today,
           student.applications[i].doc_modification_thread[j].doc_thread_id
-            .updatedAt,
-          today
+            .updatedAt
         );
         if (user.role === Role.Editor) {
           if (
@@ -550,9 +536,9 @@ const cv_rl_escalation_editor_list = (student, user, trigger_days) => {
   const today = new Date();
 
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
-    const day_diff = getNumberOfDays(
-      student.generaldocs_threads[i].doc_thread_id.updatedAt,
-      today
+    const day_diff = differenceInDays(
+      today,
+      student.generaldocs_threads[i].doc_thread_id.updatedAt
     );
     if (
       !student.generaldocs_threads[i].isFinalVersion &&
@@ -576,9 +562,9 @@ const cv_rl_escalation_agent_list = (student, user, trigger_days) => {
   const today = new Date();
 
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
-    const day_diff = getNumberOfDays(
-      student.generaldocs_threads[i].doc_thread_id.updatedAt,
-      today
+    const day_diff = differenceInDays(
+      today,
+      student.generaldocs_threads[i].doc_thread_id.updatedAt
     );
     if (
       !student.generaldocs_threads[i].isFinalVersion &&
@@ -599,9 +585,9 @@ const cv_rl_escalation_student_list = (student, user, trigger_days) => {
   const today = new Date();
 
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
-    const day_diff = getNumberOfDays(
-      student.generaldocs_threads[i].doc_thread_id.updatedAt,
-      today
+    const day_diff = differenceInDays(
+      today,
+      student.generaldocs_threads[i].doc_thread_id.updatedAt
     );
     if (
       !student.generaldocs_threads[i].isFinalVersion &&
@@ -630,9 +616,9 @@ const ml_essay_escalation_editor_single_program_list = (
 
   if (application.decided === 'O') {
     for (let j = 0; j < application.doc_modification_thread.length; j += 1) {
-      const day_diff_2 = getNumberOfDays(
-        application.doc_modification_thread[j].doc_thread_id.updatedAt,
-        today
+      const day_diff_2 = differenceInDays(
+        today,
+        application.doc_modification_thread[j].doc_thread_id.updatedAt
       );
       if (
         !application.doc_modification_thread[j].isFinalVersion &&
@@ -681,10 +667,10 @@ const ml_essay_escalation_student_list = (student, user, trigger_days) => {
         j < student.applications[i].doc_modification_thread.length;
         j += 1
       ) {
-        const day_diff_2 = getNumberOfDays(
+        const day_diff_2 = differenceInDays(
+          today,
           student.applications[i].doc_modification_thread[j].doc_thread_id
-            .updatedAt,
-          today
+            .updatedAt
         );
         if (
           !student.applications[i].doc_modification_thread[j].isFinalVersion &&
@@ -718,9 +704,9 @@ const ml_essay_escalation_agent_single_program_list = (
 
   if (application.decided === 'O') {
     for (let j = 0; j < application.doc_modification_thread.length; j += 1) {
-      const day_diff_2 = getNumberOfDays(
-        application.doc_modification_thread[j].doc_thread_id.updatedAt,
-        today
+      const day_diff_2 = differenceInDays(
+        today,
+        application.doc_modification_thread[j].doc_thread_id.updatedAt
       );
       if (!application.doc_modification_thread[j].isFinalVersion) {
         missing_doc_list += `<li><a href="${THREAD_URL}/${application.doc_modification_thread[
@@ -774,9 +760,9 @@ const unsubmitted_applications_list = (student, user, trigger_days) => {
   let unsubmitted_applications_li = '';
   const today = new Date();
   for (let i = 0; i < student.applications.length; i += 1) {
-    const day_diff = getNumberOfDays(
-      today,
-      application_deadline_calculator(student, student.applications[i])
+    const day_diff = differenceInDays(
+      application_deadline_calculator(student, student.applications[i]),
+      today
     );
     if (
       student.applications[i].decided === 'O' &&
@@ -1284,14 +1270,14 @@ const missing_academic_background = (student, user) => {
         // After test date 1 day:
         const today = new Date();
         if (
-          getNumberOfDays(
-            student.academic_background.language.english_test_date,
-            today
+          differenceInDays(
+            today,
+            student.academic_background.language.english_test_date
           ) > 1
         ) {
-          missing_background_fields += `<li>English test date : <b>expired ${getNumberOfDays(
-            student.academic_background.language.english_test_date,
-            today
+          missing_background_fields += `<li>English test date : <b>expired ${differenceInDays(
+            today,
+            student.academic_background.language.english_test_date
           )} days</b>
           </li>`;
         }
@@ -1310,14 +1296,14 @@ const missing_academic_background = (student, user) => {
         // After test date 1 day:
         const today = new Date();
         if (
-          getNumberOfDays(
-            student.academic_background.language.german_test_date,
-            today
+          differenceInDays(
+            today,
+            student.academic_background.language.german_test_date
           ) > 1
         ) {
-          missing_background_fields += `<li>German test date : <b>expired ${getNumberOfDays(
-            student.academic_background.language.german_test_date,
-            today
+          missing_background_fields += `<li>German test date : <b>expired ${differenceInDays(
+            today,
+            student.academic_background.language.german_test_date
           )} days</b>
           </li>`;
         }
@@ -1336,14 +1322,14 @@ const missing_academic_background = (student, user) => {
         // After test date 1 day:
         const today = new Date();
         if (
-          getNumberOfDays(
-            student.academic_background.language.gre_test_date,
-            today
+          differenceInDays(
+            today,
+            student.academic_background.language.gre_test_date
           ) > 1
         ) {
-          missing_background_fields += `<li>GRE test date : <b>expired ${getNumberOfDays(
-            student.academic_background.language.gre_test_date,
-            today
+          missing_background_fields += `<li>GRE test date : <b>expired ${differenceInDays(
+            today,
+            student.academic_background.language.gre_test_date
           )} days</b>
           </li>`;
         }
@@ -1362,14 +1348,14 @@ const missing_academic_background = (student, user) => {
         // After test date 1 day:
         const today = new Date();
         if (
-          getNumberOfDays(
-            student.academic_background.language.gmat_test_date,
-            today
+          differenceInDays(
+            today,
+            student.academic_background.language.gmat_test_date
           ) > 1
         ) {
-          missing_background_fields += `<li>GMAT test date : <b>expired ${getNumberOfDays(
-            student.academic_background.language.gmat_test_date,
-            today
+          missing_background_fields += `<li>GMAT test date : <b>expired ${differenceInDays(
+            today,
+            student.academic_background.language.gmat_test_date
           )} days</b>
           </li>`;
         }
@@ -1405,7 +1391,7 @@ const CVDeadline_Calculator = (student) => {
         CVDeadlineRolling = application_deadline_temp;
       }
       const day_left = parseInt(
-        getNumberOfDays(today, application_deadline_temp),
+        differenceInDays(application_deadline_temp, today),
         10
       );
       if (daysLeftMin > day_left) {
@@ -1426,7 +1412,7 @@ const cvmlrl_deadline_within30days_escalation_summary = (student) => {
   let missing_doc_list = '';
   let kk = 0;
   const CVDeadline = CVDeadline_Calculator(student);
-  const CV_day_diff = getNumberOfDays(today, CVDeadline);
+  const CV_day_diff = differenceInDays(CVDeadline, today);
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
     if (
       CV_day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER, 10) &&
@@ -1462,9 +1448,9 @@ const cvmlrl_deadline_within30days_escalation_summary = (student) => {
     }
   }
   for (let i = 0; i < student.applications.length; i += 1) {
-    const day_diff = getNumberOfDays(
-      today,
-      application_deadline_calculator(student, student.applications[i])
+    const day_diff = differenceInDays(
+      application_deadline_calculator(student, student.applications[i]),
+      today
     );
     if (
       student.applications[i].decided === 'O' &&
@@ -1663,7 +1649,6 @@ module.exports = {
   cv_ml_rl_editor_escalation_summary,
   cv_ml_rl_unfinished_summary,
   profile_keys_list,
-  getNumberOfDays,
   CVDeadline_Calculator,
   isNotArchiv,
   isArchiv,

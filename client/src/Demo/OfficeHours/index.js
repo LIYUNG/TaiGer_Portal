@@ -28,6 +28,7 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { is_TaiGer_Student } from '@taiger-common/core';
+import { differenceInDays } from 'date-fns';
 
 import {
   getNextDayDate,
@@ -35,7 +36,6 @@ import {
   getReorderWeekday,
   shiftDateByOffset,
   getTimezoneOffset,
-  getNumberOfDays,
   isInTheFuture,
   getUTCWithDST
 } from '../Utils/contants';
@@ -501,7 +501,7 @@ function OfficeHours() {
           <CustomTabPanel value={value} index={0}>
             {/* {'Only boo'} */}
             {events?.filter(
-              (event) => getNumberOfDays(new Date(), event.start) >= -1
+              (event) => differenceInDays(event.start, new Date()) >= -1
             ).length !== 0 && (
               <Banner
                 ReadOnlyMode={true}

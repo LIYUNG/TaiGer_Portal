@@ -7,7 +7,8 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Grid
+  Grid,
+  Typography
 } from '@mui/material';
 import { BarChart, LineChart } from '@mui/x-charts';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
@@ -301,7 +302,10 @@ const ResponseTimeDashboardTab = ({
               >
                 <KeyboardReturnIcon sx={{ mr: 1 }} /> Return
               </Button>
-              {`${teamTypeLabel} Overview - ${member?.name}`}
+              <Typography
+                component="span"
+                variant="h5"
+              >{`${teamTypeLabel} Overview - ${member?.name}`}</Typography>
             </Box>
           </Grid>
           <Grid item xs={12}>
@@ -324,7 +328,10 @@ const ResponseTimeDashboardTab = ({
             >
               <KeyboardReturnIcon sx={{ mr: 1 }} /> Return
             </Button>
-            {`Student Overview - ${student?.name}`}
+            <Typography
+              component="span"
+              variant="h5"
+            >{`Student Overview - ${student?.name}`}</Typography>
           </Box>
           <Grid item xs={12}>
             <StudentOverview studentId={student?.userId} />

@@ -17,13 +17,20 @@ const { getResponseIntervalByStudent } = require('../../../api');
 const editorThreadTypes = ['CV', 'ML', 'RL_A', 'RL_B', 'RL_C', 'Essay'];
 const agentThreadTypes = ['communication', 'Supplementary_Form'];
 
+const getIntervalAvg = (intervals) => {
+  if (!intervals) return 0;
+  const sumInterval = intervals?.reduce((acc, item) => acc + item?.interval, 0);
+  const averageInterval = sumInterval / intervals?.length;
+  return averageInterval;
+};
+
 const responseTimeToChartData = (responseTime, threadType) => {
   return responseTime
     ?.filter((user) => user?.avgByType?.[threadType])
     ?.map((user) => ({
       userId: user?._id,
       name: user?.name,
-      duration: Number(user?.avgByType?.[threadType]?.toFixed(2))
+      interval: Number(user?.avgByType?.[threadType]?.toFixed(2))
     }));
 };
 
@@ -69,7 +76,7 @@ const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
   return (
     <BarChart
       dataset={chartData}
-      series={[{ dataKey: 'duration' }]}
+      series={[{ dataKey: 'interval' }]}
       xAxis={[
         {
           dataKey: 'name',
@@ -100,16 +107,12 @@ const ChartOverview = ({ data, teamType, onBarClick }) => {
       {threadTypes.map((fileType) => {
         const chartData = responseTimeToChartData(data, fileType);
         if (!chartData || chartData?.length === 0) return null;
-        const totalDuration = chartData.reduce(
-          (sum, item) => sum + item.duration,
-          0
-        );
-        const averageDuration = totalDuration / chartData.length;
+        const averageInterval = getIntervalAvg(chartData);
         return (
           <Card key={fileType}>
             <CardHeader
               title={`${fileType} Response Times`}
-              subheader={`Average response time: ${averageDuration.toFixed(
+              subheader={`Average response time: ${averageInterval.toFixed(
                 2
               )} days`}
             />
@@ -187,16 +190,6 @@ const StudentOverview = ({ studentId }) => {
       }
     });
   }, [studentId]);
-
-  const getIntervalAvg = (intervals) => {
-    if (!intervals) return 0;
-    const sumDuration = intervals?.reduce(
-      (acc, item) => acc + item?.interval,
-      0
-    );
-    const averageDuration = sumDuration / intervals?.length;
-    return averageDuration;
-  };
 
   return (
     <>

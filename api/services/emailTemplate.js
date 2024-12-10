@@ -99,7 +99,7 @@ const htmlContent = (message) => `
             style={{ textDecoration: 'none' }}
           >
             <img
-            src="${TENANT_PORTAL_LINK}assets/logo-new/Taiger_LT_C_H_EN-3.svg"
+            src="${TENANT_PORTAL_LINK}assets/logo-new/Taiger_LT_C_H_EN-2x-3.png"
             alt="TaiGer"
             style=" max-height: 100px;"
             />

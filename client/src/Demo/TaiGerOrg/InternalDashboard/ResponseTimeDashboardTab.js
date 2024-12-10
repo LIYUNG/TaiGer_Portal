@@ -188,12 +188,15 @@ const StudentOverview = ({ studentId }) => {
     });
   }, [studentId]);
 
-  // const sumDuration = studentIntervals?.y?.reduce(
-  //   (accumulator, currentValue) => accumulator + currentValue,
-  //   0
-  // );
-  // const averageDuration = sumDuration / studentIntervals?.y?.length;
-  const averageDuration = 0.015555;
+  const getIntervalAvg = (intervals) => {
+    if (!intervals) return 0;
+    const sumDuration = intervals?.reduce(
+      (acc, item) => acc + item?.interval,
+      0
+    );
+    const averageDuration = sumDuration / intervals?.length;
+    return averageDuration;
+  };
 
   return (
     <>
@@ -202,9 +205,9 @@ const StudentOverview = ({ studentId }) => {
           <Card>
             <CardHeader
               title={`${studentId} Response Times`}
-              subheader={`Average response time: ${averageDuration.toFixed(
-                2
-              )} days`}
+              subheader={`Average response time: ${getIntervalAvg(
+                studentIntervals
+              ).toFixed(2)} days`}
             />
             <CardContent>
               <LineChart

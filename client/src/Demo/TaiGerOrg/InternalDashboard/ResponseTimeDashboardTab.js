@@ -217,6 +217,7 @@ const StudentOverview = ({ studentId }) => {
                   }
                 ]}
                 yAxis={[{ label: 'Duration (days)' }]}
+                margin={{ top: 20, right: 30, left: 50, bottom: 110 }}
                 height={400}
               />
             </CardContent>
@@ -253,8 +254,6 @@ const ResponseTimeDashboardTab = ({
   const onBarClickLayer2 = ({ userId, name }) => {
     setStudent({ userId, name });
   };
-
-  // const memberName = teams?.[viewMode]?.[member]?.firstname;
 
   return (
     <Grid container spacing={2}>

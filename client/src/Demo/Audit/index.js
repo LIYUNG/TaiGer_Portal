@@ -37,7 +37,17 @@ function Audit({ audit }) {
             </TableHead>
             <TableBody>
               {audit?.map((record) => {
+                const isNewUser = record?.changes?.after?.newUser
+                  ? true
+                  : false;
+                const newUser = `${record?.changes?.after?.newUser?.firstname}${record?.changes?.after?.newUser?.lastname}`;
                 const isStatusChanged = record?.field === 'status';
+                const isAssign = [
+                  'agents',
+                  'editors',
+                  'interview trainer',
+                  'essay writer'
+                ].includes(record?.field);
                 const addedUsers = record?.changes?.after?.added
                   ?.map((user) => `${user.firstname} ${user.lastname}`)
                   .join(', ');
@@ -71,10 +81,17 @@ function Audit({ audit }) {
                     <TableCell>{record.action}</TableCell>
                     <TableCell>{record.field}</TableCell>
                     <TableCell>
+                      {isNewUser ? newUser : ''}
                       {isStatusChanged
-                        ? `${record?.changes?.after ? 'Closed' : 'Open'}`
-                        : `${addedUsers && `+ ${addedUsers}`}
-                      ${removedUsers && ` - ${removedUsers}`}`}
+                        ? record?.changes?.after
+                          ? 'Closed'
+                          : 'Open'
+                        : ''}
+                      {isAssign
+                        ? `${addedUsers ? `+ ${addedUsers}` : ''} ${
+                            removedUsers && ` - ${removedUsers}`
+                          }`
+                        : ''}
                     </TableCell>
                     <TableCell>
                       {record?.targetDocumentThreadId && (

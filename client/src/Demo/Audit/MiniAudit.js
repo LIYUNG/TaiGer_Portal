@@ -35,7 +35,15 @@ function MiniAudit({ audit }) {
             </TableHead>
             <TableBody>
               {audit?.map((record) => {
+                const isNewUser = record?.changes?.after?.newUser
+                  ? true
+                  : false;
                 const isStatusChanged = record?.field === 'status';
+                const isAssign = ['agents', 'editors'].includes(record?.field);
+                const isAssignTrainerWriter = [
+                  'interview trainer',
+                  'essay writer'
+                ].includes(record?.field);
                 const addedUsers = record?.changes?.after?.added
                   ?.map((user) => `${user.firstname}`)
                   .join(', ');
@@ -62,10 +70,22 @@ function MiniAudit({ audit }) {
                   <TableRow key={record._id}>
                     <TableCell>{record.field}</TableCell>
                     <TableCell>
+                      {isNewUser ? 'create' : ''}
                       {isStatusChanged
-                        ? `${record?.changes?.after ? 'Closed' : 'Open'}`
-                        : `${addedUsers && `+ ${addedUsers}`}
-                      ${removedUsers && ` - ${removedUsers}`}`}
+                        ? record?.changes?.after
+                          ? 'Closed'
+                          : 'Open'
+                        : ''}
+                      {isAssign
+                        ? `${addedUsers ? `+ ${addedUsers}` : ''} ${
+                            removedUsers && ` - ${removedUsers}`
+                          }`
+                        : ''}
+                      {isAssignTrainerWriter
+                        ? `${addedUsers ? `+ ${addedUsers}` : ''} ${
+                            removedUsers && ` - ${removedUsers}`
+                          }`
+                        : ''}
                     </TableCell>
                     <TableCell>
                       {record?.targetDocumentThreadId && (
@@ -77,7 +97,8 @@ function MiniAudit({ audit }) {
                           component={LinkDom}
                           target="_blank"
                         >
-                          {fileName}
+                          {fileName} {record?.targetUserId?.firstname}
+                          {record?.targetUserId?.lastname}
                         </Link>
                       )}
                       {record?.interviewThreadId && (
@@ -89,9 +110,13 @@ function MiniAudit({ audit }) {
                           component={LinkDom}
                           target="_blank"
                         >
-                          {interview_name}
+                          {interview_name} {record?.targetUserId?.firstname}
+                          {record?.targetUserId?.lastname}
                         </Link>
                       )}
+                      {isNewUser || isAssign
+                        ? `${record?.targetUserId?.firstname} ${record?.targetUserId?.lastname}`
+                        : ''}
                     </TableCell>
                     <TableCell title={convertDate(record.createdAt)}>
                       {convertDate_ux_friendly(record.createdAt)}

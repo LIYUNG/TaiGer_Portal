@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { Box, Button, IconButton, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { PROFILE_NAME } from '@taiger-common/core';
 
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { profile_list, SYMBOL_EXPLANATION } from '../Utils/contants';
+import { SYMBOL_EXPLANATION } from '../Utils/contants';
 import {
   uploadforstudent,
   updateProfileDocumentStatus,
@@ -342,7 +343,7 @@ function BaseDocument_StudentView(props) {
   if (!ready) {
     return <Loading />;
   }
-  let value2 = Object.values(profile_list);
+  let value2 = Object.values(PROFILE_NAME);
   let keys2 = Object.keys(profile_wtih_doc_link_list);
   let profile_wtih_doc_link_list_key = Object.keys(profile_wtih_doc_link_list);
   let object_init = {};

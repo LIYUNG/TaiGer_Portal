@@ -3,10 +3,11 @@ import { Card, IconButton, Link, Typography } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HelpIcon from '@mui/icons-material/Help';
+import { ProfileNameType } from '@taiger-common/core';
+
 import {
   FILE_MISSING_SYMBOL,
   FILE_OK_SYMBOL,
-  profile_list,
   statuses
 } from '../../Demo/Utils/contants';
 import { MuiDataGrid } from '../MuiDataGrid';
@@ -52,7 +53,7 @@ function StudentOverviewTable(props) {
     }
 
     for (const student of students) {
-      let keys = Object.keys(profile_list);
+      let keys = Object.keys(ProfileNameType);
       let object_init = {};
       for (let i = 0; i < keys.length; i++) {
         object_init[keys[i]] = 'missing';

@@ -40,7 +40,6 @@ import Notes from '../Notes/index';
 import ApplicationProgress from '../Dashboard/MainViewTab/ApplicationProgress/ApplicationProgress';
 import StudentDashboard from '../Dashboard/StudentDashboard/StudentDashboard';
 import {
-  profile_name_list,
   convertDate,
   programstatuslist,
   SINGLE_STUDENT_TABS,
@@ -92,9 +91,7 @@ export const SingleStudentPageMainContent = ({
     detailedView: false,
     student: data,
     base_docs_link: base_docs_link,
-    survey_link: survey_link.find(
-      (link) => link.key === profile_name_list.Grading_System
-    ).link,
+    survey_link: survey_link.find((link) => link.key === 'Grading_System').link,
     success: false,
     res_status: 0,
     res_modal_message: '',

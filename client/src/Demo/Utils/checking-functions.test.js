@@ -1,5 +1,6 @@
 // import { render, screen } from '@testing-library/react';
 // import App from './App/index';
+import { ProfileNameType } from '@taiger-common/core';
 import {
   is_cv_assigned,
   isCVFinished,
@@ -32,12 +33,6 @@ import {
   is_uni_assist_paid_and_docs_uploaded,
   isUniAssistVPDNeeded
 } from './checking-functions';
-import { profile_list } from './contants';
-
-const userStudent = { role: 'Student' };
-const userAgent = { role: 'Agent' };
-const userEditor = { role: 'Editor' };
-const userAdmin = { role: 'Admin' };
 
 describe('Role checking', () => {
   test('is_cv_assigned', () => {
@@ -522,7 +517,7 @@ describe('based_documents_init', () => {
   it('should initialize all document statuses to Missing', () => {
     const student = { profile: [] };
     const { object_init } = based_documents_init(student);
-    const documentlist2_keys = Object.keys(profile_list);
+    const documentlist2_keys = Object.keys(ProfileNameType);
 
     for (const key of documentlist2_keys) {
       expect(object_init[key]).toBe(DocumentStatus.Missing);

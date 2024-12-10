@@ -21,7 +21,6 @@ const students = [
 ];
 import { mockSingleData } from '../../test/testingStudentData';
 import { SurveyProvider } from '../../components/SurveyProvider';
-import { profile_name_list } from '../Utils/contants';
 
 jest.mock('axios');
 jest.mock('../../api');
@@ -77,9 +76,7 @@ describe('Survey', () => {
       data: {
         success: true,
         data: mockSingleData.data[0],
-        survey_link: [
-          { key: profile_name_list.Grading_System, link: 'some_link' }
-        ]
+        survey_link: [{ key: 'Grading_System', link: 'some_link' }]
       }
     });
     getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });

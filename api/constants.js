@@ -1,3 +1,5 @@
+const { PROGRAM_SUBJECTS, ProfileNameType } = require('@taiger-common/core');
+
 const { ORIGIN, ESCALATION_DEADLINE_DAYS_TRIGGER } = require('./config');
 const {
   TENANT_WEBSITE,
@@ -7,7 +9,6 @@ const {
   TENANT_MEDIUM_LINK,
   TENANT_LINKEDIN_LINK
 } = require('./constants/common');
-const { PROGRAM_SUBJECTS } = require('@taiger-common/core');
 const ACCOUNT_ACTIVATION_URL = new URL('/account/activation', ORIGIN).href;
 const RESEND_ACTIVATION_URL = new URL('/account/resend-activation', ORIGIN)
   .href;
@@ -272,27 +273,6 @@ const General_Docs = [
   'CV',
   'Others'
 ];
-const profile_list = {
-  High_School_Diploma: 'High School Diploma',
-  High_School_Transcript: 'High School Transcript',
-  University_Entrance_Examination_GSAT: 'GSAT/SAT/TVE/IB Test',
-  Bachelor_Certificate: 'Bachelor Certificate/Enrolment',
-  Bachelor_Transcript: 'Bachelor Transcript',
-  Second_Degree_Certificate: 'Second Degree Certificate/Enrolment',
-  Second_Degree_Transcript: 'Second Degree Transcript',
-  Englisch_Certificate: 'TOEFL or IELTS',
-  German_Certificate: 'TestDaF or Goethe B2/C1',
-  GRE: 'GRE',
-  GMAT: 'GMAT',
-  ECTS_Conversion: 'ECTS Conversion',
-  Course_Description: 'Course Description',
-  Internship: 'Internship Certificate',
-  Exchange_Student_Certificate: 'Exchange Student Certificate',
-  Employment_Certificate: 'Employment Certificate',
-  Passport_Photo: 'Formal Profile Photo',
-  Passport: 'Passport Copy',
-  Others: 'Others'
-};
 
 const is_deadline_within30days_needed = (student) => {
   const today = new Date();
@@ -1408,27 +1388,6 @@ const missing_academic_background = (student, user) => {
   return missing_background_fields;
 };
 
-const profile_name_list = {
-  High_School_Diploma: 'High_School_Diploma',
-  High_School_Transcript: 'High_School_Transcript',
-  University_Entrance_Examination_GSAT: 'University_Entrance_Examination_GSAT',
-  Bachelor_Certificate: 'Bachelor_Certificate',
-  Bachelor_Transcript: 'Bachelor_Transcript',
-  Second_Degree_Certificate: 'Second_Degree_Certificate',
-  Second_Degree_Transcript: 'Second_Degree_Transcript',
-  Englisch_Certificate: 'Englisch_Certificate',
-  German_Certificate: 'German_Certificate',
-  GRE: 'GRE',
-  GMAT: 'GMAT',
-  ECTS_Conversion: 'ECTS_Conversion',
-  Course_Description: 'Course_Description',
-  Internship: 'Internship',
-  Exchange_Student_Certificate: 'Exchange_Student_Certificate',
-  Employment_Certificate: 'Employment_Certificate',
-  Passport: 'Passport',
-  Others: 'Others'
-};
-
 const CVDeadline_Calculator = (student) => {
   let daysLeftMin = 3000;
   let CVDeadline = '';
@@ -1594,10 +1553,10 @@ const base_documents_summary = (student) => {
         <p>以下文件仍然未上傳, 請<b>盡速上傳</b>:</p>
         <p>The following base documents are still missing, please <b>upload</b> them as soon as possible:</p>
         <ul>
-        <li>${profile_list[profile_keys_list[i]]}</li>`;
+        <li>${ProfileNameType[profile_keys_list[i]]}</li>`;
       } else {
         missing_base_documents += `<li>${
-          profile_list[profile_keys_list[i]]
+          ProfileNameType[profile_keys_list[i]]
         }</li>`;
       }
     }
@@ -1608,10 +1567,10 @@ const base_documents_summary = (student) => {
         <p>以下文件仍然<b>不合格</b>, 請<b>盡速補上</b>:</p>
         <p>The following base documents are <b>not okay</b>, please <b>upload</b> them again as soon as possible:</p>
         <ul>
-        <li>${profile_list[profile_keys_list[i]]}</li>`;
+        <li>${ProfileNameType[profile_keys_list[i]]}</li>`;
       } else {
         rejected_base_documents += `<li>${
-          profile_list[profile_keys_list[i]]
+          ProfileNameType[profile_keys_list[i]]
         }</li>`;
       }
     }
@@ -1703,9 +1662,7 @@ module.exports = {
   cv_ml_rl_escalation_summary,
   cv_ml_rl_editor_escalation_summary,
   cv_ml_rl_unfinished_summary,
-  profile_list,
   profile_keys_list,
-  profile_name_list,
   getNumberOfDays,
   CVDeadline_Calculator,
   isNotArchiv,

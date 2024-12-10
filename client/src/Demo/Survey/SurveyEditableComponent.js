@@ -50,7 +50,6 @@ import {
 import {
   APPLICATION_YEARS_FUTURE,
   EXPECTATION_APPLICATION_YEARS,
-  profile_name_list,
   getNumberOfDays
 } from '../Utils/contants';
 import Banner from '../../components/Banner/Banner';
@@ -101,7 +100,7 @@ const SurveyEditableComponent = (props) => {
       ...prevState,
       baseDocsflagOffcanvasButtonDisable: true
     }));
-    updateDocLink(survey.survey_link, profile_name_list.Grading_System); // props.k is the grading system name
+    updateDocLink(survey.survey_link, 'Grading_System'); // props.k is the grading system name
     setSurveyEditableComponentState((prevState) => ({
       ...prevState,
       baseDocsflagOffcanvasButtonDisable: false,

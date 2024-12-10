@@ -2,7 +2,7 @@ import React from 'react';
 import { DateTime, IANAZone } from 'luxon';
 import moment from 'moment-timezone';
 import { styled, alpha } from '@mui/material/styles';
-import { Box, InputBase, Typography } from '@mui/material';
+import { Box, InputBase, Typography, Link, Tooltip, Chip } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import BugReportIcon from '@mui/icons-material/BugReport';
@@ -10,7 +10,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import HelpIcon from '@mui/icons-material/Help';
 import RemoveIcon from '@mui/icons-material/Remove';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
-import { PROGRAM_SUBJECTS } from '@taiger-common/core';
+import { PROGRAM_SUBJECTS, SCHOOL_TAGS } from '@taiger-common/core';
 import {
   green,
   red,
@@ -21,7 +21,6 @@ import {
   blueGrey,
   cyan
 } from '@mui/material/colors';
-import { Link, Tooltip, Chip } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
@@ -738,27 +737,6 @@ const vpdCategory = { key: 'uniassist', value: 'Uni-Assist' };
 export const valid_categories = appConfig.vpdEnable
   ? [...commonCategories, vpdCategory]
   : commonCategories;
-
-export const profile_name_list = {
-  High_School_Diploma: 'High_School_Diploma',
-  High_School_Transcript: 'High_School_Transcript',
-  University_Entrance_Examination_GSAT: 'University_Entrance_Examination_GSAT',
-  Bachelor_Certificate: 'Bachelor_Certificate',
-  Bachelor_Transcript: 'Bachelor_Transcript',
-  Second_Degree_Certificate: 'Second_Degree_Certificate',
-  Second_Degree_Transcript: 'Second_Degree_Transcript',
-  Englisch_Certificate: 'Englisch_Certificate',
-  German_Certificate: 'German_Certificate',
-  GRE: 'GRE',
-  GMAT: 'GMAT',
-  ECTS_Conversion: 'ECTS_Conversion',
-  Course_Description: 'Course_Description',
-  Internship: 'Internship',
-  Employment_Certificate: 'Employment_Certificate',
-  Passport: 'Passport',
-  Others: 'Others',
-  Grading_System: 'Grading_System'
-};
 
 export const INTERNAL_DASHBOARD_TABS = {
   overview: 0,
@@ -2098,28 +2076,6 @@ export const programstatuslist = [
   }
 ];
 
-export const profile_list = {
-  High_School_Diploma: 'High School Diploma',
-  High_School_Transcript: 'High School Transcript',
-  University_Entrance_Examination_GSAT: 'GSAT/SAT/TVE/IB Test',
-  Bachelor_Certificate: 'Bachelor Certificate/Enrolment',
-  Bachelor_Transcript: 'Bachelor Transcript',
-  Second_Degree_Certificate: 'Second Degree Certificate/Enrolment',
-  Second_Degree_Transcript: 'Second Degree Transcript',
-  Englisch_Certificate: 'TOEFL or IELTS',
-  German_Certificate: 'TestDaF or Goethe B2/C1',
-  GRE: 'GRE',
-  GMAT: 'GMAT',
-  ECTS_Conversion: 'ECTS Conversion',
-  Course_Description: 'Course Description',
-  Internship: 'Internship Certificate',
-  Employment_Certificate: 'Employment Certificate',
-  Exchange_Student_Certificate: 'Exchange Student Certificate',
-  Passport_Photo: 'Formal Profile Photo',
-  Passport: 'Passport Copy',
-  Others: 'Others'
-};
-
 export const base_documents_checklist = {
   High_School_Diploma: ['English version ?', 'School Stamp or signature'],
   High_School_Transcript: [
@@ -2304,45 +2260,6 @@ export const PROGRAM_SUBJECTS_DETAILED = Object.fromEntries(
     }
   ])
 );
-
-export const SCHOOL_TAGS = {
-  U15: {
-    label: 'U15',
-    category: 'U15'
-  },
-  TU9: {
-    label: 'TU9 German Universities of Technology',
-    category: 'TU9'
-  },
-  EUROTECH: {
-    label: 'EuroTech Universities Alliance',
-    category: 'EUROTECH'
-  },
-  GERMAN_ELITE: {
-    label: 'German Excellence Initiative',
-    category: 'Exzellenzinitiative'
-  },
-  TIME: {
-    label: 'Top International Managers in Engineering',
-    category: 'TIME'
-  },
-  TOP50: {
-    label: 'QS Top 50 Universities',
-    category: 'TOP50'
-  },
-  TOP100: {
-    label: 'QS Top 100 Universities',
-    category: 'TOP100'
-  },
-  TOP150: {
-    label: 'QS Top 150 Universities',
-    category: 'TOP150'
-  },
-  TOP500: {
-    label: 'QS Top 500 Universities',
-    category: 'TOP500'
-  }
-};
 
 export const SCHOOL_TAG_KEYS = Object.keys(SCHOOL_TAGS);
 export const SCHOOL_TAGS_DETAILED = Object.fromEntries(

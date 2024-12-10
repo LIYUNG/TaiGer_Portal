@@ -1,6 +1,8 @@
 // const path = require('path');
+const { ProfileNameType } = require('@taiger-common/core');
+
 const { ErrorResponse } = require('../common/errors');
-const { Role, DocumentStatus, profile_name_list } = require('../constants');
+const { Role, DocumentStatus } = require('../constants');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { updateCredentialsEmail } = require('../services/email');
 const logger = require('../services/logger');
@@ -127,7 +129,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
       ensureDocumentStatus(
         updatedStudent.profile,
         docName,
-        profile_name_list,
+        ProfileNameType,
         desiredStatus,
         DocumentStatus
       );
@@ -155,7 +157,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
       ensureDocumentStatus(
         updatedStudent.profile,
         docName,
-        profile_name_list,
+        ProfileNameType,
         desiredSecondDegreeStatus,
         DocumentStatus
       );
@@ -170,7 +172,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
     ensureDocumentStatus(
       updatedStudent.profile,
       'Exchange_Student_Certificate',
-      profile_name_list,
+      ProfileNameType,
       exchangeStatus,
       DocumentStatus
     );
@@ -183,7 +185,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
     ensureDocumentStatus(
       updatedStudent.profile,
       'Internship',
-      profile_name_list,
+      ProfileNameType,
       internshipStatus,
       DocumentStatus
     );
@@ -196,7 +198,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
     ensureDocumentStatus(
       updatedStudent.profile,
       'Employment_Certificate',
-      profile_name_list,
+      ProfileNameType,
       workExperienceStatus,
       DocumentStatus
     );
@@ -244,19 +246,19 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   const profileUpdates = [
     {
       fieldName: 'german_isPassed',
-      docName: profile_name_list.German_Certificate
+      docName: ProfileNameType.German_Certificate
     },
     {
       fieldName: 'english_isPassed',
-      docName: profile_name_list.Englisch_Certificate
+      docName: ProfileNameType.Englisch_Certificate
     },
     {
       fieldName: 'gre_isPassed',
-      docName: profile_name_list.GRE
+      docName: ProfileNameType.GRE
     },
     {
       fieldName: 'gmat_isPassed',
-      docName: profile_name_list.GMAT
+      docName: ProfileNameType.GMAT
     }
   ];
 

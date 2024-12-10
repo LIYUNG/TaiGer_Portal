@@ -8,11 +8,14 @@ import * as XLSX from 'xlsx';
 import {
   getNumberOfDays,
   convertDate,
-  profile_list,
   twoYearsInDays
 } from './contants';
 import { pdfjs } from 'react-pdf';
-import { is_TaiGer_Agent, is_TaiGer_Editor } from '@taiger-common/core';
+import {
+  is_TaiGer_Agent,
+  is_TaiGer_Editor,
+  ProfileNameType
+} from '@taiger-common/core';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 export const is_User_Archived = (user) => user?.archiv === true;
@@ -252,7 +255,7 @@ export const check_german_language_Notneeded = (academic_background) => {
 
 //Testd
 export const based_documents_init = (student) => {
-  const documentlist2_keys = Object.keys(profile_list);
+  const documentlist2_keys = Object.keys(ProfileNameType);
 
   let object_init = documentlist2_keys.reduce((acc, key) => {
     acc[key] = DocumentStatus.Missing;
@@ -278,7 +281,7 @@ export const based_documents_init = (student) => {
 
 export const are_base_documents_missing = (student) => {
   if (student.profile?.length > 0) {
-    const documentlist2_keys = Object.keys(profile_list);
+    const documentlist2_keys = Object.keys(ProfileNameType);
     const { object_init } = based_documents_init(student);
 
     for (let i = 0; i < documentlist2_keys.length; i++) {
@@ -297,7 +300,7 @@ export const are_base_documents_missing = (student) => {
 export const is_any_base_documents_uploaded = (students) => {
   if (students) {
     for (let i = 0; i < students.length; i += 1) {
-      let documentlist2_keys = Object.keys(profile_list);
+      let documentlist2_keys = Object.keys(ProfileNameType);
       let object_init = {};
       for (let j = 0; j < documentlist2_keys.length; j += 1) {
         object_init[documentlist2_keys[i]] = DocumentStatus.Missing;
@@ -400,7 +403,7 @@ export const isBaseDocumentsRejected = (student) => {
     return false;
   }
   const { object_init } = based_documents_init(student);
-  const documentlist2_keys = Object.keys(profile_list);
+  const documentlist2_keys = Object.keys(ProfileNameType);
 
   for (let i = 0; i < documentlist2_keys.length; i++) {
     if (object_init[documentlist2_keys[i]] === DocumentStatus.Rejected) {
@@ -1767,7 +1770,7 @@ export const programs_refactor = (students) => {
     let isMissingBaseDocs = false;
 
     const object_init = Object.fromEntries(
-      Object.keys(profile_list).map((key) => [key, DocumentStatus.Missing])
+      Object.keys(ProfileNameType).map((key) => [key, DocumentStatus.Missing])
     );
 
     if (student.profile) {

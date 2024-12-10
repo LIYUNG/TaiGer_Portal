@@ -14,14 +14,15 @@ import {
   DialogActions
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { PROFILE_NAME } from '@taiger-common/core';
+
 import { MuiDataGrid } from '../../components/MuiDataGrid';
 import {
   FILE_DONT_CARE_SYMBOL,
   FILE_MISSING_SYMBOL,
   FILE_NOT_OK_SYMBOL,
   FILE_OK_SYMBOL,
-  FILE_UPLOADED_SYMBOL,
-  profile_list
+  FILE_UPLOADED_SYMBOL
 } from '../Utils/contants';
 import { DocumentStatus } from '../Utils/checking-functions';
 import { updateProfileDocumentStatus } from '../../api';
@@ -186,7 +187,7 @@ export function BaseDocumentsTable(props) {
     baseDocumentsTableState.students
   );
 
-  const profileArray = Object.entries(profile_list).map(([key, value]) => [
+  const profileArray = Object.entries(PROFILE_NAME).map(([key, value]) => [
     key,
     value
   ]);

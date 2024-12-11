@@ -1481,18 +1481,28 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
   // messageid + extension
   const cache_key = `${encodeURIComponent(fileKey)}`;
   const value = one_month_cache.get(cache_key); // file name
+  const encodedFileName = encodeURIComponent(file_key);
   if (value === undefined) {
     const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
     const success = one_month_cache.set(cache_key, Buffer.from(response));
     if (success) {
       logger.info('thread file cache set successfully');
     }
-    res.attachment(file_key);
+
+    res.attachment(encodedFileName);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename*=UTF-8''${encodedFileName}`
+    );
     return res.end(response);
   }
 
   logger.info('thread file cache hit');
-  res.attachment(file_key);
+  res.attachment(encodedFileName);
+  res.setHeader(
+    'Content-Disposition',
+    `attachment; filename*=UTF-8''${encodedFileName}`
+  );
   return res.end(value);
 });
 

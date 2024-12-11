@@ -109,18 +109,27 @@ const getAdmissionLetter = asyncHandler(async (req, res, next) => {
   const fileKey = `${studentId}/admission/${fileName}`;
   logger.info(`Trying to download admission letter: ${fileKey}`);
   const value = two_month_cache.get(fileKey);
+  const encodedFileName = encodeURIComponent(fileName);
   if (value === undefined) {
     const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
     const success = two_month_cache.set(fileKey, Buffer.from(response));
     if (success) {
       logger.info('Admission letter cache set successfully');
     }
-    res.attachment(fileKey);
+    res.attachment(encodedFileName);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename*=UTF-8''${encodedFileName}`
+    );
     res.end(response);
     next();
   } else {
     logger.info('Admission letter cache hit');
-    res.attachment(fileKey);
+    res.attachment(encodedFileName);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename*=UTF-8''${encodedFileName}`
+    );
     res.end(value);
     next();
   }

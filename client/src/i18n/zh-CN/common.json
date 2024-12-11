@@ -311,7 +311,7 @@
     "Target Degree": "目标学位",
     "Target Year": "预计申请年度",
     "Target Year /Semester": "申请年/学期",
-    "Task_0": "任务",
+    "Task_0": "{{count}} 任务",
     "Tasks": "任务",
     "Tasks Dashboard": "撰写任务中心",
     "Teaching Language": "教学语言",

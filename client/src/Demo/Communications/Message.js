@@ -13,7 +13,6 @@ import {
   Checkbox,
   IconButton,
   Card,
-  // Link,
   DialogTitle,
   Dialog,
   DialogContent,
@@ -26,19 +25,18 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
-// import { Link as LinkDom } from 'react-router-dom';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { is_TaiGer_Student } from '@taiger-common/core';
+import { FileIcon, defaultStyles } from 'react-file-icon';
 
-// import Output from 'editorjs-react-renderer';
 import EditorSimple from '../../components/EditorJs/EditorSimple';
 import { stringAvatar, convertDate } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { IgnoreMessage } from '../../api/index';
-import { FileIcon, defaultStyles } from 'react-file-icon';
 import { BASE_URL } from '../../api/request';
 import FilePreview from '../../components/FilePreview/FilePreview';
+import { appConfig } from '../../config';
 
 function Message(props) {
   // const onlyWidth = useWindowWidth();
@@ -150,7 +148,7 @@ function Message(props) {
     : 'Staff';
   let lastname = props.message.user_id
     ? props.message.user_id.lastname
-    : 'TaiGer';
+    : appConfig.companyName;
   const editable = props.message.user_id
     ? props.message.user_id._id.toString() === user._id.toString()
       ? true

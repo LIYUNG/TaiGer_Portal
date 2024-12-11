@@ -488,6 +488,7 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
 
   logger.info(`Trying to download ${fileType} file`);
   const value = one_month_cache.get(fileKey); // vpd name
+  const encodedFileName = encodeURIComponent(fileName);
   if (value === undefined) {
     const response = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
 
@@ -495,12 +496,20 @@ const downloadVPDFile = asyncHandler(async (req, res, next) => {
     if (success) {
       logger.info('VPD file cache set successfully');
     }
-    res.attachment(fileKey);
+    res.attachment(encodedFileName);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename*=UTF-8''${encodedFileName}`
+    );
     res.end(response);
     next();
   } else {
     logger.info('VPD file cache hit');
-    res.attachment(fileKey);
+    res.attachment(encodedFileName);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename*=UTF-8''${encodedFileName}`
+    );
     res.end(value);
     next();
   }

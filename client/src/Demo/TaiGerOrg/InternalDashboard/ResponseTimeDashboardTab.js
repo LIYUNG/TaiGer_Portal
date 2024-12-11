@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import {
   Button,
@@ -201,7 +202,7 @@ const StudentOverview = ({ studentId }) => {
         <>
           <Card>
             <CardHeader
-              title={`${studentId} Response Times`}
+              title={`Response Times`}
               subheader={`Average response time: ${getIntervalAvg(
                 studentIntervals
               ).toFixed(2)} days`}
@@ -233,17 +234,38 @@ const ResponseTimeDashboardTab = ({
   agents,
   editors
 }) => {
-  const [viewMode, setViewMode] = useState('agents');
-  const [member, setMember] = useState(null);
-  const [student, setStudent] = useState(null);
+  const [searchParams] = useSearchParams();
+  console.log('?test=', searchParams.get('test'));
+  console.log('?memberId=', searchParams.get('member'));
+  console.log('?studentId=', searchParams.get('student'));
 
+  console.log('studentAvgResponseTime=', studentAvgResponseTime);
+
+  const paramMemberId = searchParams.get('member');
+  const paramStudentId = searchParams.get('student');
+
+  const [viewMode, setViewMode] = useState('agents');
   const teams = { agents: agents, editors: editors };
   const teamTypeLabel = viewMode === 'agents' ? 'Agent' : 'Editor';
 
-  useEffect(() => {
-    setMember(null);
-    setStudent(null);
-  }, [viewMode]);
+  const [member, setMember] = useState(
+    paramMemberId
+      ? {
+          userId: paramMemberId,
+          name: teams?.[viewMode]?.[paramMemberId]?.firstname
+        }
+      : null
+  );
+  const [student, setStudent] = useState(
+    paramStudentId
+      ? {
+          userId: paramStudentId,
+          name: studentAvgResponseTime?.find(
+            (student) => student._id === paramStudentId
+          )?.name
+        }
+      : null
+  );
 
   const onBarClickLayer1 = ({ userId, name }) => {
     if (!teams?.[viewMode]?.[userId]) {

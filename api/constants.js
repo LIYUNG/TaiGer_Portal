@@ -1,4 +1,8 @@
-const { PROGRAM_SUBJECTS, ProfileNameType } = require('@taiger-common/core');
+const {
+  PROGRAM_SUBJECTS,
+  ProfileNameType,
+  SCHOOL_TAGS
+} = require('@taiger-common/core');
 const { differenceInDays } = require('date-fns');
 
 const { ORIGIN, ESCALATION_DEADLINE_DAYS_TRIGGER } = require('./config');
@@ -1581,28 +1585,7 @@ const base_documents_summary = (student) => {
     : '';
 };
 
-const PROGRAM_SUBJECT_CATEGORIES = {
-  SSM: {
-    categoryName: 'Social Sciences & Management',
-    color: 'success'
-  },
-  NS: {
-    categoryName: 'Natural Sciences',
-    color: 'secondary'
-  },
-  LSM: {
-    categoryName: 'Life Sciences & Medicine',
-    color: 'success'
-  },
-  ET: {
-    categoryName: 'Engineering and Technology',
-    color: 'secondary'
-  },
-  AH: {
-    categoryName: 'Arts & Humanities',
-    color: 'error'
-  }
-};
+const SCHOOL_TAG_KEYS = Object.keys(SCHOOL_TAGS);
 
 const CV_MUST_HAVE_PATTERNS = [
   '- present',
@@ -1695,5 +1678,6 @@ module.exports = {
   ENGLISH_BELOW,
   CONTACT_AGENT,
   CV_MUST_HAVE_PATTERNS,
-  PROGRAM_SUBJECT_KEYS
+  PROGRAM_SUBJECT_KEYS,
+  SCHOOL_TAG_KEYS
 };

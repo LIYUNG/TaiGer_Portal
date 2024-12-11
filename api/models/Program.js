@@ -1,25 +1,10 @@
 const { model, Schema } = require('mongoose');
 const mongoose = require('mongoose');
+const { SCHOOL_TYPES } = require('@taiger-common/core');
 
 const { ObjectId } = Schema.Types;
 
-const { PROGRAM_SUBJECT_KEYS } = require('../constants');
-// const { handleProgramChanges } = require('../utils/modelHelper/programChange');
-
-// const Degree = {
-//   bachelor_sc: 'B.Sc',
-//   bachelor_eng: 'B.Eng',
-//   bachelor_a: 'B.A',
-//   master_sc: 'M.Sc',
-//   master_a: 'M.A',
-//   mba: 'MBA',
-//   doctoral: 'PhD'
-// };
-// const Languages = {
-//   english: 'English',
-//   german: 'German',
-//   denglish: 'GermanAndEnglish'
-// };
+const { PROGRAM_SUBJECT_KEYS, SCHOOL_TAG_KEYS } = require('../constants');
 
 const programModule = {
   isArchiv: Boolean,
@@ -219,22 +204,12 @@ const programModule = {
   },
   schoolType: {
     type: String,
-    enum: ['University', 'University_of_Applied_Sciences']
+    enum: SCHOOL_TYPES
   },
   tags: [
     {
       type: String,
-      enum: [
-        'TU9',
-        'U15',
-        'EUROTECH',
-        'Exzellenzinitiative',
-        'TOP50',
-        'TIME',
-        'TOP100',
-        'TOP150',
-        'TOP500'
-      ]
+      enum: SCHOOL_TAG_KEYS
     }
   ],
   url: String,

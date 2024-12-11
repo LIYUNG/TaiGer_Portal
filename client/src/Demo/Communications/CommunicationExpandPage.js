@@ -239,7 +239,7 @@ function CommunicationExpandPage() {
     communicationExpandPageState;
 
   if (!isLoaded && !communicationExpandPageState.thread) {
-    return <Loading />;
+    return <></>;
   }
 
   if (res_status >= 400) {
@@ -254,9 +254,6 @@ function CommunicationExpandPage() {
   TabTitle(`${student_name}`);
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
-  }
-  if (!isLoaded) {
-    return <Loading />;
   }
 
   return (
@@ -422,7 +419,16 @@ function CommunicationExpandPage() {
                 </div>
               </div>
             ) : (
-              <CircularProgress />
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '100%'
+                }}
+              >
+                <Loading />
+              </Box>
             ))}
         </Grid>
         <Box sx={{ marginLeft: 0 }}>

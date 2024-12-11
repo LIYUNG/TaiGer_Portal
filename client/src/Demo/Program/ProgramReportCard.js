@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
   Alert,
+  Box,
   Card,
+  CircularProgress,
   Link,
   Table,
   TableBody,
@@ -15,7 +17,6 @@ import { Link as LinkDom } from 'react-router-dom';
 import { getProgramTickets } from '../../api';
 import ErrorPage from '../Utils/ErrorPage';
 import DEMO from '../../store/constant';
-import Loading from '../../components/Loading/Loading';
 import { useTranslation } from 'react-i18next';
 
 function ProgramReportCard() {
@@ -70,7 +71,20 @@ function ProgramReportCard() {
     return <ErrorPage res_status={res_status} />;
   }
   if (!isLoaded) {
-    return <Loading />;
+    return (
+      <Card style={{ height: '40vh', position: 'relative' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%'
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      </Card>
+    );
   }
   if (
     !programReportCardState.tickets ||

@@ -8,10 +8,10 @@ export default function Loading() {
   const [showExtraMessage, setShowExtraMessage] = useState(false);
 
   useEffect(() => {
-    // Set a timeout to show extra message after 3 minutes
+    // Set a timeout to show extra message after 1 second
     const timer = setTimeout(() => {
       setShowExtraMessage(true);
-    }, 0.5 * 1000); // 0.5 second
+    }, 1 * 1000);
 
     // Cleanup the timer when the component unmounts
     return () => clearTimeout(timer);
@@ -37,7 +37,7 @@ export default function Loading() {
         {t('loading', { ns: 'common' })}
       </Typography>
       {showExtraMessage && (
-        <Typography variant="body2" color="textSecondary">
+        <Typography variant="body2" color="white">
           {t('almost-done', { ns: 'common' })}
         </Typography>
       )}

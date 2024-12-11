@@ -129,7 +129,7 @@ describe('Editor Dashboard', () => {
     await waitFor(() => {
       // TODO
       expect(screen.getByTestId('dashoboard_component')).toHaveTextContent(
-        'Followup Task'
+        'Follow up'
       );
       // expect(1).toBe(1);
     });

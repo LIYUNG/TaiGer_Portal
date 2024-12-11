@@ -56,7 +56,8 @@ module.exports = {
       savePath: 'src/i18n/{{lng}}/{{ns}}.json',
       jsonIndent: 4
     },
-
+    plural: true,
+    pluralSeparator: '_',
     nsSeparator: false, // namespace separator
     keySeparator: false, // key separator
     customParser: (code, file) => {

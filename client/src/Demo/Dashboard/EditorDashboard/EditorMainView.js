@@ -98,7 +98,7 @@ function EditorMainView(props) {
   return (
     <>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={6} md={3}>
           <Card sx={{ p: 2 }}>
             <Typography>{t('Action required', { ns: 'common' })}</Typography>
             <Typography variant="h6">
@@ -108,16 +108,18 @@ function EditorMainView(props) {
                 underline="hover"
               >
                 <b>
-                  <u>{unreplied_task?.length}</u>
-                </b>{' '}
-                Task{unreplied_task?.length > 1 ? 's' : ''}
+                  {t('Task', {
+                    ns: 'common',
+                    count: unreplied_task?.length || 0
+                  })}
+                </b>
               </Link>
             </Typography>
           </Card>
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={6} md={3}>
           <Card sx={{ p: 2 }}>
-            <Typography>Followup Task</Typography>
+            <Typography>{t('Follow up', { ns: 'common' })}</Typography>
             <Typography variant="h6">
               <Link
                 to={DEMO.CV_ML_RL_CENTER_LINK}
@@ -125,16 +127,22 @@ function EditorMainView(props) {
                 underline="hover"
               >
                 <b>
-                  <u>{follow_up_task?.length}</u>
-                </b>{' '}
-                Task{follow_up_task?.length > 1 ? 's' : ''}
+                  {t('Task', {
+                    ns: 'common',
+                    count: follow_up_task?.length || 0
+                  })}
+                </b>
               </Link>
             </Typography>
           </Card>
         </Grid>
         <Grid item xs={12} md={3}>
           <Card sx={{ p: 2 }}>
-            <Typography># of my students</Typography>
+            <Typography>
+              {t('student-count', {
+                ns: 'common'
+              })}
+            </Typography>
             <Typography variant="h6">
               <Link
                 to={DEMO.STUDENT_APPLICATIONS_LINK}
@@ -142,15 +150,13 @@ function EditorMainView(props) {
                 underline="hover"
               >
                 <b>
-                  <u>
-                    {
-                      props.students.filter((student) =>
-                        student.editors.some(
-                          (editor) => editor._id === user._id.toString()
-                        )
-                      )?.length
-                    }
-                  </u>
+                  {
+                    props.students.filter((student) =>
+                      student.editors.some(
+                        (editor) => editor._id === user._id.toString()
+                      )
+                    )?.length
+                  }
                 </b>
               </Link>
             </Typography>

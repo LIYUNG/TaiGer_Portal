@@ -754,6 +754,22 @@ export const INTERNAL_DASHBOARD_REVERSED_TABS = {
   4: 'responseTime'
 };
 
+export const THREADS_TABLE_TABS = {
+  ['to-do']: 0,
+  favorite: 1,
+  ['follow-up']: 2,
+  ['no-action']: 3,
+  closed: 4
+};
+
+export const THREADS_TABLE_REVERSED_TABS = {
+  0: 'to-do',
+  1: 'favorite',
+  2: 'follow-up',
+  3: 'no-action',
+  4: 'closed'
+};
+
 export const THREAD_TABS = {
   communication: 0,
   audit: 1

@@ -295,7 +295,7 @@ export const are_base_documents_missing = (student) => {
 
 // Tested: but TODO refactor
 export const is_any_base_documents_uploaded = (students) => {
-  if (students) {
+  if (students?.length > 0) {
     for (let i = 0; i < students.length; i += 1) {
       let documentlist2_keys = Object.keys(ProfileNameType);
       let object_init = {};
@@ -303,10 +303,10 @@ export const is_any_base_documents_uploaded = (students) => {
         object_init[documentlist2_keys[i]] = DocumentStatus.Missing;
       }
       if (students[i].profile === undefined) {
-        return false;
+        continue;
       }
       if (students[i].profile.length === 0) {
-        return false;
+        continue;
       }
 
       for (let j = 0; j < students[i].profile.length; j += 1) {
@@ -322,7 +322,6 @@ export const is_any_base_documents_uploaded = (students) => {
           object_init[students[i].profile[j].name] = DocumentStatus.NotNeeded;
         }
       }
-
       for (let i = 0; i < documentlist2_keys.length; i++) {
         if (object_init[documentlist2_keys[i]] === DocumentStatus.Uploaded) {
           return true;
@@ -1652,6 +1651,7 @@ const prepEssayTask = (essay, user) => {
     ...prepEssayTaskThread(essay.student_id, essay),
     thread_id: essay._id.toString(),
     program_id: essay.program_id._id.toString(),
+    lang: essay.program_id?.lang,
     deadline: application_deadline_calculator(essay.student_id, {
       programId: essay.program_id
     }),

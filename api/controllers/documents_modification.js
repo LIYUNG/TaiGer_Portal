@@ -2218,7 +2218,7 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
         .populate('messages.user_id', 'firstname lastname role')
         .populate(
           'program_id',
-          'school program_name degree application_deadline semester'
+          'school program_name degree application_deadline semester lang'
         )
         .lean();
 

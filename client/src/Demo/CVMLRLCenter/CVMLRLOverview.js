@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link as LinkDom } from 'react-router-dom';
+import { Link as LinkDom, useLocation } from 'react-router-dom';
 import { Tabs, Tab, Box, Typography, Link, Tooltip, Chip } from '@mui/material';
 import PropTypes from 'prop-types';
 import IconButton from '@mui/material/IconButton';
@@ -7,7 +7,12 @@ import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import { is_TaiGer_role } from '@taiger-common/core';
 
-import { ATTRIBUTES, COLORS } from '../Utils/contants';
+import {
+  ATTRIBUTES,
+  COLORS,
+  THREADS_TABLE_REVERSED_TABS,
+  THREADS_TABLE_TABS
+} from '../Utils/contants';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import Banner from '../../components/Banner/Banner';
 import { useAuth } from '../../components/AuthProvider';
@@ -26,6 +31,15 @@ CustomTabPanel.propTypes = {
 function CVMLRLOverview(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const { hash } = useLocation();
+  const [tabTag, setTabTag] = useState(
+    THREADS_TABLE_TABS[hash.replace('#', '')] || 0
+  );
+  const handleTabChange = (event, newValue) => {
+    setTabTag(newValue);
+    window.location.hash = THREADS_TABLE_REVERSED_TABS[newValue];
+  };
+
   const [cVMLRLOverviewState, setCVMLRLOverviewState] = useState({
     error: '',
     isLoaded: props.isLoaded,
@@ -38,11 +52,6 @@ function CVMLRLOverview(props) {
     res_modal_message: '',
     res_modal_status: 0
   });
-  const [value, setValue] = useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
 
   useEffect(() => {
     setCVMLRLOverviewState((prevState) => ({
@@ -266,8 +275,8 @@ function CVMLRLOverview(props) {
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
-          value={value}
-          onChange={handleChange}
+          value={tabTag}
+          onChange={handleTabChange}
           variant="scrollable"
           scrollButtons="auto"
           aria-label="basic tabs example"
@@ -304,7 +313,7 @@ function CVMLRLOverview(props) {
           />
         </Tabs>
       </Box>
-      <CustomTabPanel value={value} index={0}>
+      <CustomTabPanel value={tabTag} index={0}>
         <Banner
           ReadOnlyMode={true}
           bg={'danger'}
@@ -324,7 +333,7 @@ function CVMLRLOverview(props) {
           }}
         />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+      <CustomTabPanel value={tabTag} index={1}>
         <Banner
           ReadOnlyMode={true}
           bg={'primary'}
@@ -344,7 +353,7 @@ function CVMLRLOverview(props) {
           }}
         />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
+      <CustomTabPanel value={tabTag} index={2}>
         <Banner
           ReadOnlyMode={true}
           bg={'primary'}
@@ -364,7 +373,7 @@ function CVMLRLOverview(props) {
           }}
         />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
+      <CustomTabPanel value={tabTag} index={3}>
         <Banner
           ReadOnlyMode={true}
           bg={'info'}
@@ -388,7 +397,7 @@ function CVMLRLOverview(props) {
           }}
         />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={4}>
+      <CustomTabPanel value={tabTag} index={4}>
         <Banner
           ReadOnlyMode={true}
           bg={'success'}

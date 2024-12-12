@@ -18,11 +18,13 @@ import {
 import { updateAgentBanner } from '../../../api';
 import { appConfig } from '../../../config';
 import {
+  AGENT_SUPPORT_DOCUMENTS_A,
   isAnyCVNotAssigned,
   isProgramDecided,
   is_any_base_documents_uploaded,
   is_any_programs_ready_to_submit,
   is_any_vpd_missing,
+  open_tasks,
   programs_refactor,
   progressBarCounter
 } from '../../Utils/checking-functions';
@@ -41,6 +43,7 @@ import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import useStudents from '../../../hooks/useStudents';
 import Banner from '../../../components/Banner/Banner';
+import { is_new_message_status, is_pending_status } from '../../Utils/contants';
 
 function AgentMainView(props) {
   const { user } = useAuth();
@@ -126,6 +129,30 @@ function AgentMainView(props) {
   const myStudents = students.filter((student) =>
     student.agents.some((agent) => agent._id === user._id.toString())
   );
+
+  const new_message_tasks = open_tasks(myStudents)
+    .filter((open_task) =>
+      [...AGENT_SUPPORT_DOCUMENTS_A].includes(open_task.file_type)
+    )
+    .filter(
+      (open_task) =>
+        open_task.show &&
+        !open_task.isFinalVersion &&
+        is_new_message_status(user, open_task)
+    );
+
+  const follow_up_task = open_tasks(myStudents)
+    .filter((open_task) =>
+      [...AGENT_SUPPORT_DOCUMENTS_A].includes(open_task.file_type)
+    )
+    .filter(
+      (open_task) =>
+        open_task.show &&
+        !open_task.isFinalVersion &&
+        is_pending_status(user, open_task) &&
+        open_task.latest_message_left_by_id !== ''
+    );
+
   return (
     <Box sx={{ mb: 2 }}>
       <Grid container spacing={1}>
@@ -157,6 +184,68 @@ function AgentMainView(props) {
               </Card>
             )
           )}
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <Card sx={{ p: 2 }}>
+            <Typography>{t('Action required', { ns: 'common' })}</Typography>
+            <Typography variant="h6">
+              <Link
+                to={DEMO.AGENT_SUPPORT_DOCUMENTS('to-do')}
+                component={LinkDom}
+                underline="hover"
+              >
+                <b>
+                  {t('Task', {
+                    ns: 'common',
+                    count: new_message_tasks?.length || 0
+                  })}
+                </b>
+              </Link>
+            </Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <Card sx={{ p: 2 }}>
+            <Typography>{t('Follow up', { ns: 'common' })}</Typography>
+            <Typography variant="h6">
+              <Link
+                to={DEMO.AGENT_SUPPORT_DOCUMENTS('follow-up')}
+                component={LinkDom}
+                underline="hover"
+              >
+                <b>
+                  {t('Task', {
+                    ns: 'common',
+                    count: follow_up_task?.length || 0
+                  })}
+                </b>
+              </Link>
+            </Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <Card sx={{ p: 2 }}>
+            <Typography>
+              {t('student-count', {
+                ns: 'common'
+              })}
+            </Typography>
+            <Typography variant="h6">
+              <Link
+                to={DEMO.STUDENT_APPLICATIONS_LINK}
+                component={LinkDom}
+                underline="hover"
+              >
+                <b>{students?.length || 0}</b>
+              </Link>
+            </Typography>
+          </Card>
+        </Grid>
+        <Grid item xs={6} sm={3}>
+          <Card sx={{ p: 2 }}>
+            <Typography>{t('XXXX', { ns: 'common' })}</Typography>
+            <Typography variant="h6">Comming soon</Typography>
+          </Card>
         </Grid>
         <Grid item xs={12} sm={6}>
           <Card>

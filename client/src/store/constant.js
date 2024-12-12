@@ -1,4 +1,7 @@
 const DEMO = {
+  AGENT_SUPPORT_DOCUMENTS: (tab) => {
+    return `/agent-support-documents#${tab}`;
+  },
   ASSIGN_AGENT_LINK: '/assignment/agents',
   ASSIGN_EDITOR_LINK: '/assignment/editors',
   ASSIGN_ESSAY_WRITER_LINK: '/assignment/essay-writers',

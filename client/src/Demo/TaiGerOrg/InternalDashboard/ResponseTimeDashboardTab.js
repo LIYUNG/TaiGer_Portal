@@ -236,21 +236,6 @@ const ResponseTimeDashboardTab = ({
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const updateSearchParams = () => {
-    const newParams = new URLSearchParams(searchParams);
-
-    if (student) {
-      newParams.set('student', student.userId);
-    }
-    if (member) {
-      newParams.set('member', member.userId);
-    }
-
-    const currentHash = window.location.hash;
-    setSearchParams(newParams);
-    window.location.hash = currentHash;
-  };
-
   const paramMemberId = searchParams.get('member');
   const paramStudentId = searchParams.get('student');
 
@@ -277,18 +262,35 @@ const ResponseTimeDashboardTab = ({
       : null
   );
 
+  useEffect(() => {
+    const newParams = new URLSearchParams(searchParams);
+
+    if (student) {
+      newParams.set('student', student.userId);
+    } else {
+      newParams.delete('student');
+    }
+    if (member) {
+      newParams.set('member', member.userId);
+    } else {
+      newParams.delete('member');
+    }
+
+    const currentHash = window.location.hash;
+    setSearchParams(newParams);
+    window.location.hash = currentHash;
+  }, [student, member]);
+
   const onBarClickLayer1 = ({ userId, name }) => {
     const user = { userId, name };
     if (!teams?.[viewMode]?.[userId]) {
       return;
     }
     setMember(user);
-    updateSearchParams();
   };
   const onBarClickLayer2 = ({ userId, name }) => {
     const user = { userId, name };
     setStudent(user);
-    updateSearchParams();
   };
 
   return (

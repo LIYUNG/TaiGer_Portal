@@ -234,12 +234,22 @@ const ResponseTimeDashboardTab = ({
   agents,
   editors
 }) => {
-  const [searchParams] = useSearchParams();
-  console.log('?test=', searchParams.get('test'));
-  console.log('?memberId=', searchParams.get('member'));
-  console.log('?studentId=', searchParams.get('student'));
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  console.log('studentAvgResponseTime=', studentAvgResponseTime);
+  const updateSearchParams = () => {
+    const newParams = new URLSearchParams(searchParams);
+
+    if (student) {
+      newParams.set('student', student.userId);
+    }
+    if (member) {
+      newParams.set('member', member.userId);
+    }
+
+    const currentHash = window.location.hash;
+    setSearchParams(newParams);
+    window.location.hash = currentHash;
+  };
 
   const paramMemberId = searchParams.get('member');
   const paramStudentId = searchParams.get('student');
@@ -268,13 +278,17 @@ const ResponseTimeDashboardTab = ({
   );
 
   const onBarClickLayer1 = ({ userId, name }) => {
+    const user = { userId, name };
     if (!teams?.[viewMode]?.[userId]) {
       return;
     }
-    setMember({ userId, name });
+    setMember(user);
+    updateSearchParams();
   };
   const onBarClickLayer2 = ({ userId, name }) => {
-    setStudent({ userId, name });
+    const user = { userId, name };
+    setStudent(user);
+    updateSearchParams();
   };
 
   return (

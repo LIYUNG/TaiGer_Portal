@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import LaunchIcon from '@mui/icons-material/Launch';
-import { Box, Button, IconButton, Typography } from '@mui/material';
+import { Alert, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { PROFILE_NAME } from '@taiger-common/core';
 
@@ -12,8 +11,6 @@ import {
   deleteFile,
   updateDocumentationHelperLink
 } from '../../api';
-import Banner from '../../components/Banner/Banner';
-import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import MyDocumentCard from './MyDocumentCard';
@@ -406,49 +403,10 @@ function BaseDocument_StudentView(props) {
 
   return (
     <Box>
-      <Banner
-        ReadOnlyMode={true}
-        bg={'primary'}
-        title={'info'}
-        path={'/'}
-        text={
-          <Typography variant="body2">
-            每個檔案都有注意事項。請務必上傳文件前，點選各文件名稱旁的說明連結圖示
-            <IconButton>
-              <Button
-                size="small"
-                variant="outlined"
-                endIcon={<LaunchIcon fontSize="small" />}
-              >
-                {t('Read More')}
-              </Button>
-            </IconButton>
-            並查看文件要求，照著我們的要求上傳，Agent 會再檢查文件是否沒問題。
-          </Typography>
-        }
-        link_name={''}
-        removeBanner={<></>}
-        notification_key={undefined}
-      />
-      <Banner
-        ReadOnlyMode={true}
-        bg={'danger'}
-        title={'info'}
-        path={`${DEMO.SURVEY_LINK}`}
-        text={
-          '無論是申請大學部或是碩士班，高中文件、學測或統測成績單為必要文件。德國學校通常列為必要文件，此文件會因為您的背景況狀有所變動。請先填好'
-        }
-        link_name={
-          <Typography variant="body2">
-            {t('Profile', { ns: 'common' })}{' '}
-            <IconButton>
-              <LaunchIcon fontSize="small" />
-            </IconButton>
-          </Typography>
-        }
-        removeBanner={undefined}
-        notification_key={undefined}
-      />
+      <Alert severity="info">{t('file-upload-notice', { ns: 'common' })}</Alert>
+      <Alert severity="info">
+        {t('required-document-notice', { ns: 'common' })}
+      </Alert>
       {true && file_information_test}
       {SYMBOL_EXPLANATION}
       {res_modal_status >= 400 && (

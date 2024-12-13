@@ -21,7 +21,6 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import Banner from '../../../components/Banner/Banner';
 import RespondedThreads from '../MainViewTab/RespondedThreads/RespondedThreads';
 import StudentTasksResponsive from '../MainViewTab/StudentTasks/StudentTasksResponsive';
 import {
@@ -117,27 +116,37 @@ function StudentDashboard(props) {
         </Card>
       )}
       <Alert severity="info">{t('announcement', { ns: 'common' })}</Alert>
-      <Grid container spacing={2} sx={{ mt: 0 }}>
+      <Grid container spacing={1} sx={{ mt: 0 }}>
         {student.notification &&
           !student.notification.isRead_survey_not_complete &&
           !check_academic_background_filled(student.academic_background) && (
             <Grid item xs={12}>
-              <Banner
-                bg={'danger'}
-                title={'warning'}
-                path={`${DEMO.SURVEY_LINK}`}
-                text={t('It looks like you did not finish survey. See', {
-                  ns: 'common'
-                })}
-                link_name={
-                  <>
+              <Alert
+                severity="warning"
+                onClose={(e) => removeBanner(e, 'isRead_survey_not_complete')}
+                sx={{ display: 'flex', alignItems: 'center' }}
+              >
+                <Typography variant="body2" sx={{ flexGrow: 1 }}>
+                  {t('It looks like you did not finish survey. See', {
+                    ns: 'common'
+                  })}{' '}
+                  <Link
+                    to={DEMO.SURVEY_LINK}
+                    component={LinkDom}
+                    target="_blank"
+                    underline="hover"
+                    sx={{
+                      fontWeight: 'bold',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      ml: 1
+                    }}
+                  >
                     {t('Survey')}
-                    <LaunchIcon fontSize="small" />
-                  </>
-                }
-                removeBanner={removeBanner}
-                notification_key={'isRead_survey_not_complete'}
-              />
+                    <LaunchIcon fontSize="small" sx={{ ml: 0.5 }} />
+                  </Link>
+                </Typography>
+              </Alert>
             </Grid>
           )}
 
@@ -146,158 +155,212 @@ function StudentDashboard(props) {
           appConfig.vpdEnable &&
           !is_all_uni_assist_vpd_uploaded(student) && (
             <Grid item xs={12}>
-              <Banner
-                ReadOnlyMode={props.ReadOnlyMode}
-                bg={'danger'}
-                title={'warning'}
-                path={`${DEMO.UNI_ASSIST_LINK}`}
-                text={'Please go to Uni-Assist to apply or to get VPD'}
-                link_name={
-                  <>
-                    Uni-Assist
-                    <LaunchIcon fontSize="small" />
-                  </>
+              <Alert
+                severity="warning"
+                onClose={(e) =>
+                  removeBanner(e, 'isRead_uni_assist_task_assigned')
                 }
-                removeBanner={removeBanner}
-                notification_key={'isRead_uni_assist_task_assigned'}
-              />
+                sx={{ display: 'flex', alignItems: 'center' }}
+              >
+                <Typography variant="body2" sx={{ flexGrow: 1 }}>
+                  {t('Please go to Uni-Assist to apply or to get VPD')}{' '}
+                  <Link
+                    to={DEMO.UNI_ASSIST_LINK}
+                    component={LinkDom}
+                    target="_blank"
+                    underline="hover"
+                    sx={{
+                      fontWeight: 'bold',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      ml: 1
+                    }}
+                  >
+                    {t('Uni-Assist')}
+                    <LaunchIcon fontSize="small" sx={{ ml: 0.5 }} />
+                  </Link>
+                </Typography>
+              </Alert>
             </Grid>
           )}
         {/* new agents assigned banner */}
         {student.notification &&
           !student.notification.isRead_new_agent_assigned && (
             <Grid item xs={12}>
-              <Banner
-                ReadOnlyMode={props.ReadOnlyMode}
-                bg={'primary'}
-                title={'info'}
-                path={`${DEMO.UNI_ASSIST_LINK}`}
-                text={`${t('New agent is assigned to you')}`}
-                link_name={''}
-                removeBanner={removeBanner}
-                notification_key={'isRead_new_agent_assigned'}
-              />
+              <Alert
+                severity="success"
+                onClose={(e) => removeBanner(e, 'isRead_new_agent_assigned')}
+              >
+                {t('New agent is assigned to you')}
+              </Alert>
             </Grid>
           )}
         {/* new editors assigned banner */}
         {student.notification &&
           !student.notification.isRead_new_editor_assigned && (
             <Grid item xs={12}>
-              <Banner
-                ReadOnlyMode={props.ReadOnlyMode}
-                bg={'primary'}
-                title={'info'}
-                path={`${DEMO.UNI_ASSIST_LINK}`}
-                text={t('New editor is assigned to you.', { ns: 'common' })}
-                link_name={''}
-                removeBanner={removeBanner}
-                notification_key={'isRead_new_editor_assigned'}
-              />
+              <Alert
+                severity="success"
+                onClose={(e) => removeBanner(e, 'isRead_new_editor_assigned')}
+              >
+                {t('New editor is assigned to you')}
+              </Alert>
             </Grid>
           )}
         {/* new CV ML RL Essay message */}
         {student.notification &&
           !student.notification.isRead_new_cvmlrl_messsage && (
             <Grid item xs={12}>
-              <Banner
-                ReadOnlyMode={props.ReadOnlyMode}
-                bg={'danger'}
-                title={'warning'}
-                path={`${DEMO.CV_ML_RL_CENTER_LINK}`}
-                text={`${t('New feedback from your Editor')}. See `}
-                link_name={
-                  <>
-                    CV/ML/RL Center
-                    <LaunchIcon fontSize="small" />
-                  </>
-                }
-                removeBanner={removeBanner}
-                notification_key={'isRead_new_cvmlrl_messsage'}
-              />
+              <Alert
+                severity="warning"
+                onClose={(e) => removeBanner(e, 'isRead_new_cvmlrl_messsage')}
+                sx={{ display: 'flex', alignItems: 'center' }}
+              >
+                <Typography variant="body2" sx={{ flexGrow: 1 }}>
+                  {t('New feedback from your Editor')}{' '}
+                  <Link
+                    to={DEMO.CV_ML_RL_CENTER_LINK}
+                    component={LinkDom}
+                    target="_blank"
+                    underline="hover"
+                    sx={{
+                      fontWeight: 'bold',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      ml: 1
+                    }}
+                  >
+                    {t('CV/ML/RL Center', { ns: 'common' })}
+                    <LaunchIcon fontSize="small" sx={{ ml: 0.5 }} />
+                  </Link>
+                </Typography>
+              </Alert>
             </Grid>
           )}
         {/* TODO: check function : new cv ml rl tasks are asigned to you */}
         {student.notification &&
           !student.notification.isRead_new_cvmlrl_tasks_created && (
             <Grid item xs={12}>
-              <Banner
-                ReadOnlyMode={props.ReadOnlyMode}
-                bg={'danger'}
-                title={'warning'}
-                path={`${DEMO.CV_ML_RL_CENTER_LINK}`}
-                text={`${t('New tasks are assigned to you')}. See `}
-                link_name={
-                  <Typography variant="body2" sx={{ display: 'flex' }}>
-                    CV/ML/RL Center
-                    <LaunchIcon fontSize="small" />
-                  </Typography>
+              <Alert
+                severity="warning"
+                onClose={(e) =>
+                  removeBanner(e, 'isRead_new_cvmlrl_tasks_created')
                 }
-                removeBanner={removeBanner}
-                notification_key={'isRead_new_cvmlrl_tasks_created'}
-              />
+                sx={{ display: 'flex', alignItems: 'center' }}
+              >
+                <Typography variant="body2" sx={{ flexGrow: 1 }}>
+                  {t('New tasks are assigned to you')}{' '}
+                  <Link
+                    to={DEMO.CV_ML_RL_CENTER_LINK}
+                    component={LinkDom}
+                    target="_blank"
+                    underline="hover"
+                    sx={{
+                      fontWeight: 'bold',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      ml: 1
+                    }}
+                  >
+                    {t('CV/ML/RL Center', { ns: 'common' })}
+                    <LaunchIcon fontSize="small" sx={{ ml: 0.5 }} />
+                  </Link>
+                </Typography>
+              </Alert>
             </Grid>
           )}
         {student.notification &&
           !student.notification.isRead_new_programs_assigned &&
           !check_applications_to_decided(student) && (
             <Grid item xs={12}>
-              <Banner
-                ReadOnlyMode={props.ReadOnlyMode}
-                bg={'danger'}
-                title={'warning'}
-                path={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
-                text={`${t('It looks like you did not decide programs')} `}
-                link_name={
-                  <Typography>
+              <Alert
+                severity="warning"
+                onClose={(e) => removeBanner(e, 'isRead_new_programs_assigned')}
+                sx={{ display: 'flex', alignItems: 'center' }}
+              >
+                <Typography variant="body2" sx={{ flexGrow: 1 }}>
+                  {t('It looks like you did not decide programs')}{' '}
+                  <Link
+                    to={DEMO.STUDENT_APPLICATIONS_LINK}
+                    component={LinkDom}
+                    target="_blank"
+                    underline="hover"
+                    sx={{
+                      fontWeight: 'bold',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      ml: 1
+                    }}
+                  >
                     {t('Application Overview', { ns: 'common' })}
-                    <LaunchIcon fontSize="small" />
-                  </Typography>
-                }
-                removeBanner={removeBanner}
-                notification_key={'isRead_new_programs_assigned'}
-              />
+                    <LaunchIcon fontSize="small" sx={{ ml: 0.5 }} />
+                  </Link>
+                </Typography>
+              </Alert>
             </Grid>
           )}
         {student.notification &&
           !student.notification.isRead_base_documents_missing &&
           are_base_documents_missing(student) && (
             <Grid item xs={12}>
-              <Banner
-                ReadOnlyMode={props.ReadOnlyMode}
-                bg={'danger'}
-                title={'warning'}
-                path={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                text={`${t('Some of Base Documents are still missing')}`}
-                link_name={
-                  <>
-                    Base Documents
-                    <LaunchIcon fontSize="small" />
-                  </>
+              <Alert
+                severity="warning"
+                onClose={(e) =>
+                  removeBanner(e, 'isRead_base_documents_missing')
                 }
-                removeBanner={removeBanner}
-                notification_key={'isRead_base_documents_missing'}
-              />
+                sx={{ display: 'flex', alignItems: 'center' }}
+              >
+                <Typography variant="body2" sx={{ flexGrow: 1 }}>
+                  {t('Some of Base Documents are still missing')}{' '}
+                  <Link
+                    to={DEMO.BASE_DOCUMENTS_LINK}
+                    component={LinkDom}
+                    target="_blank"
+                    underline="hover"
+                    sx={{
+                      fontWeight: 'bold',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      ml: 1
+                    }}
+                  >
+                    {t('My Documents', { ns: 'common' })}
+                    <LaunchIcon fontSize="small" sx={{ ml: 0.5 }} />
+                  </Link>
+                </Typography>
+              </Alert>
             </Grid>
           )}
         {student.notification &&
           !student.notification.isRead_base_documents_rejected &&
           isBaseDocumentsRejected(student) && (
             <Grid item xs={12}>
-              <Banner
-                ReadOnlyMode={props.ReadOnlyMode}
-                bg={'danger'}
-                title={'warning'}
-                path={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                text={`${t('Some of Base Documents are rejected')} `}
-                link_name={
-                  <>
-                    Base Documents
-                    <LaunchIcon fontSize="small" />
-                  </>
+              <Alert
+                severity="warning"
+                onClose={(e) =>
+                  removeBanner(e, 'isRead_base_documents_rejected')
                 }
-                removeBanner={removeBanner}
-                notification_key={'isRead_base_documents_rejected'}
-              />
+                sx={{ display: 'flex', alignItems: 'center' }}
+              >
+                <Typography variant="body2" sx={{ flexGrow: 1 }}>
+                  {t('Some of Base Documents are rejected')}{' '}
+                  <Link
+                    to={DEMO.BASE_DOCUMENTS_LINK}
+                    component={LinkDom}
+                    target="_blank"
+                    underline="hover"
+                    sx={{
+                      fontWeight: 'bold',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      ml: 1
+                    }}
+                  >
+                    {t('My Documents', { ns: 'common' })}
+                    <LaunchIcon fontSize="small" sx={{ ml: 0.5 }} />
+                  </Link>
+                </Typography>
+              </Alert>
             </Grid>
           )}
         <Grid item xs={12} md={12}>

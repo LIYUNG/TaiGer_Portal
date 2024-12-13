@@ -68,57 +68,52 @@ function StudentTasksResponsive(props) {
     );
   }
 
-  if (
-    props.student.applications === undefined ||
-    props.student.applications.length === 0
-  ) {
-    unread_applications_docthread = <></>;
-  } else {
-    unread_applications_docthread = props.student.applications.map(
-      (application) =>
-        application.doc_modification_thread.map(
-          (application_doc_thread, idx) => (
-            <TableRow key={idx}>
-              {!application_doc_thread.isFinalVersion &&
-                application_doc_thread.latest_message_left_by_id !==
-                  props.student._id.toString() &&
-                isProgramDecided(application) && (
-                  <>
-                    <TableCell>
-                      <Link
-                        underline="hover"
-                        to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                          application_doc_thread.doc_thread_id._id
-                        )}
-                        component={LinkDom}
-                      >
-                        {application_doc_thread.doc_thread_id.file_type}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <Link
-                        underline="hover"
-                        to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                          application_doc_thread.doc_thread_id._id
-                        )}
-                        component={LinkDom}
-                      >
-                        {application.programId.school}
-                        {' - '}
-                        {application.programId.program_name}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      {' '}
-                      {convertDate(application_doc_thread.updatedAt)}
-                    </TableCell>
-                  </>
-                )}
-            </TableRow>
+  unread_applications_docthread =
+    props.student.applications?.length > 0
+      ? props.student.applications
+          .filter((application) => isProgramDecided(application))
+          .map((application) =>
+            application.doc_modification_thread.map(
+              (application_doc_thread, idx) => (
+                <TableRow key={idx}>
+                  {!application_doc_thread.isFinalVersion &&
+                    application_doc_thread.latest_message_left_by_id !==
+                      props.student._id.toString() && (
+                      <>
+                        <TableCell>
+                          <Link
+                            underline="hover"
+                            to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                              application_doc_thread.doc_thread_id._id
+                            )}
+                            component={LinkDom}
+                          >
+                            {application_doc_thread.doc_thread_id.file_type}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            underline="hover"
+                            to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                              application_doc_thread.doc_thread_id._id
+                            )}
+                            component={LinkDom}
+                          >
+                            {application.programId.school}
+                            {' - '}
+                            {application.programId.program_name}
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          {convertDate(application_doc_thread.updatedAt)}
+                        </TableCell>
+                      </>
+                    )}
+                </TableRow>
+              )
+            )
           )
-        )
-    );
-  }
+      : null;
 
   return (
     <>
@@ -221,9 +216,12 @@ function StudentTasksResponsive(props) {
           </TableCell>
           <TableCell>
             <Typography variant="body2" sx={{ display: 'flex' }}>
-              {t('Please update your applications results to the corresponding program in this page below', {
-                ns: 'common'
-              })}
+              {t(
+                'Please update your applications results to the corresponding program in this page below',
+                {
+                  ns: 'common'
+                }
+              )}
             </Typography>
           </TableCell>
           <TableCell></TableCell>

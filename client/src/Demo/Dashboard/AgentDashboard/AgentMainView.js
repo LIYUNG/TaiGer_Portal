@@ -40,7 +40,6 @@ import NoProgramStudentTable from '../MainViewTab/AgentTasks/NoProgramStudentTab
 import BaseDocumentCheckingTable from '../MainViewTab/AgentTasks/BaseDocumentCheckingTable';
 import ProgramSpecificDocumentCheckCard from '../MainViewTab/AgentTasks/ProgramSpecificDocumentCheckCard';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
-import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import useStudents from '../../../hooks/useStudents';
 import Banner from '../../../components/Banner/Banner';
 import { is_new_message_status, is_pending_status } from '../../Utils/contants';
@@ -52,11 +51,7 @@ function AgentMainView(props) {
     res_modal_status,
     res_modal_message,
     ConfirmError,
-    students: initStudents,
-    submitUpdateAgentlist,
-    submitUpdateEditorlist,
-    submitUpdateAttributeslist,
-    updateStudentArchivStatus
+    students: initStudents
   } = useStudents({
     students: props.students
   });
@@ -335,17 +330,6 @@ function AgentMainView(props) {
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <NoEnoughDecidedProgramsTasksCard students={students} user={user} />
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <Card>
-            <TabStudBackgroundDashboard
-              students={students}
-              submitUpdateAgentlist={submitUpdateAgentlist}
-              submitUpdateEditorlist={submitUpdateEditorlist}
-              submitUpdateAttributeslist={submitUpdateAttributeslist}
-              updateStudentArchivStatus={updateStudentArchivStatus}
-            />
-          </Card>
         </Grid>
       </Grid>
       {res_modal_status >= 400 && (

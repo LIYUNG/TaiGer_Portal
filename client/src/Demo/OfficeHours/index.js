@@ -64,6 +64,9 @@ function OfficeHours() {
   const { user } = useAuth();
   const { user_id } = useParams();
   const { t } = useTranslation();
+  const query = new URLSearchParams(window.location.search);
+  const startTime = query.get('startTime');
+  const endTime = query.get('endTime');
   const {
     events,
     agents,
@@ -104,7 +107,11 @@ function OfficeHours() {
     res_modal_message,
     res_modal_status,
     ConfirmError
-  } = useCalendarEvents({ user_id });
+  } = useCalendarEvents({
+    user_id,
+    startTime: startTime || '',
+    endTime: endTime || ''
+  });
 
   const [value, setValue] = useState(0);
 

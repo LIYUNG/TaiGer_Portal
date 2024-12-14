@@ -105,79 +105,98 @@ const meetingConfirmationReminder = (receiver, user, start_time) => {
 
 const getEvents = asyncHandler(async (req, res, next) => {
   const { user } = req;
-  let events;
-  let agents_events;
-  if (user.role === Role.Student) {
-    events = await req.db
-      .model('Event')
-      .find({ requester_id: user._id })
-      .populate('receiver_id requester_id', 'firstname lastname email')
-      .lean();
-    const agents_ids = user.agents;
-    const agents = await req.db
-      .model('Agent')
-      .find({ _id: agents_ids })
-      .select('firstname lastname email selfIntroduction officehours timezone');
-    agents_events = await req.db
-      .model('Event')
-      .find({
-        receiver_id: { $in: agents_ids },
-        requester_id: { $nin: [user._id] }
-      })
-      .populate('receiver_id', 'firstname lastname email')
-      .select('start')
-      .lean();
-    return res.status(200).send({
-      success: true,
-      agents,
-      data: events,
-      booked_events: agents_events,
-      hasEvents: events.length !== 0,
-      students: []
-    });
-  }
-  const agents = await req.db
-    .model('Agent')
-    .find({ _id: user._id.toString() })
-    .select('firstname lastname email selfIntroduction officehours timezone');
-  let students = [];
+  const { startTime, endTime } = req.query;
 
-  if (is_TaiGer_Agent(user)) {
-    events = await req.db
-      .model('Event')
-      .find({
-        $or: [{ requester_id: user._id }, { receiver_id: user._id }]
-      })
-      .populate('receiver_id requester_id', 'firstname lastname email')
-      .lean();
-    students = await req.db
-      .model('Student')
-      .find({
-        agents: user._id,
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      })
-      .select('firstname lastname firstname_chinese lastname_chinese  email')
-      .lean();
-    if (events.length === 0) {
-      return res.status(200).send({
-        success: true,
-        agents,
-        data: events,
-        booked_events: [],
-        hasEvents: false,
-        students
-      });
-    }
-  }
+  // Helper: Build time filter
+  const timeFilter = {};
+  if (startTime) timeFilter.$gte = new Date(startTime);
+  if (endTime) timeFilter.$lte = new Date(endTime);
 
-  res.status(200).send({
+  // Common response structure
+  const response = {
     success: true,
-    agents,
-    data: events,
+    agents: [],
+    data: [],
     booked_events: [],
-    hasEvents: true,
-    students
-  });
+    hasEvents: false,
+    students: []
+  };
+
+  // Role-based logic
+  if (user.role === Role.Student) {
+    const agentsIds = user.agents;
+
+    // Fetch events requested by the student
+    const eventsPromise = req.db
+      .model('Event')
+      .find({
+        requester_id: user._id,
+        ...(Object.keys(timeFilter).length && { start: timeFilter })
+      })
+      .populate('receiver_id requester_id', 'firstname lastname email')
+      .lean();
+
+    // Fetch student's agents and their available events
+    const [agents, events, agentsEvents] = await Promise.all([
+      req.db
+        .model('Agent')
+        .find({ _id: { $in: agentsIds } })
+        .select(
+          'firstname lastname email selfIntroduction officehours timezone'
+        ),
+      eventsPromise,
+      req.db
+        .model('Event')
+        .find({
+          receiver_id: { $in: agentsIds },
+          requester_id: { $ne: user._id },
+          ...(Object.keys(timeFilter).length && { start: timeFilter })
+        })
+        .populate('receiver_id', 'firstname lastname email')
+        .select('start')
+        .lean()
+    ]);
+
+    response.agents = agents;
+    response.data = events;
+    response.booked_events = agentsEvents;
+    response.hasEvents = events.length > 0;
+    return res.status(200).send(response);
+  }
+
+  // For agents
+  if (is_TaiGer_Agent(user)) {
+    const [events, students] = await Promise.all([
+      req.db
+        .model('Event')
+        .find({
+          $or: [{ requester_id: user._id }, { receiver_id: user._id }],
+          ...(Object.keys(timeFilter).length && { start: timeFilter })
+        })
+        .populate('receiver_id requester_id', 'firstname lastname email')
+        .lean(),
+      req.db
+        .model('Student')
+        .find({
+          agents: user._id,
+          $or: [{ archiv: { $exists: false } }, { archiv: false }]
+        })
+        .select('firstname lastname firstname_chinese lastname_chinese email')
+        .lean()
+    ]);
+
+    response.data = events;
+    response.students = students;
+    response.hasEvents = events.length > 0;
+  }
+
+  // Agents' information
+  response.agents = await req.db
+    .model('Agent')
+    .find({ _id: user._id })
+    .select('firstname lastname email selfIntroduction officehours timezone');
+
+  res.status(200).send(response);
   next();
 });
 

@@ -59,10 +59,57 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   }
 }));
 
+const ProgramLink = ({ program }) => (
+  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <img
+      src={`/assets/logo/country_logo/svg/${program.country}.svg`}
+      alt="Logo"
+      style={{ maxWidth: 24, maxHeight: 24 }}
+    />
+    &nbsp;
+    <Link
+      underline="hover"
+      component={LinkDom}
+      to={DEMO.SINGLE_PROGRAM_LINK(program._id?.toString())}
+      target="_blank"
+      onClick={(e) => e.stopPropagation()}
+      sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}
+    >
+      {program.school}
+      <IconButton>
+        <LaunchIcon fontSize="small" />
+      </IconButton>
+    </Link>
+  </Box>
+);
+
+const AdmissionLetterLink = ({ application }) => {
+  const { t } = useTranslation();
+  return (
+    (application.admission === 'O' || application.admission === 'X') &&
+    application.admission_letter?.status === 'uploaded' && (
+      <a
+        href={`${BASE_URL}/api/admissions/${application.admission_letter.admission_file_path.replace(
+          /\\/g,
+          '/'
+        )}`}
+        target="_blank"
+        rel="noreferrer"
+        className="text-info"
+      >
+        {application.admission === 'O'
+          ? t('Admission Letter', { ns: 'admissions' })
+          : t('Rejection Letter', { ns: 'admissions' })}
+      </a>
+    )
+  );
+};
+
 export default function ApplicationProgressCard(props) {
   const [isCollapse, setIsCollapse] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
   const [application, setApplication] = useState(props.application);
   const [resultState, setResultState] = useState('-');
   // const [hasFile, setHasFile] = useState(false);
@@ -149,11 +196,12 @@ export default function ApplicationProgressCard(props) {
       }
     );
   };
+
   return (
     <>
       <Card>
         <CardContent onClick={handleToggle}>
-          <Typography sx={{ fontSize: 16 }} color="text.secondary" gutterBottom>
+          <Typography color="text.secondary" gutterBottom>
             {application_deadline_calculator(props.student, application) ===
             'CLOSE' ? (
               <>
@@ -196,52 +244,14 @@ export default function ApplicationProgressCard(props) {
               </>
             )}
           </Typography>
-          <Box sx={{ display: 'flex' }}>
-            <img
-              src={`/assets/logo/country_logo/svg/${application?.programId.country}.svg`}
-              alt="Logo"
-              style={{ maxWidth: '24px', maxHeight: '24px' }}
-            />{' '}
-            &nbsp;
-            <Link
-              underline="hover"
-              to={`${DEMO.SINGLE_PROGRAM_LINK(
-                application?.programId?._id?.toString()
-              )}`}
-              component={LinkDom}
-              target="_blank"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Typography variant="body1" fontWeight="bold">
-                {application?.programId?.school}
-                <IconButton>
-                  <LaunchIcon fontSize="small" />
-                </IconButton>
-              </Typography>
-            </Link>
-          </Box>
+          <ProgramLink program={application.programId} />
           <Typography variant="body2" fontWeight="bold">
             {application?.programId?.degree}{' '}
             {application?.programId?.program_name}{' '}
             {application?.programId?.semester}{' '}
           </Typography>
           <Typography variant="body2">
-            {(application.admission === 'O' || application.admission === 'X') &&
-              application.admission_letter?.status === 'uploaded' && (
-                <a
-                  href={`${BASE_URL}/api/admissions/${application.admission_letter?.admission_file_path.replace(
-                    /\\/g,
-                    '/'
-                  )}`}
-                  target="_blank"
-                  className="text-info"
-                  rel="noreferrer"
-                >
-                  {application.admission === 'O'
-                    ? t('Admission Letter', { ns: 'admissions' })
-                    : t('Rejection Letter', { ns: 'admissions' })}
-                </a>
-              )}
+            <AdmissionLetterLink application={application} />
             {application_deadline_calculator(props.student, application) ===
               'CLOSE' &&
               application.admission !== '-' &&

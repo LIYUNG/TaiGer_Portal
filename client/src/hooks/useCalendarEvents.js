@@ -74,7 +74,7 @@ function useCalendarEvents(props) {
         }
       );
     } else {
-      getEvents().then(
+      getEvents({ startTime: props.startTime, endTime: props.endTime }).then(
         (resp) => {
           const { data, agents, booked_events, students, hasEvents, success } =
             resp.data;
@@ -109,7 +109,7 @@ function useCalendarEvents(props) {
         }
       );
     }
-  }, [props.user_id]);
+  }, [props.user_id, props.startTime, props.endTime]);
 
   // Only Agent can request
   const handleModalCreateEvent = (newEvent) => {

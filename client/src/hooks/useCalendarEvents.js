@@ -40,6 +40,10 @@ function useCalendarEvents(props) {
   });
 
   useEffect(() => {
+    setCalendarEventsState((prevState) => ({
+      ...prevState,
+      isLoaded: false
+    }));
     if (props.isAll) {
       getAllEvents().then(
         (resp) => {

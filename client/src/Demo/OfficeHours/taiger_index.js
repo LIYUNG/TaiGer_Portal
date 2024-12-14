@@ -172,7 +172,7 @@ function TaiGerOfficeHours() {
 
   const endTime = searchParams.get('endTime') || '';
   const [viewMode, setViewMode] = useState(
-    startTime && endTime ? 'future' : 'past'
+    startTime && endTime ? 'past' : 'future'
   );
 
   const [value, setValue] = useState(0);
@@ -306,7 +306,9 @@ function TaiGerOfficeHours() {
           {appConfig.companyName}
         </Link>
 
-        <Typography color="text.primary">My Events</Typography>
+        <Typography color="text.primary">
+          {t('My Events', { ns: 'common' })}
+        </Typography>
       </Breadcrumbs>
 
       {!showCalendar ? (
@@ -422,37 +424,40 @@ function TaiGerOfficeHours() {
             </>
           )}
 
-          {viewMode === 'past' && (
-            <Card sx={{ p: 2 }}>
-              <DateRangePickerBasic />
-              <Typography variant="h6" sx={{ p: 2 }}>
-                {t('Past', { ns: 'common' })}
-              </Typography>
-              <Box>
-                {_.reverse(
-                  _.sortBy(
-                    events?.filter((event) => !isInTheFuture(event.end)),
-                    ['start']
-                  )
-                ).map((event, i) => (
-                  <EventConfirmationCard
-                    key={i}
-                    event={event}
-                    handleConfirmAppointmentModalOpen={
-                      handleConfirmAppointmentModalOpen
-                    }
-                    handleEditAppointmentModalOpen={
-                      handleEditAppointmentModalOpen
-                    }
-                    handleDeleteAppointmentModalOpen={
-                      handleDeleteAppointmentModalOpen
-                    }
-                    disabled={true}
-                  />
-                ))}
-              </Box>
-            </Card>
-          )}
+          {viewMode === 'past' &&
+            (isLoaded ? (
+              <Card sx={{ p: 2 }}>
+                <DateRangePickerBasic />
+                <Typography variant="h6" sx={{ p: 2 }}>
+                  {t('Past', { ns: 'common' })}
+                </Typography>
+                <Box>
+                  {_.reverse(
+                    _.sortBy(
+                      events?.filter((event) => !isInTheFuture(event.end)),
+                      ['start']
+                    )
+                  ).map((event, i) => (
+                    <EventConfirmationCard
+                      key={i}
+                      event={event}
+                      handleConfirmAppointmentModalOpen={
+                        handleConfirmAppointmentModalOpen
+                      }
+                      handleEditAppointmentModalOpen={
+                        handleEditAppointmentModalOpen
+                      }
+                      handleDeleteAppointmentModalOpen={
+                        handleDeleteAppointmentModalOpen
+                      }
+                      disabled={true}
+                    />
+                  ))}
+                </Box>
+              </Card>
+            ) : (
+              <CircularProgress />
+            ))}
 
           <Dialog
             open={isConfirmModalOpen}

@@ -288,6 +288,17 @@ const ResponseTimeDashboardTab = ({
     const currentHash = window.location.hash;
     setSearchParams(newParams);
     window.location.hash = currentHash;
+
+    // Clear URL parameters when component unmounts or when switching tabs
+    return () => {
+      const currentHash = window.location.hash;
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('mode');
+      newParams.delete('student');
+      newParams.delete('member');
+      setSearchParams(newParams);
+      window.location.hash = currentHash;
+    };
   }, [viewMode, student, member]);
 
   const onBarClickLayer1 = ({ userId, name }) => {

@@ -236,11 +236,15 @@ const ResponseTimeDashboardTab = ({
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const paramViewMode = searchParams.get('mode');
   const paramMemberId = searchParams.get('member');
   const paramStudentId = searchParams.get('student');
 
-  const [viewMode, setViewMode] = useState('agents');
   const teams = { agents: agents, editors: editors };
+  const modes = ['agents', 'editors'];
+  const [viewMode, setViewMode] = useState(
+    modes.includes(paramViewMode) ? paramViewMode : 'agents'
+  );
   const teamTypeLabel = viewMode === 'agents' ? 'Agent' : 'Editor';
 
   const [member, setMember] = useState(
@@ -265,6 +269,11 @@ const ResponseTimeDashboardTab = ({
   useEffect(() => {
     const newParams = new URLSearchParams(searchParams);
 
+    if (viewMode) {
+      newParams.set('mode', viewMode);
+    } else {
+      newParams.delete('mode');
+    }
     if (student) {
       newParams.set('student', student.userId);
     } else {
@@ -279,7 +288,7 @@ const ResponseTimeDashboardTab = ({
     const currentHash = window.location.hash;
     setSearchParams(newParams);
     window.location.hash = currentHash;
-  }, [student, member]);
+  }, [viewMode, student, member]);
 
   const onBarClickLayer1 = ({ userId, name }) => {
     const user = { userId, name };

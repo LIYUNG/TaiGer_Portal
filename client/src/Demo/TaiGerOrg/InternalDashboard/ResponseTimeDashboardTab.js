@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardContent,
   Grid,
+  Link,
   Typography
 } from '@mui/material';
 import { BarChart, LineChart } from '@mui/x-charts';
@@ -385,10 +386,16 @@ const ResponseTimeDashboardTab = ({
             >
               <KeyboardReturnIcon sx={{ mr: 1 }} /> Return
             </Button>
-            <Typography
-              component="span"
-              variant="h5"
-            >{`Student Overview - ${student?.name}`}</Typography>
+            <Typography component="span" variant="h5">
+              {`Student Overview - `}
+              <Link
+                underline="hover"
+                href={`/communications/t/${student.userId.toString()}`}
+                target="_blank"
+              >
+                {student?.name}
+              </Link>
+            </Typography>
           </Box>
           <Grid item xs={12}>
             <StudentOverview studentId={student?.userId} />

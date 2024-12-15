@@ -180,7 +180,6 @@ const StudentProgramOverview = ({ title, threadIntervals }) => {
   return (
     <Card>
       <CardHeader
-        // title={`${school} - ${program_name} (${threadIntervals.length})`}
         title={title}
         subheader="Average response time: NaN"
         // subheader={`Average response time: ${getIntervalAvg(
@@ -233,6 +232,17 @@ const StudentOverview = ({ studentId }) => {
 
   return (
     <>
+      {studentIntervals !== 'error' &&
+        studentIntervals?.communicationThreadIntervals?.length > 0 && (
+          <StudentProgramOverview
+            title={'Communication Thread'}
+            threadIntervals={[
+              {
+                intervals: studentIntervals?.communicationThreadIntervals
+              }
+            ]}
+          />
+        )}
       {studentIntervals !== 'error' &&
         studentIntervals?.applications?.length > 0 &&
         studentIntervals.applications.map((application) => (

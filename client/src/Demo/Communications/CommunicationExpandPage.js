@@ -394,9 +394,8 @@ function CommunicationExpandPage() {
                 (messagesLoaded ? (
                   <Box
                     sx={{
-                      height: `calc(100vh - ${APP_BAR_HEIGHT-8}px)`, // Subtract header
-                      overflowY: 'auto',
-                      overflowX: 'hidden' // Prevent horizontal scroll
+                      height: `calc(100vh - ${APP_BAR_HEIGHT - 8}px)`, // Subtract header
+                      overflowY: 'auto'
                     }}
                     ref={scrollableRef}
                   >
@@ -420,16 +419,15 @@ function CommunicationExpandPage() {
                   height: `calc(100vh - ${APP_BAR_HEIGHT}px)`, // Subtract header
                   overflowY: 'auto' /* Enable vertical scrolling */
                 }}
+                ref={scrollableRef}
               >
                 <TopBar />
-                {/* <div ref={scrollableRef}> */}
                 <CommunicationExpandPageMessagesComponent
                   student={communicationExpandPageState.student}
                   data={communicationExpandPageState.thread}
                   student_id={student_id}
                   countIncrease={countIncrease}
                 />
-                {/* </div> */}
               </Box>
             ) : (
               <Box

@@ -223,13 +223,6 @@ const StudentOverview = ({ studentId }) => {
     getResponseIntervalByStudent(studentId).then((res) => {
       if (res?.status === 200) {
         const { data } = res.data;
-        // const convertedDate = data
-        //   ?.map((item) => ({
-        //     ...item,
-        //     intervalStartAt: new Date(item.intervalStartAt)
-        //   }))
-        //   ?.sort((a, b) => a.intervalStartAt - b.intervalStartAt);
-
         setStudentIntervals(data);
         console.log(data);
       } else {

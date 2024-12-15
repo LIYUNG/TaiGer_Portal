@@ -386,7 +386,11 @@ function CommunicationExpandPage() {
             <Drawer
               sx={{
                 pt: 1,
-                flexShrink: 0
+                flexShrink: 0,
+                '& .MuiDrawer-paper': {
+                  width: '100%', // Make Drawer full width on small screens
+                  maxWidth: '100vw'
+                }
               }}
               open={open}
               variant="temporary"
@@ -395,27 +399,21 @@ function CommunicationExpandPage() {
               <TopBar />
               {student_id &&
                 (messagesLoaded ? (
-                  <div
-                    style={{
-                      overflowY: 'auto' /* Enable vertical scrolling */,
-                      overflow: 'hidden'
+                  <Box
+                    sx={{
+                      height: 'calc(100vh - 40px)', // Subtract header
+                      overflowY: 'auto',
+                      overflowX: 'hidden' // Prevent horizontal scroll
                     }}
+                    ref={scrollableRef}
                   >
-                    <div
-                      style={{
-                        overflowY: 'auto' /* Enable vertical scrolling */,
-                        maxHeight: window.innerHeight - 40
-                      }}
-                      ref={scrollableRef}
-                    >
-                      <CommunicationExpandPageMessagesComponent
-                        student={communicationExpandPageState.student}
-                        data={communicationExpandPageState.thread}
-                        student_id={student_id}
-                        countIncrease={countIncrease}
-                      />
-                    </div>
-                  </div>
+                    <CommunicationExpandPageMessagesComponent
+                      student={communicationExpandPageState.student}
+                      data={communicationExpandPageState.thread}
+                      student_id={student_id}
+                      countIncrease={countIncrease}
+                    />
+                  </Box>
                 ) : (
                   <Loading />
                 ))}
@@ -426,7 +424,7 @@ function CommunicationExpandPage() {
             (messagesLoaded ? (
               <div
                 style={{
-                  height: window.innerHeight - 70 - 40,
+                  height: window.innerHeight - 70,
                   overflow: 'hidden'
                 }}
               >
@@ -434,10 +432,8 @@ function CommunicationExpandPage() {
                 <div
                   style={{
                     overflowY: 'auto' /* Enable vertical scrolling */,
-                    maxHeight:
-                      window.innerHeight -
-                      70 -
-                      40 /* Adjusted max height, considering header */
+                    height: 'calc(100vh - 70px)', // Subtract header
+                    overflowX: 'hidden' // Prevent horizontal scroll
                   }}
                   ref={scrollableRef}
                 >

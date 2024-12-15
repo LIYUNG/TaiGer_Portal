@@ -14,7 +14,11 @@ import {
   Typography
 } from '@mui/material';
 import { BarChart, LineChart } from '@mui/x-charts';
-import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import {
+  KeyboardReturn,
+  KeyboardArrowUp,
+  KeyboardArrowDown
+} from '@mui/icons-material';
 
 const { getResponseIntervalByStudent } = require('../../../api');
 
@@ -192,11 +196,15 @@ const StudentProgramOverview = ({
   return (
     <Card onClick={handleClick}>
       <CardHeader
-        title={title}
-        subheader="Average response time: NaN"
-        // subheader={`Average response time: ${getIntervalAvg(
-        //   studentIntervals
-        // ).toFixed(2)} days`}
+        title={
+          <>
+            {isCollapsed ? <KeyboardArrowUp /> : <KeyboardArrowDown />} {title}
+          </>
+        }
+        // subheader="Average response time: NaN"
+        subheader={`Average response time: ${getIntervalAvg(
+          threadIntervals?.flatMap((thread) => thread.intervals)
+        ).toFixed(2)} days`}
       />
       <CardContent>
         <Collapse in={isCollapsed}>
@@ -399,7 +407,7 @@ const ResponseTimeDashboardTab = ({
                 onClick={() => setMember(null)}
                 color="primary"
               >
-                <KeyboardReturnIcon sx={{ mr: 1 }} /> Return
+                <KeyboardReturn sx={{ mr: 1 }} /> Return
               </Button>
               <Typography
                 component="span"
@@ -425,7 +433,7 @@ const ResponseTimeDashboardTab = ({
               onClick={() => setStudent(null)}
               color="primary"
             >
-              <KeyboardReturnIcon sx={{ mr: 1 }} /> Return
+              <KeyboardReturn sx={{ mr: 1 }} /> Return
             </Button>
             <Typography component="span" variant="h5">
               {`Student Overview - `}

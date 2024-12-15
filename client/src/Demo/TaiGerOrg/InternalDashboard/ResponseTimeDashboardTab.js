@@ -100,12 +100,12 @@ const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
       height={400}
       margin={{ top: 20, right: 30, left: 50, bottom: 110 }}
       onClick={onBarClick}
-      onItemClick={(event, barItemIdentifier) =>
+      onItemClick={(event, barItemIdentifier) => {
         onBarClick({
           userId: chartData[barItemIdentifier.dataIndex]?.userId,
           name: chartData[barItemIdentifier.dataIndex]?.name
-        })
-      }
+        });
+      }}
     ></BarChart>
   );
 };
@@ -342,12 +342,12 @@ const ResponseTimeDashboardTab = ({
       newParams.delete('mode');
     }
     if (student) {
-      newParams.set('student', student.userId);
+      newParams.set('student', student?.userId);
     } else {
       newParams.delete('student');
     }
     if (member) {
-      newParams.set('member', member.userId);
+      newParams.set('member', member?.userId);
     } else {
       newParams.delete('member');
     }
@@ -376,6 +376,7 @@ const ResponseTimeDashboardTab = ({
     setMember(user);
   };
   const onBarClickLayer2 = ({ userId, name }) => {
+    if (!userId) return;
     const user = { userId, name };
     setStudent(user);
   };
@@ -456,7 +457,7 @@ const ResponseTimeDashboardTab = ({
               {`Student Overview - `}
               <Link
                 underline="hover"
-                href={`/communications/t/${student.userId.toString()}`}
+                href={`/communications/t/${student?.userId?.toString()}`}
                 target="_blank"
               >
                 {student?.name}

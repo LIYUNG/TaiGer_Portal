@@ -115,7 +115,7 @@ function CommunicationExpandPage() {
       res_modal_message: ''
     });
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(ismobile);
   const [anchorStudentDetailEl, setAnchorStudentDetailEl] = useState(null);
   const isStudentDetailModalOpen = Boolean(anchorStudentDetailEl);
   const [isExportingMessageDisabled, setIsExportingMessageDisabled] =
@@ -227,11 +227,99 @@ function CommunicationExpandPage() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const DrawerChatMemo = () => {
+
+  const countIncrease = () => {
+    setCommunicationExpandPageState((prevState) => ({
+      ...prevState,
+      count: prevState.count + 1
+    }));
+  };
+
+  const TopBar = () => {
     return (
-      <MemoizedEmbeddedChatList count={communicationExpandPageState.count} />
+      <Box
+        className="sticky-top"
+        sx={{
+          display: 'flex'
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex'
+          }}
+        >
+          {ismobile && (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              style={{ marginLeft: '4px' }}
+              onClick={(e) => handleDrawerClose(e)}
+              edge="start"
+            >
+              <ArrowBackIcon />
+            </IconButton>
+          )}
+          <Avatar {...stringAvatar(student_name_english)}></Avatar>
+          <Link
+            to={DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+              student_id,
+              DEMO.PROFILE_HASH
+            )}
+            component={LinkDom}
+          >
+            <Typography variant="body1" fontWeight="bold" sx={{ ml: 1, mt: 1 }}>
+              {student_name_english}
+            </Typography>
+          </Link>
+        </Box>
+        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ mr: 2, md: 'flex' }}>
+          <Stack
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center"
+            spacing={0}
+          >
+            <LastLoginTime date={student.lastLoginAt} />
+            <Tooltip title={t('Export messages', { ns: 'common' })}>
+              <IconButton
+                color="inherit"
+                aria-label="open-more"
+                aria-controls={dropdownId}
+                aria-haspopup="true"
+                onClick={handleExportMessages}
+                edge="end"
+                disabled={isExportingMessageDisabled}
+              >
+                {isExportingMessageDisabled ? (
+                  <CircularProgress size={16} />
+                ) : (
+                  <ExitToAppIcon />
+                )}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={t('More', { ns: 'common' })}>
+              <IconButton
+                color="inherit"
+                aria-label="open-more"
+                aria-controls={dropdownId}
+                aria-haspopup="true"
+                onClick={handleStudentDetailModalOpen}
+                edge="end"
+              >
+                <MoreVertIcon />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        </Box>
+      </Box>
     );
   };
+  // const DrawerChatMemo = () => {
+  //   return (
+  //     <MemoizedEmbeddedChatList count={communicationExpandPageState.count} />
+  //   );
+  // };
 
   const dropdownId = 'primary-student-modal';
 
@@ -258,9 +346,6 @@ function CommunicationExpandPage() {
 
   return (
     <Box
-      onClick={() => {
-        handleDrawerClose();
-      }}
       style={{
         marginLeft: '-24px',
         marginRight: '-18px',
@@ -297,103 +382,47 @@ function CommunicationExpandPage() {
           </Box>
         </Grid>
         <Grid item xs md>
-          <Box
-            className="sticky-top"
-            sx={{
-              display: 'flex'
-            }}
-          >
-            <Box
+          {ismobile && (
+            <Drawer
               sx={{
-                display: 'flex'
+                pt: 1,
+                flexShrink: 0
               }}
+              open={open}
+              variant="temporary"
+              anchor="right"
             >
-              {ismobile && (
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  style={{ marginLeft: '4px' }}
-                  onClick={(e) => handleDrawerOpen(e)}
-                  edge="start"
-                >
-                  <ArrowBackIcon />
-                </IconButton>
-              )}
-              <Avatar {...stringAvatar(student_name_english)}></Avatar>
-              <Link
-                to={DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                  student_id,
-                  DEMO.PROFILE_HASH
-                )}
-                component={LinkDom}
-              >
-                <Typography
-                  variant="body1"
-                  fontWeight="bold"
-                  sx={{ ml: 1, mt: 1 }}
-                >
-                  {student_name_english}
-                </Typography>
-              </Link>
-            </Box>
-            <Box sx={{ flexGrow: 1 }} />
-            <Box sx={{ mr: 2, md: 'flex' }}>
-              <Stack
-                direction="row"
-                justifyContent="flex-end"
-                alignItems="center"
-                spacing={0}
-              >
-                <LastLoginTime date={student.lastLoginAt} />
-                <Tooltip title={t('Export messages', { ns: 'common' })}>
-                  <IconButton
-                    color="inherit"
-                    aria-label="open-more"
-                    aria-controls={dropdownId}
-                    aria-haspopup="true"
-                    onClick={handleExportMessages}
-                    edge="end"
-                    disabled={isExportingMessageDisabled}
+              <TopBar />
+              {student_id &&
+                (messagesLoaded ? (
+                  <div
+                    style={{
+                      overflowY: 'auto' /* Enable vertical scrolling */,
+                      overflow: 'hidden'
+                    }}
                   >
-                    {isExportingMessageDisabled ? (
-                      <CircularProgress size={16} />
-                    ) : (
-                      <ExitToAppIcon />
-                    )}
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={t('More', { ns: 'common' })}>
-                  <IconButton
-                    color="inherit"
-                    aria-label="open-more"
-                    aria-controls={dropdownId}
-                    aria-haspopup="true"
-                    onClick={handleStudentDetailModalOpen}
-                    edge="end"
-                  >
-                    <MoreVertIcon />
-                  </IconButton>
-                </Tooltip>
-              </Stack>
-            </Box>
-          </Box>
-          <Drawer
-            sx={{
-              width: '300px',
-              flexShrink: 0,
-              '& .MuiDrawer-paper': {
-                width: '300px',
-                boxSizing: 'border-box'
-              }
-            }}
-            open={open}
-            variant="temporary"
-            anchor="left"
-          >
-            <DrawerChatMemo />
-          </Drawer>
-          {!student_id && <Typography>Empty</Typography>}
-          {student_id &&
+                    <div
+                      style={{
+                        overflowY: 'auto' /* Enable vertical scrolling */,
+                        maxHeight: window.innerHeight - 40
+                      }}
+                      ref={scrollableRef}
+                    >
+                      <CommunicationExpandPageMessagesComponent
+                        student={communicationExpandPageState.student}
+                        data={communicationExpandPageState.thread}
+                        student_id={student_id}
+                        countIncrease={countIncrease}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <Loading />
+                ))}
+            </Drawer>
+          )}
+          {!ismobile &&
+            student_id &&
             (messagesLoaded ? (
               <div
                 style={{
@@ -401,6 +430,7 @@ function CommunicationExpandPage() {
                   overflow: 'hidden'
                 }}
               >
+                <TopBar />
                 <div
                   style={{
                     overflowY: 'auto' /* Enable vertical scrolling */,
@@ -415,6 +445,7 @@ function CommunicationExpandPage() {
                     student={communicationExpandPageState.student}
                     data={communicationExpandPageState.thread}
                     student_id={student_id}
+                    countIncrease={countIncrease}
                   />
                 </div>
               </div>
@@ -430,6 +461,31 @@ function CommunicationExpandPage() {
                 <Loading />
               </Box>
             ))}
+          {!student_id && <Typography>Empty</Typography>}
+          {ismobile && (
+            <Box sx={{ display: { md: 'flex' } }}>
+              <div
+                style={{
+                  height: window.innerHeight - 70,
+                  overflow: 'hidden'
+                }}
+              >
+                <div
+                  style={{
+                    overflowY: 'auto' /* Enable vertical scrolling */,
+                    maxHeight:
+                      window.innerHeight -
+                      70 /* Adjusted max height, considering header */
+                  }}
+                  onClick={(e) => handleDrawerOpen(e)}
+                >
+                  <MemoizedEmbeddedChatList
+                    count={communicationExpandPageState.count}
+                  />
+                </div>
+              </div>
+            </Box>
+          )}
         </Grid>
         <Box sx={{ marginLeft: 0 }}>
           <MemorizedStudentDetailModal

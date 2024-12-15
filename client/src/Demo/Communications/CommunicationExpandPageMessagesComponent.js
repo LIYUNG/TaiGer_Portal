@@ -8,7 +8,11 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { useAuth } from '../../components/AuthProvider';
 import useCommunications from '../../hooks/useCommunications';
 
-function CommunicationExpandPageMessagesComponent({ data, student }) {
+function CommunicationExpandPageMessagesComponent({
+  data,
+  student,
+  countIncrease
+}) {
   const { user } = useAuth();
   const { t } = useTranslation();
   const theme = useTheme();
@@ -66,6 +70,11 @@ function CommunicationExpandPageMessagesComponent({ data, student }) {
       window.removeEventListener('resize', handleResize);
     };
   }, [windowInnerWidth]);
+
+  const handleSave = (e, editorState) => {
+    countIncrease();
+    handleClickSave(e, editorState);
+  };
 
   const ConfirmError = () => {
     setCommunicationExpandPageMessagesComponentState((prevState) => ({
@@ -144,7 +153,7 @@ function CommunicationExpandPageMessagesComponent({ data, student }) {
                       files={files}
                       onFileChange={onFileChange}
                       checkResult={checkResult}
-                      handleClickSave={handleClickSave}
+                      handleClickSave={handleSave}
                     />
                   </Card>
                 </Grid>

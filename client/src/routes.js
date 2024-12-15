@@ -121,10 +121,7 @@ const ProgramTaskDelta = React.lazy(() =>
   import('./Demo/TaiGerOrg/ProgramTaskDelta/index')
 );
 const TaiGerPermissions = React.lazy(() => import('./Demo/TaiGerOrg/index'));
-const TaiGerUsersLog = React.lazy(() => import('./Demo/TaiGerOrg/Log/index'));
-const TaiGerUserLog = React.lazy(() =>
-  import('./Demo/TaiGerOrg/Log/PortalSingleUserLog')
-);
+
 const TaiGerOrg = React.lazy(() =>
   import('./Demo/TaiGerOrg/TaiGerMember/index')
 );
@@ -594,18 +591,6 @@ const routes = [
     exact: true,
     name: '',
     Component: Accounting
-  },
-  {
-    path: '/internal/logs',
-    exact: true,
-    name: '',
-    Component: TaiGerUsersLog
-  },
-  {
-    path: '/internal/logs/:user_id',
-    exact: true,
-    name: '',
-    Component: TaiGerUserLog
   },
   {
     path: '/internal/accounting/users/:taiger_user_id',

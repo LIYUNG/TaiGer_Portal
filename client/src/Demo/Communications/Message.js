@@ -219,7 +219,14 @@ function Message(props) {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <Box>
+          <Box
+            sx={{
+              overflowWrap: 'break-word', // Ensures long words wrap
+              wordBreak: 'break-word', // Breaks the word to avoid overflow
+              maxWidth: '100%', // Ensures content does not exceed parent width
+              flex: 1 // Makes Box flexible within its container
+            }}
+          >
             <EditorSimple
               holder={`${props.message._id.toString()}`}
               readOnly={true}

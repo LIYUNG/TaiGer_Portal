@@ -48,6 +48,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open, ismobile }) => ({
     flexGrow: 1,
     padding: theme.spacing(3),
+    maxHeight: 'calc(100vh - 64px)',
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
@@ -405,7 +406,7 @@ function NavBar(props) {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        // minHeight: '100vh',
         display: 'flex'
       }}
       onClick={() => {

@@ -95,7 +95,7 @@ function CommunicationExpandPage() {
   const { t } = useTranslation();
   const theme = useTheme();
   const ismobile = useMediaQuery(theme.breakpoints.down('md'));
-
+  const APP_BAR_HEIGHT = 64;
   const [communicationExpandPageState, setCommunicationExpandPageState] =
     useState({
       error: '',
@@ -350,23 +350,23 @@ function CommunicationExpandPage() {
       style={{
         marginLeft: '-24px',
         marginRight: '-18px',
-        marginTop: '-18px',
+        marginTop: '-24px',
         marginBottom: '-24px'
       }}
     >
-      <Grid container>
+      <Grid container spacing={0}>
         <Grid
           item
           xs={12} // Full width on extra small screens
           md="auto" // Let it auto-size on medium screens and up
           sx={{
+            maxHeight: `calc(100vh - ${APP_BAR_HEIGHT}px)`,
+            overflowY: 'auto',
             display: { xs: 'none', md: 'flex' }
           }}
         >
           <Box
             sx={{
-              height: 'calc(100vh - 70px)',
-              overflowY: 'auto',
               maxWidth: '300px' // Responsive width
             }}
           >
@@ -394,7 +394,7 @@ function CommunicationExpandPage() {
                 (messagesLoaded ? (
                   <Box
                     sx={{
-                      height: 'calc(100vh - 40px)', // Subtract header
+                      height: `calc(100vh - ${APP_BAR_HEIGHT}px)`, // Subtract header
                       overflowY: 'auto',
                       overflowX: 'hidden' // Prevent horizontal scroll
                     }}
@@ -417,26 +417,19 @@ function CommunicationExpandPage() {
             (messagesLoaded ? (
               <Box
                 style={{
-                  height: window.innerHeight - 70,
-                  overflow: 'hidden'
+                  height: `calc(100vh - ${APP_BAR_HEIGHT}px)`, // Subtract header
+                  overflowY: 'auto' /* Enable vertical scrolling */
                 }}
               >
                 <TopBar />
-                <div
-                  style={{
-                    overflowY: 'auto' /* Enable vertical scrolling */,
-                    height: 'calc(100vh - 100px)', // Subtract header
-                    overflowX: 'hidden' // Prevent horizontal scroll
-                  }}
-                  ref={scrollableRef}
-                >
-                  <CommunicationExpandPageMessagesComponent
-                    student={communicationExpandPageState.student}
-                    data={communicationExpandPageState.thread}
-                    student_id={student_id}
-                    countIncrease={countIncrease}
-                  />
-                </div>
+                {/* <div ref={scrollableRef}> */}
+                <CommunicationExpandPageMessagesComponent
+                  student={communicationExpandPageState.student}
+                  data={communicationExpandPageState.thread}
+                  student_id={student_id}
+                  countIncrease={countIncrease}
+                />
+                {/* </div> */}
               </Box>
             ) : (
               <Box
@@ -452,21 +445,17 @@ function CommunicationExpandPage() {
             ))}
           {!student_id && <Typography>Empty</Typography>}
           {ismobile && (
-            <Box sx={{ display: { md: 'flex' } }}>
-              <div
-                style={{
-                  height: window.innerHeight,
-                  overflow: 'hidden',
-                  overflowY: 'auto' /* Enable vertical scrolling */,
-                  maxHeight:
-                    window.innerHeight /* Adjusted max height, considering header */
-                }}
-                onClick={(e) => handleDrawerOpen(e)}
-              >
-                <MemoizedEmbeddedChatList
-                  count={communicationExpandPageState.count}
-                />
-              </div>
+            <Box
+              sx={{
+                display: { md: 'flex' },
+                maxHeight: `calc(100vh - ${APP_BAR_HEIGHT}px)`,
+                overflow: 'auto' // Prevent parent scroll
+              }}
+              onClick={(e) => handleDrawerOpen(e)}
+            >
+              <MemoizedEmbeddedChatList
+                count={communicationExpandPageState.count}
+              />
             </Box>
           )}
         </Grid>

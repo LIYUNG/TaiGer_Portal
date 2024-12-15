@@ -120,7 +120,7 @@ const ChartOverview = ({ data, teamType, onBarClick }) => {
         if (!chartData || chartData?.length === 0) return null;
         const averageInterval = getIntervalAvg(chartData);
         return (
-          <Card key={fileType}>
+          <Card key={fileType} sx={{ mb: 2 }}>
             <CardHeader
               title={`${fileType} Response Times`}
               subheader={`Average response time: ${averageInterval.toFixed(
@@ -194,7 +194,7 @@ const StudentProgramOverview = ({
   };
 
   return (
-    <Card onClick={handleClick}>
+    <Card onClick={handleClick} sx={{ mb: 2 }}>
       <CardHeader
         title={
           <>
@@ -245,7 +245,6 @@ const StudentOverview = ({ studentId }) => {
       if (res?.status === 200) {
         const { data } = res.data;
         setStudentIntervals(data);
-        console.log(data);
       } else {
         setStudentIntervals('error');
       }

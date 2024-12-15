@@ -165,7 +165,10 @@ function Message(props) {
           borderRadius: 2,
           overflowWrap: 'break-word', // Add this line
           ...(props.isTaiGerView &&
-            !ismobile && { maxWidth: window.innerWidth - 664 + 32 }),
+            !ismobile && {
+              width: '100%', // Make Drawer full width on small screens
+              maxWidth: '100vw'
+            }),
           marginTop: '1px',
           '& .MuiAvatar-root': {
             width: 32,

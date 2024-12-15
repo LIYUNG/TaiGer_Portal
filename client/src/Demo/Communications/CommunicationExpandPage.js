@@ -53,7 +53,7 @@ const StudentDetailModal = ({
     anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
     sx={{
       filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-      height: window.innerHeight - 56
+      height: window.innerHeight
     }}
   >
     <ListItem sx={{ py: 1 }}>
@@ -240,6 +240,7 @@ function CommunicationExpandPage() {
       <Box
         className="sticky-top"
         sx={{
+          m: 1,
           display: 'flex'
         }}
       >
@@ -356,36 +357,28 @@ function CommunicationExpandPage() {
       <Grid container>
         <Grid
           item
-          style={{ width: '300px' }}
-          sx={{ display: { xs: 'none', md: 'flex' } }}
+          xs={12} // Full width on extra small screens
+          md="auto" // Let it auto-size on medium screens and up
+          sx={{
+            display: { xs: 'none', md: 'flex' }
+          }}
         >
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <div
-              style={{
-                height: window.innerHeight - 70,
-                overflow: 'hidden'
-              }}
-            >
-              <div
-                style={{
-                  overflowY: 'auto' /* Enable vertical scrolling */,
-                  maxHeight:
-                    window.innerHeight -
-                    70 /* Adjusted max height, considering header */
-                }}
-              >
-                <MemoizedEmbeddedChatList
-                  count={communicationExpandPageState.count}
-                />
-              </div>
-            </div>
+          <Box
+            sx={{
+              height: 'calc(100vh - 70px)',
+              overflowY: 'auto',
+              maxWidth: '300px' // Responsive width
+            }}
+          >
+            <MemoizedEmbeddedChatList
+              count={communicationExpandPageState.count}
+            />
           </Box>
         </Grid>
-        <Grid item xs md>
+        <Grid item xs={12} md>
           {ismobile && (
             <Drawer
               sx={{
-                pt: 1,
                 flexShrink: 0,
                 '& .MuiDrawer-paper': {
                   width: '100%', // Make Drawer full width on small screens
@@ -422,7 +415,7 @@ function CommunicationExpandPage() {
           {!ismobile &&
             student_id &&
             (messagesLoaded ? (
-              <div
+              <Box
                 style={{
                   height: window.innerHeight - 70,
                   overflow: 'hidden'
@@ -432,7 +425,7 @@ function CommunicationExpandPage() {
                 <div
                   style={{
                     overflowY: 'auto' /* Enable vertical scrolling */,
-                    height: 'calc(100vh - 70px)', // Subtract header
+                    height: 'calc(100vh - 100px)', // Subtract header
                     overflowX: 'hidden' // Prevent horizontal scroll
                   }}
                   ref={scrollableRef}
@@ -444,7 +437,7 @@ function CommunicationExpandPage() {
                     countIncrease={countIncrease}
                   />
                 </div>
-              </div>
+              </Box>
             ) : (
               <Box
                 sx={{
@@ -462,23 +455,17 @@ function CommunicationExpandPage() {
             <Box sx={{ display: { md: 'flex' } }}>
               <div
                 style={{
-                  height: window.innerHeight - 70,
-                  overflow: 'hidden'
+                  height: window.innerHeight,
+                  overflow: 'hidden',
+                  overflowY: 'auto' /* Enable vertical scrolling */,
+                  maxHeight:
+                    window.innerHeight /* Adjusted max height, considering header */
                 }}
+                onClick={(e) => handleDrawerOpen(e)}
               >
-                <div
-                  style={{
-                    overflowY: 'auto' /* Enable vertical scrolling */,
-                    maxHeight:
-                      window.innerHeight -
-                      70 /* Adjusted max height, considering header */
-                  }}
-                  onClick={(e) => handleDrawerOpen(e)}
-                >
-                  <MemoizedEmbeddedChatList
-                    count={communicationExpandPageState.count}
-                  />
-                </div>
+                <MemoizedEmbeddedChatList
+                  count={communicationExpandPageState.count}
+                />
               </div>
             </Box>
           )}

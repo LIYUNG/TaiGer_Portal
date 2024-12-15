@@ -98,7 +98,7 @@ function CommunicationExpandPageMessagesComponent({
             onClick={handleLoadMessages}
             disabled={loadButtonDisabled}
             size="small"
-            sx={{ my: 1 }}
+            sx={{ mb: 1 }}
           >
             {t('Load')}
           </Button>
@@ -135,7 +135,8 @@ function CommunicationExpandPageMessagesComponent({
                       borderRadius: 2,
                       padding: 2,
                       ...(!ismobile && {
-                        maxWidth: windowInnerWidth - 664 + 32
+                        width: '100%', // Make Drawer full width on small screens
+                        maxWidth: '100vw'
                       }),
                       pt: 2,
                       '& .MuiAvatar-root': {

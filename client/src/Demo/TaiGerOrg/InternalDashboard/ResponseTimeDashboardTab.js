@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardContent,
   Collapse,
+  Divider,
   Grid,
   Link,
   Typography
@@ -210,26 +211,35 @@ const StudentProgramOverview = ({
         <Collapse in={isCollapsed}>
           {threadIntervals.length !== 0 &&
             threadIntervals.map((thread) => (
-              <LineChart
-                key={thread.threadId}
-                dataset={thread.intervals
-                  .map((item) => ({
-                    ...item,
-                    intervalStartAt: new Date(item.intervalStartAt)
-                  }))
-                  .sort((a, b) => a.intervalStartAt - b.intervalStartAt)}
-                series={[{ dataKey: 'interval' }]}
-                xAxis={[
-                  {
-                    label: thread.intervalType,
-                    dataKey: 'intervalStartAt',
-                    scaleType: 'time'
-                  }
-                ]}
-                yAxis={[{ label: 'Duration (days)' }]}
-                margin={{ top: 20, right: 30, left: 50, bottom: 110 }}
-                height={400}
-              />
+              <>
+                {thread.intervalType && (
+                  <Divider textAlign="left" sx={{ mb: 10, px: 6 }}>
+                    <Typography variant="h6" sx={{ px: 1 }}>
+                      {thread.intervalType}
+                    </Typography>
+                  </Divider>
+                )}
+                <LineChart
+                  key={thread.threadId}
+                  dataset={thread.intervals
+                    .map((item) => ({
+                      ...item,
+                      intervalStartAt: new Date(item.intervalStartAt)
+                    }))
+                    .sort((a, b) => a.intervalStartAt - b.intervalStartAt)}
+                  series={[{ dataKey: 'interval' }]}
+                  xAxis={[
+                    {
+                      // label: thread.intervalType,
+                      dataKey: 'intervalStartAt',
+                      scaleType: 'time'
+                    }
+                  ]}
+                  yAxis={[{ label: 'Duration (days)' }]}
+                  margin={{ top: 20, right: 30, left: 50, bottom: 110 }}
+                  height={400}
+                />
+              </>
             ))}
         </Collapse>
       </CardContent>
@@ -253,6 +263,13 @@ const StudentOverview = ({ studentId }) => {
 
   return (
     <>
+      {studentIntervals !== 'error' &&
+        !studentIntervals?.communicationThreadIntervals &&
+        studentIntervals?.applications?.length == 0 && (
+          <Typography variant="h5" sx={{ p: 2 }}>
+            No data available.
+          </Typography>
+        )}
       {studentIntervals !== 'error' &&
         studentIntervals?.communicationThreadIntervals?.length > 0 && (
           <StudentProgramOverview

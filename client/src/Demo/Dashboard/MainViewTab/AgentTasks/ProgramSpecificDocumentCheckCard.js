@@ -1,12 +1,7 @@
 import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import {
-  Card,
-  Alert,
-  Typography,
-  Link
-} from '@mui/material';
+import { Card, Alert, Typography, Link } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 
 import { useAuth } from '../../../../components/AuthProvider';
@@ -22,7 +17,7 @@ function ProgramSpecificDocumentCheckCard(props) {
 
   const no_programs_student_tasks = open_tasks(props.students)
     .filter((student) =>
-      student.agents.some((agent) => agent._id === user._id.toString())
+      student.agents?.some((agent) => agent._id === user._id?.toString())
     )
     .filter((open_task) =>
       [...AGENT_SUPPORT_DOCUMENTS_A].includes(open_task.file_type)
@@ -38,7 +33,8 @@ function ProgramSpecificDocumentCheckCard(props) {
       width: 120,
       renderCell: (params) => {
         const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-          params.row.student_id
+          params.row.student_id,
+          DEMO.APPLICATION_HASH
         )}`;
         return (
           <Link

@@ -459,7 +459,52 @@ const getResponseIntervalByStudent = asyncHandler(async (req, res) => {
     })
     .select('-updatedAt -_id -student_id')
     .lean();
-  res.status(200).send({ success: true, data: responseIntervalRecords });
+
+  const intervalsGroupedByThread = responseIntervalRecords.reduce(
+    (acc, item) => {
+      const key = item.thread_id || item.interval_type;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(item);
+      return acc;
+    },
+    {}
+  );
+
+  studentApplications.applications = studentApplications.applications
+    .map((application) => {
+      const threadIds = application.doc_modification_thread;
+      if (!threadIds) {
+        return;
+      }
+      let intervalsByThreads = [];
+      const threadIntervals = threadIds.forEach((threadId) => {
+        const _id = threadId.toString();
+        if (intervalsGroupedByThread.hasOwnProperty(_id)) {
+          intervalsByThreads.push({
+            threadId: _id,
+            intervalType: intervalsGroupedByThread[_id][0].interval_type,
+            intervals: intervalsGroupedByThread[_id]?.map((interval) => {
+              delete interval.thread_id;
+              delete interval.interval_type;
+              return interval;
+            })
+          });
+        }
+      });
+      if (intervalsByThreads.length === 0) {
+        return;
+      }
+      delete application.doc_modification_thread;
+      application.threadIntervals = intervalsByThreads;
+      const { ['programId']: program, ...rest } = application;
+      application = { ...program, ...rest };
+      return application;
+    })
+    ?.filter((application) => !!application);
+
+  res.status(200).send({ success: true, data: studentApplications });
 });
 
 const getResponseTimeByStudent = asyncHandler(async (req, res) => {

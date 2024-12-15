@@ -472,6 +472,9 @@ const getResponseIntervalByStudent = asyncHandler(async (req, res) => {
     {}
   );
 
+  studentApplications.communicationThreadIntervals =
+    intervalsGroupedByThread?.['communication'];
+
   studentApplications.applications = studentApplications.applications
     .map((application) => {
       const threadIds = application.doc_modification_thread;

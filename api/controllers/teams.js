@@ -422,10 +422,43 @@ const getEditorData = asyncHandler(async (req, editor) => {
 
 const getResponseIntervalByStudent = asyncHandler(async (req, res) => {
   const studentId = req.params.studentId;
+
+  const studentApplications = await req.db
+    .model('Student')
+    .findById(studentId)
+    .populate({
+      path: 'applications.programId',
+      select: 'school program_name'
+    })
+    .select({
+      'applications.programId': 1,
+      'applications.doc_modification_thread.doc_thread_id': 1
+    })
+    .lean();
+
+  let allDocThreadId = [];
+  if (studentApplications && studentApplications.applications) {
+    studentApplications.applications = studentApplications.applications.map(
+      (app) => ({
+        programId: app.programId,
+        doc_modification_thread: app.doc_modification_thread.map(
+          (thread) => thread.doc_thread_id
+        )
+      })
+    );
+
+    allDocThreadIds = studentApplications.applications.reduce((acc, app) => {
+      return acc.concat(app.doc_modification_thread);
+    }, []);
+  }
+
   const responseIntervalRecords = await req.db
     .model('Interval')
-    .find({ student_id: studentId })
-    .select('-updatedAt -_id');
+    .find({
+      $or: [{ student_id: studentId }, { thread_id: { $in: allDocThreadIds } }]
+    })
+    .select('-updatedAt -_id -student_id')
+    .lean();
   res.status(200).send({ success: true, data: responseIntervalRecords });
 });
 

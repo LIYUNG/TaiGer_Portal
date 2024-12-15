@@ -8,6 +8,7 @@ import {
   Card,
   CardHeader,
   CardContent,
+  Collapse,
   Grid,
   Link,
   Typography
@@ -176,9 +177,20 @@ const MemberOverview = ({
   );
 };
 
-const StudentProgramOverview = ({ title, threadIntervals }) => {
+const StudentProgramOverview = ({
+  title,
+  threadIntervals,
+  collapse = false
+}) => {
+  const [isCollapsed, setIsCollapsed] = useState(collapse);
+
+  const handleClick = (e) => {
+    e.stopPropagation();
+    setIsCollapsed((prevOpen) => !prevOpen);
+  };
+
   return (
-    <Card>
+    <Card onClick={handleClick}>
       <CardHeader
         title={title}
         subheader="Average response time: NaN"
@@ -187,29 +199,31 @@ const StudentProgramOverview = ({ title, threadIntervals }) => {
         // ).toFixed(2)} days`}
       />
       <CardContent>
-        {threadIntervals.length !== 0 &&
-          threadIntervals.map((thread) => (
-            <LineChart
-              key={thread.threadId}
-              dataset={thread.intervals
-                .map((item) => ({
-                  ...item,
-                  intervalStartAt: new Date(item.intervalStartAt)
-                }))
-                .sort((a, b) => a.intervalStartAt - b.intervalStartAt)}
-              series={[{ dataKey: 'interval' }]}
-              xAxis={[
-                {
-                  label: thread.intervalType,
-                  dataKey: 'intervalStartAt',
-                  scaleType: 'time'
-                }
-              ]}
-              yAxis={[{ label: 'Duration (days)' }]}
-              margin={{ top: 20, right: 30, left: 50, bottom: 110 }}
-              height={400}
-            />
-          ))}
+        <Collapse in={isCollapsed}>
+          {threadIntervals.length !== 0 &&
+            threadIntervals.map((thread) => (
+              <LineChart
+                key={thread.threadId}
+                dataset={thread.intervals
+                  .map((item) => ({
+                    ...item,
+                    intervalStartAt: new Date(item.intervalStartAt)
+                  }))
+                  .sort((a, b) => a.intervalStartAt - b.intervalStartAt)}
+                series={[{ dataKey: 'interval' }]}
+                xAxis={[
+                  {
+                    label: thread.intervalType,
+                    dataKey: 'intervalStartAt',
+                    scaleType: 'time'
+                  }
+                ]}
+                yAxis={[{ label: 'Duration (days)' }]}
+                margin={{ top: 20, right: 30, left: 50, bottom: 110 }}
+                height={400}
+              />
+            ))}
+        </Collapse>
       </CardContent>
     </Card>
   );
@@ -241,6 +255,7 @@ const StudentOverview = ({ studentId }) => {
                 intervals: studentIntervals?.communicationThreadIntervals
               }
             ]}
+            collapse={true}
           />
         )}
       {studentIntervals !== 'error' &&

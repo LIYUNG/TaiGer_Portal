@@ -127,38 +127,32 @@ function CommunicationExpandPageMessagesComponent({
             isTaiGerView={true}
           />
           {student.archiv !== true ? (
-            <Card>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Card
-                    sx={{
-                      borderRadius: 2,
-                      padding: 2,
-                      ...(!ismobile && {
-                        width: '100%', // Make Drawer full width on small screens
-                        maxWidth: '100vw'
-                      }),
-                      pt: 2,
-                      '& .MuiAvatar-root': {
-                        width: 32,
-                        height: 32,
-                        ml: -0.5,
-                        mr: 1
-                      }
-                    }}
-                  >
-                    <CommunicationThreadEditor
-                      thread={thread}
-                      buttonDisabled={buttonDisabled}
-                      editorState={editorState}
-                      files={files}
-                      onFileChange={onFileChange}
-                      checkResult={checkResult}
-                      handleClickSave={handleSave}
-                    />
-                  </Card>
-                </Grid>
-              </Grid>
+            <Card
+              sx={{
+                borderRadius: 2,
+                padding: 2,
+                ...(!ismobile && {
+                  width: '100%', // Make Drawer full width on small screens
+                  maxWidth: '100vw'
+                }),
+                pt: 2,
+                '& .MuiAvatar-root': {
+                  width: 32,
+                  height: 32,
+                  ml: -0.5,
+                  mr: 1
+                }
+              }}
+            >
+              <CommunicationThreadEditor
+                thread={thread}
+                buttonDisabled={buttonDisabled}
+                editorState={editorState}
+                files={files}
+                onFileChange={onFileChange}
+                checkResult={checkResult}
+                handleClickSave={handleSave}
+              />
             </Card>
           ) : (
             <Card>

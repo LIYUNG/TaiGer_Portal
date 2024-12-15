@@ -240,7 +240,7 @@ function CommunicationExpandPage() {
       <Box
         className="sticky-top"
         sx={{
-          m: 1,
+          my: 1,
           display: 'flex'
         }}
       >
@@ -394,7 +394,7 @@ function CommunicationExpandPage() {
                 (messagesLoaded ? (
                   <Box
                     sx={{
-                      height: `calc(100vh - ${APP_BAR_HEIGHT}px)`, // Subtract header
+                      height: `calc(100vh - ${APP_BAR_HEIGHT-8}px)`, // Subtract header
                       overflowY: 'auto',
                       overflowX: 'hidden' // Prevent horizontal scroll
                     }}

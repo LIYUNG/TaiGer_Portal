@@ -176,6 +176,46 @@ const MemberOverview = ({
   );
 };
 
+const StudentProgramOverview = ({ application }) => {
+  const { school, program_name, threadIntervals } = application;
+  return (
+    <Card>
+      <CardHeader
+        title={`${school} - ${program_name} (${threadIntervals.length})`}
+        subheader="Average response time: NaN"
+        // subheader={`Average response time: ${getIntervalAvg(
+        //   studentIntervals
+        // ).toFixed(2)} days`}
+      />
+      <CardContent>
+        {threadIntervals.length !== 0 &&
+          threadIntervals.map((thread) => (
+            <LineChart
+              key={thread.threadId}
+              dataset={thread.intervals
+                .map((item) => ({
+                  ...item,
+                  intervalStartAt: new Date(item.intervalStartAt)
+                }))
+                .sort((a, b) => a.intervalStartAt - b.intervalStartAt)}
+              series={[{ dataKey: 'interval' }]}
+              xAxis={[
+                {
+                  label: thread.intervalType,
+                  dataKey: 'intervalStartAt',
+                  scaleType: 'time'
+                }
+              ]}
+              yAxis={[{ label: 'Duration (days)' }]}
+              margin={{ top: 20, right: 30, left: 50, bottom: 110 }}
+              height={400}
+            />
+          ))}
+      </CardContent>
+    </Card>
+  );
+};
+
 const StudentOverview = ({ studentId }) => {
   const [studentIntervals, setStudentIntervals] = useState('error');
   useEffect(() => {
@@ -183,14 +223,15 @@ const StudentOverview = ({ studentId }) => {
     getResponseIntervalByStudent(studentId).then((res) => {
       if (res?.status === 200) {
         const { data } = res.data;
-        const convertedDate = data
-          ?.map((item) => ({
-            ...item,
-            intervalStartAt: new Date(item.intervalStartAt)
-          }))
-          ?.sort((a, b) => a.intervalStartAt - b.intervalStartAt);
+        // const convertedDate = data
+        //   ?.map((item) => ({
+        //     ...item,
+        //     intervalStartAt: new Date(item.intervalStartAt)
+        //   }))
+        //   ?.sort((a, b) => a.intervalStartAt - b.intervalStartAt);
 
-        setStudentIntervals(convertedDate);
+        setStudentIntervals(data);
+        console.log(data);
       } else {
         setStudentIntervals('error');
       }
@@ -199,33 +240,14 @@ const StudentOverview = ({ studentId }) => {
 
   return (
     <>
-      {studentIntervals != 'error' && (
-        <>
-          <Card>
-            <CardHeader
-              title={`Response Times`}
-              subheader={`Average response time: ${getIntervalAvg(
-                studentIntervals
-              ).toFixed(2)} days`}
-            />
-            <CardContent>
-              <LineChart
-                dataset={studentIntervals}
-                series={[{ dataKey: 'interval' }]}
-                xAxis={[
-                  {
-                    dataKey: 'intervalStartAt',
-                    scaleType: 'time'
-                  }
-                ]}
-                yAxis={[{ label: 'Duration (days)' }]}
-                margin={{ top: 20, right: 30, left: 50, bottom: 110 }}
-                height={400}
-              />
-            </CardContent>
-          </Card>
-        </>
-      )}
+      {studentIntervals !== 'error' &&
+        studentIntervals?.applications?.length > 0 &&
+        studentIntervals.applications.map((application) => (
+          <StudentProgramOverview
+            key={application._id}
+            application={application}
+          />
+        ))}
     </>
   );
 };

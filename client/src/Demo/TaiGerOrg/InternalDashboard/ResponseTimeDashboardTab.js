@@ -176,12 +176,12 @@ const MemberOverview = ({
   );
 };
 
-const StudentProgramOverview = ({ application }) => {
-  const { school, program_name, threadIntervals } = application;
+const StudentProgramOverview = ({ title, threadIntervals }) => {
   return (
     <Card>
       <CardHeader
-        title={`${school} - ${program_name} (${threadIntervals.length})`}
+        // title={`${school} - ${program_name} (${threadIntervals.length})`}
+        title={title}
         subheader="Average response time: NaN"
         // subheader={`Average response time: ${getIntervalAvg(
         //   studentIntervals
@@ -238,7 +238,8 @@ const StudentOverview = ({ studentId }) => {
         studentIntervals.applications.map((application) => (
           <StudentProgramOverview
             key={application._id}
-            application={application}
+            title={`${application.school} - ${application.program_name} (${application.threadIntervals.length})`}
+            threadIntervals={application?.threadIntervals}
           />
         ))}
     </>

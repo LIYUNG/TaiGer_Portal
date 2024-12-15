@@ -195,7 +195,7 @@ const StudentProgramOverview = ({
   };
 
   return (
-    <Card onClick={handleClick} sx={{ mb: 2 }}>
+    <Card sx={{ mb: 2 }}>
       <CardHeader
         title={
           <>
@@ -206,6 +206,7 @@ const StudentProgramOverview = ({
         subheader={`Average response time: ${getIntervalAvg(
           threadIntervals?.flatMap((thread) => thread.intervals)
         ).toFixed(2)} days`}
+        onClick={handleClick}
       />
       <CardContent>
         <Collapse in={isCollapsed}>

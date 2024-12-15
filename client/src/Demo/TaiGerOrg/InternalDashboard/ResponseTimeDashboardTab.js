@@ -185,7 +185,8 @@ const MemberOverview = ({
 const StudentProgramOverview = ({
   title,
   threadIntervals,
-  collapse = false
+  collapse = false,
+  ...props
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(collapse);
 
@@ -195,14 +196,13 @@ const StudentProgramOverview = ({
   };
 
   return (
-    <Card sx={{ mb: 2 }}>
+    <Card sx={{ mb: 2 }} {...props}>
       <CardHeader
         title={
           <>
             {isCollapsed ? <KeyboardArrowUp /> : <KeyboardArrowDown />} {title}
           </>
         }
-        // subheader="Average response time: NaN"
         subheader={`Average response time: ${getIntervalAvg(
           threadIntervals?.flatMap((thread) => thread.intervals)
         ).toFixed(2)} days`}
@@ -212,7 +212,7 @@ const StudentProgramOverview = ({
         <Collapse in={isCollapsed}>
           {threadIntervals.length !== 0 &&
             threadIntervals.map((thread) => (
-              <>
+              <React.Fragment key={thread.threadId}>
                 {thread.intervalType && (
                   <Divider textAlign="left" sx={{ mb: 10, px: 6 }}>
                     <Typography variant="h6" sx={{ px: 1 }}>
@@ -221,7 +221,6 @@ const StudentProgramOverview = ({
                   </Divider>
                 )}
                 <LineChart
-                  key={thread.threadId}
                   dataset={thread.intervals
                     .map((item) => ({
                       ...item,
@@ -240,7 +239,7 @@ const StudentProgramOverview = ({
                   margin={{ top: 20, right: 30, left: 50, bottom: 110 }}
                   height={400}
                 />
-              </>
+              </React.Fragment>
             ))}
         </Collapse>
       </CardContent>
@@ -281,6 +280,7 @@ const StudentOverview = ({ studentId }) => {
               }
             ]}
             collapse={true}
+            key={'communication'}
           />
         )}
       {studentIntervals !== 'error' &&

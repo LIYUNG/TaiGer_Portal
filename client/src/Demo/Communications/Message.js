@@ -165,7 +165,10 @@ function Message(props) {
           borderRadius: 2,
           overflowWrap: 'break-word', // Add this line
           ...(props.isTaiGerView &&
-            !ismobile && { maxWidth: window.innerWidth - 664 + 32 }),
+            !ismobile && {
+              width: '100%', // Make Drawer full width on small screens
+              maxWidth: '100vw'
+            }),
           marginTop: '1px',
           '& .MuiAvatar-root': {
             width: 32,
@@ -216,7 +219,14 @@ function Message(props) {
           </Box>
         </AccordionSummary>
         <AccordionDetails>
-          <Box>
+          <Box
+            sx={{
+              overflowWrap: 'break-word', // Ensures long words wrap
+              wordBreak: 'break-word', // Breaks the word to avoid overflow
+              maxWidth: '100%', // Ensures content does not exceed parent width
+              flex: 1 // Makes Box flexible within its container
+            }}
+          >
             <EditorSimple
               holder={`${props.message._id.toString()}`}
               readOnly={true}

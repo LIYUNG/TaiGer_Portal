@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
-import { MenuItem, Skeleton } from '@mui/material';
+import { Box, MenuItem, Skeleton } from '@mui/material';
 
 import Friends from './Friends';
 import { getMyCommunicationThread, getQueryStudentResults } from '../../api';
@@ -127,7 +127,7 @@ const EmbeddedChatList = (props) => {
   };
 
   return (
-    <>
+    <Box>
       <Search>
         <SearchIconWrapper>
           <SearchIcon />
@@ -163,7 +163,7 @@ const EmbeddedChatList = (props) => {
           }
         />
       )}
-    </>
+    </Box>
   );
 };
 

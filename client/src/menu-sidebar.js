@@ -298,13 +298,6 @@ if (appConfig.AIEnable) {
 taiger_teams_items = [
   ...taiger_teams_items,
   {
-    id: 'user_logs',
-    title: 'User Logs',
-    type: 'item',
-    icon: <HistoryIcon />,
-    url: '/internal/logs'
-  },
-  {
     id: 'internal_dashboard',
     title: 'tenant-dashboard',
     tenant: `${appConfig.companyName}`,

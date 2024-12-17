@@ -53,7 +53,7 @@ const StudentDetailModal = ({
     anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
     sx={{
       filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-      height: window.innerHeight - 56
+      height: window.innerHeight
     }}
   >
     <ListItem sx={{ py: 1 }}>
@@ -95,7 +95,7 @@ function CommunicationExpandPage() {
   const { t } = useTranslation();
   const theme = useTheme();
   const ismobile = useMediaQuery(theme.breakpoints.down('md'));
-
+  const APP_BAR_HEIGHT = 64;
   const [communicationExpandPageState, setCommunicationExpandPageState] =
     useState({
       error: '',
@@ -240,6 +240,7 @@ function CommunicationExpandPage() {
       <Box
         className="sticky-top"
         sx={{
+          my: 1,
           display: 'flex'
         }}
       >
@@ -349,44 +350,40 @@ function CommunicationExpandPage() {
       style={{
         marginLeft: '-24px',
         marginRight: '-18px',
-        marginTop: '-18px',
+        marginTop: '-24px',
         marginBottom: '-24px'
       }}
     >
-      <Grid container>
+      <Grid container spacing={0}>
         <Grid
           item
-          style={{ width: '300px' }}
-          sx={{ display: { xs: 'none', md: 'flex' } }}
+          xs={12} // Full width on extra small screens
+          md="auto" // Let it auto-size on medium screens and up
+          sx={{
+            maxHeight: `calc(100vh - ${APP_BAR_HEIGHT}px)`,
+            overflowY: 'auto',
+            display: { xs: 'none', md: 'flex' }
+          }}
         >
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <div
-              style={{
-                height: window.innerHeight - 70,
-                overflow: 'hidden'
-              }}
-            >
-              <div
-                style={{
-                  overflowY: 'auto' /* Enable vertical scrolling */,
-                  maxHeight:
-                    window.innerHeight -
-                    70 /* Adjusted max height, considering header */
-                }}
-              >
-                <MemoizedEmbeddedChatList
-                  count={communicationExpandPageState.count}
-                />
-              </div>
-            </div>
+          <Box
+            sx={{
+              maxWidth: '300px' // Responsive width
+            }}
+          >
+            <MemoizedEmbeddedChatList
+              count={communicationExpandPageState.count}
+            />
           </Box>
         </Grid>
-        <Grid item xs md>
+        <Grid item xs={12} md>
           {ismobile && (
             <Drawer
               sx={{
-                pt: 1,
-                flexShrink: 0
+                flexShrink: 0,
+                '& .MuiDrawer-paper': {
+                  width: '100%', // Make Drawer full width on small screens
+                  maxWidth: '100vw'
+                }
               }}
               open={open}
               variant="temporary"
@@ -395,27 +392,20 @@ function CommunicationExpandPage() {
               <TopBar />
               {student_id &&
                 (messagesLoaded ? (
-                  <div
-                    style={{
-                      overflowY: 'auto' /* Enable vertical scrolling */,
-                      overflow: 'hidden'
+                  <Box
+                    sx={{
+                      height: `calc(100vh - ${APP_BAR_HEIGHT - 8}px)`, // Subtract header
+                      overflowY: 'auto'
                     }}
+                    ref={scrollableRef}
                   >
-                    <div
-                      style={{
-                        overflowY: 'auto' /* Enable vertical scrolling */,
-                        maxHeight: window.innerHeight - 40
-                      }}
-                      ref={scrollableRef}
-                    >
-                      <CommunicationExpandPageMessagesComponent
-                        student={communicationExpandPageState.student}
-                        data={communicationExpandPageState.thread}
-                        student_id={student_id}
-                        countIncrease={countIncrease}
-                      />
-                    </div>
-                  </div>
+                    <CommunicationExpandPageMessagesComponent
+                      student={communicationExpandPageState.student}
+                      data={communicationExpandPageState.thread}
+                      student_id={student_id}
+                      countIncrease={countIncrease}
+                    />
+                  </Box>
                 ) : (
                   <Loading />
                 ))}
@@ -424,31 +414,21 @@ function CommunicationExpandPage() {
           {!ismobile &&
             student_id &&
             (messagesLoaded ? (
-              <div
+              <Box
                 style={{
-                  height: window.innerHeight - 70 - 40,
-                  overflow: 'hidden'
+                  height: `calc(100vh - ${APP_BAR_HEIGHT}px)`, // Subtract header
+                  overflowY: 'auto' /* Enable vertical scrolling */
                 }}
+                ref={scrollableRef}
               >
                 <TopBar />
-                <div
-                  style={{
-                    overflowY: 'auto' /* Enable vertical scrolling */,
-                    maxHeight:
-                      window.innerHeight -
-                      70 -
-                      40 /* Adjusted max height, considering header */
-                  }}
-                  ref={scrollableRef}
-                >
-                  <CommunicationExpandPageMessagesComponent
-                    student={communicationExpandPageState.student}
-                    data={communicationExpandPageState.thread}
-                    student_id={student_id}
-                    countIncrease={countIncrease}
-                  />
-                </div>
-              </div>
+                <CommunicationExpandPageMessagesComponent
+                  student={communicationExpandPageState.student}
+                  data={communicationExpandPageState.thread}
+                  student_id={student_id}
+                  countIncrease={countIncrease}
+                />
+              </Box>
             ) : (
               <Box
                 sx={{
@@ -463,27 +443,17 @@ function CommunicationExpandPage() {
             ))}
           {!student_id && <Typography>Empty</Typography>}
           {ismobile && (
-            <Box sx={{ display: { md: 'flex' } }}>
-              <div
-                style={{
-                  height: window.innerHeight - 70,
-                  overflow: 'hidden'
-                }}
-              >
-                <div
-                  style={{
-                    overflowY: 'auto' /* Enable vertical scrolling */,
-                    maxHeight:
-                      window.innerHeight -
-                      70 /* Adjusted max height, considering header */
-                  }}
-                  onClick={(e) => handleDrawerOpen(e)}
-                >
-                  <MemoizedEmbeddedChatList
-                    count={communicationExpandPageState.count}
-                  />
-                </div>
-              </div>
+            <Box
+              sx={{
+                display: { md: 'flex' },
+                maxHeight: `calc(100vh - ${APP_BAR_HEIGHT}px)`,
+                overflow: 'auto' // Prevent parent scroll
+              }}
+              onClick={(e) => handleDrawerOpen(e)}
+            >
+              <MemoizedEmbeddedChatList
+                count={communicationExpandPageState.count}
+              />
             </Box>
           )}
         </Grid>

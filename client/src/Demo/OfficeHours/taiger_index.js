@@ -114,6 +114,22 @@ const DateRangePickerBasic = () => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box
         sx={{
+          justifyContent: 'space-between',
+          marginTop: 2
+        }}
+      >
+        <Button variant="outlined" onClick={() => handleShortcut('week')}>
+          Last 1 Week
+        </Button>
+        <Button variant="outlined" onClick={() => handleShortcut('month')}>
+          Last 1 Month
+        </Button>{' '}
+        <Button variant="outlined" onClick={() => handleShortcut('year')}>
+          Last 1 Year
+        </Button>
+      </Box>
+      <Box
+        sx={{
           display: 'flex',
           flexDirection: 'row', // Layout in a single row
           alignItems: 'center', // Align items vertically
@@ -134,23 +150,7 @@ const DateRangePickerBasic = () => {
           onChange={(newValue) => setEndTime(newValue)}
           renderInput={(params) => <TextField {...params} />}
         />
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginTop: 2
-          }}
-        >
-          <Button variant="outlined" onClick={() => handleShortcut('week')}>
-            Last 1 Week
-          </Button>
-          <Button variant="outlined" onClick={() => handleShortcut('month')}>
-            Last 1 Month
-          </Button>{' '}
-          <Button variant="outlined" onClick={() => handleShortcut('year')}>
-            Last 1 Year
-          </Button>
-        </Box>
+
         <Button
           variant="contained"
           onClick={handleSubmit}

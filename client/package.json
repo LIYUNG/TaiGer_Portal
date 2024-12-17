@@ -30,6 +30,7 @@
     "@mui/x-data-grid": "^7.1.0",
     "@mui/x-date-pickers": "^7.23.1",
     "@taiger-common/core": "^1.0.5",
+    "@tanstack/react-query": "^5.62.8",
     "@tanstack/react-virtual": "^3.0.4",
     "axios": "^0.21.4",
     "diff": "^5.2.0",

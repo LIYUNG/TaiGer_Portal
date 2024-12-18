@@ -104,6 +104,11 @@ export const assignProgramToStudent = (studentId, program_ids) =>
   request.post(`/api/students/${studentId}/applications`, {
     program_id_set: program_ids
   });
+export const assignProgramToStudentV2 = ({ studentId, program_ids }) =>
+  request.post(`/api/students/${studentId}/applications`, {
+    program_id_set: program_ids
+  });
+
 export const getStudentApplications = (studentId) =>
   request.get(`/api/students/${studentId}/applications`);
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link as LinkDom, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -16,11 +16,12 @@ import {
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { is_TaiGer_role } from '@taiger-common/core';
+import { useQuery } from '@tanstack/react-query';
+import queryString from 'query-string';
 
-import ProgramListSubpage from './ProgramListSubpage';
-import ErrorPage from '../Utils/ErrorPage';
+// import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { getPrograms, assignProgramToStudent, createProgram } from '../../api';
+import { assignProgramToStudent, createProgram } from '../../api';
 // A great library for fuzzy filtering/sorting items
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
@@ -29,15 +30,17 @@ import NewProgramEdit from './NewProgramEdit';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
+import { getProgramsQuery } from '../../api/query';
+import { ProgramsTable } from './ProgramsTable';
 
 function ProgramList(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data, isLoading, isError, error } = useQuery(getProgramsQuery());
+  const programs = data?.data?.data;
   let [tableStates, setTableStates] = useState({
     success: false,
-    isloaded: false,
     isAssigning: false,
     isButtonDisable: false,
     error: null,
@@ -46,97 +49,38 @@ function ProgramList(props) {
     res_modal_status: 0,
     res_modal_message: ''
   });
-  let [statedata, setStatedata] = useState({
-    success: false,
-    programs: null,
-    isloaded: false,
-    res_modal_status: 0,
-    error: '',
-    res_status: 0
-  });
+
   const [filters, setFilters] = useState({});
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
 
-  let [programs, setPrograms] = useState({
-    programIds: [],
-    schools: [],
-    program_names: [],
-    degree: [],
-    semester: []
-  });
   let [studentId, setStudentId] = useState('');
   let [isCreationMode, setIsCreationMode] = useState(false);
 
   TabTitle(t('Program List', { ns: 'common' }));
-  useEffect(() => {
-    getPrograms().then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setStatedata((state) => ({
-            ...state,
-            success: success,
-            programs: data,
-            isloaded: true,
-            res_status: status
-          }));
-          const parseQueryParams = () => {
-            const searchParams = new URLSearchParams(window.location.search);
-            const params = {};
 
-            // Iterate through each query parameter
-            for (const [key, value] of searchParams.entries()) {
-              // Add key-value pair to params object
-              params[key] = value;
-            }
+  // useEffect(() => {
+  //   const parsed = queryString.parse(location.search);
+  //   console.log(parsed);
+  //   setFilters((prevFilters) => ({
+  //     ...prevFilters,
+  //     parsed
+  //   }));
+  // }, []);
 
-            // Set state with parsed query parameters
-            setFilters(params);
-          };
-          parseQueryParams();
-        } else {
-          setStatedata((state) => ({
-            ...state,
-            isloaded: true,
-            res_status: status
-          }));
-        }
-      },
-      (error) =>
-        setStatedata((state) => ({
-          ...state,
-          error,
-          isloaded: true
-        }))
-    );
-  }, []);
+  //  const parseQueryParams = () => {
+  //    const searchParams = new URLSearchParams(window.location.search);
+  //    const params = {};
 
-  useEffect(() => {
-    const data_idxes = rowSelectionModel;
-    setPrograms({
-      programIds: data_idxes.map(
-        (idx) => statedata.programs.find((program) => program?._id === idx)?._id
-      ),
-      schools: data_idxes.map(
-        (idx) =>
-          statedata.programs.find((program) => program?._id === idx)?.school
-      ),
-      program_names: data_idxes.map(
-        (idx) =>
-          statedata.programs.find((program) => program?._id === idx)
-            ?.program_name
-      ),
-      degree: data_idxes.map(
-        (idx) =>
-          statedata.programs.find((program) => program?._id === idx)?.degree
-      ),
-      semester: data_idxes.map(
-        (idx) =>
-          statedata.programs.find((program) => program?._id === idx)?.semester
-      )
-    });
-  }, [rowSelectionModel]);
+  //    // Iterate through each query parameter
+  //    for (const [key, value] of searchParams.entries()) {
+  //      // Add key-value pair to params object
+  //      params[key] = value;
+  //    }
+
+  //    // Set state with parsed query parameters
+  //    setFilters(params);
+  //  };
+  //  parseQueryParams();
 
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
@@ -223,51 +167,14 @@ function ProgramList(props) {
   };
 
   const handleSubmit_Program = (program) => {
-    setIsSubmitting(true);
     createProgram(program).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          let new_program_list = [...statedata.programs, data];
-          setIsSubmitting(false);
-          setStatedata((state) => ({
-            ...state,
-            success: success,
-            programs: new_program_list,
-            isloaded: true,
-            res_modal_status: status
-          }));
-          setIsCreationMode(!isCreationMode);
-        } else {
-          const { message } = resp.data;
-          setIsSubmitting(false);
-          setStatedata((state) => ({
-            ...state,
-            isloaded: true,
-            res_modal_status: status,
-            res_modal_message: message
-          }));
-        }
-      },
-      (error) => {
-        setIsSubmitting(false);
-        setStatedata((state) => ({
-          ...state,
-          error,
-          isloaded: true
-        }));
-      }
+      () => {},
+      () => {}
     );
   };
 
   const ConfirmError = () => {
     setTableStates((state) => ({
-      ...state,
-      res_modal_status: 0,
-      res_modal_message: ''
-    }));
-    setStatedata((state) => ({
       ...state,
       res_modal_status: 0,
       res_modal_message: ''
@@ -344,12 +251,12 @@ function ProgramList(props) {
     }
   ];
 
-  if (!statedata.isloaded && !statedata.programs) {
+  if (isLoading) {
     return <Loading />;
   }
 
-  if (statedata.res_status >= 400) {
-    return <ErrorPage res_status={statedata.res_status} />;
+  if (isError) {
+    return <>{error}</>;
   }
 
   const handleFilterChange = (event, column) => {
@@ -366,7 +273,7 @@ function ProgramList(props) {
     }
   };
 
-  const transformedData = statedata.programs.map((row) => {
+  const transformedData = programs.map((row) => {
     return {
       ...row, // Spread the original row object
       id: row._id // Map MongoDB _id to id property
@@ -374,7 +281,8 @@ function ProgramList(props) {
     };
   });
   const filteredRows = transformedData.filter((row) => {
-    return Object.keys(filters).every((field) => {
+    const parsed = queryString.parse(location.search);
+    return Object.keys(parsed).every((field) => {
       const filterValue = filters[field];
       return (
         filterValue === '' ||
@@ -396,13 +304,7 @@ function ProgramList(props) {
           res_modal_message={tableStates.res_modal_message}
         />
       )}
-      {statedata.res_modal_status >= 400 && (
-        <ModalMain
-          ConfirmError={ConfirmError}
-          res_modal_status={statedata.res_modal_status}
-          res_modal_message={statedata.res_modal_message}
-        />
-      )}
+
       <Breadcrumbs aria-label="breadcrumb">
         <Link
           underline="hover"
@@ -421,8 +323,8 @@ function ProgramList(props) {
           <NewProgramEdit
             handleClick={onClickIsCreateApplicationMode}
             handleSubmit_Program={handleSubmit_Program}
-            programs={statedata.programs}
-            isSubmitting={isSubmitting}
+            programs={programs}
+            isSubmitting={false}
             type={'create'}
           />
         </>
@@ -476,6 +378,7 @@ function ProgramList(props) {
               </Button>
             </Box>
           </Box>
+          <ProgramsTable isLoading={isLoading} data={transformedData} />
           <div style={{ height: '50%', width: '100%' }}>
             <DataGrid
               columnHeaderHeight={130}
@@ -523,30 +426,19 @@ function ProgramList(props) {
               }}
             />
           </div>
-          {props.isStudentApplicationPage ? (
+          {props.isStudentApplicationPage && (
             <ProgramListSingleStudentAssignSubpage
               student={props.student}
               show={tableStates.modalShowAssignWindow}
               assignProgram={assignProgram}
               setModalHide={setModalHide}
               setStudentId={setStudentId}
-              uni_name={programs.schools}
-              program_name={programs.program_names}
-              degree={programs.degree}
-              semester={programs.semester}
+              // uni_name={assigningPrograms.schools}
+              // program_name={assigningPrograms.program_names}
+              // degree={assigningPrograms.degree}
+              // semester={assigningPrograms.semester}
               handleChange2={handleSetStudentId}
               isButtonDisable={tableStates.isButtonDisable}
-              onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
-            />
-          ) : (
-            <ProgramListSubpage
-              show={tableStates.modalShowAssignWindow}
-              setModalHide={setModalHide}
-              uni_name={programs.schools}
-              program_name={programs.program_names}
-              handleSetStudentId={handleSetStudentId}
-              isButtonDisable={tableStates.isButtonDisable}
-              studentId={studentId}
               onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
             />
           )}

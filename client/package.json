@@ -47,6 +47,7 @@
     "moment-timezone": "^0.5.43",
     "namor": "^2.0.4",
     "prop-types": "^15.8.1",
+    "query-string": "^9.1.1",
     "react": "^18.2.0",
     "react-big-calendar": "^1.8.1",
     "react-datasheet-grid": "^4.11.4",

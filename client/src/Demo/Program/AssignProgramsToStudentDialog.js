@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -10,6 +11,7 @@ import {
   FormControlLabel,
   List,
   ListItem,
+  Snackbar,
   Typography
 } from '@mui/material';
 import { getStudentsQuery } from '../../api/query';
@@ -35,6 +37,9 @@ export const AssignProgramsToStudentDialog = ({
     enabled: open // Only fetch data when the modal is open
   });
   let [studentId, setStudentId] = useState('');
+  let [openError, setOpenError] = useState(false);
+  const [severity, setSeverity] = useState('success'); // 'success' or 'error'
+  const [message, setMessage] = useState('');
   const {
     mutate,
     isPending,
@@ -42,9 +47,17 @@ export const AssignProgramsToStudentDialog = ({
     error: mutateError
   } = useMutation({
     mutationFn: assignProgramToStudentV2,
+    onError: (error) => {
+      setSeverity('error');
+      setMessage(error.message || 'An error occurred. Please try again.');
+      setOpenError(true);
+    },
     onSuccess: () => {
       handleOnSuccess();
+      setSeverity('success');
+      setMessage('Assigned programs successfully!');
       setStudentId('');
+      setOpenError(true);
     }
   });
 
@@ -64,61 +77,79 @@ export const AssignProgramsToStudentDialog = ({
   }
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>{t('Selected Programs')}</DialogTitle>
-      <DialogContent>
-        {programs?.map(({ school, program_name, degree, semester }, index) => (
-          <Box key={index}>
-            {school}
-            {program_name}
-            {degree}
-            {semester}
-          </Box>
-        ))}
-        ---
-        {isLoading && <CircularProgress />}
-        {isQueryError && (
-          <Typography color="error">
-            An error occurred: {error.message}
-          </Typography>
-        )}
-        {!isLoading && !isQueryError && students && (
-          <List dense>
-            {students.map((student, i) => (
-              <ListItem key={i} divider>
-                <FormControlLabel
-                  label={`${student.firstname}, ${student.lastname}`}
-                  control={
-                    <Checkbox
-                      checked={studentId === student._id}
-                      onChange={handleSetStudentId}
-                      value={student._id}
-                    />
-                  }
-                />
-              </ListItem>
-            ))}
-          </List>
-        )}
-        {isMutateError && (
-          <Typography color="error">
-            An error occurred: {mutateError.message}
-          </Typography>
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Button
-          color="primary"
-          variant="contained"
-          disabled={isPending}
-          onClick={(e) => handleSubmit(e)}
+    <>
+      <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+        <DialogTitle>{t('Selected Programs')}</DialogTitle>
+        <DialogContent>
+          {programs?.map(
+            ({ school, program_name, degree, semester }, index) => (
+              <Box key={index}>
+                {school}
+                {program_name}
+                {degree}
+                {semester}
+              </Box>
+            )
+          )}
+          ---
+          {isLoading && <CircularProgress />}
+          {isQueryError && (
+            <Typography color="error">
+              An error occurred: {error.message}
+            </Typography>
+          )}
+          {!isLoading && !isQueryError && students && (
+            <List dense>
+              {students.map((student, i) => (
+                <ListItem key={i} divider>
+                  <FormControlLabel
+                    label={`${student.firstname}, ${student.lastname}`}
+                    control={
+                      <Checkbox
+                        checked={studentId === student._id}
+                        onChange={handleSetStudentId}
+                        value={student._id}
+                      />
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          )}
+          {isMutateError && (
+            <Typography color="error">
+              An error occurred: {mutateError.message}
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={isPending}
+            onClick={(e) => handleSubmit(e)}
+          >
+            {isPending ? <CircularProgress /> : t('Assign', { ns: 'common' })}
+          </Button>
+          <Button onClick={onClose} color="primary">
+            {t('Close')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* Snackbar for feedback */}
+      <Snackbar
+        open={openError}
+        autoHideDuration={6000}
+        onClose={() => setOpenError(false)}
+      >
+        <Alert
+          onClose={() => setOpenError(false)}
+          severity={severity}
+          sx={{ width: '100%' }}
         >
-          {isPending ? <CircularProgress /> : t('Assign', { ns: 'common' })}
-        </Button>
-        <Button onClick={onClose} color="primary">
-          {t('Close')}
-        </Button>
-      </DialogActions>
-    </Dialog>
+          {message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 };

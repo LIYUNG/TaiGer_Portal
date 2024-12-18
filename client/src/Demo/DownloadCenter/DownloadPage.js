@@ -8,6 +8,13 @@ import {
   Typography
 } from '@mui/material';
 import { Link as LinkDom, Navigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import {
+  is_TaiGer_Admin,
+  is_TaiGer_Agent,
+  is_TaiGer_Editor,
+  is_TaiGer_Student
+} from '@taiger-common/core';
 
 import EditDownloadFiles from './EditDownloadFiles';
 import { templatelist } from '../Utils/contants';
@@ -19,7 +26,6 @@ import DEMO from '../../store/constant';
 import Banner from '../../components/Banner/Banner';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
-import { useTranslation } from 'react-i18next';
 
 function DownloadPage() {
   const { user } = useAuth();
@@ -183,10 +189,10 @@ function DownloadPage() {
   };
 
   if (
-    user.role !== 'Admin' &&
-    user.role !== 'Editor' &&
-    user.role !== 'Agent' &&
-    user.role !== 'Student'
+    !is_TaiGer_Admin(user) &&
+    !is_TaiGer_Editor(user) &&
+    !is_TaiGer_Agent(user) &&
+    !is_TaiGer_Student(user)
   ) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
@@ -238,7 +244,6 @@ function DownloadPage() {
           />
 
           <EditDownloadFiles
-            user={user}
             templates={downloadPageState.templates}
             submitFile={submitFile}
             onFileChange={onFileChange}

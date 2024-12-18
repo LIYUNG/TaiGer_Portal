@@ -23,6 +23,7 @@ CustomTabPanel.propTypes = {
 
 function CVMLRLDashboard(props) {
   const { t } = useTranslation();
+  const memoizedColumnsMrt = useMemo(() => c1_mrt, []);
   const [cVMLRLDashboardState, setCVMLRLDashboardState] = useState({
     error: '',
     isLoaded: props.isLoaded,
@@ -81,8 +82,6 @@ function CVMLRLDashboard(props) {
   );
 
   const cvmlrl_all_v2 = open_tasks_arr.filter((open_task) => open_task.show);
-
-  const memoizedColumnsMrt = useMemo(() => c1_mrt, [c1_mrt]);
 
   return (
     <>

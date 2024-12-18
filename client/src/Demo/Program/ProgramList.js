@@ -67,9 +67,6 @@ function ProgramList(props) {
   let [studentId, setStudentId] = useState('');
   let [isCreationMode, setIsCreationMode] = useState(false);
 
-  if (!is_TaiGer_role(user)) {
-    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
-  }
   TabTitle(t('Program List', { ns: 'common' }));
   useEffect(() => {
     getPrograms().then(
@@ -140,6 +137,10 @@ function ProgramList(props) {
       )
     });
   }, [rowSelectionModel]);
+
+  if (!is_TaiGer_role(user)) {
+    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+  }
 
   const assignProgram = (assign_data) => {
     const { student_id, program_ids } = assign_data;

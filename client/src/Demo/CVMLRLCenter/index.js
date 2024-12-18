@@ -29,7 +29,7 @@ import {
   is_pending_status
 } from '../Utils/contants';
 
-function index() {
+function CVMLRLCenter() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [indexState, setIndexState] = useState({
@@ -158,8 +158,8 @@ function index() {
                     (userId) => userId !== user._id.toString()
                   )
                 : row.flag_by_user_id?.length > 0
-                ? [...row.flag_by_user_id, user._id.toString()]
-                : [user._id.toString()]
+                  ? [...row.flag_by_user_id, user._id.toString()]
+                  : [user._id.toString()]
             }
           : row
       );
@@ -278,4 +278,4 @@ function index() {
   );
 }
 
-export default index;
+export default CVMLRLCenter;

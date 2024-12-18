@@ -3,7 +3,13 @@ module.exports = {
     browser: true,
     es2021: true
   },
-  extends: ['eslint:recommended', 'plugin:react/recommended'],
+  extends: [
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'prettier',
+    'plugin:@tanstack/eslint-plugin-query/recommended'
+  ],
   overrides: [
     {
       env: {
@@ -20,8 +26,13 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module'
   },
-  plugins: ['react'],
+  plugins: ['react-refresh', 'react', 'prettier', '@tanstack/query'],
   rules: {
-    'react/prop-types': 'off'
+    'react-refresh/only-export-components': [
+      'warn',
+      { allowConstantExport: true }
+    ],
+    'react/prop-types': 'off',
+    'react/react-in-jsx-scope': 'off'
   }
 };

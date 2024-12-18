@@ -473,6 +473,7 @@ function ProgramList(props) {
                 onClick={onClickIsCreateApplicationMode}
               >
                 {t('Add New Program')}
+                {t('Add New Program')}
               </Button>
             </Box>
           </Box>
@@ -574,4 +575,5 @@ function ProgramList(props) {
   );
 }
 
+export default ProgramList;
 export default ProgramList;

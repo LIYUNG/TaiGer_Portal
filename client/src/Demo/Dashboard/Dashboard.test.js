@@ -81,7 +81,7 @@ describe('Dashboard', () => {
     await waitFor(() => {
       // TODO
       expect(screen.getByTestId('dashoboard_component')).toHaveTextContent(
-        'Agents'
+        'Comming soon'
       );
       // expect(1).toBe(1);
     });

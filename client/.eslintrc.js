@@ -6,10 +6,11 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
+    // 'plugin:react-hooks/recommended',
     'prettier',
     'plugin:@tanstack/eslint-plugin-query/recommended'
   ],
+  ignorePatterns: ['dist', 'node_modules', 'package.json', 'package-lock.json'],
   overrides: [
     {
       env: {
@@ -23,6 +24,9 @@ module.exports = {
     }
   ],
   parserOptions: {
+    ecmaFeatures: {
+      jsx: true
+    },
     ecmaVersion: 'latest',
     sourceType: 'module'
   },

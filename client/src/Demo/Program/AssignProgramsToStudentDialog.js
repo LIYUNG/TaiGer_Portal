@@ -79,7 +79,7 @@ export const AssignProgramsToStudentDialog = ({
   return (
     <>
       <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-        <DialogTitle>{t('Selected Programs')}</DialogTitle>
+        <DialogTitle>{t('Selected Programs', { ns: 'programList' })}</DialogTitle>
         <DialogContent>
           {programs?.map(
             ({ school, program_name, degree, semester }, index) => (

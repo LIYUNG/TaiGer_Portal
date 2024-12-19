@@ -26,7 +26,7 @@ export const ProgramsTable = ({ isLoading, data }) => {
       filterFn: 'contains',
       size: 250,
       Cell: (params) => {
-        const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.original.id)}`;
+        const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.original._id)}`;
         return (
           <Link
             underline="hover"
@@ -44,7 +44,7 @@ export const ProgramsTable = ({ isLoading, data }) => {
       header: t('Program', { ns: 'common' }),
       size: 250,
       Cell: (params) => {
-        const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.original.id)}`;
+        const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.original._id)}`;
         return (
           <Link
             underline="hover"
@@ -122,7 +122,6 @@ export const ProgramsTable = ({ isLoading, data }) => {
       onAssignClick={handleAssignClick}
     />
   );
-  console.log(table.getSelectedRowModel());
   return (
     <>
       <MaterialReactTable table={table} />

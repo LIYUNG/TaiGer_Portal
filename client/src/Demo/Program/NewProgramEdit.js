@@ -96,17 +96,13 @@ function NewProgramEdit(props) {
 
   const handleChange = (e) => {
     // e.preventDefault();
-    console.log(e.target.value);
-    console.log(e.target.checked);
-    console.log(e.target.type);
-    console.log(e.target.name);
     const key = e.target.name;
     const value =
       e.target.type === 'checkbox'
         ? e.target.checked
         : typeof e.target.value === 'string'
-        ? e.target.value.trimLeft()
-        : e.target.value;
+          ? e.target.value.trimLeft()
+          : e.target.value;
 
     const newState = { ...programChanges };
     if (value === initProgram[key] || (!initProgram[key] && value === '')) {

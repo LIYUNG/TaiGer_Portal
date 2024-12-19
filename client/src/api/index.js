@@ -368,6 +368,9 @@ export const deleteProgram = (programId) =>
 export const createProgram = (program) =>
   request.post('/api/programs', program);
 
+export const createProgramV2 = ({ program }) =>
+  postData('/api/programs', program);
+
 export const updateProgram = (program) =>
   request.put(`/api/programs/${program._id}`, program);
 

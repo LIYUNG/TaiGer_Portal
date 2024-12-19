@@ -53,7 +53,8 @@ export const TopToolbar = ({
         <Button
           color="primary"
           variant="contained"
-          // onClick={onClickIsCreateApplicationMode}
+          component={LinkDom}
+          to={DEMO.NEW_PROGRAM}
         >
           {t('Add New Program')}
         </Button>

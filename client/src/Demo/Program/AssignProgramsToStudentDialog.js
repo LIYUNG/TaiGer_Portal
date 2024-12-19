@@ -37,7 +37,7 @@ export const AssignProgramsToStudentDialog = ({
     enabled: open // Only fetch data when the modal is open
   });
   let [studentId, setStudentId] = useState('');
-  let [openError, setOpenError] = useState(false);
+  let [openSnackbar, setOpenSnackbar] = useState(false);
   const [severity, setSeverity] = useState('success'); // 'success' or 'error'
   const [message, setMessage] = useState('');
   const {
@@ -50,14 +50,14 @@ export const AssignProgramsToStudentDialog = ({
     onError: (error) => {
       setSeverity('error');
       setMessage(error.message || 'An error occurred. Please try again.');
-      setOpenError(true);
+      setOpenSnackbar(true);
     },
     onSuccess: () => {
       handleOnSuccess();
       setSeverity('success');
       setMessage('Assigned programs successfully!');
       setStudentId('');
-      setOpenError(true);
+      setOpenSnackbar(true);
     }
   });
 
@@ -138,12 +138,12 @@ export const AssignProgramsToStudentDialog = ({
       </Dialog>
       {/* Snackbar for feedback */}
       <Snackbar
-        open={openError}
+        open={openSnackbar}
         autoHideDuration={6000}
-        onClose={() => setOpenError(false)}
+        onClose={() => setOpenSnackbar(false)}
       >
         <Alert
-          onClose={() => setOpenError(false)}
+          onClose={() => setOpenSnackbar(false)}
           severity={severity}
           sx={{ width: '100%' }}
         >

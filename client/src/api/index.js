@@ -1,4 +1,4 @@
-import { BASE_URL, request } from './request';
+import { BASE_URL, postData, request } from './request';
 
 export const login = (credentials) => request.post('/auth/login', credentials);
 
@@ -105,27 +105,10 @@ export const assignProgramToStudent = (studentId, program_ids) =>
     program_id_set: program_ids
   });
 
-export const assignProgramToStudentV2 = async ({ studentId, program_ids }) => {
-  try {
-    const response = await request.post(
-      `/api/students/${studentId}/applications`,
-      {
-        program_id_set: program_ids
-      }
-    );
-
-    if (!response || response.status >= 400) {
-      // Throw an error for 4xx/5xx status codes or if response is not valid
-      throw new Error(response.data?.message || 'An unknown error occurred.');
-    }
-
-    return response.data; // Return the response data if everything is okay
-  } catch (error) {
-    // Throwing the error so it can be caught in the useMutation onError callback
-    console.log(error);
-    throw error;
-  }
-};
+export const assignProgramToStudentV2 = ({ studentId, program_ids }) =>
+  postData(`/api/students/${studentId}/applications`, {
+    program_id_set: program_ids
+  });
 
 export const getStudentApplications = (studentId) =>
   request.get(`/api/students/${studentId}/applications`);

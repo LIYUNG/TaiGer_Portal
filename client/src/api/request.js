@@ -21,4 +21,43 @@ const request = axios.create({
   validateStatus: (status) => status < 500
 });
 
-export { request };
+const postData = async (url, payload) => {
+  try {
+    const response = await request.post(url, payload);
+    if (response.status >= 400) {
+      throw new Error(response.data?.message || 'An unknown error occurred');
+    }
+    return response.data; // Return the data on success
+  } catch (error) {
+    console.log(error);
+    throw error; // Propagate the error
+  }
+};
+
+const getData = async (url) => {
+  try {
+    const response = await request.get(url);
+    if (response.status >= 400) {
+      throw new Error(response.data?.message || 'An unknown error occurred');
+    }
+    return response.data; // Return the data on success
+  } catch (error) {
+    console.log(error);
+    throw error; // Propagate the error
+  }
+};
+
+const deleteData = async (url) => {
+  try {
+    const response = await request.delete(url);
+    if (response.status >= 400) {
+      throw new Error(response.data?.message || 'An unknown error occurred');
+    }
+    return response.data; // Return the data on success
+  } catch (error) {
+    console.log(error);
+    throw error; // Propagate the error
+  }
+};
+
+export { request, postData, getData, deleteData };

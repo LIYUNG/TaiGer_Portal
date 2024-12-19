@@ -115,7 +115,7 @@ const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
       },
       {
         accessorKey: 'country', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
-        enableClickToCopy: true,
+        // enableClickToCopy: true,
         filterVariant: 'autocomplete',
         header: 'Country',
         size: 90

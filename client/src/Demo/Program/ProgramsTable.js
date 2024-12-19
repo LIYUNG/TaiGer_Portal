@@ -11,6 +11,7 @@ import { Link } from '@mui/material';
 import DEMO from '../../store/constant';
 import { TopToolbar } from '../../components/table/programs-table/TopToolbar';
 import { AssignProgramsToStudentDialog } from './AssignProgramsToStudentDialog';
+import { COUNTRIES_ARRAY_OPTIONS } from '../Utils/contants';
 
 export const ProgramsTable = ({ isLoading, data }) => {
   const customTableStyles = useTableStyles();
@@ -59,6 +60,8 @@ export const ProgramsTable = ({ isLoading, data }) => {
     },
     {
       accessorKey: 'country',
+      filterVariant: 'multi-select',
+      filterSelectOptions: COUNTRIES_ARRAY_OPTIONS.map((item) => item.value),
       header: t('Country', { ns: 'common' }),
       size: 90
     },
@@ -92,6 +95,7 @@ export const ProgramsTable = ({ isLoading, data }) => {
   const table = useMaterialReactTable({
     ...tableConfig,
     columns,
+    state: { isLoading },
     data: data || []
   });
   const handleAssignClick = () => {

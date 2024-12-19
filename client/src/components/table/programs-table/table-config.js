@@ -1,9 +1,7 @@
 export const getTableConfig = (customTableStyles, isLoading) => ({
   enableFilters: true,
-  // state: rowSelection ? { rowSelection } : null,
   enableColumnFilters: true,
   enableColumnFilterModes: true,
-  enableColumnOrdering: true,
   enableColumnPinning: true,
   enableColumnResizing: true,
   enableRowSelection: true,

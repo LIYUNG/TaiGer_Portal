@@ -79,7 +79,9 @@ export const AssignProgramsToStudentDialog = ({
   return (
     <>
       <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-        <DialogTitle>{t('Selected Programs', { ns: 'programList' })}</DialogTitle>
+        <DialogTitle>
+          {t('Selected Programs', { ns: 'programList' })}
+        </DialogTitle>
         <DialogContent>
           {programs?.map(
             ({ school, program_name, degree, semester }, index) => (
@@ -126,7 +128,7 @@ export const AssignProgramsToStudentDialog = ({
           <Button
             color="primary"
             variant="contained"
-            disabled={isPending}
+            disabled={isPending || studentId === ''}
             onClick={(e) => handleSubmit(e)}
           >
             {isPending ? <CircularProgress /> : t('Assign', { ns: 'common' })}

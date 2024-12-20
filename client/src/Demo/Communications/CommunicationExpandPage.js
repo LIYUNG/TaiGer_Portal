@@ -14,12 +14,14 @@ import {
   Menu,
   Link,
   Stack,
-  Tooltip
+  Tooltip,
+  MenuItem
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { is_TaiGer_role } from '@taiger-common/core';
 
 import { getCommunicationThread, WidgetExportMessagePDF } from '../../api';
@@ -66,6 +68,35 @@ const StudentDetailModal = ({
     </ListItem>
   </Menu>
 );
+
+const AgentsEditorsModal = ({
+  open,
+  student,
+  dropdownId,
+  anchorAgentsEditorsEl,
+  handleAgentsEditorsStudentDetailModalClose
+}) => (
+  <Menu
+    anchorEl={anchorAgentsEditorsEl}
+    id={dropdownId}
+    open={open}
+    onClose={handleAgentsEditorsStudentDetailModalClose}
+    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+  >
+    {student?.agents?.map((agent) => (
+      <MenuItem key={agent._id}>
+        {agent.firstname} {agent.lastname}
+      </MenuItem>
+    ))}
+    {student?.editors?.map((editor) => (
+      <MenuItem key={editor._id}>
+        {editor.firstname} {editor.lastname}
+      </MenuItem>
+    ))}
+  </Menu>
+);
+
 const MemorizedStudentDetailModal = React.memo(StudentDetailModal);
 
 const LastLoginTime = ({ date }) => {
@@ -124,7 +155,9 @@ function CommunicationExpandPage() {
 
   const [open, setOpen] = useState(ismobile);
   const [anchorStudentDetailEl, setAnchorStudentDetailEl] = useState(null);
+  const [anchorAgentsEditorsEl, setAnchorAgentsEditorsEl] = useState(null);
   const isStudentDetailModalOpen = Boolean(anchorStudentDetailEl);
+  const isAgentsEditorsModalOpen = Boolean(anchorAgentsEditorsEl);
   const [isExportingMessageDisabled, setIsExportingMessageDisabled] =
     useState(false);
   const scrollableRef = useRef(null);
@@ -198,6 +231,11 @@ function CommunicationExpandPage() {
     setAnchorStudentDetailEl(event.currentTarget);
   };
 
+  const handleAgentsEditorsModalOpen = (event) => {
+    event.stopPropagation();
+    setAnchorAgentsEditorsEl(event.currentTarget);
+  };
+
   const handleExportMessages = async (event) => {
     event.stopPropagation();
     setIsExportingMessageDisabled(true);
@@ -229,6 +267,11 @@ function CommunicationExpandPage() {
   const handleStudentDetailModalClose = (event) => {
     event.stopPropagation();
     setAnchorStudentDetailEl(null);
+  };
+
+  const handleAgentsEditorsModalClose = (event) => {
+    event.stopPropagation();
+    setAnchorAgentsEditorsEl(null);
   };
 
   const handleDrawerClose = () => {
@@ -295,6 +338,15 @@ function CommunicationExpandPage() {
               <IconButton
                 color="inherit"
                 aria-label="open-more"
+                aria-controls={agentsEditorsDropdownId}
+                aria-haspopup="true"
+                onClick={handleAgentsEditorsModalOpen}
+              >
+                <PeopleAltIcon />
+              </IconButton>
+              <IconButton
+                color="inherit"
+                aria-label="open-more"
                 aria-controls={dropdownId}
                 aria-haspopup="true"
                 onClick={handleExportMessages}
@@ -304,7 +356,7 @@ function CommunicationExpandPage() {
                 {isExportingMessageDisabled ? (
                   <CircularProgress size={16} />
                 ) : (
-                  <ExitToAppIcon />
+                  <FileDownloadIcon />
                 )}
               </IconButton>
             </Tooltip>
@@ -332,6 +384,7 @@ function CommunicationExpandPage() {
   // };
 
   const dropdownId = 'primary-student-modal';
+  const agentsEditorsDropdownId = 'primary-agents-editors-modal';
 
   const { messagesLoaded, student, isLoaded, res_status } =
     communicationExpandPageState;
@@ -477,6 +530,15 @@ function CommunicationExpandPage() {
             student_id={student_id}
           />
         </Box>
+        <AgentsEditorsModal
+          open={isAgentsEditorsModalOpen}
+          student={student}
+          dropdownId={agentsEditorsDropdownId}
+          anchorAgentsEditorsEl={anchorAgentsEditorsEl}
+          handleAgentsEditorsStudentDetailModalClose={
+            handleAgentsEditorsModalClose
+          }
+        />
       </Grid>
     </Box>
   );

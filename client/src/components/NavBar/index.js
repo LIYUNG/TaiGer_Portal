@@ -287,39 +287,18 @@ function NavBar(props) {
       transformOrigin={{ horizontal: 'right', vertical: 'top' }}
       anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
     >
-      <MenuItem
-        onClick={handleCloseProfile}
-        sx={{
-          '&:hover': {
-            backgroundColor: '#e0e0e0' // Set a different color on hover if needed
-          }
-        }}
-      >
+      <MenuItem onClick={handleCloseProfile}>
         <Avatar />
         {`${user.firstname} ${user.lastname}`}
       </MenuItem>
       <Divider />
-      <MenuItem
-        onClick={handleCloseSettings}
-        sx={{
-          '&:hover': {
-            backgroundColor: '#e0e0e0' // Set a different color on hover if needed
-          }
-        }}
-      >
+      <MenuItem onClick={handleCloseSettings}>
         <ListItemIcon>
           <Settings fontSize="small" />
         </ListItemIcon>
         {t('Settings', { ns: 'common' })}
       </MenuItem>
-      <MenuItem
-        onClick={handleCloseLogout}
-        sx={{
-          '&:hover': {
-            backgroundColor: '#e0e0e0' // Set a different color on hover if needed
-          }
-        }}
-      >
+      <MenuItem onClick={handleCloseLogout}>
         <ListItemIcon>
           <Logout fontSize="small" />
         </ListItemIcon>

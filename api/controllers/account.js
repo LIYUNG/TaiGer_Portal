@@ -79,23 +79,23 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
 
     // TODO: update base documents needed or not:
     const documentsToEnsure = [
-      'Bachelor_Certificate',
-      'Bachelor_Transcript',
-      'Course_Description',
-      'Employment_Certificate',
-      'ECTS_Conversion'
+      ProfileNameType.Bachelor_Certificate,
+      ProfileNameType.Bachelor_Transcript,
+      ProfileNameType.Course_Description,
+      ProfileNameType.Employment_Certificate,
+      ProfileNameType.ECTS_Conversion
     ];
     const ensureDocumentStatus = (
       studentProfile,
       docName,
       profileNameList,
-      status,
-      DocStatus
+      status
     ) => {
       let document = studentProfile.find(
         (doc) => doc.name === profileNameList[docName]
       );
-
+      console.log('document:', document);
+      console.log('desired:', status);
       if (!document) {
         document = studentProfile.create({ name: profileNameList[docName] });
         document.status = status;
@@ -105,12 +105,13 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
         studentProfile.push(document);
       } else if (
         document.status ===
-        (status === DocStatus.NotNeeded
-          ? DocStatus.Missing
-          : DocStatus.NotNeeded)
+        (status === DocumentStatus.NotNeeded
+          ? DocumentStatus.Missing
+          : DocumentStatus.NotNeeded)
       ) {
         document.status = status;
       }
+      console.log('updated document:', document);
     };
     let desiredStatus;
 
@@ -130,8 +131,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
         updatedStudent.profile,
         docName,
         ProfileNameType,
-        desiredStatus,
-        DocumentStatus
+        desiredStatus
       );
     });
 
@@ -150,16 +150,15 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
       desiredSecondDegreeStatus = DocumentStatus.Missing;
     }
     const secondDegreeDocumentsToEnsure = [
-      'Second_Degree_Certificate',
-      'Second_Degree_Transcript'
+      ProfileNameType.Second_Degree_Certificate,
+      ProfileNameType.Second_Degree_Transcript
     ];
     secondDegreeDocumentsToEnsure.forEach((docName) => {
       ensureDocumentStatus(
         updatedStudent.profile,
         docName,
         ProfileNameType,
-        desiredSecondDegreeStatus,
-        DocumentStatus
+        desiredSecondDegreeStatus
       );
     });
 
@@ -171,10 +170,9 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
 
     ensureDocumentStatus(
       updatedStudent.profile,
-      'Exchange_Student_Certificate',
+      ProfileNameType.Exchange_Student_Certificate,
       ProfileNameType,
-      exchangeStatus,
-      DocumentStatus
+      exchangeStatus
     );
 
     const internshipStatus =
@@ -184,10 +182,9 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
         : DocumentStatus.NotNeeded;
     ensureDocumentStatus(
       updatedStudent.profile,
-      'Internship',
+      ProfileNameType.Internship,
       ProfileNameType,
-      internshipStatus,
-      DocumentStatus
+      internshipStatus
     );
 
     const workExperienceStatus =
@@ -197,10 +194,9 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
         : DocumentStatus.NotNeeded;
     ensureDocumentStatus(
       updatedStudent.profile,
-      'Employment_Certificate',
+      ProfileNameType.Employment_Certificate,
       ProfileNameType,
-      workExperienceStatus,
-      DocumentStatus
+      workExperienceStatus
     );
 
     await updatedStudent.save();

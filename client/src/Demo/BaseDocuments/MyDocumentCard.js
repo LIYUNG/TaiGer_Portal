@@ -330,7 +330,7 @@ function MyDocumentCard(props) {
       return FILE_NOT_OK_SYMBOL;
     } else if (props.status === 'notneeded') {
       return FILE_DONT_CARE_SYMBOL;
-    } else {
+    } else if (props.status === 'missing') {
       return FILE_MISSING_SYMBOL;
     }
   };

@@ -18,72 +18,7 @@ import MyDocumentCard from './MyDocumentCard';
 function BaseDocument_StudentView(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const profile_wtih_doc_link_list = {
-    High_School_Diploma: {
-      name: t('High School Diploma', { ns: 'common' }),
-      link: ''
-    },
-    High_School_Transcript: {
-      name: t('High School Transcript', { ns: 'common' }),
-      link: ''
-    },
-    University_Entrance_Examination_GSAT: {
-      name: t('GSAT/SAT/TVE/IB Test', { ns: 'common' }),
-      link: ''
-    },
-    Bachelor_Certificate: {
-      name: t('Bachelor Certificate/Enrolment', { ns: 'common' }),
-      link: ''
-    },
-    Bachelor_Transcript: {
-      name: t('Bachelor Transcript', { ns: 'common' }),
-      link: ''
-    },
-    Second_Degree_Certificate: {
-      name: t('Second Degree Certificate/Enrolment', { ns: 'common' }),
-      link: ''
-    },
-    Second_Degree_Transcript: {
-      name: t('Second Degree Transcript', { ns: 'common' }),
-      link: ''
-    },
-    Englisch_Certificate: {
-      name: t('TOEFL or IELTS', { ns: 'common' }),
-      link: ''
-    },
-    German_Certificate: {
-      name: t('TestDaF or Goethe B2/C1', { ns: 'common' }),
-      link: ''
-    },
-    GRE: { name: t('GRE', { ns: 'common' }), link: '' },
-    GMAT: { name: t('GMAT', { ns: 'common' }), link: '' },
-    ECTS_Conversion: {
-      name: t('ECTS Conversion', { ns: 'common' }),
-      link: ''
-    },
-    Course_Description: {
-      name: t('Course Description', { ns: 'common' }),
-      link: ''
-    },
-    Internship: {
-      name: t('Internship Certificate', { ns: 'common' }),
-      link: ''
-    },
-    Employment_Certificate: {
-      name: t('Employment Certificate', { ns: 'common' }),
-      link: ''
-    },
-    Exchange_Student_Certificate: {
-      name: t('Exchange Student Certificate', { ns: 'common' }),
-      link: ''
-    },
-    Passport_Photo: {
-      name: t('Formal Profile Photo', { ns: 'common' }),
-      link: ''
-    },
-    Passport: { name: t('Passport Copy', { ns: 'common' }), link: '' },
-    Others: { name: t('Others', { ns: 'common' }), link: '' }
-  };
+
   const [baseDocumentStudentViewState, setBaseDocumentStudentViewState] =
     useState({
       error: '',
@@ -99,7 +34,7 @@ function BaseDocument_StudentView(props) {
     });
 
   useEffect(() => {
-    let keys2 = Object.keys(profile_wtih_doc_link_list);
+    let keys2 = Object.keys(PROFILE_NAME);
     let temp_isLoaded = {};
     for (let i = 0; i < keys2.length; i++) {
       temp_isLoaded[keys2[i]] = true;
@@ -340,13 +275,11 @@ function BaseDocument_StudentView(props) {
   if (!ready) {
     return <Loading />;
   }
-  let value2 = Object.values(PROFILE_NAME);
-  let keys2 = Object.keys(profile_wtih_doc_link_list);
-  let profile_wtih_doc_link_list_key = Object.keys(profile_wtih_doc_link_list);
+  let profile_wtih_doc_link_list_key = Object.keys(PROFILE_NAME);
   let object_init = {};
   let object_message = {};
   let object_time_init = {};
-  keys2.forEach((key) => {
+  profile_wtih_doc_link_list_key.forEach((key) => {
     object_init[key] = { status: 'missing', link: '' };
     object_message[key] = '';
     object_time_init[key] = '';
@@ -391,7 +324,7 @@ function BaseDocument_StudentView(props) {
       status={object_init[k].status}
       user={user}
       isLoaded={baseDocumentStudentViewState.isLoaded[k]}
-      docName={value2[i]}
+      docName={PROFILE_NAME[k]}
       message={object_message[k]}
       time={object_time_init[k]}
       student={baseDocumentStudentViewState.student}

@@ -1062,9 +1062,10 @@ const createApplication = asyncHandler(async (req, res, next) => {
     );
   }
   const student = await req.db.model('Student').findById(studentId);
-  const program_ids = await req.db
-    .model('Program')
-    .find({ _id: { $in: program_id_set } });
+  const program_ids = await req.db.model('Program').find({
+    _id: { $in: program_id_set },
+    $or: [{ isArchiv: { $exists: false } }, { isArchiv: false }]
+  });
   if (program_ids.length !== program_id_set.length) {
     logger.error('createApplication: some program_ids invalid');
     throw new ErrorResponse(

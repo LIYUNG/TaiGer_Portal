@@ -22,6 +22,7 @@ export const getTableConfig = (customTableStyles, isLoading) => ({
   muiTableContainerProps: { sx: customTableStyles.tableContainerStyle },
   muiTablePaperProps: { sx: customTableStyles.tablePaperStyle },
   muiBottomToolbarProps: { sx: customTableStyles.tableBottomToolbarStyle },
+  positionToolbarAlertBanner: 'bottom',
   muiSearchTextFieldProps: {
     placeholder: 'Loo up',
     sx: customTableStyles.searchTextFieldStyle,

@@ -16,7 +16,7 @@ import { is_TaiGer_role } from '@taiger-common/core';
 import {
   frequencyDistribution,
   isProgramDecided,
-  isProgramWithdraw,
+  isProgramSubmitted,
   programs_refactor
 } from '../Utils/checking-functions';
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
@@ -30,6 +30,7 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import TasksDistributionBarChart from '../../components/Charts/TasksDistributionBarChart';
 import useStudents from '../../hooks/useStudents';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
+import { DECISION_STATUS_E, SUBMISSION_STATUS_E } from '../Utils/contants';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
@@ -72,8 +73,8 @@ function ApplicationOverviewTabs(props) {
   };
 
   const applications_distribution = open_applications_arr.map(
-    ({ deadline, file_type, isPotentials, show }) => {
-      return { deadline, file_type, isPotentials, show };
+    ({ closed, deadline, file_type, isPotentials, show }) => {
+      return { closed, deadline, file_type, isPotentials, show };
     }
   );
   const open_distr = frequencyDistribution(applications_distribution);
@@ -89,17 +90,15 @@ function ApplicationOverviewTabs(props) {
     });
   });
 
-  const filteredRows = open_applications_arr
-    .filter((app) => isProgramDecided(app) && !isProgramWithdraw(app))
-    .filter((row) => {
-      return Object.keys(filters).every((field) => {
-        const filterValue = filters[field];
-        return (
-          filterValue === '' ||
-          row[field]?.toString().toLowerCase().includes(filterValue)
-        );
-      });
+  const filteredRows = open_applications_arr.filter((row) => {
+    return Object.keys(filters).every((field) => {
+      const filterValue = filters[field];
+      return (
+        filterValue === '' ||
+        row[field]?.toString().toLowerCase().includes(filterValue)
+      );
     });
+  });
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -157,6 +156,30 @@ function ApplicationOverviewTabs(props) {
             {params.value}
           </Link>
         );
+      }
+    },
+    {
+      field: 'decided',
+      headerName: t('Decided', { ns: 'common' }),
+      width: 120,
+      renderCell: (params) => {
+        return params.row.decided === '-'
+          ? DECISION_STATUS_E.UNKNOWN_SYMBOL
+          : isProgramDecided(params.row)
+            ? DECISION_STATUS_E.OK_SYMBOL
+            : DECISION_STATUS_E.NOT_OK_SYMBOL;
+      }
+    },
+    {
+      field: 'closed',
+      headerName: t('Closed', { ns: 'common' }),
+      width: 120,
+      renderCell: (params) => {
+        return params.row.closed === '-'
+          ? SUBMISSION_STATUS_E.UNKNOWN_SYMBOL
+          : isProgramSubmitted(params.row)
+            ? SUBMISSION_STATUS_E.OK_SYMBOL
+            : SUBMISSION_STATUS_E.NOT_OK_SYMBOL;
       }
     },
     {

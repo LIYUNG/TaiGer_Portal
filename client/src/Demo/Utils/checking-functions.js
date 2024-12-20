@@ -790,9 +790,6 @@ export const application_date_calculator = (student, application) => {
 };
 
 export const application_deadline_calculator = (student, application) => {
-  if (isProgramSubmitted(application)) {
-    return 'CLOSE';
-  }
   if (isProgramWithdraw(application)) {
     return 'WITHDRAW';
   }
@@ -1990,7 +1987,7 @@ export const numStudentYearDistribution = (students) => {
 export const frequencyDistribution = (tasks) => {
   const map = {};
   for (let i = 0; i < tasks.length; i++) {
-    if (tasks[i].deadline === 'CLOSE' || tasks[i].deadline === 'WITHDRAW') {
+    if (tasks[i].closed === 'O' || tasks[i].closed === 'X') {
       continue;
     }
     map[tasks[i].deadline] = map[tasks[i].deadline]

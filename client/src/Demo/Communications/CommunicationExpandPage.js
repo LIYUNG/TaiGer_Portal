@@ -423,20 +423,22 @@ function CommunicationExpandPage() {
           {!ismobile &&
             student_id &&
             (messagesLoaded ? (
-              <Box
-                style={{
-                  height: `calc(100vh - ${APP_BAR_HEIGHT}px)`, // Subtract header
-                  overflowY: 'auto' /* Enable vertical scrolling */
-                }}
-                ref={scrollableRef}
-              >
+              <Box>
                 <TopBar />
-                <CommunicationExpandPageMessagesComponent
-                  student={communicationExpandPageState.student}
-                  data={communicationExpandPageState.thread}
-                  student_id={student_id}
-                  countIncrease={countIncrease}
-                />
+                <Box
+                  style={{
+                    height: `calc(100vh - ${APP_BAR_HEIGHT + 60}px)`, // Subtract header
+                    overflowY: 'auto' /* Enable vertical scrolling */
+                  }}
+                  ref={scrollableRef}
+                >
+                  <CommunicationExpandPageMessagesComponent
+                    student={communicationExpandPageState.student}
+                    data={communicationExpandPageState.thread}
+                    student_id={student_id}
+                    countIncrease={countIncrease}
+                  />
+                </Box>
               </Box>
             ) : (
               <Box

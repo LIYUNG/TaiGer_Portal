@@ -1233,7 +1233,7 @@ export const YES_NO_BOOLEAN_OPTIONS = [
 ];
 
 export const DEGREE_CATOGARY_ARRAY_OPTIONS = [
-  { value: '', label: 'Please Select' },
+  { value: '-', label: 'Please Select' },
   { value: 'Bachelor', label: 'Bachelor' },
   { value: 'B. A.', label: 'Bachelor of Art' },
   { value: 'B. Eng.', label: 'Bachelor of Engineering' },
@@ -1249,7 +1249,7 @@ export const DEGREE_CATOGARY_ARRAY_OPTIONS = [
 ];
 
 export const LANGUAGES_ARRAY_OPTIONS = [
-  { value: '', label: 'Please Select' },
+  { value: '-', label: 'Please Select' },
   { value: 'English', label: 'English' },
   { value: 'German', label: 'German' },
   { value: 'German-and-English', label: 'German-AND-English' },
@@ -1305,7 +1305,6 @@ export const COUNTRIES_MAPPING = {
 };
 
 export const COUNTRIES_ARRAY_OPTIONS = [
-  { value: '-', label: '-' },
   { value: 'at', label: 'Austria' },
   { value: 'au', label: 'Australia' },
   { value: 'be', label: 'Belgium' },
@@ -1450,7 +1449,7 @@ export const EXPECTATION_APPLICATION_YEARS = () => {
 };
 
 export const SEMESTER_ARRAY_OPTIONS = [
-  { value: '', label: 'Please Select' },
+  { value: '-', label: 'Please Select' },
   { value: 'WS', label: 'Winter Semester (Semester begins on October)' },
   { value: 'SS', label: 'Summer Semester (Semester begins on April)' }
 ];

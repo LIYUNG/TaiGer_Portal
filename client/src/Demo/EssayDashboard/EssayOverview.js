@@ -71,173 +71,176 @@ function EssayOverview(props) {
     }));
   };
 
+  const memoizedColumns = useMemo(() => {
+    return [
+      {
+        field: 'firstname_lastname',
+        headerName: t('First-, Last Name', { ns: 'common' }),
+        align: 'left',
+        headerAlign: 'left',
+        width: 150,
+        renderCell: (params) => {
+          const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+            params.row.student_id,
+            DEMO.PROFILE_HASH
+          )}`;
+          return (
+            <>
+              <IconButton
+                onClick={() => props.handleFavoriteToggle(params.row.id)}
+              >
+                {params.row.flag_by_user_id?.includes(user._id.toString()) ? (
+                  <StarRoundedIcon
+                    color={params.value ? 'primary' : 'action'}
+                  />
+                ) : (
+                  <StarBorderRoundedIcon
+                    color={params.value ? 'primary' : 'action'}
+                  />
+                )}
+              </IconButton>
+              <Link
+                underline="hover"
+                to={linkUrl}
+                component={LinkDom}
+                target="_blank"
+                title={params.value}
+              >
+                {params.value}
+              </Link>
+            </>
+          );
+        }
+      },
+      {
+        field: 'outsourced_user_id',
+        headerName: t('Essay Writer', { ns: 'common' }),
+        align: 'left',
+        headerAlign: 'left',
+        minWidth: 120,
+        renderCell: (params) => {
+          return (
+            params.row.outsourced_user_id?.map((outsourcer) => (
+              <Link
+                underline="hover"
+                to={DEMO.TEAM_EDITOR_LINK(outsourcer._id.toString())}
+                component={LinkDom}
+                target="_blank"
+                title={outsourcer.firstname}
+                key={`${outsourcer._id.toString()}`}
+              >
+                {`${outsourcer.firstname} `}
+              </Link>
+            )) || []
+          );
+        }
+      },
+      {
+        field: 'editors',
+        headerName: t('Editors', { ns: 'common' }),
+        align: 'left',
+        headerAlign: 'left',
+        minWidth: 120,
+        renderCell: (params) => {
+          return params.row.editors?.map((editor) => (
+            <Link
+              underline="hover"
+              to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
+              component={LinkDom}
+              target="_blank"
+              title={editor.firstname}
+              key={`${editor._id.toString()}`}
+            >
+              {`${editor.firstname} `}
+            </Link>
+          ));
+        }
+      },
+      {
+        field: 'deadline',
+        headerName: t('Deadline', { ns: 'common' }),
+        minWidth: 100
+      },
+      {
+        field: 'days_left',
+        headerName: t('Days left', { ns: 'common' }),
+        minWidth: 80
+      },
+      {
+        field: 'document_name',
+        headerName: t('Document name', { ns: 'common' }),
+        minWidth: 380,
+        renderCell: (params) => {
+          const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
+            params.row.thread_id
+          )}`;
+          return (
+            <>
+              {params.row?.attributes?.map(
+                (attribute) =>
+                  [1, 3, 9, 10, 11].includes(attribute.value) && (
+                    <Tooltip
+                      title={`${attribute.name}: ${
+                        ATTRIBUTES[attribute.value - 1].definition
+                      }`}
+                      key={attribute._id}
+                    >
+                      <Chip
+                        size="small"
+                        label={attribute.name[0]}
+                        color={COLORS[attribute.value]}
+                      />
+                    </Tooltip>
+                  )
+              )}
+              <Link
+                underline="hover"
+                to={linkUrl}
+                component={LinkDom}
+                target="_blank"
+                title={params.value}
+              >
+                {params.value}
+              </Link>
+            </>
+          );
+        }
+      },
+      {
+        field: 'aged_days',
+        headerName: t('Aged days', { ns: 'common' }),
+        minWidth: 80
+      },
+      {
+        field: 'number_input_from_editors',
+        headerName: t('Editor Feedback (#Messages/#Files)', { ns: 'common' }),
+        minWidth: 80
+      },
+      {
+        field: 'number_input_from_student',
+        headerName: t('Student Feedback (#Messages/#Files)', {
+          ns: 'common'
+        }),
+        minWidth: 80
+      },
+      {
+        field: 'latest_reply',
+        headerName: t('Latest Reply', { ns: 'common' }),
+        minWidth: 100
+      },
+      {
+        field: 'updatedAt',
+        headerName: t('Last Update', { ns: 'common' }),
+        minWidth: 100
+      }
+    ];
+  }, [t, props, user]);
+
   const { res_modal_status, res_modal_message, isLoaded } = cVMLRLOverviewState;
 
   if (!isLoaded && !cVMLRLOverviewState.students) {
     return <Loading />;
   }
-  const essay_dashboard_table_column = [
-    {
-      field: 'firstname_lastname',
-      headerName: t('First-, Last Name', { ns: 'common' }),
-      align: 'left',
-      headerAlign: 'left',
-      width: 150,
-      renderCell: (params) => {
-        const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-          params.row.student_id,
-          DEMO.PROFILE_HASH
-        )}`;
-        return (
-          <>
-            <IconButton
-              onClick={() => props.handleFavoriteToggle(params.row.id)}
-            >
-              {params.row.flag_by_user_id?.includes(user._id.toString()) ? (
-                <StarRoundedIcon color={params.value ? 'primary' : 'action'} />
-              ) : (
-                <StarBorderRoundedIcon
-                  color={params.value ? 'primary' : 'action'}
-                />
-              )}
-            </IconButton>
-            <Link
-              underline="hover"
-              to={linkUrl}
-              component={LinkDom}
-              target="_blank"
-              title={params.value}
-            >
-              {params.value}
-            </Link>
-          </>
-        );
-      }
-    },
-    {
-      field: 'outsourced_user_id',
-      headerName: t('Essay Writer', { ns: 'common' }),
-      align: 'left',
-      headerAlign: 'left',
-      minWidth: 120,
-      renderCell: (params) => {
-        return (
-          params.row.outsourced_user_id?.map((outsourcer) => (
-            <Link
-              underline="hover"
-              to={DEMO.TEAM_EDITOR_LINK(outsourcer._id.toString())}
-              component={LinkDom}
-              target="_blank"
-              title={outsourcer.firstname}
-              key={`${outsourcer._id.toString()}`}
-            >
-              {`${outsourcer.firstname} `}
-            </Link>
-          )) || []
-        );
-      }
-    },
-    {
-      field: 'editors',
-      headerName: t('Editors', { ns: 'common' }),
-      align: 'left',
-      headerAlign: 'left',
-      minWidth: 120,
-      renderCell: (params) => {
-        return params.row.editors?.map((editor) => (
-          <Link
-            underline="hover"
-            to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
-            component={LinkDom}
-            target="_blank"
-            title={editor.firstname}
-            key={`${editor._id.toString()}`}
-          >
-            {`${editor.firstname} `}
-          </Link>
-        ));
-      }
-    },
-    {
-      field: 'deadline',
-      headerName: t('Deadline', { ns: 'common' }),
-      minWidth: 100
-    },
-    {
-      field: 'days_left',
-      headerName: t('Days left', { ns: 'common' }),
-      minWidth: 80
-    },
-    {
-      field: 'document_name',
-      headerName: t('Document name', { ns: 'common' }),
-      minWidth: 380,
-      renderCell: (params) => {
-        const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
-          params.row.thread_id
-        )}`;
-        return (
-          <>
-            {params.row?.attributes?.map(
-              (attribute) =>
-                [1, 3, 9, 10, 11].includes(attribute.value) && (
-                  <Tooltip
-                    title={`${attribute.name}: ${
-                      ATTRIBUTES[attribute.value - 1].definition
-                    }`}
-                    key={attribute._id}
-                  >
-                    <Chip
-                      size="small"
-                      label={attribute.name[0]}
-                      color={COLORS[attribute.value]}
-                    />
-                  </Tooltip>
-                )
-            )}
-            <Link
-              underline="hover"
-              to={linkUrl}
-              component={LinkDom}
-              target="_blank"
-              title={params.value}
-            >
-              {params.value}
-            </Link>
-          </>
-        );
-      }
-    },
-    {
-      field: 'aged_days',
-      headerName: t('Aged days', { ns: 'common' }),
-      minWidth: 80
-    },
-    {
-      field: 'number_input_from_editors',
-      headerName: t('Editor Feedback (#Messages/#Files)', { ns: 'common' }),
-      minWidth: 80
-    },
-    {
-      field: 'number_input_from_student',
-      headerName: t('Student Feedback (#Messages/#Files)', { ns: 'common' }),
-      minWidth: 80
-    },
-    {
-      field: 'latest_reply',
-      headerName: t('Latest Reply', { ns: 'common' }),
-      minWidth: 100
-    },
-    {
-      field: 'updatedAt',
-      headerName: t('Last Update', { ns: 'common' }),
-      minWidth: 100
-    }
-  ];
-  const memoizedColumns = useMemo(
-    () => essay_dashboard_table_column,
-    [essay_dashboard_table_column]
-  );
 
   return (
     <>

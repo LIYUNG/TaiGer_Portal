@@ -1,4 +1,4 @@
-import { BASE_URL, request } from './request';
+import { BASE_URL, postData, request } from './request';
 
 export const login = (credentials) => request.post('/auth/login', credentials);
 
@@ -104,6 +104,12 @@ export const assignProgramToStudent = (studentId, program_ids) =>
   request.post(`/api/students/${studentId}/applications`, {
     program_id_set: program_ids
   });
+
+export const assignProgramToStudentV2 = ({ studentId, program_ids }) =>
+  postData(`/api/students/${studentId}/applications`, {
+    program_id_set: program_ids
+  });
+
 export const getStudentApplications = (studentId) =>
   request.get(`/api/students/${studentId}/applications`);
 
@@ -361,6 +367,9 @@ export const deleteProgram = (programId) =>
 
 export const createProgram = (program) =>
   request.post('/api/programs', program);
+
+export const createProgramV2 = ({ program }) =>
+  postData('/api/programs', program);
 
 export const updateProgram = (program) =>
   request.put(`/api/programs/${program._id}`, program);

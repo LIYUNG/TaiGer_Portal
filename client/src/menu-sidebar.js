@@ -23,7 +23,6 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import DrawIcon from '@mui/icons-material/Draw';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import HistoryIcon from '@mui/icons-material/History';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DifferenceIcon from '@mui/icons-material/Difference';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';

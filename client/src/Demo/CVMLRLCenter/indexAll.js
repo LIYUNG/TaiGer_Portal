@@ -13,7 +13,7 @@ import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import { useTranslation } from 'react-i18next';
 
-function indexAll() {
+function CVMLRLCenterAll() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [indexAllState, setIndexAllState] = useState({
@@ -100,4 +100,4 @@ function indexAll() {
   );
 }
 
-export default indexAll;
+export default CVMLRLCenterAll;

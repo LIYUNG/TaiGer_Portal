@@ -20,7 +20,7 @@ import { truncateText } from '../../../../Demo/Utils/checking-functions';
 import { useAuth } from '../../../AuthProvider';
 import { useTranslation } from 'react-i18next';
 
-const friend = (props) => {
+const Friend = (props) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { t } = useTranslation();
@@ -133,4 +133,4 @@ const friend = (props) => {
   );
 };
 
-export default friend;
+export default Friend;

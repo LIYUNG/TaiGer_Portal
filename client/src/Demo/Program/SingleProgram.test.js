@@ -7,6 +7,7 @@ import { getProgram, getProgramTicket } from '../../api';
 import axios from 'axios';
 import { useAuth } from '../../components/AuthProvider';
 import { MemoryRouter, useParams } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { mockSingleProgramNoStudentsData } from '../../test/testingSingleProgramPageData';
 
@@ -30,6 +31,21 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../../components/AuthProvider');
 const mockedAxios = jest.Mocked;
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false // Disable retries for faster tests
+      }
+    }
+  });
+
+const renderWithQueryClient = (ui) => {
+  const testQueryClient = createTestQueryClient();
+  return render(
+    <QueryClientProvider client={testQueryClient}>{ui}</QueryClientProvider>
+  );
+};
 
 class ResizeObserver {
   observe() {}
@@ -46,7 +62,8 @@ describe('Single Program Page checking', () => {
       user: { role: 'Student', _id: '639baebf8b84944b872cf648' }
     });
     useParams.mockReturnValue({ programId: '2532fde46751651538084485' });
-    render(
+
+    renderWithQueryClient(
       <MemoryRouter>
         <SingleProgram />
       </MemoryRouter>

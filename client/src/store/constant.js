@@ -84,6 +84,7 @@ const DEMO = {
   },
   PROGRAMS: '/programs',
   SCHOOL_CONFIG: '/programs/config',
+  NEW_PROGRAM: '/programs/create',
   KEYWORDS_EDIT: '/courses/analysis/keywords',
   KEYWORDS_NEW: '/courses/analysis/keywords/new',
   CREATE_NEW_PROGRAM_ANALYSIS: '/courses/analysis/programs/requirements/new',

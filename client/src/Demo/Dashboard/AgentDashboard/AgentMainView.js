@@ -327,7 +327,7 @@ function AgentMainView(props) {
         <NoProgramStudentTable students={students} />
         <Grid item xs={12} sm={6} md={4}>
           <ProgramSpecificDocumentCheckCard students={students} />
-        </Grid>
+        </Grid> 
         <Grid item xs={12} sm={6} md={4}>
           <NoEnoughDecidedProgramsTasksCard students={students} user={user} />
         </Grid>

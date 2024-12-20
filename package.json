@@ -1,13 +1,23 @@
 {
-    "name": "taiger-portal",
-    "version": "0.0.0",
-    "private": true,
-    "scripts": {
-        "backend": "cd api&&npm run dev",
-        "frontend": "cd client&&npm start",
-        "full": "concurrently \"npm run backend\" \"npm run frontend\""
-    },
-    "devDependencies": {
-        "concurrently": "^8.2.2"
-    }
+  "name": "taiger-portal",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "backend": "cd api&&npm run dev",
+    "frontend": "cd client&&npm start",
+    "full": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "test": "cd client&&npm run-script test:ci",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "client/src/**/*.{js,jsx}": [
+      "prettier --list-different",
+      "eslint"
+    ]
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11"
+  }
 }

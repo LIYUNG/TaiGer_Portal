@@ -23,7 +23,7 @@ import {
 } from '../Utils/contants';
 import { useTranslation } from 'react-i18next';
 
-function index() {
+function AgentSupportDocuments() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [indexState, setIndexState] = useState({
@@ -208,4 +208,4 @@ function index() {
   );
 }
 
-export default index;
+export default AgentSupportDocuments;

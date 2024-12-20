@@ -17,7 +17,6 @@ import { useTranslation } from 'react-i18next';
 import { is_TaiGer_role } from '@taiger-common/core';
 
 import {
-  assignProgramToStudent,
   getProgram,
   processProgramListAi,
   updateProgram
@@ -28,13 +27,13 @@ import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { TabTitle } from '../Utils/TabTitle';
 import { deleteProgram } from '../../api';
-import ProgramListSubpage from './ProgramListSubpage';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
 import NewProgramEdit from './NewProgramEdit';
 import ProgramDiffModal from './ProgramDiffModal';
+import { AssignProgramsToStudentDialog } from './AssignProgramsToStudentDialog';
 
 function SingleProgram() {
   const { programId } = useParams();
@@ -94,59 +93,6 @@ function SingleProgram() {
     );
   }, [programId]);
 
-  const assignProgram = (assign_data) => {
-    const { student_id, program_ids } = assign_data;
-    setSingleProgramState((prevState) => ({
-      ...prevState,
-      isAssigning: true
-    }));
-    assignProgramToStudent(student_id, program_ids).then(
-      (resp) => {
-        const { success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setSingleProgramState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            isAssigning: false,
-            modalShowAssignSuccessWindow: true,
-            modalShowAssignWindow: false,
-            success,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setSingleProgramState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            isAssigning: false,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setSingleProgramState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          isAssigning: false,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
-        }));
-      }
-    );
-  };
-
-  const onSubmitAddToStudentProgramList = (e) => {
-    e.preventDefault();
-    const student_id = singleProgramState.student_id;
-    assignProgram({
-      student_id,
-      program_ids: [singleProgramState.program._id.toString()]
-    });
-  };
-
   const onHideAssignSuccessWindow = () => {
     setSingleProgramState((prevState) => ({
       ...prevState,
@@ -175,14 +121,6 @@ function SingleProgram() {
         modalShowDiffWindow: show
       }));
     };
-  };
-
-  const handleSetStudentId = (e) => {
-    const { value } = e.target;
-    setSingleProgramState((prevState) => ({
-      ...prevState,
-      student_id: value
-    }));
   };
 
   const handleSubmit_Program = (program) => {
@@ -412,18 +350,12 @@ function SingleProgram() {
           RemoveProgramHandler={RemoveProgramHandler}
           program_id={program._id?.toString()}
         />
-        {singleProgramState.modalShowAssignWindow && (
-          <ProgramListSubpage
-            show={singleProgramState.modalShowAssignWindow}
-            setModalHide={setModalHide}
-            uni_name={[program.school]}
-            program_name={[program.program_name]}
-            handleSetStudentId={handleSetStudentId}
-            isButtonDisable={singleProgramState.isAssigning}
-            studentId={singleProgramState.student_id}
-            onSubmitAddToStudentProgramList={onSubmitAddToStudentProgramList}
-          />
-        )}
+        <AssignProgramsToStudentDialog
+          open={singleProgramState.modalShowAssignWindow}
+          onClose={setModalHide}
+          programs={[program]}
+          handleOnSuccess={setModalHide}
+        />
         <Dialog
           open={singleProgramState.modalShowAssignSuccessWindow}
           onClose={onHideAssignSuccessWindow}

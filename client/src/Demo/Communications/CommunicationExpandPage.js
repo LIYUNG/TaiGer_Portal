@@ -36,6 +36,7 @@ import MemoizedEmbeddedChatList from '../../components/EmbeddedChatList';
 import { FetchStudentLayer } from '../StudentDatabase/FetchStudentLayer';
 import CommunicationExpandPageMessagesComponent from './CommunicationExpandPageMessagesComponent';
 import ErrorPage from '../Utils/ErrorPage';
+import { truncateText } from '../Utils/checking-functions';
 
 const StudentDetailModal = ({
   open,
@@ -79,13 +80,19 @@ const LastLoginTime = ({ date }) => {
   };
 
   return (
-    <Box onClick={() => setView(!view)} title={t('Last Login', { ns: 'auth' })}>
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      onClick={() => setView(!view)}
+      title={t('Last Login', { ns: 'auth' })}
+      sx={{ ml: 1 }}
+    >
       {view ? (
         <LastLoginAbsoluteTime date={date} />
       ) : (
         <LastLoginRelativeTime date={date} />
       )}
-    </Box>
+    </Typography>
   );
 };
 
@@ -261,17 +268,20 @@ function CommunicationExpandPage() {
             </IconButton>
           )}
           <Avatar {...stringAvatar(student_name_english)}></Avatar>
-          <Link
-            to={DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-              student_id,
-              DEMO.PROFILE_HASH
-            )}
-            component={LinkDom}
-          >
-            <Typography variant="body1" fontWeight="bold" sx={{ ml: 1, mt: 1 }}>
-              {student_name_english}
-            </Typography>
-          </Link>
+          <Box>
+            <Link
+              to={DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                student_id,
+                DEMO.PROFILE_HASH
+              )}
+              component={LinkDom}
+            >
+              <Typography variant="body1" fontWeight="bold" sx={{ ml: 1 }}>
+                {truncateText(student_name_english, 32)}
+              </Typography>
+            </Link>
+            <LastLoginTime date={student.lastLoginAt} />
+          </Box>
         </Box>
         <Box sx={{ flexGrow: 1 }} />
         <Box sx={{ mr: 2, md: 'flex' }}>
@@ -279,9 +289,8 @@ function CommunicationExpandPage() {
             direction="row"
             justifyContent="flex-end"
             alignItems="center"
-            spacing={0}
+            spacing={1}
           >
-            <LastLoginTime date={student.lastLoginAt} />
             <Tooltip title={t('Export messages', { ns: 'common' })}>
               <IconButton
                 color="inherit"
@@ -414,20 +423,22 @@ function CommunicationExpandPage() {
           {!ismobile &&
             student_id &&
             (messagesLoaded ? (
-              <Box
-                style={{
-                  height: `calc(100vh - ${APP_BAR_HEIGHT}px)`, // Subtract header
-                  overflowY: 'auto' /* Enable vertical scrolling */
-                }}
-                ref={scrollableRef}
-              >
+              <Box>
                 <TopBar />
-                <CommunicationExpandPageMessagesComponent
-                  student={communicationExpandPageState.student}
-                  data={communicationExpandPageState.thread}
-                  student_id={student_id}
-                  countIncrease={countIncrease}
-                />
+                <Box
+                  style={{
+                    height: `calc(100vh - ${APP_BAR_HEIGHT + 60}px)`, // Subtract header
+                    overflowY: 'auto' /* Enable vertical scrolling */
+                  }}
+                  ref={scrollableRef}
+                >
+                  <CommunicationExpandPageMessagesComponent
+                    student={communicationExpandPageState.student}
+                    data={communicationExpandPageState.thread}
+                    student_id={student_id}
+                    countIncrease={countIncrease}
+                  />
+                </Box>
               </Box>
             ) : (
               <Box

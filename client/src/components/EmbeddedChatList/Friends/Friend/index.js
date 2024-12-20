@@ -22,7 +22,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { useAuth } from '../../../AuthProvider';
 import { useTranslation } from 'react-i18next';
 
-const friend = (props) => {
+const Friend = (props) => {
   const { student_id } = useParams();
   const { user } = useAuth();
   const { t } = useTranslation();
@@ -130,4 +130,4 @@ const friend = (props) => {
   );
 };
 
-export default friend;
+export default Friend;

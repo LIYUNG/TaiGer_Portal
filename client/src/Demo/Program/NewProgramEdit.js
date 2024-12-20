@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
@@ -13,7 +13,8 @@ import {
   Typography,
   FormGroup,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  Autocomplete
 } from '@mui/material';
 import { is_TaiGer_Admin } from '@taiger-common/core';
 
@@ -41,47 +42,10 @@ function NewProgramEdit(props) {
   const initProgram = props.program || { is_rl_specific: false };
   const [programChanges, setProgramChanges] = useState({});
   const program = { ...initProgram, ...programChanges };
-  const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const searchContainerRef = useRef(null);
-  const [isResultsVisible, setIsResultsVisible] = useState(false);
-  const schoolNameSet = new Set(
-    props.programs?.map((program) => program.school)
+  const schoolName2Set = Array.from(
+    new Set(props.programs?.map((program) => program.school))
   );
-
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (searchTerm) {
-        fetchSearchResults();
-      } else {
-        setSearchResults([]);
-      }
-    }, 300); // Adjust the delay as needed
-    document.addEventListener('click', handleClickOutside);
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-      clearTimeout(delayDebounceFn);
-    };
-  }, [searchTerm]);
-
-  const fetchSearchResults = () => {
-    setSearchResults(
-      [...schoolNameSet].filter((school) =>
-        school.toLowerCase().includes(program.school.toLowerCase())
-      )
-    );
-    setIsResultsVisible(true);
-  };
-  const handleClickOutside = (event) => {
-    // Check if the click target is outside of the search container and result list
-    if (
-      searchContainerRef.current &&
-      !searchContainerRef.current.contains(event.target)
-    ) {
-      // Clicked outside, hide the result list
-      setIsResultsVisible(false);
-    }
-  };
 
   const handleChangeByField = (field) => (value) => {
     const newState = { ...programChanges };
@@ -96,17 +60,13 @@ function NewProgramEdit(props) {
 
   const handleChange = (e) => {
     // e.preventDefault();
-    console.log(e.target.value);
-    console.log(e.target.checked);
-    console.log(e.target.type);
-    console.log(e.target.name);
     const key = e.target.name;
     const value =
       e.target.type === 'checkbox'
         ? e.target.checked
         : typeof e.target.value === 'string'
-        ? e.target.value.trimLeft()
-        : e.target.value;
+          ? e.target.value.trimLeft()
+          : e.target.value;
 
     const newState = { ...programChanges };
     if (value === initProgram[key] || (!initProgram[key] && value === '')) {
@@ -115,7 +75,6 @@ function NewProgramEdit(props) {
       newState[key] = value;
     }
     setProgramChanges(newState);
-
     if (e.target.id === 'school') {
       setSearchTerm(value.trimLeft());
     }
@@ -132,9 +91,7 @@ function NewProgramEdit(props) {
   };
 
   const onClickResultHandler = (result) => {
-    setSearchResults([]);
     setProgramChanges((preState) => ({ ...preState.program, school: result }));
-    setIsResultsVisible(false);
     setSearchTerm('');
   };
 
@@ -155,43 +112,31 @@ function NewProgramEdit(props) {
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>
-            <div className="search-container-school" ref={searchContainerRef}>
-              <TextField
-                fullWidth
-                size="small"
-                type="text"
-                id="school"
-                name="school"
-                placeholder="National Taiwan University"
-                onChange={(e) => handleChange(e)}
-                InputProps={{
-                  readOnly: props.type === 'edit' && !is_TaiGer_Admin(user),
-                  disableUnderline: true
-                }}
-                value={program.school || searchTerm}
-              />
-
-              {/* {loading && <div>Loading...</div>} */}
-              {props.programs && searchResults.length > 0
-                ? isResultsVisible && (
-                    <div className="search-results result-list">
-                      {searchResults.map((result, i) => (
-                        <li
-                          onClick={() => onClickResultHandler(result)}
-                          key={i}
-                        >
-                          {`${result}`}
-                        </li>
-                      ))}
-                    </div>
-                  )
-                : props.programs &&
-                  isResultsVisible && (
-                    <div className="search-results result-list">
-                      <li>No result</li>
-                    </div>
-                  )}
-            </div>
+            <Autocomplete
+              freeSolo
+              size="small"
+              options={schoolName2Set} // Display filtered results
+              value={searchTerm}
+              onChange={(event, value) => onClickResultHandler(value)} // Handle selection
+              onInputChange={(event, value) => handleChange(event, value)} // Handle input changes
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  type="text"
+                  id="school"
+                  name="school"
+                  placeholder="National Taiwan University"
+                  InputProps={{
+                    ...params.InputProps,
+                    readOnly: props.type === 'edit' && !is_TaiGer_Admin(user), // Conditional readonly
+                    disableUnderline: true,
+                    endAdornment: <>{params.InputProps.endAdornment}</>
+                  }}
+                />
+              )}
+              noOptionsText="No results" // Message when no results are found
+            />
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
@@ -242,7 +187,7 @@ function NewProgramEdit(props) {
                 id="degree"
                 onChange={(e) => handleChange(e)}
                 disabled={props.type === 'edit' && !is_TaiGer_Admin(user)}
-                value={program.degree || ''}
+                value={program.degree || '-'}
               >
                 {DEGREE_CATOGARY_ARRAY_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -266,7 +211,7 @@ function NewProgramEdit(props) {
                 id="semester"
                 onChange={(e) => handleChange(e)}
                 disabled={props.type === 'edit' && !is_TaiGer_Admin(user)}
-                value={program.semester || ''}
+                value={program.semester || '-'}
               >
                 {SEMESTER_ARRAY_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -1089,8 +1034,19 @@ function NewProgramEdit(props) {
                 onChange={(e) => handleChange(e)}
                 value={program.country || '-'}
               >
+                <MenuItem value={'-'}>-</MenuItem>
                 {COUNTRIES_ARRAY_OPTIONS.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                  >
+                    <img
+                      src={`/assets/logo/country_logo/svg/${option.value}.svg`}
+                      alt="Logo"
+                      style={{ maxWidth: 24, maxHeight: 24 }}
+                    />
+                    &nbsp; &nbsp;
                     {option.label}
                   </MenuItem>
                 ))}

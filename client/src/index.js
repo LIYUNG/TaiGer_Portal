@@ -1,6 +1,7 @@
 import React, { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { I18nextProvider } from 'react-i18next';
+import { QueryClientProvider } from '@tanstack/react-query';
 
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -8,6 +9,7 @@ import { AuthProvider } from './components/AuthProvider/index';
 import './index.css';
 import i18n from './i18n';
 import { CustomThemeProvider } from './components/ThemeProvider';
+import { queryClient } from './api/client';
 
 const storedLanguage = localStorage.getItem('locale') || 'en';
 i18n.changeLanguage(storedLanguage);
@@ -16,9 +18,11 @@ const app = (
   <CustomThemeProvider>
     <I18nextProvider>
       <AuthProvider>
-        <StrictMode>
-          <App />
-        </StrictMode>
+        <QueryClientProvider client={queryClient}>
+          <StrictMode>
+            <App />
+          </StrictMode>
+        </QueryClientProvider>
       </AuthProvider>
     </I18nextProvider>
   </CustomThemeProvider>

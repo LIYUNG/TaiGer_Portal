@@ -52,7 +52,8 @@ const {
   putOriginAuthorConfirmedByStudent,
   putThreadFavorite,
   IgnoreMessageInDocumentThread,
-  checkDocumentPattern
+  checkDocumentPattern,
+  getMyThreadMessages
 } = require('../controllers/documents_modification');
 const {
   docThreadMultitenant_filter,
@@ -69,7 +70,6 @@ const {
   AssignOutsourcerFilter
 } = require('../middlewares/AssignOutsourcerFilter');
 const { auditLog } = require('../utils/log/auditLog');
-
 const router = Router();
 
 router.use(protect);
@@ -80,6 +80,15 @@ router
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     checkDocumentPattern
+  );
+
+router
+  .route('/overview/all-messages')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    getMyThreadMessages,
+    logAccess
   );
 
 router

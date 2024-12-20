@@ -2261,6 +2261,61 @@ const IgnoreMessageInDocumentThread = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const isAdminOrAccessAllChat = async (req) => {
+  const { user } = req;
+  const permissions = await getPermission(req, user);
+  return (
+    user.role === Role.Admin ||
+    ((is_TaiGer_Agent(user) || is_TaiGer_Editor(user)) &&
+      permissions?.canAccessAllChat)
+  );
+};
+
+const getMyThreadMessages = asyncHandler(async (req, res, next) => {
+  const { user } = req;
+  const studentQuery = {
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  };
+
+  if (!isAdminOrAccessAllChat(user)) {
+    if (is_TaiGer_Agent(user)) {
+      studentQuery.agents = user._id.toString();
+    } else if (is_TaiGer_Editor(user)) {
+      studentQuery.editors = user._id.toString();
+    } else {
+      logger.error(`getMyMessages: not ${TENANT_SHORT_NAME} user!`);
+      throw new ErrorResponse(401, `Invalid ${TENANT_SHORT_NAME} user`);
+    }
+  }
+
+  const students = await req.db
+    .model('Student')
+    .find(studentQuery)
+    .select('firstname lastname role')
+    .lean();
+  const studentIds = students.map((stud, i) => stud._id);
+  const studentThreads = await req.db
+    .model('Documentthread')
+    .find({
+      student_id: { $in: studentIds },
+      messages: { $exists: true, $not: { $size: 0 } } // ensure messages array is not empty
+    })
+    .select({
+      messages: { $slice: -1 } // only get the last message
+    });
+
+  res.status(200).send({
+    success: true,
+    data: {
+      students: students,
+      studentThreads: studentThreads,
+      user
+    }
+  });
+
+  next();
+});
+
 module.exports = {
   getAllCVMLRLOverview,
   getSurveyInputs,
@@ -2271,6 +2326,7 @@ module.exports = {
   initGeneralMessagesThread,
   initApplicationMessagesThread,
   getMessages,
+  getMyThreadMessages,
   getMessageImageDownload,
   getMessageFileDownload,
   postImageInThread,

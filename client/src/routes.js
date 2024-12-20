@@ -62,6 +62,10 @@ const CommunicationExpandPage = React.lazy(
   () => import('./Demo/Communications/CommunicationExpandPage')
 );
 
+const DocumentCommunicatiomExpandPage = React.lazy(
+  () => import('./Demo/Communications/DocumentCommunicatiomExpandPage')
+);
+
 const UniAssist = React.lazy(() => import('./Demo/UniAssist/index'));
 const PortalCredentialPage = React.lazy(
   () => import('./Demo/PortalCredentialPage/index')
@@ -744,6 +748,11 @@ if (appConfig.messengerEnable) {
     exact: true,
     name: 'All Chat',
     Component: CommunicationExpandPage
+  });
+  routes.push({
+    path: '/doc-communications/:threadId?',
+    name: 'All Chat',
+    Component: DocumentCommunicatiomExpandPage
   });
 }
 

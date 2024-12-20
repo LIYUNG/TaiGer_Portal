@@ -729,7 +729,8 @@ const commonCategories = [
   { key: 'portal-instruction', value: 'Portal-Instruction' },
   { key: 'certification', value: 'Certification' },
   { key: 'visa', value: 'Visa' },
-  { key: 'enrolment', value: 'Enrolment' }
+  { key: 'enrolment', value: 'Enrolment' },
+  { key: 'scholarship', value: 'Scholarship' }
 ];
 
 const vpdCategory = { key: 'uniassist', value: 'Uni-Assist' };
@@ -1516,7 +1517,8 @@ export const documentation_categories = appConfig.vpdEnable
       certification: 'Certification Instruction',
       uniassist: 'Uni-Assist Instruction',
       visa: 'Visa Instruction',
-      enrolment: 'Enrolment Instruction'
+      enrolment: 'Enrolment Instruction',
+      scholarship: 'Scholarship List'
     }
   : {
       howtostart: `How to Start ${appConfig.companyName} Portal`,
@@ -1526,7 +1528,8 @@ export const documentation_categories = appConfig.vpdEnable
       'portal-instruction': 'Portal Instruction',
       certification: 'Certification Instruction',
       visa: 'Visa Instruction',
-      enrolment: 'Enrolment Instruction'
+      enrolment: 'Enrolment Instruction',
+      scholarship: 'Scholarship List'
     };
 
 export const Role = {

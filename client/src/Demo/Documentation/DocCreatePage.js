@@ -23,7 +23,7 @@ import { is_TaiGer_AdminAgent, is_TaiGer_role } from '@taiger-common/core';
 
 import DocumentsListItems from './DocumentsListItems';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
-import { valid_categories, documentation_categories } from '../Utils/contants';
+import { valid_categories, documentation_categories  } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
@@ -40,6 +40,7 @@ import { useTranslation } from 'react-i18next';
 import { appConfig } from '../../config';
 
 function DocCreatePage(props) {
+  console.log('valid_categories:', valid_categories);
   const { user } = useAuth();
   const { t } = useTranslation();
   const [DocCreatePageState, setDocCreatePage] = useState({

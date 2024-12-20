@@ -46,6 +46,7 @@ import {
   SINGLE_STUDENT_REVERSED_TABS
 } from '../Utils/contants';
 import {
+  isProgramDecided,
   needGraduatedApplicantsButStudentNotGraduated,
   needGraduatedApplicantsPrograms
 } from '../Utils/checking-functions';
@@ -506,19 +507,29 @@ export const SingleStudentPageMainContent = ({
                 </Link>
               )}
               <Typography variant="body1">
-                Applications (Selected / Contract):
+                Applications (Selected / Decided / Contract):
               </Typography>
               {singleStudentPage.student.applying_program_count ? (
                 singleStudentPage.student.applications.length <
                 singleStudentPage.student.applying_program_count ? (
                   <Typography className="text-danger">
-                    <b>{singleStudentPage.student.applications.length}</b> /{' '}
-                    {singleStudentPage.student.applying_program_count}
+                    <b>{singleStudentPage.student.applications.length}</b> /
+                    {
+                      singleStudentPage.student.applications?.filter((app) =>
+                        isProgramDecided(app)
+                      )?.length
+                    }{' '}
+                    /{singleStudentPage.student.applying_program_count}
                   </Typography>
                 ) : (
                   <Typography className="text-info">
                     {singleStudentPage.student.applications.length} /{' '}
-                    {singleStudentPage.student.applying_program_count}
+                    {
+                      singleStudentPage.student.applications?.filter((app) =>
+                        isProgramDecided(app)
+                      )?.length
+                    }{' '}
+                    / {singleStudentPage.student.applying_program_count}
                   </Typography>
                 )
               ) : (

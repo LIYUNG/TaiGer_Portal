@@ -846,7 +846,7 @@ export const GetCVDeadline = (student) => {
   let CVDeadlineRolling = '';
   let hasRolling = false;
   student.applications.forEach((application) => {
-    if (isProgramDecided(application)) {
+    if (isProgramDecided(application) && application.closed === '-') {
       const applicationDeadline = application_deadline_calculator(
         student,
         application
@@ -1663,10 +1663,10 @@ const prepEssayTask = (essay, user) => {
             (outsourcer) => outsourcer._id.toString() === user._id.toString()
           ) || false
         : is_TaiGer_Agent(user)
-        ? essay.student_id?.agents.some(
-            (agent) => agent._id.toString() === user._id.toString()
-          ) || false
-        : true,
+          ? essay.student_id?.agents.some(
+              (agent) => agent._id.toString() === user._id.toString()
+            ) || false
+          : true,
     document_name: `${essay.file_type} - ${essay.program_id.school} - ${essay.program_id.degree} -${essay.program_id.program_name}`,
     days_left:
       differenceInDays(
@@ -1832,36 +1832,37 @@ export const programs_refactor = (students) => {
         const base_docs = isProgramSubmitted(application)
           ? '-'
           : isMissingBaseDocs
-          ? 'X'
-          : 'O';
+            ? 'X'
+            : 'O';
         const uniassist = is_program_submitted
           ? '-'
           : check_program_uni_assist_needed(application)
-          ? application.uni_assist &&
-            application.uni_assist.status === DocumentStatus.Uploaded
-            ? 'O'
-            : 'X'
-          : 'Not Needed';
+            ? application.uni_assist &&
+              application.uni_assist.status === DocumentStatus.Uploaded
+              ? 'O'
+              : 'X'
+            : 'Not Needed';
         const cv = is_program_submitted ? '-' : is_cv_done ? 'O' : 'X';
         const ml_rl = is_program_decided
           ? is_program_submitted
             ? '-'
             : is_program_ml_rl_essay_finished(application)
-            ? 'O'
-            : 'X'
+              ? 'O'
+              : 'X'
           : 'X';
         const ready = is_program_decided
           ? is_program_submitted
             ? '-'
             : !isMissingBaseDocs &&
-              (!check_program_uni_assist_needed(application) ||
-                (check_program_uni_assist_needed(application) &&
-                  application.uni_assist &&
-                  application.uni_assist.status === DocumentStatus.Uploaded)) &&
-              is_cv_done &&
-              is_program_ml_rl_essay_finished(application)
-            ? 'Ready!'
-            : 'No'
+                (!check_program_uni_assist_needed(application) ||
+                  (check_program_uni_assist_needed(application) &&
+                    application.uni_assist &&
+                    application.uni_assist.status ===
+                      DocumentStatus.Uploaded)) &&
+                is_cv_done &&
+                is_program_ml_rl_essay_finished(application)
+              ? 'Ready!'
+              : 'No'
           : 'Undecided';
 
         acc.push({
@@ -1936,8 +1937,8 @@ export const toogleItemInArray = (arr, item) => {
   return arr?.includes(item)
     ? arr?.filter((userId) => userId !== item)
     : arr?.length > 0
-    ? [...arr, item]
-    : [item];
+      ? [...arr, item]
+      : [item];
 };
 
 const getNextProgram = (student) => {
@@ -2001,19 +2002,19 @@ export const frequencyDistribution = (tasks) => {
             potentials: map[tasks[i].deadline].potentials
           }
         : tasks[i].isPotentials
-        ? {
-            show: map[tasks[i].deadline].show,
-            potentials: map[tasks[i].deadline].potentials + 1
-          }
-        : {
-            show: map[tasks[i].deadline].show,
-            potentials: map[tasks[i].deadline].potentials
-          }
+          ? {
+              show: map[tasks[i].deadline].show,
+              potentials: map[tasks[i].deadline].potentials + 1
+            }
+          : {
+              show: map[tasks[i].deadline].show,
+              potentials: map[tasks[i].deadline].potentials
+            }
       : tasks[i].show
-      ? { show: 1, potentials: 0 }
-      : tasks[i].isPotentials
-      ? { show: 0, potentials: 1 }
-      : { show: 0, potentials: 0 };
+        ? { show: 1, potentials: 0 }
+        : tasks[i].isPotentials
+          ? { show: 0, potentials: 1 }
+          : { show: 0, potentials: 0 };
   }
   const filteredMap = Object.fromEntries(
     Object.entries(map).filter(
@@ -2199,9 +2200,8 @@ export const readDOCX = async (file, studentName) => {
   const result = await new Promise((resolve) => {
     reader.onload = async (event) => {
       const content = event.target.result;
-      const { headerText, textContent, footerText } = await extractTextFromDocx(
-        content
-      );
+      const { headerText, textContent, footerText } =
+        await extractTextFromDocx(content);
       const combinedText =
         `${headerText}${textContent}${footerText}`.toLowerCase();
       if (combinedText.includes(studentName.toLowerCase())) {

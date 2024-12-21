@@ -55,8 +55,8 @@ const Friend = (props) => {
           props.data?.latestCommunication?.readBy.includes(props.activeId) ||
           props.data?.latestCommunication?.user_id?.toString() ===
             user._id?.toString()
-            ? theme.palette.background.secondary
-            : theme.palette.info.main // Set your desired background color
+            ? theme.palette.background.default
+            : theme.palette.action.disabled // Set your desired background color
       }}
       title={`${
         props.data.lastname_chinese ? props.data.lastname_chinese : ''

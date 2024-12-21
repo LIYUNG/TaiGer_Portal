@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+
 import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+
 import { Box, Typography } from '@mui/material';
+
+import { getMyThreadMessages } from '../../api';
 
 // import React, { useEffect, useRef, useState } from 'react';
 // import { Link as LinkDom, Navigate, useParams } from 'react-router-dom';
@@ -100,13 +105,36 @@ import { Box, Typography } from '@mui/material';
 //   );
 // };
 
+const getThreadMessageQuery = () => ({
+  queryKey: ['threadMessages'],
+  queryFn: async () => {
+    try {
+      const response = await getMyThreadMessages();
+      return response;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  },
+  staleTime: 1000 * 60 // 1 minutes
+});
+
 function DocumentCommunicationExpandPage() {
   const { threadId: paramThreadId } = useParams();
   const [threadId, setThreadId] = useState(paramThreadId);
+  const { data, isLoading, isError, error } = useQuery(getThreadMessageQuery());
+  const { students = [], studentThreads = [] } = data?.data?.data || {};
 
   const handleOnClick = () => {
     setThreadId(threadId ? null : 'test!');
   };
+
+  console.log('isLoading:', isLoading);
+  console.log('isError:', isError);
+  console.log('error:', error);
+
+  console.log('students:', students);
+  console.log('studentThreads:', studentThreads);
 
   return (
     <Box>

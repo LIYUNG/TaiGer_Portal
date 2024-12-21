@@ -46,6 +46,7 @@ function DocumentCommunicationExpandPage() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [threadId, setThreadId] = useState(paramThreadId);
+
   const {
     data: myMessagesData,
     isLoading: myMessagesIsLoading,
@@ -65,9 +66,18 @@ function DocumentCommunicationExpandPage() {
     myMessagesData?.data?.data || {};
 
   const { messages = [] } = threadData?.data?.data || {};
+  const [studentId, setStudentId] = useState(null);
 
   const handleOnClick = () => {
     setThreadId(threadId ? null : 'test!');
+  };
+
+  const handleOnClickStudent = (id) => {
+    setStudentId(id);
+  };
+
+  const handleOnClickThread = (id) => {
+    setThreadId(id);
   };
 
   console.log('isLoading:', myMessagesIsLoading);
@@ -86,16 +96,29 @@ function DocumentCommunicationExpandPage() {
         {t('CommunicationExpandPage - ') + threadId}
       </Typography>
       <button onClick={handleOnClick}>Change threadId</button>
-      <Grid container spacing={3}>
+
+      <Grid container spacing={3} sx={{ mt: 3 }}>
         <Grid item size="grow">
           {students?.map((student) => (
-            <Typography key={student._id}>{student.firstname}</Typography>
+            <Typography
+              key={student._id}
+              onClick={() => handleOnClickStudent(student._id)}
+            >
+              {student.firstname}
+            </Typography>
           ))}
         </Grid>
         <Grid item size="grow">
-          {studentThreads?.map((thread) => (
-            <Typography key={thread._id}>{thread.file_type}</Typography>
-          ))}
+          {studentThreads
+            ?.filter((thread) => thread.student_id === studentId)
+            ?.map((thread) => (
+              <Typography
+                key={thread._id}
+                onClick={() => handleOnClickThread(thread._id)}
+              >
+                {thread.file_type}
+              </Typography>
+            ))}
         </Grid>
         <Grid item size={8}>
           {messages?.map((msgItem) => (

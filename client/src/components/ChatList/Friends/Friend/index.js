@@ -51,14 +51,11 @@ const Friend = (props) => {
       onClick={handleToChat}
       sx={{
         width: menuWidth,
-        backgroundColor: props.data?.latestCommunication?.readBy.includes(
+        backgroundColor: props.data?.latestCommunication?.readBy?.includes(
           props.activeId
         )
           ? theme.palette.background.secondary
-          : theme.palette.info.main, // Set your desired background color
-        '&:hover': {
-          backgroundColor: theme.palette.action.hover // Set a different color on hover if needed
-        }
+          : theme.palette.info.main // Set your desired background color
       }}
       title={`${
         props.data.lastname_chinese ? props.data.lastname_chinese : ''

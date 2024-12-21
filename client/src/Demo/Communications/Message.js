@@ -19,14 +19,15 @@ import {
   DialogContentText,
   DialogActions,
   Typography,
-  CircularProgress
+  CircularProgress,
+  AvatarGroup
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { is_TaiGer_Student } from '@taiger-common/core';
+import { is_TaiGer_AdminAgent, is_TaiGer_Student } from '@taiger-common/core';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 
 import EditorSimple from '../../components/EditorJs/EditorSimple';
@@ -282,21 +283,44 @@ function Message(props) {
               </Card>
             ))}
           </Box>
-          {!is_TaiGer_Student(user) &&
-            is_TaiGer_Student(props.message.user_id) && (
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={messageState.ignore_message}
-                      onChange={handleCheckboxChange}
-                    />
-                  }
-                  label="no need to reply"
-                  labelPlacement="start"
-                />
-              </FormGroup>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            {is_TaiGer_AdminAgent(user) && (
+              <AvatarGroup>
+                {props.message?.readBy?.map((usr) => (
+                  <Avatar
+                    key={user._id?.toString()}
+                    {...stringAvatar(`${usr?.firstname} ${usr?.lastname}`)}
+                    sx={{
+                      ...stringAvatar(`${usr?.firstname} ${usr?.lastname}`).sx,
+                      width: 8,
+                      height: 8 // Override the size
+                    }}
+                    size="small"
+                    title={`Read by ${usr?.firstname} ${usr?.lastname} at ${convertDate(props.message.timeStampReadBy?.[user._id?.toString()])}`}
+                  />
+                ))}
+              </AvatarGroup>
             )}
+            {!is_TaiGer_Student(user) &&
+              is_TaiGer_Student(props.message.user_id) && (
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={messageState.ignore_message}
+                        onChange={handleCheckboxChange}
+                      />
+                    }
+                    label="no need to reply"
+                    labelPlacement="start"
+                  />
+                </FormGroup>
+              )}
+          </Box>
         </AccordionDetails>
       </Accordion>
       {/* TODOL consider to move it to the parent! It render many time! as message increase */}

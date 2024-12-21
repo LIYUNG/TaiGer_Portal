@@ -2300,16 +2300,23 @@ const getMyThreadMessages = asyncHandler(async (req, res, next) => {
       student_id: { $in: studentIds },
       messages: { $exists: true, $not: { $size: 0 } } // ensure messages array is not empty
     })
+    .sort({ updatedAt: -1 })
     .select({
-      messages: { $slice: -1 } // only get the last message
-    });
+      _id: 1,
+      student_id: 1,
+      file_type: 1,
+      program_id: 1,
+      isFinalVersion: 1,
+      messages: { $slice: -1 }, // only get the last message
+      updatedAt: 1
+    })
+    .populate('messages.user_id', 'firstname lastname role');
 
   res.status(200).send({
     success: true,
     data: {
       students: students,
-      studentThreads: studentThreads,
-      user
+      studentThreads: studentThreads
     }
   });
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -45,7 +45,7 @@ function DocumentCommunicationExpandPage() {
 
   const { user } = useAuth();
   const { t } = useTranslation();
-  const [threadId, setThreadId] = useState(paramThreadId);
+  const [threadId, setThreadId] = useState(paramThreadId || null);
 
   const {
     data: myMessagesData,
@@ -60,13 +60,19 @@ function DocumentCommunicationExpandPage() {
     // isError: threadIsError,
     // error: threadError
   } = useQuery(getThreadMessages(threadId));
-  console.log('threadData:', threadData);
 
   const { students = [], studentThreads = [] } =
     myMessagesData?.data?.data || {};
 
-  const { messages = [] } = threadData?.data?.data || {};
+  const { messages = [], student_id: threadStudent = {} } =
+    threadData?.data?.data || {};
   const [studentId, setStudentId] = useState(null);
+
+  useEffect(() => {
+    if (threadStudent?._id) {
+      setStudentId(threadStudent._id);
+    }
+  }, [threadStudent]);
 
   const handleOnClick = () => {
     setThreadId(threadId ? null : 'test!');
@@ -74,11 +80,15 @@ function DocumentCommunicationExpandPage() {
 
   const handleOnClickStudent = (id) => {
     setStudentId(id);
+    setThreadId(null);
   };
 
   const handleOnClickThread = (id) => {
     setThreadId(id);
   };
+
+  console.log('threadData?.data?.data:', threadData?.data?.data);
+  console.log('studentThreads:', studentThreads);
 
   console.log('isLoading:', myMessagesIsLoading);
 
@@ -93,7 +103,7 @@ function DocumentCommunicationExpandPage() {
   return (
     <Box>
       <Typography variant="h1">
-        {t('CommunicationExpandPage - ') + threadId}
+        {t('CommunicationExpandPage - ') + threadId + ' - ' + studentId}
       </Typography>
       <button onClick={handleOnClick}>Change threadId</button>
 
@@ -110,7 +120,7 @@ function DocumentCommunicationExpandPage() {
         </Grid>
         <Grid item size="grow">
           {studentThreads
-            ?.filter((thread) => thread.student_id === studentId)
+            ?.filter((thread) => thread?.student_id === studentId)
             ?.map((thread) => (
               <Typography
                 key={thread._id}

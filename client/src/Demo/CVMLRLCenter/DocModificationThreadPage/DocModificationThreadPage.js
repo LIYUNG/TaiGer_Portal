@@ -993,12 +993,12 @@ function DocModificationThreadPage() {
                     'Portfolio'
                       ? 'Please upload the portfolio in Microsoft Word form here so that your Editor can help you for the text modification'
                       : docModificationThreadPageState.thread.file_type ===
-                        'Supplementary_Form'
-                      ? '請填好這個 program 的 Supplementory Form，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
-                      : docModificationThreadPageState.thread.file_type ===
-                        'Curriculum_Analysis'
-                      ? '請填好這個 program 的 Curriculum Analysis，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
-                      : '-'}
+                          'Supplementary_Form'
+                        ? '請填好這個 program 的 Supplementory Form，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
+                        : docModificationThreadPageState.thread.file_type ===
+                            'Curriculum_Analysis'
+                          ? '請填好這個 program 的 Curriculum Analysis，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
+                          : '-'}
                   </Typography>
                 </>
               )}
@@ -1276,29 +1276,33 @@ function DocModificationThreadPage() {
               }
             }}
           >
-            <Avatar {...stringAvatar(`${user.firstname} ${user.lastname}`)} />
-            <Typography
-              variant="body1"
-              sx={{ mt: 1 }}
-              style={{ marginLeft: '10px', flex: 1 }}
-            >
-              <b>
-                {user.firstname} {user.lastname}
-              </b>
-            </Typography>
             {docModificationThreadPageState.thread.isFinalVersion ? (
               <Typography>{t('thread-close')}</Typography>
             ) : (
-              <DocThreadEditor
-                thread={docModificationThreadPageState.thread}
-                buttonDisabled={docModificationThreadPageState.buttonDisabled}
-                doc_title={'docModificationThreadPageState.doc_title'}
-                editorState={docModificationThreadPageState.editorState}
-                handleClickSave={handleClickSave}
-                file={docModificationThreadPageState.file}
-                onFileChange={onFileChange}
-                checkResult={checkResult}
-              />
+              <>
+                <Avatar
+                  {...stringAvatar(`${user.firstname} ${user.lastname}`)}
+                />
+                <Typography
+                  variant="body1"
+                  sx={{ mt: 1 }}
+                  style={{ marginLeft: '10px', flex: 1 }}
+                >
+                  <b>
+                    {user.firstname} {user.lastname}
+                  </b>
+                </Typography>
+                <DocThreadEditor
+                  thread={docModificationThreadPageState.thread}
+                  buttonDisabled={docModificationThreadPageState.buttonDisabled}
+                  doc_title={'docModificationThreadPageState.doc_title'}
+                  editorState={docModificationThreadPageState.editorState}
+                  handleClickSave={handleClickSave}
+                  file={docModificationThreadPageState.file}
+                  onFileChange={onFileChange}
+                  checkResult={checkResult}
+                />
+              </>
             )}
           </Card>
         ) : (

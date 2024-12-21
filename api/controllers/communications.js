@@ -231,7 +231,7 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
       .select('firstname lastname role')
       .lean();
     // Get only the last communication
-    const student_ids = students.map((stud, i) => stud._id);
+    const student_ids = students.map((stud) => stud._id);
     const studentsWithCommunications = await req.db.model('Student').aggregate([
       {
         $lookup: {
@@ -274,7 +274,7 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
     })
     .select('firstname lastname role')
     .lean();
-  const student_ids = students.map((stud, i) => stud._id);
+  const student_ids = students.map((stud) => stud._id);
   const studentsWithCommunications = await req.db.model('Student').aggregate([
     {
       $lookup: {
@@ -337,7 +337,7 @@ const getMyMessages = asyncHandler(async (req, res, next) => {
       .select('firstname lastname role')
       .lean();
     // Get only the last communication
-    const student_ids = students.map((stud, i) => stud._id);
+    const student_ids = students.map((stud) => stud._id);
     const studentsWithCommunications = await req.db.model('Student').aggregate([
       {
         $lookup: {
@@ -387,7 +387,7 @@ const getMyMessages = asyncHandler(async (req, res, next) => {
       })
       .select('firstname lastname role')
       .lean();
-    const student_ids = students.map((stud, i) => stud._id);
+    const student_ids = students.map((stud) => stud._id);
     const studentsWithCommunications = await req.db.model('Student').aggregate([
       {
         $lookup: {
@@ -435,7 +435,6 @@ const getMyMessages = asyncHandler(async (req, res, next) => {
 
 const loadMessages = asyncHandler(async (req, res, next) => {
   const {
-    user,
     params: { studentId, pageNumber }
   } = req;
 
@@ -447,7 +446,7 @@ const loadMessages = asyncHandler(async (req, res, next) => {
     )
     .populate('agents', 'firstname lastname email role');
   if (!student) {
-    logger.error('getMessages: Invalid student id!');
+    logger.error('loadMessages: Invalid student id!');
     throw new ErrorResponse(404, 'Student tot found');
   }
   const skipAmount = (pageNumber - 1) * pageSize;
@@ -486,13 +485,12 @@ const getMessages = asyncHandler(async (req, res, next) => {
     .select(
       'firstname lastname firstname_chinese lastname_chinese agents lastLoginAt archiv'
     )
-    .populate('agents', 'firstname lastname email role');
+    .populate('agents editors', 'firstname lastname email role');
   if (!student) {
     logger.error('getMessages: Invalid student id!');
     throw new ErrorResponse(404, 'Student not found');
   }
-  let communication_thread;
-  communication_thread = await req.db
+  const communication_thread = await req.db
     .model('Communication')
     .find({
       student_id: studentId
@@ -534,11 +532,10 @@ const getChatFile = asyncHandler(async (req, res, next) => {
     }
     res.attachment(fileName);
     return res.end(response);
-  } else {
-    logger.info('cache hit');
-    res.attachment(fileName);
-    return res.end(value);
   }
+  logger.info('cache hit');
+  res.attachment(fileName);
+  return res.end(value);
 });
 
 // (O) notification email works

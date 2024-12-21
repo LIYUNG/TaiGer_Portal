@@ -72,17 +72,17 @@ const StudentDetailModal = ({
 const AgentsEditorsModal = ({
   open,
   student,
-  dropdownId,
+  agentsEditorsDropdownId,
   anchorAgentsEditorsEl,
   handleAgentsEditorsStudentDetailModalClose
 }) => (
   <Menu
     anchorEl={anchorAgentsEditorsEl}
-    id={dropdownId}
+    id={agentsEditorsDropdownId}
     open={open}
     onClose={handleAgentsEditorsStudentDetailModalClose}
     transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+    anchorOrigin={{ horizontal: 'right', vertical: 60 }}
   >
     {student?.agents?.map((agent) => (
       <MenuItem key={agent._id}>
@@ -232,7 +232,6 @@ function CommunicationExpandPage() {
   };
 
   const handleAgentsEditorsModalOpen = (event) => {
-    event.stopPropagation();
     setAnchorAgentsEditorsEl(event.currentTarget);
   };
 
@@ -285,6 +284,8 @@ function CommunicationExpandPage() {
     }));
   };
 
+  const agentsEditorsDropdownId = 'primary-agents-editors-modal';
+
   const TopBar = () => {
     return (
       <Box
@@ -320,7 +321,7 @@ function CommunicationExpandPage() {
               component={LinkDom}
             >
               <Typography variant="body1" fontWeight="bold" sx={{ ml: 1 }}>
-                {truncateText(student_name_english, 32)}
+                {truncateText(student_name_english, 24)}
               </Typography>
             </Link>
             <LastLoginTime date={student.lastLoginAt} />
@@ -334,16 +335,19 @@ function CommunicationExpandPage() {
             alignItems="center"
             spacing={1}
           >
-            <Tooltip title={t('Export messages', { ns: 'common' })}>
+            <Tooltip title={t('Agents Editors', { ns: 'common' })}>
               <IconButton
                 color="inherit"
-                aria-label="open-more"
+                aria-label="open-more-1"
                 aria-controls={agentsEditorsDropdownId}
                 aria-haspopup="true"
+                edge="end"
                 onClick={handleAgentsEditorsModalOpen}
               >
                 <PeopleAltIcon />
               </IconButton>
+            </Tooltip>
+            <Tooltip title={t('Export messages', { ns: 'common' })}>
               <IconButton
                 color="inherit"
                 aria-label="open-more"
@@ -374,6 +378,15 @@ function CommunicationExpandPage() {
             </Tooltip>
           </Stack>
         </Box>
+        <AgentsEditorsModal
+          open={isAgentsEditorsModalOpen}
+          student={student}
+          agentsEditorsDropdownId={agentsEditorsDropdownId}
+          anchorAgentsEditorsEl={isAgentsEditorsModalOpen}
+          handleAgentsEditorsStudentDetailModalClose={
+            handleAgentsEditorsModalClose
+          }
+        />
       </Box>
     );
   };
@@ -384,7 +397,6 @@ function CommunicationExpandPage() {
   // };
 
   const dropdownId = 'primary-student-modal';
-  const agentsEditorsDropdownId = 'primary-agents-editors-modal';
 
   const { messagesLoaded, student, isLoaded, res_status } =
     communicationExpandPageState;
@@ -530,15 +542,6 @@ function CommunicationExpandPage() {
             student_id={student_id}
           />
         </Box>
-        <AgentsEditorsModal
-          open={isAgentsEditorsModalOpen}
-          student={student}
-          dropdownId={agentsEditorsDropdownId}
-          anchorAgentsEditorsEl={anchorAgentsEditorsEl}
-          handleAgentsEditorsStudentDetailModalClose={
-            handleAgentsEditorsModalClose
-          }
-        />
       </Grid>
     </Box>
   );

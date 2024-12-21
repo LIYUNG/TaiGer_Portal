@@ -20,7 +20,8 @@ import {
   DialogActions,
   Typography,
   CircularProgress,
-  AvatarGroup
+  AvatarGroup,
+  Stack
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
@@ -50,6 +51,8 @@ function Message(props) {
     filePath: '',
     previewModalShow: false,
     deleteMessageModalShow: false,
+    ignoredMessageBy: props.message.ignoredMessageBy,
+    ignoredMessageUpdatedAt: props.message.ignoredMessageUpdatedAt,
     ignore_message:
       props.message.ignore_message === false ||
       props.message.ignore_message === undefined
@@ -124,7 +127,9 @@ function Message(props) {
     const ignoreMessageState = !messageState.ignore_message;
     setMessageState((prevState) => ({
       ...prevState,
-      ignore_message: ignoreMessageState
+      ignore_message: ignoreMessageState,
+      ignoredMessageBy: user,
+      ignoredMessageUpdatedAt: new Date()
     }));
     const message = props.message;
     const updateIgnoreMessage = async () => {
@@ -305,21 +310,46 @@ function Message(props) {
                 ))}
               </AvatarGroup>
             )}
-            {!is_TaiGer_Student(user) &&
-              is_TaiGer_Student(props.message.user_id) && (
-                <FormGroup>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={messageState.ignore_message}
-                        onChange={handleCheckboxChange}
+            <Stack
+              direction="row"
+              justifyContent="flex-end"
+              alignItems="center"
+            >
+              {!is_TaiGer_Student(user) &&
+                is_TaiGer_Student(props.message.user_id) && (
+                  <>
+                    {messageState.ignore_message && (
+                      <Avatar
+                        key={user._id?.toString()}
+                        {...stringAvatar(
+                          `${messageState.ignoredMessageBy?.firstname} ${messageState.ignoredMessageBy?.lastname}`
+                        )}
+                        sx={{
+                          ...stringAvatar(
+                            `${messageState.ignoredMessageBy?.firstname} ${messageState.ignoredMessageBy?.lastname}`
+                          ).sx,
+                          width: 8,
+                          height: 8 // Override the size
+                        }}
+                        size="small"
+                        title={`Ignored by ${messageState.ignoredMessageBy?.firstname} ${messageState.ignoredMessageBy?.lastname} at ${convertDate(messageState.ignoredMessageUpdatedAt)}`}
                       />
-                    }
-                    label="no need to reply"
-                    labelPlacement="start"
-                  />
-                </FormGroup>
-              )}
+                    )}
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={messageState.ignore_message}
+                            onChange={handleCheckboxChange}
+                          />
+                        }
+                        label="no need to reply"
+                        labelPlacement="start"
+                      />
+                    </FormGroup>
+                  </>
+                )}
+            </Stack>
           </Box>
         </AccordionDetails>
       </Accordion>

@@ -495,7 +495,10 @@ const getMessages = asyncHandler(async (req, res, next) => {
     .find({
       student_id: studentId
     })
-    .populate('student_id user_id readBy', 'firstname lastname role')
+    .populate(
+      'student_id user_id readBy ignoredMessageBy',
+      'firstname lastname role'
+    )
     .sort({ createdAt: -1 }) // 0: latest!
     .limit(pageSize); // show only first y limit items after skip.
 

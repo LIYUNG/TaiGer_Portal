@@ -305,7 +305,7 @@ function Message(props) {
                       height: 8 // Override the size
                     }}
                     size="small"
-                    title={`Read by ${usr?.firstname} ${usr?.lastname} at ${convertDate(props.message.timeStampReadBy?.[user._id?.toString()])}`}
+                    title={`Read by ${usr?.firstname} ${usr?.lastname} at ${convertDate(props.message.timeStampReadBy?.[usr._id?.toString()])}`}
                   />
                 ))}
               </AvatarGroup>

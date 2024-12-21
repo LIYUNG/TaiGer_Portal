@@ -495,16 +495,32 @@ const getMessages = asyncHandler(async (req, res, next) => {
     .find({
       student_id: studentId
     })
-    .populate('student_id user_id', 'firstname lastname role')
+    .populate(
+      'student_id user_id readBy ignoredMessageBy',
+      'firstname lastname role'
+    )
     .sort({ createdAt: -1 }) // 0: latest!
     .limit(pageSize); // show only first y limit items after skip.
 
-  // Multitenant-filter: Check student can only access their own thread!!!!
   if (communication_thread.length > 0) {
     const lastElement = communication_thread[0];
-    if (!lastElement.readBy.includes(new ObjectId(user._id.toString()))) {
-      lastElement.readBy.push(new ObjectId(user._id.toString()));
+    const userIdStr = user._id.toString();
+
+    // Check if user is in the readBy list
+    const isUserNotInReadBy =
+      lastElement.user_id._id?.toString() !== user._id?.toString() &&
+      !lastElement.readBy.some((usr) => usr._id.toString() === userIdStr);
+
+    if (isUserNotInReadBy) {
+      lastElement.readBy.push(new ObjectId(userIdStr));
+
+      // Update timestamp for the user
+      lastElement.timeStampReadBy = {
+        ...lastElement.timeStampReadBy,
+        [userIdStr]: new Date()
+      };
       await lastElement.save();
+      await lastElement.populate('readBy', 'firstname lastname role');
     }
   }
   res.status(200).send({
@@ -607,11 +623,13 @@ const postMessages = asyncHandler(async (req, res, next) => {
     }
   }
   const Communication = req.db.model('Communication'); // Get the Communication model from the tenant-specific connection
+
   const new_message = new Communication({
     student_id: studentId,
     user_id: user._id,
     message,
-    readBy: [new ObjectId(user._id.toString())],
+    readBy: [],
+    timeStampReadBy: {},
     files: newfile,
     createdAt: new Date()
   });
@@ -622,7 +640,7 @@ const postMessages = asyncHandler(async (req, res, next) => {
     .find({
       student_id: studentId
     })
-    .populate('student_id user_id', 'firstname lastname')
+    .populate('student_id user_id readBy', 'firstname lastname')
     .sort({ createdAt: -1 }) // 0: latest!
     .limit(1);
   res.status(200).send({ success: true, data: communication_latest });
@@ -738,17 +756,20 @@ const deleteAMessageInCommunicationThread = asyncHandler(
 
 const IgnoreMessage = asyncHandler(async (req, res, next) => {
   const {
+    user,
     params: { communication_messageId, ignoreMessageState }
   } = req;
 
   try {
-    await req.db
-      .model('Communication')
-      .findByIdAndUpdate(
-        communication_messageId,
-        { ignore_message: ignoreMessageState },
-        {}
-      );
+    await req.db.model('Communication').findByIdAndUpdate(
+      communication_messageId,
+      {
+        ignore_message: ignoreMessageState,
+        ignoredMessageBy: user._id,
+        ignoredMessageUpdatedAt: new Date()
+      },
+      {}
+    );
   } catch (e) {
     logger.error(
       `IgnoreMessage error for messageId ${communication_messageId}, state: ${ignoreMessageState}`

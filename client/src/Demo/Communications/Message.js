@@ -19,14 +19,16 @@ import {
   DialogContentText,
   DialogActions,
   Typography,
-  CircularProgress
+  CircularProgress,
+  AvatarGroup,
+  Stack
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { is_TaiGer_Student } from '@taiger-common/core';
+import { is_TaiGer_AdminAgent, is_TaiGer_Student } from '@taiger-common/core';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 
 import EditorSimple from '../../components/EditorJs/EditorSimple';
@@ -49,6 +51,8 @@ function Message(props) {
     filePath: '',
     previewModalShow: false,
     deleteMessageModalShow: false,
+    ignoredMessageBy: props.message.ignoredMessageBy,
+    ignoredMessageUpdatedAt: props.message.ignoredMessageUpdatedAt,
     ignore_message:
       props.message.ignore_message === false ||
       props.message.ignore_message === undefined
@@ -123,7 +127,9 @@ function Message(props) {
     const ignoreMessageState = !messageState.ignore_message;
     setMessageState((prevState) => ({
       ...prevState,
-      ignore_message: ignoreMessageState
+      ignore_message: ignoreMessageState,
+      ignoredMessageBy: user,
+      ignoredMessageUpdatedAt: new Date()
     }));
     const message = props.message;
     const updateIgnoreMessage = async () => {
@@ -282,21 +288,69 @@ function Message(props) {
               </Card>
             ))}
           </Box>
-          {!is_TaiGer_Student(user) &&
-            is_TaiGer_Student(props.message.user_id) && (
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={messageState.ignore_message}
-                      onChange={handleCheckboxChange}
-                    />
-                  }
-                  label="no need to reply"
-                  labelPlacement="start"
-                />
-              </FormGroup>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            {is_TaiGer_AdminAgent(user) && (
+              <AvatarGroup>
+                {props.message?.readBy?.map((usr) => (
+                  <Avatar
+                    key={user._id?.toString()}
+                    {...stringAvatar(`${usr?.firstname} ${usr?.lastname}`)}
+                    sx={{
+                      ...stringAvatar(`${usr?.firstname} ${usr?.lastname}`).sx,
+                      width: 8,
+                      height: 8 // Override the size
+                    }}
+                    size="small"
+                    title={`Read by ${usr?.firstname} ${usr?.lastname} at ${convertDate(props.message.timeStampReadBy?.[usr._id?.toString()])}`}
+                  />
+                ))}
+              </AvatarGroup>
             )}
+            <Stack
+              direction="row"
+              justifyContent="flex-end"
+              alignItems="center"
+            >
+              {!is_TaiGer_Student(user) &&
+                is_TaiGer_Student(props.message.user_id) && (
+                  <>
+                    {messageState.ignore_message && (
+                      <Avatar
+                        key={user._id?.toString()}
+                        {...stringAvatar(
+                          `${messageState.ignoredMessageBy?.firstname} ${messageState.ignoredMessageBy?.lastname}`
+                        )}
+                        sx={{
+                          ...stringAvatar(
+                            `${messageState.ignoredMessageBy?.firstname} ${messageState.ignoredMessageBy?.lastname}`
+                          ).sx,
+                          width: 8,
+                          height: 8 // Override the size
+                        }}
+                        size="small"
+                        title={`Ignored by ${messageState.ignoredMessageBy?.firstname} ${messageState.ignoredMessageBy?.lastname} at ${convertDate(messageState.ignoredMessageUpdatedAt)}`}
+                      />
+                    )}
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={messageState.ignore_message}
+                            onChange={handleCheckboxChange}
+                          />
+                        }
+                        label="no need to reply"
+                        labelPlacement="start"
+                      />
+                    </FormGroup>
+                  </>
+                )}
+            </Stack>
+          </Box>
         </AccordionDetails>
       </Accordion>
       {/* TODOL consider to move it to the parent! It render many time! as message increase */}

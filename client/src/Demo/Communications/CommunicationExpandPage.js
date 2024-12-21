@@ -14,12 +14,14 @@ import {
   Menu,
   Link,
   Stack,
-  Tooltip
+  Tooltip,
+  MenuItem
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { is_TaiGer_role } from '@taiger-common/core';
 
 import { getCommunicationThread, WidgetExportMessagePDF } from '../../api';
@@ -66,6 +68,35 @@ const StudentDetailModal = ({
     </ListItem>
   </Menu>
 );
+
+const AgentsEditorsModal = ({
+  open,
+  student,
+  agentsEditorsDropdownId,
+  anchorAgentsEditorsEl,
+  handleAgentsEditorsStudentDetailModalClose
+}) => (
+  <Menu
+    anchorEl={anchorAgentsEditorsEl}
+    id={agentsEditorsDropdownId}
+    open={open}
+    onClose={handleAgentsEditorsStudentDetailModalClose}
+    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+    anchorOrigin={{ horizontal: 'right', vertical: 60 }}
+  >
+    {student?.agents?.map((agent) => (
+      <MenuItem key={agent._id}>
+        {agent.firstname} {agent.lastname}
+      </MenuItem>
+    ))}
+    {student?.editors?.map((editor) => (
+      <MenuItem key={editor._id}>
+        {editor.firstname} {editor.lastname}
+      </MenuItem>
+    ))}
+  </Menu>
+);
+
 const MemorizedStudentDetailModal = React.memo(StudentDetailModal);
 
 const LastLoginTime = ({ date }) => {
@@ -124,7 +155,9 @@ function CommunicationExpandPage() {
 
   const [open, setOpen] = useState(ismobile);
   const [anchorStudentDetailEl, setAnchorStudentDetailEl] = useState(null);
+  const [anchorAgentsEditorsEl, setAnchorAgentsEditorsEl] = useState(null);
   const isStudentDetailModalOpen = Boolean(anchorStudentDetailEl);
+  const isAgentsEditorsModalOpen = Boolean(anchorAgentsEditorsEl);
   const [isExportingMessageDisabled, setIsExportingMessageDisabled] =
     useState(false);
   const scrollableRef = useRef(null);
@@ -198,6 +231,10 @@ function CommunicationExpandPage() {
     setAnchorStudentDetailEl(event.currentTarget);
   };
 
+  const handleAgentsEditorsModalOpen = (event) => {
+    setAnchorAgentsEditorsEl(event.currentTarget);
+  };
+
   const handleExportMessages = async (event) => {
     event.stopPropagation();
     setIsExportingMessageDisabled(true);
@@ -231,6 +268,11 @@ function CommunicationExpandPage() {
     setAnchorStudentDetailEl(null);
   };
 
+  const handleAgentsEditorsModalClose = (event) => {
+    event.stopPropagation();
+    setAnchorAgentsEditorsEl(null);
+  };
+
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -241,6 +283,8 @@ function CommunicationExpandPage() {
       count: prevState.count + 1
     }));
   };
+
+  const agentsEditorsDropdownId = 'primary-agents-editors-modal';
 
   const TopBar = () => {
     return (
@@ -277,7 +321,7 @@ function CommunicationExpandPage() {
               component={LinkDom}
             >
               <Typography variant="body1" fontWeight="bold" sx={{ ml: 1 }}>
-                {truncateText(student_name_english, 32)}
+                {truncateText(student_name_english, 24)}
               </Typography>
             </Link>
             <LastLoginTime date={student.lastLoginAt} />
@@ -291,6 +335,18 @@ function CommunicationExpandPage() {
             alignItems="center"
             spacing={1}
           >
+            <Tooltip title={t('Agents Editors', { ns: 'common' })}>
+              <IconButton
+                color="inherit"
+                aria-label="open-more-1"
+                aria-controls={agentsEditorsDropdownId}
+                aria-haspopup="true"
+                edge="end"
+                onClick={handleAgentsEditorsModalOpen}
+              >
+                <PeopleAltIcon />
+              </IconButton>
+            </Tooltip>
             <Tooltip title={t('Export messages', { ns: 'common' })}>
               <IconButton
                 color="inherit"
@@ -304,7 +360,7 @@ function CommunicationExpandPage() {
                 {isExportingMessageDisabled ? (
                   <CircularProgress size={16} />
                 ) : (
-                  <ExitToAppIcon />
+                  <FileDownloadIcon />
                 )}
               </IconButton>
             </Tooltip>
@@ -322,6 +378,15 @@ function CommunicationExpandPage() {
             </Tooltip>
           </Stack>
         </Box>
+        <AgentsEditorsModal
+          open={isAgentsEditorsModalOpen}
+          student={student}
+          agentsEditorsDropdownId={agentsEditorsDropdownId}
+          anchorAgentsEditorsEl={isAgentsEditorsModalOpen}
+          handleAgentsEditorsStudentDetailModalClose={
+            handleAgentsEditorsModalClose
+          }
+        />
       </Box>
     );
   };

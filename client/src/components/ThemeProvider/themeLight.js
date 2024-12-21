@@ -42,6 +42,17 @@ let themeLight = createTheme({
   },
   shape: {
     borderRadius: 8 // Subtle rounded corners for cards and buttons
+  },
+  components: {
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            backgroundColor: (theme) => theme.palette.action.hover
+          }
+        }
+      }
+    }
   }
 });
 themeLight = responsiveFontSizes(themeLight);

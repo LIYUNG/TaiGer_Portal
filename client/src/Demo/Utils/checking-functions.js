@@ -736,6 +736,10 @@ export const isProgramAdmitted = (application) => {
   return application.admission === 'O';
 };
 
+export const isProgramRejected = (application) => {
+  return application.admission === 'X';
+};
+
 // Tested
 export const isProgramWithdraw = (application) => {
   return application.closed === 'X';

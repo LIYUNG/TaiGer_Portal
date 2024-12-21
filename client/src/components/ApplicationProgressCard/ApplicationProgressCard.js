@@ -36,6 +36,8 @@ import DEMO from '../../store/constant';
 import {
   application_deadline_calculator,
   isProgramAdmitted,
+  isProgramRejected,
+  isProgramSubmitted,
   progressBarCounter
 } from '../../Demo/Utils/checking-functions';
 import { BASE_URL } from '../../api/request';
@@ -86,7 +88,7 @@ const ProgramLink = ({ program }) => (
 const AdmissionLetterLink = ({ application }) => {
   const { t } = useTranslation();
   return (
-    (application.admission === 'O' || application.admission === 'X') &&
+    (isProgramAdmitted(application) || isProgramRejected(application)) &&
     application.admission_letter?.status === 'uploaded' && (
       <a
         href={`${BASE_URL}/api/admissions/${application.admission_letter.admission_file_path.replace(
@@ -97,7 +99,7 @@ const AdmissionLetterLink = ({ application }) => {
         rel="noreferrer"
         className="text-info"
       >
-        {application.admission === 'O'
+        {isProgramAdmitted(application)
           ? t('Admission Letter', { ns: 'admissions' })
           : t('Rejection Letter', { ns: 'admissions' })}
       </a>
@@ -202,8 +204,7 @@ export default function ApplicationProgressCard(props) {
       <Card>
         <CardContent onClick={handleToggle}>
           <Typography color="text.secondary" gutterBottom>
-            {application_deadline_calculator(props.student, application) ===
-            'CLOSE' ? (
+            {isProgramSubmitted(application) ? (
               <>
                 {application.admission === '-' && (
                   <>
@@ -219,7 +220,7 @@ export default function ApplicationProgressCard(props) {
                     {t('Admitted', { ns: 'common' })}
                   </>
                 )}
-                {application.admission === 'X' && (
+                {isProgramRejected(application) && (
                   <>
                     <IconButton>{FILE_NOT_OK_SYMBOL}</IconButton>
                     &nbsp;
@@ -252,8 +253,7 @@ export default function ApplicationProgressCard(props) {
           </Typography>
           <Typography variant="body2">
             <AdmissionLetterLink application={application} />
-            {application_deadline_calculator(props.student, application) ===
-              'CLOSE' &&
+            {isProgramSubmitted(application) &&
               application.admission !== '-' &&
               (!application.admission_letter?.status ||
                 application.admission_letter?.status !== 'uploaded') && (
@@ -266,15 +266,14 @@ export default function ApplicationProgressCard(props) {
                   startIcon={<AddIcon />}
                   sx={{ my: 1 }}
                 >
-                  {application.admission === 'O'
+                  {isProgramAdmitted(application)
                     ? t('upload-admission-letter', { ns: 'admissions' })
                     : t('upload-rejection-letter', { ns: 'admissions' })}
                 </Button>
               )}
           </Typography>
           {appConfig.interviewEnable &&
-            application_deadline_calculator(props.student, application) ===
-              'CLOSE' &&
+            isProgramSubmitted(application) &&
             application.admission === '-' && (
               <>
                 {!application.interview_status && (
@@ -342,8 +341,7 @@ export default function ApplicationProgressCard(props) {
                 )}
               </>
             )}
-          {application_deadline_calculator(props.student, application) ===
-            'CLOSE' &&
+          {isProgramSubmitted(application) &&
             (application.admission === '-' ? (
               <Typography>{t('Tell me about your result')} : </Typography>
             ) : (
@@ -359,31 +357,29 @@ export default function ApplicationProgressCard(props) {
                 {t('Change your result')}
               </Button>
             ))}
-          {application_deadline_calculator(props.student, application) ===
-            'CLOSE' &&
-            application.admission === '-' && (
-              <Box sx={{ my: 1 }}>
-                <Button
-                  sx={{ mr: 1 }}
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  onClick={(e) => openSetResultModal(e, 'O')}
-                  startIcon={<CheckIcon />}
-                >
-                  {t('Admitted', { ns: 'common' })}
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  size="small"
-                  onClick={(e) => openSetResultModal(e, 'X')}
-                  startIcon={<CloseIcon />}
-                >
-                  {t('Rejected', { ns: 'common' })}
-                </Button>
-              </Box>
-            )}
+          {isProgramSubmitted(application) && application.admission === '-' && (
+            <Box sx={{ my: 1 }}>
+              <Button
+                sx={{ mr: 1 }}
+                variant="contained"
+                color="primary"
+                size="small"
+                onClick={(e) => openSetResultModal(e, 'O')}
+                startIcon={<CheckIcon />}
+              >
+                {t('Admitted', { ns: 'common' })}
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                size="small"
+                onClick={(e) => openSetResultModal(e, 'X')}
+                startIcon={<CloseIcon />}
+              >
+                {t('Rejected', { ns: 'common' })}
+              </Button>
+            </Box>
+          )}
           <Typography
             variant="body1"
             component="div"
@@ -392,8 +388,7 @@ export default function ApplicationProgressCard(props) {
             <BorderLinearProgress
               variant="determinate"
               value={
-                application_deadline_calculator(props.student, application) ===
-                'CLOSE'
+                isProgramSubmitted(application)
                   ? 100
                   : progressBarCounter(props.student, application)
               }
@@ -402,8 +397,7 @@ export default function ApplicationProgressCard(props) {
             />
             <span>
               {`${
-                application_deadline_calculator(props.student, application) ===
-                'CLOSE'
+                isProgramSubmitted(application)
                   ? 100
                   : progressBarCounter(props.student, application)
               }%`}

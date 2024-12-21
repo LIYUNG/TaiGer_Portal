@@ -8,12 +8,14 @@ import { Box, Grid, Typography } from '@mui/material';
 import { useAuth } from '../../components/AuthProvider';
 import { is_TaiGer_role } from '@taiger-common/core';
 import DEMO from '../../store/constant';
+import Loading from '../../components/Loading/Loading';
 import { getMyThreadMessages, getMessagThread } from '../../api';
 
 const getMyThreadMessageQuery = () => ({
   queryKey: ['myThreadMessages'],
   queryFn: async () => {
     try {
+      // await new Promise((resolve) => setTimeout(resolve, 10000));
       const response = await getMyThreadMessages();
       return response;
     } catch (error) {
@@ -109,14 +111,18 @@ function DocumentCommunicationExpandPage() {
 
       <Grid container spacing={3} sx={{ mt: 3 }}>
         <Grid item size="grow">
-          {students?.map((student) => (
-            <Typography
-              key={student._id}
-              onClick={() => handleOnClickStudent(student._id)}
-            >
-              {student.firstname}
-            </Typography>
-          ))}
+          {myMessagesIsLoading ? (
+            <Loading />
+          ) : (
+            students?.map((student) => (
+              <Typography
+                key={student._id}
+                onClick={() => handleOnClickStudent(student._id)}
+              >
+                {student.firstname}
+              </Typography>
+            ))
+          )}
         </Grid>
         <Grid item size="grow">
           {studentThreads

@@ -51,9 +51,9 @@ const Friend = (props) => {
       onClick={handleToChat}
       sx={{
         width: menuWidth,
-        backgroundColor: props.data?.latestCommunication?.readBy?.includes(
-          props.activeId
-        )
+        backgroundColor: props.data?.latestCommunication?.readBy
+          ?.map((usr) => usr._id)
+          .includes(props.activeId)
           ? theme.palette.background.secondary
           : theme.palette.info.main // Set your desired background color
       }}

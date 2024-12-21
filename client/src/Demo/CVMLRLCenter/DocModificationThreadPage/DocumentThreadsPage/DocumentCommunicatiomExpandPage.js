@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { Box, Grid, Typography } from '@mui/material';
 
-import { useAuth } from '../../components/AuthProvider';
+import { useAuth } from '../../../../components/AuthProvider';
 import { is_TaiGer_role } from '@taiger-common/core';
-import DEMO from '../../store/constant';
-import Loading from '../../components/Loading/Loading';
-import { getMyThreadMessages, getMessagThread } from '../../api';
+import DEMO from '../../../../store/constant';
+import Loading from '../../../../components/Loading/Loading';
+import { getMyThreadMessages, getMessagThread } from '../../../../api';
 
 const getMyThreadMessageQuery = () => ({
   queryKey: ['myThreadMessages'],

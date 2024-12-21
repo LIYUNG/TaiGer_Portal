@@ -63,7 +63,10 @@ const CommunicationExpandPage = React.lazy(
 );
 
 const DocumentCommunicatiomExpandPage = React.lazy(
-  () => import('./Demo/Communications/DocumentCommunicatiomExpandPage')
+  () =>
+    import(
+      './Demo/CVMLRLCenter/DocModificationThreadPage/DocumentThreadsPage/DocumentCommunicatiomExpandPage'
+    )
 );
 
 const UniAssist = React.lazy(() => import('./Demo/UniAssist/index'));

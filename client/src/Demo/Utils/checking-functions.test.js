@@ -29,7 +29,8 @@ import {
   num_uni_assist_vpd_uploaded,
   check_student_needs_uni_assist,
   is_uni_assist_paid_and_docs_uploaded,
-  isUniAssistVPDNeeded
+  isUniAssistVPDNeeded,
+  is_all_uni_assist_vpd_uploaded
 } from './checking-functions';
 
 describe('Role checking', () => {
@@ -617,6 +618,106 @@ describe('is_any_base_documents_uploaded', () => {
   it('should return false if students array is null or undefined', () => {
     expect(is_any_base_documents_uploaded(null)).toBe(false);
     expect(is_any_base_documents_uploaded(undefined)).toBe(false);
+  });
+});
+
+describe('is_all_uni_assist_vpd_uploaded', () => {
+  it('should return false if student applications is undefined', () => {
+    const student = { applications: undefined };
+    const result = is_all_uni_assist_vpd_uploaded(student);
+    expect(result).toBe(false);
+  });
+
+  it('should ignore applications without "VPD" in uni_assist', () => {
+    const student = {
+      applications: [
+        {
+          programId: { uni_assist: 'SomeOtherDoc' },
+          decided: 'O',
+          uni_assist: {
+            status: DocumentStatusType.Uploaded,
+            vpd_file_path: 'path/to/vpd'
+          }
+        }
+      ]
+    };
+    const result = is_all_uni_assist_vpd_uploaded(student);
+    expect(result).toBe(true); // Should ignore this application since 'VPD' is not in uni_assist
+  });
+
+  it('should return false if uni_assist is missing', () => {
+    const student = {
+      applications: [
+        {
+          programId: { uni_assist: ['VPD'] },
+          decided: 'O',
+          uni_assist: undefined
+        }
+      ]
+    };
+    const result = is_all_uni_assist_vpd_uploaded(student);
+    expect(result).toBe(false);
+  });
+
+  it('should continue if uni_assist status is NotNeeded', () => {
+    const student = {
+      applications: [
+        {
+          programId: { uni_assist: ['VPD'] },
+          decided: 'O',
+          uni_assist: { status: DocumentStatusType.NotNeeded }
+        },
+        {
+          programId: { uni_assist: ['VPD'] },
+          decided: 'O',
+          uni_assist: {
+            status: DocumentStatusType.Uploaded,
+            vpd_file_path: 'path/to/vpd'
+          }
+        }
+      ]
+    };
+    const result = is_all_uni_assist_vpd_uploaded(student);
+    expect(result).toBe(true); // Should skip the first application due to status NotNeeded
+  });
+
+  it('should return false if uni_assist status is not Uploaded or vpd_file_path is empty', () => {
+    const student = {
+      applications: [
+        {
+          programId: { uni_assist: ['VPD'] },
+          decided: 'O',
+          uni_assist: { status: DocumentStatusType.Missing, vpd_file_path: '' }
+        }
+      ]
+    };
+    const result = is_all_uni_assist_vpd_uploaded(student);
+    expect(result).toBe(false); // Should return false since status is not 'Uploaded' and file path is empty
+  });
+
+  it('should return true if all VPD documents are uploaded', () => {
+    const student = {
+      applications: [
+        {
+          programId: { uni_assist: ['VPD'] },
+          decided: 'O',
+          uni_assist: {
+            status: DocumentStatusType.Uploaded,
+            vpd_file_path: 'path/to/vpd'
+          }
+        },
+        {
+          programId: { uni_assist: ['VPD'] },
+          decided: 'O',
+          uni_assist: {
+            status: DocumentStatusType.Uploaded,
+            vpd_file_path: 'another/path/to/vpd'
+          }
+        }
+      ]
+    };
+    const result = is_all_uni_assist_vpd_uploaded(student);
+    expect(result).toBe(true); // All conditions for uploading are satisfied
   });
 });
 

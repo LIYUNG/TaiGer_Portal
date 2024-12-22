@@ -26,7 +26,6 @@ import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import { is_TaiGer_Student } from '@taiger-common/core';
 import i18next from 'i18next';
-import { formatDistanceToNow } from 'date-fns';
 
 export const IS_DEV =
   !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
@@ -1134,15 +1133,33 @@ export const sortProgramFields = (a, b) => {
 };
 
 export const convertDateUXFriendly = (date) => {
-  if (!date) return '-';
+  // let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
 
-  // Calculate relative time using date-fns
-  const relativeTime = formatDistanceToNow(new Date(date), {
-    addSuffix: true // Adds "ago" or similar suffix
-  });
+  const currentDate = new Date();
+  const input_date_point = new Date(date);
+  // Calculate the time difference in milliseconds
+  const timeDiff = Math.abs(currentDate - input_date_point);
 
-  // If you want translations with i18next
-  return i18next.t('timeRelative', { relativeTime });
+  // Convert milliseconds to minutes, hours, days, and weeks
+  const minutes = Math.floor(timeDiff / (1000 * 60));
+  const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+  const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+  const weeks = Math.floor(days / 7);
+
+  let timeDisplay;
+  if (!date) {
+    return '-';
+  }
+  if (minutes < 60) {
+    timeDisplay = i18next.t('timeMinutes', { ns: 'common', minutes });
+  } else if (hours < 24) {
+    timeDisplay = i18next.t('timeHours', { ns: 'common', hours });
+  } else if (days < 7) {
+    timeDisplay = i18next.t('timeDays', { ns: 'common', days });
+  } else {
+    timeDisplay = i18next.t('timeWeeks', { ns: 'common', weeks });
+  }
+  return timeDisplay;
 };
 
 const create_years = (start_year, end_year) => {

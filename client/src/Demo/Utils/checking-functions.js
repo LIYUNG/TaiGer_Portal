@@ -286,7 +286,7 @@ export const are_base_documents_missing = (student) => {
   return false;
 };
 
-// Tested: but TODO refactor
+// Tested
 export const is_any_base_documents_uploaded = (students) => {
   if (!students?.length) return false;
 

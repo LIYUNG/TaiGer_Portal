@@ -118,7 +118,7 @@ const getTeamMembers = asyncHandler(async (req, res) => {
   const users = await req.db.model('User').aggregate([
     {
       $match: {
-        role: { $in: ['Admin', 'Agent', 'Editor'] },
+        role: { $in: [Role.Admin, Role.Agent, Role.Editor] },
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       }
     },

@@ -7,7 +7,6 @@ const { UPLOAD_PATH } = require('../../config');
 const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { Student, UserSchema } = require('../../models/User');
-const { DocumentStatus } = require('../../constants');
 const { generateUser } = require('../fixtures/faker');
 const { protect, permit } = require('../../middlewares/auth');
 const {
@@ -394,13 +393,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     }_${category}${path.extname(
       updatedStudent.profile[profile_file_idx].path
     )}`;
-    // expect(
-    //   updatedStudent.applications[appl_idx].documents[doc_idx].name
-    // ).toMatchObject({
-    //   // path: expect.not.stringMatching(/^$/),
-    //   name: docName,
-    //   // status: DocumentStatus.Uploaded,
-    // });
+
     const file_name_inDB = path.basename(
       updatedStudent.profile[profile_file_idx].path
     );
@@ -512,13 +505,7 @@ describe('POST /api/students/:studentId/files/:category', () => {
     }_${category}${path.extname(
       updatedStudent.profile[profile_file_idx].path
     )}`;
-    // expect(
-    //   updatedStudent.applications[appl_idx].documents[doc_idx].name
-    // ).toMatchObject({
-    //   // path: expect.not.stringMatching(/^$/),
-    //   name: docName,
-    //   // status: DocumentStatus.Uploaded,
-    // });
+
     const file_name_inDB = path.basename(
       updatedStudent.profile[profile_file_idx].path
     );

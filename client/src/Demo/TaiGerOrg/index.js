@@ -17,7 +17,7 @@ import {
   Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { is_TaiGer_Admin, is_TaiGer_role } from '@taiger-common/core';
+import { is_TaiGer_Admin, is_TaiGer_role, Role } from '@taiger-common/core';
 
 import ErrorPage from '../Utils/ErrorPage';
 import { getTeamMembers, updateUserPermission } from '../../api';
@@ -168,16 +168,16 @@ function TaiGerOrg() {
     return <ErrorPage res_status={res_status} />;
   }
   const admins = taiGerOrgState.teams.filter(
-    (member) => member.role === 'Admin'
+    (member) => member.role === Role.Admin
   );
   const agents = taiGerOrgState.teams.filter(
-    (member) => member.role === 'Agent'
+    (member) => member.role === Role.Agent
   );
   // const managers = taiGerOrgState.teams.filter(
   //   (member) => member.role === 'Manager'
   // );
   const editors = taiGerOrgState.teams.filter(
-    (member) => member.role === 'Editor'
+    (member) => member.role === Role.Editor
   );
 
   const EditorRow = ({ editor }) => {

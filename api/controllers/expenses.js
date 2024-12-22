@@ -7,7 +7,7 @@ const logger = require('../services/logger');
 
 const getExpenses = asyncHandler(async (req, res) => {
   const studentsWithExpenses = await req.db.model('Student').aggregate([
-    { $match: { role: { $in: ['Admin', 'Agent', 'Editor'] } } },
+    { $match: { role: { $in: [Role.Admin, Role.Agent, Role.Editor] } } },
     {
       $lookup: {
         from: 'expenses',

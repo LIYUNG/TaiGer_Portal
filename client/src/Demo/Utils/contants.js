@@ -1528,15 +1528,6 @@ export const documentation_categories = appConfig.vpdEnable
       scholarship: 'Scholarship List'
     };
 
-export const Role = {
-  Admin: 'Admin',
-  Manager: 'Manager',
-  Guest: 'Guest',
-  Agent: 'Agent',
-  Editor: 'Editor',
-  Student: 'Student'
-};
-
 export const internal_documentation_categories = {
   agents: 'Agents',
   editors: 'Editors',

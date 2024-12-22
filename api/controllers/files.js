@@ -1,10 +1,10 @@
 const path = require('path');
-const { Role } = require('@taiger-common/core');
+const { Role, DocumentStatusType } = require('@taiger-common/core');
 
 const { asyncHandler } = require('../middlewares/error-handler');
 const { one_month_cache, two_month_cache } = require('../cache/node-cache');
 const { ErrorResponse } = require('../common/errors');
-const { DocumentStatus, isNotArchiv } = require('../constants');
+const { isNotArchiv } = require('../constants');
 const {
   deleteTemplateSuccessEmail,
   sendAgentUploadedProfileFilesForStudentEmail,
@@ -143,7 +143,7 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
   let document = student.profile.find(({ name }) => name === category);
   if (!document) {
     document = student.profile.create({ name: category });
-    document.status = DocumentStatus.Uploaded;
+    document.status = DocumentStatusType.Uploaded;
     document.required = true;
     document.updatedAt = new Date();
     document.path = req.file.key;
@@ -208,7 +208,7 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
       );
     }
   } else {
-    document.status = DocumentStatus.Uploaded;
+    document.status = DocumentStatusType.Uploaded;
     document.required = true;
     document.updatedAt = new Date();
     document.path = req.file.key;
@@ -334,10 +334,10 @@ const updateVPDFileNecessity = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(404, 'Application not found');
   }
   // TODO: set bot notneeded and resume needed
-  if (app.uni_assist.status !== DocumentStatus.NotNeeded) {
-    app.uni_assist.status = DocumentStatus.NotNeeded;
+  if (app.uni_assist.status !== DocumentStatusType.NotNeeded) {
+    app.uni_assist.status = DocumentStatusType.NotNeeded;
   } else {
-    app.uni_assist.status = DocumentStatus.Missing;
+    app.uni_assist.status = DocumentStatusType.Missing;
   }
   app.uni_assist.updatedAt = new Date();
   app.uni_assist.vpd_file_path = '';
@@ -369,7 +369,7 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
     (application) => application.programId._id.toString() === program_id
   );
   if (!app) {
-    app.uni_assist.status = DocumentStatus.Uploaded;
+    app.uni_assist.status = DocumentStatusType.Uploaded;
     app.uni_assist.updatedAt = new Date();
     app.uni_assist.vpd_file_path = req.file.key;
     await student.save();
@@ -378,12 +378,12 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
     return;
   }
   if (fileType === 'VPD') {
-    app.uni_assist.status = DocumentStatus.Uploaded;
+    app.uni_assist.status = DocumentStatusType.Uploaded;
     app.uni_assist.updatedAt = new Date();
     app.uni_assist.vpd_file_path = req.file.key;
   }
   if (fileType === 'VPDConfirmation') {
-    // app.uni_assist.status = DocumentStatus.Uploaded;
+    // app.uni_assist.status = DocumentStatusType.Uploaded;
     app.uni_assist.updatedAt = new Date();
     app.uni_assist.vpd_paid_confirmation_file_path = req.file.key;
   }
@@ -594,7 +594,7 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   try {
     if (!document) {
       document = student.profile.create({ name: category });
-      document.status = DocumentStatus.NotNeeded;
+      document.status = DocumentStatusType.NotNeeded;
       document.feedback = feedback;
       document.required = true;
       document.updatedAt = new Date();
@@ -603,12 +603,12 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
       await student.save();
       res.status(201).send({ success: true, data: student });
     } else {
-      if (status === DocumentStatus.Rejected) {
+      if (status === DocumentStatusType.Rejected) {
         // rejected file notification set
         student.notification.isRead_base_documents_rejected = false;
         document.feedback = feedback;
       }
-      if (status === DocumentStatus.Accepted) {
+      if (status === DocumentStatusType.Accepted) {
         document.feedback = '';
       }
 
@@ -620,8 +620,8 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
       // Reminder for Student:
       if (isNotArchiv(student)) {
         if (
-          status !== DocumentStatus.NotNeeded &&
-          status !== DocumentStatus.Missing
+          status !== DocumentStatusType.NotNeeded &&
+          status !== DocumentStatusType.Missing
         ) {
           await sendChangedProfileFileStatusEmail(
             {
@@ -852,7 +852,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
   let updatedStudent;
   if (req.file) {
     const admission_letter_temp = {
-      status: DocumentStatus.Uploaded,
+      status: DocumentStatusType.Uploaded,
       admission_file_path: req.file.key,
       comments: '',
       updatedAt: new Date()
@@ -996,7 +996,7 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   const cache_key = `${studentId}${fileKey}`;
   try {
     await deleteS3Object(AWS_S3_BUCKET_NAME, fileKey);
-    document.status = DocumentStatus.Missing;
+    document.status = DocumentStatusType.Missing;
     document.path = '';
     document.updatedAt = new Date();
 
@@ -1073,7 +1073,7 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
       logger.info('VPD cache key deleted successfully');
     }
     if (fileType === 'VPD') {
-      app.uni_assist.status = DocumentStatus.Missing;
+      app.uni_assist.status = DocumentStatusType.Missing;
       app.uni_assist.vpd_file_path = '';
     }
     if (fileType === 'VPDConfirmation') {

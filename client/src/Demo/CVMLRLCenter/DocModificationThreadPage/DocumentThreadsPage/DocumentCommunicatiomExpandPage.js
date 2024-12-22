@@ -9,6 +9,8 @@ import { useAuth } from '../../../../components/AuthProvider';
 import { is_TaiGer_role } from '@taiger-common/core';
 import DEMO from '../../../../store/constant';
 import Loading from '../../../../components/Loading/Loading';
+
+import MessageList from '../../../../components/Message/MessageList';
 import { getMyThreadMessages, getMessagThread } from '../../../../api';
 
 const getMyThreadMessageQuery = () => ({
@@ -57,8 +59,8 @@ function DocumentCommunicationExpandPage() {
   } = useQuery(getMyThreadMessageQuery());
 
   const {
-    data: threadData
-    // isLoading: threadIsLoading,
+    data: threadData,
+    isLoading: threadIsLoading
     // isError: threadIsError,
     // error: threadError
   } = useQuery(getThreadMessages(threadId));
@@ -68,6 +70,8 @@ function DocumentCommunicationExpandPage() {
 
   const { messages = [], student_id: threadStudent = {} } =
     threadData?.data?.data || {};
+
+  const thread = threadData?.data?.data || {};
   const [studentId, setStudentId] = useState(null);
 
   useEffect(() => {
@@ -93,6 +97,9 @@ function DocumentCommunicationExpandPage() {
   console.log('studentThreads:', studentThreads);
 
   console.log('isLoading:', myMessagesIsLoading);
+  console.log('messages:', messages);
+
+  console.log('thread: ', thread);
 
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
@@ -110,7 +117,7 @@ function DocumentCommunicationExpandPage() {
       <button onClick={handleOnClick}>Change threadId</button>
 
       <Grid container spacing={3} sx={{ mt: 3 }}>
-        <Grid item size="grow">
+        <Grid item xs={1}>
           {myMessagesIsLoading ? (
             <Loading />
           ) : (
@@ -124,7 +131,7 @@ function DocumentCommunicationExpandPage() {
             ))
           )}
         </Grid>
-        <Grid item size="grow">
+        <Grid item xs={1}>
           {studentThreads
             ?.filter((thread) => thread?.student_id === studentId)
             ?.map((thread) => (
@@ -136,12 +143,24 @@ function DocumentCommunicationExpandPage() {
               </Typography>
             ))}
         </Grid>
-        <Grid item size={8}>
-          {messages?.map((msgItem) => (
+        <Grid item xs={10}>
+          <Box>
+            <MessageList
+              isLoading={!threadIsLoading}
+              documentsthreadId={threadId}
+              thread={thread}
+              apiPrefix={'/api/document-threads'}
+              accordionKeys={new Array(thread?.messages?.length)
+                .fill()
+                .map((x, i) => (i === thread?.messages?.length - 1 ? i : -1))}
+            />
+          </Box>
+
+          {/* {messages?.map((msgItem) => (
             <Typography key={msgItem._id}>
               {msgItem.message.substring(0, 150)}
             </Typography>
-          ))}
+          ))} */}
         </Grid>
       </Grid>
     </Box>

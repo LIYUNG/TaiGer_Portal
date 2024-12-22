@@ -39,7 +39,7 @@ function ProgramCreatePage() {
   const handleSubmitProgram = (program) => {
     mutate({ program });
   };
-  console.log(distinctSchools);
+
   return (
     <Box>
       <Suspense fallback={<Loading />}>

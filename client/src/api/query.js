@@ -1,4 +1,4 @@
-import { getPrograms, getStudents } from '.';
+import { getPrograms, getStudents, getStudentsAndDocLinks2 } from '.';
 
 export const getProgramsQuery = () => ({
   queryKey: ['programs'],
@@ -26,4 +26,10 @@ export const getStudentsQuery = () => ({
     }
   },
   staleTime: 1000 * 60 * 5 // 5 minutes
+});
+
+export const getStudentsAndDocLinks2Query = () => ({
+  queryKey: ['students/doc-links'],
+  queryFn: getStudentsAndDocLinks2,
+  staleTime: 1000 * 60 * 1 // 1 minutes
 });

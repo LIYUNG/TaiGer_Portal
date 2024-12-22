@@ -1,4 +1,4 @@
-import { BASE_URL, postData, request } from './request';
+import { BASE_URL, getData, postData, request } from './request';
 
 export const login = (credentials) => request.post('/auth/login', credentials);
 
@@ -134,8 +134,7 @@ export const uploadforstudent = (category, studentId, data) =>
 export const getStudentAndDocLinks = (studentId) =>
   request.get(`/api/students/doc-links/${studentId}`);
 
-export const getStudentsAndDocLinks = () =>
-  request.get(`/api/students/doc-links`);
+export const getStudentsAndDocLinks2 = () => getData(`/api/students/doc-links`);
 
 export const updateDocumentationHelperLink = (link, key, category) =>
   request.post(`/api/students/doc-links`, { link, key, category });
@@ -168,6 +167,17 @@ export const updateProfileDocumentStatus = (
   request.post(`/api/students/${studentId}/${category}/status`, {
     status: status,
     feedback: message
+  });
+
+export const updateProfileDocumentStatusV2 = ({
+  category,
+  student_id,
+  status,
+  feedback
+}) =>
+  postData(`/api/students/${student_id}/${category}/status`, {
+    status,
+    feedback
   });
 
 // Account APIs

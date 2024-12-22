@@ -572,7 +572,7 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   const { studentId, category } = req.params;
   const { status, feedback } = req.body;
 
-  if (!Object.values(DocumentStatus).includes(status)) {
+  if (!Object.values(DocumentStatusType).includes(status)) {
     logger.error('updateProfileDocumentStatus: Invalid document status');
     throw new ErrorResponse(403, 'Invalid document status');
   }

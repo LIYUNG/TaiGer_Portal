@@ -147,16 +147,13 @@ export default function ApplicationProgressCard(props) {
     e.preventDefault();
     if (!e.target.files) {
       setLetter(null);
-      // setHasFile(false);
       return;
     }
     const file_num = e.target.files.length;
     if (file_num >= 1) {
       setLetter(e.target.files[0]);
-      // setHasFile(true);
     } else {
       setLetter(null);
-      // setHasFile(false);
     }
   };
 

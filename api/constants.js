@@ -1387,11 +1387,11 @@ const CVDeadline_Calculator = (student) => {
       }
     }
   }
-  return daysLeftMin === 3000
-    ? hasRolling
-      ? CVDeadlineRolling
-      : '-'
-    : CVDeadline;
+  if (daysLeftMin === 3000) {
+    return hasRolling ? CVDeadlineRolling : '-';
+  }
+
+  return CVDeadline;
 };
 
 const cvmlrl_deadline_within30days_escalation_summary = (student) => {

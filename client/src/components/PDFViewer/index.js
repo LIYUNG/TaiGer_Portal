@@ -24,7 +24,7 @@ const PDFViewer = (apiFilePath, path) => {
     };
 
     fetchPdfData();
-  }, []);
+  }, [apiFilePath]);
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
     setPageWidth(containerRef.current.offsetWidth - 30);

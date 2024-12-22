@@ -25,7 +25,8 @@ import { Link as LinkDom } from 'react-router-dom';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import { is_TaiGer_Student } from '@taiger-common/core';
-import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
+import { formatDistanceToNow } from 'date-fns';
 
 export const IS_DEV =
   !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
@@ -1132,35 +1133,16 @@ export const sortProgramFields = (a, b) => {
   return indexA - indexB;
 };
 
-export const convertDate_ux_friendly = (date) => {
-  // let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
+export const convertDateUXFriendly = (date) => {
+  if (!date) return '-';
 
-  const { t } = useTranslation();
-  const currentDate = new Date();
-  const input_date_point = new Date(date);
-  // Calculate the time difference in milliseconds
-  const timeDiff = Math.abs(currentDate - input_date_point);
+  // Calculate relative time using date-fns
+  const relativeTime = formatDistanceToNow(new Date(date), {
+    addSuffix: true // Adds "ago" or similar suffix
+  });
 
-  // Convert milliseconds to minutes, hours, days, and weeks
-  const minutes = Math.floor(timeDiff / (1000 * 60));
-  const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-  const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-  const weeks = Math.floor(days / 7);
-
-  let timeDisplay;
-  if (!date) {
-    return '-';
-  }
-  if (minutes < 60) {
-    timeDisplay = t('timeMinutes', { ns: 'common', minutes });
-  } else if (hours < 24) {
-    timeDisplay = t('timeHours', { ns: 'common', hours });
-  } else if (days < 7) {
-    timeDisplay = t('timeDays', { ns: 'common', days });
-  } else {
-    timeDisplay = t('timeWeeks', { ns: 'common', weeks });
-  }
-  return timeDisplay;
+  // If you want translations with i18next
+  return i18next.t('timeRelative', { relativeTime });
 };
 
 const create_years = (start_year, end_year) => {

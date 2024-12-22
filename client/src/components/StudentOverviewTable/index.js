@@ -198,8 +198,8 @@ function StudentOverviewTable(props) {
           student.applications?.length === 0
             ? '-'
             : to_register_application_portals(student)
-            ? 'Missing'
-            : 'Complete'
+              ? 'Missing'
+              : 'Complete'
         }`,
         uniassist: `${
           is_uni_assist_needed
@@ -236,469 +236,472 @@ function StudentOverviewTable(props) {
 
     return transformedStudents;
   };
-  const column = [
-    {
-      field: 'firstname_lastname',
-      headerName: t('First-/ Last Name', { ns: 'common' }),
-      align: 'left',
-      headerAlign: 'left',
-      width: 150,
-      renderCell: (params) => {
-        const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-          params.row.id,
-          DEMO.PROFILE_HASH
-        )}`;
-        return (
-          <>
+  const memoizedColumns = useMemo(() => {
+    return [
+      {
+        field: 'firstname_lastname',
+        headerName: t('First-/ Last Name', { ns: 'common' }),
+        align: 'left',
+        headerAlign: 'left',
+        width: 150,
+        renderCell: (params) => {
+          const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+            params.row.id,
+            DEMO.PROFILE_HASH
+          )}`;
+          return (
+            <>
+              <Link
+                underline="hover"
+                to={linkUrl}
+                component={LinkDom}
+                target="_blank"
+                title={params.value}
+              >
+                {params.value}
+              </Link>
+            </>
+          );
+        }
+      },
+      {
+        field: 'year_semester',
+        headerName: t('Target Year /Semester', { ns: 'common' }),
+        align: 'left',
+        headerAlign: 'left',
+        width: 100
+      },
+      {
+        field: 'target_degree',
+        headerName: t('Target Degree', { ns: 'common' }),
+        align: 'left',
+        headerAlign: 'left',
+        width: 80
+      },
+      {
+        field: 'agents_joined',
+        headerName: t('Agents', { ns: 'common' }),
+        width: 80,
+        renderCell: (params) => {
+          return params.row.agents?.map((agent) => (
             <Link
               underline="hover"
-              to={linkUrl}
+              to={DEMO.TEAM_AGENT_LINK(agent._id.toString())}
               component={LinkDom}
               target="_blank"
-              title={params.value}
+              title={agent.firstname}
+              key={`${agent._id.toString()}`}
+            >
+              {`${agent.firstname} `}
+            </Link>
+          ));
+        }
+      },
+      {
+        field: 'editors_joined',
+        headerName: t('Editors', { ns: 'common' }),
+        width: 80,
+        renderCell: (params) => {
+          return params.row.editors?.map((editor) => (
+            <Link
+              underline="hover"
+              to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
+              component={LinkDom}
+              target="_blank"
+              title={editor.firstname}
+              key={`${editor._id.toString()}`}
+            >
+              {`${editor.firstname} `}
+            </Link>
+          ));
+        }
+      },
+      {
+        field: 'isGraduated',
+        headerName: t('Graduated', { ns: 'common' }),
+        width: 70
+      },
+      {
+        field: 'program_selection',
+        headerName: t('Program Selection', { ns: 'common' }),
+        width: 100,
+        renderCell: (params) => {
+          return (
+            <Link
+              to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(params.row.id)}`}
+              component={LinkDom}
+            >
+              <Typography>
+                {params.row.areProgramsAllDecided ? (
+                  <IconButton>{FILE_OK_SYMBOL}</IconButton>
+                ) : (
+                  <IconButton>{FILE_MISSING_SYMBOL}</IconButton>
+                )}
+                (
+                {params.row.num_apps_decided >
+                params.row.applying_program_count ? (
+                  <b>{params.row.num_apps_decided}</b>
+                ) : (
+                  params.row.num_apps_decided
+                )}
+                /{params.row.applying_program_count})
+              </Typography>
+            </Link>
+          );
+        }
+      },
+      {
+        field: 'application',
+        headerName: t('Application', { ns: 'common' }),
+        width: 100,
+        renderCell: (params) => {
+          return (
+            <Link
+              to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(params.row.id)}`}
+              component={LinkDom}
+            >
+              {params.row.is_All_Applications_Submitted ? (
+                <Typography>
+                  {params.row.num_apps_closed >=
+                  params.row.applying_program_count ? (
+                    <>
+                      <IconButton>{FILE_OK_SYMBOL}</IconButton>
+                      <b>({params.row.num_apps_closed}</b>
+                    </>
+                  ) : (
+                    <>
+                      <IconButton>{FILE_MISSING_SYMBOL}</IconButton>(
+                      {params.row.num_apps_closed}
+                    </>
+                  )}
+                  /{params.row.applying_program_count})
+                </Typography>
+              ) : (
+                <Typography title="incomplete">
+                  <IconButton>{FILE_MISSING_SYMBOL}</IconButton>(
+                  {params.row.num_apps_closed >
+                  params.row.applying_program_count ? (
+                    <b>{params.row.num_apps_closed}</b>
+                  ) : (
+                    params.row.num_apps_closed
+                  )}
+                  /{params.row.applying_program_count})
+                </Typography>
+              )}
+            </Link>
+          );
+        }
+      },
+      {
+        field: 'nextProgram',
+        headerName: t('Next Program to apply', { ns: 'common' }),
+        width: 100
+      },
+      {
+        field: 'nextProgramDeadline',
+        headerName: t('Next Program deadline', { ns: 'common' }),
+        width: 100
+      },
+      {
+        field: 'nextProgramDayleft',
+        headerName: t('Next Program Days left', { ns: 'common' }),
+        width: 70
+      },
+      {
+        field: 'nextProgramStatus',
+        headerName: t('Next Program status', { ns: 'common' }),
+        width: 70
+      },
+      {
+        field: 'survey',
+        headerName: t('Survey', { ns: 'common' }),
+        width: 100,
+        renderCell: (params) => {
+          return (
+            <Link
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                params.row.id,
+                DEMO.PROFILE_HASH
+              )}`}
+              component={LinkDom}
+              style={{ textDecoration: 'none' }}
             >
               {params.value}
             </Link>
-          </>
-        );
-      }
-    },
-    {
-      field: 'year_semester',
-      headerName: t('Target Year /Semester', { ns: 'common' }),
-      align: 'left',
-      headerAlign: 'left',
-      width: 100
-    },
-    {
-      field: 'target_degree',
-      headerName: t('Target Degree', { ns: 'common' }),
-      align: 'left',
-      headerAlign: 'left',
-      width: 80
-    },
-    {
-      field: 'agents_joined',
-      headerName: t('Agents', { ns: 'common' }),
-      width: 80,
-      renderCell: (params) => {
-        return params.row.agents?.map((agent) => (
-          <Link
-            underline="hover"
-            to={DEMO.TEAM_AGENT_LINK(agent._id.toString())}
-            component={LinkDom}
-            target="_blank"
-            title={agent.firstname}
-            key={`${agent._id.toString()}`}
-          >
-            {`${agent.firstname} `}
-          </Link>
-        ));
-      }
-    },
-    {
-      field: 'editors_joined',
-      headerName: t('Editors', { ns: 'common' }),
-      width: 80,
-      renderCell: (params) => {
-        return params.row.editors?.map((editor) => (
-          <Link
-            underline="hover"
-            to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
-            component={LinkDom}
-            target="_blank"
-            title={editor.firstname}
-            key={`${editor._id.toString()}`}
-          >
-            {`${editor.firstname} `}
-          </Link>
-        ));
-      }
-    },
-    {
-      field: 'isGraduated',
-      headerName: t('Graduated', { ns: 'common' }),
-      width: 70
-    },
-    {
-      field: 'program_selection',
-      headerName: t('Program Selection', { ns: 'common' }),
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <Link
-            to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(params.row.id)}`}
-            component={LinkDom}
-          >
-            <Typography>
-              {params.row.areProgramsAllDecided ? (
-                <IconButton>{FILE_OK_SYMBOL}</IconButton>
-              ) : (
-                <IconButton>{FILE_MISSING_SYMBOL}</IconButton>
+          );
+        }
+      },
+      {
+        field: 'basedocument',
+        headerName: t('Documents', { ns: 'common' }),
+        width: 100,
+        renderCell: (params) => {
+          return (
+            <Link
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                params.row.id,
+                DEMO.PROFILE_HASH
+              )}`}
+              component={LinkDom}
+            >
+              {params.value}
+            </Link>
+          );
+        }
+      },
+      {
+        field: 'Language',
+        headerName: t('Language', { ns: 'common' }),
+        width: 100,
+        renderCell: (params) => {
+          return !isLanguageInfoComplete(params.row.academic_background) ? (
+            <Link
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                params.row.id,
+                DEMO.PROFILE_HASH
+              )}`}
+              component={LinkDom}
+            >
+              <Typography>No info</Typography>
+            </Link>
+          ) : (
+            <>
+              {isEnglishLanguageInfoComplete(
+                params.row.academic_background
+              ) && (
+                <Link
+                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                    params.row.id,
+                    DEMO.SURVEY_HASH
+                  )}`}
+                  component={LinkDom}
+                >
+                  E:
+                  {params.row.isEnglishPassed ? (
+                    <IconButton>
+                      <CheckCircleIcon
+                        fontSize="small"
+                        style={{ color: green[500] }}
+                        title={`complete ${params.row.academic_background?.language.english_certificate} ${params.row.academic_background?.language.english_score}`}
+                      />
+                    </IconButton>
+                  ) : (
+                    !check_english_language_Notneeded(
+                      params.row.academic_background
+                    ) && (
+                      <>
+                        {FILE_MISSING_SYMBOL}
+                        <HelpIcon
+                          fontSize="small"
+                          style={{ color: grey[400] }}
+                          title={`Expected Test Date ${params.row.academic_background?.language.english_certificate} ${params.row.academic_background?.language.english_test_date}`}
+                        />
+                      </>
+                    )
+                  )}
+                </Link>
               )}
-              (
-              {params.row.num_apps_decided >
-              params.row.applying_program_count ? (
-                <b>{params.row.num_apps_decided}</b>
-              ) : (
-                params.row.num_apps_decided
-              )}
-              /{params.row.applying_program_count})
-            </Typography>
-          </Link>
-        );
-      }
-    },
-    {
-      field: 'application',
-      headerName: t('Application', { ns: 'common' }),
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <Link
-            to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(params.row.id)}`}
-            component={LinkDom}
-          >
-            {params.row.is_All_Applications_Submitted ? (
-              <Typography>
-                {params.row.num_apps_closed >=
-                params.row.applying_program_count ? (
-                  <>
-                    <IconButton>{FILE_OK_SYMBOL}</IconButton>
-                    <b>({params.row.num_apps_closed}</b>
-                  </>
-                ) : (
-                  <>
-                    <IconButton>{FILE_MISSING_SYMBOL}</IconButton>(
-                    {params.row.num_apps_closed}
-                  </>
-                )}
-                /{params.row.applying_program_count})
-              </Typography>
-            ) : (
-              <Typography title="incomplete">
-                <IconButton>{FILE_MISSING_SYMBOL}</IconButton>(
-                {params.row.num_apps_closed >
-                params.row.applying_program_count ? (
-                  <b>{params.row.num_apps_closed}</b>
-                ) : (
-                  params.row.num_apps_closed
-                )}
-                /{params.row.applying_program_count})
-              </Typography>
-            )}
-          </Link>
-        );
-      }
-    },
-    {
-      field: 'nextProgram',
-      headerName: t('Next Program to apply', { ns: 'common' }),
-      width: 100
-    },
-    {
-      field: 'nextProgramDeadline',
-      headerName: t('Next Program deadline', { ns: 'common' }),
-      width: 100
-    },
-    {
-      field: 'nextProgramDayleft',
-      headerName: t('Next Program Days left', { ns: 'common' }),
-      width: 70
-    },
-    {
-      field: 'nextProgramStatus',
-      headerName: t('Next Program status', { ns: 'common' }),
-      width: 70
-    },
-    {
-      field: 'survey',
-      headerName: t('Survey', { ns: 'common' }),
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <Link
-            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-              params.row.id,
-              DEMO.PROFILE_HASH
-            )}`}
-            component={LinkDom}
-            style={{ textDecoration: 'none' }}
-          >
-            {params.value}
-          </Link>
-        );
-      }
-    },
-    {
-      field: 'basedocument',
-      headerName: t('Documents', { ns: 'common' }),
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <Link
-            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-              params.row.id,
-              DEMO.PROFILE_HASH
-            )}`}
-            component={LinkDom}
-          >
-            {params.value}
-          </Link>
-        );
-      }
-    },
-    {
-      field: 'Language',
-      headerName: t('Language', { ns: 'common' }),
-      width: 100,
-      renderCell: (params) => {
-        return !isLanguageInfoComplete(params.row.academic_background) ? (
-          <Link
-            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-              params.row.id,
-              DEMO.PROFILE_HASH
-            )}`}
-            component={LinkDom}
-          >
-            <Typography>No info</Typography>
-          </Link>
-        ) : (
-          <>
-            {isEnglishLanguageInfoComplete(params.row.academic_background) && (
-              <Link
-                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                  params.row.id,
-                  DEMO.SURVEY_HASH
-                )}`}
-                component={LinkDom}
-              >
-                E:
-                {params.row.isEnglishPassed ? (
-                  <IconButton>
-                    <CheckCircleIcon
-                      fontSize="small"
-                      style={{ color: green[500] }}
-                      title={`complete ${params.row.academic_background?.language.english_certificate} ${params.row.academic_background?.language.english_score}`}
-                    />
-                  </IconButton>
-                ) : (
-                  !check_english_language_Notneeded(
-                    params.row.academic_background
-                  ) && (
-                    <>
-                      {FILE_MISSING_SYMBOL}
+              {check_if_there_is_german_language_info(
+                params.row.academic_background
+              ) && (
+                <Link
+                  to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                    params.row.id,
+                    DEMO.SURVEY_HASH
+                  )}`}
+                  component={LinkDom}
+                >
+                  D:
+                  {params.row.isGermanPassed ? (
+                    <IconButton>
+                      <CheckCircleIcon
+                        fontSize="small"
+                        style={{ color: green[500] }}
+                        title={`complete ${params.row.academic_background?.language.german_certificate} ${params.row.academic_background?.language.german_score}`}
+                      />
+                    </IconButton>
+                  ) : (
+                    !check_german_language_Notneeded(
+                      params.row.academic_background
+                    ) && (
                       <HelpIcon
                         fontSize="small"
                         style={{ color: grey[400] }}
-                        title={`Expected Test Date ${params.row.academic_background?.language.english_certificate} ${params.row.academic_background?.language.english_test_date}`}
+                        title={`Expected Test Date${params.row.academic_background?.language.german_certificate} ${params.row.academic_background?.language.german_test_date}`}
                       />
-                    </>
-                  )
-                )}
-              </Link>
-            )}
-            {check_if_there_is_german_language_info(
-              params.row.academic_background
-            ) && (
-              <Link
-                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                  params.row.id,
-                  DEMO.SURVEY_HASH
-                )}`}
-                component={LinkDom}
-              >
-                D:
-                {params.row.isGermanPassed ? (
-                  <IconButton>
-                    <CheckCircleIcon
-                      fontSize="small"
-                      style={{ color: green[500] }}
-                      title={`complete ${params.row.academic_background?.language.german_certificate} ${params.row.academic_background?.language.german_score}`}
-                    />
-                  </IconButton>
-                ) : (
-                  !check_german_language_Notneeded(
-                    params.row.academic_background
-                  ) && (
-                    <HelpIcon
-                      fontSize="small"
-                      style={{ color: grey[400] }}
-                      title={`Expected Test Date${params.row.academic_background?.language.german_certificate} ${params.row.academic_background?.language.german_test_date}`}
-                    />
-                  )
-                )}
-                {params.row.academic_background?.language.english_isPassed ===
-                  '--' &&
-                  params.row.academic_background?.language.german_isPassed ===
+                    )
+                  )}
+                  {params.row.academic_background?.language.english_isPassed ===
                     '--' &&
-                  'Not needed'}
-              </Link>
-            )}
-          </>
-        );
+                    params.row.academic_background?.language.german_isPassed ===
+                      '--' &&
+                    'Not needed'}
+                </Link>
+              )}
+            </>
+          );
+        }
+      },
+      {
+        field: 'courseAnalysis',
+        headerName: t('Course Analysis', { ns: 'common' }),
+        width: 100,
+        renderCell: (params) => {
+          return (
+            <Link
+              to={`${DEMO.COURSES_INPUT_LINK(params.row.id)}`}
+              component={LinkDom}
+            >
+              {params.value}
+            </Link>
+          );
+        }
+      },
+      {
+        field: 'CV',
+        headerName: t('CV', { ns: 'common' }),
+        width: 100,
+        renderCell: (params) => {
+          return (
+            <Link
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                params.row.id,
+                DEMO.CVMLRL_HASH
+              )}`}
+              component={LinkDom}
+            >
+              {params.value}
+            </Link>
+          );
+        }
+      },
+      {
+        field: 'ML',
+        headerName: t('ML', { ns: 'common' }),
+        width: 80,
+        renderCell: (params) => {
+          return (
+            <Link
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                params.row.id,
+                DEMO.CVMLRL_HASH
+              )}`}
+              className="text-info"
+              component={LinkDom}
+            >
+              {params.value}
+            </Link>
+          );
+        }
+      },
+      {
+        field: 'RL',
+        headerName: t('RL', { ns: 'common' }),
+        width: 80,
+        renderCell: (params) => {
+          return (
+            <Link
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                params.row.id,
+                DEMO.CVMLRL_HASH
+              )}`}
+              component={LinkDom}
+            >
+              {params.value}
+            </Link>
+          );
+        }
+      },
+      {
+        field: 'Essay',
+        headerName: t('Essay', { ns: 'common' }),
+        width: 80,
+        renderCell: (params) => {
+          return (
+            <Link
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                params.row.id,
+                DEMO.CVMLRL_HASH
+              )}`}
+              component={LinkDom}
+            >
+              {params.value}
+            </Link>
+          );
+        }
+      },
+      {
+        field: 'Portals',
+        headerName: t('Portals', { ns: 'common' }),
+        width: 100,
+        renderCell: (params) => {
+          return (
+            <Link
+              to={`${DEMO.PORTALS_MANAGEMENT_STUDENTID_LINK(params.row.id)}`}
+              component={LinkDom}
+            >
+              {params.value}
+            </Link>
+          );
+        }
+      },
+      {
+        field: 'uniassist',
+        headerName: t('Uni-Assist', { ns: 'common' }),
+        width: 100,
+        renderCell: (params) => {
+          return (
+            <Link
+              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                params.row.id,
+                DEMO.UNIASSIST_HASH
+              )}`}
+              component={LinkDom}
+            >
+              {params.value}
+            </Link>
+          );
+        }
+      },
+      {
+        field: 'openofferreject',
+        headerName: t('open/offer/reject', { ns: 'common' }),
+        width: 100,
+        renderCell: (params) => {
+          return (
+            <>
+              {
+                params.row.student.applications.filter(
+                  (application) =>
+                    isProgramSubmitted(application) &&
+                    isProgramDecided(application) &&
+                    application.admission === '-'
+                ).length
+              }
+              /
+              {
+                params.row.student.applications.filter(
+                  (application) =>
+                    isProgramSubmitted(application) &&
+                    isProgramDecided(application) &&
+                    application.admission === 'O'
+                ).length
+              }
+              /
+              {
+                params.row.student.applications.filter(
+                  (application) =>
+                    isProgramSubmitted(application) &&
+                    isProgramDecided(application) &&
+                    application.admission === 'X'
+                ).length
+              }
+            </>
+          );
+        }
       }
-    },
-    {
-      field: 'courseAnalysis',
-      headerName: t('Course Analysis', { ns: 'common' }),
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <Link
-            to={`${DEMO.COURSES_INPUT_LINK(params.row.id)}`}
-            component={LinkDom}
-          >
-            {params.value}
-          </Link>
-        );
-      }
-    },
-    {
-      field: 'CV',
-      headerName: t('CV', { ns: 'common' }),
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <Link
-            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-              params.row.id,
-              DEMO.CVMLRL_HASH
-            )}`}
-            component={LinkDom}
-          >
-            {params.value}
-          </Link>
-        );
-      }
-    },
-    {
-      field: 'ML',
-      headerName: t('ML', { ns: 'common' }),
-      width: 80,
-      renderCell: (params) => {
-        return (
-          <Link
-            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-              params.row.id,
-              DEMO.CVMLRL_HASH
-            )}`}
-            className="text-info"
-            component={LinkDom}
-          >
-            {params.value}
-          </Link>
-        );
-      }
-    },
-    {
-      field: 'RL',
-      headerName: t('RL', { ns: 'common' }),
-      width: 80,
-      renderCell: (params) => {
-        return (
-          <Link
-            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-              params.row.id,
-              DEMO.CVMLRL_HASH
-            )}`}
-            component={LinkDom}
-          >
-            {params.value}
-          </Link>
-        );
-      }
-    },
-    {
-      field: 'Essay',
-      headerName: t('Essay', { ns: 'common' }),
-      width: 80,
-      renderCell: (params) => {
-        return (
-          <Link
-            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-              params.row.id,
-              DEMO.CVMLRL_HASH
-            )}`}
-            component={LinkDom}
-          >
-            {params.value}
-          </Link>
-        );
-      }
-    },
-    {
-      field: 'Portals',
-      headerName: t('Portals', { ns: 'common' }),
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <Link
-            to={`${DEMO.PORTALS_MANAGEMENT_STUDENTID_LINK(params.row.id)}`}
-            component={LinkDom}
-          >
-            {params.value}
-          </Link>
-        );
-      }
-    },
-    {
-      field: 'uniassist',
-      headerName: t('Uni-Assist', { ns: 'common' }),
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <Link
-            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-              params.row.id,
-              DEMO.UNIASSIST_HASH
-            )}`}
-            component={LinkDom}
-          >
-            {params.value}
-          </Link>
-        );
-      }
-    },
-    {
-      field: 'openofferreject',
-      headerName: t('open/offer/reject', { ns: 'common' }),
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <>
-            {
-              params.row.student.applications.filter(
-                (application) =>
-                  isProgramSubmitted(application) &&
-                  isProgramDecided(application) &&
-                  application.admission === '-'
-              ).length
-            }
-            /
-            {
-              params.row.student.applications.filter(
-                (application) =>
-                  isProgramSubmitted(application) &&
-                  isProgramDecided(application) &&
-                  application.admission === 'O'
-              ).length
-            }
-            /
-            {
-              params.row.student.applications.filter(
-                (application) =>
-                  isProgramSubmitted(application) &&
-                  isProgramDecided(application) &&
-                  application.admission === 'X'
-              ).length
-            }
-          </>
-        );
-      }
-    }
-  ];
-  const memoizedColumns = useMemo(() => column, [column]);
+    ];
+  }, [t]);
 
   const rows = tranform(props.students);
   return (

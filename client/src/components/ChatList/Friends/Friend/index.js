@@ -11,7 +11,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import {
-  convertDate_ux_friendly,
+  convertDateUXFriendly,
   menuWidth,
   stringAvatar
 } from '../../../../Demo/Utils/contants';
@@ -98,7 +98,7 @@ const Friend = (props) => {
                   : ''
               }${truncateText(firstText, 26)} ${
                 props.data?.latestCommunication?.createdAt &&
-                `• ${convertDate_ux_friendly(
+                `• ${convertDateUXFriendly(
                   props.data.latestCommunication.createdAt
                 )}`
               }`}

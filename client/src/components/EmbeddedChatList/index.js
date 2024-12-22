@@ -55,6 +55,36 @@ const EmbeddedChatList = (props) => {
   }, [props.count]);
 
   useEffect(() => {
+    const fetchSearchResults = async () => {
+      try {
+        const response = await getQueryStudentResults(searchTerm);
+        if (response.data.success) {
+          setSearchResults(response.data?.data?.students);
+          setEmbeddedChatListState((prevState) => ({
+            ...prevState,
+            isLoaded: true
+          }));
+        } else {
+          setSearchTerm('');
+          setSearchResults([]);
+          setEmbeddedChatListState((prevState) => ({
+            ...prevState,
+            res_modal_status: 401,
+            res_modal_message: 'Session expired. Please refresh.',
+            isLoaded: true
+          }));
+        }
+      } catch (error) {
+        setSearchTerm('');
+        setSearchResults([]);
+        setEmbeddedChatListState((prevState) => ({
+          ...prevState,
+          isLoaded: true,
+          res_modal_status: 403,
+          res_modal_message: error
+        }));
+      }
+    };
     if (chatListState.searchMode) {
       setEmbeddedChatListState((prevState) => ({
         ...prevState,
@@ -75,38 +105,7 @@ const EmbeddedChatList = (props) => {
         clearTimeout(delayDebounceFn);
       };
     }
-  }, [searchTerm]);
-
-  const fetchSearchResults = async () => {
-    try {
-      const response = await getQueryStudentResults(searchTerm);
-      if (response.data.success) {
-        setSearchResults(response.data?.data?.students);
-        setEmbeddedChatListState((prevState) => ({
-          ...prevState,
-          isLoaded: true
-        }));
-      } else {
-        setSearchTerm('');
-        setSearchResults([]);
-        setEmbeddedChatListState((prevState) => ({
-          ...prevState,
-          res_modal_status: 401,
-          res_modal_message: 'Session expired. Please refresh.',
-          isLoaded: true
-        }));
-      }
-    } catch (error) {
-      setSearchTerm('');
-      setSearchResults([]);
-      setEmbeddedChatListState((prevState) => ({
-        ...prevState,
-        isLoaded: true,
-        res_modal_status: 403,
-        res_modal_message: error
-      }));
-    }
-  };
+  }, [searchTerm, chatListState.searchMode]);
 
   const handleInputChange = (e) => {
     if (e.target.value !== '') {

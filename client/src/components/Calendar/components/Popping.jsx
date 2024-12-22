@@ -35,14 +35,11 @@ const Popping = ({
   handleBook,
   newDescription,
   user
-  // deleteEventApi,
-  // renderStatus,
-  // rerender
 }) => {
+  const { t } = useTranslation();
   if (event?.id) {
     // const navigate = useNavigate();
     const { title, start, end } = event;
-    const { t } = useTranslation();
     const textLimit = 2000;
 
     const modal = () => {

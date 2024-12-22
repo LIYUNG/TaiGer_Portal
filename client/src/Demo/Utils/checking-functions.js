@@ -288,55 +288,29 @@ export const are_base_documents_missing = (student) => {
 
 // Tested: but TODO refactor
 export const is_any_base_documents_uploaded = (students) => {
-  if (students?.length > 0) {
-    for (let i = 0; i < students.length; i += 1) {
-      let documentlist2_keys = Object.keys(ProfileNameType);
-      let object_init = {};
-      for (let j = 0; j < documentlist2_keys.length; j += 1) {
-        object_init[documentlist2_keys[i]] = DocumentStatusType.Missing;
-      }
-      if (students[i].profile === undefined) {
-        continue;
-      }
-      if (students[i].profile.length === 0) {
-        continue;
-      }
+  if (!students?.length) return false;
 
-      for (let j = 0; j < students[i].profile.length; j += 1) {
-        if (students[i].profile[j].status === DocumentStatusType.Uploaded) {
-          object_init[students[i].profile[j].name] =
-            DocumentStatusType.Uploaded;
-        } else if (
-          students[i].profile[j].status === DocumentStatusType.Accepted
-        ) {
-          object_init[students[i].profile[j].name] =
-            DocumentStatusType.Accepted;
-        } else if (
-          students[i].profile[j].status === DocumentStatusType.Rejected
-        ) {
-          object_init[students[i].profile[j].name] =
-            DocumentStatusType.Rejected;
-        } else if (
-          students[i].profile[j].status === DocumentStatusType.Missing
-        ) {
-          object_init[students[i].profile[j].name] = DocumentStatusType.Missing;
-        } else if (
-          students[i].profile[j].status === DocumentStatusType.NotNeeded
-        ) {
-          object_init[students[i].profile[j].name] =
-            DocumentStatusType.NotNeeded;
-        }
-      }
-      for (let i = 0; i < documentlist2_keys.length; i++) {
-        if (
-          object_init[documentlist2_keys[i]] === DocumentStatusType.Uploaded
-        ) {
-          return true;
-        }
-      }
-    }
-  }
-  return false;
+  // Create a map of initial document statuses
+  const initialDocumentStatus = Object.fromEntries(
+    Object.keys(ProfileNameType).map((key) => [key, DocumentStatusType.Missing])
+  );
+
+  return students.some((student) => {
+    if (!student.profile?.length) return false;
+
+    // Create a new status object for each student
+    const documentStatus = { ...initialDocumentStatus };
+
+    // Update status for each profile document
+    student.profile.forEach((profile) => {
+      documentStatus[profile.name] = profile.status;
+    });
+
+    // Check if any document is uploaded
+    return Object.keys(ProfileNameType).some(
+      (key) => documentStatus[key] === DocumentStatusType.Uploaded
+    );
+  });
 };
 
 export const needUpdateCourseSelection = (student) => {

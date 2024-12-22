@@ -36,6 +36,41 @@ const NavSearch = () => {
   const searchContainerRef = useRef(null);
 
   useEffect(() => {
+    const fetchSearchResults = async () => {
+      try {
+        setLoading(true);
+        const response = is_TaiGer_role(user)
+          ? await getQueryResults(searchTerm)
+          : await getQueryPublicResults(searchTerm);
+        if (response.data.success) {
+          setSearchResults(response.data.data);
+          setIsResultsVisible(true);
+          setLoading(false);
+        } else {
+          setIsResultsVisible(false);
+          setStatedata((state) => ({
+            ...state,
+            res_modal_status: 401,
+            res_modal_message: 'Session expired. Please refresh.'
+          }));
+          setSearchTerm('');
+          setSearchResults([]);
+          setIsErrorTerm(true);
+          setLoading(false);
+        }
+      } catch (error) {
+        setIsResultsVisible(false);
+        setStatedata((state) => ({
+          ...state,
+          res_modal_status: 403,
+          res_modal_message: error
+        }));
+        setSearchTerm('');
+        setSearchResults([]);
+        setIsErrorTerm(true);
+        setLoading(false);
+      }
+    };
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm !== '') {
         fetchSearchResults();
@@ -48,43 +83,7 @@ const NavSearch = () => {
       document.removeEventListener('click', handleClickOutside);
       clearTimeout(delayDebounceFn);
     };
-  }, [searchTerm]);
-
-  const fetchSearchResults = async () => {
-    try {
-      setLoading(true);
-      const response = is_TaiGer_role(user)
-        ? await getQueryResults(searchTerm)
-        : await getQueryPublicResults(searchTerm);
-      if (response.data.success) {
-        setSearchResults(response.data.data);
-        setIsResultsVisible(true);
-        setLoading(false);
-      } else {
-        setIsResultsVisible(false);
-        setStatedata((state) => ({
-          ...state,
-          res_modal_status: 401,
-          res_modal_message: 'Session expired. Please refresh.'
-        }));
-        setSearchTerm('');
-        setSearchResults([]);
-        setIsErrorTerm(true);
-        setLoading(false);
-      }
-    } catch (error) {
-      setIsResultsVisible(false);
-      setStatedata((state) => ({
-        ...state,
-        res_modal_status: 403,
-        res_modal_message: error
-      }));
-      setSearchTerm('');
-      setSearchResults([]);
-      setIsErrorTerm(true);
-      setLoading(false);
-    }
-  };
+  }, [searchTerm, user]);
 
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value.trimLeft());

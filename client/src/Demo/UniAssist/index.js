@@ -55,7 +55,7 @@ function UniAssistList() {
         });
       }
     );
-  }, []);
+  }, [uniAssistListState, user._id]);
 
   if (!is_TaiGer_Student(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;

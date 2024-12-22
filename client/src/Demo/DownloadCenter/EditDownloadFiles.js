@@ -17,7 +17,7 @@ import { BASE_URL } from '../../api/request';
 import { templatelist } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 
-function EditDownloadFiles(props) {
+const EditDownloadFiles = (props) => {
   const { user } = useAuth();
   const { t } = useTranslation();
   const submitFile = (e, prop) => {
@@ -107,6 +107,6 @@ function EditDownloadFiles(props) {
       <TableBody>{templatelist2}</TableBody>
     </Table>
   );
-}
+};
 
 export default EditDownloadFiles;

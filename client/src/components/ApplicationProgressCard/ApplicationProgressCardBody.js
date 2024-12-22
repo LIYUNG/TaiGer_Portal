@@ -8,7 +8,7 @@ import { isEnglishOK } from '../../Demo/Utils/checking-functions';
 import {
   FILE_MISSING_SYMBOL,
   FILE_OK_SYMBOL,
-  convertDate_ux_friendly
+  convertDateUXFriendly
 } from '../../Demo/Utils/contants';
 import { red } from '@mui/material/colors';
 
@@ -45,7 +45,7 @@ export default function ApplicationProgressCardBody(props) {
                 )}{' '}
                 {thread.doc_thread_id?.file_type}
               </Link>
-              {' - '} {convertDate_ux_friendly(thread.doc_thread_id?.updatedAt)}
+              {' - '} {convertDateUXFriendly(thread.doc_thread_id?.updatedAt)}
             </Typography>
           </ListItem>
         ))}
@@ -286,7 +286,7 @@ export default function ApplicationProgressCardBody(props) {
                 {thread.doc_thread_id?.file_type.replace(/_/g, ' ')}
               </Link>
               {' - '}
-              {convertDate_ux_friendly(thread.doc_thread_id?.updatedAt)}
+              {convertDateUXFriendly(thread.doc_thread_id?.updatedAt)}
             </Typography>
           </ListItem>
         ))}
@@ -311,7 +311,7 @@ export default function ApplicationProgressCardBody(props) {
                 )}{' '}
                 Uni-Assist VPD
                 {' - '}{' '}
-                {convertDate_ux_friendly(
+                {convertDateUXFriendly(
                   props.application?.uni_assist?.updatedAt
                 )}
               </Link>

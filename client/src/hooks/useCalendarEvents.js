@@ -113,7 +113,7 @@ function useCalendarEvents(props) {
         }
       );
     }
-  }, [props.user_id, props.startTime, props.endTime]);
+  }, [props.user_id, props.startTime, props.endTime, props.isAll]);
 
   // Only Agent can request
   const handleModalCreateEvent = (newEvent) => {

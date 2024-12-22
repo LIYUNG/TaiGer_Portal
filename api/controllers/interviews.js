@@ -1,8 +1,9 @@
 const async = require('async');
 const path = require('path');
+const { Role } = require('@taiger-common/core');
+
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../constants');
 const logger = require('../services/logger');
 const { AWS_S3_BUCKET_NAME } = require('../config');
 const {

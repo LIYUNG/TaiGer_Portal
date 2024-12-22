@@ -2,6 +2,7 @@ const _ = require('lodash');
 const { spawn } = require('child_process');
 const axios = require('axios');
 const path = require('path');
+const { Role } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
@@ -12,7 +13,7 @@ const {
 } = require('../services/email');
 const { one_month_cache } = require('../cache/node-cache');
 const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
-const { isNotArchiv, Role } = require('../constants');
+const { isNotArchiv } = require('../constants');
 const { getTemporaryCredentials, callApiGateway } = require('../aws');
 const { getS3Object } = require('../aws/s3');
 const {

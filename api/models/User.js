@@ -5,8 +5,9 @@ const {
 } = require('mongoose');
 const bcrypt = require('bcryptjs');
 const isEmail = require('validator/lib/isEmail');
+const { Role } = require('@taiger-common/core');
 
-const { DocumentStatus, ManagerType, Role } = require('../constants');
+const { DocumentStatus, ManagerType } = require('../constants');
 const { attributeSchema } = require('./common');
 
 const { PROGRAM_SUBJECT_KEYS } = require('../constants');

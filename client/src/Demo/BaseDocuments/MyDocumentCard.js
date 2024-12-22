@@ -51,7 +51,6 @@ import {
   SetNotNeededIconButton,
   UploadIconButton
 } from '../../components/Buttons/Button';
-// import { updateProfileDocumentStatus } from '../../api';
 import Loading from '../../components/Loading/Loading';
 
 function MyDocumentCard(props) {

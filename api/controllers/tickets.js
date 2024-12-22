@@ -1,8 +1,7 @@
-const { is_TaiGer_role } = require('@taiger-common/core');
+const { Role, is_TaiGer_role } = require('@taiger-common/core');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
-const { Role } = require('../constants');
 const { isNotArchiv } = require('../constants');
 const {
   TicketCreatedAgentEmail,

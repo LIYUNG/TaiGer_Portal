@@ -2,10 +2,10 @@ const async = require('async');
 const { ObjectId } = require('mongodb');
 const path = require('path');
 const { is_TaiGer_Agent } = require('@taiger-common/core');
+const { Role } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../constants');
 const {
   sendAgentNewMessageReminderEmail,
   sendStudentNewMessageReminderEmail

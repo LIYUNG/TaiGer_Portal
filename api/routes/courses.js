@@ -1,4 +1,6 @@
 const { Router } = require('express');
+const { Role } = require('@taiger-common/core');
+
 const {
   GeneralPOSTRequestRateLimiter,
   GeneralGETRequestRateLimiter,
@@ -12,7 +14,6 @@ const {
   InnerTaigerMultitenantFilter
 } = require('../middlewares/InnerTaigerMultitenantFilter');
 const { protect, permit, prohibit } = require('../middlewares/auth');
-const { Role } = require('../constants');
 
 const {
   getCourse,

@@ -1,14 +1,14 @@
 const path = require('path');
 const async = require('async');
-const { ErrorResponse } = require('../common/errors');
 const { spawn } = require('child_process');
+const { Role } = require('@taiger-common/core');
 
+const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
 const { ProgramAI } = require('../models/ProgramAI');
 const { isProd } = require('../config');
 const { openAIClient, OpenAiModel } = require('../services/openai');
-const { Role } = require('../constants');
 const { generalMLPrompt } = require('../prompt/ml_prompt');
 const { FILE_MAPPING_TABLE } = require('../constants');
 const { generalRLPrompt } = require('../prompt/rl_prompt');

@@ -3,8 +3,9 @@ const path = require('path');
 const { spawn } = require('child_process');
 const EventEmitter = require('events');
 const request = require('supertest');
+const { Role } = require('@taiger-common/core');
+
 const { connect, clearDatabase } = require('../fixtures/db');
-const { Role } = require('../../constants');
 const { app } = require('../../app');
 const { UserSchema } = require('../../models/User');
 const { programSchema } = require('../../models/Program');

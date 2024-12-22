@@ -1,5 +1,6 @@
+const { Role } = require('@taiger-common/core');
+
 const { ResponseTime } = require('../models/ResponseTime');
-const { Role } = require('../constants');
 const { asyncHandler } = require('../middlewares/error-handler');
 
 const GetResponseTimeForCommunication = asyncHandler(async () =>

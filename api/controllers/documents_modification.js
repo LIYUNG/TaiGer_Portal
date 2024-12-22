@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 const async = require('async');
 const path = require('path');
-const { is_TaiGer_Agent, is_TaiGer_External } = require('@taiger-common/core');
+const {
+  Role,
+  is_TaiGer_Agent,
+  is_TaiGer_External
+} = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
@@ -30,7 +34,6 @@ const {
   CVDeadline_Calculator,
   EDITOR_SCOPE,
   ESSAY_WRITER_SCOPE,
-  Role,
   CV_MUST_HAVE_PATTERNS
 } = require('../constants');
 const {

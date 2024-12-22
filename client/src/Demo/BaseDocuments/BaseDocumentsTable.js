@@ -14,7 +14,7 @@ import {
   DialogActions
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { PROFILE_NAME } from '@taiger-common/core';
+import { DocumentStatusType, PROFILE_NAME } from '@taiger-common/core';
 
 import { MuiDataGrid } from '../../components/MuiDataGrid';
 import {
@@ -24,7 +24,6 @@ import {
   FILE_OK_SYMBOL,
   FILE_UPLOADED_SYMBOL
 } from '../Utils/contants';
-import { DocumentStatus } from '../Utils/checking-functions';
 import { updateProfileDocumentStatus } from '../../api';
 import DEMO from '../../store/constant';
 import AcceptProfileFileModel from './AcceptedFilePreviewModal';
@@ -198,7 +197,7 @@ export function BaseDocumentsTable(props) {
       headerName: t(basdDoc[1], { ns: 'common' }),
       minWidth: 100,
       renderCell: (params) => {
-        if (params.value?.status === DocumentStatus.Uploaded) {
+        if (params.value?.status === DocumentStatusType.Uploaded) {
           return (
             <Link
               underline="hover"
@@ -211,7 +210,7 @@ export function BaseDocumentsTable(props) {
               {`${params.value?.status || ''}`}
             </Link>
           );
-        } else if (params.value?.status === DocumentStatus.Accepted) {
+        } else if (params.value?.status === DocumentStatusType.Accepted) {
           let document_split = params.value?.path.replace(/\\/g, '/');
           let document_name = document_split.split('/')[1];
           return (
@@ -235,14 +234,14 @@ export function BaseDocumentsTable(props) {
               {`${params.value?.status || ''}`}
             </Box>
           );
-        } else if (params.value?.status === DocumentStatus.Rejected) {
+        } else if (params.value?.status === DocumentStatusType.Rejected) {
           return (
             <>
               <IconButton>{FILE_NOT_OK_SYMBOL}</IconButton>{' '}
               {`${params.value?.status || ''}`}
             </>
           );
-        } else if (params.value?.status === DocumentStatus.NotNeeded) {
+        } else if (params.value?.status === DocumentStatusType.NotNeeded) {
           return (
             <>
               <IconButton>{FILE_DONT_CARE_SYMBOL}</IconButton>

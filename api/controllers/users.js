@@ -1,10 +1,10 @@
 const _ = require('lodash');
 const crypto = require('crypto');
 const generator = require('generate-password');
+const { Role } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../constants');
 const {
   updateNotificationEmail,
   sendInvitationEmail

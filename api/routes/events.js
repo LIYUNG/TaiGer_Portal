@@ -1,4 +1,6 @@
 const { Router } = require('express');
+const { Role } = require('@taiger-common/core');
+
 const { protect, permit } = require('../middlewares/auth');
 const {
   getEvents,
@@ -10,7 +12,6 @@ const {
   getAllEvents,
   getActiveEventsNumber
 } = require('../controllers/events');
-const { Role } = require('../constants');
 
 const {
   GeneralGETRequestRateLimiter,

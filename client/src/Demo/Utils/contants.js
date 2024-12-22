@@ -511,8 +511,8 @@ export const NoonNightLabel = (start) => {
   return start_temp.getHours() === 12 && start_temp.getMinutes() === 0
     ? '(Noon)'
     : start_temp.getHours() === 0 && start_temp.getMinutes() === 0
-    ? '(Night)'
-    : '';
+      ? '(Night)'
+      : '';
 };
 
 export const transformObjectToArray = (inputObject) => {
@@ -1498,10 +1498,6 @@ export const is_new_message_status = (user, thread) => {
 export const is_my_fav_message_status = (user, thread) => {
   return thread.flag_by_user_id?.includes(user._id.toString());
 };
-
-export const DELETE_STYLE = 'danger';
-export const REJECT_STYLE = 'secondary';
-export const ACCEPT_STYLE = 'success';
 
 export const is_pending_status = (user, thread) => {
   return !is_new_message_status(user, thread);

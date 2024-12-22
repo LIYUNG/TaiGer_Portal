@@ -1,4 +1,5 @@
-const { Role } = require('../../constants');
+const { Role } = require('@taiger-common/core');
+
 const { getPermission } = require('../../utils/queryFunctions');
 const {
   permission_canAssignEditor_filter,

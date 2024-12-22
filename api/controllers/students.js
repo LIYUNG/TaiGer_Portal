@@ -1,8 +1,11 @@
-const { is_TaiGer_Agent, is_TaiGer_External } = require('@taiger-common/core');
+const {
+  Role,
+  is_TaiGer_Agent,
+  is_TaiGer_External
+} = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../constants');
 const {
   add_portals_registered_status,
   userChangesHelperFunction

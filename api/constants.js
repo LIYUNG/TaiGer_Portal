@@ -1,7 +1,8 @@
 const {
   PROGRAM_SUBJECTS,
   ProfileNameType,
-  SCHOOL_TAGS
+  SCHOOL_TAGS,
+  Role
 } = require('@taiger-common/core');
 const { differenceInDays } = require('date-fns');
 
@@ -72,16 +73,6 @@ const JITSI_MEET_INSTRUCTIONS_URL = new URL(
   ORIGIN
 ).href;
 
-const Role = {
-  Admin: 'Admin',
-  Manager: 'Manager',
-  External: 'External',
-  Guest: 'Guest',
-  Agent: 'Agent',
-  Editor: 'Editor',
-  Student: 'Student'
-};
-
 const TAIGER_SIGNATURE = `
 <p><b>Your ${TENANT_NAME} Team</b></p><p>Website: <a href="${TENANT_WEBSITE}">${TENANT_WEBSITE}</a></p>
 <div class="social-icons">
@@ -115,6 +106,7 @@ const ManagerType = {
   None: 'None'
 };
 
+// TODO: use taiger-core
 const DocumentStatus = {
   Uploaded: 'uploaded',
   Missing: 'missing',

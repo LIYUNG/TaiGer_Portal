@@ -1,9 +1,9 @@
 const path = require('path');
 const async = require('async');
+const { Role } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../constants');
 
 const logger = require('../services/logger');
 

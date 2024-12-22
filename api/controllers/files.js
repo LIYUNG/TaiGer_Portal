@@ -1,7 +1,8 @@
 const path = require('path');
+const { Role } = require('@taiger-common/core');
+
 const { asyncHandler } = require('../middlewares/error-handler');
 const { one_month_cache, two_month_cache } = require('../cache/node-cache');
-const { Role } = require('../constants');
 const { ErrorResponse } = require('../common/errors');
 const { DocumentStatus, isNotArchiv } = require('../constants');
 const {

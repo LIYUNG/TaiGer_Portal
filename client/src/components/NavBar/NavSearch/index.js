@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { is_TaiGer_role } from '@taiger-common/core';
+import { is_TaiGer_role, Role } from '@taiger-common/core';
 import SearchIcon from '@mui/icons-material/Search';
 import { Box } from '@mui/material';
 
@@ -10,7 +10,6 @@ import ModalMain from '../../../Demo/Utils/ModalHandler/ModalMain';
 import './search.css';
 import { useAuth } from '../../AuthProvider';
 import {
-  Role,
   Search,
   SearchIconWrapper,
   StyledInputBase

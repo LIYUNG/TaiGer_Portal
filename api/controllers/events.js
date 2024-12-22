@@ -1,8 +1,7 @@
 const async = require('async');
-const { is_TaiGer_Agent } = require('@taiger-common/core');
+const { Role, is_TaiGer_Agent } = require('@taiger-common/core');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../constants');
 const {
   MeetingInvitationEmail,
   MeetingConfirmationReminderEmail,

@@ -1,6 +1,5 @@
-// import { render, screen } from '@testing-library/react';
-// import App from './App/index';
-import { ProfileNameType } from '@taiger-common/core';
+import { DocumentStatusType, ProfileNameType } from '@taiger-common/core';
+
 import {
   is_cv_assigned,
   isCVFinished,
@@ -18,7 +17,6 @@ import {
   check_german_language_passed,
   check_english_language_Notneeded,
   check_english_language_passed,
-  DocumentStatus,
   based_documents_init,
   is_any_base_documents_uploaded,
   check_languages_filled,
@@ -520,57 +518,59 @@ describe('based_documents_init', () => {
     const documentlist2_keys = Object.keys(ProfileNameType);
 
     for (const key of documentlist2_keys) {
-      expect(object_init[key]).toBe(DocumentStatus.Missing);
+      expect(object_init[key]).toBe(DocumentStatusType.Missing);
     }
   });
 
   it('should update document statuses based on student profile', () => {
     const student = {
       profile: [
-        { name: 'High_School_Diploma', status: DocumentStatus.Uploaded },
-        { name: 'Course_Description', status: DocumentStatus.Accepted },
-        { name: 'Bachelor_Transcript', status: DocumentStatus.Rejected }
+        { name: 'High_School_Diploma', status: DocumentStatusType.Uploaded },
+        { name: 'Course_Description', status: DocumentStatusType.Accepted },
+        { name: 'Bachelor_Transcript', status: DocumentStatusType.Rejected }
       ]
     };
     const { object_init } = based_documents_init(student);
 
-    expect(object_init.High_School_Diploma).toBe(DocumentStatus.Uploaded);
-    expect(object_init.Course_Description).toBe(DocumentStatus.Accepted);
-    expect(object_init.Bachelor_Transcript).toBe(DocumentStatus.Rejected);
+    expect(object_init.High_School_Diploma).toBe(DocumentStatusType.Uploaded);
+    expect(object_init.Course_Description).toBe(DocumentStatusType.Accepted);
+    expect(object_init.Bachelor_Transcript).toBe(DocumentStatusType.Rejected);
   });
 
   it('should handle documents with status Missing', () => {
     const student = {
-      profile: [{ name: 'High_School_Diploma', status: DocumentStatus.Missing }]
+      profile: [
+        { name: 'High_School_Diploma', status: DocumentStatusType.Missing }
+      ]
     };
     const { object_init } = based_documents_init(student);
 
-    expect(object_init.High_School_Diploma).toBe(DocumentStatus.Missing);
+    expect(object_init.High_School_Diploma).toBe(DocumentStatusType.Missing);
   });
 
   it('should handle documents with status NotNeeded', () => {
     const student = {
       profile: [
-        { name: 'High_School_Diploma', status: DocumentStatus.NotNeeded }
+        { name: 'High_School_Diploma', status: DocumentStatusType.NotNeeded }
       ]
     };
     const { object_init } = based_documents_init(student);
 
-    expect(object_init.High_School_Diploma).toBe(DocumentStatus.NotNeeded);
+    expect(object_init.High_School_Diploma).toBe(DocumentStatusType.NotNeeded);
   });
 
   it('should not change the status of documents not in the student profile', () => {
     const student = {
       profile: [
-        { name: 'High_School_Diploma', status: DocumentStatus.Uploaded }
+        { name: 'High_School_Diploma', status: DocumentStatusType.Uploaded }
       ]
     };
     const { object_init } = based_documents_init(student);
 
-    expect(object_init.High_School_Diploma).toBe(DocumentStatus.Uploaded);
-    expect(object_init.High_School_Transcript).toBe(DocumentStatus.Missing);
+    expect(object_init.High_School_Diploma).toBe(DocumentStatusType.Uploaded);
+    expect(object_init.High_School_Transcript).toBe(DocumentStatusType.Missing);
     expect(object_init.University_Entrance_Examination_GSAT).toBe(
-      DocumentStatus.Missing
+      DocumentStatusType.Missing
     );
   });
 });
@@ -578,9 +578,9 @@ describe('based_documents_init', () => {
 describe('is_any_base_documents_uploaded', () => {
   const studentWithUploadedDocument = {
     profile: [
-      { name: 'Bachelor_Transcript', status: DocumentStatus.Uploaded },
-      { name: 'Englisch_Certificate', status: DocumentStatus.Accepted },
-      { name: 'High_School_Diploma', status: DocumentStatus.Missing }
+      { name: 'Bachelor_Transcript', status: DocumentStatusType.Uploaded },
+      { name: 'Englisch_Certificate', status: DocumentStatusType.Accepted },
+      { name: 'High_School_Diploma', status: DocumentStatusType.Missing }
     ]
   };
 
@@ -598,12 +598,12 @@ describe('is_any_base_documents_uploaded', () => {
     const studentsNoDocs = [
       {
         profile: [
-          { name: 'High_School_Diploma', status: DocumentStatus.Missing }
+          { name: 'High_School_Diploma', status: DocumentStatusType.Missing }
         ]
       },
       {
         profile: [
-          { name: 'Bachelor_Transcript', status: DocumentStatus.NotNeeded }
+          { name: 'Bachelor_Transcript', status: DocumentStatusType.NotNeeded }
         ]
       }
     ];
@@ -1038,7 +1038,7 @@ describe('isUniAssistVPDNeeded', () => {
   it('returns false when uni_assist includes VPD and status is NotNeeded', () => {
     const application = {
       programId: { uni_assist: 'Yes-VPD' },
-      uni_assist: { status: DocumentStatus.NotNeeded },
+      uni_assist: { status: DocumentStatusType.NotNeeded },
       decided: 'O'
     };
     const result = isUniAssistVPDNeeded(application);
@@ -1048,7 +1048,7 @@ describe('isUniAssistVPDNeeded', () => {
   it('returns true when uni_assist includes VPD, status is not Uploaded, and vpd_file_path is empty', () => {
     const application = {
       programId: { uni_assist: 'Yes-VPD' },
-      uni_assist: { status: DocumentStatus.Pending, vpd_file_path: '' },
+      uni_assist: { status: DocumentStatusType.Pending, vpd_file_path: '' },
       decided: 'O'
     };
     const result = isUniAssistVPDNeeded(application);
@@ -1059,7 +1059,7 @@ describe('isUniAssistVPDNeeded', () => {
     const application = {
       programId: { uni_assist: 'Yes-VPD' },
       uni_assist: {
-        status: DocumentStatus.Uploaded,
+        status: DocumentStatusType.Uploaded,
         vpd_file_path: 'path/to/file'
       },
       decided: 'O'

@@ -9,6 +9,7 @@ import { differenceInDays } from 'date-fns';
 import { convertDate, twoYearsInDays } from './contants';
 import { pdfjs } from 'react-pdf';
 import {
+  DocumentStatusType,
   is_TaiGer_Agent,
   is_TaiGer_Editor,
   ProfileNameType
@@ -16,14 +17,6 @@ import {
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 export const is_User_Archived = (user) => user?.archiv === true;
-
-export const DocumentStatus = {
-  Uploaded: 'uploaded',
-  Missing: 'missing',
-  Accepted: 'accepted',
-  Rejected: 'rejected',
-  NotNeeded: 'notneeded'
-};
 
 // Tested
 export const calculateDisplayLength = (text) => {
@@ -255,17 +248,17 @@ export const based_documents_init = (student) => {
   const documentlist2_keys = Object.keys(ProfileNameType);
 
   let object_init = documentlist2_keys.reduce((acc, key) => {
-    acc[key] = DocumentStatus.Missing;
+    acc[key] = DocumentStatusType.Missing;
     return acc;
   }, {});
 
   student.profile.forEach((doc) => {
     switch (doc.status) {
-      case DocumentStatus.Uploaded:
-      case DocumentStatus.Accepted:
-      case DocumentStatus.Rejected:
-      case DocumentStatus.Missing:
-      case DocumentStatus.NotNeeded:
+      case DocumentStatusType.Uploaded:
+      case DocumentStatusType.Accepted:
+      case DocumentStatusType.Rejected:
+      case DocumentStatusType.Missing:
+      case DocumentStatusType.NotNeeded:
         object_init[doc.name] = doc.status;
         break;
       default:
@@ -283,8 +276,8 @@ export const are_base_documents_missing = (student) => {
 
     for (let i = 0; i < documentlist2_keys.length; i++) {
       if (
-        object_init[documentlist2_keys[i]] !== DocumentStatus.Accepted &&
-        object_init[documentlist2_keys[i]] !== DocumentStatus.NotNeeded
+        object_init[documentlist2_keys[i]] !== DocumentStatusType.Accepted &&
+        object_init[documentlist2_keys[i]] !== DocumentStatusType.NotNeeded
       ) {
         return true;
       }
@@ -300,7 +293,7 @@ export const is_any_base_documents_uploaded = (students) => {
       let documentlist2_keys = Object.keys(ProfileNameType);
       let object_init = {};
       for (let j = 0; j < documentlist2_keys.length; j += 1) {
-        object_init[documentlist2_keys[i]] = DocumentStatus.Missing;
+        object_init[documentlist2_keys[i]] = DocumentStatusType.Missing;
       }
       if (students[i].profile === undefined) {
         continue;
@@ -310,20 +303,34 @@ export const is_any_base_documents_uploaded = (students) => {
       }
 
       for (let j = 0; j < students[i].profile.length; j += 1) {
-        if (students[i].profile[j].status === DocumentStatus.Uploaded) {
-          object_init[students[i].profile[j].name] = DocumentStatus.Uploaded;
-        } else if (students[i].profile[j].status === DocumentStatus.Accepted) {
-          object_init[students[i].profile[j].name] = DocumentStatus.Accepted;
-        } else if (students[i].profile[j].status === DocumentStatus.Rejected) {
-          object_init[students[i].profile[j].name] = DocumentStatus.Rejected;
-        } else if (students[i].profile[j].status === DocumentStatus.Missing) {
-          object_init[students[i].profile[j].name] = DocumentStatus.Missing;
-        } else if (students[i].profile[j].status === DocumentStatus.NotNeeded) {
-          object_init[students[i].profile[j].name] = DocumentStatus.NotNeeded;
+        if (students[i].profile[j].status === DocumentStatusType.Uploaded) {
+          object_init[students[i].profile[j].name] =
+            DocumentStatusType.Uploaded;
+        } else if (
+          students[i].profile[j].status === DocumentStatusType.Accepted
+        ) {
+          object_init[students[i].profile[j].name] =
+            DocumentStatusType.Accepted;
+        } else if (
+          students[i].profile[j].status === DocumentStatusType.Rejected
+        ) {
+          object_init[students[i].profile[j].name] =
+            DocumentStatusType.Rejected;
+        } else if (
+          students[i].profile[j].status === DocumentStatusType.Missing
+        ) {
+          object_init[students[i].profile[j].name] = DocumentStatusType.Missing;
+        } else if (
+          students[i].profile[j].status === DocumentStatusType.NotNeeded
+        ) {
+          object_init[students[i].profile[j].name] =
+            DocumentStatusType.NotNeeded;
         }
       }
       for (let i = 0; i < documentlist2_keys.length; i++) {
-        if (object_init[documentlist2_keys[i]] === DocumentStatus.Uploaded) {
+        if (
+          object_init[documentlist2_keys[i]] === DocumentStatusType.Uploaded
+        ) {
           return true;
         }
       }
@@ -402,7 +409,7 @@ export const isBaseDocumentsRejected = (student) => {
   const documentlist2_keys = Object.keys(ProfileNameType);
 
   for (let i = 0; i < documentlist2_keys.length; i++) {
-    if (object_init[documentlist2_keys[i]] === DocumentStatus.Rejected) {
+    if (object_init[documentlist2_keys[i]] === DocumentStatusType.Rejected) {
       return true;
     }
   }
@@ -1086,14 +1093,14 @@ export const isUniAssistVPDNeeded = (application) => {
     }
     if (
       application.uni_assist &&
-      application.uni_assist.status === DocumentStatus.NotNeeded
+      application.uni_assist.status === DocumentStatusType.NotNeeded
     ) {
       return false;
     }
 
     if (
       application.uni_assist &&
-      (application.uni_assist.status !== DocumentStatus.Uploaded ||
+      (application.uni_assist.status !== DocumentStatusType.Uploaded ||
         application.uni_assist.vpd_file_path === '')
     ) {
       return true;
@@ -1139,8 +1146,8 @@ export const num_uni_assist_vpd_uploaded = (student) => {
       application.programId.uni_assist &&
       application.programId.uni_assist.includes('VPD') &&
       application.uni_assist &&
-      application.uni_assist.status !== DocumentStatus.NotNeeded &&
-      (application.uni_assist.status === DocumentStatus.Uploaded ||
+      application.uni_assist.status !== DocumentStatusType.NotNeeded &&
+      (application.uni_assist.status === DocumentStatusType.Uploaded ||
         application.uni_assist.vpd_file_path)
     ) {
       counter += 1;
@@ -1166,7 +1173,8 @@ export const num_uni_assist_vpd_needed = (student) => {
       }
       if (
         student.applications[j].uni_assist &&
-        student.applications[j].uni_assist.status === DocumentStatus.NotNeeded
+        student.applications[j].uni_assist.status ===
+          DocumentStatusType.NotNeeded
       ) {
         continue;
       }
@@ -1265,7 +1273,7 @@ export const is_vpd_missing = (application) => {
   }
   if (
     application.uni_assist &&
-    (application.uni_assist.status !== DocumentStatus.Uploaded ||
+    (application.uni_assist.status !== DocumentStatusType.Uploaded ||
       application.uni_assist.vpd_file_path === '')
   ) {
     return true;
@@ -1290,14 +1298,14 @@ export const is_any_vpd_missing = (students) => {
             if (
               students[i].applications[j].uni_assist &&
               students[i].applications[j].uni_assist.status ===
-                DocumentStatus.NotNeeded
+                DocumentStatusType.NotNeeded
             ) {
               continue;
             }
             if (
               students[i].applications[j].uni_assist &&
               (students[i].applications[j].uni_assist.status !==
-                DocumentStatus.Uploaded ||
+                DocumentStatusType.Uploaded ||
                 students[i].applications[j].uni_assist.vpd_file_path === '')
             ) {
               return true;
@@ -1330,8 +1338,8 @@ export const is_the_uni_assist_vpd_uploaded = (application) => {
       return false;
     }
     if (
-      application.uni_assist.status === DocumentStatus.Uploaded ||
-      application.uni_assist.status === DocumentStatus.NotNeeded
+      application.uni_assist.status === DocumentStatusType.Uploaded ||
+      application.uni_assist.status === DocumentStatusType.NotNeeded
     ) {
       return true;
     }
@@ -1495,14 +1503,15 @@ export const is_all_uni_assist_vpd_uploaded = (student) => {
       }
       if (
         student.applications[j].uni_assist &&
-        student.applications[j].uni_assist.status === DocumentStatus.NotNeeded
+        student.applications[j].uni_assist.status ===
+          DocumentStatusType.NotNeeded
       ) {
         continue;
       }
       if (
         student.applications[j].uni_assist &&
         (student.applications[j].uni_assist.status !==
-          DocumentStatus.Uploaded ||
+          DocumentStatusType.Uploaded ||
           student.applications[j].uni_assist.vpd_file_path === '')
       ) {
         return false;
@@ -1768,7 +1777,10 @@ export const programs_refactor = (students) => {
     let isMissingBaseDocs = false;
 
     const object_init = Object.fromEntries(
-      Object.keys(ProfileNameType).map((key) => [key, DocumentStatus.Missing])
+      Object.keys(ProfileNameType).map((key) => [
+        key,
+        DocumentStatusType.Missing
+      ])
     );
 
     if (student.profile) {
@@ -1779,8 +1791,8 @@ export const programs_refactor = (students) => {
 
     isMissingBaseDocs = Object.keys(object_init).some(
       (key) =>
-        object_init[key] !== DocumentStatus.Accepted &&
-        object_init[key] !== DocumentStatus.NotNeeded
+        object_init[key] !== DocumentStatusType.Accepted &&
+        object_init[key] !== DocumentStatusType.NotNeeded
     );
 
     const is_cv_done = isCVFinished(student);
@@ -1838,7 +1850,7 @@ export const programs_refactor = (students) => {
           ? '-'
           : check_program_uni_assist_needed(application)
             ? application.uni_assist &&
-              application.uni_assist.status === DocumentStatus.Uploaded
+              application.uni_assist.status === DocumentStatusType.Uploaded
               ? 'O'
               : 'X'
             : 'Not Needed';
@@ -1858,7 +1870,7 @@ export const programs_refactor = (students) => {
                   (check_program_uni_assist_needed(application) &&
                     application.uni_assist &&
                     application.uni_assist.status ===
-                      DocumentStatus.Uploaded)) &&
+                      DocumentStatusType.Uploaded)) &&
                 is_cv_done &&
                 is_program_ml_rl_essay_finished(application)
               ? 'Ready!'

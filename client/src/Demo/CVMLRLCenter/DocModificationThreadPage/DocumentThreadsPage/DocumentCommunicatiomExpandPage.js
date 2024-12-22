@@ -68,10 +68,8 @@ function DocumentCommunicationExpandPage() {
   const { students = [], studentThreads = [] } =
     myMessagesData?.data?.data || {};
 
-  const { messages = [], student_id: threadStudent = {} } =
-    threadData?.data?.data || {};
-
   const thread = threadData?.data?.data || {};
+  const { student_id: threadStudent } = thread;
   const [studentId, setStudentId] = useState(null);
 
   useEffect(() => {
@@ -79,10 +77,6 @@ function DocumentCommunicationExpandPage() {
       setStudentId(threadStudent._id);
     }
   }, [threadStudent]);
-
-  const handleOnClick = () => {
-    setThreadId(threadId ? null : 'test!');
-  };
 
   const handleOnClickStudent = (id) => {
     setStudentId(id);
@@ -92,14 +86,6 @@ function DocumentCommunicationExpandPage() {
   const handleOnClickThread = (id) => {
     setThreadId(id);
   };
-
-  console.log('threadData?.data?.data:', threadData?.data?.data);
-  console.log('studentThreads:', studentThreads);
-
-  console.log('isLoading:', myMessagesIsLoading);
-  console.log('messages:', messages);
-
-  console.log('thread: ', thread);
 
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
@@ -114,7 +100,6 @@ function DocumentCommunicationExpandPage() {
       <Typography variant="h1">
         {t('CommunicationExpandPage - ') + threadId + ' - ' + studentId}
       </Typography>
-      <button onClick={handleOnClick}>Change threadId</button>
 
       <Grid container spacing={3} sx={{ mt: 3 }}>
         <Grid item xs={1}>

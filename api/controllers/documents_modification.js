@@ -2313,10 +2313,18 @@ const getMyThreadMessages = asyncHandler(async (req, res, next) => {
     })
     .populate('messages.user_id', 'firstname lastname role');
 
+  const studentIdsFromThreads = [
+    ...new Set(studentThreads.map((thread) => String(thread.student_id)))
+  ];
+
+  const studentsWithThreads = students.filter((student) =>
+    studentIdsFromThreads.includes(String(student._id))
+  );
+
   res.status(200).send({
     success: true,
     data: {
-      students: students,
+      students: studentsWithThreads,
       studentThreads: studentThreads
     }
   });

@@ -119,14 +119,23 @@ function DocumentCommunicationExpandPage() {
         <Grid item xs={1}>
           {studentThreads
             ?.filter((thread) => thread?.student_id === studentId)
-            ?.map((thread) => (
-              <Typography
-                key={thread._id}
-                onClick={() => handleOnClickThread(thread._id)}
-              >
-                {thread.file_type}
-              </Typography>
-            ))}
+            ?.sort((a, b) => a.file_type.localeCompare(b.file_type))
+            ?.map((thread, index, array) => {
+              // Find the index of the first occurrence of the current file_type
+              const firstIndex = array.findIndex(
+                (t) => t.file_type === thread.file_type
+              );
+              // Calculate the incrementing index for the current file_type
+              const typeIndex = index - firstIndex + 1;
+              return (
+                <Typography
+                  key={thread._id}
+                  onClick={() => handleOnClickThread(thread._id)}
+                >
+                  {`${thread.file_type} #${typeIndex}`}
+                </Typography>
+              );
+            })}
         </Grid>
         <Grid item xs={10}>
           <Box>

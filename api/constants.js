@@ -106,15 +106,6 @@ const ManagerType = {
   None: 'None'
 };
 
-// TODO: use taiger-core
-const DocumentStatus = {
-  Uploaded: 'uploaded',
-  Missing: 'missing',
-  Accepted: 'accepted',
-  Rejected: 'rejected',
-  NotNeeded: 'notneeded'
-};
-
 const CheckListStatus = {
   NotStarted: 'notstarted',
   Processing: 'processing',
@@ -1598,7 +1589,6 @@ module.exports = {
   Role,
   TicketStatus,
   ManagerType,
-  DocumentStatus,
   CheckListStatus,
   TaskStatus,
   EDITOR_SCOPE,

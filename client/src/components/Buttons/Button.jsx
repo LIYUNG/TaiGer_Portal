@@ -8,6 +8,7 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn'; // 
 import MessageIcon from '@mui/icons-material/Message';
 
 import { VisuallyHiddenInput } from '../Input';
+import { DocumentStatusType } from '@taiger-common/core';
 
 export const DownloadIconButton = ({ showPreview, path, t }) => (
   <Tooltip title={t('Download', { ns: 'common' })}>
@@ -103,7 +104,12 @@ export const SetNeededIconButton = ({
     <IconButton
       color="secondary"
       onClick={(e) =>
-        onUpdateProfileDocStatus(e, k, buttonState.student_id, 'missing')
+        onUpdateProfileDocStatus(
+          e,
+          k,
+          buttonState.student_id,
+          DocumentStatusType.Missing
+        )
       }
     >
       <AssignmentTurnedInIcon />

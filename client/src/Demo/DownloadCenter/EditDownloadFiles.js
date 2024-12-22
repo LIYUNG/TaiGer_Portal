@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
-import { is_TaiGer_Admin } from '@taiger-common/core';
+import { DocumentStatusType, is_TaiGer_Admin } from '@taiger-common/core';
 
 import { BASE_URL } from '../../api/request';
 import { templatelist } from '../Utils/contants';
@@ -27,7 +27,7 @@ const EditDownloadFiles = (props) => {
 
   let object_init = {};
   for (let i = 0; i < templatelist.length; i++) {
-    object_init[templatelist[i].prop] = 'missing';
+    object_init[templatelist[i].prop] = DocumentStatusType.Missing;
   }
   for (let i = 0; i < props.templates.length; i++) {
     object_init[props.templates[i].category_name] = 'uploaded';

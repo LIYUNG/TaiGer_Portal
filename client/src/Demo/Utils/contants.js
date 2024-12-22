@@ -1536,14 +1536,6 @@ export const internal_documentation_categories = {
   others: 'Others'
 };
 
-export const statuses = {
-  uploaded: 'uploaded',
-  accepted: 'accepted',
-  rejected: 'rejected',
-  missing: 'missing',
-  notneeded: 'notneeded'
-};
-
 export const studentOverviewTableHeader = [
   'Target Year',
   'First-/Lastname,Birthday',

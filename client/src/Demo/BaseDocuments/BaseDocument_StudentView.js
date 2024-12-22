@@ -220,7 +220,7 @@ function BaseDocument_StudentView(props) {
   let object_message = {};
   let object_time_init = {};
   profile_wtih_doc_link_list_key.forEach((key) => {
-    object_init[key] = { status: 'missing', link: '' };
+    object_init[key] = { status: DocumentStatusType.Missing, link: '' };
     object_message[key] = '';
     object_time_init[key] = '';
   });

@@ -3,13 +3,9 @@ import { Card, IconButton, Link, Typography } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HelpIcon from '@mui/icons-material/Help';
-import { ProfileNameType } from '@taiger-common/core';
+import { DocumentStatusType, ProfileNameType } from '@taiger-common/core';
 
-import {
-  FILE_MISSING_SYMBOL,
-  FILE_OK_SYMBOL,
-  statuses
-} from '../../Demo/Utils/contants';
+import { FILE_MISSING_SYMBOL, FILE_OK_SYMBOL } from '../../Demo/Utils/contants';
 import { MuiDataGrid } from '../MuiDataGrid';
 import {
   areProgramsDecidedMoreThanContract,
@@ -56,24 +52,24 @@ function StudentOverviewTable(props) {
       let keys = Object.keys(ProfileNameType);
       let object_init = {};
       for (let i = 0; i < keys.length; i++) {
-        object_init[keys[i]] = 'missing';
+        object_init[keys[i]] = DocumentStatusType.Missing;
       }
 
       if (student.profile) {
         student.profile.forEach((item) => {
-          object_init[item.name] = statuses[item.status] || '';
+          object_init[item.name] = DocumentStatusType[item.status] || '';
         });
       }
       let isMissingBaseDocs = false;
       let total_base_docs_needed = 0;
       let total_accepted_base_docs_needed = 0;
       for (let i = 0; i < keys.length; i += 1) {
-        if (object_init[keys[i]] !== statuses.notneeded) {
+        if (object_init[keys[i]] !== DocumentStatusType.NotNeeded) {
           total_base_docs_needed += 1;
         }
         if (
-          object_init[keys[i]] === statuses.accepted &&
-          object_init[keys[i]] !== statuses.notneeded
+          object_init[keys[i]] === DocumentStatusType.Accepted &&
+          object_init[keys[i]] !== DocumentStatusType.NotNeeded
         ) {
           total_accepted_base_docs_needed += 1;
         }

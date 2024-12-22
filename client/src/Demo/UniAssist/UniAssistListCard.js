@@ -273,7 +273,7 @@ function UniAssistListCard(props) {
             (application) => application.programId._id.toString() === program_id
           );
           if (uniAssistListCardState.fileType === 'VPD') {
-            app.uni_assist.status = 'missing';
+            app.uni_assist.status = DocumentStatusType.Missing;
             app.uni_assist.vpd_file_path = '';
           }
           if (uniAssistListCardState.fileType === 'VPDConfirmation') {

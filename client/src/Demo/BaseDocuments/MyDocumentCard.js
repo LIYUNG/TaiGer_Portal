@@ -63,10 +63,13 @@ function MyDocumentCard(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [showPreview, setShowPreview] = useState(false);
+  const [status, setStatus] = useState(props.status);
   const [rejectProfileFileModelOpen, setRejectProfileFileModelOpen] =
     useState(false);
   const [acceptProfileFileModelOpen, setAcceptProfileFileModelOpen] =
     useState(false);
+  const [missingWindowOpen, setMissingWindowOpen] = useState(false);
+  const [neededWindowOpen, setNeededWindowOpen] = useState(false);
   const [baseDocsflagOffcanvas, setBaseDocsflagOffcanvas] = useState(false);
   const [
     baseDocsflagOffcanvasButtonDisable,
@@ -75,6 +78,7 @@ function MyDocumentCard(props) {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [severity, setSeverity] = useState('success'); // 'success' or 'error'
   const [message, setMessage] = useState('');
+
   const [MyDocumentCardState, setMyDocumentCardState] = useState({
     student: props.student,
     link: props.link,
@@ -92,9 +96,7 @@ function MyDocumentCard(props) {
       ? base_documents_checklist[props.k].length
       : 0,
     num_checked_points: 0,
-    checkedBoxes: [],
-    setMissingWindow: false,
-    SetNeededWindow: false
+    checkedBoxes: []
   });
 
   const { mutate, isPending } = useMutation({
@@ -107,9 +109,12 @@ function MyDocumentCard(props) {
     onSuccess: () => {
       setSeverity('success');
       setMessage('Update file status successfully!');
+      // TODO: upload local state: could be improved, see udemy(doest not need to wait onSuccess!)
+      setStatus(MyDocumentCardState.status);
       queryClient.invalidateQueries({ queryKey: ['students/doc-links'] });
-      // TODO: upload local state
       setOpenSnackbar(true);
+      setMissingWindowOpen(false);
+      setNeededWindowOpen(false);
       setRejectProfileFileModelOpen(false);
       setAcceptProfileFileModelOpen(false);
       setShowPreview(false);
@@ -177,17 +182,17 @@ function MyDocumentCard(props) {
         ...prevState,
         student_id,
         category,
-        status,
-        SetNeededWindow: true
+        status
       }));
+      setNeededWindowOpen(true);
     } else if (status === DocumentStatusType.NotNeeded) {
       setMyDocumentCardState((prevState) => ({
         ...prevState,
         student_id,
         category,
-        status,
-        setMissingWindow: true
+        status
       }));
+      setMissingWindowOpen(true);
     } else {
       setMyDocumentCardState((prevState) => ({
         ...prevState,
@@ -246,20 +251,6 @@ function MyDocumentCard(props) {
     }));
   };
 
-  const closeSetMissingWindow = () => {
-    setMyDocumentCardState((prevState) => ({
-      ...prevState,
-      setMissingWindow: false
-    }));
-  };
-
-  const closeSetNeededWindow = () => {
-    setMyDocumentCardState((prevState) => ({
-      ...prevState,
-      SetNeededWindow: false
-    }));
-  };
-
   const handleGeneralDocSubmit = (e, k, student_id) => {
     e.preventDefault();
     setMyDocumentCardState((prevState) => ({
@@ -291,25 +282,25 @@ function MyDocumentCard(props) {
   };
 
   const StatusIcon = () => {
-    if (props.status === DocumentStatusType.Uploaded) {
+    if (status === DocumentStatusType.Uploaded) {
       return FILE_UPLOADED_SYMBOL;
-    } else if (props.status === DocumentStatusType.Accepted) {
+    } else if (status === DocumentStatusType.Accepted) {
       return FILE_OK_SYMBOL;
-    } else if (props.status === DocumentStatusType.Rejected) {
+    } else if (status === DocumentStatusType.Rejected) {
       return FILE_NOT_OK_SYMBOL;
-    } else if (props.status === DocumentStatusType.NotNeeded) {
+    } else if (status === DocumentStatusType.NotNeeded) {
       return FILE_DONT_CARE_SYMBOL;
-    } else if (props.status === DocumentStatusType.Missing) {
+    } else if (status === DocumentStatusType.Missing) {
       return FILE_MISSING_SYMBOL;
     }
   };
 
-  const ButttonRow_Uploaded = ((props.status === DocumentStatusType.NotNeeded &&
+  const ButttonRow_Uploaded = ((status === DocumentStatusType.NotNeeded &&
     is_TaiGer_AdminAgent(user)) ||
-    props.status === DocumentStatusType.Uploaded ||
-    props.status === DocumentStatusType.Rejected ||
-    props.status === DocumentStatusType.Missing ||
-    props.status === DocumentStatusType.Accepted) && (
+    status === DocumentStatusType.Uploaded ||
+    status === DocumentStatusType.Rejected ||
+    status === DocumentStatusType.Missing ||
+    status === DocumentStatusType.Accepted) && (
     <Box
       sx={{
         mb: 1,
@@ -352,7 +343,7 @@ function MyDocumentCard(props) {
               </Typography>
             )}
           </Stack>
-          {props.status === DocumentStatusType.Rejected && (
+          {status === DocumentStatusType.Rejected && (
             <Typography variant="body2" fontWeight="bold">
               {t('Message', { ns: 'common' })}: {MyDocumentCardState.comments}
             </Typography>
@@ -368,8 +359,8 @@ function MyDocumentCard(props) {
             alignItems="center"
             spacing={1}
           >
-            {(props.status === DocumentStatusType.Missing ||
-              props.status === DocumentStatusType.NotNeeded) &&
+            {(status === DocumentStatusType.Missing ||
+              status === DocumentStatusType.NotNeeded) &&
               (is_TaiGer_Student(user) || is_TaiGer_AdminAgent(user)) && (
                 <UploadIconButton
                   user={user}
@@ -379,16 +370,16 @@ function MyDocumentCard(props) {
                   k={props.k}
                 />
               )}
-            {(props.status === DocumentStatusType.Rejected ||
-              props.status === DocumentStatusType.Uploaded ||
-              props.status === DocumentStatusType.Accepted) && (
+            {(status === DocumentStatusType.Rejected ||
+              status === DocumentStatusType.Uploaded ||
+              status === DocumentStatusType.Accepted) && (
               <DownloadIconButton
                 showPreview={showPreviewD}
                 path={props.path}
                 t={t}
               />
             )}
-            {props.status === DocumentStatusType.Rejected &&
+            {status === DocumentStatusType.Rejected &&
               !is_TaiGer_Student(user) && (
                 <CommentsIconButton
                   buttonState={MyDocumentCardState}
@@ -397,7 +388,7 @@ function MyDocumentCard(props) {
                   t={t}
                 />
               )}
-            {props.status === DocumentStatusType.NotNeeded && (
+            {status === DocumentStatusType.NotNeeded && (
               <SetNeededIconButton
                 onUpdateProfileDocStatus={onUpdateProfileDocStatus}
                 k={props.k}
@@ -405,9 +396,9 @@ function MyDocumentCard(props) {
                 t={t}
               />
             )}
-            {(props.status === DocumentStatusType.Uploaded ||
-              props.status === DocumentStatusType.Rejected ||
-              (props.status === DocumentStatusType.Accepted &&
+            {(status === DocumentStatusType.Uploaded ||
+              status === DocumentStatusType.Rejected ||
+              (status === DocumentStatusType.Accepted &&
                 is_TaiGer_AdminAgent(user))) &&
               !is_TaiGer_Editor(user) && (
                 <DeleteIconButton
@@ -419,7 +410,7 @@ function MyDocumentCard(props) {
                   t={t}
                 />
               )}
-            {props.status === DocumentStatusType.Missing &&
+            {status === DocumentStatusType.Missing &&
               is_TaiGer_AdminAgent(user) && (
                 <SetNotNeededIconButton
                   onUpdateProfileDocStatus={onUpdateProfileDocStatus}
@@ -619,7 +610,7 @@ function MyDocumentCard(props) {
         <DialogActions>
           {is_TaiGer_AdminAgent(user) && (
             <>
-              {props.status !== DocumentStatusType.Accepted && (
+              {status !== DocumentStatusType.Accepted && (
                 <Button
                   variant="contained"
                   color="primary"
@@ -679,8 +670,8 @@ function MyDocumentCard(props) {
         </DialogActions>
       </Dialog>
       <Dialog
-        open={MyDocumentCardState.SetNeededWindow}
-        onClose={closeSetNeededWindow}
+        open={neededWindowOpen}
+        onClose={() => setNeededWindowOpen(false)}
         aria-labelledby="contained-modal-title-vcenter"
       >
         <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
@@ -702,14 +693,14 @@ function MyDocumentCard(props) {
             </Button>
           )}
 
-          <Button onClick={closeSetNeededWindow}>
+          <Button onClick={() => setNeededWindowOpen(false)}>
             {t('No', { ns: 'common' })}
           </Button>
         </DialogActions>
       </Dialog>
       <Dialog
-        open={MyDocumentCardState.setMissingWindow}
-        onClose={closeSetMissingWindow}
+        open={missingWindowOpen}
+        onClose={() => setMissingWindowOpen(false)}
         aria-labelledby="contained-modal-title-vcenter"
       >
         <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
@@ -728,7 +719,7 @@ function MyDocumentCard(props) {
           >
             {t('Yes', { ns: 'common' })}
           </Button>
-          <Button onClick={closeSetMissingWindow}>
+          <Button onClick={() => setMissingWindowOpen(false)}>
             {t('No', { ns: 'common' })}
           </Button>
         </DialogActions>

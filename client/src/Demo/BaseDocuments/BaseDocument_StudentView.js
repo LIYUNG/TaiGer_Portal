@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { PROFILE_NAME } from '@taiger-common/core';
+import { DocumentStatusType, PROFILE_NAME } from '@taiger-common/core';
 
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { SYMBOL_EXPLANATION } from '../Utils/contants';
@@ -25,7 +25,6 @@ function BaseDocument_StudentView(props) {
       student_id: '',
       isLoaded: {},
       ready: false,
-      docName: '',
       file: '',
       deleteFileWarningModel: false,
       res_status: 0,
@@ -47,7 +46,6 @@ function BaseDocument_StudentView(props) {
   }, [props.student._id.toString()]);
 
   const onDeleteFilefromstudent = (category, student_id) => {
-    // e.preventDefault();
     let student_new = { ...baseDocumentStudentViewState.student };
     let idx = student_new.profile.findIndex((doc) => doc.name === category);
     setBaseDocumentStudentViewState((prevState) => ({
@@ -240,14 +238,14 @@ function BaseDocument_StudentView(props) {
       let document_name = document_split.split('/')[1];
 
       switch (profile.status) {
-        case 'uploaded':
-        case 'accepted':
-        case 'rejected':
+        case DocumentStatusType.Uploaded:
+        case DocumentStatusType.Accepted:
+        case DocumentStatusType.Rejected:
           object_init[profile.name].status = profile.status;
           object_init[profile.name].path = document_name;
           break;
-        case 'notneeded':
-        case 'missing':
+        case DocumentStatusType.NotNeeded:
+        case DocumentStatusType.Missing:
           object_init[profile.name].status = profile.status;
           break;
       }

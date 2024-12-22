@@ -52,6 +52,7 @@ const {
   userChangesHelperFunction
 } = require('../utils/utils_function');
 const { getS3Object } = require('../aws/s3');
+const { getPermission } = require('../utils/queryFunctions');
 
 const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   const students = await req.db
@@ -2277,7 +2278,7 @@ const getMyThreadMessages = asyncHandler(async (req, res, next) => {
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   };
 
-  if (!isAdminOrAccessAllChat(user)) {
+  if (!isAdminOrAccessAllChat(req, user)) {
     if (is_TaiGer_Agent(user)) {
       studentQuery.agents = user._id.toString();
     } else if (is_TaiGer_Editor(user)) {

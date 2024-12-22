@@ -295,19 +295,22 @@ function Message(props) {
           >
             {is_TaiGer_AdminAgent(user) && (
               <AvatarGroup>
-                {props.message?.readBy?.map((usr) => (
-                  <Avatar
-                    key={user._id?.toString()}
-                    {...stringAvatar(`${usr?.firstname} ${usr?.lastname}`)}
-                    sx={{
-                      ...stringAvatar(`${usr?.firstname} ${usr?.lastname}`).sx,
-                      width: 8,
-                      height: 8 // Override the size
-                    }}
-                    size="small"
-                    title={`Read by ${usr?.firstname} ${usr?.lastname} at ${convertDate(props.message.timeStampReadBy?.[usr._id?.toString()])}`}
-                  />
-                ))}
+                {props.message?.readBy
+                  ?.filter((usr) => usr._id?.toString() !== user._id.toString())
+                  .map((usr) => (
+                    <Avatar
+                      key={user._id?.toString()}
+                      {...stringAvatar(`${usr?.firstname} ${usr?.lastname}`)}
+                      sx={{
+                        ...stringAvatar(`${usr?.firstname} ${usr?.lastname}`)
+                          .sx,
+                        width: 8,
+                        height: 8 // Override the size
+                      }}
+                      size="small"
+                      title={`Read by ${usr?.firstname} ${usr?.lastname} at ${convertDate(props.message.timeStampReadBy?.[usr._id?.toString()])}`}
+                    />
+                  ))}
               </AvatarGroup>
             )}
             <Stack

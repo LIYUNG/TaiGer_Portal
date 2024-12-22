@@ -507,9 +507,9 @@ const getMessages = asyncHandler(async (req, res, next) => {
     const userIdStr = user._id.toString();
 
     // Check if user is in the readBy list
-    const isUserNotInReadBy =
-      lastElement.user_id._id?.toString() !== user._id?.toString() &&
-      !lastElement.readBy.some((usr) => usr._id.toString() === userIdStr);
+    const isUserNotInReadBy = !lastElement.readBy.some(
+      (usr) => usr._id.toString() === userIdStr
+    );
 
     if (isUserNotInReadBy) {
       lastElement.readBy.push(new ObjectId(userIdStr));
@@ -628,8 +628,8 @@ const postMessages = asyncHandler(async (req, res, next) => {
     student_id: studentId,
     user_id: user._id,
     message,
-    readBy: [],
-    timeStampReadBy: {},
+    readBy: [new ObjectId(user._id)],
+    timeStampReadBy: { [user._id?.toString()]: new Date() },
     files: newfile,
     createdAt: new Date()
   });

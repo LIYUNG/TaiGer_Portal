@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
-const async = require('async');
 const path = require('path');
 const {
   Role,
   is_TaiGer_Agent,
-  is_TaiGer_External
+  is_TaiGer_External,
+  is_TaiGer_Admin,
+  is_TaiGer_Student
 } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
@@ -244,7 +245,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     user
     // params: { userId },
   } = req;
-  if (user.role === Role.Admin) {
+  if (is_TaiGer_Admin(user)) {
     const students = await req.db
       .model('Student')
       .find({
@@ -346,7 +347,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
         'applications applications generaldocs_threads firstname lastname application_preference attributes'
       );
     res.status(200).send({ success: true, data: students });
-  } else if (user.role === Role.Student) {
+  } else if (is_TaiGer_Student(user)) {
     const obj = user.notification; // create object
     obj['isRead_new_cvmlrl_messsage'] = true; // set value
     obj['isRead_new_cvmlrl_tasks_created'] = true;
@@ -840,7 +841,7 @@ const postMessages = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'message collapse');
   }
   // Check student can only access their own thread!!!!
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     if (document_thread.student_id._id.toString() !== user._id.toString()) {
       logger.error('getMessages: Unauthorized request!');
       throw new ErrorResponse(403, 'Unauthorized request');
@@ -902,9 +903,9 @@ const postMessages = asyncHandler(async (req, res) => {
         doc_thread_id.toString() === document_thread._id.toString()
     );
     if (doc_thread) {
-      if (user.role === Role.Student) {
+      if (is_TaiGer_Student(user)) {
       }
-      if (user.role !== Role.Student) {
+      if (!is_TaiGer_Student(user)) {
         student.notification.isRead_new_cvmlrl_messsage = false;
       }
       doc_thread.latest_message_left_by_id = user._id.toString();
@@ -916,9 +917,9 @@ const postMessages = asyncHandler(async (req, res) => {
         doc_thread_id.toString() === document_thread._id.toString()
     );
     if (general_thread) {
-      if (user.role === Role.Student) {
+      if (is_TaiGer_Student(user)) {
       }
-      if (user.role !== Role.Student) {
+      if (!is_TaiGer_Student(user)) {
         student.notification.isRead_new_cvmlrl_messsage = false;
       }
       general_thread.latest_message_left_by_id = user._id.toString();
@@ -929,7 +930,7 @@ const postMessages = asyncHandler(async (req, res) => {
   await student.save();
   res.status(200).send({ success: true, data: document_thread2 });
 
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     if (
       [
         'Supplementary_Form',
@@ -1454,7 +1455,7 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
   }
 
   if (
-    user.role === Role.Student &&
+    is_TaiGer_Student(user) &&
     document_thread.file_type === 'Essay' &&
     !document_thread.isOriginAuthorDeclarationConfirmedByStudent
   ) {
@@ -1469,7 +1470,7 @@ const getMessageFileDownload = asyncHandler(async (req, res) => {
 
   // (O) Multitenancy check
   if (
-    user.role === Role.Student &&
+    is_TaiGer_Student(user) &&
     document_thread.student_id.toString() !== user._id.toString()
   ) {
     logger.error('getMessageFileDownload: Not authorized!');
@@ -2161,7 +2162,7 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
   try {
     const matchingDocuments = [];
     const { user } = req;
-    if (user.role === Role.Student) {
+    if (is_TaiGer_Student(user)) {
       const essayDocumentThreads = await req.db
         .model('Documentthread')
         .find(

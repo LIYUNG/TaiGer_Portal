@@ -1,4 +1,4 @@
-const { Role } = require('@taiger-common/core');
+const { Role, is_TaiGer_Student, is_TaiGer_Guest } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const logger = require('../services/logger');
@@ -9,7 +9,7 @@ const docThreadMultitenant_filter = asyncHandler(async (req, res, next) => {
     user,
     params: { messagesThreadId }
   } = req;
-  if (user.role === Role.Student || user.role === Role.Guest) {
+  if (is_TaiGer_Student(user) || is_TaiGer_Guest(user)) {
     const document_thread = await req.db
       .model('Documentthread')
       .findById(messagesThreadId)

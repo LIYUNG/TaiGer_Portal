@@ -1,7 +1,7 @@
 const async = require('async');
 const { ObjectId } = require('mongodb');
 const path = require('path');
-const { is_TaiGer_Agent } = require('@taiger-common/core');
+const { is_TaiGer_Agent, is_TaiGer_Admin, is_TaiGer_Student } = require('@taiger-common/core');
 const { Role } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
@@ -56,7 +56,7 @@ const getSearchUserMessages = asyncHandler(async (req, res, next) => {
 
   const permissions = await getPermission(req, user);
   if (
-    user.role === Role.Admin ||
+    is_TaiGer_Admin(user) ||
     (is_TaiGer_Agent(user) && permissions?.canAccessAllChat)
   ) {
     const students = await req.db
@@ -149,7 +149,7 @@ const getSearchMessageKeywords = asyncHandler(async (req, res) => {
       }
     }
   ]);
-  if (user.role === Role.Admin) {
+  if (is_TaiGer_Admin(user)) {
     const students = await req.db
       .model('Student')
       .find({
@@ -197,7 +197,7 @@ const getSearchMessageKeywords = asyncHandler(async (req, res) => {
 
 const getUnreadNumberMessages = asyncHandler(async (req, res) => {
   const { user } = req;
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     const latestMessage = await req.db
       .model('Communication')
       .findOne({
@@ -220,7 +220,7 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
   }
   const permissions = await getPermission(req, user);
   if (
-    user.role === Role.Admin ||
+    is_TaiGer_Admin(user) ||
     (is_TaiGer_Agent(user) && permissions?.canAccessAllChat)
   ) {
     const students = await req.db
@@ -326,7 +326,7 @@ const getMyMessages = asyncHandler(async (req, res, next) => {
   const permissions = await getPermission(req, user);
 
   if (
-    user.role === Role.Admin ||
+    is_TaiGer_Admin(user) ||
     (is_TaiGer_Agent(user) && permissions?.canAccessAllChat)
   ) {
     const students = await req.db
@@ -562,7 +562,7 @@ const postMessages = asyncHandler(async (req, res, next) => {
   } = req;
   const { message } = req.body;
   // TODO: check if consecutive post?
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     const communication_thread = await req.db
       .model('Communication')
       .find({
@@ -651,7 +651,7 @@ const postMessages = asyncHandler(async (req, res, next) => {
     .populate('editors agents', 'firstname lastname email archiv');
 
   // inform agent/student
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     for (let i = 0; i < student.agents.length; i += 1) {
       // inform active-agent
       if (isNotArchiv(student)) {

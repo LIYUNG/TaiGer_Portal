@@ -1,4 +1,4 @@
-const { Role, is_TaiGer_role } = require('@taiger-common/core');
+const { is_TaiGer_role, is_TaiGer_Student } = require('@taiger-common/core');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
@@ -42,7 +42,7 @@ const getTickets = asyncHandler(async (req, res) => {
 
 const getTicket = asyncHandler(async (req, res) => {
   const { user } = req;
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     const ticket = await req.db
       .model('Ticket')
       .findById(req.params.ticketId)

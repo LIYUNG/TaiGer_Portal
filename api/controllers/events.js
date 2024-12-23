@@ -1,5 +1,9 @@
 const async = require('async');
-const { Role, is_TaiGer_Agent } = require('@taiger-common/core');
+const {
+  Role,
+  is_TaiGer_Agent,
+  is_TaiGer_Student
+} = require('@taiger-common/core');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const {
@@ -33,7 +37,7 @@ const MeetingAdjustReminder = (receiver, user, meeting_event) => {
 
 const MeetingCancelledReminder = (user, meeting_event) => {
   MeetingCancelledReminderEmail(
-    user.role === Role.Student
+    is_TaiGer_Student(user)
       ? {
           id: meeting_event.receiver_id[0]._id.toString(),
           firstname: meeting_event.receiver_id[0].firstname,
@@ -52,10 +56,9 @@ const MeetingCancelledReminder = (user, meeting_event) => {
       meeting_time: meeting_event.start,
       student_id: user._id.toString(),
       event: meeting_event,
-      event_title:
-        user.role === Role.Student
-          ? `${user.firstname} ${user.lastname}`
-          : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
+      event_title: is_TaiGer_Student(user)
+        ? `${user.firstname} ${user.lastname}`
+        : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
       isUpdatingEvent: false
     }
   );
@@ -76,10 +79,9 @@ const meetingInvitation = (receiver, user, event) => {
       meeting_link: event.meetingLink,
       isUpdatingEvent: false,
       event,
-      event_title:
-        user.role === Role.Student
-          ? `${user.firstname} ${user.lastname}`
-          : `${receiver.firstname} ${receiver.lastname}`
+      event_title: is_TaiGer_Student(user)
+        ? `${user.firstname} ${user.lastname}`
+        : `${receiver.firstname} ${receiver.lastname}`
     }
   );
 };
@@ -122,7 +124,7 @@ const getEvents = asyncHandler(async (req, res, next) => {
   };
 
   // Role-based logic
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     const agentsIds = user.agents;
 
     // Fetch events requested by the student
@@ -202,7 +204,7 @@ const getEvents = asyncHandler(async (req, res, next) => {
 const getActiveEventsNumber = asyncHandler(async (req, res, next) => {
   const { user } = req;
   if (
-    user.role === Role.Student ||
+    is_TaiGer_Student(user) ||
     is_TaiGer_Agent(user) ||
     user.role === Role.Admin
   ) {
@@ -282,7 +284,7 @@ const postEvent = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const newEvent = req.body;
   let events;
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     let write_NewEvent;
     delete newEvent.id;
     newEvent.isConfirmedRequester = true;
@@ -418,7 +420,7 @@ const confirmEvent = asyncHandler(async (req, res, next) => {
   const updated_event = req.body;
   try {
     const date = new Date(updated_event.start);
-    if (user.role === Role.Student) {
+    if (is_TaiGer_Student(user)) {
       updated_event.isConfirmedRequester = true;
       updated_event.meetingLink = `https://meet.jit.si/${user.firstname}_${
         user.lastname
@@ -468,7 +470,7 @@ const confirmEvent = asyncHandler(async (req, res, next) => {
     }
     // TODO Sent email to requester
 
-    if (user.role === Role.Student) {
+    if (is_TaiGer_Student(user)) {
       event.receiver_id.forEach((receiver) => {
         meetingInvitation(receiver, user, event);
       });
@@ -491,7 +493,7 @@ const updateEvent = asyncHandler(async (req, res, next) => {
   const updated_event = req.body;
   try {
     const date = new Date(updated_event.start);
-    if (user.role === Role.Student) {
+    if (is_TaiGer_Student(user)) {
       updated_event.isConfirmedRequester = true;
       updated_event.isConfirmedReceiver = false;
     }
@@ -517,7 +519,7 @@ const updateEvent = asyncHandler(async (req, res, next) => {
     }
     // Sent email to receiver
     // sync with google calendar.
-    if (user.role === Role.Student) {
+    if (is_TaiGer_Student(user)) {
       event.receiver_id.forEach((receiver) => {
         MeetingAdjustReminder(receiver, user, event);
       });
@@ -545,7 +547,7 @@ const deleteEvent = asyncHandler(async (req, res, next) => {
       .lean();
     await req.db.model('Event').findByIdAndDelete(event_id);
     let events;
-    if (user.role === Role.Student) {
+    if (is_TaiGer_Student(user)) {
       events = await req.db
         .model('Event')
         .find({ requester_id: user._id })

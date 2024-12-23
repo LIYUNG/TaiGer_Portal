@@ -2,7 +2,9 @@
 const {
   Role,
   ProfileNameType,
-  DocumentStatusType
+  DocumentStatusType,
+  is_TaiGer_Student,
+  is_TaiGer_Guest
 } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
@@ -62,7 +64,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
   const { studentId } = req.params;
   // const { _id } = student;
   let student_id;
-  if (user.role === Role.Student || user.role === Role.Guest) {
+  if (is_TaiGer_Student(user) || is_TaiGer_Guest(user)) {
     student_id = user._id.toString();
   } else {
     student_id = studentId;
@@ -223,7 +225,7 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   const { studentId } = req.params;
   let student_id;
 
-  if (user.role === Role.Student || user.role === Role.Guest) {
+  if (is_TaiGer_Student(user) || is_TaiGer_Guest(user)) {
     student_id = user._id.toString();
   } else {
     student_id = studentId;
@@ -318,7 +320,7 @@ const updateApplicationPreferenceSkill = asyncHandler(
     } = req;
     const { studentId } = req.params;
     let student_id;
-    if (user.role === Role.Student || user.role === Role.Guest) {
+    if (is_TaiGer_Student(user) || is_TaiGer_Guest(user)) {
       student_id = user._id;
     } else {
       student_id = studentId;

@@ -1,5 +1,5 @@
 const path = require('path');
-const { Role, DocumentStatusType } = require('@taiger-common/core');
+const { Role, DocumentStatusType, is_TaiGer_Student } = require('@taiger-common/core');
 
 const { asyncHandler } = require('../middlewares/error-handler');
 const { one_month_cache, two_month_cache } = require('../cache/node-cache');
@@ -150,7 +150,7 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
     student.profile.push(document);
     await student.save();
     res.status(201).send({ success: true, data: student });
-    if (user.role === Role.Student) {
+    if (is_TaiGer_Student(user)) {
       // TODO: add notification for agents
       for (let i = 0; i < student.agents.length; i += 1) {
         const agent = await req.db
@@ -216,7 +216,7 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
 
     // retrieve studentId differently depend on if student or Admin/Agent uploading the file
     res.status(201).send({ success: true, data: student });
-    if (user.role === Role.Student) {
+    if (is_TaiGer_Student(user)) {
       // TODO: notify agents
       for (let i = 0; i < student.agents.length; i += 1) {
         const agent = await req.db
@@ -398,7 +398,7 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
     .findById(studentId)
     .populate('agents', 'firstname lastname email archiv');
 
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     // Reminder for Agent:
     for (let i = 0; i < student_updated.agents.length; i += 1) {
       if (isNotArchiv(student_updated.agents[i])) {
@@ -733,7 +733,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     .lean();
 
   res.status(201).send({ success: true, data: student_updated });
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     for (let i = 0; i < student_updated.agents.length; i += 1) {
       if (isNotArchiv(student_updated.agents[i])) {
         await UpdateStudentApplicationsEmail(
@@ -921,7 +921,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
     (application) => application.programId?.id.toString() === programId
   );
   res.status(200).send({ success: true, data: udpatedApplication });
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     if (result !== '-') {
       for (let i = 0; i < student.agents?.length; i += 1) {
         if (isNotArchiv(student.agents[i])) {

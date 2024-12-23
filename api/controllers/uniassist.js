@@ -1,6 +1,5 @@
 const path = require('path');
-const async = require('async');
-const { Role } = require('@taiger-common/core');
+const { is_TaiGer_Student } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
@@ -11,7 +10,7 @@ const getStudentUniAssist = asyncHandler(async (req, res) => {
     user,
     params: { studentId }
   } = req;
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     const obj = user.notification; // create object
     obj['isRead_uni_assist_task_assigned'] = true; // set value
     await req.db

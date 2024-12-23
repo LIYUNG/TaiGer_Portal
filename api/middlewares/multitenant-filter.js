@@ -1,4 +1,8 @@
-const { Role } = require('@taiger-common/core');
+const {
+  Role,
+  is_TaiGer_Student,
+  is_TaiGer_Guest
+} = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 
@@ -25,7 +29,7 @@ const complaintTicketMultitenant_filter = async (req, res, next) => {
     user,
     params: { ticketId }
   } = req;
-  if (user.role === Role.Student || user.role === Role.Guest) {
+  if (is_TaiGer_Student(user) || is_TaiGer_Guest(user)) {
     const ticket = await req.db.model('Complaint').findById(ticketId);
     if (
       ticket.requester_id.toString() &&

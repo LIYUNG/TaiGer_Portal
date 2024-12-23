@@ -1,7 +1,8 @@
 const {
   Role,
   is_TaiGer_Agent,
-  is_TaiGer_External
+  is_TaiGer_External,
+  is_TaiGer_Student
 } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
@@ -390,7 +391,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
     }
   } else if (is_TaiGer_External(user)) {
     res.status(200).send({ success: true, data: [] });
-  } else if (user.role === Role.Student) {
+  } else if (is_TaiGer_Student(user)) {
     const studentPromise = req.db
       .model('Student')
       .findById(user._id.toString())
@@ -505,7 +506,7 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
     });
 
     res.status(200).send({ success: true, data: students, base_docs_link });
-  } else if (user.role === Role.Student) {
+  } else if (is_TaiGer_Student(user)) {
     const obj = user.notification; // create object
     obj['isRead_base_documents_rejected'] = true; // set value
     await req.db

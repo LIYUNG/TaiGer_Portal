@@ -3,7 +3,12 @@ const {
   ProfileNameType,
   SCHOOL_TAGS,
   Role,
-  DocumentStatusType
+  DocumentStatusType,
+  PROFILE_NAME,
+  is_TaiGer_Editor,
+  is_TaiGer_Student,
+  is_TaiGer_Agent,
+  is_TaiGer_AdminAgent
 } = require('@taiger-common/core');
 const { differenceInDays } = require('date-fns');
 
@@ -107,13 +112,6 @@ const ManagerType = {
   None: 'None'
 };
 
-const CheckListStatus = {
-  NotStarted: 'notstarted',
-  Processing: 'processing',
-  Finished: 'finished',
-  NotNeeded: 'notneeded'
-};
-
 const isNotArchiv = (user) => {
   if (user.archiv === undefined || !user.archiv) {
     return true;
@@ -179,14 +177,6 @@ const application_deadline_calculator = (student, application) => {
   return `${application_year}/${
     application.programId.application_deadline.split('-')[0]
   }/${application.programId.application_deadline.split('-')[1]}`;
-};
-
-const TaskStatus = {
-  Finished: 'finished',
-  Locked: 'locked',
-  Open: 'Open',
-  Pending: 'pending',
-  NotNeeded: 'notneeded'
 };
 
 const EDITOR_SCOPE = {
@@ -345,7 +335,7 @@ const does_editor_have_pending_tasks = (students, editor) => {
 
 const is_cv_ml_rl_task_response_needed = (student, user) => {
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
-    if (user.role === Role.Editor) {
+    if (is_TaiGer_Editor(user)) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
@@ -354,7 +344,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
       ) {
         return true;
       }
-    } else if (user.role === Role.Student) {
+    } else if (is_TaiGer_Student(user)) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !==
@@ -362,7 +352,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
       ) {
         return true;
       }
-    } else if (user.role === Role.Agent) {
+    } else if (is_TaiGer_Agent(user)) {
       if (!student.generaldocs_threads[i].isFinalVersion) {
         return true;
       }
@@ -375,7 +365,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
         j < student.applications[i].doc_modification_thread.length;
         j += 1
       ) {
-        if (user.role === Role.Editor) {
+        if (is_TaiGer_Editor(user)) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -386,7 +376,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
           ) {
             return true;
           }
-        } else if (user.role === Role.Student) {
+        } else if (is_TaiGer_Student(user)) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -395,7 +385,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
           ) {
             return true;
           }
-        } else if (user.role === Role.Agent) {
+        } else if (is_TaiGer_Agent(user)) {
           if (
             !student.applications[i].doc_modification_thread[j].isFinalVersion
           ) {
@@ -415,7 +405,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
       today,
       student.generaldocs_threads[i].updatedAt
     );
-    if (user.role === Role.Editor) {
+    if (is_TaiGer_Editor(user)) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
@@ -425,7 +415,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
       ) {
         return true;
       }
-    } else if (user.role === Role.Student) {
+    } else if (is_TaiGer_Student(user)) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !==
@@ -434,7 +424,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
       ) {
         return true;
       }
-    } else if (user.role === Role.Agent) {
+    } else if (is_TaiGer_Agent(user)) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         day_diff > trigger_days
@@ -455,7 +445,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
           student.applications[i].doc_modification_thread[j].doc_thread_id
             .updatedAt
         );
-        if (user.role === Role.Editor) {
+        if (is_TaiGer_Editor(user)) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -467,7 +457,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
           ) {
             return true;
           }
-        } else if (user.role === Role.Student) {
+        } else if (is_TaiGer_Student(user)) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -477,7 +467,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
           ) {
             return true;
           }
-        } else if (user.role === Role.Agent) {
+        } else if (is_TaiGer_Agent(user)) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -726,14 +716,14 @@ const ml_essay_escalation_agent_list = (student, user, trigger_days) => {
 
 const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
   let missing_doc_list = '';
-  if (user.role === Role.Editor) {
+  if (is_TaiGer_Editor(user)) {
     missing_doc_list = `
         The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
         ${cv_rl_escalation_editor_list(student, user, trigger_days)}
         ${ml_essay_escalation_editor_list(student, user, trigger_days)}
         </ul>`;
-  } else if (user.role === Role.Student) {
+  } else if (is_TaiGer_Student(user)) {
     missing_doc_list = `
         The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
@@ -817,7 +807,7 @@ const unsubmitted_applications_escalation_agent_summary = (
 
 const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
   let missing_doc_list = '';
-  if (user.role === Role.Editor) {
+  if (is_TaiGer_Editor(user)) {
     missing_doc_list = `
         <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
       student.firstname
@@ -828,7 +818,7 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
         ${ml_essay_escalation_editor_list(student, user, trigger_days)}
         </ul>`;
   }
-  if (user.role === Role.Agent) {
+  if (is_TaiGer_Agent(user)) {
     missing_doc_list = `
         <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
       student.firstname
@@ -848,7 +838,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
   let missing_doc_list = '';
   let kk = 0;
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
-    if (user.role === Role.Editor) {
+    if (is_TaiGer_Editor(user)) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
@@ -873,7 +863,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
           }</a></li>`;
         }
       }
-    } else if (user.role === Role.Student) {
+    } else if (is_TaiGer_Student(user)) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !==
@@ -897,7 +887,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
           }</a></li>`;
         }
       }
-    } else if (user.role === Role.Agent) {
+    } else if (is_TaiGer_Agent(user)) {
       if (!student.generaldocs_threads[i].isFinalVersion) {
         if (kk === 0) {
           missing_doc_list = `
@@ -927,7 +917,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
         j < student.applications[i].doc_modification_thread.length;
         j += 1
       ) {
-        if (user.role === Role.Editor) {
+        if (is_TaiGer_Editor(user)) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -960,7 +950,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
               }</a></li>`;
             }
           }
-        } else if (user.role === Role.Student) {
+        } else if (is_TaiGer_Student(user)) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -991,7 +981,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
               }</a></li>`;
             }
           }
-        } else if (user.role === Role.Agent) {
+        } else if (is_TaiGer_Agent(user)) {
           if (
             !student.applications[i].doc_modification_thread[j].isFinalVersion
           ) {
@@ -1028,26 +1018,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
   }
   return missing_doc_list;
 };
-const profile_keys_list = [
-  'High_School_Diploma',
-  'High_School_Transcript',
-  'University_Entrance_Examination_GSAT',
-  'Bachelor_Certificate',
-  'Bachelor_Transcript',
-  'Second_Degree_Certificate',
-  'Second_Degree_Transcript',
-  'Englisch_Certificate',
-  'German_Certificate',
-  'GRE',
-  'GMAT',
-  'ECTS_Conversion',
-  'Course_Description',
-  'Internship',
-  'Exchange_Student_Certificate',
-  'Employment_Certificate',
-  'Passport',
-  'Others'
-];
+const profile_keys_list = Object.keys(ProfileNameType);
 
 const check_english_language_passed = (academic_background) => {
   if (!academic_background || !academic_background.language) {
@@ -1134,7 +1105,7 @@ const missing_academic_background = (student, user) => {
     <li>GMAT Certificate?</li`;
     }
     missing_background_fields += '</ul>';
-    if (user.role === Role.Admin || user.role === Role.Agent) {
+    if (is_TaiGer_AdminAgent(user)) {
       missing_background_fields += `
       <p>請至 <a href="${SURVEY_URL_FOR_AGENT_URL(
         student._id.toString()
@@ -1349,7 +1320,7 @@ const missing_academic_background = (student, user) => {
         }
       }
     }
-    if (user.role === Role.Agent || user.role === Role.Admin) {
+    if (is_TaiGer_AdminAgent(user)) {
       missing_background_fields += `<p>Please go to <a href="${SURVEY_URL_FOR_AGENT_URL(
         student._id.toString()
       )}">Survey</a> and update them.</p>`;
@@ -1527,10 +1498,10 @@ const base_documents_summary = (student) => {
         <p>以下文件仍然未上傳, 請<b>盡速上傳</b>:</p>
         <p>The following base documents are still missing, please <b>upload</b> them as soon as possible:</p>
         <ul>
-        <li>${ProfileNameType[profile_keys_list[i]]}</li>`;
+        <li>${PROFILE_NAME[profile_keys_list[i]]}</li>`;
       } else {
         missing_base_documents += `<li>${
-          ProfileNameType[profile_keys_list[i]]
+          PROFILE_NAME[profile_keys_list[i]]
         }</li>`;
       }
     }
@@ -1541,10 +1512,10 @@ const base_documents_summary = (student) => {
         <p>以下文件仍然<b>不合格</b>, 請<b>盡速補上</b>:</p>
         <p>The following base documents are <b>not okay</b>, please <b>upload</b> them again as soon as possible:</p>
         <ul>
-        <li>${ProfileNameType[profile_keys_list[i]]}</li>`;
+        <li>${PROFILE_NAME[profile_keys_list[i]]}</li>`;
       } else {
         rejected_base_documents += `<li>${
-          ProfileNameType[profile_keys_list[i]]
+          PROFILE_NAME[profile_keys_list[i]]
         }</li>`;
       }
     }
@@ -1590,8 +1561,6 @@ module.exports = {
   Role,
   TicketStatus,
   ManagerType,
-  CheckListStatus,
-  TaskStatus,
   EDITOR_SCOPE,
   ESSAY_WRITER_SCOPE,
   FILE_MAPPING_TABLE,

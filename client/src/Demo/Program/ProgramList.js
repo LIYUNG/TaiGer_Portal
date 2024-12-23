@@ -16,7 +16,7 @@ function ProgramList() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { data, isLoading, isError, error } = useQuery(getProgramsQuery());
-  const programs = data?.data?.data;
+  const programs = data?.data;
 
   TabTitle(t('Program List', { ns: 'common' }));
 

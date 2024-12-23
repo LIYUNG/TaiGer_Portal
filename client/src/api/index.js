@@ -51,6 +51,7 @@ export const getEditors = () => request.get('/api/editors');
 export const getEssayWriters = () => request.get('/api/essay-writers');
 
 export const getStudents = () => request.get(`/api/students`);
+export const getStudentsV2 = () => getData(`/api/students`);
 
 export const getAllStudents = () => request.get(`/api/students/all`);
 
@@ -60,7 +61,7 @@ export const getAllActiveStudents = () =>
 export const getAllArchivedStudents = () =>
   request.get(`/api/students/all/archiv`);
 
-export const getAdmissions = () => request.get(`/api/admissions`);
+export const getAdmissions = () => getData(`/api/admissions`);
 
 export const getExpenses = () => request.get(`/api/expenses`);
 
@@ -365,6 +366,7 @@ export const deleteInternalDocumentation = (doc_id) =>
 
 // Program APIs
 export const getPrograms = () => request.get('/api/programs');
+export const getProgramsV2 = () => getData('/api/programs');
 export const getDistinctSchools = () => request.get('/api/programs/schools');
 export const updateSchoolAttributes = (schoolAttributes) =>
   request.put('/api/programs/schools', schoolAttributes);

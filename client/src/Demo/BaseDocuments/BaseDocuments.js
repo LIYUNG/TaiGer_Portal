@@ -6,7 +6,6 @@ import { is_TaiGer_role } from '@taiger-common/core';
 
 import BaseDocument_StudentView from './BaseDocument_StudentView';
 import { SYMBOL_EXPLANATION } from '../Utils/contants';
-import ErrorPage from '../Utils/ErrorPage';
 import { TabTitle } from '../Utils/TabTitle';
 import { useAuth } from '../../components/AuthProvider';
 import DEMO from '../../store/constant';
@@ -19,27 +18,23 @@ import { getStudentsAndDocLinks2Query } from '../../api/query';
 function BaseDocuments() {
   const { user } = useAuth();
   const { t } = useTranslation();
-  const { data, isLoading, isError } = useQuery(getStudentsAndDocLinks2Query());
+  const { data, isLoading, isError, error } = useQuery(
+    getStudentsAndDocLinks2Query()
+  );
 
   TabTitle('Base Documents');
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  if (isError >= 400) {
-    return <ErrorPage res_status={500} />;
-  }
   const students = data?.data;
 
-  const student_profile_student_view = students?.map((student, i) => (
-    <Card key={i}>
-      <BaseDocument_StudentView
-        student={student}
-        SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
-      />
-    </Card>
-  ));
+  const StudentDocoumentsView = () =>
+    students?.map((student, i) => (
+      <Card key={i}>
+        <BaseDocument_StudentView
+          student={student}
+          SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+        />
+      </Card>
+    ));
 
   return (
     <Box>
@@ -67,12 +62,15 @@ function BaseDocuments() {
           </Typography>
         )}
       </Breadcrumbs>
-
-      {is_TaiGer_role(user) ? (
-        <BaseDocumentsTable students={students} />
-      ) : (
-        <>{student_profile_student_view}</>
-      )}
+      {isLoading && <Loading />}
+      {isError && <>{error}</>}
+      {!isLoading &&
+        !isError &&
+        (is_TaiGer_role(user) ? (
+          <BaseDocumentsTable students={students} />
+        ) : (
+          <StudentDocoumentsView />
+        ))}
     </Box>
   );
 }

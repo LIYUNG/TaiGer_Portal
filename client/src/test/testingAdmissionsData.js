@@ -2,92 +2,6 @@ export const mockAdmissionsData = {
   success: true,
   data: [
     {
-      application_preference: {
-        special_wished: '',
-        application_outside_germany: '-',
-        considered_privat_universities: '-',
-        expected_application_date: '',
-        expected_application_semester: '',
-        target_application_field: '',
-        target_degree: ''
-      },
-      needEditor: false,
-      linkedIn: '',
-      _id: '636625fd94358b085b0fccb0',
-      firstname: 'Student1',
-      lastname: 'Chen',
-      archiv: true,
-      role: 'Student',
-      createdAt: '2022-11-05T08:59:41.239Z',
-      agents: [
-        {
-          _id: '6366467594358b085b0fce78',
-          firstname: 'Travis',
-          lastname: 'TaiGer',
-          role: 'Agent'
-        }
-      ],
-      applications: [],
-      checklist: {
-        blocked_account_instruction: {
-          isNeeded: true,
-          name: 'Blocked Account',
-          status: 'notstarted'
-        },
-        certification_instruction: {
-          isNeeded: true,
-          name: 'Copy Certification',
-          status: 'notstarted'
-        },
-        course_analysis: {
-          isNeeded: true,
-          name: 'Course Analysis',
-          status: 'notstarted'
-        },
-        health_insurance_instruction: {
-          isNeeded: true,
-          name: 'Health Insurance',
-          status: 'notstarted'
-        },
-        uni_assist: {
-          isNeeded: true,
-          name: 'Uni-Assist',
-          status: 'notstarted'
-        },
-        visa_instruction: {
-          isNeeded: true,
-          name: 'Visa Instruction',
-          status: 'notstarted'
-        }
-      },
-      editors: [
-        {
-          _id: '6371126f2fa1e09320e1a216',
-          firstname: 'editor_hao',
-          lastname: 'tsui',
-          role: 'Editor'
-        },
-        {
-          _id: '639d192f7b10d10a9b4ac97c',
-          firstname: 'Editor',
-          lastname: 'Test',
-          role: 'Editor'
-        }
-      ],
-      lastLoginAt: '2023-05-21T09:11:07.810Z',
-      attributes: []
-    },
-    {
-      application_preference: {
-        special_wished: '',
-        expected_application_date: '2023',
-        expected_application_semester: 'WS',
-        updatedAt: '2023-08-18T22:45:40.129Z',
-        application_outside_germany: '-',
-        considered_privat_universities: 'NotSure',
-        target_application_field: 'mj',
-        target_degree: 'Bachelor'
-      },
       _id: '6366287a94358b085b0fccf7',
       firstname: 'Testing-Student',
       lastname: 'Chen',
@@ -202,22 +116,6 @@ export const mockAdmissionsData = {
         {
           finalEnrolment: false,
           programId: {
-            _id: '2532fde46751651537908470',
-            school: 'Bielefeld University',
-            program_name:
-              'Binational Bachelor of Science in Chemistry (German-French)',
-            degree: 'B. Sc.',
-            semester: 'WS'
-          },
-          reject_reason: '',
-          decided: '-',
-          closed: '-',
-          admission: '-',
-          _id: '64d79d1b6ead5bc43287d39d'
-        },
-        {
-          finalEnrolment: false,
-          programId: {
             _id: '2532fde46751651538064954',
             school: 'Technische Universität Berlin (TU Berlin)',
             program_name: 'Scientific Computing',
@@ -229,55 +127,8 @@ export const mockAdmissionsData = {
           closed: '-',
           admission: '-',
           _id: '64e54176af84763394804cb8'
-        },
-        {
-          finalEnrolment: false,
-          programId: {
-            _id: '2532fde46751651538084485',
-            school: 'Technische Universität München (TUM)',
-            program_name: 'Management & Technology (MMT)',
-            degree: 'M. Sc.',
-            semester: 'WS'
-          },
-          reject_reason: '',
-          decided: '-',
-          closed: '-',
-          admission: '-',
-          _id: '64fb8f1cc625e7033f967ec7'
         }
       ],
-      checklist: {
-        blocked_account_instruction: {
-          isNeeded: true,
-          name: 'Blocked Account',
-          status: 'notstarted'
-        },
-        certification_instruction: {
-          isNeeded: true,
-          name: 'Copy Certification',
-          status: 'notstarted'
-        },
-        course_analysis: {
-          isNeeded: true,
-          name: 'Course Analysis',
-          status: 'notstarted'
-        },
-        health_insurance_instruction: {
-          isNeeded: true,
-          name: 'Health Insurance',
-          status: 'notstarted'
-        },
-        uni_assist: {
-          isNeeded: true,
-          name: 'Uni-Assist',
-          status: 'notstarted'
-        },
-        visa_instruction: {
-          isNeeded: true,
-          name: 'Visa Instruction',
-          status: 'notstarted'
-        }
-      },
       editors: [
         {
           _id: '639d192f7b10d10a9b4ac97c',
@@ -299,60 +150,10 @@ export const mockAdmissionsData = {
         }
       ],
       lastLoginAt: '2024-03-07T18:15:37.321Z',
-      unreadMessages: [],
       lastname_chinese: 'AA',
-      firstname_chinese: 'd',
-      needEditor: true,
-      attributes: [
-        {
-          value: 1,
-          name: 'Demanding',
-          _id: '65e0c807c59e90c4f32fd6b0'
-        },
-        {
-          value: 2,
-          name: 'Parents Pushing',
-          _id: '65e0c807c59e90c4f32fd6b1'
-        },
-        {
-          value: 3,
-          name: 'Urgent',
-          _id: '65e0c807c59e90c4f32fd6b2'
-        },
-        {
-          value: 4,
-          name: 'Slow Response',
-          _id: '65e0c807c59e90c4f32fd6b3'
-        },
-        {
-          value: 5,
-          name: 'Disappear',
-          _id: '65e0c807c59e90c4f32fd6b4'
-        },
-        {
-          value: 6,
-          name: 'Low-IQ',
-          _id: '65e0c807c59e90c4f32fd6b5'
-        },
-        {
-          value: 8,
-          name: 'Done',
-          _id: '65e0c807c59e90c4f32fd6b6'
-        }
-      ],
-      linkedIn: ''
+      firstname_chinese: 'd'
     },
     {
-      application_preference: {
-        target_degree: '',
-        special_wished: '',
-        expected_application_date: '2023',
-        expected_application_semester: 'WS',
-        target_application_field: 'Technology, Automotive Management',
-        considered_privat_universities: 'Yes',
-        application_outside_germany: 'No',
-        updatedAt: '2023-01-13T04:22:31.918Z'
-      },
       needEditor: false,
       linkedIn: '',
       _id: '63b95e26cd18b9adc03bb5f0',
@@ -372,38 +173,6 @@ export const mockAdmissionsData = {
           role: 'Editor'
         }
       ],
-      checklist: {
-        course_analysis: {
-          name: 'Course Analysis',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        uni_assist: {
-          name: 'Uni-Assist',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        certification_instruction: {
-          name: 'Copy Certification',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        blocked_account_instruction: {
-          name: 'Blocked Account',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        health_insurance_instruction: {
-          name: 'Health Insurance',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        visa_instruction: {
-          name: 'Visa Instruction',
-          isNeeded: true,
-          status: 'notstarted'
-        }
-      },
       firstname: 'Testing-Student2',
       lastname: 'Wo',
       archiv: false,
@@ -475,16 +244,6 @@ export const mockAdmissionsData = {
       attributes: []
     },
     {
-      application_preference: {
-        target_degree: '',
-        special_wished: '',
-        expected_application_date: '2023',
-        expected_application_semester: 'WS',
-        target_application_field: 'Marketing, Business Management ',
-        considered_privat_universities: 'Yes',
-        application_outside_germany: 'Yes',
-        updatedAt: '2023-01-22T20:17:17.745Z'
-      },
       needEditor: false,
       linkedIn: '',
       _id: '63b95e46cd18b9adc03bb5f7',
@@ -504,38 +263,6 @@ export const mockAdmissionsData = {
           role: 'Editor'
         }
       ],
-      checklist: {
-        course_analysis: {
-          name: 'Course Analysis',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        uni_assist: {
-          name: 'Uni-Assist',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        certification_instruction: {
-          name: 'Copy Certification',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        blocked_account_instruction: {
-          name: 'Blocked Account',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        health_insurance_instruction: {
-          name: 'Health Insurance',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        visa_instruction: {
-          name: 'Visa Instruction',
-          isNeeded: true,
-          status: 'notstarted'
-        }
-      },
       firstname: 'Testing-Student3',
       lastname: 'Liu',
       archiv: false,
@@ -638,16 +365,6 @@ export const mockAdmissionsData = {
       attributes: []
     },
     {
-      application_preference: {
-        expected_application_date: '2023',
-        expected_application_semester: 'WS',
-        target_application_field: 'Electrical Engineering',
-        considered_privat_universities: 'No',
-        application_outside_germany: 'No',
-        updatedAt: '2023-05-04T13:16:48.519Z',
-        special_wished: '',
-        target_degree: ''
-      },
       linkedIn: '',
       _id: '63b9a785f7b3a4a141267dbf',
       agents: [
@@ -666,41 +383,8 @@ export const mockAdmissionsData = {
           role: 'Editor'
         }
       ],
-      checklist: {
-        course_analysis: {
-          name: 'Course Analysis',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        uni_assist: {
-          name: 'Uni-Assist',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        certification_instruction: {
-          name: 'Copy Certification',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        blocked_account_instruction: {
-          name: 'Blocked Account',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        health_insurance_instruction: {
-          name: 'Health Insurance',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        visa_instruction: {
-          name: 'Visa Instruction',
-          isNeeded: true,
-          status: 'notstarted'
-        }
-      },
       firstname: 'Testing-Student5',
       lastname: 'Liu',
-      archiv: false,
       role: 'Student',
       applications: [
         {
@@ -770,16 +454,6 @@ export const mockAdmissionsData = {
       attributes: []
     },
     {
-      application_preference: {
-        expected_application_date: '2023',
-        expected_application_semester: 'WS',
-        target_application_field: 'Robotics Electrical, tech. univ.',
-        considered_privat_universities: 'Yes',
-        application_outside_germany: 'No',
-        updatedAt: '2023-06-03T06:38:33.855Z',
-        target_degree: '',
-        special_wished: ''
-      },
       linkedIn: '',
       _id: '63b9c883045871fbf1cc025e',
       agents: [
@@ -798,38 +472,6 @@ export const mockAdmissionsData = {
           role: 'Editor'
         }
       ],
-      checklist: {
-        course_analysis: {
-          name: 'Course Analysis',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        uni_assist: {
-          name: 'Uni-Assist',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        certification_instruction: {
-          name: 'Copy Certification',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        blocked_account_instruction: {
-          name: 'Blocked Account',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        health_insurance_instruction: {
-          name: 'Health Insurance',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        visa_instruction: {
-          name: 'Visa Instruction',
-          isNeeded: true,
-          status: 'notstarted'
-        }
-      },
       firstname: 'Testing-Studen6',
       lastname: 'Liu',
       archiv: false,
@@ -920,16 +562,6 @@ export const mockAdmissionsData = {
       attributes: []
     },
     {
-      application_preference: {
-        target_degree: '',
-        special_wished: '',
-        expected_application_date: '2023',
-        expected_application_semester: 'WS',
-        target_application_field: 'Management',
-        considered_privat_universities: 'No',
-        application_outside_germany: 'No',
-        updatedAt: '2023-01-11T09:27:28.619Z'
-      },
       needEditor: false,
       linkedIn: '',
       _id: '63be7aff8d4ce70477309776',
@@ -949,38 +581,6 @@ export const mockAdmissionsData = {
           role: 'Editor'
         }
       ],
-      checklist: {
-        course_analysis: {
-          name: 'Course Analysis',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        uni_assist: {
-          name: 'Uni-Assist',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        certification_instruction: {
-          name: 'Copy Certification',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        blocked_account_instruction: {
-          name: 'Blocked Account',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        health_insurance_instruction: {
-          name: 'Health Insurance',
-          isNeeded: true,
-          status: 'notstarted'
-        },
-        visa_instruction: {
-          name: 'Visa Instruction',
-          isNeeded: true,
-          status: 'notstarted'
-        }
-      },
       firstname: 'Kuan-Yu',
       lastname: 'Pan',
       archiv: false,
@@ -1052,16 +652,6 @@ export const mockAdmissionsData = {
       attributes: []
     },
     {
-      application_preference: {
-        special_wished: '',
-        expected_application_date: '2023',
-        expected_application_semester: 'WS',
-        target_application_field: '',
-        considered_privat_universities: '-',
-        application_outside_germany: '-',
-        updatedAt: '2023-01-15T16:17:30.959Z',
-        target_degree: ''
-      },
       needEditor: false,
       linkedIn: '',
       _id: '63c4260f20fb8b0295e276c7',
@@ -1178,8 +768,7 @@ export const mockAdmissionsData = {
         }
       ],
       createdAt: '2023-01-15T16:13:03.925Z',
-      lastLoginAt: '2023-05-29T14:01:37.287Z',
-      attributes: []
+      lastLoginAt: '2023-05-29T14:01:37.287Z'
     },
     {
       application_preference: {
@@ -1342,66 +931,6 @@ export const mockAdmissionsData = {
         {
           finalEnrolment: false,
           programId: {
-            _id: '2532fde46751651538082024',
-            school: 'Technische Universität München (TUM)',
-            program_name: 'Informatics (Computer Science)',
-            degree: 'M. Sc.',
-            semester: 'WS'
-          },
-          reject_reason: '',
-          decided: '-',
-          closed: '-',
-          admission: '-',
-          _id: '647c37731ce415bd85d83d25'
-        },
-        {
-          finalEnrolment: false,
-          programId: {
-            _id: '2532fde46751651538082472',
-            school: 'Technische Universität München (TUM)',
-            program_name: 'Information Systems',
-            degree: 'M. Sc.',
-            semester: 'WS'
-          },
-          reject_reason: '',
-          decided: '-',
-          closed: '-',
-          admission: '-',
-          _id: '647c384e1ce415bd85d83e3b'
-        },
-        {
-          finalEnrolment: false,
-          programId: {
-            _id: '2532fde46751651538160027',
-            school: 'University of Tübingen',
-            program_name: 'Quantitative Data Science Methods (QDS)',
-            degree: 'M. Sc.',
-            semester: 'WS'
-          },
-          reject_reason: '',
-          decided: '-',
-          closed: '-',
-          admission: '-',
-          _id: '647c38931ce415bd85d84050'
-        },
-        {
-          finalEnrolment: false,
-          programId: {
-            _id: '2532fde46751651538065760',
-            school: 'Technische Universität Braunschweig',
-            program_name: 'Data Science',
-            degree: 'M. Sc.',
-            semester: 'WS'
-          },
-          reject_reason: '',
-          decided: '-',
-          closed: '-',
-          admission: '-',
-          _id: '647c39201ce415bd85d843fd'
-        },
-        {
-          finalEnrolment: false,
-          programId: {
             _id: '2532fde46751651538057608',
             school: 'Technical University of Darmstadt',
             program_name: 'Artificial Intelligence and Machine Learning',
@@ -1417,21 +946,6 @@ export const mockAdmissionsData = {
         {
           finalEnrolment: false,
           programId: {
-            _id: '2532fde46751651538132314',
-            school: 'University of Hohenheim',
-            program_name: 'Business Informatics',
-            degree: 'M. Sc.',
-            semester: 'WS'
-          },
-          reject_reason: '',
-          decided: '-',
-          closed: '-',
-          admission: '-',
-          _id: '647c3c4a1ce415bd85d845ed'
-        },
-        {
-          finalEnrolment: false,
-          programId: {
             _id: '2532fde46751651539000021',
             school: 'Technische Universität Hamburg (TUHH)',
             program_name: 'Data Science',
@@ -1443,51 +957,6 @@ export const mockAdmissionsData = {
           closed: 'O',
           admission: '-',
           _id: '647c3c871ce415bd85d84726'
-        },
-        {
-          finalEnrolment: false,
-          programId: {
-            _id: '2532fde46751651537909326',
-            school: 'Bielefeld University',
-            program_name: 'Data Science',
-            degree: 'M. Sc.',
-            semester: 'WS'
-          },
-          reject_reason: '',
-          decided: '-',
-          closed: '-',
-          admission: '-',
-          _id: '647c3dd31ce415bd85d849e4'
-        },
-        {
-          finalEnrolment: false,
-          programId: {
-            _id: '2532fde46751651538034302',
-            school: 'RWTH Aachen University',
-            program_name: 'Data Science',
-            degree: 'M. Sc.',
-            semester: 'WS'
-          },
-          reject_reason: '',
-          decided: '-',
-          closed: '-',
-          admission: '-',
-          _id: '647c3dd31ce415bd85d849e8'
-        },
-        {
-          finalEnrolment: false,
-          programId: {
-            _id: '2532fde46751651538146759',
-            school: 'University of Potsdam',
-            program_name: 'Data Science',
-            degree: 'M. Sc.',
-            semester: 'WS'
-          },
-          reject_reason: '',
-          decided: '-',
-          closed: '-',
-          admission: '-',
-          _id: '647c3dd31ce415bd85d849ec'
         }
       ],
       createdAt: '2023-01-17T18:19:10.845Z',

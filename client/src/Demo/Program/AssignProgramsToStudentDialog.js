@@ -73,7 +73,7 @@ export const AssignProgramsToStudentDialog = ({
 
   let students;
   if (data) {
-    students = data?.data?.data;
+    students = data?.data;
   }
 
   return (

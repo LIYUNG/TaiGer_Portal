@@ -1,17 +1,19 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 import Admissions from './Admissions';
 import 'react-i18next';
 import { getAdmissions } from '../../api';
-import axios from 'axios';
 import { useAuth } from '../../components/AuthProvider';
 import { MemoryRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { mockAdmissionsData } from '../../test/testingAdmissionsData';
 
 jest.mock('axios');
-jest.mock('../../api');
+jest.mock('../../api', () => ({
+  ...jest.requireActual('../../api'),
+  getAdmissions: jest.fn()
+}));
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => {
@@ -24,7 +26,22 @@ jest.mock('react-i18next', () => ({
 }));
 
 jest.mock('../../components/AuthProvider');
-const mockedAxios = jest.Mocked;
+
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false // Disable retries for faster tests
+      }
+    }
+  });
+
+const renderWithQueryClient = (ui) => {
+  const testQueryClient = createTestQueryClient();
+  return render(
+    <QueryClientProvider client={testQueryClient}>{ui}</QueryClientProvider>
+  );
+};
 
 class ResizeObserver {
   observe() {}
@@ -39,7 +56,7 @@ describe('Admissions page checking', () => {
     useAuth.mockReturnValue({
       user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
     });
-    render(
+    renderWithQueryClient(
       <MemoryRouter>
         <Admissions />
       </MemoryRouter>

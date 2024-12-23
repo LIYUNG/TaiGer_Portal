@@ -119,9 +119,7 @@ const isNotArchiv = (user) => {
   return false;
 };
 
-const isArchiv = (user) => {
-  return !!user.archiv;
-};
+const isArchiv = (user) => !!user.archiv;
 
 const application_deadline_calculator = (student, application) => {
   if (application.closed === 'O') {

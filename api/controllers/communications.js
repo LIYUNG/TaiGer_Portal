@@ -1,7 +1,10 @@
-const async = require('async');
 const { ObjectId } = require('mongodb');
 const path = require('path');
-const { is_TaiGer_Agent, is_TaiGer_Admin, is_TaiGer_Student } = require('@taiger-common/core');
+const {
+  is_TaiGer_Agent,
+  is_TaiGer_Admin,
+  is_TaiGer_Student
+} = require('@taiger-common/core');
 const { Role } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
@@ -96,14 +99,7 @@ const getSearchUserMessages = asyncHandler(async (req, res, next) => {
       .limit(10)
       .select('firstname lastname firstname_chinese lastname_chinese role')
       .lean();
-    const students = await req.db
-      .model('Student')
-      .find({
-        agents: user._id.toString(),
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      })
-      .select('firstname lastname role')
-      .lean();
+
     // Merge the results
     const mergedResults = students_search.map((student) => {
       const aggregateData = studentsWithCommunications.find(

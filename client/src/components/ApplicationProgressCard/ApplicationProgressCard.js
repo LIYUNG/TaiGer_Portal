@@ -255,8 +255,8 @@ export default function ApplicationProgressCard(props) {
               (!application.admission_letter?.status ||
                 application.admission_letter?.status !== 'uploaded') && (
                 <Button
-                  variant="outlined"
-                  color="secondary"
+                  variant="contained"
+                  color="primary"
                   size="small"
                   title="Undo"
                   onClick={(e) => openSetResultModal(e, application.admission)}
@@ -269,6 +269,22 @@ export default function ApplicationProgressCard(props) {
                 </Button>
               )}
           </Typography>
+          {/* TODO: refactor update api, so that useMutate can be integrated here. */}
+          {false &&
+            isProgramSubmitted(application) &&
+            isProgramAdmitted(application) && (
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                title="Undo"
+                onClick={(e) => openSetResultModal(e, application.admission)}
+                startIcon={<AddIcon />}
+                sx={{ my: 1 }}
+              >
+                {t('decided-to-study', { ns: 'admissions' })}
+              </Button>
+            )}
           {appConfig.interviewEnable &&
             isProgramSubmitted(application) &&
             application.admission === '-' && (

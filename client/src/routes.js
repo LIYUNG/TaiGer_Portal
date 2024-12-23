@@ -121,7 +121,6 @@ const ProgramTaskDelta = React.lazy(
   () => import('./Demo/TaiGerOrg/ProgramTaskDelta/index')
 );
 const TaiGerPermissions = React.lazy(() => import('./Demo/TaiGerOrg/index'));
-
 const TaiGerOrg = React.lazy(
   () => import('./Demo/TaiGerOrg/TaiGerMember/index')
 );
@@ -145,7 +144,7 @@ const LearningResources = React.lazy(
 );
 const ContactUs = React.lazy(() => import('./Demo/Contact/index'));
 const StudentApplications = React.lazy(
-  () => import('./Demo/StudentApplications/index')
+  () => import('./Demo/StudentApplications/StudentApplicationsIndividual')
 );
 const SingleProgram = React.lazy(() => import('./Demo/Program/SingleProgram'));
 const ProgramChangeRequestPage = React.lazy(

@@ -15,7 +15,7 @@ module.exports = {
       list: ['i18next.t', 't'],
       extensions: ['.js', '.jsx']
     },
-    removeUnusedKeys: true,
+    removeUnusedKeys: false,
 
     // Create and update files `en.json`, `fr.json`, `es.json`
     lngs: ['en', 'zh-CN', 'zh-TW'],

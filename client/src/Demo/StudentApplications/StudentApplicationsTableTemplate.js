@@ -548,14 +548,14 @@ function StudentApplicationsTableTemplate(props) {
                 {isProgramSubmitted(application)
                   ? '-'
                   : application.programId.application_deadline
-                  ? differenceInDays(
-                      application_deadline_calculator(
-                        props.student,
-                        application
-                      ),
-                      today
-                    )
-                  : '-'}
+                    ? differenceInDays(
+                        application_deadline_calculator(
+                          props.student,
+                          application
+                        ),
+                        today
+                      )
+                    : '-'}
               </Typography>
             </TableCell>
           </TableRow>
@@ -606,28 +606,41 @@ function StudentApplicationsTableTemplate(props) {
             underline="hover"
             color="inherit"
             component={LinkDom}
+            to={`${DEMO.STUDENT_DATABASE_LINK}`}
+          >
+            {t('Students Database', { ns: 'common' })}
+          </Link>
+        )}
+        {is_TaiGer_role(user) && (
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
               props.student._id.toString(),
               DEMO.PROFILE_HASH
             )}`}
           >
-            {props.student.firstname} {props.student.lastname}
+            {t('Student', { ns: 'common' })} {props.student.firstname}{' '}
+            {props.student.lastname}
           </Link>
         )}
         <Typography color="text.primary">
           {t('Applications', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={is_TaiGer_role(user) ? 6 : 12}>
-          <StudentPreferenceCard student={props.student} />
-        </Grid>
-        {is_TaiGer_role(user) && (
-          <Grid item xs={12} md={6}>
-            <ImportStudentProgramsCard student={props.student} />
+      <Box>
+        <Grid container spacing={2} sx={{ mt: 0 }}>
+          <Grid item xs={12} md={is_TaiGer_role(user) ? 6 : 12}>
+            <StudentPreferenceCard student={props.student} />
           </Grid>
-        )}
-      </Grid>
+          {is_TaiGer_role(user) && (
+            <Grid item xs={12} md={6}>
+              <ImportStudentProgramsCard student={props.student} />
+            </Grid>
+          )}
+        </Grid>
+      </Box>
       <>
         {isProgramNotSelectedEnough([
           studentApplicationsTableTemplateState.student

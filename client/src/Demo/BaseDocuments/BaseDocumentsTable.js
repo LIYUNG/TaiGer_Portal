@@ -149,7 +149,7 @@ export function BaseDocumentsTable(props) {
 
   const onUpdateProfileDocStatus = (e, category, student_id, status) => {
     e.preventDefault();
-    if (status === 'accepted') {
+    if (status === DocumentStatusType.Accepted) {
       setBaseDocumentsTableState((prevState) => ({
         ...prevState,
         student_id,

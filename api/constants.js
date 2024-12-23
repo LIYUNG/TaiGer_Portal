@@ -2,7 +2,8 @@ const {
   PROGRAM_SUBJECTS,
   ProfileNameType,
   SCHOOL_TAGS,
-  Role
+  Role,
+  DocumentStatusType
 } = require('@taiger-common/core');
 const { differenceInDays } = require('date-fns');
 
@@ -1501,25 +1502,25 @@ const base_documents_summary = (student) => {
   let missing_base_documents = '';
   const object_init = {};
   for (let i = 0; i < profile_keys_list.length; i += 1) {
-    object_init[profile_keys_list[i]] = 'missing';
+    object_init[profile_keys_list[i]] = DocumentStatusType.Missing;
   }
   for (let i = 0; i < student.profile.length; i += 1) {
-    if (student.profile[i].status === 'uploaded') {
-      object_init[student.profile[i].name] = 'uploaded';
-    } else if (student.profile[i].status === 'accepted') {
-      object_init[student.profile[i].name] = 'accepted';
-    } else if (student.profile[i].status === 'rejected') {
-      object_init[student.profile[i].name] = 'rejected';
-    } else if (student.profile[i].status === 'missing') {
-      object_init[student.profile[i].name] = 'missing';
-    } else if (student.profile[i].status === 'notneeded') {
-      object_init[student.profile[i].name] = 'notneeded';
+    if (student.profile[i].status === DocumentStatusType.Uploaded) {
+      object_init[student.profile[i].name] = DocumentStatusType.Uploaded;
+    } else if (student.profile[i].status === DocumentStatusType.Accepted) {
+      object_init[student.profile[i].name] = DocumentStatusType.Accepted;
+    } else if (student.profile[i].status === DocumentStatusType.Rejected) {
+      object_init[student.profile[i].name] = DocumentStatusType.Rejected;
+    } else if (student.profile[i].status === DocumentStatusType.Missing) {
+      object_init[student.profile[i].name] = DocumentStatusType.Missing;
+    } else if (student.profile[i].status === DocumentStatusType.NotNeeded) {
+      object_init[student.profile[i].name] = DocumentStatusType.NotNeeded;
     }
   }
   let xx = 0;
   let yy = 0;
   for (let i = 0; i < profile_keys_list.length; i += 1) {
-    if (object_init[profile_keys_list[i]] === 'missing') {
+    if (object_init[profile_keys_list[i]] === DocumentStatusType.Missing) {
       if (xx === 0) {
         xx += 1;
         missing_base_documents = `
@@ -1533,7 +1534,7 @@ const base_documents_summary = (student) => {
         }</li>`;
       }
     }
-    if (object_init[profile_keys_list[i]] === 'rejected') {
+    if (object_init[profile_keys_list[i]] === DocumentStatusType.Rejected) {
       if (yy === 0) {
         yy += 1;
         rejected_base_documents = `

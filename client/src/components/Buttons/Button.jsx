@@ -86,7 +86,7 @@ export const SetNotNeededIconButton = ({
     <IconButton
       color="secondary"
       onClick={(e) =>
-        onUpdateProfileDocStatus(e, k, buttonState.student_id, 'notneeded')
+        onUpdateProfileDocStatus(e, k, buttonState.student_id, DocumentStatusType.NotNeeded)
       }
     >
       <NotInterestedIcon />

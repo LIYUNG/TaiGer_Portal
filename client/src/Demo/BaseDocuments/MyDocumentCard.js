@@ -169,37 +169,19 @@ function MyDocumentCard(props) {
 
   const onUpdateProfileDocStatus = (e, category, student_id, status) => {
     e.preventDefault();
+    setMyDocumentCardState((prevState) => ({
+      ...prevState,
+      student_id,
+      category,
+      status
+    }));
     if (status === DocumentStatusType.Accepted) {
-      setMyDocumentCardState((prevState) => ({
-        ...prevState,
-        student_id,
-        category,
-        status
-      }));
       setAcceptProfileFileModelOpen(true);
     } else if (status === DocumentStatusType.Missing) {
-      setMyDocumentCardState((prevState) => ({
-        ...prevState,
-        student_id,
-        category,
-        status
-      }));
       setNeededWindowOpen(true);
     } else if (status === DocumentStatusType.NotNeeded) {
-      setMyDocumentCardState((prevState) => ({
-        ...prevState,
-        student_id,
-        category,
-        status
-      }));
       setMissingWindowOpen(true);
     } else {
-      setMyDocumentCardState((prevState) => ({
-        ...prevState,
-        student_id,
-        category,
-        status
-      }));
       setRejectProfileFileModelOpen(true);
     }
   };

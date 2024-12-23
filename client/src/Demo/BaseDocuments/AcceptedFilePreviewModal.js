@@ -11,7 +11,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CloseIcon from '@mui/icons-material/Close';
-import { is_TaiGer_Editor, is_TaiGer_Student } from '@taiger-common/core';
+import { DocumentStatusType, is_TaiGer_Editor, is_TaiGer_Student } from '@taiger-common/core';
 
 import { BASE_URL } from '../../api/request';
 import FilePreview from '../../components/FilePreview/FilePreview';
@@ -70,7 +70,7 @@ function AcceptProfileFileModel(props) {
                 e,
                 props.k,
                 props.student_id,
-                'rejected'
+                DocumentStatusType.Rejected
               )
             }
             startIcon={<CloseIcon />}

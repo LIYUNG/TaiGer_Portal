@@ -1,11 +1,11 @@
 const _ = require('lodash');
 const path = require('path');
-const { ErrorResponse } = require('../common/errors');
+const { Role } = require('@taiger-common/core');
 
+const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { one_month_cache } = require('../cache/node-cache');
 const logger = require('../services/logger');
-const { Role } = require('../constants');
 const { API_ORIGIN, AWS_S3_PUBLIC_BUCKET_NAME } = require('../config');
 const { getS3Object } = require('../aws/s3');
 

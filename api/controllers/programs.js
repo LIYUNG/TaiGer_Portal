@@ -1,11 +1,15 @@
+const {
+  Role,
+  is_TaiGer_Agent,
+  is_TaiGer_Student
+} = require('@taiger-common/core');
+
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../constants');
 const logger = require('../services/logger');
 const { one_month_cache } = require('../cache/node-cache');
 const { two_weeks_cache } = require('../cache/node-cache');
 const { PROGRAMS_CACHE } = require('../config');
-const { is_TaiGer_Agent } = require('@taiger-common/core');
 
 const getDistinctSchoolsAttributes = async (req, res) => {
   try {
@@ -155,7 +159,7 @@ const getStudentsByProgram = asyncHandler(async (req, programId) => {
 const getProgram = asyncHandler(async (req, res) => {
   const { user } = req;
   // prevent student multitenancy
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     if (
       user.applications.findIndex(
         (app) => app.programId.toString() === req.params.programId

@@ -31,6 +31,8 @@ function AdmissionsTable(props) {
 
   const applicationResultsArray = (students, tag) => {
     const result = [];
+    if (!students || !Array.isArray(students)) return result;
+
     for (const student of students) {
       let editors_name_string = '';
       let agents_name_string = '';
@@ -271,8 +273,8 @@ function AdmissionsTable(props) {
               (params.row.admission === 'O'
                 ? t('Admission Letter', { ns: 'common' })
                 : params.row.admission === 'X'
-                ? t('Rejection Letter', { ns: 'common' })
-                : '')}
+                  ? t('Rejection Letter', { ns: 'common' })
+                  : '')}
           </Link>
         );
       }

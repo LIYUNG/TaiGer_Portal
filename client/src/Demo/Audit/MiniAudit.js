@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { convertDate, convertDate_ux_friendly } from '../Utils/contants';
+import { convertDate, convertDateUXFriendly } from '../Utils/contants';
 import DEMO from '../../store/constant';
 
 function MiniAudit({ audit }) {
@@ -119,7 +119,7 @@ function MiniAudit({ audit }) {
                         : ''}
                     </TableCell>
                     <TableCell title={convertDate(record.createdAt)}>
-                      {convertDate_ux_friendly(record.createdAt)}
+                      {convertDateUXFriendly(record.createdAt)}
                     </TableCell>
                   </TableRow>
                 );

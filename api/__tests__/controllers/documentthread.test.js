@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const request = require('supertest');
+const { Role } = require('@taiger-common/core');
 
 const { UPLOAD_PATH } = require('../../config');
 const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
-const { Role } = require('../../constants');
 const { User, UserSchema } = require('../../models/User');
 const { programSchema } = require('../../models/Program');
 const { generateUser } = require('../fixtures/faker');

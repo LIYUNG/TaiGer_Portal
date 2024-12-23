@@ -1,7 +1,7 @@
 const { Router } = require('express');
-const { GeneralGETRequestRateLimiter } = require('../middlewares/rate_limiter');
-const { Role } = require('../constants');
+const { Role } = require('@taiger-common/core');
 
+const { GeneralGETRequestRateLimiter } = require('../middlewares/rate_limiter');
 const { protect, permit } = require('../middlewares/auth');
 const {
   processProgramListAi,

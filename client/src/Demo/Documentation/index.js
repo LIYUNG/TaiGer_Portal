@@ -17,6 +17,7 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
 import { useTranslation } from 'react-i18next';
+import { Role } from '@taiger-common/core';
 
 function Documentation(props) {
   const { category } = useParams();
@@ -141,10 +142,10 @@ function Documentation(props) {
   };
 
   if (
-    user.role !== 'Admin' &&
-    user.role !== 'Editor' &&
-    user.role !== 'Agent' &&
-    user.role !== 'Student'
+    user.role !== Role.Admin &&
+    user.role !== Role.Editor &&
+    user.role !== Role.Agent &&
+    user.role !== Role.Student
   ) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }

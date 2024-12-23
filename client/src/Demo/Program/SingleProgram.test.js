@@ -30,7 +30,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('../../components/AuthProvider');
-const mockedAxios = jest.Mocked;
+
 const createTestQueryClient = () =>
   new QueryClient({
     defaultOptions: {
@@ -68,12 +68,6 @@ describe('Single Program Page checking', () => {
         <SingleProgram />
       </MemoryRouter>
     );
-
-    // Example
-    // const buttonElement = screen.getByRole('button');
-    // userEvent.click(buttonElement);
-    // const outputElement = screen.getByText('good to see you', { exact: false });
-    // expect(outputElement).toBeInTheDocument(1);
 
     await waitFor(() => {
       expect(screen.getByTestId('single_program_page')).toHaveTextContent(

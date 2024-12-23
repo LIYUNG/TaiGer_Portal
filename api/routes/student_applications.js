@@ -1,14 +1,13 @@
 const { Router } = require('express');
+const { Role } = require('@taiger-common/core');
+
 const {
   GeneralGETRequestRateLimiter,
   getMessagesRateLimiter
 } = require('../middlewares/rate_limiter');
 const { protect, permit } = require('../middlewares/auth');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
-
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
-
-const { Role } = require('../constants');
 
 
 const {

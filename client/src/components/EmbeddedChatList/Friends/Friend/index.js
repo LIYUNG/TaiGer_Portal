@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 
 import {
-  convertDate_ux_friendly,
+  convertDateUXFriendly,
   stringAvatar
 } from '../../../../Demo/Utils/contants';
 import DEMO from '../../../../store/constant';
@@ -107,7 +107,7 @@ const Friend = (props) => {
               user._id.toString() === lastReply
                 ? `${t('You', { ns: 'common' })}: `
                 : ''
-            }${truncateText(firstText, 14)} • ${convertDate_ux_friendly(
+            }${truncateText(firstText, 14)} • ${convertDateUXFriendly(
               props.data?.latestCommunication?.createdAt
             )}`}
             style={{

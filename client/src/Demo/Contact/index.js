@@ -18,6 +18,7 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
+import { Role } from '@taiger-common/core';
 
 function Contact() {
   const { user } = useAuth();
@@ -30,10 +31,10 @@ function Contact() {
   };
 
   if (
-    user.role !== 'Admin' &&
-    user.role !== 'Editor' &&
-    user.role !== 'Agent' &&
-    user.role !== 'Student'
+    user.role !== Role.Admin &&
+    user.role !== Role.Editor &&
+    user.role !== Role.Agent &&
+    user.role !== Role.Student
   ) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
   }
@@ -94,7 +95,7 @@ function Contact() {
             <TableRow>
               <TableCell>{t('Role')}</TableCell>
               <TableCell>First-, Last Name</TableCell>
-              <TableCell>Email</TableCell>
+              <TableCell>{t('Email', { ns: 'common' })}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

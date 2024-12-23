@@ -23,7 +23,7 @@ export default function Activation() {
         setActivationSuccess(false);
       }
     });
-  }, []);
+  }, [email, token]);
 
   //TODO: default call API to get token
   const handleResendSubmit = async (e) => {

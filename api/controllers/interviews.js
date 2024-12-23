@@ -1,8 +1,9 @@
 const async = require('async');
 const path = require('path');
+const { Role, is_TaiGer_Student } = require('@taiger-common/core');
+
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../constants');
 const logger = require('../services/logger');
 const { AWS_S3_BUCKET_NAME } = require('../config');
 const {
@@ -50,10 +51,9 @@ const InterviewCancelledReminder = async (
       meeting_time: meeting_event.start,
       student_id: user._id.toString(),
       event: meeting_event,
-      event_title:
-        user.role === Role.Student
-          ? `${user.firstname} ${user.lastname}`
-          : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
+      event_title: is_TaiGer_Student(user)
+        ? `${user.firstname} ${user.lastname}`
+        : `${meeting_event.receiver_id[0].firstname} ${meeting_event.receiver_id[0].lastname}`,
       isUpdatingEvent: false,
       cc
     }
@@ -124,7 +124,7 @@ const getMyInterview = asyncHandler(async (req, res) => {
   const studentFilter = {
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   };
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     filter.student_id = user._id.toString();
   }
   const interviews = await req.db

@@ -2,7 +2,7 @@ import React from 'react';
 import { useTheme } from '@mui/material';
 import { diffChars } from 'diff';
 
-const prepHighlightColor = () => {
+const useHighlightColors = () => {
   const theme = useTheme();
   const mode = theme.palette.mode;
   const [addTextColor, addTextBg] =
@@ -18,9 +18,9 @@ const prepHighlightColor = () => {
   return { addTextColor, addTextBg, removeTextColor, removeTextBg };
 };
 
-const highlightTextDiff = (original = '', updated = '') => {
+const HighlightTextDiff = (original = '', updated = '') => {
   const { addTextColor, addTextBg, removeTextColor, removeTextBg } =
-    prepHighlightColor();
+    useHighlightColors();
 
   const diff = diffChars(`${original}`, `${updated}`);
   return diff.map((part, index) => {
@@ -43,4 +43,4 @@ const highlightTextDiff = (original = '', updated = '') => {
   });
 };
 
-export { highlightTextDiff };
+export { HighlightTextDiff };

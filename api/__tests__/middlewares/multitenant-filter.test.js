@@ -1,4 +1,5 @@
-const { Role } = require('../../constants');
+const { Role } = require('@taiger-common/core');
+
 const { ErrorResponse } = require('../../common/errors');
 const { multitenant_filter } = require('../../middlewares/multitenant-filter');
 

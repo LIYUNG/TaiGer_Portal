@@ -27,7 +27,7 @@ import Banner from '../../components/Banner/Banner';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 
-function DownloadPage() {
+const DownloadPage = () => {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [downloadPageState, setDownloadPageState] = useState({
@@ -255,6 +255,6 @@ function DownloadPage() {
       </Box>
     </Box>
   );
-}
+};
 
 export default DownloadPage;

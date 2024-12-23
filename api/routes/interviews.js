@@ -1,8 +1,7 @@
 const { Router } = require('express');
+const { Role } = require('@taiger-common/core');
 
-const { Role } = require('../constants');
 const { protect, permit } = require('../middlewares/auth');
-
 const {
   getAllInterviews,
   getInterview,

@@ -1,6 +1,6 @@
 const { body, param, validationResult } = require('express-validator');
 const { ObjectID } = require('mongodb');
-const { Role } = require('../constants');
+const { Role } = require('@taiger-common/core');
 
 const fieldsValidation =
   (...rules) =>

@@ -1,5 +1,6 @@
+const { Role, is_TaiGer_Student } = require('@taiger-common/core');
+
 const { ResponseTime } = require('../models/ResponseTime');
-const { Role } = require('../constants');
 const { asyncHandler } = require('../middlewares/error-handler');
 
 const GetResponseTimeForCommunication = asyncHandler(async () =>
@@ -95,18 +96,18 @@ const GetFormattedFileType = (fileType) => {
   return entry ? entry[0] : null;
 };
 
-const GernerateLookupTable = (Lookup, key, task) => {
+const GernerateLookupTable = (Lookup, user, task) => {
   const FormattedFileType = GetFormattedFileType(task.interval_type);
-  const userId = key?._id.toString();
+  const userId = user?._id.toString();
   if (FormattedFileType) {
     if (!(userId in Lookup)) {
       Lookup[userId] = JSON.parse(JSON.stringify(BlankLookupTable));
-      Lookup[userId]['UserProfile'].firstname = key.firstname;
-      Lookup[userId]['UserProfile'].lastname = key.lastname;
-      Lookup[userId]['UserProfile'].role = key.role;
-      if (key.role === Role.Student) {
-        Lookup[userId]['UserProfile'].agents = key.agents;
-        Lookup[userId]['UserProfile'].editors = key.editors;
+      Lookup[userId]['UserProfile'].firstname = user.firstname;
+      Lookup[userId]['UserProfile'].lastname = user.lastname;
+      Lookup[userId]['UserProfile'].role = user.role;
+      if (is_TaiGer_Student(user)) {
+        Lookup[userId]['UserProfile'].agents = user.agents;
+        Lookup[userId]['UserProfile'].editors = user.editors;
       }
     }
     Lookup[userId][FormattedFileType].AvgResponseTime.push(task.intervalAvg);

@@ -11,13 +11,13 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useTranslation } from 'react-i18next';
-import { is_TaiGer_Admin } from '@taiger-common/core';
+import { DocumentStatusType, is_TaiGer_Admin } from '@taiger-common/core';
 
 import { BASE_URL } from '../../api/request';
 import { templatelist } from '../Utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 
-function EditDownloadFiles(props) {
+const EditDownloadFiles = (props) => {
   const { user } = useAuth();
   const { t } = useTranslation();
   const submitFile = (e, prop) => {
@@ -27,7 +27,7 @@ function EditDownloadFiles(props) {
 
   let object_init = {};
   for (let i = 0; i < templatelist.length; i++) {
-    object_init[templatelist[i].prop] = 'missing';
+    object_init[templatelist[i].prop] = DocumentStatusType.Missing;
   }
   for (let i = 0; i < props.templates.length; i++) {
     object_init[props.templates[i].category_name] = 'uploaded';
@@ -107,6 +107,6 @@ function EditDownloadFiles(props) {
       <TableBody>{templatelist2}</TableBody>
     </Table>
   );
-}
+};
 
 export default EditDownloadFiles;

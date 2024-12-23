@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { is_TaiGer_Admin, is_TaiGer_role } from '@taiger-common/core';
+import { is_TaiGer_Admin, is_TaiGer_role, Role } from '@taiger-common/core';
 
 import ErrorPage from '../../Utils/ErrorPage';
 
@@ -88,13 +88,13 @@ function TaiGerMember() {
     return <ErrorPage res_status={res_status} />;
   }
   const admins = taiGerMemberState.teams.filter(
-    (member) => member.role === 'Admin'
+    (member) => member.role === Role.Admin
   );
   const agents = taiGerMemberState.teams.filter(
-    (member) => member.role === 'Agent'
+    (member) => member.role === Role.Agent
   );
   const editors = taiGerMemberState.teams.filter(
-    (member) => member.role === 'Editor'
+    (member) => member.role === Role.Editor
   );
   return (
     <Box>
@@ -117,7 +117,9 @@ function TaiGerMember() {
       <Card>
         {is_TaiGer_Admin(user) && (
           <>
-            <Typography variant="h5">Admin:</Typography>
+            <Typography variant="h5">
+              {t('Admin', { ns: 'common' })}:
+            </Typography>
             {admins.map((admin, i) => (
               <Typography fontWeight="bold" key={i}>
                 <Link

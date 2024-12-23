@@ -50,7 +50,7 @@ import {
   program_fields_special_notes,
   programField2Label
 } from '../Utils/contants';
-import { highlightTextDiff } from '../Utils/diffChecker';
+import { HighlightTextDiff } from '../Utils/diffChecker';
 import Banner from '../../components/Banner/Banner';
 import DEMO from '../../store/constant';
 import ProgramReport from './ProgramReport';
@@ -447,10 +447,10 @@ function SingleProgramView(props) {
                                 })}
                               </TableCell>
                               <TableCell>
-                                {highlightTextDiff(
-                                  change?.originalValues?.[key],
-                                  change?.updatedValues?.[key]
-                                )}
+                                <HighlightTextDiff
+                                  original={change?.originalValues?.[key]}
+                                  updatd={change?.updatedValues?.[key]}
+                                />
                               </TableCell>
                             </TableRow>
                           ))}

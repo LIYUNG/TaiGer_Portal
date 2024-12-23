@@ -22,7 +22,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 
-import { convertDate_ux_friendly } from '../Utils/contants';
+import { convertDateUXFriendly } from '../Utils/contants';
 
 function CustomerSupportBody({ complaintTickets }) {
   const { t } = useTranslation();
@@ -121,7 +121,7 @@ function CustomerSupportBody({ complaintTickets }) {
                       primary={`${ticket.title} - ${ticket.requester_id?.firstname}`}
                       secondary={`${
                         ticket.description
-                      } - ${convertDate_ux_friendly(ticket.updatedAt)}`}
+                      } - ${convertDateUXFriendly(ticket.updatedAt)}`}
                     />
                     <Typography variant="body2" color="textSecondary">
                       {ticket.status}

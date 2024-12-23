@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { PROFILE_NAME } from '@taiger-common/core';
+import { DocumentStatusType, PROFILE_NAME } from '@taiger-common/core';
 
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { SYMBOL_EXPLANATION } from '../Utils/contants';
 import {
   uploadforstudent,
-  updateProfileDocumentStatus,
   deleteFile,
   updateDocumentationHelperLink
 } from '../../api';
@@ -26,7 +25,6 @@ function BaseDocument_StudentView(props) {
       student_id: '',
       isLoaded: {},
       ready: false,
-      docName: '',
       file: '',
       deleteFileWarningModel: false,
       res_status: 0,
@@ -47,65 +45,7 @@ function BaseDocument_StudentView(props) {
     }));
   }, [props.student._id.toString()]);
 
-  const onUpdateProfileFilefromstudent = (
-    category,
-    student_id,
-    status,
-    feedback
-  ) => {
-    setBaseDocumentStudentViewState((prevState) => ({
-      ...prevState,
-      isLoaded: {
-        ...prevState.isLoaded,
-        [category]: false
-      }
-    }));
-    updateProfileDocumentStatus(category, student_id, status, feedback).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setBaseDocumentStudentViewState((prevState) => ({
-            ...prevState,
-            student: data,
-            success,
-            isLoaded: {
-              ...prevState.isLoaded,
-              [category]: true
-            },
-            res_modal_status: status
-          }));
-        } else {
-          // TODO: redesign, modal ist better!
-          const { message } = resp.data;
-          setBaseDocumentStudentViewState((prevState) => ({
-            ...prevState,
-            isLoaded: {
-              ...prevState.isLoaded,
-              [category]: true
-            },
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setBaseDocumentStudentViewState((prevState) => ({
-          ...prevState,
-          isLoaded: {
-            ...prevState.isLoaded,
-            [category]: true
-          },
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
-        }));
-      }
-    );
-  };
-
   const onDeleteFilefromstudent = (category, student_id) => {
-    // e.preventDefault();
     let student_new = { ...baseDocumentStudentViewState.student };
     let idx = student_new.profile.findIndex((doc) => doc.name === category);
     setBaseDocumentStudentViewState((prevState) => ({
@@ -280,7 +220,7 @@ function BaseDocument_StudentView(props) {
   let object_message = {};
   let object_time_init = {};
   profile_wtih_doc_link_list_key.forEach((key) => {
-    object_init[key] = { status: 'missing', link: '' };
+    object_init[key] = { status: DocumentStatusType.Missing, link: '' };
     object_message[key] = '';
     object_time_init[key] = '';
   });
@@ -298,14 +238,14 @@ function BaseDocument_StudentView(props) {
       let document_name = document_split.split('/')[1];
 
       switch (profile.status) {
-        case 'uploaded':
-        case 'accepted':
-        case 'rejected':
+        case DocumentStatusType.Uploaded:
+        case DocumentStatusType.Accepted:
+        case DocumentStatusType.Rejected:
           object_init[profile.name].status = profile.status;
           object_init[profile.name].path = document_name;
           break;
-        case 'notneeded':
-        case 'missing':
+        case DocumentStatusType.NotNeeded:
+        case DocumentStatusType.Missing:
           object_init[profile.name].status = profile.status;
           break;
       }
@@ -314,25 +254,25 @@ function BaseDocument_StudentView(props) {
       object_time_init[profile.name] = profile.updatedAt;
     });
   }
-  const file_information_test = profile_wtih_doc_link_list_key.map((k, i) => (
-    <MyDocumentCard
-      k={k}
-      key={i + 1}
-      updateDocLink={updateDocLink}
-      link={object_init[k].link}
-      path={object_init[k].path}
-      status={object_init[k].status}
-      user={user}
-      isLoaded={baseDocumentStudentViewState.isLoaded[k]}
-      docName={PROFILE_NAME[k]}
-      message={object_message[k]}
-      time={object_time_init[k]}
-      student={baseDocumentStudentViewState.student}
-      onDeleteFilefromstudent={onDeleteFilefromstudent}
-      onUpdateProfileFilefromstudent={onUpdateProfileFilefromstudent}
-      handleGeneralDocSubmit={handleGeneralDocSubmit}
-    />
-  ));
+  const MyDocumentsCard = () =>
+    profile_wtih_doc_link_list_key.map((k, i) => (
+      <MyDocumentCard
+        k={k}
+        key={i + 1}
+        updateDocLink={updateDocLink}
+        link={object_init[k].link}
+        path={object_init[k].path}
+        status={object_init[k].status}
+        user={user}
+        isLoaded={baseDocumentStudentViewState.isLoaded[k]}
+        docName={PROFILE_NAME[k]}
+        message={object_message[k]}
+        time={object_time_init[k]}
+        student={baseDocumentStudentViewState.student}
+        onDeleteFilefromstudent={onDeleteFilefromstudent}
+        handleGeneralDocSubmit={handleGeneralDocSubmit}
+      />
+    ));
 
   return (
     <Box>
@@ -340,7 +280,7 @@ function BaseDocument_StudentView(props) {
       <Alert severity="info">
         {t('required-document-notice', { ns: 'common' })}
       </Alert>
-      {true && file_information_test}
+      <MyDocumentsCard />
       {SYMBOL_EXPLANATION}
       {res_modal_status >= 400 && (
         <ModalMain

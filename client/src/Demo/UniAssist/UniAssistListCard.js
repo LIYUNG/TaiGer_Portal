@@ -25,11 +25,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DownloadIcon from '@mui/icons-material/Download';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { is_TaiGer_AdminAgent } from '@taiger-common/core';
+import { DocumentStatusType, is_TaiGer_AdminAgent } from '@taiger-common/core';
 
 import { BASE_URL } from '../../api/request';
 import {
-  DocumentStatus,
   check_student_needs_uni_assist,
   isProgramDecided
 } from '../Utils/checking-functions';
@@ -274,7 +273,7 @@ function UniAssistListCard(props) {
             (application) => application.programId._id.toString() === program_id
           );
           if (uniAssistListCardState.fileType === 'VPD') {
-            app.uni_assist.status = 'missing';
+            app.uni_assist.status = DocumentStatusType.Missing;
             app.uni_assist.vpd_file_path = '';
           }
           if (uniAssistListCardState.fileType === 'VPDConfirmation') {
@@ -466,7 +465,7 @@ function UniAssistListCard(props) {
           application.uni_assist?.vpd_paid_confirmation_file_path === '' &&
           application.uni_assist?.vpd_file_path === '' &&
           !application.uni_assist?.isPaid &&
-          application.uni_assist?.status !== DocumentStatus.NotNeeded && (
+          application.uni_assist?.status !== DocumentStatusType.NotNeeded && (
             <Button
               size="small"
               variant="contained"
@@ -482,7 +481,7 @@ function UniAssistListCard(props) {
               {t('Set Not Needed', { ns: 'common' })}
             </Button>
           )}
-        {application.uni_assist?.status === DocumentStatus.NotNeeded &&
+        {application.uni_assist?.status === DocumentStatusType.NotNeeded &&
           is_TaiGer_AdminAgent(user) && (
             <Button
               size="small"
@@ -524,13 +523,15 @@ function UniAssistListCard(props) {
               <ProgramName application={application} />
               <SetNeedButtons application={application} />
             </Box>
-            {application.uni_assist?.status === DocumentStatus.NotNeeded && (
+            {application.uni_assist?.status ===
+              DocumentStatusType.NotNeeded && (
               <Typography variant="string">
                 Uni-assist is not necessary as it can be reused from another
                 program.
               </Typography>
             )}
-            {application.uni_assist?.status !== DocumentStatus.NotNeeded && (
+            {application.uni_assist?.status !==
+              DocumentStatusType.NotNeeded && (
               <Box>
                 {is_TaiGer_AdminAgent(user) && (
                   <FormControlLabel
@@ -542,7 +543,7 @@ function UniAssistListCard(props) {
                       !(
                         !application.uni_assist ||
                         application.uni_assist.status ===
-                          DocumentStatus.Missing ||
+                          DocumentStatusType.Missing ||
                         application.uni_assist.status === 'notstarted'
                       )
                     }
@@ -567,7 +568,7 @@ function UniAssistListCard(props) {
                       !(
                         !application.uni_assist ||
                         application.uni_assist.status ===
-                          DocumentStatus.Missing ||
+                          DocumentStatusType.Missing ||
                         application.uni_assist.status === 'notstarted'
                       )
                     }
@@ -575,7 +576,8 @@ function UniAssistListCard(props) {
                   <Typography variant="body1">
                     &nbsp; VPD &nbsp;
                     {!application.uni_assist ||
-                    application.uni_assist.status === DocumentStatus.Missing ||
+                    application.uni_assist.status ===
+                      DocumentStatusType.Missing ||
                     application.uni_assist.status === 'notstarted' ? (
                       <Button
                         component="label"
@@ -683,7 +685,7 @@ function UniAssistListCard(props) {
                                 !(
                                   !application.uni_assist ||
                                   application.uni_assist.status ===
-                                    DocumentStatus.Missing ||
+                                    DocumentStatusType.Missing ||
                                   application.uni_assist.status === 'notstarted'
                                 )
                               }

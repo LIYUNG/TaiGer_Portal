@@ -31,7 +31,7 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import {
   convertDate,
-  convertDate_ux_friendly,
+  convertDateUXFriendly,
   stringAvatar
 } from '../Utils/contants';
 import MemoizedEmbeddedChatList from '../../components/EmbeddedChatList';
@@ -103,7 +103,7 @@ const LastLoginTime = ({ date }) => {
   const [view, setView] = useState(false);
   const { t } = useTranslation();
   const LastLoginRelativeTime = ({ date }) => {
-    return <>{convertDate_ux_friendly(date)}</>;
+    return <>{convertDateUXFriendly(date)}</>;
   };
 
   const LastLoginAbsoluteTime = ({ date }) => {

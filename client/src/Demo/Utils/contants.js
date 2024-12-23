@@ -25,7 +25,7 @@ import { Link as LinkDom } from 'react-router-dom';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import { is_TaiGer_Student } from '@taiger-common/core';
-import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 
 export const IS_DEV =
   !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
@@ -511,8 +511,8 @@ export const NoonNightLabel = (start) => {
   return start_temp.getHours() === 12 && start_temp.getMinutes() === 0
     ? '(Noon)'
     : start_temp.getHours() === 0 && start_temp.getMinutes() === 0
-    ? '(Night)'
-    : '';
+      ? '(Night)'
+      : '';
 };
 
 export const transformObjectToArray = (inputObject) => {
@@ -1132,10 +1132,9 @@ export const sortProgramFields = (a, b) => {
   return indexA - indexB;
 };
 
-export const convertDate_ux_friendly = (date) => {
+export const convertDateUXFriendly = (date) => {
   // let dat = new Date(date).toLocaleDateString('zh-Hans-CN');
 
-  const { t } = useTranslation();
   const currentDate = new Date();
   const input_date_point = new Date(date);
   // Calculate the time difference in milliseconds
@@ -1152,13 +1151,13 @@ export const convertDate_ux_friendly = (date) => {
     return '-';
   }
   if (minutes < 60) {
-    timeDisplay = t('timeMinutes', { ns: 'common', minutes });
+    timeDisplay = i18next.t('timeMinutes', { ns: 'common', minutes });
   } else if (hours < 24) {
-    timeDisplay = t('timeHours', { ns: 'common', hours });
+    timeDisplay = i18next.t('timeHours', { ns: 'common', hours });
   } else if (days < 7) {
-    timeDisplay = t('timeDays', { ns: 'common', days });
+    timeDisplay = i18next.t('timeDays', { ns: 'common', days });
   } else {
-    timeDisplay = t('timeWeeks', { ns: 'common', weeks });
+    timeDisplay = i18next.t('timeWeeks', { ns: 'common', weeks });
   }
   return timeDisplay;
 };
@@ -1499,10 +1498,6 @@ export const is_my_fav_message_status = (user, thread) => {
   return thread.flag_by_user_id?.includes(user._id.toString());
 };
 
-export const DELETE_STYLE = 'danger';
-export const REJECT_STYLE = 'secondary';
-export const ACCEPT_STYLE = 'success';
-
 export const is_pending_status = (user, thread) => {
   return !is_new_message_status(user, thread);
 };
@@ -1532,15 +1527,6 @@ export const documentation_categories = appConfig.vpdEnable
       scholarship: 'Scholarship List'
     };
 
-export const Role = {
-  Admin: 'Admin',
-  Manager: 'Manager',
-  Guest: 'Guest',
-  Agent: 'Agent',
-  Editor: 'Editor',
-  Student: 'Student'
-};
-
 export const internal_documentation_categories = {
   agents: 'Agents',
   editors: 'Editors',
@@ -1548,14 +1534,6 @@ export const internal_documentation_categories = {
   'base-documents-internal': 'Base Documents Internal',
   'uniassist-internal': 'Uni-Assist Internal',
   others: 'Others'
-};
-
-export const statuses = {
-  uploaded: 'uploaded',
-  accepted: 'accepted',
-  rejected: 'rejected',
-  missing: 'missing',
-  notneeded: 'notneeded'
 };
 
 export const studentOverviewTableHeader = [

@@ -66,7 +66,7 @@ function MessageCard(props) {
       isLoaded: props.isLoaded,
       deleteMessageModalShow: false
     }));
-  }, [props.message.message]);
+  }, [props.message.message, props.isLoaded]);
 
   const onOpendeleteMessageModalShow = (e, message_id, createdAt) => {
     e.stopPropagation();

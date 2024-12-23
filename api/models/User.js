@@ -5,8 +5,9 @@ const {
 } = require('mongoose');
 const bcrypt = require('bcryptjs');
 const isEmail = require('validator/lib/isEmail');
+const { Role, DocumentStatusType } = require('@taiger-common/core');
 
-const { DocumentStatus, ManagerType, Role } = require('../constants');
+const { ManagerType } = require('../constants');
 const { attributeSchema } = require('./common');
 
 const { PROGRAM_SUBJECT_KEYS } = require('../constants');
@@ -99,8 +100,8 @@ const UserSchema = new Schema(
         },
         status: {
           type: String,
-          enum: Object.values(DocumentStatus),
-          default: DocumentStatus.Missing
+          enum: Object.values(DocumentStatusType),
+          default: DocumentStatusType.Missing
         },
         file_category: {
           type: String,
@@ -120,8 +121,8 @@ const UserSchema = new Schema(
         },
         status: {
           type: String,
-          enum: Object.values(DocumentStatus),
-          default: DocumentStatus.Missing
+          enum: Object.values(DocumentStatusType),
+          default: DocumentStatusType.Missing
         },
         file_category: {
           type: String,
@@ -488,8 +489,8 @@ const Student = User.discriminator(
           },
           status: {
             type: String,
-            enum: Object.values(DocumentStatus),
-            default: DocumentStatus.Missing
+            enum: Object.values(DocumentStatusType),
+            default: DocumentStatusType.Missing
           },
           required: {
             type: Boolean,

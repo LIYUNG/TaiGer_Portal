@@ -1,4 +1,4 @@
-const { Role } = require('../constants');
+const { Role } = require('@taiger-common/core');
 
 const { isArchiv } = require('../constants');
 const {

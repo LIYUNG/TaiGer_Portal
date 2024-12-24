@@ -8,7 +8,6 @@ import {
   Select,
   MenuItem,
   TableContainer,
-  Divider,
   TableBody,
   Paper,
   Table,
@@ -20,6 +19,9 @@ import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useNavigate, useParams } from 'react-router-dom';
 import 'react-datasheet-grid/dist/style.css';
 import { is_TaiGer_role } from '@taiger-common/core';
+import WarningIcon from '@mui/icons-material/Warning';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import FlagIcon from '@mui/icons-material/Flag';
 
 import { convertDate } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -30,70 +32,145 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
+import { green } from '@mui/material/colors';
 
 export const CourseAnalysisComponent = ({ sheet }) => {
   const sortedCourses = sheet.sorted;
   const suggestedCourses = sheet.suggestion;
+
   return (
     <>
-      {/* Display Sorted Courses */}
-      <Typography variant="h5" gutterBottom>
-        Sorted Courses
-      </Typography>
-      {JSON.stringify(sortedCourses)}
-      <Divider />
-      {JSON.stringify(suggestedCourses)}
-
       {Object.keys(sortedCourses).map((category, i) => (
-        <Paper key={i} sx={{ p: 1, m: 1 }}>
-          <Typography variant="h6">{category}</Typography>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Course</TableCell>
-                <TableCell>Credits</TableCell>
-                <TableCell>Grades</TableCell>
-                <TableCell>Required ECTS</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {sortedCourses[category].map((course, index) => (
-                <TableRow key={index}>
-                  <TableCell>{course[category]}</TableCell>
-                  <TableCell>{course.credits}</TableCell>
-                  <TableCell>{course.grades}</TableCell>
-                  <TableCell>{course.requiredECTS}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Paper>
-      ))}
+        <Paper key={i} sx={{ p: 2, m: 2 }}>
+          <Box display="flex" alignItems="center">
+            {sortedCourses[category][sortedCourses[category].length - 1]
+              .credits <
+            sortedCourses[category][sortedCourses[category].length - 1]
+              .requiredECTS ? (
+              <>
+                <WarningIcon style={{ color: 'red', marginRight: '8px' }} />
+                <Typography variant="h5" fontWeight="bold">
+                  {category}
+                </Typography>
+              </>
+            ) : (
+              <>
+                <CheckCircleIcon
+                  style={{ color: green[500], marginRight: '8px' }}
+                />
+                <Typography variant="h5" fontWeight="bold">
+                  {category}
+                </Typography>
+              </>
+            )}
+          </Box>
 
-      {/* Display Suggested Courses */}
-      <Typography variant="h5" gutterBottom>
-        Suggested Courses
-      </Typography>
+          {/* Sorted Courses */}
+          {sortedCourses[category].length > 0 && (
+            <Box display="flex" flexDirection="column" gap={2} sx={{ mb: 3 }}>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Box sx={{ ml: 2 }}>
+                  <Typography variant="body1">
+                    ECTS credits conversion Factor: 1.5x
+                  </Typography>
+                </Box>
+                <Box sx={{ mr: 2 }}>
+                  <Box display="flex" alignItems="center">
+                    <FlagIcon style={{ marginRight: '8px' }} />
+                    <Typography
+                      style={{ fontWeight: 'normal', color: 'inherit' }}
+                    >
+                      Required ECTS:{' '}
+                      {
+                        sortedCourses[category][
+                          sortedCourses[category].length - 1
+                        ].requiredECTS
+                      }
+                    </Typography>
+                  </Box>
+                  <Box display="flex" alignItems="center">
+                    {sortedCourses[category][sortedCourses[category].length - 1]
+                      .credits <
+                    sortedCourses[category][sortedCourses[category].length - 1]
+                      .requiredECTS ? (
+                      <>
+                        <WarningIcon
+                          style={{ color: 'red', marginRight: '8px' }}
+                        />
+                        <Typography
+                          style={{ fontWeight: 'bold', color: 'red' }}
+                        >
+                          You acquired ECTS:{' '}
+                          {
+                            sortedCourses[category][
+                              sortedCourses[category].length - 1
+                            ].credits
+                          }
+                        </Typography>
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircleIcon
+                          style={{ color: green[500], marginRight: '8px' }}
+                        />
+                        <Typography
+                          style={{ fontWeight: 'normal', color: 'inherit' }}
+                        >
+                          You acquired ECTS:{' '}
+                          {
+                            sortedCourses[category][
+                              sortedCourses[category].length - 1
+                            ].credits
+                          }
+                        </Typography>
+                      </>
+                    )}
+                  </Box>
+                </Box>
+              </Box>
 
-      {Object.keys(suggestedCourses).map((category, i) => (
-        <Paper key={i} sx={{ p: 1, m: 1 }}>
-          <Typography variant="h6">{category}</Typography>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Course</TableCell>
-                <TableCell>Suggested Course</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {suggestedCourses[category].map((suggestion, index) => (
-                <TableRow key={index}>
-                  <TableCell>{Object.keys(suggestion)[0]}</TableCell>
-                  <TableCell>{suggestion['建議修課']}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              <TableContainer style={{ overflowX: 'auto' }}>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Course</TableCell>
+                      <TableCell>Credits</TableCell>
+                      <TableCell>Grades</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {sortedCourses[category]
+                      ?.slice(0, -1)
+                      .map((course, index) => (
+                        <TableRow key={index}>
+                          <TableCell>{course[category]}</TableCell>
+                          <TableCell>{course.credits}</TableCell>
+                          <TableCell>{course.grades}</TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          )}
+
+          {/* Suggested Courses */}
+          {suggestedCourses[category] &&
+            suggestedCourses[category].length > 0 && (
+              <Box display="flex" flexDirection="column" gap={2}>
+                <Typography variant="h6">Suggested Courses</Typography>
+                <Typography variant="body1">
+                  {suggestedCourses[category]
+                    .map((sug) => sug['建議修課'])
+                    .filter((sug) => sug)
+                    .join('， ')}
+                </Typography>
+              </Box>
+            )}
         </Paper>
       ))}
     </>
@@ -304,11 +381,9 @@ export default function CourseAnalysisV2() {
           </MenuItem>
         ))}
       </Select>
-      <TableContainer style={{ overflowX: 'auto' }}>
-        {sheetName !== 'General' && (
-          <CourseAnalysisComponent sheet={statedata.sheets?.[sheetName]} />
-        )}
-      </TableContainer>
+      {sheetName !== 'General' && (
+        <CourseAnalysisComponent sheet={statedata.sheets?.[sheetName]} />
+      )}
       {t('Last update', { ns: 'common' })} {convertDate(statedata.timestamp)}
     </Box>
   );

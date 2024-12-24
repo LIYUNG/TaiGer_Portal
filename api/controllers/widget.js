@@ -136,6 +136,28 @@ const WidgetdownloadXLSX = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const WidgetdownloadJson = asyncHandler(async (req, res, next) => {
+  const {
+    params: { adminId }
+  } = req;
+
+  const fileKey = path
+    .join(adminId, `analysed_transcript_${student_name}.json`)
+    .replace(/\\/g, '/');
+
+  logger.info(`Trying to download transcript json file ${fileKey}`);
+
+  const analysedJson = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
+  const jsonString = Buffer.from(analysedJson).toString('utf-8');
+  const jsonData = JSON.parse(jsonString);
+  const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
+
+  res
+    .status(200)
+    .send({ success: true, json: jsonData, fileKey: fileKey_converted });
+  next();
+});
+
 // Export messages as pdf
 const WidgetExportMessagePDF = asyncHandler(async (req, res, next) => {
   const {
@@ -224,5 +246,6 @@ module.exports = {
   WidgetProcessTranscriptV2,
   WidgetProcessTranscript,
   WidgetdownloadXLSX,
+  WidgetdownloadJson,
   WidgetExportMessagePDF
 };

@@ -11,7 +11,8 @@ const {
   WidgetProcessTranscript,
   WidgetdownloadXLSX,
   WidgetExportMessagePDF,
-  WidgetProcessTranscriptV2
+  WidgetProcessTranscriptV2,
+  WidgetdownloadJson
 } = require('../controllers/widget');
 
 const router = Router();
@@ -42,12 +43,11 @@ router
     WidgetProcessTranscript
   );
 
-router
-  .route('/transcript/:adminId')
-  .get(
-    GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
-    WidgetdownloadXLSX
-  );
+router.route('/transcript/:adminId').get(
+  GeneralGETRequestRateLimiter,
+  permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
+  // WidgetdownloadXLSX
+  WidgetdownloadJson
+);
 
 module.exports = router;

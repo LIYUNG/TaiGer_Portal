@@ -78,6 +78,11 @@ const MyCourses = React.lazy(() => import('./Demo/MyCourses/index'));
 const MyCoursesAnalysis = React.lazy(
   () => import('./Demo/MyCourses/CourseAnalysis')
 );
+
+const MyCoursesAnalysisV2 = React.lazy(
+  () => import('./Demo/MyCourses/CourseAnalysisV2')
+);
+
 const CoursesAnalysisWidget = React.lazy(
   () => import('./Demo/MyCourses/CourseWidget')
 );
@@ -500,7 +505,7 @@ const routes = [
     path: '/internal/widgets/:admin_id',
     exact: true,
     name: 'My MyCourses Analysis',
-    Component: MyCoursesAnalysis
+    Component: MyCoursesAnalysisV2
   },
   {
     path: '/cv-ml-rl-center',

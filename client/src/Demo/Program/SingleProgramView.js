@@ -449,7 +449,7 @@ function SingleProgramView(props) {
                               <TableCell>
                                 <HighlightTextDiff
                                   original={change?.originalValues?.[key]}
-                                  updatd={change?.updatedValues?.[key]}
+                                  updated={change?.updatedValues?.[key]}
                                 />
                               </TableCell>
                             </TableRow>

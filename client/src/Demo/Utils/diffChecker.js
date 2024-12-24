@@ -18,7 +18,7 @@ const useHighlightColors = () => {
   return { addTextColor, addTextBg, removeTextColor, removeTextBg };
 };
 
-const HighlightTextDiff = (original = '', updated = '') => {
+const HighlightTextDiff = ({ original = '', updated = '' }) => {
   const { addTextColor, addTextBg, removeTextColor, removeTextBg } =
     useHighlightColors();
 

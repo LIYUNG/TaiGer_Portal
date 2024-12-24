@@ -296,7 +296,16 @@ function Message(props) {
             {is_TaiGer_AdminAgent(user) && (
               <AvatarGroup>
                 {props.message?.readBy
-                  ?.filter((usr) => usr._id?.toString() !== user._id.toString())
+                  ?.filter(
+                    (usr) =>
+                      (props.message.student_id?._id?.toString() !==
+                        props.message.user_id?._id?.toString() &&
+                        usr._id?.toString() !== user._id.toString()) ||
+                      (props.message.student_id?._id?.toString() ===
+                        props.message.user_id?._id?.toString() &&
+                        usr._id?.toString() !==
+                          props.message.student_id?._id.toString())
+                  )
                   .map((usr) => (
                     <Avatar
                       key={user._id?.toString()}

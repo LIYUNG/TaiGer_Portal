@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { useQuery } from '@tanstack/react-query';
@@ -46,6 +46,7 @@ const getThreadMessages = (threadId) => ({
 
 function DocumentCommunicationExpandPage() {
   const { threadId: paramThreadId } = useParams();
+  const navigate = useNavigate();
 
   const { user } = useAuth();
   const { t } = useTranslation();
@@ -78,6 +79,12 @@ function DocumentCommunicationExpandPage() {
     }
   }, [threadStudent]);
 
+  useEffect(() => {
+    if (threadId) {
+      navigate(`/doc-communications/${threadId}`);
+    }
+  }, [threadId, navigate]);
+
   const handleOnClickStudent = (id) => {
     setStudentId(id);
     setThreadId(null);
@@ -86,6 +93,49 @@ function DocumentCommunicationExpandPage() {
   const handleOnClickThread = (id) => {
     setThreadId(id);
   };
+
+  const categories = {
+    General: [
+      'CV',
+      'Recommendation_Letter_A',
+      'Recommendation_Letter_B',
+      'Recommendation_Letter_C'
+    ],
+    Editors: ['ML', 'RL_A', 'RL_B', 'RL_C', 'Essay'],
+    Others: [
+      'Interview',
+      'Others',
+      'Internship_Form',
+      'Scholarship_Form',
+      'Portfolio'
+    ],
+    Agents: ['Supplementary_Form', 'Curriculum_Analysis']
+  };
+
+  const getCategory = (fileType) => {
+    for (const [category, types] of Object.entries(categories)) {
+      if (types.includes(fileType)) {
+        return category;
+      }
+    }
+    return 'Others'; // Default category if not found
+  };
+
+  const sortedThreads = studentThreads
+    ?.filter((thread) => thread?.student_id === studentId)
+    ?.sort((a, b) => {
+      const categoryA = getCategory(a.file_type);
+      const categoryB = getCategory(b.file_type);
+      if (categoryA === categoryB) {
+        return a.file_type.localeCompare(b.file_type);
+      }
+      return (
+        Object.keys(categories).indexOf(categoryA) -
+        Object.keys(categories).indexOf(categoryB)
+      );
+    });
+
+  let currentCategory = '';
 
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
@@ -102,7 +152,7 @@ function DocumentCommunicationExpandPage() {
       </Typography>
 
       <Grid container spacing={3} sx={{ mt: 3 }}>
-        <Grid item xs={1}>
+        <Grid item xs={1.5}>
           {myMessagesIsLoading ? (
             <Loading />
           ) : (
@@ -116,28 +166,36 @@ function DocumentCommunicationExpandPage() {
             ))
           )}
         </Grid>
-        <Grid item xs={1}>
-          {studentThreads
-            ?.filter((thread) => thread?.student_id === studentId)
-            ?.sort((a, b) => a.file_type.localeCompare(b.file_type))
-            ?.map((thread, index, array) => {
-              // Find the index of the first occurrence of the current file_type
-              const firstIndex = array.findIndex(
-                (t) => t.file_type === thread.file_type
-              );
-              // Calculate the incrementing index for the current file_type
-              const typeIndex = index - firstIndex + 1;
-              return (
-                <Typography
-                  key={thread._id}
-                  onClick={() => handleOnClickThread(thread._id)}
-                >
-                  {`${thread.file_type} #${typeIndex}`}
+        <Grid item xs={1.5}>
+          {sortedThreads?.map((thread, index, array) => {
+            const category = getCategory(thread.file_type);
+            const firstIndex = array.findIndex(
+              (t) =>
+                getCategory(t.file_type) === category &&
+                t.file_type === thread.file_type
+            );
+            const typeIndex = index - firstIndex + 1;
+            const displayIndex = categories.General.includes(thread.file_type)
+              ? ''
+              : ` #${typeIndex}`;
+            const showCategoryLabel = category !== currentCategory;
+            currentCategory = category;
+
+            return (
+              <React.Fragment key={thread._id}>
+                {showCategoryLabel && (
+                  <Typography variant="h5" style={{ marginTop: '16px' }}>
+                    {category}
+                  </Typography>
+                )}
+                <Typography onClick={() => handleOnClickThread(thread._id)}>
+                  {`${thread.file_type}${displayIndex}`}
                 </Typography>
-              );
-            })}
+              </React.Fragment>
+            );
+          })}
         </Grid>
-        <Grid item xs={10}>
+        <Grid item xs={9}>
           <Box>
             <MessageList
               isLoading={!threadIsLoading}

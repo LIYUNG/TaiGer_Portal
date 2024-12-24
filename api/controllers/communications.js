@@ -452,7 +452,7 @@ const loadMessages = asyncHandler(async (req, res, next) => {
       student_id: studentId
     })
     .populate(
-      'student_id user_id',
+      'student_id user_id readBy ignoredMessageBy',
       'firstname lastname firstname_chinese lastname_chinese role agents editors'
     )
     .sort({ createdAt: -1 })
@@ -695,7 +695,10 @@ const updateAMessageInThread = asyncHandler(async (req, res, next) => {
     const thread = await req.db
       .model('Communication')
       .findByIdAndUpdate(messageId, { message }, { new: true })
-      .populate('student_id user_id', 'firstname lastname');
+      .populate(
+        'student_id user_id readBy ignoredMessageBy',
+        'firstname lastname role'
+      );
     if (!thread) {
       logger.error('updateAMessageInThread : Invalid message thread id');
       throw new ErrorResponse(404, 'Thread not found');

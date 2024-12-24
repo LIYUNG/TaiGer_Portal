@@ -10,18 +10,15 @@ import {
   MenuItem,
   Select,
   Typography,
-  Dialog,
-  DialogTitle,
-  DialogContentText,
-  DialogContent,
-  DialogActions,
   Badge,
   Tabs,
   Tab,
   lighten,
   RadioGroup,
   FormControlLabel,
-  Radio
+  Radio,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
@@ -72,6 +69,7 @@ const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
       language
     );
     setIsAnalysingV2(false);
+    setModalHide();
   };
 
   const setModalShow2 = () => {
@@ -238,6 +236,8 @@ export default function CourseWidgetBody({ programRequirements }) {
   const { user } = useAuth();
   const { student_id } = useParams();
   const { t } = useTranslation();
+  const [severity, setSeverity] = useState('success'); // 'success' or 'error'
+  const [message, setMessage] = useState('');
 
   let [statedata, setStatedata] = useState({
     error: '',
@@ -323,6 +323,8 @@ export default function CourseWidgetBody({ programRequirements }) {
         const { data, success } = resp.data;
         const { status } = resp;
         if (success) {
+          setSeverity('success');
+          setMessage(t('Transcript analysed successfully!'));
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
@@ -344,6 +346,8 @@ export default function CourseWidgetBody({ programRequirements }) {
         }
       },
       (error) => {
+        setSeverity('error');
+        setMessage(error.message || 'An error occurred. Please try again.');
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
@@ -455,6 +459,8 @@ export default function CourseWidgetBody({ programRequirements }) {
       const { data, success } = resp.data;
       const { status } = resp;
       if (success) {
+        setSeverity('success');
+        setMessage(t('Transcript analysed successfully!'));
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
@@ -475,6 +481,8 @@ export default function CourseWidgetBody({ programRequirements }) {
         }));
       }
     } catch (error) {
+      setSeverity('error');
+      setMessage(error.message || 'An error occurred. Please try again.');
       setStatedata((state) => ({
         ...state,
         isLoaded: true,
@@ -698,28 +706,19 @@ export default function CourseWidgetBody({ programRequirements }) {
           </Typography>
         </Card>
       </Box>
-
-      <Dialog
+      <Snackbar
         open={statedata.analysisSuccessModalWindowOpen}
+        autoHideDuration={6000}
         onClose={closeanalysisSuccessModal}
-        aria-labelledby="contained-modal-title-vcenter"
       >
-        <DialogTitle>{t('Success', { ns: 'common' })}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {t('Transcript analysed successfully!')}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={closeanalysisSuccessModal}
-          >
-            {t('Close', { ns: 'common' })}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <Alert
+          onClose={closeanalysisSuccessModal}
+          severity={severity}
+          sx={{ width: '100%' }}
+        >
+          {message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

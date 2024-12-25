@@ -21,7 +21,8 @@ import {
   TableRow,
   Typography,
   Tabs,
-  Tab
+  Tab,
+  Breadcrumbs
 } from '@mui/material';
 import {
   is_TaiGer_Admin,
@@ -82,6 +83,38 @@ function SingleProgramView(props) {
 
   return (
     <>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link
+          underline="hover"
+          color="inherit"
+          component={LinkDom}
+          to={`${DEMO.DASHBOARD_LINK}`}
+        >
+          {appConfig.companyName}
+        </Link>
+        {is_TaiGer_role(user) ? (
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.PROGRAMS}`}
+          >
+            {t('Program List', { ns: 'common' })}
+          </Link>
+        ) : (
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(user._id.toString())}`}
+          >
+            {t('Applications')}
+          </Link>
+        )}
+        <Typography color="text.primary">
+          {`${props.program.school}-${props.program.program_name}`}
+        </Typography>
+      </Breadcrumbs>
       <Box sx={{ my: 1 }}>
         <Banner
           ReadOnlyMode={true}
@@ -479,10 +512,10 @@ function SingleProgramView(props) {
               )}
               <Grid item>
                 <Button
-                  fullWidth
-                  variant="contained"
                   color="info"
-                  onClick={() => props.handleClick()}
+                  variant="contained"
+                  component={LinkDom}
+                  to={DEMO.PROGRAM_EDIT(props.program._id?.toString())}
                 >
                   {t('Edit', { ns: 'common' })}
                 </Button>

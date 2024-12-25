@@ -59,8 +59,7 @@ function NewProgramEdit(props) {
   };
 
   const handleChange = (e) => {
-    // e.preventDefault();
-    const key = e.target.name;
+    const key = e.target?.name;
     const value =
       e.target.type === 'checkbox'
         ? e.target.checked
@@ -69,7 +68,7 @@ function NewProgramEdit(props) {
           : e.target.value;
 
     const newState = { ...programChanges };
-    if (value === initProgram[key] || (!initProgram[key] && value === '')) {
+    if (value === initProgram[key] || (!initProgram[key] && !value)) {
       delete newState[key];
     } else {
       newState[key] = value;
@@ -92,7 +91,7 @@ function NewProgramEdit(props) {
 
   const onClickResultHandler = (result) => {
     setProgramChanges((preState) => ({ ...preState.program, school: result }));
-    setSearchTerm('');
+    setSearchTerm(result);
   };
 
   return (
@@ -116,9 +115,9 @@ function NewProgramEdit(props) {
               freeSolo
               size="small"
               options={schoolName2Set} // Display filtered results
-              value={searchTerm}
+              value={program.school}
               onChange={(event, value) => onClickResultHandler(value)} // Handle selection
-              onInputChange={(event, value) => handleChange(event, value)} // Handle input changes
+              readOnly={props.type === 'edit' && !is_TaiGer_Admin(user)} // Conditional readonly
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -127,9 +126,11 @@ function NewProgramEdit(props) {
                   id="school"
                   name="school"
                   placeholder="National Taiwan University"
+                  value={searchTerm}
+                  onChange={(event) => handleChange(event)} // Handle input changes
                   InputProps={{
                     ...params.InputProps,
-                    readOnly: props.type === 'edit' && !is_TaiGer_Admin(user), // Conditional readonly
+                    // readOnly: props.type === 'edit' && !is_TaiGer_Admin(user), // Conditional readonly
                     disableUnderline: true,
                     endAdornment: <>{params.InputProps.endAdornment}</>
                   }}

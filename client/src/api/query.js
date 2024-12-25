@@ -1,9 +1,16 @@
 import {
   getAdmissions,
   getProgramsV2,
+  getProgramV2,
   getStudentsAndDocLinks2,
   getStudentsV2
 } from '.';
+
+export const getProgramQuery = ({ programId }) => ({
+  queryKey: ['programs', programId],
+  queryFn: () => getProgramV2(programId),
+  staleTime: 1000 * 60 // 1 minutes
+});
 
 export const getProgramsQuery = () => ({
   queryKey: ['programs'],

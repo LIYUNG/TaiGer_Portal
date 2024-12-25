@@ -1,10 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import {
-  Card,
-  Breadcrumbs,
   Button,
-  Link,
-  Typography,
   Box,
   Dialog,
   DialogTitle,
@@ -12,39 +8,25 @@ import {
   DialogContentText,
   DialogActions
 } from '@mui/material';
-import { Link as LinkDom, useParams } from 'react-router-dom';
+import { Await, useLoaderData } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { is_TaiGer_role } from '@taiger-common/core';
 
-import {
-  getProgram,
-  processProgramListAi,
-  updateProgram
-} from '../../api';
+import { processProgramListAi } from '../../api';
 import SingleProgramView from './SingleProgramView';
 import ProgramDeleteWarning from './ProgramDeleteWarning';
-import ErrorPage from '../Utils/ErrorPage';
-import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { TabTitle } from '../Utils/TabTitle';
 import { deleteProgram } from '../../api';
-import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
-import { appConfig } from '../../config';
-import NewProgramEdit from './NewProgramEdit';
 import ProgramDiffModal from './ProgramDiffModal';
 import { AssignProgramsToStudentDialog } from './AssignProgramsToStudentDialog';
 
 function SingleProgram() {
-  const { programId } = useParams();
+  const { data } = useLoaderData();
   const { t } = useTranslation();
   const { user } = useAuth();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [singleProgramState, setSingleProgramState] = useState({
     error: '',
     isLoaded: false,
-    program: null,
-    success: false,
     isEdit: false,
     isReport: false,
     modalShowAssignSuccessWindow: false,
@@ -59,39 +41,6 @@ function SingleProgram() {
     res_modal_message: '',
     res_modal_status: 0
   });
-  useEffect(() => {
-    getProgram(programId).then(
-      (resp) => {
-        const { data, success, students, vc } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setSingleProgramState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            program: data,
-            students,
-            vc,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          setSingleProgramState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setSingleProgramState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
-  }, [programId]);
 
   const onHideAssignSuccessWindow = () => {
     setSingleProgramState((prevState) => ({
@@ -121,56 +70,6 @@ function SingleProgram() {
         modalShowDiffWindow: show
       }));
     };
-  };
-
-  const handleSubmit_Program = (program) => {
-    setIsSubmitting(true);
-    updateProgram(program).then(
-      (resp) => {
-        const { data, success, vc } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setIsSubmitting(false);
-          setSingleProgramState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            program: data,
-            vc,
-            success: success,
-            isEdit: !singleProgramState.isEdit,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setIsSubmitting(false);
-          setSingleProgramState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_status: status,
-            res_modal_message: message
-          }));
-        }
-      },
-      (error) => {
-        setIsSubmitting(false);
-        setSingleProgramState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
-        }));
-      }
-    );
-  };
-
-  const ConfirmError = () => {
-    // window.location.reload(true);
-    setSingleProgramState((prevState) => ({
-      ...prevState,
-      res_modal_status: 0,
-      res_modal_message: ''
-    }));
   };
 
   const handleClick = () => {
@@ -231,164 +130,92 @@ function SingleProgram() {
   };
 
   const programListAssistant = () => {
-    processProgramListAi(programId).then(
+    processProgramListAi('TODO').then(
       () => {},
       () => {}
     );
   };
 
-  const {
-    res_status,
-    isLoaded,
-    isDeleted,
-    res_modal_status,
-    res_modal_message,
-    program,
-    students,
-    vc
-  } = singleProgramState;
-  if (res_status >= 400) {
-    return <ErrorPage res_status={res_status} />;
-  }
-  if (!isLoaded) {
-    return <Loading />;
-  }
-  TabTitle(`${program.school} - ${program.program_name}`);
+  // if (isDeleted) {
+  //   return (
+  //     <Card sx={{ p: 2 }}>
+  //       <Typography variant="h5">The program is deleted</Typography>
+  //       <Typography>
+  //         <LinkDom to={`${DEMO.PROGRAMS}`}>
+  //           Click me back to the program list
+  //         </LinkDom>
+  //       </Typography>
+  //     </Card>
+  //   );
+  // }
 
-  if (isDeleted) {
-    return (
-      <Card sx={{ p: 2 }}>
-        <Typography variant="h5">The program is deleted</Typography>
-        <Typography>
-          <LinkDom to={`${DEMO.PROGRAMS}`}>
-            Click me back to the program list
-          </LinkDom>
-        </Typography>
-      </Card>
-    );
-  }
-  if (singleProgramState.isEdit) {
-    return (
-      <Box data-testid="single_program_page_edit">
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-        <NewProgramEdit
-          program={program}
-          handleSubmit_Program={handleSubmit_Program}
-          isSubmitting={isSubmitting}
-          handleClick={handleClick}
-          type={'edit'}
-        />
-      </Box>
-    );
-  } else {
-    return (
-      <Box data-testid="single_program_page">
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link
-            underline="hover"
-            color="inherit"
-            component={LinkDom}
-            to={`${DEMO.DASHBOARD_LINK}`}
-          >
-            {appConfig.companyName}
-          </Link>
-          {is_TaiGer_role(user) ? (
-            <Link
-              underline="hover"
-              color="inherit"
-              component={LinkDom}
-              to={`${DEMO.PROGRAMS}`}
-            >
-              {t('Program List', { ns: 'common' })}
-            </Link>
-          ) : (
-            <Link
-              underline="hover"
-              color="inherit"
-              component={LinkDom}
-              to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(user._id.toString())}`}
-            >
-              {t('Applications')}
-            </Link>
+  return (
+    <Box data-testid="single_program_page">
+      <Suspense fallback={<Loading />}>
+        <Await resolve={data}>
+          {(loadedData) => (
+            <>
+              <SingleProgramView
+                program={loadedData.data}
+                user={user}
+                students={loadedData.students}
+                versions={loadedData.vc}
+                programListAssistant={programListAssistant}
+                handleClick={handleClick}
+                setModalShow2={setModalShow2}
+                setModalShowDDelete={setModalShowDDelete}
+                setDiffModalShow={setDiffModal(true)}
+              />
+              <ProgramDeleteWarning
+                deleteProgramWarning={singleProgramState.deleteProgramWarning}
+                setModalHideDDelete={setModalHideDDelete}
+                uni_name={loadedData.data.school}
+                program_name={loadedData.data.program_name}
+                RemoveProgramHandler={RemoveProgramHandler}
+                program_id={loadedData.data._id?.toString()}
+              />
+              <AssignProgramsToStudentDialog
+                open={singleProgramState.modalShowAssignWindow}
+                onClose={setModalHide}
+                programs={[loadedData.data]}
+                handleOnSuccess={setModalHide}
+              />
+              <Dialog
+                open={singleProgramState.modalShowAssignSuccessWindow}
+                onClose={onHideAssignSuccessWindow}
+                aria-labelledby="contained-modal-title-vcenter"
+              >
+                <DialogTitle>{t('Success', { ns: 'common' })}</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    {t('Program(s) assigned to student successfully!', {
+                      ns: 'programList'
+                    })}
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={onHideAssignSuccessWindow}
+                  >
+                    {t('Close', { ns: 'common' })}
+                  </Button>
+                </DialogActions>
+              </Dialog>
+
+              {singleProgramState.modalShowDiffWindow && (
+                <ProgramDiffModal
+                  open={singleProgramState.modalShowDiffWindow}
+                  setModalHide={setDiffModal(false)}
+                  originalProgram={loadedData.data}
+                />
+              )}
+            </>
           )}
-          <Typography color="text.primary">
-            {`${program.school}-${program.program_name}`}
-          </Typography>
-        </Breadcrumbs>
-        <SingleProgramView
-          program={program}
-          isLoaded={isLoaded}
-          user={user}
-          students={students}
-          versions={vc}
-          programId={programId}
-          programListAssistant={programListAssistant}
-          handleClick={handleClick}
-          setModalShow2={setModalShow2}
-          setModalShowDDelete={setModalShowDDelete}
-          setDiffModalShow={setDiffModal(true)}
-        />
-
-        <ProgramDeleteWarning
-          deleteProgramWarning={singleProgramState.deleteProgramWarning}
-          setModalHideDDelete={setModalHideDDelete}
-          uni_name={program.school}
-          program_name={program.program_name}
-          RemoveProgramHandler={RemoveProgramHandler}
-          program_id={program._id?.toString()}
-        />
-        <AssignProgramsToStudentDialog
-          open={singleProgramState.modalShowAssignWindow}
-          onClose={setModalHide}
-          programs={[program]}
-          handleOnSuccess={setModalHide}
-        />
-        <Dialog
-          open={singleProgramState.modalShowAssignSuccessWindow}
-          onClose={onHideAssignSuccessWindow}
-          aria-labelledby="contained-modal-title-vcenter"
-        >
-          <DialogTitle>{t('Success', { ns: 'common' })}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              {t('Program(s) assigned to student successfully!', {
-                ns: 'programList'
-              })}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={onHideAssignSuccessWindow}
-            >
-              {t('Close', { ns: 'common' })}
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {singleProgramState.modalShowDiffWindow && (
-          <ProgramDiffModal
-            open={singleProgramState.modalShowDiffWindow}
-            setModalHide={setDiffModal(false)}
-            originalProgram={program}
-          />
-        )}
-      </Box>
-    );
-  }
+        </Await>
+      </Suspense>
+    </Box>
+  );
 }
 export default SingleProgram;

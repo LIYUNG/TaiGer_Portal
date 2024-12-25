@@ -17,7 +17,8 @@ import {
   getProgramRequirement,
   getProgramRequirements,
   getProgramsAndCourseKeywordSets,
-  getCommunicationThread
+  getCommunicationThread,
+  getProgram
 } from '.';
 
 export async function getStudentsLoader() {
@@ -47,7 +48,7 @@ export async function getAllActiveEssaysLoader() {
   }
 }
 
-// 
+//
 
 export async function CommunicationThreadLoader({ params }) {
   const student_id = params.student_id;
@@ -63,7 +64,7 @@ export function getCommunicationThreadLoader({ params }) {
   return defer({ data: CommunicationThreadLoader({ params }) });
 }
 
-// 
+//
 
 export async function ComplaintTicketLoader({ params }) {
   const complaintTicketId = params.complaintTicketId;
@@ -79,7 +80,7 @@ export function getComplaintTicketLoader({ params }) {
   return defer({ complaintTicket: ComplaintTicketLoader({ params }) });
 }
 
-// 
+//
 
 export async function AllComplaintTicketsLoader() {
   const response = await getComplaintsTickets();
@@ -94,7 +95,7 @@ export function getAllComplaintTicketsLoader() {
   return defer({ complaintTickets: AllComplaintTicketsLoader() });
 }
 
-// 
+//
 
 export async function AllActiveStudentsLoader() {
   const response = await getAllActiveStudents();
@@ -273,4 +274,22 @@ export async function ProgramRequirementsLoader() {
 
 export function getProgramRequirementsLoader() {
   return defer({ programRequirements: ProgramRequirementsLoader() });
+}
+
+///
+
+export async function ProgramsLoader({ params }) {
+  const { programId } = params;
+
+  const response = await getProgram(programId);
+  if (response.status >= 400) {
+    throw json({ message: response.statusText }, { status: response.status });
+  } else {
+    return response.data;
+  }
+}
+
+export function getProgramLoader({ params }) {
+  // { data, success, students, vc } = resp.data;
+  return defer({ data: ProgramsLoader({ params }) });
 }

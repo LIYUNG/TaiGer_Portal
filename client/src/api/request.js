@@ -34,6 +34,19 @@ const postData = async (url, payload) => {
   }
 };
 
+const putData = async (url, payload) => {
+  try {
+    const response = await request.put(url, payload);
+    if (response.status >= 400) {
+      throw new Error(response.data?.message || 'An unknown error occurred');
+    }
+    return response.data; // Return the data on success
+  } catch (error) {
+    console.log(error);
+    throw error; // Propagate the error
+  }
+};
+
 const getData = async (url) => {
   try {
     const response = await request.get(url);
@@ -60,4 +73,4 @@ const deleteData = async (url) => {
   }
 };
 
-export { request, postData, getData, deleteData };
+export { request, postData, putData, getData, deleteData };

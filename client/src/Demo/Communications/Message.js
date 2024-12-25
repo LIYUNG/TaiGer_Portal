@@ -21,7 +21,8 @@ import {
   Typography,
   CircularProgress,
   AvatarGroup,
-  Stack
+  Stack,
+  Tooltip
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
@@ -307,18 +308,21 @@ function Message(props) {
                           props.message.student_id?._id.toString())
                   )
                   .map((usr) => (
-                    <Avatar
-                      key={user._id?.toString()}
-                      {...stringAvatar(`${usr?.firstname} ${usr?.lastname}`)}
-                      sx={{
-                        ...stringAvatar(`${usr?.firstname} ${usr?.lastname}`)
-                          .sx,
-                        width: 8,
-                        height: 8 // Override the size
-                      }}
-                      size="small"
+                    <Tooltip
                       title={`Read by ${usr?.firstname} ${usr?.lastname} at ${convertDate(props.message.timeStampReadBy?.[usr._id?.toString()])}`}
-                    />
+                      key={user._id?.toString()}
+                    >
+                      <Avatar
+                        {...stringAvatar(`${usr?.firstname} ${usr?.lastname}`)}
+                        sx={{
+                          ...stringAvatar(`${usr?.firstname} ${usr?.lastname}`)
+                            .sx,
+                          width: 8,
+                          height: 8 // Override the size
+                        }}
+                        size="small"
+                      />
+                    </Tooltip>
                   ))}
               </AvatarGroup>
             )}

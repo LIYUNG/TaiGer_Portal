@@ -18,15 +18,17 @@ import {
   FormControlLabel,
   Radio,
   Snackbar,
-  Alert
+  Alert,
+  // Checkbox,
+  // ListItemText
 } from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import 'react-datasheet-grid/dist/style.css';
-import { is_TaiGer_role } from '@taiger-common/core';
+import { is_TaiGer_role, PROGRAM_SUBJECTS } from '@taiger-common/core';
 
-import { PROGRAM_ANALYSIS_ATTRIBUTES, study_group } from '../Utils/contants';
+import { convertDateUXFriendly, study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
@@ -105,11 +107,23 @@ const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
       {
         accessorKey: 'attributes', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
         filterVariant: 'multi-select',
-        filterSelectOptions: PROGRAM_ANALYSIS_ATTRIBUTES.map(
-          (item) => item.value
-        ), //custom options list (as opposed to faceted list)
+        filterSelectOptions: Object.keys(PROGRAM_SUBJECTS), //custom options list (as opposed to faceted list)
         header: 'Attributes',
-        size: 90
+        size: 90,
+        // Filter: ({ column }) => (
+        //   <MaterialReactTable.MRT_FilterDropdown
+        //     options={Object.keys(PROGRAM_SUBJECTS)}
+        //     onSelectChange={(selectedValues) => {
+        //       // Handle changes to the selected values here
+        //     }}
+        //     renderOption={(option, { selected }) => (
+        //       <MenuItem key={option} value={option}>
+        //         <Checkbox checked={selected} />
+        //         <ListItemText primary={PROGRAM_SUBJECTS[option]} />
+        //       </MenuItem>
+        //     )}
+        //   />
+        // )
       },
       {
         accessorKey: 'country', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
@@ -120,7 +134,7 @@ const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
       },
       {
         accessorKey: 'updatedAt', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
-        enableClickToCopy: true,
+        // enableClickToCopy: true,
         header: 'updatedAt',
         size: 90
       }
@@ -436,8 +450,9 @@ export default function CourseWidgetBody({ programRequirements }) {
       program_name: `${row.programId[0].school} ${row.programId[0].program_name} ${row.programId[0].degree}`,
       lang: `${row.programId[0].lang}`,
       degree: `${row.programId[0].degree}`,
-      attributes: `${row.attributes.map((item) => item.value).join('-')}`,
+      attributes: `${row.attributes.join('-')}`,
       country: `${row.programId[0].country}`,
+      updatedAt: convertDateUXFriendly(row.updatedAt),
       id: row._id // Map MongoDB _id to id property
       // other properties...
     };

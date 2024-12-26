@@ -24,19 +24,19 @@ function SingleProgram() {
   const { data } = useLoaderData();
   const { t } = useTranslation();
   const { user } = useAuth();
+  const [deleteProgramWarningOpen, setDeleteProgramWarningOpen] =
+    useState(false);
+  const [modalShowAssignWindowOpen, setModalShowAssignWindow] = useState(false);
   const [singleProgramState, setSingleProgramState] = useState({
     error: '',
     isLoaded: false,
     isEdit: false,
     isReport: false,
     modalShowAssignSuccessWindow: false,
-    modalShowAssignWindow: false,
     modalShowDiffWindow: false,
-    deleteProgramWarning: false,
     isDeleted: false,
     res_status: 0,
     students: [],
-    student_id: '',
     tickets: [],
     res_modal_message: '',
     res_modal_status: 0
@@ -49,20 +49,6 @@ function SingleProgram() {
     }));
   };
 
-  const setModalShow2 = () => {
-    setSingleProgramState((prevState) => ({
-      ...prevState,
-      modalShowAssignWindow: true
-    }));
-  };
-
-  const setModalHide = () => {
-    setSingleProgramState((prevState) => ({
-      ...prevState,
-      modalShowAssignWindow: false
-    }));
-  };
-
   const setDiffModal = (show = true) => {
     return () => {
       setSingleProgramState((prevState) => ({
@@ -72,36 +58,16 @@ function SingleProgram() {
     };
   };
 
-  const handleClick = () => {
-    setSingleProgramState((prevState) => ({
-      ...prevState,
-      isEdit: !singleProgramState.isEdit
-    }));
-  };
-
-  const setModalShowDDelete = () => {
-    setSingleProgramState((prevState) => ({
-      ...prevState,
-      deleteProgramWarning: true
-    }));
-  };
-
-  const setModalHideDDelete = () => {
-    setSingleProgramState((prevState) => ({
-      ...prevState,
-      deleteProgramWarning: false
-    }));
-  };
   const RemoveProgramHandler = (program_id) => {
     deleteProgram(program_id).then(
       (resp) => {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
+          setDeleteProgramWarningOpen(false);
           setSingleProgramState((prevState) => ({
             ...prevState,
             isLoaded: true,
-            deleteProgramWarning: false,
             isDeleted: true,
             success: success,
             isEdit: !singleProgramState.isEdit,
@@ -161,24 +127,23 @@ function SingleProgram() {
                 students={loadedData.students}
                 versions={loadedData.vc}
                 programListAssistant={programListAssistant}
-                handleClick={handleClick}
-                setModalShow2={setModalShow2}
-                setModalShowDDelete={setModalShowDDelete}
+                setModalShowAssignWindow={setModalShowAssignWindow}
+                setDeleteProgramWarningOpen={setDeleteProgramWarningOpen}
                 setDiffModalShow={setDiffModal(true)}
               />
               <ProgramDeleteWarning
-                deleteProgramWarning={singleProgramState.deleteProgramWarning}
-                setModalHideDDelete={setModalHideDDelete}
+                deleteProgramWarning={deleteProgramWarningOpen}
+                setDeleteProgramWarningOpen={setDeleteProgramWarningOpen}
                 uni_name={loadedData.data.school}
                 program_name={loadedData.data.program_name}
                 RemoveProgramHandler={RemoveProgramHandler}
                 program_id={loadedData.data._id?.toString()}
               />
               <AssignProgramsToStudentDialog
-                open={singleProgramState.modalShowAssignWindow}
-                onClose={setModalHide}
+                open={() => modalShowAssignWindowOpen(true)}
+                onClose={() => modalShowAssignWindowOpen(false)}
                 programs={[loadedData.data]}
-                handleOnSuccess={setModalHide}
+                handleOnSuccess={() => modalShowAssignWindowOpen(false)}
               />
               <Dialog
                 open={singleProgramState.modalShowAssignSuccessWindow}

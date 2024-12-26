@@ -14,7 +14,7 @@ function ProgramDeleteWarning(props) {
   return (
     <Dialog
       open={props.deleteProgramWarning}
-      onClose={props.setModalHideDDelete}
+      onClose={() => props.setDeleteProgramWarningOpen(false)}
       aria-labelledby="contained-modal-title-vcenter"
     >
       <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
@@ -37,7 +37,7 @@ function ProgramDeleteWarning(props) {
         <Button
           color="secondary"
           variant="outlined"
-          onClick={props.setModalHideDDelete}
+          onClick={() => props.setDeleteProgramWarningOpen(false)}
         >
           {t('No', { ns: 'common' })}
         </Button>

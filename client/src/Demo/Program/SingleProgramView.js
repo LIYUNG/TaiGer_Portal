@@ -504,7 +504,7 @@ function SingleProgramView(props) {
                     fullWidth
                     variant="outlined"
                     color="primary"
-                    onClick={() => props.setModalShow2()}
+                    onClick={() => props.setModalShowAssignWindow(true)}
                   >
                     {t('Assign', { ns: 'common' })}
                   </Button>
@@ -526,7 +526,7 @@ function SingleProgramView(props) {
                   <Button
                     variant="outlined"
                     color="error"
-                    onClick={() => props.setModalShowDDelete()}
+                    onClick={() => props.setDeleteProgramWarningOpen(true)}
                   >
                     {t('Delete', { ns: 'common' })}
                   </Button>

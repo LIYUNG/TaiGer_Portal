@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import {
-  Alert,
   Box,
   Button,
   Checkbox,
@@ -14,7 +13,6 @@ import {
   FormControlLabel,
   Grid,
   IconButton,
-  Snackbar,
   Stack,
   TextField,
   Tooltip,
@@ -58,6 +56,7 @@ import Loading from '../../components/Loading/Loading';
 import { useMutation } from '@tanstack/react-query';
 import { updateProfileDocumentStatusV2 } from '../../api';
 import { queryClient } from '../../api/client';
+import { useSnackBar } from '../../contexts/use-snack-bar';
 
 function MyDocumentCard(props) {
   const { user } = useAuth();
@@ -75,9 +74,7 @@ function MyDocumentCard(props) {
     baseDocsflagOffcanvasButtonDisable,
     setBaseDocsflagOffcanvasButtonDisable
   ] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [severity, setSeverity] = useState('success'); // 'success' or 'error'
-  const [message, setMessage] = useState('');
+  const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
 
   const [MyDocumentCardState, setMyDocumentCardState] = useState({
     student: props.student,
@@ -715,19 +712,6 @@ function MyDocumentCard(props) {
         updateDocLink={updateDocLink}
         baseDocsflagOffcanvasButtonDisable={baseDocsflagOffcanvasButtonDisable}
       />
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert
-          onClose={() => setOpenSnackbar(false)}
-          severity={severity}
-          sx={{ width: '100%' }}
-        >
-          {message}
-        </Alert>
-      </Snackbar>
     </>
   );
 }

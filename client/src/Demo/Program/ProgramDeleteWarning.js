@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -30,9 +31,13 @@ function ProgramDeleteWarning(props) {
         <Button
           color="primary"
           variant="contained"
+          disabled={props.isPending}
           onClick={() => props.RemoveProgramHandler(props.program_id)}
+          startIcon={props.isPending ? <CircularProgress size={20} /> : null}
         >
-          {t('Yes', { ns: 'common' })}
+          {props.isPending
+            ? t('Deleting', { ns: 'common' })
+            : t('Yes', { ns: 'common' })}
         </Button>
         <Button
           color="secondary"

@@ -16,11 +16,7 @@ import {
   lighten,
   RadioGroup,
   FormControlLabel,
-  Radio,
-  Snackbar,
-  Alert,
-  // Checkbox,
-  // ListItemText
+  Radio
 } from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
@@ -50,6 +46,7 @@ import {
   useMaterialReactTable
 } from 'material-react-table';
 import CourseAnalysisConfirmDialog from './CourseAnalysisConfirmDialog';
+import { useSnackBar } from '../../contexts/use-snack-bar';
 
 const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
   const [language, setLanguage] = useState('zh'); // 'en' for English, 'zh' for 中文
@@ -109,7 +106,7 @@ const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
         filterVariant: 'multi-select',
         filterSelectOptions: Object.keys(PROGRAM_SUBJECTS), //custom options list (as opposed to faceted list)
         header: 'Attributes',
-        size: 90,
+        size: 90
         // Filter: ({ column }) => (
         //   <MaterialReactTable.MRT_FilterDropdown
         //     options={Object.keys(PROGRAM_SUBJECTS)}
@@ -250,9 +247,7 @@ export default function CourseWidgetBody({ programRequirements }) {
   const { user } = useAuth();
   const { student_id } = useParams();
   const { t } = useTranslation();
-  const [severity, setSeverity] = useState('success'); // 'success' or 'error'
-  const [message, setMessage] = useState('');
-
+  const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
   let [statedata, setStatedata] = useState({
     error: '',
     isLoaded: true,
@@ -265,7 +260,6 @@ export default function CourseWidgetBody({ programRequirements }) {
       }
     ],
     analysis: {},
-    analysisSuccessModalWindowOpen: false,
     success: false,
     student: null,
     file: '',
@@ -339,11 +333,11 @@ export default function CourseWidgetBody({ programRequirements }) {
         if (success) {
           setSeverity('success');
           setMessage(t('Transcript analysed successfully!'));
+          setOpenSnackbar(true);
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
             analysis: data,
-            analysisSuccessModalWindowOpen: true,
             success: success,
             isAnalysing: false,
             res_modal_status: status
@@ -476,11 +470,11 @@ export default function CourseWidgetBody({ programRequirements }) {
       if (success) {
         setSeverity('success');
         setMessage(t('Transcript analysed successfully!'));
+        setOpenSnackbar(true);
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
           analysis: data,
-          analysisSuccessModalWindowOpen: true,
           success: success,
           isAnalysing: false,
           res_modal_status: status
@@ -510,12 +504,6 @@ export default function CourseWidgetBody({ programRequirements }) {
     }
   };
 
-  const closeanalysisSuccessModal = () => {
-    setStatedata((state) => ({
-      ...state,
-      analysisSuccessModalWindowOpen: false
-    }));
-  };
   const columns = [
     {
       ...keyColumn('course_chinese', textColumn),
@@ -721,19 +709,6 @@ export default function CourseWidgetBody({ programRequirements }) {
           </Typography>
         </Card>
       </Box>
-      <Snackbar
-        open={statedata.analysisSuccessModalWindowOpen}
-        autoHideDuration={6000}
-        onClose={closeanalysisSuccessModal}
-      >
-        <Alert
-          onClose={closeanalysisSuccessModal}
-          severity={severity}
-          sx={{ width: '100%' }}
-        >
-          {message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 }

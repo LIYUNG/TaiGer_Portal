@@ -1,5 +1,5 @@
-import { Suspense, useState } from 'react';
-import { Alert, Box, Snackbar } from '@mui/material';
+import { Suspense } from 'react';
+import { Box } from '@mui/material';
 import { Await, useLoaderData, useNavigate } from 'react-router-dom';
 
 import NewProgramEdit from './NewProgramEdit';
@@ -8,12 +8,11 @@ import { createProgramV2 } from '../../api';
 import DEMO from '../../store/constant';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '../../api/client';
+import { useSnackBar } from '../../contexts/use-snack-bar';
 
 function ProgramCreatePage() {
   const { distinctSchools } = useLoaderData();
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [severity, setSeverity] = useState('success'); // 'success' or 'error'
-  const [message, setMessage] = useState('');
+  const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
   const navigate = useNavigate();
 
   const onClickIsCreateApplicationMode = () => {
@@ -57,19 +56,6 @@ function ProgramCreatePage() {
           )}
         </Await>
       </Suspense>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert
-          onClose={() => setOpenSnackbar(false)}
-          severity={severity}
-          sx={{ width: '100%' }}
-        >
-          {message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 }

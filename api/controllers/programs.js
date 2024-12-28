@@ -376,10 +376,11 @@ const deleteProgram = asyncHandler(async (req, res) => {
         }
       }
     })
-    .select('firstname lastname applications.programId');
+    .select('firstname lastname applications.programId')
+    .lean();
   // Check if anyone applied this program
   if (students.length === 0) {
-    logger.info('it can be deleted!');
+    logger.info('it can be safely deleted!');
 
     await req.db
       .model('Program')
@@ -390,14 +391,16 @@ const deleteProgram = asyncHandler(async (req, res) => {
     if (value === 1) {
       logger.info('cache key deleted successfully due to delete');
     }
-    // TODO:
-    // Remove programId from programRequirement programId.
+    await req.db
+      .model('ProgramRequirement')
+      .findOneAndDelete({ programId: { $in: [req.params.programId] } });
   } else {
     logger.error('it can not be deleted!');
     logger.error('The following students have these programs!');
-    // Make sure delete failed to user (Admin)
-    logger.error('deleteProgram: some students have these programs');
-    throw new ErrorResponse(423, 'This program can not be deleted!');
+    logger.error(
+      students.map((std) => `${std.firstname} ${std.lastname}`).join(', ')
+    );
+    throw new ErrorResponse(403, 'This program can not be deleted!');
   }
   res.status(200).send({ success: true });
   if (students.length === 0) {

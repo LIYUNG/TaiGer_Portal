@@ -1,5 +1,5 @@
-import { Suspense, useState } from 'react';
-import { Alert, Box, Snackbar } from '@mui/material';
+import { Suspense } from 'react';
+import { Box } from '@mui/material';
 import { Await, useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
 import NewProgramEdit from './NewProgramEdit';
@@ -9,12 +9,12 @@ import DEMO from '../../store/constant';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { queryClient } from '../../api/client';
 import { getProgramQuery } from '../../api/query';
+import { useSnackBar } from '../../contexts/use-snack-bar';
 
 function ProgramEditPage() {
   const { distinctSchools } = useLoaderData();
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [severity, setSeverity] = useState('success'); // 'success' or 'error'
-  const [message, setMessage] = useState('');
+  const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
+
   const navigate = useNavigate();
   const { programId } = useParams();
   const { data, isLoading } = useQuery({
@@ -67,19 +67,6 @@ function ProgramEditPage() {
           )}
         </Await>
       </Suspense>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert
-          onClose={() => setOpenSnackbar(false)}
-          severity={severity}
-          sx={{ width: '100%' }}
-        >
-          {message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 }

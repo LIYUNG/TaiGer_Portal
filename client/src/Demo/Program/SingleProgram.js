@@ -1,36 +1,46 @@
 import React, { Suspense, useState } from 'react';
-import {
-  Button,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions
-} from '@mui/material';
-import { Await, useLoaderData } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { Box } from '@mui/material';
+import { Await, useLoaderData, useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 
-import { processProgramListAi } from '../../api';
+import { deleteProgramV2, processProgramListAi } from '../../api';
 import SingleProgramView from './SingleProgramView';
 import ProgramDeleteWarning from './ProgramDeleteWarning';
-import { deleteProgram } from '../../api';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import ProgramDiffModal from './ProgramDiffModal';
 import { AssignProgramsToStudentDialog } from './AssignProgramsToStudentDialog';
+import { queryClient } from '../../api/client';
+import DEMO from '../../store/constant';
+import { useSnackBar } from '../../contexts/use-snack-bar';
 
 function SingleProgram() {
   const { data } = useLoaderData();
-  const { t } = useTranslation();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: deleteProgramV2,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['programs'] });
+      setSeverity('success');
+      setMessage('Delete the program successfully!');
+      setOpenSnackbar(true);
+      navigate(DEMO.PROGRAMS);
+    },
+    onError: (error) => {
+      setSeverity('error');
+      setMessage(error.message || 'An error occurred. Please try again.');
+      setOpenSnackbar(true);
+    }
+  });
+
   const [deleteProgramWarningOpen, setDeleteProgramWarningOpen] =
     useState(false);
   const [modalShowAssignWindowOpen, setModalShowAssignWindow] = useState(false);
   const [singleProgramState, setSingleProgramState] = useState({
     error: '',
-    isLoaded: false,
-    isEdit: false,
     isReport: false,
     modalShowAssignSuccessWindow: false,
     modalShowDiffWindow: false,
@@ -42,13 +52,6 @@ function SingleProgram() {
     res_modal_status: 0
   });
 
-  const onHideAssignSuccessWindow = () => {
-    setSingleProgramState((prevState) => ({
-      ...prevState,
-      modalShowAssignSuccessWindow: false
-    }));
-  };
-
   const setDiffModal = (show = true) => {
     return () => {
       setSingleProgramState((prevState) => ({
@@ -57,42 +60,8 @@ function SingleProgram() {
       }));
     };
   };
-
-  const RemoveProgramHandler = (program_id) => {
-    deleteProgram(program_id).then(
-      (resp) => {
-        const { success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setDeleteProgramWarningOpen(false);
-          setSingleProgramState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            isDeleted: true,
-            success: success,
-            isEdit: !singleProgramState.isEdit,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setSingleProgramState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_status: status,
-            res_modal_message: message
-          }));
-        }
-      },
-      (error) => {
-        setSingleProgramState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
-        }));
-      }
-    );
+  const RemoveProgramHandlerV2 = (program_id) => {
+    mutate({ program_id });
   };
 
   const programListAssistant = () => {
@@ -101,19 +70,6 @@ function SingleProgram() {
       () => {}
     );
   };
-
-  // if (isDeleted) {
-  //   return (
-  //     <Card sx={{ p: 2 }}>
-  //       <Typography variant="h5">The program is deleted</Typography>
-  //       <Typography>
-  //         <LinkDom to={`${DEMO.PROGRAMS}`}>
-  //           Click me back to the program list
-  //         </LinkDom>
-  //       </Typography>
-  //     </Card>
-  //   );
-  // }
 
   return (
     <Box data-testid="single_program_page">
@@ -136,7 +92,8 @@ function SingleProgram() {
                 setDeleteProgramWarningOpen={setDeleteProgramWarningOpen}
                 uni_name={loadedData.data.school}
                 program_name={loadedData.data.program_name}
-                RemoveProgramHandler={RemoveProgramHandler}
+                RemoveProgramHandler={RemoveProgramHandlerV2}
+                isPending={isPending}
                 program_id={loadedData.data._id?.toString()}
               />
               <AssignProgramsToStudentDialog
@@ -145,30 +102,6 @@ function SingleProgram() {
                 programs={[loadedData.data]}
                 handleOnSuccess={() => setModalShowAssignWindow(false)}
               />
-              <Dialog
-                open={singleProgramState.modalShowAssignSuccessWindow}
-                onClose={onHideAssignSuccessWindow}
-                aria-labelledby="contained-modal-title-vcenter"
-              >
-                <DialogTitle>{t('Success', { ns: 'common' })}</DialogTitle>
-                <DialogContent>
-                  <DialogContentText>
-                    {t('Program(s) assigned to student successfully!', {
-                      ns: 'programList'
-                    })}
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    onClick={onHideAssignSuccessWindow}
-                  >
-                    {t('Close', { ns: 'common' })}
-                  </Button>
-                </DialogActions>
-              </Dialog>
-
               {singleProgramState.modalShowDiffWindow && (
                 <ProgramDiffModal
                   open={singleProgramState.modalShowDiffWindow}

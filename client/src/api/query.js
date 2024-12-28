@@ -5,7 +5,9 @@ import {
   getProgramV2,
   getStudentsAndDocLinks2,
   getStudentsV2,
-  getStatisticsV2
+  getStatisticsV2,
+  getAllActiveStudentsV2,
+  getAllStudentsV2
 } from '.';
 
 export const getProgramQuery = ({ programId }) => ({
@@ -23,6 +25,18 @@ export const getProgramTicketsQuery = ({ type, status }) => ({
 export const getStatisticsQuery = () => ({
   queryKey: ['statistics'],
   queryFn: getStatisticsV2,
+  staleTime: 1000 * 60 * 5 // 5 minutes
+});
+
+export const getAllActiveStudentsQuery = () => ({
+  queryKey: ['students/all/active'],
+  queryFn: () => getAllActiveStudentsV2(),
+  staleTime: 1000 * 60 * 1 // 1 minutes
+});
+
+export const getAllStudentsQuery = () => ({
+  queryKey: ['students/all'],
+  queryFn: () => getAllStudentsV2(),
   staleTime: 1000 * 60 * 5 // 5 minutes
 });
 

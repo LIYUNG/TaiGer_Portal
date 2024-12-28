@@ -1,14 +1,12 @@
 import { defer, json } from 'react-router-dom';
 import {
   getStudents,
-  getAllActiveStudents,
   getArchivStudents,
   getAllArchivedStudents,
   getStudentAndDocLinks,
   getApplicationStudent,
   getMyAcademicBackground,
   getAllActiveEssays,
-  getAllStudents,
   getStudentUniAssist,
   getComplaintsTickets,
   getComplaintsTicket,
@@ -20,6 +18,8 @@ import {
   getCommunicationThread,
   getProgram
 } from '.';
+import { queryClient } from './client';
+import { getAllActiveStudentsQuery, getAllStudentsQuery } from './query';
 
 export async function getStudentsLoader() {
   const response = await getStudents();
@@ -30,13 +30,8 @@ export async function getStudentsLoader() {
   }
 }
 
-export async function getAllStudentsLoader() {
-  const response = await getAllStudents();
-  if (response.status >= 400) {
-    throw json({ message: response.statusText }, { status: response.status });
-  } else {
-    return response;
-  }
+export async function getAllStudentsV2Loader() {
+  return queryClient.fetchQuery(getAllStudentsQuery());
 }
 
 export async function getAllActiveEssaysLoader() {
@@ -97,17 +92,8 @@ export function getAllComplaintTicketsLoader() {
 
 //
 
-export async function AllActiveStudentsLoader() {
-  const response = await getAllActiveStudents();
-  if (response.status >= 400) {
-    throw json({ message: response.statusText }, { status: response.status });
-  } else {
-    return response.data.data;
-  }
-}
-
-export function getAllActiveStudentsLoader() {
-  return defer({ students: AllActiveStudentsLoader() });
+export async function AllActiveStudentsV2Loader() {
+  return queryClient.fetchQuery(getAllActiveStudentsQuery());
 }
 
 export async function getStudentUniAssistLoader() {

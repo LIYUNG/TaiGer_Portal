@@ -1,7 +1,6 @@
 import React from 'react';
 import { appConfig } from './config';
 import {
-  getAllActiveStudentsLoader,
   getApplicationStudentLoader,
   getMyAcademicBackgroundLoader,
   getStudentAndDocLinksLoader,
@@ -9,7 +8,7 @@ import {
   // getEssaysLoader,
   combinedLoader,
   getAllActiveEssaysLoader,
-  getAllStudentsLoader,
+  getAllStudentsV2Loader,
   getAllArchivedStudentsLoader,
   getAllComplaintTicketsLoader,
   getComplaintTicketLoader,
@@ -19,7 +18,8 @@ import {
   getProgramsAndCourseKeywordSetsLoader,
   getProgramRequirementLoader,
   getCommunicationThreadLoader,
-  getProgramLoader
+  getProgramLoader,
+  AllActiveStudentsV2Loader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
@@ -275,13 +275,13 @@ const routes = [
     element: <ProgramRequirements />
   },
   {
-    path: '/courses/analysis/programs/requirements/new', //TODO: create the page
+    path: '/courses/analysis/programs/requirements/new',
     errorElement: <DefaultErrorPage />,
     loader: getProgramsAndCourseKeywordSetsLoader,
     element: <ProgramRequirementsNewIndex />
   },
   {
-    path: '/courses/analysis/programs/requirements/:requirementId', //TODO: create the page
+    path: '/courses/analysis/programs/requirements/:requirementId',
     errorElement: <DefaultErrorPage />,
     loader: getProgramRequirementLoader,
     element: <ProgramRequirementsEditIndex />
@@ -389,7 +389,7 @@ const routes = [
   {
     path: '/student-database',
     errorElement: <DefaultErrorPage />,
-    loader: getAllStudentsLoader,
+    loader: getAllStudentsV2Loader,
     element: <StudentDatabase />
   },
   {
@@ -479,7 +479,7 @@ const routes = [
   {
     path: '/all-base-documents',
     errorElement: <DefaultErrorPage />,
-    loader: getAllActiveStudentsLoader,
+    loader: AllActiveStudentsV2Loader,
     element: <AllBaseDocuments />
   },
   {
@@ -570,7 +570,7 @@ const routes = [
   {
     path: '/all-students-applications',
     errorElement: <DefaultErrorPage />,
-    loader: getAllActiveStudentsLoader,
+    loader: AllActiveStudentsV2Loader,
     element: <AllApplicantsOverview />
   },
   {
@@ -599,7 +599,7 @@ const routes = [
   {
     path: '/students-overview/all',
     errorElement: <DefaultErrorPage />,
-    loader: getAllActiveStudentsLoader,
+    loader: AllActiveStudentsV2Loader,
     element: <StudentOverviewPage />
   },
   {

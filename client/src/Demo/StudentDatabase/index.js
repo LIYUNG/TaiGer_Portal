@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, Link as LinkDom, useLoaderData } from 'react-router-dom';
+import { Navigate, Link as LinkDom } from 'react-router-dom';
 import { Box, Breadcrumbs, Card, Link, Typography } from '@mui/material';
 import { is_TaiGer_role } from '@taiger-common/core';
 
@@ -11,13 +11,16 @@ import { appConfig } from '../../config';
 import useStudents from '../../hooks/useStudents';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
+import { getAllStudentsQuery } from '../../api/query';
 
 function StudentDatabase() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const {
     data: { data: fetchedAllStudents }
-  } = useLoaderData();
+  } = useQuery(getAllStudentsQuery());
+
   const {
     res_modal_status,
     res_modal_message,

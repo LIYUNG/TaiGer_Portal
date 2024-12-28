@@ -9,6 +9,7 @@ import { useAuth } from '../../components/AuthProvider/index';
 import { MemoryRouter, RouterProvider, createMemoryRouter } from 'react-router-dom';
 
 import { mockSingleData } from '../../test/testingStudentData';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 jest.mock('axios');
 jest.mock('../../api');
@@ -24,6 +25,22 @@ jest.mock('react-i18next', () => ({
 }));
 
 jest.mock('../../components/AuthProvider');
+
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false // Disable retries for faster tests
+      }
+    }
+  });
+
+const renderWithQueryClient = (ui) => {
+  const testQueryClient = createTestQueryClient();
+  return render(
+    <QueryClientProvider client={testQueryClient}>{ui}</QueryClientProvider>
+  );
+};
 
 class ResizeObserver {
   observe() {}
@@ -52,7 +69,7 @@ describe('StudentOverviewPage', () => {
     const router = createMemoryRouter(routes, {
       initialEntries: ['/students-overview/all']
     });
-    render(<RouterProvider router={router} />);
+    renderWithQueryClient(<RouterProvider router={router} />);
 
     await waitFor(() => {
       // TODO

@@ -61,9 +61,12 @@ export const getStudents = () => request.get(`/api/students`);
 export const getStudentsV2 = () => getData(`/api/students`);
 
 export const getAllStudents = () => request.get(`/api/students/all`);
+export const getAllStudentsV2 = () => getData(`/api/students/all`);
 
 export const getAllActiveStudents = () =>
   request.get(`/api/students/all/active`);
+
+export const getAllActiveStudentsV2 = () => getData(`/api/students/all/active`);
 
 export const getAllArchivedStudents = () =>
   request.get(`/api/students/all/archiv`);
@@ -370,7 +373,6 @@ export const deleteInternalDocumentation = (doc_id) =>
   request.delete(`/api/docs/internal/${doc_id}`);
 
 // Program APIs
-export const getPrograms = () => request.get('/api/programs');
 export const getProgramsV2 = () => getData('/api/programs');
 export const getDistinctSchools = () => request.get('/api/programs/schools');
 export const updateSchoolAttributes = (schoolAttributes) =>
@@ -613,7 +615,7 @@ export const updateOfficehours = (user_id, officehours, timezone) =>
 
 // Teams
 export const getTeamMembers = () => request.get('/api/teams');
-export const getStatistics = () => request.get('/api/teams/statistics');
+export const getStatisticsV2 = () => getData('/api/teams/statistics');
 export const getResponseIntervalByStudent = (studentId) =>
   request.get(`/api/teams/response-interval/${studentId}`);
 
@@ -739,9 +741,12 @@ export const updateProgramTicket = (ticket_id, updatedTicket) =>
   request.put(`/api/tickets/${ticket_id}`, updatedTicket);
 export const deleteProgramTicket = (ticket_id) =>
   request.delete(`/api/tickets/${ticket_id}`);
-// TODO
+
 export const getProgramTickets = (type, status) =>
   request.get(`/api/tickets?type=${type}&status=${status}`);
+
+export const getProgramTicketsV2 = ({ type, status }) =>
+  getData(`/api/tickets?type=${type}&status=${status}`);
 
 // Complaint
 export const createComplaintTicket = (ticket) =>

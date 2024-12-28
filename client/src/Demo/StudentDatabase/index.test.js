@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import StudentDatabase from '.';
 import 'react-i18next';
-import { getAllStudents, getProgramTickets } from '../../api';
+import { getProgramTickets } from '../../api';
 import axios from 'axios';
 import { useAuth } from '../../components/AuthProvider/index';
 import {
@@ -18,6 +18,11 @@ const students = [
   { firstname: 'student2', lastname: 'Lin', role: 'Student' }
 ];
 import { mockSingleData } from '../../test/testingStudentData';
+import {
+  useQuery,
+  QueryClient,
+  QueryClientProvider
+} from '@tanstack/react-query';
 
 jest.mock('axios');
 jest.mock('../../api');
@@ -33,7 +38,26 @@ jest.mock('react-i18next', () => ({
 }));
 
 jest.mock('../../components/AuthProvider');
-const mockedAxios = jest.Mocked;
+jest.mock('@tanstack/react-query', () => ({
+  ...jest.requireActual('@tanstack/react-query'),
+  useQuery: jest.fn()
+}));
+
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false // Disable retries for faster tests
+      }
+    }
+  });
+
+const renderWithQueryClient = (ui) => {
+  const testQueryClient = createTestQueryClient();
+  return render(
+    <QueryClientProvider client={testQueryClient}>{ui}</QueryClientProvider>
+  );
+};
 
 class ResizeObserver {
   observe() {}
@@ -55,16 +79,21 @@ const routes = [
 describe('StudentDatabase', () => {
   window.ResizeObserver = ResizeObserver;
   test('Student dashboard not crash', async () => {
-    getAllStudents.mockResolvedValue({ data: mockSingleData });
     getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
     useAuth.mockReturnValue({
       user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
     });
 
+    useQuery.mockImplementation(() => ({
+      data: mockSingleData,
+      isLoading: false,
+      isError: false
+    }));
+
     const router = createMemoryRouter(routes, {
       initialEntries: ['/student-database']
     });
-    render(<RouterProvider router={router} />);
+    renderWithQueryClient(<RouterProvider router={router} />);
 
     // Example
     // const buttonElement = screen.getByRole('button');

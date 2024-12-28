@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Alert,
   Box,
@@ -14,63 +14,17 @@ import {
 } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 
-import { getProgramTickets } from '../../api';
-import ErrorPage from '../Utils/ErrorPage';
 import DEMO from '../../store/constant';
 import { useTranslation } from 'react-i18next';
+import { getProgramTicketsQuery } from '../../api/query';
+import { useQuery } from '@tanstack/react-query';
 
 function ProgramReportCard() {
   const { t } = useTranslation();
-  const [programReportCardState, setProgramReportCardState] = useState({
-    isReport: false,
-    isReportDelete: false,
-    isUpdateReport: false,
-    description: '',
-    isLoaded: false,
-    tickets: [],
-    ticket: {},
-    res_status: 0,
-    res_modal_message: '',
-    res_modal_status: 0
+  const { data, isLoading } = useQuery({
+    ...getProgramTicketsQuery({ type: 'program', status: 'open' })
   });
-
-  useEffect(() => {
-    getProgramTickets('program', 'open').then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setProgramReportCardState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            tickets: data,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          setProgramReportCardState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
-        setProgramReportCardState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_status: 500
-        }));
-      }
-    );
-  }, []);
-
-  const { res_status, isLoaded } = programReportCardState;
-  if (res_status >= 400) {
-    return <ErrorPage res_status={res_status} />;
-  }
-  if (!isLoaded) {
+  if (isLoading) {
     return (
       <Card style={{ height: '40vh', position: 'relative' }}>
         <Box
@@ -86,48 +40,44 @@ function ProgramReportCard() {
       </Card>
     );
   }
-  if (
-    !programReportCardState.tickets ||
-    programReportCardState.tickets?.length === 0
-  ) {
-    return <></>;
-  }
+  const tickets = data?.data || [];
 
-  const tickets = programReportCardState.tickets.map((ticket, i) => (
-    <TableRow key={i}>
-      <TableCell>
-        <Link
-          to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
-          component={LinkDom}
-        >
-          {i + 1}.
-        </Link>
-      </TableCell>
-      <TableCell>
-        <Link
-          to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
-          component={LinkDom}
-          title={`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`}
-        >
-          {`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`.substring(
-            0,
-            30
-          )}
-          {`...`}
-        </Link>
-      </TableCell>
-      <TableCell>
-        <Link
-          to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
-          component={LinkDom}
-          title={ticket.description}
-        >
-          {`${ticket.description}`.substring(0, 50)}
-          {ticket.description?.length > 50 ? ` ...` : ''}
-        </Link>
-      </TableCell>
-    </TableRow>
-  ));
+  const Tickets = () =>
+    tickets.map((ticket, i) => (
+      <TableRow key={i}>
+        <TableCell>
+          <Link
+            to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
+            component={LinkDom}
+          >
+            {i + 1}.
+          </Link>
+        </TableCell>
+        <TableCell>
+          <Link
+            to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
+            component={LinkDom}
+            title={`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`}
+          >
+            {`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`.substring(
+              0,
+              30
+            )}
+            {`...`}
+          </Link>
+        </TableCell>
+        <TableCell>
+          <Link
+            to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
+            component={LinkDom}
+            title={ticket.description}
+          >
+            {`${ticket.description}`.substring(0, 50)}
+            {ticket.description?.length > 50 ? ` ...` : ''}
+          </Link>
+        </TableCell>
+      </TableRow>
+    ));
   return (
     <Card style={{ height: '40vh', overflow: 'auto' }}>
       <Alert severity="error">
@@ -143,7 +93,9 @@ function ProgramReportCard() {
             <TableCell>{t('Description', { ns: 'common' })}</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>{tickets}</TableBody>
+        <TableBody>
+          <Tickets />
+        </TableBody>
       </Table>
     </Card>
   );

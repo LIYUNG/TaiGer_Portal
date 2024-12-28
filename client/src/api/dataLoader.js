@@ -278,7 +278,7 @@ export function getProgramRequirementsLoader() {
 
 ///
 
-export async function ProgramsLoader({ params }) {
+export async function ProgramLoader({ params }) {
   const { programId } = params;
 
   const response = await getProgram(programId);
@@ -291,5 +291,5 @@ export async function ProgramsLoader({ params }) {
 
 export function getProgramLoader({ params }) {
   // { data, success, students, vc } = resp.data;
-  return defer({ data: ProgramsLoader({ params }) });
+  return defer({ data: ProgramLoader({ params }) });
 }

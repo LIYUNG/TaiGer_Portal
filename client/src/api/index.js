@@ -739,9 +739,12 @@ export const updateProgramTicket = (ticket_id, updatedTicket) =>
   request.put(`/api/tickets/${ticket_id}`, updatedTicket);
 export const deleteProgramTicket = (ticket_id) =>
   request.delete(`/api/tickets/${ticket_id}`);
-// TODO
+
 export const getProgramTickets = (type, status) =>
   request.get(`/api/tickets?type=${type}&status=${status}`);
+
+export const getProgramTicketsV2 = ({ type, status }) =>
+  getData(`/api/tickets?type=${type}&status=${status}`);
 
 // Complaint
 export const createComplaintTicket = (ticket) =>

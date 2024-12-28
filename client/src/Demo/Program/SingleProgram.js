@@ -140,10 +140,10 @@ function SingleProgram() {
                 program_id={loadedData.data._id?.toString()}
               />
               <AssignProgramsToStudentDialog
-                open={() => modalShowAssignWindowOpen(true)}
-                onClose={() => modalShowAssignWindowOpen(false)}
+                open={modalShowAssignWindowOpen}
+                onClose={() => setModalShowAssignWindow(false)}
                 programs={[loadedData.data]}
-                handleOnSuccess={() => modalShowAssignWindowOpen(false)}
+                handleOnSuccess={() => setModalShowAssignWindow(false)}
               />
               <Dialog
                 open={singleProgramState.modalShowAssignSuccessWindow}

@@ -6,7 +6,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Checkbox,
   Chip,
   createFilterOptions,
   Grid,
@@ -17,14 +16,14 @@ import {
 import { Link as LinkDom, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 import DEMO from '../../../store/constant';
 import { postProgramRequirements, putProgramRequirement } from '../../../api';
-import { PROGRAM_ANALYSIS_ATTRIBUTES } from '../../Utils/contants';
+import {
+  // PROGRAM_ANALYSIS_ATTRIBUTES,
+  PROGRAM_SUBJECTS_DETAILED
+} from '../../Utils/contants';
+import SearchableMultiSelect from '../../../components/Input/searchableMuliselect';
 
 const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
   const { requirementId } = useParams();
@@ -50,12 +49,13 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
 
   const navigate = useNavigate();
 
-  const onAttributesChange = (e, newValues) => {
+  const handleChangeByField = (field) => (value) => {
     setCheckboxState((prevState) => ({
       ...prevState,
-      updateAttributesList: newValues
+      [field]: value
     }));
   };
+
   const handleAddCategory = () => {
     setProgramCategories([
       ...programCategories,
@@ -204,37 +204,13 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
               size="small"
             />
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <Autocomplete
-              multiple
-              options={PROGRAM_ANALYSIS_ATTRIBUTES}
-              disableCloseOnSelect
-              getOptionLabel={(option) => option.name}
-              value={checkboxState.updateAttributesList || []}
-              onChange={(e, newValue) => onAttributesChange(e, newValue)}
-              isOptionEqualToValue={(option, value) =>
-                option.value === value.value
-              }
-              fullWidth
-              renderOption={(props, option, { selected }) => (
-                <li {...props}>
-                  <Checkbox
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    style={{ marginRight: 8 }}
-                    checked={selected}
-                  />
-                  {option.name}
-                </li>
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  label="Attribute"
-                  placeholder="Demanding"
-                />
-              )}
+          <Box>
+            <SearchableMultiSelect
+              name="updateAttributesList"
+              label={null}
+              data={PROGRAM_SUBJECTS_DETAILED}
+              value={checkboxState?.updateAttributesList}
+              setValue={handleChangeByField('updateAttributesList')}
             />
           </Box>
           <Box>

@@ -3,6 +3,7 @@ const {
   Types: { ObjectId }
 } = require('mongoose');
 const { programRequirementAttributeSchema } = require('./common');
+const { PROGRAM_SUBJECT_KEYS } = require('../constants');
 
 const programRequirementSchema = new Schema(
   {
@@ -30,8 +31,8 @@ const programRequirementSchema = new Schema(
     ],
     attributes: [
       {
-        type: programRequirementAttributeSchema,
-        required: true
+        type: String,
+        enum: PROGRAM_SUBJECT_KEYS
       }
     ],
     fpso: {

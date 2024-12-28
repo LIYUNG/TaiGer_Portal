@@ -1,5 +1,4 @@
 import {
-  Alert,
   Box,
   Button,
   Checkbox,
@@ -11,7 +10,6 @@ import {
   FormControlLabel,
   List,
   ListItem,
-  Snackbar,
   Typography
 } from '@mui/material';
 import { getStudentsQuery } from '../../api/query';
@@ -19,6 +17,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { assignProgramToStudentV2 } from '../../api';
 import { useTranslation } from 'react-i18next';
+import { useSnackBar } from '../../contexts/use-snack-bar';
 
 export const AssignProgramsToStudentDialog = ({
   open,
@@ -37,9 +36,7 @@ export const AssignProgramsToStudentDialog = ({
     enabled: open // Only fetch data when the modal is open
   });
   let [studentId, setStudentId] = useState('');
-  let [openSnackbar, setOpenSnackbar] = useState(false);
-  const [severity, setSeverity] = useState('success'); // 'success' or 'error'
-  const [message, setMessage] = useState('');
+  const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
   const {
     mutate,
     isPending,
@@ -131,27 +128,17 @@ export const AssignProgramsToStudentDialog = ({
             disabled={isPending || studentId === ''}
             onClick={(e) => handleSubmit(e)}
           >
-            {isPending ? <CircularProgress /> : t('Assign', { ns: 'common' })}
+            {isPending ? (
+              <CircularProgress size={20} />
+            ) : (
+              t('Assign', { ns: 'common' })
+            )}
           </Button>
           <Button onClick={onClose} color="primary">
             {t('Close')}
           </Button>
         </DialogActions>
       </Dialog>
-      {/* Snackbar for feedback */}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert
-          onClose={() => setOpenSnackbar(false)}
-          severity={severity}
-          sx={{ width: '100%' }}
-        >
-          {message}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

@@ -85,6 +85,7 @@ const DEMO = {
   PROGRAMS: '/programs',
   SCHOOL_CONFIG: '/programs/config',
   NEW_PROGRAM: '/programs/create',
+  PROGRAM_EDIT: (program_id) => `/programs/${program_id}/edit`,
   KEYWORDS_EDIT: '/courses/analysis/keywords',
   KEYWORDS_NEW: '/courses/analysis/keywords/new',
   CREATE_NEW_PROGRAM_ANALYSIS: '/courses/analysis/programs/requirements/new',

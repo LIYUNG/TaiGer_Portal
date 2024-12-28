@@ -16,17 +16,15 @@ import {
   lighten,
   RadioGroup,
   FormControlLabel,
-  Radio,
-  Snackbar,
-  Alert
+  Radio
 } from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import 'react-datasheet-grid/dist/style.css';
-import { is_TaiGer_role } from '@taiger-common/core';
+import { is_TaiGer_role, PROGRAM_SUBJECTS } from '@taiger-common/core';
 
-import { PROGRAM_ANALYSIS_ATTRIBUTES, study_group } from '../Utils/contants';
+import { convertDateUXFriendly, study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
@@ -48,6 +46,7 @@ import {
   useMaterialReactTable
 } from 'material-react-table';
 import CourseAnalysisConfirmDialog from './CourseAnalysisConfirmDialog';
+import { useSnackBar } from '../../contexts/use-snack-bar';
 
 const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
   const [language, setLanguage] = useState('zh'); // 'en' for English, 'zh' for 中文
@@ -105,11 +104,23 @@ const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
       {
         accessorKey: 'attributes', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
         filterVariant: 'multi-select',
-        filterSelectOptions: PROGRAM_ANALYSIS_ATTRIBUTES.map(
-          (item) => item.value
-        ), //custom options list (as opposed to faceted list)
+        filterSelectOptions: Object.keys(PROGRAM_SUBJECTS), //custom options list (as opposed to faceted list)
         header: 'Attributes',
         size: 90
+        // Filter: ({ column }) => (
+        //   <MaterialReactTable.MRT_FilterDropdown
+        //     options={Object.keys(PROGRAM_SUBJECTS)}
+        //     onSelectChange={(selectedValues) => {
+        //       // Handle changes to the selected values here
+        //     }}
+        //     renderOption={(option, { selected }) => (
+        //       <MenuItem key={option} value={option}>
+        //         <Checkbox checked={selected} />
+        //         <ListItemText primary={PROGRAM_SUBJECTS[option]} />
+        //       </MenuItem>
+        //     )}
+        //   />
+        // )
       },
       {
         accessorKey: 'country', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
@@ -120,7 +131,7 @@ const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
       },
       {
         accessorKey: 'updatedAt', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
-        enableClickToCopy: true,
+        // enableClickToCopy: true,
         header: 'updatedAt',
         size: 90
       }
@@ -236,9 +247,7 @@ export default function CourseWidgetBody({ programRequirements }) {
   const { user } = useAuth();
   const { student_id } = useParams();
   const { t } = useTranslation();
-  const [severity, setSeverity] = useState('success'); // 'success' or 'error'
-  const [message, setMessage] = useState('');
-
+  const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
   let [statedata, setStatedata] = useState({
     error: '',
     isLoaded: true,
@@ -251,7 +260,6 @@ export default function CourseWidgetBody({ programRequirements }) {
       }
     ],
     analysis: {},
-    analysisSuccessModalWindowOpen: false,
     success: false,
     student: null,
     file: '',
@@ -325,11 +333,11 @@ export default function CourseWidgetBody({ programRequirements }) {
         if (success) {
           setSeverity('success');
           setMessage(t('Transcript analysed successfully!'));
+          setOpenSnackbar(true);
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
             analysis: data,
-            analysisSuccessModalWindowOpen: true,
             success: success,
             isAnalysing: false,
             res_modal_status: status
@@ -436,8 +444,9 @@ export default function CourseWidgetBody({ programRequirements }) {
       program_name: `${row.programId[0].school} ${row.programId[0].program_name} ${row.programId[0].degree}`,
       lang: `${row.programId[0].lang}`,
       degree: `${row.programId[0].degree}`,
-      attributes: `${row.attributes.map((item) => item.value).join('-')}`,
+      attributes: `${row.attributes.join('-')}`,
       country: `${row.programId[0].country}`,
+      updatedAt: convertDateUXFriendly(row.updatedAt),
       id: row._id // Map MongoDB _id to id property
       // other properties...
     };
@@ -461,11 +470,11 @@ export default function CourseWidgetBody({ programRequirements }) {
       if (success) {
         setSeverity('success');
         setMessage(t('Transcript analysed successfully!'));
+        setOpenSnackbar(true);
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
           analysis: data,
-          analysisSuccessModalWindowOpen: true,
           success: success,
           isAnalysing: false,
           res_modal_status: status
@@ -495,12 +504,6 @@ export default function CourseWidgetBody({ programRequirements }) {
     }
   };
 
-  const closeanalysisSuccessModal = () => {
-    setStatedata((state) => ({
-      ...state,
-      analysisSuccessModalWindowOpen: false
-    }));
-  };
   const columns = [
     {
       ...keyColumn('course_chinese', textColumn),
@@ -706,19 +709,6 @@ export default function CourseWidgetBody({ programRequirements }) {
           </Typography>
         </Card>
       </Box>
-      <Snackbar
-        open={statedata.analysisSuccessModalWindowOpen}
-        autoHideDuration={6000}
-        onClose={closeanalysisSuccessModal}
-      >
-        <Alert
-          onClose={closeanalysisSuccessModal}
-          severity={severity}
-          sx={{ width: '100%' }}
-        >
-          {message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 }

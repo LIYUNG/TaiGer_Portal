@@ -1,4 +1,11 @@
-import { BASE_URL, getData, postData, request } from './request';
+import {
+  BASE_URL,
+  deleteData,
+  getData,
+  postData,
+  putData,
+  request
+} from './request';
 
 export const login = (credentials) => request.post('/auth/login', credentials);
 
@@ -372,8 +379,14 @@ export const updateSchoolAttributes = (schoolAttributes) =>
 export const getProgram = (programId) =>
   request.get(`/api/programs/${programId}`);
 
+export const getProgramV2 = (programId) =>
+  getData(`/api/programs/${programId}`);
+
 export const deleteProgram = (programId) =>
   request.delete(`/api/programs/${programId}`);
+
+export const deleteProgramV2 = ({ program_id }) =>
+  deleteData(`/api/programs/${program_id}`);
 
 export const createProgram = (program) =>
   request.post('/api/programs', program);
@@ -383,6 +396,9 @@ export const createProgramV2 = ({ program }) =>
 
 export const updateProgram = (program) =>
   request.put(`/api/programs/${program._id}`, program);
+
+export const updateProgramV2 = ({ program }) =>
+  putData(`/api/programs/${program._id}`, program);
 
 export const getProgramChangeRequests = (programId) =>
   request.get(`/api/programs/${programId}/change-requests`);

@@ -18,7 +18,8 @@ import {
   getProgramRequirementsLoader,
   getProgramsAndCourseKeywordSetsLoader,
   getProgramRequirementLoader,
-  getCommunicationThreadLoader
+  getCommunicationThreadLoader,
+  getProgramLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
@@ -152,6 +153,9 @@ const StudentApplications = React.lazy(
   () => import('./Demo/StudentApplications/StudentApplicationsIndividual')
 );
 const SingleProgram = React.lazy(() => import('./Demo/Program/SingleProgram'));
+const ProgramEditPage = React.lazy(
+  () => import('./Demo/Program/ProgramEditPage')
+);
 const ProgramChangeRequestPage = React.lazy(
   () => import('./Demo/Program/ProgramChangeRequestPage')
 );
@@ -303,7 +307,7 @@ const routes = [
   {
     path: '/programs/:programId/change-requests',
     exact: true,
-    name: 'SingleProgram',
+    name: 'ProgramChangeRequestPage',
     Component: ProgramChangeRequestPage
   },
   {
@@ -324,7 +328,15 @@ const routes = [
     path: '/programs/:programId',
     exact: true,
     name: 'SingleProgram',
+    loader: getProgramLoader,
     Component: SingleProgram
+  },
+  {
+    path: '/programs/:programId/edit',
+    exact: true,
+    name: 'ProgramEditPage',
+    loader: getDistinctSchoolsLoader,
+    Component: ProgramEditPage
   },
   {
     path: '/document-modification/:documentsthreadId',

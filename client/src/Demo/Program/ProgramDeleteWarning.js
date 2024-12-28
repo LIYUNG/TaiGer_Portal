@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -14,7 +15,7 @@ function ProgramDeleteWarning(props) {
   return (
     <Dialog
       open={props.deleteProgramWarning}
-      onClose={props.setModalHideDDelete}
+      onClose={() => props.setDeleteProgramWarningOpen(false)}
       aria-labelledby="contained-modal-title-vcenter"
     >
       <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
@@ -30,14 +31,18 @@ function ProgramDeleteWarning(props) {
         <Button
           color="primary"
           variant="contained"
+          disabled={props.isPending}
           onClick={() => props.RemoveProgramHandler(props.program_id)}
+          startIcon={props.isPending ? <CircularProgress size={20} /> : null}
         >
-          {t('Yes', { ns: 'common' })}
+          {props.isPending
+            ? t('Deleting', { ns: 'common' })
+            : t('Yes', { ns: 'common' })}
         </Button>
         <Button
           color="secondary"
           variant="outlined"
-          onClick={props.setModalHideDDelete}
+          onClick={() => props.setDeleteProgramWarningOpen(false)}
         >
           {t('No', { ns: 'common' })}
         </Button>

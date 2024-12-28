@@ -4,7 +4,8 @@ import {
   getProgramTicketsV2,
   getProgramV2,
   getStudentsAndDocLinks2,
-  getStudentsV2
+  getStudentsV2,
+  getStatisticsV2
 } from '.';
 
 export const getProgramQuery = ({ programId }) => ({
@@ -17,6 +18,12 @@ export const getProgramTicketsQuery = ({ type, status }) => ({
   queryKey: ['tickets', { type, status }],
   queryFn: () => getProgramTicketsV2({ type, status }),
   staleTime: 1000 * 60 // 1 minutes
+});
+
+export const getStatisticsQuery = () => ({
+  queryKey: ['statistics'],
+  queryFn: getStatisticsV2,
+  staleTime: 1000 * 60 * 5 // 5 minutes
 });
 
 export const getProgramsQuery = () => ({

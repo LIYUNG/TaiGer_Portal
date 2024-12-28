@@ -370,7 +370,6 @@ export const deleteInternalDocumentation = (doc_id) =>
   request.delete(`/api/docs/internal/${doc_id}`);
 
 // Program APIs
-export const getPrograms = () => request.get('/api/programs');
 export const getProgramsV2 = () => getData('/api/programs');
 export const getDistinctSchools = () => request.get('/api/programs/schools');
 export const updateSchoolAttributes = (schoolAttributes) =>

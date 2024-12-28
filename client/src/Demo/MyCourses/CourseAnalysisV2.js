@@ -26,7 +26,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import { convertDate } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { WidgetanalyzedFileDownload } from '../../api';
+import { WidgetanalyzedFileV2Download } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
@@ -200,7 +200,7 @@ export default function CourseAnalysisV2() {
     res_modal_message: ''
   });
   useEffect(() => {
-    WidgetanalyzedFileDownload(user._id.toString()).then(
+    WidgetanalyzedFileV2Download(user._id.toString()).then(
       (resp) => {
         const { success, json } = resp.data;
         if (success) {

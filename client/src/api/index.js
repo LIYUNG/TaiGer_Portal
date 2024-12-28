@@ -218,7 +218,12 @@ export const WidgetTranscriptanalyserV2 = (language, courses, requirementIds) =>
   });
 
 export const WidgetanalyzedFileDownload = (adminId) =>
-  request.get(`/api/widgets/transcript/${adminId}`);
+  request.get(`/api/widgets/transcript/${adminId}`, {
+    responseType: 'blob'
+  });
+
+export const WidgetanalyzedFileV2Download = (adminId) =>
+  request.get(`/api/widgets/transcript/v2/${adminId}`);
 
 export const WidgetExportMessagePDF = (student_id) =>
   request.get(`/api/widgets/messages/export/${student_id}`, {

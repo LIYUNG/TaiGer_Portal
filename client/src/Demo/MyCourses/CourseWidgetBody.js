@@ -671,6 +671,27 @@ export default function CourseWidgetBody({ programRequirements }) {
                 ? t('Analysing', { ns: 'courses' })
                 : t('Analyse', { ns: 'courses' })}
             </Button>
+            <Typography>
+              {statedata.analysis && statedata.analysis.isAnalysed ? (
+                <>
+                  <Button
+                    onClick={onDownload}
+                    disabled={statedata.isDownloading}
+                  >
+                    {t('Download', { ns: 'common' })}
+                  </Button>
+                  <Link
+                    to={`${DEMO.INTERNAL_WIDGET_LINK(user._id.toString())}`}
+                    target="_blank"
+                    component={LinkDom}
+                  >
+                    {t('View Online', { ns: 'courses' })}
+                  </Link>
+                </>
+              ) : (
+                t('No analysis yet', { ns: 'courses' })
+              )}
+            </Typography>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
             <Box
@@ -688,25 +709,28 @@ export default function CourseWidgetBody({ programRequirements }) {
                 onAnalyseV2={onAnalyseV2}
               />
             </LocalizationProvider>
+            <Typography>
+              {statedata.analysis && statedata.analysis.isAnalysed ? (
+                <>
+                  <Button
+                    onClick={onDownload}
+                    disabled={statedata.isDownloading}
+                  >
+                    {t('Download', { ns: 'common' })}
+                  </Button>
+                  <Link
+                    to={`${DEMO.INTERNAL_WIDGET_V2_LINK(user._id.toString())}`}
+                    target="_blank"
+                    component={LinkDom}
+                  >
+                    {t('View Online', { ns: 'courses' })}
+                  </Link>
+                </>
+              ) : (
+                t('No analysis yet', { ns: 'courses' })
+              )}
+            </Typography>
           </CustomTabPanel>
-          <Typography>
-            {statedata.analysis && statedata.analysis.isAnalysed ? (
-              <>
-                <Button onClick={onDownload} disabled={statedata.isDownloading}>
-                  {t('Download', { ns: 'common' })}
-                </Button>
-                <Link
-                  to={`${DEMO.INTERNAL_WIDGET_LINK(user._id.toString())}`}
-                  target="_blank"
-                  component={LinkDom}
-                >
-                  {t('View Online', { ns: 'courses' })}
-                </Link>
-              </>
-            ) : (
-              t('No analysis yet', { ns: 'courses' })
-            )}
-          </Typography>
         </Card>
       </Box>
     </Box>

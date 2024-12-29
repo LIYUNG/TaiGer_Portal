@@ -3,9 +3,9 @@ import { Tabs, Tab, Box, Typography, Breadcrumbs } from '@mui/material';
 import PropTypes from 'prop-types';
 import { Navigate, Link as LinkDom, useLocation } from 'react-router-dom';
 import { Link } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import { is_TaiGer_role } from '@taiger-common/core';
 import { useQuery } from '@tanstack/react-query';
+import i18next from 'i18next';
 
 import { TabTitle } from '../../Utils/TabTitle';
 import DEMO from '../../../store/constant';
@@ -33,7 +33,6 @@ CustomTabPanel.propTypes = {
 
 function InternalDashboard() {
   const { user } = useAuth();
-  const { t } = useTranslation();
   const { hash } = useLocation();
   const { data, isLoading } = useQuery(getStatisticsQuery());
   const [value, setValue] = useState(
@@ -156,13 +155,13 @@ function InternalDashboard() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          {t('tenant-team', {
+          {i18next.t('tenant-team', {
             ns: 'common',
             tenant: appConfig.companyName
           })}
         </Typography>
         <Typography color="text.primary">
-          {t('tenant-dashboard', {
+          {i18next.t('tenant-dashboard', {
             ns: 'common',
             tenant: appConfig.companyName
           })}

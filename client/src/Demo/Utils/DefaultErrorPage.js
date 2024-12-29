@@ -2,11 +2,10 @@ import React from 'react';
 import { Box, Button, Card, Stack, Typography } from '@mui/material';
 import { useRouteError } from 'react-router-dom';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'; // Example icon from Material UI
-import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 
 function DefaultErrorPage() {
   const error = useRouteError();
-  const { t } = useTranslation();
 
   const getErrorMessage = () => {
     if (error?.status) {
@@ -46,7 +45,7 @@ function DefaultErrorPage() {
       >
         <ErrorOutlineIcon sx={{ fontSize: 48, color: 'error.main', mb: 2 }} />
         <Typography variant="h5" component="h1" sx={{ mb: 2 }}>
-          {t('something-went-wrong')}
+          {i18next.t('something-went-wrong')}
         </Typography>
         {getErrorMessage()}
         <Stack

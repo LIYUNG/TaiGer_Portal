@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { Link as LinkDom } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import {
   Button,
   CircularProgress,
@@ -17,6 +16,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
+import i18next from 'i18next';
 
 import DEMO from '../../../store/constant';
 import { useAuth } from '../../AuthProvider';
@@ -26,7 +26,6 @@ import {
 } from '../../../Demo/Utils/contants';
 
 export function CreateNewEventModal(props) {
-  const { t } = useTranslation();
   const [newEventDescription, setNewEventDescription] = useState('');
   const { user } = useAuth();
   const { available_termins } = props;
@@ -100,14 +99,14 @@ export function CreateNewEventModal(props) {
         </Typography>
         <FormControl fullWidth sx={{ my: 2 }}>
           <InputLabel id="time_slot">
-            {t('Time Slot', { ns: 'common' })}
+            {i18next.t('Time Slot', { ns: 'common' })}
           </InputLabel>
           <Select
             labelId="Time_Slot"
             name="Time_Slot"
             id="Time_Slot"
             value={props.newEventStart}
-            label={t('Time Slot', { ns: 'common' })}
+            label={i18next.t('Time Slot', { ns: 'common' })}
             onChange={props.handleUpdateTimeSlot}
           >
             {available_termins
@@ -131,7 +130,9 @@ export function CreateNewEventModal(props) {
           </Select>
         </FormControl>
         <FormControl fullWidth>
-          <InputLabel id="Choose_Student">{t('Choose Student')}</InputLabel>
+          <InputLabel id="Choose_Student">
+            {i18next.t('Choose Student')}
+          </InputLabel>
           <Select
             labelId="Choose_Student"
             name="Choose_Student"
@@ -166,10 +167,10 @@ export function CreateNewEventModal(props) {
           }
           onClick={handleCreateEvent}
         >
-          {props.BookButtonDisable ? <CircularProgress /> : t('Create')}
+          {props.BookButtonDisable ? <CircularProgress /> : i18next.t('Create')}
         </Button>
         <Button variant="outlined" onClick={props.handleNewEventModalClose}>
-          {t('Cancel', { ns: 'common' })}
+          {i18next.t('Cancel', { ns: 'common' })}
         </Button>
       </DialogActions>
     </Dialog>

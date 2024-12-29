@@ -7,11 +7,8 @@ import {
   TableCell,
   TableRow
 } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import { Link as LinkDom } from 'react-router-dom';
-
-import { UserlistHeader, convertDate, getDate } from '../Utils/contants';
-import DEMO from '../../store/constant';
+import i18next from 'i18next';
 import {
   is_TaiGer_Admin,
   is_TaiGer_Agent,
@@ -19,10 +16,12 @@ import {
   is_TaiGer_Student
 } from '@taiger-common/core';
 
+import { UserlistHeader, convertDate, getDate } from '../Utils/contants';
+import DEMO from '../../store/constant';
+
 function User(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const { t } = useTranslation();
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -44,7 +43,7 @@ function User(props) {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
               >
-                {t('Option', { ns: 'common' })}
+                {i18next.t('Option', { ns: 'common' })}
               </Button>
               <Menu
                 id="basic-menu"
@@ -65,7 +64,7 @@ function User(props) {
                     )
                   }
                 >
-                  {t('Set User as', { ns: 'common' })}
+                  {i18next.t('Set User as', { ns: 'common' })}
                 </MenuItem>
                 <MenuItem
                   onClick={() =>
@@ -78,8 +77,8 @@ function User(props) {
                   }
                 >
                   {props.user.archiv === true
-                    ? t('Activate', { ns: 'common' })
-                    : t('Archive', { ns: 'common' })}
+                    ? i18next.t('Activate', { ns: 'common' })
+                    : i18next.t('Archive', { ns: 'common' })}
                 </MenuItem>
                 <MenuItem
                   onClick={() =>
@@ -90,7 +89,7 @@ function User(props) {
                     )
                   }
                 >
-                  {t('Delete', { ns: 'common' })}
+                  {i18next.t('Delete', { ns: 'common' })}
                 </MenuItem>
               </Menu>
             </>
@@ -100,9 +99,9 @@ function User(props) {
           <TableCell key={k}>
             {typeof props.user[y.prop] == 'boolean' ? (
               props.user[y.prop] ? (
-                t('Yes', { ns: 'common' })
+                i18next.t('Yes', { ns: 'common' })
               ) : (
-                t('No', { ns: 'common' })
+                i18next.t('No', { ns: 'common' })
               )
             ) : is_TaiGer_Student(props.user) ? (
               <Link

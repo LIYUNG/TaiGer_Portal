@@ -2,12 +2,15 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { CustomDrawer } from './Drawer'; // Update the import path accordingly
 import { useAuth } from '../../components/AuthProvider/index';
-import { useTranslation } from 'react-i18next';
 import { BrowserRouter } from 'react-router-dom';
 
 // Mock the hooks
 jest.mock('../../components/AuthProvider/index', () => ({
   useAuth: jest.fn()
+}));
+
+jest.mock('i18next', () => ({
+  t: jest.fn((key) => key)
 }));
 
 jest.mock('react-i18next', () => ({

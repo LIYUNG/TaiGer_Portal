@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SendIcon from '@mui/icons-material/Send';
 import { is_TaiGer_role } from '@taiger-common/core';
-
-import EditorSimple from '../EditorJs/EditorSimple';
 import {
   Button,
   Grid,
@@ -12,12 +10,13 @@ import {
   Typography,
   Box
 } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
+
 import { CVMLRL_DOC_PRECHECK_STATUS_E } from '../../Demo/Utils/contants';
 import { useAuth } from '../AuthProvider';
+import EditorSimple from '../EditorJs/EditorSimple';
 
 function DocThreadEditor(props) {
-  const { t } = useTranslation();
   const { user } = useAuth();
   let [statedata, setStatedata] = useState({
     editorState: props.editorState
@@ -71,8 +70,8 @@ function DocThreadEditor(props) {
                       {props.checkResult[i][ky].value === undefined
                         ? CVMLRL_DOC_PRECHECK_STATUS_E.WARNING_SYMBOK
                         : props.checkResult[i][ky].value
-                        ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
-                        : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
+                          ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
+                          : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
                       {props.checkResult[i][ky].text}
                       {props.checkResult[i][ky].hasMetadata &&
                         props.checkResult[i][ky].metaData}
@@ -104,7 +103,7 @@ function DocThreadEditor(props) {
           statedata.editorState.blocks.length === 0 ||
           props.buttonDisabled ? (
             <Tooltip
-              title={t(
+              title={i18next.t(
                 'Please write some text to improve the communication and understanding.'
               )}
               placement="top"
@@ -114,7 +113,7 @@ function DocThreadEditor(props) {
                 variant="outlined"
                 startIcon={<SendIcon />}
               >
-                {t('Send', { ns: 'common' })}
+                {i18next.t('Send', { ns: 'common' })}
               </Button>
             </Tooltip>
           ) : (
@@ -124,7 +123,7 @@ function DocThreadEditor(props) {
               onClick={(e) => props.handleClickSave(e, statedata.editorState)}
               startIcon={<SendIcon />}
             >
-              {t('Send', { ns: 'common' })}
+              {i18next.t('Send', { ns: 'common' })}
             </Button>
           )}
         </Grid>

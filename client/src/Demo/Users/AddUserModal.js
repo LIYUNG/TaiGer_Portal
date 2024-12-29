@@ -11,10 +11,9 @@ import {
   Select,
   TextField
 } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 
 function AddUserModal(props) {
-  const { t } = useTranslation();
   const [addUserModal, setAddUserModal] = useState({ user_information: {} });
   const handleChange = (e) => {
     e.preventDefault();
@@ -40,13 +39,13 @@ function AddUserModal(props) {
 
   return (
     <Dialog open={props.addUserModalState} onClose={props.cloaseAddUserModal}>
-      <DialogTitle>{t('Add New User')}</DialogTitle>
+      <DialogTitle>{i18next.t('Add New User')}</DialogTitle>
       <DialogContent>
         <TextField
           name="firstname"
           required
           fullWidth
-          label={t('First Name (English)')}
+          label={i18next.t('First Name (English)')}
           type="text"
           placeholder="Shiao-Ming"
           onChange={(e) => handleChange(e)}
@@ -56,7 +55,7 @@ function AddUserModal(props) {
           name="lastname"
           required
           fullWidth
-          label={t('Last Name (English)')}
+          label={i18next.t('Last Name (English)')}
           type="text"
           placeholder="Chen"
           onChange={(e) => handleChange(e)}
@@ -66,7 +65,7 @@ function AddUserModal(props) {
           name="firstname_chinese"
           required
           fullWidth
-          label={t('名 (中文)')}
+          label={i18next.t('名 (中文)')}
           type="text"
           placeholder="小明"
           onChange={(e) => handleChange(e)}
@@ -76,7 +75,7 @@ function AddUserModal(props) {
           name="lastname_chinese"
           required
           fullWidth
-          label={t('姓 (中文)')}
+          label={i18next.t('姓 (中文)')}
           type="text"
           placeholder="陳"
           onChange={(e) => handleChange(e)}
@@ -84,17 +83,17 @@ function AddUserModal(props) {
         />
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel id="Application Count">
-            {t('Application Count')}
+            {i18next.t('Application Count')}
           </InputLabel>
           <Select
             labelId="Application Count"
             name="applying_program_count"
             id="Application Count"
             value={addUserModal.user_information?.applying_program_count || '0'}
-            label={t('Application Count')}
+            label={i18next.t('Application Count')}
             onChange={(e) => handleChange(e)}
           >
-            <MenuItem value="0">{t('Please Select')}</MenuItem>
+            <MenuItem value="0">{i18next.t('Please Select')}</MenuItem>
             <MenuItem value="1">1</MenuItem>
             <MenuItem value="2">2</MenuItem>
             <MenuItem value="3">3</MenuItem>
@@ -111,7 +110,7 @@ function AddUserModal(props) {
           name="email"
           required
           fullWidth
-          label={t('Email Address')}
+          label={i18next.t('Email Address')}
           type="text"
           placeholder="chung.ming.wang@gmail.com"
           onChange={(e) => handleChange(e)}
@@ -130,14 +129,14 @@ function AddUserModal(props) {
           }
           onClick={(e) => AddUserSubmit(e, addUserModal.user_information)}
         >
-          {props.isLoaded ? t('add-user') : t('Loading')}
+          {props.isLoaded ? i18next.t('add-user') : i18next.t('Loading')}
         </Button>
         <Button
           color="secondary"
           variant="outlined"
           onClick={props.cloaseAddUserModal}
         >
-          {t('Cancel', { ns: 'common' })}
+          {i18next.t('Cancel', { ns: 'common' })}
         </Button>
       </DialogActions>
     </Dialog>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { Alert, Card, Grid, Link, ListItem } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
+import i18next from 'i18next';
 
 import {
   isEnglishCertificateExpiredBeforeDeadline,
@@ -12,13 +12,12 @@ import {
 import DEMO from '../../store/constant';
 
 export default function EnglishCertificateExpiredBeforeDeadlineBanner(props) {
-  const { t } = useTranslation();
   return (
     isEnglishCertificateExpiredBeforeDeadline(props.student) && (
       <Grid item xs={12} md={12}>
         <Card sx={{ border: '4px solid red' }}>
           <Alert severity="warning">
-            {t('english-certificate-expired-before-application-deadlines', {
+            {i18next.t('english-certificate-expired-before-application-deadlines', {
               ns: 'common'
             })}
             &nbsp;:&nbsp;
@@ -41,7 +40,7 @@ export default function EnglishCertificateExpiredBeforeDeadlineBanner(props) {
                 {dayjs(
                   props.student.academic_background.language.english_test_date
                 )?.format('YYYY-MM-DD')}
-                {t('valid-only-two-years', {
+                {i18next.t('valid-only-two-years', {
                   ns: 'common'
                 })}
               </Link>

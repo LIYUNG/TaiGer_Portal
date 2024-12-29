@@ -1461,20 +1461,6 @@ export const DEGREE_ARRAY_OPTIONS = [
   { value: 'BachelorMaster', label: 'BachelorMaster' }
 ];
 
-export const is_not_started_tasks_status = (user, thread) => {
-  if (thread.isFinalVersion) {
-    return false;
-  }
-  if (
-    thread.latest_message_left_by_id === undefined ||
-    thread.latest_message_left_by_id === ''
-  ) {
-    return true;
-  }
-};
-export const is_started_tasks_status = (user, thread) => {
-  return !is_not_started_tasks_status(user, thread);
-};
 export const is_new_message_status = (user, thread) => {
   if (thread.isFinalVersion) {
     return false;
@@ -1535,31 +1521,6 @@ export const internal_documentation_categories = {
   'uniassist-internal': 'Uni-Assist Internal',
   others: 'Others'
 };
-
-export const studentOverviewTableHeader = [
-  'Target Year',
-  'First-/Lastname,Birthday',
-  'Agent',
-  'Editor',
-  'Graduated',
-  'Program Selection',
-  'Applications',
-  'Next Program to apply',
-  'Next Program deadline',
-  'Days left',
-  'Next Program status',
-  'Survey',
-  'Base Documents',
-  'Language',
-  'Course Analysis',
-  'CV',
-  'ML',
-  'RL',
-  'Essay',
-  'Portals',
-  'Uni-Assist',
-  'open/offer/reject'
-];
 
 export const col_keywords = [
   {

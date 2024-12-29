@@ -1,13 +1,12 @@
 import React from 'react';
 import DownloadIcon from '@mui/icons-material/Download';
 import { Button } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 
 import { BASE_URL } from '../../api/request';
 import PDFViewer from '../../components/PDFViewer/index';
 
 const FilePreview = ({ path, apiFilePath }) => {
-  const { t } = useTranslation();
   const fileExtension = path.split('.')[1]?.toLowerCase();
   return (
     <>
@@ -39,7 +38,7 @@ const FilePreview = ({ path, apiFilePath }) => {
                 color="secondary"
                 startIcon={<DownloadIcon />}
               >
-                {t('Download', { ns: 'common' })}
+                {i18next.t('Download', { ns: 'common' })}
               </Button>
             </a>
           </div>

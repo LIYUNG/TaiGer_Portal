@@ -172,7 +172,7 @@ const getEvents = asyncHandler(async (req, res, next) => {
         .model('Event')
         .find({
           $or: [{ requester_id: user._id }, { receiver_id: user._id }],
-          ...(Object.keys(timeFilter).length && { start: timeFilter })
+          ...(Object.keys(timeFilter).length && { end: timeFilter })
         })
         .populate('receiver_id requester_id', 'firstname lastname email')
         .lean(),

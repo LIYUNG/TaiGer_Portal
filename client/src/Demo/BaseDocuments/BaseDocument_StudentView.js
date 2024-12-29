@@ -13,10 +13,12 @@ import {
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import MyDocumentCard from './MyDocumentCard';
+import { useSnackBar } from '../../contexts/use-snack-bar';
 
 function BaseDocument_StudentView(props) {
   const { user } = useAuth();
   const { t } = useTranslation();
+  const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
 
   const [baseDocumentStudentViewState, setBaseDocumentStudentViewState] =
     useState({
@@ -74,6 +76,9 @@ function BaseDocument_StudentView(props) {
             deleteFileWarningModel: false,
             res_modal_status: status
           }));
+          setSeverity('success');
+          setMessage('Deleted file successfully!');
+          setOpenSnackbar(true);
         } else {
           // TODO: redesign, modal ist better!
           const { message } = resp.data;
@@ -89,6 +94,9 @@ function BaseDocument_StudentView(props) {
         }
       },
       (error) => {
+        setSeverity('error');
+        setMessage(error.message || 'An error occurred. Please try again.');
+        setOpenSnackbar(true);
         setBaseDocumentStudentViewState((prevState) => ({
           ...prevState,
           isLoaded: {
@@ -146,6 +154,9 @@ function BaseDocument_StudentView(props) {
             file: '',
             res_modal_status: status
           }));
+          setSeverity('success');
+          setMessage('Uploaded file successfully. Your agent is informed and will check it as soon as possible.');
+          setOpenSnackbar(true);
         } else {
           // TODO: what if data is oversize? data type not match?
           const { message } = resp.data;
@@ -161,6 +172,9 @@ function BaseDocument_StudentView(props) {
         }
       },
       (error) => {
+        setSeverity('error');
+        setMessage(error.message || 'An error occurred. Please try again.');
+        setOpenSnackbar(true);
         setBaseDocumentStudentViewState((prevState) => ({
           ...prevState,
           isLoaded: {

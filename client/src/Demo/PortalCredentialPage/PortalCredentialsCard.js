@@ -10,11 +10,7 @@ import {
   Card,
   Link,
   Typography,
-  TextField,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions
+  TextField
 } from '@mui/material';
 
 import ErrorPage from '../Utils/ErrorPage';
@@ -29,6 +25,7 @@ import {
   LinkableNewlineText,
   isProgramDecided
 } from '../Utils/checking-functions';
+import { useSnackBar } from '../../contexts/use-snack-bar';
 
 export default function PortalCredentialsCard(props) {
   const { t } = useTranslation();
@@ -38,7 +35,6 @@ export default function PortalCredentialsCard(props) {
     isUpdateLoaded: {},
     isChanged: {},
     applications: [],
-    confirmModalWindowOpen: false,
     success: false,
     student: null,
     credentials: {},
@@ -47,6 +43,7 @@ export default function PortalCredentialsCard(props) {
     res_modal_status: 0,
     res_modal_message: ''
   });
+  const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
 
   useEffect(() => {
     getPortalCredentials(props.student_id).then(
@@ -181,10 +178,16 @@ export default function PortalCredentialsCard(props) {
         const { success } = resp.data;
         const { status } = resp;
         if (success) {
+          setSeverity('success');
+          setMessage(
+            t('Update portal credentials successfully', {
+              ns: 'portalManagement'
+            })
+          );
+          setOpenSnackbar(true);
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
-            confirmModalWindowOpen: true,
             isChanged: { ...state.isChanged, [program_id]: false },
             isUpdateLoaded: { ...state.isUpdateLoaded, [program_id]: true },
             success: success,
@@ -203,6 +206,9 @@ export default function PortalCredentialsCard(props) {
         }
       },
       (error) => {
+        setSeverity('error');
+        setMessage(error.message || 'An error occurred. Please try again.');
+        setOpenSnackbar(true);
         setStatedata((state) => ({
           ...state,
           isLoaded: true,
@@ -221,13 +227,6 @@ export default function PortalCredentialsCard(props) {
       ...state,
       res_modal_status: 0,
       res_modal_message: ''
-    }));
-  };
-
-  const closeModal = () => {
-    setStatedata((state) => ({
-      ...state,
-      confirmModalWindowOpen: false
     }));
   };
 
@@ -479,19 +478,6 @@ export default function PortalCredentialsCard(props) {
           </Fragment>
         ))}
       </Card>
-      <Dialog open={statedata.confirmModalWindowOpen} onClose={closeModal}>
-        <DialogTitle>{t('Confirmation', { ns: 'common' })}</DialogTitle>
-        <DialogContent>
-          {t('Update portal credentials successfully', {
-            ns: 'portalManagement'
-          })}
-        </DialogContent>
-        <DialogActions>
-          <Button color="primary" variant="outlined" onClick={closeModal}>
-            {t('Close', { ns: 'common' })}
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 }

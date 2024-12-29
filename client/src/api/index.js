@@ -87,6 +87,9 @@ export const getApplicationStudent = (studentId) =>
 export const getStudentUniAssist = (studentId) =>
   request.get(`/api/uniassist/${studentId}`);
 
+export const getStudentUniAssistV2 = ({ studentId }) =>
+  getData(`/api/uniassist/${studentId}`);
+
 export const getArchivStudents = (TaiGerStaffId) =>
   request.get(`/api/teams/archiv/${TaiGerStaffId}`);
 
@@ -161,6 +164,9 @@ export const uploadVPDforstudent = (studentId, program_id, data, fileType) =>
 
 export const deleteVPDFile = (studentId, program_id, fileType) =>
   request.delete(`/api/students/${studentId}/vpd/${program_id}/${fileType}`);
+
+export const deleteVPDFileV2 = ({ studentId, program_id, fileType }) =>
+  deleteData(`/api/students/${studentId}/vpd/${program_id}/${fileType}`);
 
 export const SetAsNotNeeded = (studentId, program_id) =>
   request.put(`/api/students/${studentId}/vpd/${program_id}/VPD`);

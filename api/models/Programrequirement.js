@@ -38,6 +38,10 @@ const programRequirementSchema = new Schema(
     fpso: {
       type: String
     },
+    gpaScore: {
+      type: Number,
+      default: 0
+    },
     cvScore: {
       type: Number,
       default: 0

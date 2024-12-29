@@ -566,6 +566,15 @@ export default function CourseWidgetBody({ programRequirements }) {
           </Button>
           <Button
             variant="contained"
+            color="secondary"
+            component={LinkDom}
+            to={DEMO.PROGRAM_ANALYSIS}
+            sx={{ mr: 1 }}
+          >
+            {t('Program Requirements', { ns: 'common' })}
+          </Button>
+          <Button
+            variant="contained"
             component={LinkDom}
             to={`${DEMO.CREATE_NEW_PROGRAM_ANALYSIS}`}
             target="_blank"

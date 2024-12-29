@@ -602,7 +602,7 @@ export const SingleStudentPageMainContent = ({
               )}`}
               component={LinkDom}
               underline="hover"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               target="_blank"
             >
               <Button color="primary" variant="contained">

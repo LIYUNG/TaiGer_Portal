@@ -572,7 +572,7 @@ function MyDocumentCard(props) {
               }`}
               download
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               <Button
                 color="primary"

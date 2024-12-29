@@ -96,7 +96,7 @@ const AdmissionLetterLink = ({ application }) => {
           '/'
         )}`}
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         className="text-info"
       >
         {isProgramAdmitted(application)

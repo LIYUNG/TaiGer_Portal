@@ -865,7 +865,7 @@ const SurveyEditableComponent = (props) => {
                 }
                 target="_blank"
                 className="text-info"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 <Button
                   variant="outlined"

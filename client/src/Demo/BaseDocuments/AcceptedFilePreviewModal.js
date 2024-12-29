@@ -44,7 +44,7 @@ function AcceptProfileFileModel(props) {
             }`}
             download
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >
             <Button
               size="small"

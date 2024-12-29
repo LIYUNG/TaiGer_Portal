@@ -119,13 +119,14 @@ export const UniAssistProgramBlock = ({ application, student }) => {
     useState(false);
   const [notNeededModelOpen, setAsNotNeededModelOpen] = useState(false);
   const [applicationState, setApplicationState] = useState(application);
+  const handleMutationError = (error) => {
+    setSeverity('error');
+    setMessage(error.message || 'An error occurred. Please try again.');
+    setOpenSnackbar(true);
+  };
   const { mutate: mutateCheck, isPending: isChecking } = useMutation({
     mutationFn: SetUniAssistPaidV2,
-    onError: (error) => {
-      setSeverity('error');
-      setMessage(error.message || 'An error occurred. Please try again.');
-      setOpenSnackbar(true);
-    },
+    onError: handleMutationError,
     onSuccess: ({ data }) => {
       setSeverity('success');
       setMessage('VPD status marked successfully!');
@@ -137,11 +138,7 @@ export const UniAssistProgramBlock = ({ application, student }) => {
   });
   const { mutate: mutateUpdate, isPending: isUpdating } = useMutation({
     mutationFn: SetAsNotNeededV2,
-    onError: (error) => {
-      setSeverity('error');
-      setMessage(error.message || 'An error occurred. Please try again.');
-      setOpenSnackbar(true);
-    },
+    onError: handleMutationError,
     onSuccess: ({ data }) => {
       setSeverity('success');
       setMessage('VPD status updated successfully!');
@@ -153,11 +150,7 @@ export const UniAssistProgramBlock = ({ application, student }) => {
   });
   const { mutate: mutateUpload, isPending: isUploading } = useMutation({
     mutationFn: uploadVPDforstudentV2,
-    onError: (error) => {
-      setSeverity('error');
-      setMessage(error.message || 'An error occurred. Please try again.');
-      setOpenSnackbar(true);
-    },
+    onError: handleMutationError,
     onSuccess: ({ data }) => {
       setSeverity('success');
       setMessage('File uploaded successfully!');
@@ -169,11 +162,7 @@ export const UniAssistProgramBlock = ({ application, student }) => {
   });
   const { mutate: mutateDelete, isPending: isDeleting } = useMutation({
     mutationFn: deleteVPDFileV2,
-    onError: (error) => {
-      setSeverity('error');
-      setMessage(error.message || 'An error occurred. Please try again.');
-      setOpenSnackbar(true);
-    },
+    onError: handleMutationError,
     onSuccess: ({ data }) => {
       setSeverity('success');
       setMessage('File deleted successfully!');
@@ -184,25 +173,13 @@ export const UniAssistProgramBlock = ({ application, student }) => {
     }
   });
   const [uniAssistProgramBlockState, setUniAssistProgramBlockState] = useState({
-    error: '',
-    fileType: '',
-    student_id: '',
-    program_id: '',
-    isLoaded2: {},
-    isLoadedVPDConfirmation: {},
-    isLoaded: false,
-    student: student,
-    res_status: 0,
-    res_modal_message: '',
-    res_modal_status: 0
+    fileType: ''
   });
 
-  const onDeleteVPDFileWarningPopUp = (e, student_id, program_id, fileType) => {
+  const onDeleteVPDFileWarningPopUp = (e, fileType) => {
     e.preventDefault();
     setUniAssistProgramBlockState((prevState) => ({
       ...prevState,
-      student_id,
-      program_id,
       fileType
     }));
     setDeleteVPDFileWarningModelOpen(true);
@@ -229,8 +206,8 @@ export const UniAssistProgramBlock = ({ application, student }) => {
 
   const handleUniAssistDocDeleteV2 = () => {
     mutateDelete({
-      studentId: uniAssistProgramBlockState.student_id,
-      program_id: uniAssistProgramBlockState.program_id,
+      studentId: student._id.toString(),
+      program_id: application.programId._id.toString(),
       fileType: uniAssistProgramBlockState.fileType
     });
   };
@@ -269,8 +246,7 @@ export const UniAssistProgramBlock = ({ application, student }) => {
           {applicationState.uni_assist?.status ===
             DocumentStatusType.NotNeeded && (
             <Typography variant="string">
-              Uni-assist is not necessary as it can be reused from another
-              program.
+              {i18next.t('uni-assist-not-necessary', { ns: 'uniassist' })}
             </Typography>
           )}
           {applicationState.uni_assist?.status !==
@@ -297,7 +273,7 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                       onChange={(e) =>
                         onCheckHandlerV2(
                           e,
-                          uniAssistProgramBlockState.student._id.toString(),
+                          student._id.toString(),
                           applicationState.programId._id.toString(),
                           !applicationState.uni_assist.isPaid
                         )
@@ -330,7 +306,7 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                       disabled={isUploading}
                       startIcon={
                         isUploading ? (
-                          <CircularProgress size={16} />
+                          <CircularProgress size={20} />
                         ) : (
                           <CloudUploadIcon />
                         )
@@ -342,7 +318,7 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                         onChange={(e) =>
                           handleUniAssistDocSubmit(
                             e,
-                            uniAssistProgramBlockState.student._id.toString(),
+                            student._id.toString(),
                             applicationState.programId._id.toString()
                           )
                         }
@@ -350,31 +326,21 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                     </Button>
                   ) : (
                     <>
-                      <a
-                        href={`${BASE_URL}/api/students/${uniAssistProgramBlockState.student._id.toString()}/vpd/${applicationState.programId._id.toString()}/VPD`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <Button
-                          title="Download"
-                          disabled={!uniAssistProgramBlockState.isLoaded2}
-                          variant="contained"
-                          size="small"
-                          startIcon={<DownloadIcon />}
-                        >
-                          {i18next.t('Download', { ns: 'common' })} VPD
-                        </Button>
-                      </a>
                       <Button
-                        onClick={(e) =>
-                          onDeleteVPDFileWarningPopUp(
-                            e,
-                            uniAssistProgramBlockState.student._id.toString(),
-                            applicationState.programId._id.toString(),
-                            'VPD'
-                          )
-                        }
-                        disabled={!uniAssistProgramBlockState.isLoaded2}
+                        component={Link}
+                        href={`${BASE_URL}/api/students/${student._id.toString()}/vpd/${applicationState.programId._id.toString()}/VPD`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant="contained"
+                        size="small"
+                        startIcon={<DownloadIcon />}
+                        title={i18next.t('Download', { ns: 'common' })}
+                      >
+                        {i18next.t('Download', { ns: 'common' })} VPD
+                      </Button>
+                      <Button
+                        onClick={(e) => onDeleteVPDFileWarningPopUp(e, 'VPD')}
+                        disabled={isDeleting}
                         variant="contained"
                         color="error"
                         size="small"
@@ -405,7 +371,7 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                     ?.vpd_paid_confirmation_file_path === '' ? (
                     <>
                       {isUploading ? (
-                        <CircularProgress size={16} />
+                        <CircularProgress size={20} />
                       ) : (
                         <Button
                           component="label"
@@ -429,7 +395,7 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                             onChange={(e) =>
                               handleUniAssistVPDPaidConfirmationDocSubmit(
                                 e,
-                                uniAssistProgramBlockState.student._id.toString(),
+                                student._id.toString(),
                                 applicationState.programId._id.toString()
                               )
                             }
@@ -439,32 +405,23 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                     </>
                   ) : (
                     <>
-                      <a
-                        href={`${BASE_URL}/api/students/${uniAssistProgramBlockState.student._id.toString()}/vpd/${applicationState.programId._id.toString()}/VPDConfirmation`}
+                      <Button
+                        component={Link}
+                        href={`${BASE_URL}/api/students/${student._id.toString()}/vpd/${applicationState.programId._id.toString()}/VPDConfirmation`}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        startIcon={<DownloadIcon />}
+                        title={i18next.t('Download', { ns: 'common' })}
                       >
-                        <Button
-                          title="Download"
-                          variant="contained"
-                          color="primary"
-                          size="small"
-                          disabled={!uniAssistProgramBlockState.isLoaded2}
-                          startIcon={<DownloadIcon />}
-                        >
-                          {i18next.t('Download', { ns: 'common' })}
-                        </Button>
-                      </a>
-
+                        {i18next.t('Download', { ns: 'common' })}
+                      </Button>
                       <Button
                         color="error"
                         onClick={(e) =>
-                          onDeleteVPDFileWarningPopUp(
-                            e,
-                            uniAssistProgramBlockState.student._id.toString(),
-                            applicationState.programId._id.toString(),
-                            'VPDConfirmation'
-                          )
+                          onDeleteVPDFileWarningPopUp(e, 'VPDConfirmation')
                         }
                         disabled={isDeleting}
                         variant="contained"
@@ -510,12 +467,11 @@ export const UniAssistProgramBlock = ({ application, student }) => {
             color="secondary"
             disabled={isDeleting}
             onClick={() => handleUniAssistDocDeleteV2()}
+            startIcon={isDeleting && <CircularProgress size={20} />}
           >
-            {isDeleting ? (
-              <CircularProgress size={16} />
-            ) : (
-              i18next.t('Yes', { ns: 'common' })
-            )}
+            {isDeleting
+              ? i18next.t('Deleting', { ns: 'common' })
+              : i18next.t('Yes', { ns: 'common' })}
           </Button>
           <Button
             onClick={() => setDeleteVPDFileWarningModelOpen(false)}
@@ -544,9 +500,11 @@ export const UniAssistProgramBlock = ({ application, student }) => {
             variant="contained"
             disabled={isUpdating}
             onClick={handleSetAsNotNeededV2}
-            startIcon={isUpdating && <CircularProgress size={16} />}
+            startIcon={isUpdating && <CircularProgress size={20} />}
           >
-            {i18next.t('Yes', { ns: 'common' })}
+            {isUpdating
+              ? i18next.t('Updating', { ns: 'common' })
+              : i18next.t('Yes', { ns: 'common' })}
           </Button>
           <Button
             color="secondary"

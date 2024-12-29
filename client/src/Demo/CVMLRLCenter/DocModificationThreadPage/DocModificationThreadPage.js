@@ -918,7 +918,7 @@ function DocModificationThreadPage() {
                           <a
                             href={`${BASE_URL}/api/account/files/template/${'RL_academic_survey_lock'}`}
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                           >
                             <Button
                               variant="contained"
@@ -933,7 +933,7 @@ function DocModificationThreadPage() {
                           <a
                             href={`${BASE_URL}/api/account/files/template/${`RL_employer_survey_lock`}`}
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                           >
                             <Button
                               variant="contained"
@@ -950,7 +950,7 @@ function DocModificationThreadPage() {
                           <a
                             href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                           >
                             <Button
                               variant="contained"

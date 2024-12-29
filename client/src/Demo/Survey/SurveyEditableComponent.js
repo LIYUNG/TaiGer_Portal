@@ -292,11 +292,11 @@ const SurveyEditableComponent = (props) => {
                         .high_school_isGraduated === 'Yes'
                         ? t('High School Graduate Year')
                         : survey.academic_background?.university
-                            .high_school_isGraduated === 'No'
-                        ? t('High School Graduate leaved Year')
-                        : survey.academic_background?.university
-                            ?.high_school_isGraduated === 'pending' &&
-                          t('Expected High School Graduate Year')
+                              .high_school_isGraduated === 'No'
+                          ? t('High School Graduate leaved Year')
+                          : survey.academic_background?.university
+                              ?.high_school_isGraduated === 'pending' &&
+                            t('Expected High School Graduate Year')
                     }`}
                     variant="outlined"
                     placeholder="2016"
@@ -429,9 +429,9 @@ const SurveyEditableComponent = (props) => {
                             .isGraduated === 'No'
                             ? t('Leaved Year')
                             : survey?.academic_background?.university
-                                .isGraduated === 'Yes'
-                            ? t('Graduated Year')
-                            : t('Expected Graduate Year')
+                                  .isGraduated === 'Yes'
+                              ? t('Graduated Year')
+                              : t('Expected Graduate Year')
                         }`}
                         onChange={(e) => handleChangeAcademic(e)}
                       >
@@ -681,9 +681,9 @@ const SurveyEditableComponent = (props) => {
                                 .isSecondGraduated === 'No'
                                 ? t('Leaved Year')
                                 : survey?.academic_background?.university
-                                    .isSecondGraduated === 'Yes'
-                                ? t('Graduated Year')
-                                : t('Expected Graduate Year')
+                                      .isSecondGraduated === 'Yes'
+                                  ? t('Graduated Year')
+                                  : t('Expected Graduate Year')
                             }`}
                             onChange={(e) => handleChangeAcademic(e)}
                           >

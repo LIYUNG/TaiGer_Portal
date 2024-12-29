@@ -535,14 +535,17 @@ export const MissingSurveyFieldsListArray = ({
     if (!application_preference.expected_application_semester) {
       missingFields.push('Expected Application Semester');
     }
-    if (!application_preference.target_application_field) {
-      missingFields.push('Target Application Fields');
-    }
     if (!application_preference.target_program_language) {
       missingFields.push('Target Program Language');
     }
     if (!application_preference.target_degree) {
       missingFields.push('Target Degree Programs');
+    }
+    if (
+      !application_preference.targetApplicationSubjects ||
+      application_preference.targetApplicationSubjects?.length === 0
+    ) {
+      missingFields.push('Target Application Subjects');
     }
     if (application_preference.considered_privat_universities === '-') {
       missingFields.push(
@@ -858,25 +861,24 @@ export const check_application_preference_filled = (application_preference) => {
   if (!application_preference) {
     return false;
   }
-  // TODO: can add more mandatory field
   const {
     expected_application_date,
     expected_application_semester,
-    target_application_field,
     target_program_language,
     target_degree,
     considered_privat_universities,
-    application_outside_germany
+    application_outside_germany,
+    targetApplicationSubjects
   } = application_preference;
 
   return (
     expected_application_date &&
     expected_application_semester &&
-    target_application_field &&
     target_program_language &&
     target_degree &&
     considered_privat_universities !== '-' &&
-    application_outside_germany !== '-'
+    application_outside_germany !== '-' &&
+    targetApplicationSubjects?.length !== 0
   );
 };
 

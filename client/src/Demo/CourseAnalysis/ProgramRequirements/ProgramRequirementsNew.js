@@ -21,7 +21,8 @@ import DEMO from '../../../store/constant';
 import { postProgramRequirements, putProgramRequirement } from '../../../api';
 import {
   // PROGRAM_ANALYSIS_ATTRIBUTES,
-  PROGRAM_SUBJECTS_DETAILED
+  PROGRAM_SUBJECTS_DETAILED,
+  SCORES_TYPE
 } from '../../Utils/contants';
 import SearchableMultiSelect from '../../../components/Input/searchableMuliselect';
 
@@ -43,43 +44,7 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
     directRejectionScore: requirement?.directRejectionScore || 0,
     directAdmissionScore: requirement?.directAdmissionScore || 0
   });
-  const SCORES_TYPE = [
-    {
-      name: 'gpaScore',
-      label: 'GPA Score',
-      description: 'GPA score (if applicable)'
-    },
-    {
-      name: 'cvScore',
-      label: 'CV Score',
-      description: 'CV score (if applicable)'
-    },
-    {
-      name: 'mlScore',
-      label: 'ML Score',
-      description: 'ML score (if applicable)'
-    },
-    {
-      name: 'rlScore',
-      label: 'RL Score',
-      description: 'RL score (if applicable)'
-    },
-    {
-      name: 'essayScore',
-      label: 'Essay Score',
-      description: 'Essay score (if applicable)'
-    },
-    {
-      name: 'directRejectionScore',
-      label: 'Direct Rejection Score',
-      description: 'Direct Rejection score (if applicable)'
-    },
-    {
-      name: 'directAdmissionScore',
-      label: 'Direct Admission Score',
-      description: 'Direct Admission score (if applicable)'
-    }
-  ];
+
   const [program, setProgram] = useState(
     requirement?.programId[0]
       ? {

@@ -13,7 +13,9 @@ import {
   Table,
   TableHead,
   TableRow,
-  TableCell
+  TableCell,
+  Grid,
+  Stack
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useNavigate, useParams } from 'react-router-dom';
@@ -23,7 +25,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import FlagIcon from '@mui/icons-material/Flag';
 
-import { convertDate } from '../Utils/contants';
+import { convertDate, SCORES_TYPE } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { WidgetanalyzedFileV2Download } from '../../api';
@@ -33,147 +35,179 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
 import { green } from '@mui/material/colors';
+import i18next from 'i18next';
 
 export const CourseAnalysisComponent = ({ sheet }) => {
   const sortedCourses = sheet.sorted;
+  const scores = sheet.scores;
   const suggestedCourses = sheet.suggestion;
-
+  const acquiredECTS = (table) => {
+    return table[table.length - 1].credits;
+  };
+  const requiredECTS = (table) => {
+    return table[table.length - 1].requiredECTS;
+  };
+  const satisfiedRequirement = (table) => {
+    return acquiredECTS(table) >= requiredECTS(table);
+  };
+  const getMaxScoreECTS = (table) => {
+    return table[table.length - 1].maxScore || 0;
+  };
   return (
-    <>
-      {Object.keys(sortedCourses).map((category, i) => (
-        <Paper key={i} sx={{ p: 2, m: 2 }}>
-          <Box display="flex" alignItems="center">
-            {sortedCourses[category][sortedCourses[category].length - 1]
-              .credits <
-            sortedCourses[category][sortedCourses[category].length - 1]
-              .requiredECTS ? (
-              <>
-                <WarningIcon style={{ color: 'red', marginRight: '8px' }} />
-                <Typography variant="h5" fontWeight="bold">
-                  {category}
-                </Typography>
-              </>
-            ) : (
-              <>
-                <CheckCircleIcon
-                  style={{ color: green[500], marginRight: '8px' }}
-                />
-                <Typography variant="h5" fontWeight="bold">
-                  {category}
-                </Typography>
-              </>
-            )}
-          </Box>
-
-          {/* Sorted Courses */}
-          {sortedCourses[category].length > 0 && (
-            <Box display="flex" flexDirection="column" gap={2} sx={{ mb: 3 }}>
-              <Box
-                display="flex"
-                justifyContent="space-between"
+    <Grid container spacing={0}>
+      <Grid item xs={12} md={6}>
+        {Object.keys(sortedCourses).map((category, i) => (
+          <Paper key={i} sx={{ p: 2, m: 1 }}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Stack
+                direction="row"
+                justifyContent="flex-start"
                 alignItems="center"
               >
-                <Box sx={{ ml: 2 }}>
-                  <Typography variant="body1">
-                    ECTS credits conversion Factor: 1.5x
+                {satisfiedRequirement(sortedCourses[category]) ? (
+                  <CheckCircleIcon
+                    style={{ color: green[500], marginRight: '8px' }}
+                  />
+                ) : (
+                  <WarningIcon style={{ color: 'red', marginRight: '8px' }} />
+                )}
+                <Typography variant="h5" fontWeight="bold">
+                  {category}
+                </Typography>
+              </Stack>
+              <Stack
+                direction="row"
+                justifyContent="flex-end"
+                alignItems="center"
+              >
+                {getMaxScoreECTS(sortedCourses[category]) !== 0 && (
+                  <Typography variant="h5" fontWeight="bold">
+                    {i18next.t('acquired-score')}:{' '}
+                    {satisfiedRequirement(sortedCourses[category])
+                      ? getMaxScoreECTS(sortedCourses[category])
+                      : 0}
+                    {' / '}
+                    {getMaxScoreECTS(sortedCourses[category])}
                   </Typography>
-                </Box>
-                <Box sx={{ mr: 2 }}>
-                  <Box display="flex" alignItems="center">
-                    <FlagIcon style={{ marginRight: '8px' }} />
-                    <Typography
-                      style={{ fontWeight: 'normal', color: 'inherit' }}
-                    >
-                      Required ECTS:{' '}
-                      {
-                        sortedCourses[category][
-                          sortedCourses[category].length - 1
-                        ].requiredECTS
-                      }
+                )}
+              </Stack>
+            </Box>
+
+            {/* Sorted Courses */}
+            {sortedCourses[category].length > 0 && (
+              <Box display="flex" flexDirection="column" gap={2} sx={{ mb: 3 }}>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Box sx={{ ml: 2 }}>
+                    <Typography variant="body1">
+                      {i18next.t('ects-conversion-rate')}: 1.5x
                     </Typography>
                   </Box>
-                  <Box display="flex" alignItems="center">
-                    {sortedCourses[category][sortedCourses[category].length - 1]
-                      .credits <
-                    sortedCourses[category][sortedCourses[category].length - 1]
-                      .requiredECTS ? (
-                      <>
-                        <WarningIcon
-                          style={{ color: 'red', marginRight: '8px' }}
-                        />
-                        <Typography
-                          style={{ fontWeight: 'bold', color: 'red' }}
-                        >
-                          You acquired ECTS:{' '}
-                          {
-                            sortedCourses[category][
-                              sortedCourses[category].length - 1
-                            ].credits
-                          }
-                        </Typography>
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircleIcon
-                          style={{ color: green[500], marginRight: '8px' }}
-                        />
-                        <Typography
-                          style={{ fontWeight: 'normal', color: 'inherit' }}
-                        >
-                          You acquired ECTS:{' '}
-                          {
-                            sortedCourses[category][
-                              sortedCourses[category].length - 1
-                            ].credits
-                          }
-                        </Typography>
-                      </>
-                    )}
+                  <Box>
+                    <Box display="flex" alignItems="center">
+                      <FlagIcon style={{ marginRight: '8px' }} />
+                      <Typography
+                        style={{ fontWeight: 'normal', color: 'inherit' }}
+                      >
+                        {i18next.t('required-ects')}:{' '}
+                        {requiredECTS(sortedCourses[category])}
+                      </Typography>
+                    </Box>
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-end"
+                      alignItems="center"
+                    >
+                      {satisfiedRequirement(sortedCourses[category]) ? (
+                        <>
+                          <CheckCircleIcon style={{ color: green[500] }} />
+                          <Typography
+                            style={{ fontWeight: 'normal', color: 'inherit' }}
+                          >
+                            {i18next.t('your-acquired-ects')}:{' '}
+                            {acquiredECTS(sortedCourses[category])}
+                          </Typography>
+                        </>
+                      ) : (
+                        <>
+                          <WarningIcon style={{ color: 'red' }} />
+                          <Typography
+                            style={{ fontWeight: 'bold', color: 'red' }}
+                          >
+                            {i18next.t('your-acquired-ects')}:{' '}
+                            {acquiredECTS(sortedCourses[category])}
+                          </Typography>
+                        </>
+                      )}
+                    </Stack>
                   </Box>
                 </Box>
-              </Box>
-
-              <TableContainer style={{ overflowX: 'auto' }}>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Course</TableCell>
-                      <TableCell>Credits</TableCell>
-                      <TableCell>Grades</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {sortedCourses[category]
-                      ?.slice(0, -1)
-                      .map((course, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{course[category]}</TableCell>
-                          <TableCell>{course.credits}</TableCell>
-                          <TableCell>{course.grades}</TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          )}
-
-          {/* Suggested Courses */}
-          {suggestedCourses[category] &&
-            suggestedCourses[category].length > 0 && (
-              <Box display="flex" flexDirection="column" gap={2}>
-                <Typography variant="h6">Suggested Courses</Typography>
-                <Typography variant="body1">
-                  {suggestedCourses[category]
-                    .map((sug) => sug['建議修課'])
-                    .filter((sug) => sug)
-                    .join('， ')}
-                </Typography>
+                <TableContainer style={{ overflowX: 'auto' }}>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>
+                          {i18next.t('Course', { ns: 'common' })}
+                        </TableCell>
+                        <TableCell>
+                          {i18next.t('Credits', { ns: 'common' })}
+                        </TableCell>
+                        <TableCell>
+                          {i18next.t('Grades', { ns: 'common' })}
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {sortedCourses[category]
+                        ?.slice(0, -1)
+                        .map((course, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{course[category]}</TableCell>
+                            <TableCell>{course.credits}</TableCell>
+                            <TableCell>{course.grades}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
               </Box>
             )}
+
+            {/* Suggested Courses */}
+            {suggestedCourses[category] &&
+              suggestedCourses[category].length > 0 && (
+                <Box display="flex" flexDirection="column" gap={2}>
+                  <Typography variant="h6">Suggested Courses</Typography>
+                  <Typography variant="body1">
+                    {suggestedCourses[category]
+                      .map((sug) => sug['建議修課'])
+                      .filter((sug) => sug)
+                      .join('， ')}
+                  </Typography>
+                </Box>
+              )}
+          </Paper>
+        ))}
+      </Grid>
+      <Grid item xs={12} md={6}>
+        <Paper sx={{ p: 2, m: 1 }}>
+          <Box>
+            {SCORES_TYPE.map((score) => (
+              <Typography key={score.label}>
+                {score.label}: {scores[score.name]}
+              </Typography>
+            ))}
+          </Box>
         </Paper>
-      ))}
-    </>
+      </Grid>
+    </Grid>
   );
 };
 export default function CourseAnalysisV2() {

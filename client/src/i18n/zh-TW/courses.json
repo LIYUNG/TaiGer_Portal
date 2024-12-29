@@ -4,7 +4,7 @@
     "Analyse V2": "Analyse V2",
     "Analysing": "分析中",
     "Course Analysis banner": "此份課程分析僅供選課參考。請仔細看過每個向度所缺的課程，並對照學校之後學期是否有開期課程，抓出來，並和您的 Agent 討論。",
-    "Course Analysis description": "在 General 頁面，為大略依照您主修向度做分類，其餘的 Tabs 為指標性學校的課程匹配度分析。你會看到每個學校會要求的向度會不一樣，每個向度會對應一個 Required_ECTS，代表你修的課程學分（經過 ECTS轉換 (1.5x 台灣學分)換算後），必須超過該向度的 Required_ECTS 才算達到該項度要求。若有缺少學分、向度，請參考每個 Program Tab 表格最右側，每個向度的 建議修課名單",
+    "Course Analysis description": "在 General 頁面，為大略依照您主修向度做分類，其餘的 Tabs 為指標性學校的課程匹配度分析。你會看到每個學校會要求的向度會不一樣，每個向度會對應一個 Required_ECTS，代表你修的課程學分（經過 ECTS轉換 (1.5x 台灣學分)換算後），必須超過該向度的 Required_ECTS 才算達到該向度要求。若有缺少學分、向度，請參考每個 Program Tab 表格最右側，每個向度的 建議修課名單",
     "Courses Analysis": "課程分析",
     "Courses analysed successfully!": "課程分析成功！",
     "Last analysis at": "最後分析於",

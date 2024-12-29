@@ -156,11 +156,13 @@ export const updateDocumentationHelperLink = (link, key, category) =>
 export const deleteFile = (category, studentId) =>
   request.delete(`/api/students/${studentId}/files/${category}`);
 
-export const uploadVPDforstudent = (studentId, program_id, data, fileType) =>
-  request.post(
-    `/api/students/${studentId}/vpd/${program_id}/${fileType}`,
-    data
-  );
+export const uploadVPDforstudentV2 = ({
+  studentId,
+  program_id,
+  data,
+  fileType
+}) =>
+  postData(`/api/students/${studentId}/vpd/${program_id}/${fileType}`, data);
 
 export const deleteVPDFile = (studentId, program_id, fileType) =>
   request.delete(`/api/students/${studentId}/vpd/${program_id}/${fileType}`);
@@ -171,10 +173,19 @@ export const deleteVPDFileV2 = ({ studentId, program_id, fileType }) =>
 export const SetAsNotNeeded = (studentId, program_id) =>
   request.put(`/api/students/${studentId}/vpd/${program_id}/VPD`);
 
-export const SetUniAssistPaid = (studentId, program_id, isPaid) =>
-  request.post(`/api/students/${studentId}/vpd/${program_id}/payments`, {
+export const SetAsNotNeededV2 = ({ studentId, program_id }) =>
+  putData(`/api/students/${studentId}/vpd/${program_id}/VPD`);
+
+// export const SetUniAssistPaid = (studentId, program_id, isPaid) =>
+//   request.post(`/api/students/${studentId}/vpd/${program_id}/payments`, {
+//     isPaid
+//   });
+
+export const SetUniAssistPaidV2 = ({ studentId, program_id, isPaid }) =>
+  postData(`/api/students/${studentId}/vpd/${program_id}/payments`, {
     isPaid
   });
+
 export const updateProfileDocumentStatus = (
   category,
   studentId,

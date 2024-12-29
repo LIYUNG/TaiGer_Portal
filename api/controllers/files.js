@@ -310,8 +310,12 @@ const updateVPDPayment = asyncHandler(async (req, res, next) => {
   app.uni_assist.updatedAt = new Date();
   await student.save();
 
+  const updatedApplication = student.applications.find(
+    (application) => application.programId._id.toString() === program_id
+  );
+
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  res.status(201).send({ success: true, data: student });
+  res.status(201).send({ success: true, data: updatedApplication });
   next();
 });
 // () email:

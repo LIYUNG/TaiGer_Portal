@@ -20,7 +20,6 @@ function UniAssistList() {
   const { data, isLoading } = useQuery(
     getStudentUniAssistQuery({ studentId: user._id.toString() })
   );
-  console.log(data);
   const { t } = useTranslation();
 
   if (!is_TaiGer_Student(user)) {

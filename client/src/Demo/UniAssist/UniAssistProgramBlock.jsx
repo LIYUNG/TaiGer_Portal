@@ -30,11 +30,10 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { BASE_URL } from '../../api/request';
 import {
-  // deleteVPDFile,
   deleteVPDFileV2,
-  SetAsNotNeeded,
-  SetUniAssistPaid,
-  uploadVPDforstudent
+  SetAsNotNeededV2,
+  SetUniAssistPaidV2,
+  uploadVPDforstudentV2
 } from '../../api';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '../../api/client';
@@ -73,18 +72,13 @@ const ProgramName = ({ application }) => {
   );
 };
 
-const SetNeedButtons = ({ application }) => {
+const SetNeedButtons = ({ application, setAsNotNeededModelOpen }) => {
   const { user } = useAuth();
 
-  // const opensetAsNotNeededWindow = (e, student_id, program_id) => {
-  //   e.preventDefault();
-  //   setUniAssistProgramBlockState((prevState) => ({
-  //     ...prevState,
-  //     setAsNotNeededModel: true,
-  //     student_id,
-  //     program_id
-  //   }));
-  // };
+  const opensetAsNotNeededWindow = (e) => {
+    e.preventDefault();
+    setAsNotNeededModelOpen(true);
+  };
 
   return (
     <span>
@@ -97,13 +91,7 @@ const SetNeedButtons = ({ application }) => {
             size="small"
             variant="contained"
             color="success"
-            // onClick={(e) =>
-            //   opensetAsNotNeededWindow(
-            //     e,
-            //     uniAssistProgramBlockState.student._id.toString(),
-            //     application.programId._id.toString()
-            //   )
-            // }
+            onClick={(e) => opensetAsNotNeededWindow(e)}
           >
             {i18next.t('Set Not Needed', { ns: 'common' })}
           </Button>
@@ -114,13 +102,7 @@ const SetNeedButtons = ({ application }) => {
             size="small"
             color="success"
             variant="outlined"
-            // onClick={(e) =>
-            //   opensetAsNotNeededWindow(
-            //     e,
-            //     uniAssistProgramBlockState.student._id.toString(),
-            //     application.programId._id.toString()
-            //   )
-            // }
+            onClick={(e) => opensetAsNotNeededWindow(e)}
           >
             {i18next.t('Set needed')}
           </Button>
@@ -137,7 +119,55 @@ export const UniAssistProgramBlock = ({ application, student }) => {
     useState(false);
   const [notNeededModelOpen, setAsNotNeededModelOpen] = useState(false);
   const [applicationState, setApplicationState] = useState(application);
-  const { mutate } = useMutation({
+  const { mutate: mutateCheck, isPending: isChecking } = useMutation({
+    mutationFn: SetUniAssistPaidV2,
+    onError: (error) => {
+      setSeverity('error');
+      setMessage(error.message || 'An error occurred. Please try again.');
+      setOpenSnackbar(true);
+    },
+    onSuccess: ({ data }) => {
+      setSeverity('success');
+      setMessage('VPD status marked successfully!');
+      setApplicationState(data);
+      queryClient.invalidateQueries({ queryKey: ['uniassist'] });
+      setOpenSnackbar(true);
+      setAsNotNeededModelOpen(false);
+    }
+  });
+  const { mutate: mutateUpdate, isPending: isUpdating } = useMutation({
+    mutationFn: SetAsNotNeededV2,
+    onError: (error) => {
+      setSeverity('error');
+      setMessage(error.message || 'An error occurred. Please try again.');
+      setOpenSnackbar(true);
+    },
+    onSuccess: ({ data }) => {
+      setSeverity('success');
+      setMessage('VPD status updated successfully!');
+      setApplicationState(data);
+      queryClient.invalidateQueries({ queryKey: ['uniassist'] });
+      setOpenSnackbar(true);
+      setAsNotNeededModelOpen(false);
+    }
+  });
+  const { mutate: mutateUpload, isPending: isUploading } = useMutation({
+    mutationFn: uploadVPDforstudentV2,
+    onError: (error) => {
+      setSeverity('error');
+      setMessage(error.message || 'An error occurred. Please try again.');
+      setOpenSnackbar(true);
+    },
+    onSuccess: ({ data }) => {
+      setSeverity('success');
+      setMessage('File uploaded successfully!');
+      setApplicationState(data);
+      queryClient.invalidateQueries({ queryKey: ['uniassist'] });
+      setOpenSnackbar(true);
+      setDeleteVPDFileWarningModelOpen(false);
+    }
+  });
+  const { mutate: mutateDelete, isPending: isDeleting } = useMutation({
     mutationFn: deleteVPDFileV2,
     onError: (error) => {
       setSeverity('error');
@@ -180,142 +210,25 @@ export const UniAssistProgramBlock = ({ application, student }) => {
 
   const handleUniAssistDocSubmit = (e, student_id, program_id) => {
     e.preventDefault();
-    onSubmitVPDFile(e, e.target.files[0], student_id, program_id, 'VPD');
+    onSubmitVPDFileV2(e, e.target.files[0], student_id, program_id, 'VPD');
   };
 
-  const handleSetAsNotNeeded = (e) => {
-    e.preventDefault();
-    setUniAssistProgramBlockState((prevState) => ({
-      ...prevState,
-      isLoaded2: false
-    }));
-
-    SetAsNotNeeded(
-      uniAssistProgramBlockState.student_id,
-      uniAssistProgramBlockState.program_id
-    ).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setUniAssistProgramBlockState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            student: data,
-            success: success,
-            isLoaded2: true,
-            student_id: '',
-            program_id: '',
-            res_modal_status: status
-          }));
-          setAsNotNeededModelOpen(false);
-        } else {
-          const { message } = resp.data;
-          setUniAssistProgramBlockState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            isLoaded2: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setUniAssistProgramBlockState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
-        }));
-      }
-    );
+  const handleSetAsNotNeededV2 = () => {
+    mutateUpdate({
+      studentId: student._id.toString(),
+      program_id: application.programId._id.toString()
+    });
   };
 
-  const onSubmitVPDFile = (e, NewFile, student_id, program_id, fileType) => {
+  const onSubmitVPDFileV2 = (e, NewFile, studentId, program_id, fileType) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', NewFile);
-    if (fileType === 'VPD') {
-      setUniAssistProgramBlockState((prevState) => ({
-        ...prevState,
-        isLoaded2: false
-      }));
-    }
-    if (fileType === 'VPDConfirmation') {
-      setUniAssistProgramBlockState((prevState) => ({
-        ...prevState,
-        isLoadedVPDConfirmation: false
-      }));
-    }
-
-    uploadVPDforstudent(student_id, program_id, formData, fileType).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          if (fileType === 'VPD') {
-            setApplicationState(data);
-            setUniAssistProgramBlockState((prevState) => ({
-              ...prevState,
-              success,
-              category: '',
-              isLoaded: true,
-              isLoaded2: true,
-              file: '',
-              res_modal_status: status
-            }));
-          }
-          if (fileType === 'VPDConfirmation') {
-            setApplicationState(data);
-            setUniAssistProgramBlockState((prevState) => ({
-              ...prevState,
-              success,
-              category: '',
-              isLoaded: true,
-              isLoadedVPDConfirmation: true,
-              file: '',
-              res_modal_status: status
-            }));
-          }
-        } else {
-          const { message } = resp.data;
-          setUniAssistProgramBlockState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            isLoaded2: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setUniAssistProgramBlockState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
-        }));
-      }
-    );
+    mutateUpload({ studentId, program_id, data: formData, fileType });
   };
 
   const handleUniAssistDocDeleteV2 = () => {
-    if (uniAssistProgramBlockState.fileType === 'VPD') {
-      setUniAssistProgramBlockState((prevState) => ({
-        ...prevState,
-        isLoaded2: false
-      }));
-    }
-    if (uniAssistProgramBlockState.fileType === 'VPDConfirmation') {
-      setUniAssistProgramBlockState((prevState) => ({
-        ...prevState,
-        isLoadedVPDConfirmation: false
-      }));
-    }
-
-    mutate({
+    mutateDelete({
       studentId: uniAssistProgramBlockState.student_id,
       program_id: uniAssistProgramBlockState.program_id,
       fileType: uniAssistProgramBlockState.fileType
@@ -328,7 +241,7 @@ export const UniAssistProgramBlock = ({ application, student }) => {
     program_id
   ) => {
     e.preventDefault();
-    onSubmitVPDFile(
+    onSubmitVPDFileV2(
       e,
       e.target.files[0],
       student_id,
@@ -336,43 +249,9 @@ export const UniAssistProgramBlock = ({ application, student }) => {
       'VPDConfirmation'
     );
   };
-
-  const onCheckHandler = (e, student_id, program_id, isPaid) => {
+  const onCheckHandlerV2 = (e, studentId, program_id, isPaid) => {
     e.preventDefault();
-    SetUniAssistPaid(student_id, program_id, isPaid).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setUniAssistProgramBlockState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            student: data,
-            success: success,
-            student_id: '',
-            program_id: '',
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setUniAssistProgramBlockState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setUniAssistProgramBlockState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
-        }));
-      }
-    );
+    mutateCheck({ studentId, program_id, isPaid });
   };
 
   return (
@@ -381,7 +260,11 @@ export const UniAssistProgramBlock = ({ application, student }) => {
         <>
           <Box sx={{ display: 'flex' }}>
             <ProgramName application={applicationState} />
-            <SetNeedButtons application={applicationState} />
+            <SetNeedButtons
+              application={applicationState}
+              student={student}
+              setAsNotNeededModelOpen={setAsNotNeededModelOpen}
+            />
           </Box>
           {applicationState.uni_assist?.status ===
             DocumentStatusType.NotNeeded && (
@@ -410,8 +293,9 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                   control={
                     <Checkbox
                       checked={applicationState.uni_assist.isPaid}
+                      disabled={isChecking}
                       onChange={(e) =>
-                        onCheckHandler(
+                        onCheckHandlerV2(
                           e,
                           uniAssistProgramBlockState.student._id.toString(),
                           applicationState.programId._id.toString(),
@@ -443,9 +327,9 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                       component="label"
                       size="small"
                       variant="outlined"
-                      disabled={!uniAssistProgramBlockState.isLoaded2}
+                      disabled={isUploading}
                       startIcon={
-                        !uniAssistProgramBlockState.isLoaded2 ? (
+                        isUploading ? (
                           <CircularProgress size={16} />
                         ) : (
                           <CloudUploadIcon />
@@ -520,39 +404,37 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                   applicationState.uni_assist
                     ?.vpd_paid_confirmation_file_path === '' ? (
                     <>
-                      {uniAssistProgramBlockState.isLoadedVPDConfirmation ? (
-                        <>
-                          <Button
-                            component="label"
-                            size="small"
-                            color="secondary"
-                            disabled={
-                              !(
-                                !applicationState.uni_assist ||
-                                applicationState.uni_assist.status ===
-                                  DocumentStatusType.Missing ||
-                                applicationState.uni_assist.status ===
-                                  'notstarted'
+                      {isUploading ? (
+                        <CircularProgress size={16} />
+                      ) : (
+                        <Button
+                          component="label"
+                          size="small"
+                          color="secondary"
+                          disabled={
+                            !(
+                              !applicationState.uni_assist ||
+                              applicationState.uni_assist.status ===
+                                DocumentStatusType.Missing ||
+                              applicationState.uni_assist.status ===
+                                'notstarted'
+                            )
+                          }
+                          variant="outlined"
+                          startIcon={<CloudUploadIcon />}
+                        >
+                          {i18next.t('Upload file', { ns: 'common' })}
+                          <VisuallyHiddenInput
+                            type="file"
+                            onChange={(e) =>
+                              handleUniAssistVPDPaidConfirmationDocSubmit(
+                                e,
+                                uniAssistProgramBlockState.student._id.toString(),
+                                applicationState.programId._id.toString()
                               )
                             }
-                            variant="outlined"
-                            startIcon={<CloudUploadIcon />}
-                          >
-                            {i18next.t('Upload file', { ns: 'common' })}
-                            <VisuallyHiddenInput
-                              type="file"
-                              onChange={(e) =>
-                                handleUniAssistVPDPaidConfirmationDocSubmit(
-                                  e,
-                                  uniAssistProgramBlockState.student._id.toString(),
-                                  applicationState.programId._id.toString()
-                                )
-                              }
-                            />
-                          </Button>
-                        </>
-                      ) : (
-                        <CircularProgress size={16} />
+                          />
+                        </Button>
                       )}
                     </>
                   ) : (
@@ -584,9 +466,7 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                             'VPDConfirmation'
                           )
                         }
-                        disabled={
-                          !uniAssistProgramBlockState.isLoadedVPDConfirmation
-                        }
+                        disabled={isDeleting}
                         variant="contained"
                         size="small"
                         startIcon={<DeleteIcon />}
@@ -628,17 +508,13 @@ export const UniAssistProgramBlock = ({ application, student }) => {
           <Button
             variant="contained"
             color="secondary"
-            disabled={
-              !uniAssistProgramBlockState.isLoaded2 ||
-              !uniAssistProgramBlockState.isLoadedVPDConfirmation
-            }
+            disabled={isDeleting}
             onClick={() => handleUniAssistDocDeleteV2()}
           >
-            {uniAssistProgramBlockState.isLoaded2 ||
-            uniAssistProgramBlockState.isLoadedVPDConfirmation ? (
-              i18next.t('Yes', { ns: 'common' })
-            ) : (
+            {isDeleting ? (
               <CircularProgress size={16} />
+            ) : (
+              i18next.t('Yes', { ns: 'common' })
             )}
           </Button>
           <Button
@@ -664,20 +540,13 @@ export const UniAssistProgramBlock = ({ application, student }) => {
         </DialogContent>
         <DialogActions>
           <Button
-            color="secondary"
+            color="primary"
             variant="contained"
-            disabled={
-              !uniAssistProgramBlockState.isLoaded2 ||
-              !uniAssistProgramBlockState.isLoadedVPDConfirmation
-            }
-            onClick={(e) => handleSetAsNotNeeded(e)}
+            disabled={isUpdating}
+            onClick={handleSetAsNotNeededV2}
+            startIcon={isUpdating && <CircularProgress size={16} />}
           >
-            {uniAssistProgramBlockState.isLoaded2 ||
-            uniAssistProgramBlockState.isLoadedVPDConfirmation ? (
-              i18next.t('Yes', { ns: 'common' })
-            ) : (
-              <CircularProgress size={16} />
-            )}
+            {i18next.t('Yes', { ns: 'common' })}
           </Button>
           <Button
             color="secondary"

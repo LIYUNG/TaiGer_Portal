@@ -250,10 +250,14 @@ export const WidgetExportMessagePDF = (student_id) =>
 export const transcriptanalyser_test = (studentId, category, language) =>
   request.post(`/api/courses/transcript/${studentId}/${category}/${language}`);
 
-export const transcriptanalyser_testV2 = (studentId, category, language) =>
-  request.post(
-    `/api/courses/transcript/v2/${studentId}/${category}/${language}`
-  );
+export const transcriptanalyser_testV2 = ({
+  language,
+  studentId,
+  requirementIds
+}) =>
+  request.post(`/api/courses/transcript/v2/${studentId}/${language}`, {
+    requirementIds
+  });
 
 export const analyzedFileDownload_test = (studentId) =>
   request.get(`/api/courses/transcript/${studentId}`, {
@@ -272,6 +276,10 @@ export const deleteKeywordSet = (keywordsSetId) =>
 
 export const getProgramRequirements = () =>
   request.get(`/api/program-requirements`);
+
+export const getProgramRequirementsV2 = () =>
+  getData(`/api/program-requirements`);
+
 export const postProgramRequirements = (payload) =>
   request.post(`/api/program-requirements/new`, payload);
 export const getProgramsAndCourseKeywordSets = () =>

@@ -288,7 +288,8 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
 
 const processTranscript_api_gatway = asyncHandler(async (req, res, next) => {
   const {
-    params: { category, studentId, language }
+    params: { category, studentId, language },
+    body: { requirementIds }
   } = req;
 
   try {
@@ -313,11 +314,11 @@ const processTranscript_api_gatway = asyncHandler(async (req, res, next) => {
     student_name = student_name.replace(/ /g, '-');
     const response = await callApiGateway(Credentials, apiGatewayUrl, 'POST', {
       courses: stringified_courses,
-      category,
       student_id: studentId,
       student_name,
       language,
-      courses_taiger_guided: stringified_courses_taiger_guided
+      courses_taiger_guided: stringified_courses_taiger_guided,
+      requirement_ids: JSON.stringify(requirementIds)
     });
 
     courses.analysis.isAnalysed = true;
@@ -327,6 +328,13 @@ const processTranscript_api_gatway = asyncHandler(async (req, res, next) => {
     );
     courses.analysis.updatedAt = new Date();
     courses.save();
+
+    const fileKey = `analysed_transcript_${studentId}.json`;
+
+    const success = one_month_cache.del(fileKey);
+    if (success === 1) {
+      logger.info('cache key deleted successfully');
+    }
 
     res.status(200).send({ success: true, data: courses.analysis });
   } catch (err) {

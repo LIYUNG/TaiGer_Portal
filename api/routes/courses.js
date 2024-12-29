@@ -80,7 +80,7 @@ router
 
 // TaiGer Transcript Analyser:
 router
-  .route('/transcript/v2/:studentId/:category/:language')
+  .route('/transcript/v2/:studentId/:language')
   .post(
     filter_archiv_user,
     TranscriptAnalyserRateLimiter,

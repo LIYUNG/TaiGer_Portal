@@ -19,7 +19,7 @@ import {
   getProgram
 } from '.';
 import { queryClient } from './client';
-import { getAllActiveStudentsQuery, getAllStudentsQuery } from './query';
+import { getAllActiveStudentsQuery, getAllStudentsQuery, getProgramRequirementsQuery } from './query';
 
 export async function getStudentsLoader() {
   const response = await getStudents();
@@ -260,6 +260,10 @@ export async function ProgramRequirementsLoader() {
 
 export function getProgramRequirementsLoader() {
   return defer({ programRequirements: ProgramRequirementsLoader() });
+}
+
+export async function getProgramRequirementsV2Loader() {
+  return queryClient.fetchQuery(getProgramRequirementsQuery());
 }
 
 ///

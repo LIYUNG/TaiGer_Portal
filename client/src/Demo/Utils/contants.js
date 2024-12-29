@@ -2211,8 +2211,7 @@ export const SCHOOL_TAGS_DETAILED = Object.fromEntries(
     }
   ])
 );
-
-export const SCORES_TYPE = [
+export const GENERAL_SCORES = [
   {
     name: 'gpaScore',
     label: 'GPA Score',
@@ -2237,7 +2236,10 @@ export const SCORES_TYPE = [
     name: 'essayScore',
     label: 'Essay Score',
     description: 'Essay score (if applicable)'
-  },
+  }
+];
+export const SCORES_TYPE = [
+  ...GENERAL_SCORES,
   {
     name: 'directRejectionScore',
     label: 'Direct Rejection Score',

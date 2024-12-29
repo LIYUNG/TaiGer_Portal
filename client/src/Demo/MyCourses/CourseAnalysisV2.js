@@ -25,7 +25,7 @@ import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import FlagIcon from '@mui/icons-material/Flag';
 
-import { convertDate, SCORES_TYPE } from '../Utils/contants';
+import { convertDate, GENERAL_SCORES } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { WidgetanalyzedFileV2Download } from '../../api';
@@ -41,18 +41,41 @@ export const CourseAnalysisComponent = ({ sheet }) => {
   const sortedCourses = sheet.sorted;
   const scores = sheet.scores;
   const suggestedCourses = sheet.suggestion;
+
   const acquiredECTS = (table) => {
     return table[table.length - 1].credits;
   };
+
   const requiredECTS = (table) => {
     return table[table.length - 1].requiredECTS;
   };
+
   const satisfiedRequirement = (table) => {
     return acquiredECTS(table) >= requiredECTS(table);
   };
+
   const getMaxScoreECTS = (table) => {
     return table[table.length - 1].maxScore || 0;
   };
+
+  const getOverallCourseScoreArray = () => {
+    const scoreArray = Object.keys(sortedCourses).map((category) =>
+      satisfiedRequirement(sortedCourses[category])
+        ? getMaxScoreECTS(sortedCourses[category])
+        : 0
+    );
+
+    return scoreArray.slice(0, -1);
+  };
+
+  const getOverallCourseScore = () => {
+    const scoreSum = getOverallCourseScoreArray().reduce(
+      (sum, current) => sum + current,
+      0
+    );
+    return scoreSum;
+  };
+
   return (
     <Grid container spacing={0}>
       <Grid item xs={12} md={6}>
@@ -199,7 +222,11 @@ export const CourseAnalysisComponent = ({ sheet }) => {
       <Grid item xs={12} md={6}>
         <Paper sx={{ p: 2, m: 1 }}>
           <Box>
-            {SCORES_TYPE.map((score) => (
+            <Typography>
+              Courses Score: {getOverallCourseScoreArray().join(' + ')} ={' '}
+              {getOverallCourseScore()}
+            </Typography>
+            {GENERAL_SCORES.map((score) => (
               <Typography key={score.label}>
                 {score.label}: {scores[score.name]}
               </Typography>

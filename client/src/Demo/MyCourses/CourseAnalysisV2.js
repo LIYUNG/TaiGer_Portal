@@ -15,7 +15,8 @@ import {
   TableRow,
   TableCell,
   Grid,
-  Stack
+  Stack,
+  Alert
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useNavigate, useParams } from 'react-router-dom';
@@ -423,16 +424,20 @@ export default function CourseAnalysisV2() {
           {t('Courses Analysis')} Beta
         </Typography>
       </Breadcrumbs>
-      <Typography variant="body1" sx={{ pt: 2 }}>
+      <Alert severity="warning" sx={{ mt: 1 }}>
+        This is internal testing only. Student will not see this.
+      </Alert>
+      <Typography variant="body1" sx={{ pt: 1 }}>
         {t('Course Analysis banner', { ns: 'courses' })}
       </Typography>
-      <Typography variant="body1" sx={{ py: 2 }}>
+      <Typography variant="body1" sx={{ py: 1 }}>
         {t('Course Analysis description', { ns: 'courses' })}
       </Typography>
       <Button
         size="small"
         color="primary"
         variant="contained"
+        disabled
         onClick={() => navigate(DEMO.COURSES_ANALYSIS_EXPLANATION_LINK)}
         sx={{ mr: 2 }}
       >
@@ -442,6 +447,7 @@ export default function CourseAnalysisV2() {
         size="small"
         color="secondary"
         variant="contained"
+        disabled
         onClick={() => onDownload()}
       >
         {t('Download', { ns: 'common' })} Report

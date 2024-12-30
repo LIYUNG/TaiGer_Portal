@@ -30,7 +30,7 @@ import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
 
 export default function CourseAnalysis() {
-  const { user_id, student_id } = useParams();
+  const { user_id } = useParams();
   const { t } = useTranslation();
   const { user } = useAuth();
   const [value, setValue] = useState(0);
@@ -53,107 +53,67 @@ export default function CourseAnalysis() {
   });
   const ref = useRef(null);
   useEffect(() => {
-    if (user_id) {
-      WidgetanalyzedFileDownload(user._id.toString()).then(
-        (resp) => {
-          // TODO: timeout? success?
-          const { status } = resp;
-          if (status < 300) {
-            const actualFileName = decodeURIComponent(
-              resp.headers['content-disposition'].split('"')[1]
-            );
-            const student_name_temp = `Pre-Customer`;
-            const { data: blob } = resp;
-            if (blob.size === 0) return;
-            handleFile(blob).then((wb) => {
-              const { mySheetData: sheets, ModifiedDate: LastModified } =
-                readDataFormExcel(wb);
-              const sheetNames = Object.keys(sheets);
-              setStatedata((state) => ({
-                ...state,
-                sheets,
-                student_name: student_name_temp,
-                excel_file: blob,
-                isLoaded: true,
-                file_name: actualFileName,
-                LastModified,
-                sheetNames,
-                res_modal_status: status
-              }));
-            });
+    const isInternal = window.location.href.includes('internal');
+    const downloadFn = isInternal
+      ? WidgetanalyzedFileDownload
+      : analyzedFileDownload_test;
+
+    downloadFn(user_id).then(
+      (resp) => {
+        // TODO: timeout? success?
+        const { status } = resp;
+        if (status < 300) {
+          const actualFileName = decodeURIComponent(
+            resp.headers['content-disposition'].split('"')[1]
+          );
+          let student_name_temp = '';
+          if (isInternal) {
+            student_name_temp = `Pre-Customer`;
           } else {
-            const { statusText } = resp;
-            setStatedata((state) => ({
-              ...state,
-              isLoaded: true,
-              res_modal_status: status,
-              res_modal_message: statusText
-            }));
-          }
-        },
-        (error) => {
-          setStatedata((state) => ({
-            ...state,
-            isLoaded: true,
-            error,
-            res_modal_status: 500,
-            res_modal_message: ''
-          }));
-        }
-      );
-    } else {
-      const studentId = student_id || user._id.toString();
-      analyzedFileDownload_test(studentId).then(
-        (resp) => {
-          // TODO: timeout? success?
-          const { status } = resp;
-          if (status < 300) {
-            const actualFileName = decodeURIComponent(
-              resp.headers['content-disposition'].split('"')[1]
-            );
             const temp = actualFileName.split('_');
             const lastname = temp[3].split('.');
-            const student_name_temp = `${temp[2]} - ${lastname[0]}`;
-            const { data: blob } = resp;
-            if (blob.size === 0) return;
-            handleFile(blob).then((wb) => {
-              const { mySheetData: sheets, ModifiedDate: LastModified } =
-                readDataFormExcel(wb);
-              const sheetNames = Object.keys(sheets);
-              setStatedata((state) => ({
-                ...state,
-                sheets,
-                student_name: student_name_temp,
-                excel_file: blob,
-                studentId,
-                isLoaded: true,
-                file_name: actualFileName,
-                LastModified,
-                sheetNames,
-                res_modal_status: status
-              }));
-            });
-          } else {
-            const { statusText } = resp;
+            student_name_temp = `${temp[2]} - ${lastname[0]}`;
+          }
+
+          const { data: blob } = resp;
+          if (blob.size === 0) return;
+          handleFile(blob).then((wb) => {
+            const { mySheetData: sheets, ModifiedDate: LastModified } =
+              readDataFormExcel(wb);
+            const sheetNames = Object.keys(sheets);
             setStatedata((state) => ({
               ...state,
+              sheets,
+              student_name: student_name_temp,
+              excel_file: blob,
+              studentId: user_id,
               isLoaded: true,
-              res_modal_status: status,
-              res_modal_message: statusText
+              file_name: actualFileName,
+              LastModified,
+              sheetNames,
+              res_modal_status: status
             }));
-          }
-        },
-        (error) => {
+          });
+        } else {
+          const { statusText } = resp;
           setStatedata((state) => ({
             ...state,
             isLoaded: true,
-            error,
-            res_modal_status: 500,
-            res_modal_message: ''
+            res_modal_status: status,
+            res_modal_message: statusText
           }));
         }
-      );
-    }
+      },
+      (error) => {
+        setStatedata((state) => ({
+          ...state,
+          isLoaded: true,
+          error,
+          res_modal_status: 500,
+          res_modal_message: ''
+        }));
+      }
+    );
   }, []);
 
   const handleChange = (event) => {

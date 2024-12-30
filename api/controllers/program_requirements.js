@@ -143,6 +143,12 @@ const updateProgramRequirement = asyncHandler(async (req, res) => {
 
   fields.updatedAt = new Date();
   delete fields.program;
+  if (fields?.program_categories) {
+    fields.coursesScore = fields?.program_categories
+      ?.map((program_category) => program_category.maxScore)
+      ?.reduce((sum, current) => sum + current, 0);
+  }
+
   const updatedProgramRequirement = await req.db
     .model('ProgramRequirement')
     .findByIdAndUpdate(requirementId, fields, {

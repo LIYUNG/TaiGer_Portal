@@ -50,6 +50,10 @@ const programRequirementSchema = new Schema(
       type: Number,
       default: 0
     },
+    coursesScore: {
+      type: Number,
+      default: 0
+    },
     cvScore: {
       type: Number,
       default: 0

@@ -2212,6 +2212,12 @@ export const SCHOOL_TAGS_DETAILED = Object.fromEntries(
   ])
 );
 
+export const GENERAL_SCORES_COURSE = {
+  name: 'coursesScore',
+  label: 'Course Score',
+  description: 'Course score (if applicable)'
+};
+
 export const GENERAL_SCORES_GPA = {
   name: 'gpaScore',
   label: 'GPA Score',
@@ -2302,3 +2308,14 @@ export const SCORES_TYPE = [
   DIRECT_ADMISSION_SECOND_SCORE,
   DIRECT_REJECTION_SECOND_SCORE
 ];
+
+export const CONSIDRED_SCORES_DETAILED = Object.fromEntries(
+  [GENERAL_SCORES_COURSE, ...GENERAL_SCORES].map((score) => [
+    score.label,
+    {
+      ...score,
+      color: 'primary',
+      categoryName: 'N/A'
+    }
+  ])
+);

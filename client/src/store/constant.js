@@ -61,11 +61,16 @@ const DEMO = {
   INTERVIEW_SINGLE_SURVEY_LINK: (interview_id) => {
     return `/interview-training/${interview_id}/survey`;
   },
+  INTERNAL_WIDGET_COURSE_ANALYSER_LINK:
+    '/internal/widgets/course-analyser',
   INTERNAL_WIDGET_LINK: (user_id) => {
     return `/internal/widgets/${user_id}`;
   },
   INTERNAL_WIDGET_V2_LINK: (user_id) => {
     return `/internal/widgets/course-analyser/v2/${user_id}`;
+  },
+  COURSES_ANALYSIS_RESULT_V2_LINK: (user_id) => {
+    return `/my-courses/analysis/v2/${user_id}`;
   },
   INTERNAL_LOGS_LINK: '/internal/logs',
   INTERNAL_LOGS_USER_ID_LINK: (user_id) => {

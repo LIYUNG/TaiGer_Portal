@@ -87,6 +87,9 @@ export const getApplicationStudent = (studentId) =>
 export const getStudentUniAssist = (studentId) =>
   request.get(`/api/uniassist/${studentId}`);
 
+export const getStudentUniAssistV2 = ({ studentId }) =>
+  getData(`/api/uniassist/${studentId}`);
+
 export const getArchivStudents = (TaiGerStaffId) =>
   request.get(`/api/teams/archiv/${TaiGerStaffId}`);
 
@@ -153,22 +156,36 @@ export const updateDocumentationHelperLink = (link, key, category) =>
 export const deleteFile = (category, studentId) =>
   request.delete(`/api/students/${studentId}/files/${category}`);
 
-export const uploadVPDforstudent = (studentId, program_id, data, fileType) =>
-  request.post(
-    `/api/students/${studentId}/vpd/${program_id}/${fileType}`,
-    data
-  );
+export const uploadVPDforstudentV2 = ({
+  studentId,
+  program_id,
+  data,
+  fileType
+}) =>
+  postData(`/api/students/${studentId}/vpd/${program_id}/${fileType}`, data);
 
 export const deleteVPDFile = (studentId, program_id, fileType) =>
   request.delete(`/api/students/${studentId}/vpd/${program_id}/${fileType}`);
 
+export const deleteVPDFileV2 = ({ studentId, program_id, fileType }) =>
+  deleteData(`/api/students/${studentId}/vpd/${program_id}/${fileType}`);
+
 export const SetAsNotNeeded = (studentId, program_id) =>
   request.put(`/api/students/${studentId}/vpd/${program_id}/VPD`);
 
-export const SetUniAssistPaid = (studentId, program_id, isPaid) =>
-  request.post(`/api/students/${studentId}/vpd/${program_id}/payments`, {
+export const SetAsNotNeededV2 = ({ studentId, program_id }) =>
+  putData(`/api/students/${studentId}/vpd/${program_id}/VPD`);
+
+// export const SetUniAssistPaid = (studentId, program_id, isPaid) =>
+//   request.post(`/api/students/${studentId}/vpd/${program_id}/payments`, {
+//     isPaid
+//   });
+
+export const SetUniAssistPaidV2 = ({ studentId, program_id, isPaid }) =>
+  postData(`/api/students/${studentId}/vpd/${program_id}/payments`, {
     isPaid
   });
+
 export const updateProfileDocumentStatus = (
   category,
   studentId,
@@ -233,15 +250,21 @@ export const WidgetExportMessagePDF = (student_id) =>
 export const transcriptanalyser_test = (studentId, category, language) =>
   request.post(`/api/courses/transcript/${studentId}/${category}/${language}`);
 
-export const transcriptanalyser_testV2 = (studentId, category, language) =>
-  request.post(
-    `/api/courses/transcript/v2/${studentId}/${category}/${language}`
-  );
+export const transcriptanalyser_testV2 = ({
+  language,
+  studentId,
+  requirementIds
+}) =>
+  request.post(`/api/courses/transcript/v2/${studentId}/${language}`, {
+    requirementIds
+  });
 
 export const analyzedFileDownload_test = (studentId) =>
   request.get(`/api/courses/transcript/${studentId}`, {
     responseType: 'blob'
   });
+export const analyzedFileV2Download = (user_id) =>
+  request.get(`/api/courses/transcript/v2/${user_id}`);
 
 export const getCourseKeywordSets = () => request.get(`/api/course-keywords`);
 export const getCourseKeywordSet = (keywordsSetId) =>
@@ -255,6 +278,10 @@ export const deleteKeywordSet = (keywordsSetId) =>
 
 export const getProgramRequirements = () =>
   request.get(`/api/program-requirements`);
+
+export const getProgramRequirementsV2 = () =>
+  getData(`/api/program-requirements`);
+
 export const postProgramRequirements = (payload) =>
   request.post(`/api/program-requirements/new`, payload);
 export const getProgramsAndCourseKeywordSets = () =>

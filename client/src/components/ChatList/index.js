@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { Box, ListItem, MenuItem, Skeleton, Typography } from '@mui/material';
+import i18next from 'i18next';
 
 import Friends from './Friends';
 import { getMyCommunicationThread, getQueryStudentResults } from '../../api';
@@ -11,11 +12,9 @@ import {
   StyledInputBase,
   menuWidth
 } from '../../Demo/Utils/contants';
-import { useTranslation } from 'react-i18next';
 
 const ChatList = (props) => {
   const { user } = useAuth();
-  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [chatListState, setChatListState] = useState({
@@ -138,7 +137,7 @@ const ChatList = (props) => {
       <ListItem onClick={(e) => e.stopPropagation()}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box>
-            <Typography variant="h6">{t('Chat', { ns: 'common' })}</Typography>
+            <Typography variant="h6">{i18next.t('Chat', { ns: 'common' })}</Typography>
           </Box>
         </Box>
       </ListItem>

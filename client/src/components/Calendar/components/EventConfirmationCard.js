@@ -139,7 +139,7 @@ export default function EventConfirmationCard(props) {
                       to={`${props.event.meetingLink}`}
                       component={LinkDom}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                     >
                       {props.event.meetingLink}
                     </Link>
@@ -174,7 +174,7 @@ export default function EventConfirmationCard(props) {
                       to={`${props.event.meetingLink}`}
                       component={LinkDom}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                     >
                       {props.event.meetingLink}
                     </Link>

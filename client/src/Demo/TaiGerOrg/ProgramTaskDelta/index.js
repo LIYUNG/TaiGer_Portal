@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 import { is_TaiGer_role } from '@taiger-common/core';
+import i18next from 'i18next';
+import { Navigate, Link as LinkDom } from 'react-router-dom';
 
 import { TabTitle } from '../../Utils/TabTitle';
 import TabProgramTaskDelta from '../../Dashboard/MainViewTab/ProgramTaskDelta/TabProgramTaskDelta';
@@ -8,15 +10,12 @@ import ErrorPage from '../../Utils/ErrorPage';
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { getApplicationTaskDeltas } from '../../../api';
 import DEMO from '../../../store/constant';
-import { Navigate, Link as LinkDom } from 'react-router-dom';
 import { useAuth } from '../../../components/AuthProvider';
 import { appConfig } from '../../../config';
 import Loading from '../../../components/Loading/Loading';
-import { useTranslation } from 'react-i18next';
 
 function ProgramTaskDeltaDashboard() {
   const { user } = useAuth();
-  const { t } = useTranslation();
   const [ProgramTaskDeltaDashboardState, setProgramTaskDeltaDashboardState] =
     useState({
       error: '',
@@ -98,10 +97,10 @@ function ProgramTaskDeltaDashboard() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          {t('All Students', { ns: 'common' })}
+          {i18next.t('All Students', { ns: 'common' })}
         </Typography>
         <Typography color="text.primary">
-          {t('Program Task Diff', { ns: 'common' })}
+          {i18next.t('Program Task Diff', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
       <TabProgramTaskDelta deltas={ProgramTaskDeltaDashboardState.data} />

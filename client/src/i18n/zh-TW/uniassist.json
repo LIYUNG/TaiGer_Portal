@@ -1,4 +1,5 @@
 {
     "All document uploaded to Uni-Assist and paid, waiting for VPD": "所有檔案已上傳到uni-assist並且已付款，等待 VPD 中",
-    "uni-assist full": "Uni-Assist 會全權負責轉交申請給學校。您的檔案全部完成後請全部上傳到 Uni-Assist 以及 Program 繳費上傳處。此 Program 不需要VPD"
+    "uni-assist full": "Uni-Assist 會全權負責轉交申請給學校。您的檔案全部完成後請全部上傳到 Uni-Assist 以及 Program 繳費上傳處。此 Program 不需要VPD",
+    "uni-assist-not-necessary": "Uni-assist 不是必需的，因為它可以從另一個科系重複使用。"
 }

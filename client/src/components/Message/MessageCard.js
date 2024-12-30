@@ -19,15 +19,14 @@ import {
   DialogContentText,
   DialogActions
 } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { is_TaiGer_Student } from '@taiger-common/core';
+import i18next from 'i18next';
 
 import { BASE_URL } from '../../../src/api/request';
 import EditorSimple from '../EditorJs/EditorSimple';
-// import Output from 'editorjs-react-renderer';
 import { stringAvatar, convertDate } from '../../Demo/Utils/contants';
 import { useAuth } from '../AuthProvider';
 import Loading from '../Loading/Loading';
@@ -35,7 +34,6 @@ import { IgnoreMessageThread } from '../../../src/api/index';
 
 function MessageCard(props) {
   const { user } = useAuth();
-  const { t } = useTranslation();
   const [messageState, setMessageState] = useState({
     editorState: null,
     ConvertedContent: '',
@@ -262,7 +260,7 @@ function MessageCard(props) {
         onClose={onHidedeleteMessageModalShow}
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+        <DialogTitle>{i18next.t('Warning', { ns: 'common' })}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Do you wan to delete this message on{' '}
@@ -277,11 +275,11 @@ function MessageCard(props) {
             onClick={onDeleteSingleMessage}
           >
             {props.isLoaded
-              ? t('Delete', { ns: 'common' })
-              : t('Pending', { ns: 'common' })}
+              ? i18next.t('Delete', { ns: 'common' })
+              : i18next.t('Pending', { ns: 'common' })}
           </Button>
           <Button onClick={onHidedeleteMessageModalShow} variant="outlined">
-            {t('Cancel', { ns: 'common' })}
+            {i18next.t('Cancel', { ns: 'common' })}
           </Button>
         </DialogActions>
       </Dialog>

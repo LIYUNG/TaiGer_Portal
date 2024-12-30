@@ -1,11 +1,10 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
+import i18next from 'i18next';
 
 import Friend from './Friend';
-import { useTranslation } from 'react-i18next';
 
 function Friends(props) {
-  const { t } = useTranslation();
 
   if (props.students.length === 0) {
     return (
@@ -17,7 +16,7 @@ function Friends(props) {
           textAlign: 'center'
         }}
       >
-        {t('No students found')}
+        {i18next.t('No students found')}
       </Typography>
     );
   }

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 
 export default function Loading() {
-  const { t } = useTranslation();
   const [showExtraMessage, setShowExtraMessage] = useState(false);
 
   useEffect(() => {
@@ -34,11 +33,11 @@ export default function Loading() {
     >
       <CircularProgress />
       <Typography variant="h6" color="white" mt={2}>
-        {t('loading', { ns: 'common' })}
+        {i18next.t('loading', { ns: 'common' })}
       </Typography>
       {showExtraMessage && (
         <Typography variant="body2" color="white">
-          {t('almost-done', { ns: 'common' })}
+          {i18next.t('almost-done', { ns: 'common' })}
         </Typography>
       )}
     </Box>

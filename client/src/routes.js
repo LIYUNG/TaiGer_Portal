@@ -19,7 +19,8 @@ import {
   getProgramRequirementLoader,
   getCommunicationThreadLoader,
   getProgramLoader,
-  AllActiveStudentsV2Loader
+  AllActiveStudentsV2Loader,
+  getProgramRequirementsV2Loader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
@@ -447,10 +448,16 @@ const routes = [
     Component: Download
   },
   {
-    path: '/my-courses/analysis/:student_id',
+    path: '/my-courses/analysis/:user_id',
     exact: true,
     name: 'My Courses Analysis',
     Component: MyCoursesAnalysis
+  },
+  {
+    path: '/my-courses/analysis/v2/:user_id',
+    exact: true,
+    name: 'My Courses Analysis',
+    Component: MyCoursesAnalysisV2
   },
   {
     path: '/my-courses/:student_id',
@@ -510,17 +517,17 @@ const routes = [
     path: '/internal/widgets/course-analyser',
     exact: true,
     name: 'Course Analyser',
-    loader: getProgramRequirementsLoader,
+    loader: getProgramRequirementsV2Loader,
     Component: CoursesAnalysisWidget
   },
   {
-    path: '/internal/widgets/course-analyser/v2/:admin_id',
+    path: '/internal/widgets/course-analyser/v2/:user_id',
     exact: true,
-    name: 'My MyCourses Analysis',
+    name: 'MyCourses Analysis',
     Component: MyCoursesAnalysisV2
   },
   {
-    path: '/internal/widgets/:admin_id',
+    path: '/internal/widgets/:user_id',
     exact: true,
     name: 'My MyCourses Analysis',
     Component: MyCoursesAnalysis

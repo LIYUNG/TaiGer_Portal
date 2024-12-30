@@ -22,7 +22,9 @@ import {
   ListItem,
   MenuItem,
   Select,
+  Tab,
   TableContainer,
+  Tabs,
   Typography,
   useTheme
 } from '@mui/material';
@@ -55,12 +57,20 @@ import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { TopBar } from '../../components/TopBar/TopBar';
+import { a11yProps, CustomTabPanel } from '../../components/Tabs';
+import { ProgramRequirementsTableWrapper } from './ProgramRequirementsTableWrapper';
+import i18next from 'i18next';
+import { useSnackBar } from '../../contexts/use-snack-bar';
 
 export default function MyCourses() {
   const { student_id } = useParams();
   const { user } = useAuth();
   const { t } = useTranslation();
+  const [value, setValue] = useState(0);
+  const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
+
   const theme = useTheme(); // Get the current theme from Material UI
+
   let [statedata, setStatedata] = useState({
     error: '',
     isLoaded: false,
@@ -137,6 +147,10 @@ export default function MyCourses() {
       }
     );
   }, []);
+
+  const handleChangeValue = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const onChange = (new_data) => {
     setStatedata((prevState) => ({
@@ -342,56 +356,39 @@ export default function MyCourses() {
     );
   };
 
-  const onAnalyseV2 = () => {
-    if (statedata.study_group === '') {
-      alert('Please select study group');
-      return;
-    }
-    setStatedata((prevState) => ({
-      ...prevState,
-      isAnalysing: true
-    }));
-    transcriptanalyser_testV2(
-      statedata.student._id.toString(),
-      statedata.study_group,
-      statedata.analysis_language
-    ).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setStatedata((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            analysis: data,
-            analysisSuccessModalWindowOpen: true,
-            success: success,
-            isAnalysing: false,
-            res_modal_status: status
-          }));
-        } else {
-          setStatedata((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            isAnalysing: false,
-            res_modal_status: status,
-            res_modal_message:
-              'Make sure that you updated your courses and select the right target group and language!'
-          }));
-        }
-      },
-      (error) => {
+  const onAnalyseV2 = async (requirementIds, lang) => {
+    try {
+      const response = await transcriptanalyser_testV2({
+        language: lang,
+        studentId: statedata.student._id.toString(),
+        requirementIds
+      });
+      const { data, success } = response.data;
+      const { status } = response;
+
+      if (success) {
+        setSeverity('success');
+        setMessage(i18next.t('Transcript analysed successfully!'));
+        setOpenSnackbar(true);
         setStatedata((prevState) => ({
           ...prevState,
-          isLoaded: true,
-          isAnalysing: false,
-          error,
-          res_modal_status: 500,
+          analysis: data,
+          success: success,
+          res_modal_status: status
+        }));
+      } else {
+        setStatedata((prevState) => ({
+          ...prevState,
+          res_modal_status: status,
           res_modal_message:
             'Make sure that you updated your courses and select the right target group and language!'
         }));
       }
-    );
+    } catch (error) {
+      setSeverity('error');
+      setMessage(error.message || 'An error occurred. Please try again.');
+      setOpenSnackbar(true);
+    }
   };
 
   const onDownload = () => {
@@ -695,12 +692,11 @@ export default function MyCourses() {
         onClick={onSubmit}
         disabled={statedata.isUpdating}
         sx={{ mb: 2 }}
+        startIcon={statedata.isUpdating && <CircularProgress size={20} />}
       >
-        {statedata.isUpdating ? (
-          <CircularProgress size={16} />
-        ) : (
-          t('Update', { ns: 'common' })
-        )}
+        {statedata.isUpdating
+          ? t('Updating', { ns: 'common' })
+          : t('Update', { ns: 'common' })}
       </Button>
       <Typography variant="body2">
         {t(
@@ -720,86 +716,81 @@ export default function MyCourses() {
       <Card sx={{ mt: 2, p: 2 }}>
         {is_TaiGer_AdminAgent(user) && (
           <>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography variant="h6">
-                  {t('Courses Analysis', { ns: 'courses' })}
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel id="select-target-group">
-                    {t('Select Target Group', { ns: 'courses' })}
-                  </InputLabel>
-                  <Select
-                    labelId="select-label"
-                    id="study_group"
-                    value={statedata.study_group}
-                    label={t('Select Target Group', { ns: 'courses' })}
-                    onChange={handleChange_study_group}
-                  >
-                    <MenuItem value={''}>Select Study Group</MenuItem>
-                    {study_group.map((cat, i) => (
-                      <MenuItem value={cat.key} key={i}>
-                        {cat.value}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth sx={{ marginBottom: 1 }}>
-                  <InputLabel id="select-language">
-                    {t('Select language', { ns: 'courses' })}
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="analysis_language"
-                    value={statedata.analysis_language}
-                    label={t('Select language', { ns: 'courses' })}
-                    onChange={handleChange_analysis_language}
-                  >
-                    <MenuItem value={''}>Select Study Group</MenuItem>
-                    <MenuItem value={'zh'}>中文</MenuItem>
-                    <MenuItem value={'en'}>English (Beta Version)</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={onAnalyse}
-                  disabled={
-                    statedata.isAnalysing ||
-                    statedata.study_group === '' ||
-                    statedata.analysis_language === ''
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Tabs
+                value={value}
+                onChange={handleChangeValue}
+                variant="scrollable"
+                scrollButtons="auto"
+                aria-label="basic tabs example"
+              >
+                <Tab label="Default" {...a11yProps(0)} />
+                <Tab
+                  label={
+                    <Badge badgeContent={'V2'} color="error">
+                      New Analyzer
+                    </Badge>
                   }
-                  endIcon={
-                    statedata.isAnalysing ? (
-                      <CircularProgress size={24} />
-                    ) : (
-                      <></>
-                    )
-                  }
-                  sx={{ mr: 2 }}
-                >
-                  {statedata.isAnalysing
-                    ? t('Analysing', { ns: 'courses' })
-                    : t('Analyse', { ns: 'courses' })}
-                </Button>
-                <Badge badgeContent={'Upcoming'} color="error">
+                  {...a11yProps(1)}
+                />
+              </Tabs>
+            </Box>
+            <CustomTabPanel value={value} index={0}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Typography variant="h6">
+                    {t('Courses Analysis', { ns: 'courses' })}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel id="select-target-group">
+                      {t('Select Target Group', { ns: 'courses' })}
+                    </InputLabel>
+                    <Select
+                      labelId="select-label"
+                      id="study_group"
+                      value={statedata.study_group}
+                      label={t('Select Target Group', { ns: 'courses' })}
+                      onChange={handleChange_study_group}
+                    >
+                      <MenuItem value={''}>Select Study Group</MenuItem>
+                      {study_group.map((cat, i) => (
+                        <MenuItem value={cat.key} key={i}>
+                          {cat.value}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth sx={{ marginBottom: 1 }}>
+                    <InputLabel id="select-language">
+                      {t('Select language', { ns: 'courses' })}
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="analysis_language"
+                      value={statedata.analysis_language}
+                      label={t('Select language', { ns: 'courses' })}
+                      onChange={handleChange_analysis_language}
+                    >
+                      <MenuItem value={''}>Select Study Group</MenuItem>
+                      <MenuItem value={'zh'}>中文</MenuItem>
+                      <MenuItem value={'en'}>English (Beta Version)</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
                   <Button
-                    fullWidth
                     color="primary"
                     variant="contained"
-                    onClick={onAnalyseV2}
-                    // disabled={
-                    //   statedata.isAnalysing ||
-                    //   statedata.study_group === '' ||
-                    //   statedata.analysis_language === ''
-                    // }
-                    disabled
+                    onClick={onAnalyse}
+                    disabled={
+                      statedata.isAnalysing ||
+                      statedata.study_group === '' ||
+                      statedata.analysis_language === ''
+                    }
                     endIcon={
                       statedata.isAnalysing ? (
                         <CircularProgress size={24} />
@@ -807,61 +798,109 @@ export default function MyCourses() {
                         <></>
                       )
                     }
+                    sx={{ mr: 2 }}
                   >
                     {statedata.isAnalysing
                       ? t('Analysing', { ns: 'courses' })
-                      : t('Analyse V2', { ns: 'courses' })}
+                      : t('Analyse', { ns: 'courses' })}
                   </Button>
-                </Badge>
+                </Grid>
               </Grid>
-            </Grid>
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={1}>
+              <Typography variant="h5">
+                Attention: This is <b>NOT</b> production ready and student WILL
+                NOT be informed and see any result. Internal testing purpose at
+                the moment.
+              </Typography>
+              <ProgramRequirementsTableWrapper onAnalyseV2={onAnalyseV2} />
+              {statedata.analysis && statedata.analysis.isAnalysedV2 ? (
+                <>
+                  <Typography>
+                    <LinkDom
+                      to={`${DEMO.COURSES_ANALYSIS_RESULT_V2_LINK(
+                        statedata.student._id.toString()
+                      )}`}
+                      target="_blank"
+                    >
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        size="small"
+                      >
+                        {t('View Online', { ns: 'courses' })}
+                      </Button>
+                    </LinkDom>
+                  </Typography>
+                  <Typography sx={{ mt: 2 }}>
+                    {t('Last analysis at', { ns: 'courses' })}:{' '}
+                    {statedata.analysis
+                      ? convertDate(statedata.analysis.updatedAtV2)
+                      : ''}
+                  </Typography>
+                </>
+              ) : (
+                <Typography>
+                  {t('No analysis yet', { ns: 'courses' })}
+                </Typography>
+              )}
+            </CustomTabPanel>
           </>
         )}
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h6">
-              {t('Courses Analysis', { ns: 'courses' })}
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            {statedata.analysis && statedata.analysis.isAnalysed ? (
-              <>
-                <Typography>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    size="small"
-                    onClick={onDownload}
-                    disabled={statedata.isDownloading}
-                    startIcon={<DownloadIcon />}
-                    sx={{ marginRight: 2 }}
-                  >
-                    {t('Download', { ns: 'common' })}
-                  </Button>
-                  <LinkDom
-                    to={`${DEMO.COURSES_ANALYSIS_RESULT_LINK(
-                      statedata.student._id.toString()
-                    )}`}
-                    target="_blank"
-                  >
-                    <Button color="secondary" variant="contained" size="small">
-                      {t('View Online', { ns: 'courses' })}
+        {value === 0 && (
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="h6">
+                {t('Courses Analysis', { ns: 'courses' })}
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              {statedata.analysis && statedata.analysis.isAnalysed ? (
+                <>
+                  <Typography>
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      size="small"
+                      onClick={onDownload}
+                      disabled={statedata.isDownloading}
+                      startIcon={<DownloadIcon />}
+                      sx={{ marginRight: 2 }}
+                    >
+                      {t('Download', { ns: 'common' })}
                     </Button>
-                  </LinkDom>
+                    <LinkDom
+                      to={`${DEMO.COURSES_ANALYSIS_RESULT_LINK(
+                        statedata.student._id.toString()
+                      )}`}
+                      target="_blank"
+                    >
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        size="small"
+                      >
+                        {t('View Online', { ns: 'courses' })}
+                      </Button>
+                    </LinkDom>
+                  </Typography>
+                  <Typography sx={{ mt: 2 }}>
+                    {t('Last analysis at', { ns: 'courses' })}:{' '}
+                    {statedata.analysis
+                      ? convertDate(statedata.analysis.updatedAt)
+                      : ''}
+                  </Typography>
+                </>
+              ) : (
+                <Typography>
+                  {t('No analysis yet', { ns: 'courses' })}
                 </Typography>
-                <Typography sx={{ mt: 2 }}>
-                  {t('Last analysis at', { ns: 'courses' })}:{' '}
-                  {statedata.analysis
-                    ? convertDate(statedata.analysis.updatedAt)
-                    : ''}
-                </Typography>
-              </>
-            ) : (
-              <Typography>{t('No analysis yet', { ns: 'courses' })}</Typography>
-            )}
+              )}
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </Card>
+
       <Dialog open={statedata.confirmModalWindowOpen} onClose={closeModal}>
         <DialogTitle>{t('Confirmation', { ns: 'common' })}</DialogTitle>
         <DialogContent>

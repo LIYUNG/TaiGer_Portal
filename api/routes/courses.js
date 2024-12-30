@@ -22,7 +22,8 @@ const {
   processTranscript_api,
   processTranscript_test,
   downloadXLSX,
-  processTranscript_api_gatway
+  processTranscript_api_gatway,
+  downloadJson
   //   updateCourses,
 } = require('../controllers/course');
 const { logAccess } = require('../utils/log/log');
@@ -80,7 +81,7 @@ router
 
 // TaiGer Transcript Analyser:
 router
-  .route('/transcript/v2/:studentId/:category/:language')
+  .route('/transcript/v2/:studentId/:language')
   .post(
     filter_archiv_user,
     TranscriptAnalyserRateLimiter,
@@ -111,6 +112,17 @@ router
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     multitenant_filter,
     downloadXLSX,
+    logAccess
+  );
+
+router
+  .route('/transcript/v2/:studentId')
+  .get(
+    filter_archiv_user,
+    DownloadTemplateRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    multitenant_filter,
+    downloadJson,
     logAccess
   );
 // router

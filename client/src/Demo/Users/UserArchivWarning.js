@@ -7,17 +7,16 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 
 function UserArchivWarning(props) {
-  const { t } = useTranslation();
   return (
     <Dialog
       open={props.archivUserWarning}
       onClose={props.setModalArchivHide}
       aria-labelledby="contained-modal-title-vcenter"
     >
-      <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+      <DialogTitle>{i18next.t('Warning', { ns: 'common' })}</DialogTitle>
       <DialogContent>
         <DialogContentText>
           {' '}
@@ -39,14 +38,16 @@ function UserArchivWarning(props) {
             )
           }
         >
-          {props.isLoaded ? t('Yes', { ns: 'common' }) : t('Loading')}
+          {props.isLoaded
+            ? i18next.t('Yes', { ns: 'common' })
+            : i18next.t('Loading')}
         </Button>
         <Button
           color="primary"
           variant="outlined"
           onClick={props.setModalArchivHide}
         >
-          {t('No', { ns: 'common' })}
+          {i18next.t('No', { ns: 'common' })}
         </Button>
       </DialogActions>
     </Dialog>

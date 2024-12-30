@@ -26,6 +26,14 @@ export const StudentPreferenceCard = (props) => {
           </b>
         </ListItem>
         <ListItem>
+          {t('Target Application Subjects')}:{' '}
+          <b>
+            {props.student.application_preference?.targetApplicationSubjects?.join(
+              ', '
+            )}
+          </b>
+        </ListItem>
+        <ListItem>
           {t('Target Degree Programs')}:{' '}
           <b>{props.student.application_preference?.target_degree}</b>
         </ListItem>

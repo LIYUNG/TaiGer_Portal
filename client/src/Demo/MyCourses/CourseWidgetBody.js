@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -12,17 +12,12 @@ import {
   Typography,
   Badge,
   Tabs,
-  Tab,
-  lighten,
-  RadioGroup,
-  FormControlLabel,
-  Radio
+  Tab
 } from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import 'react-datasheet-grid/dist/style.css';
-import { is_TaiGer_role, PROGRAM_SUBJECTS } from '@taiger-common/core';
+import { is_TaiGer_role } from '@taiger-common/core';
 
 import { convertDateUXFriendly, study_group } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -32,225 +27,19 @@ import {
   WidgetTranscriptanalyser,
   WidgetTranscriptanalyserV2
 } from '../../api';
-import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
-import Loading from '../../components/Loading/Loading';
 import { a11yProps, CustomTabPanel } from '../../components/Tabs';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import {
-  MaterialReactTable,
-  MRT_GlobalFilterTextField,
-  MRT_ToggleFiltersButton,
-  useMaterialReactTable
-} from 'material-react-table';
-import CourseAnalysisConfirmDialog from './CourseAnalysisConfirmDialog';
 import { useSnackBar } from '../../contexts/use-snack-bar';
-
-const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
-  const [language, setLanguage] = useState('zh'); // 'en' for English, 'zh' for 中文
-  const [isAnalysingV2, setIsAnalysingV2] = useState(false);
-  const { t } = useTranslation();
-  const [rowSelection, setRowSelection] = useState({});
-  let [statedata, setStatedata] = useState({});
-  const setModalHide = () => {
-    setStatedata((state) => ({
-      ...state,
-      modalShowAssignWindow: false
-    }));
-  };
-
-  const onAnalyse = async () => {
-    setIsAnalysingV2(true);
-    await onAnalyseV2(
-      Object.keys(rowSelection)?.map((idx) => data[idx]?._id),
-      language
-    );
-    setIsAnalysingV2(false);
-    setModalHide();
-  };
-
-  const setModalShow2 = () => {
-    setStatedata((state) => ({
-      ...state,
-      modalShowAssignWindow: true
-    }));
-  };
-
-  const handleLanguageChange = (event) => {
-    const newLanguage = event.target.value;
-    setLanguage(newLanguage);
-  };
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: 'program_name', //id is still required when using accessorFn instead of accessorKey
-        header: 'Program Name',
-        size: 450,
-        Cell: ({ renderedCellValue }) => (
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '1rem'
-            }}
-          >
-            {/* using renderedCellValue instead of cell.getValue() preserves filter match highlighting */}
-            <span>{renderedCellValue}</span>
-          </Box>
-        )
-      },
-      {
-        accessorKey: 'attributes', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
-        filterVariant: 'multi-select',
-        filterSelectOptions: Object.keys(PROGRAM_SUBJECTS), //custom options list (as opposed to faceted list)
-        header: 'Attributes',
-        size: 90
-        // Filter: ({ column }) => (
-        //   <MaterialReactTable.MRT_FilterDropdown
-        //     options={Object.keys(PROGRAM_SUBJECTS)}
-        //     onSelectChange={(selectedValues) => {
-        //       // Handle changes to the selected values here
-        //     }}
-        //     renderOption={(option, { selected }) => (
-        //       <MenuItem key={option} value={option}>
-        //         <Checkbox checked={selected} />
-        //         <ListItemText primary={PROGRAM_SUBJECTS[option]} />
-        //       </MenuItem>
-        //     )}
-        //   />
-        // )
-      },
-      {
-        accessorKey: 'country', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
-        // enableClickToCopy: true,
-        filterVariant: 'autocomplete',
-        header: 'Country',
-        size: 90
-      },
-      {
-        accessorKey: 'updatedAt', //accessorKey used to define `data` column. `id` gets set to accessorKey automatically
-        // enableClickToCopy: true,
-        header: 'updatedAt',
-        size: 90
-      }
-    ],
-    []
-  );
-
-  const table = useMaterialReactTable({
-    columns,
-    data, //data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
-    enableColumnFilterModes: true,
-    enableColumnOrdering: true,
-    enableColumnPinning: true,
-    enableFacetedValues: true,
-    enableRowSelection: true,
-    initialState: {
-      showColumnFilters: true,
-      showGlobalFilter: true,
-      columnPinning: {
-        left: ['mrt-row-expand', 'mrt-row-select']
-      }
-    },
-    muiTableBodyRowProps: ({ row }) => ({
-      //add onClick to row to select upon clicking anywhere in the row
-      onClick: row.getToggleSelectedHandler(),
-      sx: { cursor: 'pointer' }
-    }),
-    onRowSelectionChange: setRowSelection,
-    state: { rowSelection },
-    paginationDisplayMode: 'pages',
-    positionToolbarAlertBanner: 'bottom',
-    muiSearchTextFieldProps: {
-      size: 'small',
-      variant: 'outlined'
-    },
-    muiPaginationProps: {
-      color: 'secondary',
-      rowsPerPageOptions: [10, 20, 30],
-      shape: 'rounded',
-      variant: 'outlined'
-    },
-
-    renderTopToolbar: ({ table }) => {
-      return (
-        <Box
-          sx={(theme) => ({
-            backgroundColor: lighten(theme.palette.background.default, 0.05),
-            display: 'flex',
-            gap: '0.5rem',
-            p: '8px',
-            justifyContent: 'space-between'
-          })}
-        >
-          <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <MRT_GlobalFilterTextField table={table} />
-            <MRT_ToggleFiltersButton table={table} />
-          </Box>
-          <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <FormControl component="fieldset">
-              <RadioGroup
-                row
-                aria-label="language"
-                name="language"
-                value={language}
-                onChange={handleLanguageChange}
-              >
-                <FormControlLabel
-                  value="en"
-                  control={<Radio />}
-                  label="English"
-                />
-                <FormControlLabel value="zh" control={<Radio />} label="中文" />
-              </RadioGroup>
-            </FormControl>
-            <Box sx={{ display: 'flex', gap: '0.5rem' }}>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={setModalShow2}
-                disabled={!Object.keys(rowSelection)?.length > 0}
-                endIcon={
-                  statedata.isAnalysing ? <CircularProgress size={24} /> : <></>
-                }
-              >
-                {statedata.isAnalysing
-                  ? t('Analysing', { ns: 'courses' })
-                  : t('Analyse V2', { ns: 'courses' })}
-              </Button>
-            </Box>
-          </Box>
-        </Box>
-      );
-    }
-  });
-
-  return (
-    <>
-      <MaterialReactTable table={table} />
-      <CourseAnalysisConfirmDialog
-        show={statedata.modalShowAssignWindow}
-        setModalHide={setModalHide}
-        data={Object.keys(rowSelection)?.map((idx) => data[idx])}
-        isButtonDisable={
-          isAnalysingV2 || !Object.keys(rowSelection)?.length > 0
-        }
-        onAnalyse={onAnalyse}
-      />
-    </>
-  );
-};
+import i18next from 'i18next';
+import { ProgramRequirementsTable } from '../../components/ProgramRequirementsTable/ProgramRequirementsTable';
 
 export default function CourseWidgetBody({ programRequirements }) {
   const { user } = useAuth();
   const { student_id } = useParams();
-  const { t } = useTranslation();
   const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
   let [statedata, setStatedata] = useState({
     error: '',
-    isLoaded: true,
     coursesdata: [
       {
         course_chinese: '電子學',
@@ -262,7 +51,6 @@ export default function CourseWidgetBody({ programRequirements }) {
     analysis: {},
     success: false,
     student: null,
-    file: '',
     study_group: '',
     analysis_language: '',
     analyzed_course: '',
@@ -332,11 +120,10 @@ export default function CourseWidgetBody({ programRequirements }) {
         const { status } = resp;
         if (success) {
           setSeverity('success');
-          setMessage(t('Transcript analysed successfully!'));
+          setMessage(i18next.t('Transcript analysed successfully!'));
           setOpenSnackbar(true);
           setStatedata((state) => ({
             ...state,
-            isLoaded: true,
             analysis: data,
             success: success,
             isAnalysing: false,
@@ -345,7 +132,6 @@ export default function CourseWidgetBody({ programRequirements }) {
         } else {
           setStatedata((state) => ({
             ...state,
-            isLoaded: true,
             isAnalysing: false,
             res_modal_status: status,
             res_modal_message:
@@ -356,9 +142,9 @@ export default function CourseWidgetBody({ programRequirements }) {
       (error) => {
         setSeverity('error');
         setMessage(error.message || 'An error occurred. Please try again.');
+        setOpenSnackbar(true);
         setStatedata((state) => ({
           ...state,
-          isLoaded: true,
           isAnalysing: false,
           error,
           res_modal_status: 500,
@@ -418,7 +204,6 @@ export default function CourseWidgetBody({ programRequirements }) {
           const { statusText } = resp;
           setStatedata((state) => ({
             ...state,
-            isLoaded: true,
             res_modal_status: status,
             res_modal_message: statusText,
             isDownloading: false
@@ -428,7 +213,6 @@ export default function CourseWidgetBody({ programRequirements }) {
       (error) => {
         setStatedata((state) => ({
           ...state,
-          isLoaded: true,
           error,
           res_modal_status: 500,
           res_modal_message: '',
@@ -469,11 +253,10 @@ export default function CourseWidgetBody({ programRequirements }) {
       const { status } = resp;
       if (success) {
         setSeverity('success');
-        setMessage(t('Transcript analysed successfully!'));
+        setMessage(i18next.t('Transcript analysed successfully!'));
         setOpenSnackbar(true);
         setStatedata((state) => ({
           ...state,
-          isLoaded: true,
           analysis: data,
           success: success,
           isAnalysing: false,
@@ -482,7 +265,6 @@ export default function CourseWidgetBody({ programRequirements }) {
       } else {
         setStatedata((state) => ({
           ...state,
-          isLoaded: true,
           isAnalysing: false,
           res_modal_status: status,
           res_modal_message:
@@ -494,7 +276,6 @@ export default function CourseWidgetBody({ programRequirements }) {
       setMessage(error.message || 'An error occurred. Please try again.');
       setStatedata((state) => ({
         ...state,
-        isLoaded: true,
         isAnalysing: false,
         error,
         res_modal_status: 500,
@@ -520,9 +301,6 @@ export default function CourseWidgetBody({ programRequirements }) {
     { ...keyColumn('grades', textColumn), title: 'Grades' }
   ];
 
-  if (!statedata.isLoaded) {
-    return <Loading />;
-  }
   if (!student_id) {
     if (!is_TaiGer_role(user)) {
       return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
@@ -532,7 +310,6 @@ export default function CourseWidgetBody({ programRequirements }) {
   if (statedata.res_status >= 400) {
     return <ErrorPage res_status={statedata.res_status} />;
   }
-  TabTitle(`Course Analyser`);
 
   return (
     <Box>
@@ -551,7 +328,7 @@ export default function CourseWidgetBody({ programRequirements }) {
         sx={{ my: 1 }}
       >
         <Typography variant="h6">
-          {t('Course Analyser', { ns: 'common' })}
+          {i18next.t('Course Analyser', { ns: 'common' })}
         </Typography>
         <Box>
           <Button
@@ -562,7 +339,16 @@ export default function CourseWidgetBody({ programRequirements }) {
             target="_blank"
             sx={{ mr: 2 }}
           >
-            {t('Edit Keywords', { ns: 'common' })}
+            {i18next.t('Edit Keywords', { ns: 'common' })}
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            component={LinkDom}
+            to={DEMO.PROGRAM_ANALYSIS}
+            sx={{ mr: 1 }}
+          >
+            {i18next.t('Program Requirements', { ns: 'common' })}
           </Button>
           <Button
             variant="contained"
@@ -571,7 +357,7 @@ export default function CourseWidgetBody({ programRequirements }) {
             target="_blank"
             color="primary"
           >
-            {t('Create New Analysis', { ns: 'common' })}
+            {i18next.t('Create New Analysis', { ns: 'common' })}
           </Button>
         </Box>
       </Box>
@@ -617,7 +403,7 @@ export default function CourseWidgetBody({ programRequirements }) {
           <CustomTabPanel value={value} index={0}>
             <FormControl fullWidth>
               <InputLabel id="select-target-group">
-                {t('Select Target Group', { ns: 'courses' })}
+                {i18next.t('Select Target Group', { ns: 'courses' })}
               </InputLabel>
               <Select
                 labelId="study_group"
@@ -638,16 +424,16 @@ export default function CourseWidgetBody({ programRequirements }) {
             <br />
             <FormControl fullWidth>
               <InputLabel id="select-language">
-                {t('Select language', { ns: 'courses' })}
+                {i18next.t('Select language', { ns: 'courses' })}
               </InputLabel>
               <Select
                 labelId="analysis_language"
-                label={t('Select language', { ns: 'courses' })}
+                label={i18next.t('Select language', { ns: 'courses' })}
                 name="analysis_language"
                 id="analysis_language"
                 onChange={(e) => handleChange_analysis_language(e)}
               >
-                <MenuItem value={''}>{t('Select language')}</MenuItem>
+                <MenuItem value={''}>{i18next.t('Select language')}</MenuItem>
                 <MenuItem value={'zh'}>中文</MenuItem>
                 <MenuItem value={'en'}>English (Beta Version)</MenuItem>
               </Select>
@@ -668,8 +454,8 @@ export default function CourseWidgetBody({ programRequirements }) {
               }
             >
               {statedata.isAnalysing
-                ? t('Analysing', { ns: 'courses' })
-                : t('Analyse', { ns: 'courses' })}
+                ? i18next.t('Analysing', { ns: 'courses' })
+                : i18next.t('Analyse', { ns: 'courses' })}
             </Button>
             <Typography>
               {statedata.analysis && statedata.analysis.isAnalysed ? (
@@ -678,18 +464,18 @@ export default function CourseWidgetBody({ programRequirements }) {
                     onClick={onDownload}
                     disabled={statedata.isDownloading}
                   >
-                    {t('Download', { ns: 'common' })}
+                    {i18next.t('Download', { ns: 'common' })}
                   </Button>
                   <Link
                     to={`${DEMO.INTERNAL_WIDGET_LINK(user._id.toString())}`}
                     target="_blank"
                     component={LinkDom}
                   >
-                    {t('View Online', { ns: 'courses' })}
+                    {i18next.t('View Online', { ns: 'courses' })}
                   </Link>
                 </>
               ) : (
-                t('No analysis yet', { ns: 'courses' })
+                i18next.t('No analysis yet', { ns: 'courses' })
               )}
             </Typography>
           </CustomTabPanel>
@@ -703,12 +489,10 @@ export default function CourseWidgetBody({ programRequirements }) {
               <Typography variant="h6"></Typography>
               <Box></Box>
             </Box>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <ProgramRequirementsTable
-                data={transformedData}
-                onAnalyseV2={onAnalyseV2}
-              />
-            </LocalizationProvider>
+            <ProgramRequirementsTable
+              data={transformedData}
+              onAnalyseV2={onAnalyseV2}
+            />
             <Typography>
               {statedata.analysis && statedata.analysis.isAnalysed ? (
                 <>
@@ -716,18 +500,18 @@ export default function CourseWidgetBody({ programRequirements }) {
                     onClick={onDownload}
                     disabled={statedata.isDownloading}
                   >
-                    {t('Download', { ns: 'common' })}
+                    {i18next.t('Download', { ns: 'common' })}
                   </Button>
                   <Link
                     to={`${DEMO.INTERNAL_WIDGET_V2_LINK(user._id.toString())}`}
                     target="_blank"
                     component={LinkDom}
                   >
-                    {t('View Online', { ns: 'courses' })}
+                    {i18next.t('View Online', { ns: 'courses' })}
                   </Link>
                 </>
               ) : (
-                t('No analysis yet', { ns: 'courses' })
+                i18next.t('No analysis yet', { ns: 'courses' })
               )}
             </Typography>
           </CustomTabPanel>

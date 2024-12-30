@@ -62,7 +62,7 @@ function ModalMain(props) {
                 <a
                   href="https://www.ilovepdf.com/compress_pdf"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
                   <b>PDF Compressor</b>
                 </a>{' '}
@@ -70,7 +70,7 @@ function ModalMain(props) {
                 <a
                   href="https://www.adobe.com/de/acrobat/online/compress-pdf.html"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
                   <b>Adobe WebApp</b>
                 </a>

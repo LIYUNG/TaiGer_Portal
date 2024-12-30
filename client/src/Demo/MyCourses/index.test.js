@@ -9,6 +9,7 @@ import { useAuth } from '../../components/AuthProvider';
 import { MemoryRouter, useParams } from 'react-router-dom';
 
 import { exampleCourse } from '../../test/testingCourseData';
+import { SnackBarProvider } from '../../contexts/use-snack-bar';
 
 jest.mock('axios');
 jest.mock('../../api');
@@ -47,7 +48,9 @@ describe('Course input pag checking', () => {
     useParams.mockReturnValue({ student_id: '6483036b87c9c3e8823755ec' });
     render(
       <MemoryRouter>
-        <MyCourses />
+        <SnackBarProvider>
+          <MyCourses />
+        </SnackBarProvider>
       </MemoryRouter>
     );
 

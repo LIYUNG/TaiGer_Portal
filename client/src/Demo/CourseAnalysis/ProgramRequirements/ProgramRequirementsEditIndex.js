@@ -1,18 +1,17 @@
 import React, { Suspense } from 'react';
 import { Await, useLoaderData, Link as LinkDom } from 'react-router-dom';
-import { TabTitle } from '../../Utils/TabTitle';
-
+import i18next from 'i18next';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+
+import { TabTitle } from '../../Utils/TabTitle';
 import Loading from '../../../components/Loading/Loading';
 import DEMO from '../../../store/constant';
 import { appConfig } from '../../../config';
-import { useTranslation } from 'react-i18next';
 import ProgramRequirementsNew from './ProgramRequirementsNew';
 
 function ProgramRequirementsEditIndex() {
-  const { t } = useTranslation();
   const { programRequirement } = useLoaderData();
-  TabTitle('Program Requirement Edit');
+  TabTitle(i18next.t('Program Requirement Edit'));
 
   return (
     <Box data-testid="dashoboard_component">
@@ -31,7 +30,7 @@ function ProgramRequirementsEditIndex() {
           component={LinkDom}
           to={`${DEMO.PROGRAMS}`}
         >
-          {t('Program List', { ns: 'common' })}
+          {i18next.t('Program List', { ns: 'common' })}
         </Link>
         <Link
           underline="hover"
@@ -39,10 +38,10 @@ function ProgramRequirementsEditIndex() {
           component={LinkDom}
           to={`${DEMO.PROGRAM_ANALYSIS}`}
         >
-          {t('Program Requirements', { ns: 'common' })}
+          {i18next.t('Program Requirements', { ns: 'common' })}
         </Link>
         <Typography color="text.primary">
-          {t('Create', { ns: 'common' })}
+          {i18next.t('Create', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
       <Suspense fallback={<Loading />}>

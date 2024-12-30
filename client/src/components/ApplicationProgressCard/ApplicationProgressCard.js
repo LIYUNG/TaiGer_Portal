@@ -26,9 +26,9 @@ import {
   styled,
   TextField
 } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import LaunchIcon from '@mui/icons-material/Launch';
+import i18next from 'i18next';
 
 import ApplicationProgressCardBody from './ApplicationProgressCardBody';
 import { updateStudentApplicationResult } from '../../api';
@@ -86,7 +86,6 @@ const ProgramLink = ({ program }) => (
 );
 
 const AdmissionLetterLink = ({ application }) => {
-  const { t } = useTranslation();
   return (
     (isProgramAdmitted(application) || isProgramRejected(application)) &&
     application.admission_letter?.status === 'uploaded' && (
@@ -96,12 +95,12 @@ const AdmissionLetterLink = ({ application }) => {
           '/'
         )}`}
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         className="text-info"
       >
         {isProgramAdmitted(application)
-          ? t('Admission Letter', { ns: 'admissions' })
-          : t('Rejection Letter', { ns: 'admissions' })}
+          ? i18next.t('Admission Letter', { ns: 'admissions' })
+          : i18next.t('Rejection Letter', { ns: 'admissions' })}
       </a>
     )
   );
@@ -119,7 +118,6 @@ export default function ApplicationProgressCard(props) {
   const [returnedMessage, setReturnedMessage] = useState('');
   const [showUndoModal, setShowUndoModal] = useState(false);
   const [showSetResultModal, setShowSetResultModal] = useState(false);
-  const { t } = useTranslation();
 
   const handleToggle = () => {
     setIsCollapse(!isCollapse);
@@ -207,21 +205,21 @@ export default function ApplicationProgressCard(props) {
                   <>
                     <IconButton>{FILE_OK_SYMBOL}</IconButton>
                     &nbsp;
-                    {t('Submitted', { ns: 'common' })}
+                    {i18next.t('Submitted', { ns: 'common' })}
                   </>
                 )}
                 {isProgramAdmitted(application) && (
                   <>
                     <IconButton>{FILE_OK_SYMBOL}</IconButton>
                     &nbsp;
-                    {t('Admitted', { ns: 'common' })}
+                    {i18next.t('Admitted', { ns: 'common' })}
                   </>
                 )}
                 {isProgramRejected(application) && (
                   <>
                     <IconButton>{FILE_NOT_OK_SYMBOL}</IconButton>
                     &nbsp;
-                    {t('Rejected', { ns: 'common' })}
+                    {i18next.t('Rejected', { ns: 'common' })}
                   </>
                 )}
               </>
@@ -264,8 +262,10 @@ export default function ApplicationProgressCard(props) {
                   sx={{ my: 1 }}
                 >
                   {isProgramAdmitted(application)
-                    ? t('upload-admission-letter', { ns: 'admissions' })
-                    : t('upload-rejection-letter', { ns: 'admissions' })}
+                    ? i18next.t('upload-admission-letter', { ns: 'admissions' })
+                    : i18next.t('upload-rejection-letter', {
+                        ns: 'admissions'
+                      })}
                 </Button>
               )}
           </Typography>
@@ -282,7 +282,7 @@ export default function ApplicationProgressCard(props) {
                 startIcon={<AddIcon />}
                 sx={{ my: 1 }}
               >
-                {t('decided-to-study', { ns: 'admissions' })}
+                {i18next.t('decided-to-study', { ns: 'admissions' })}
               </Button>
             )}
           {appConfig.interviewEnable &&
@@ -292,7 +292,7 @@ export default function ApplicationProgressCard(props) {
                 {!application.interview_status && (
                   <>
                     <Typography variant="body2" sx={{ my: 1 }}>
-                      {t(
+                      {i18next.t(
                         'Have you received the interview invitation from this program?'
                       )}
                     </Typography>
@@ -303,7 +303,7 @@ export default function ApplicationProgressCard(props) {
                         size="small"
                         onClick={() => navigate(`${DEMO.INTERVIEW_ADD_LINK}`)}
                       >
-                        {t('Training Request', { ns: 'interviews' })}
+                        {i18next.t('Training Request', { ns: 'interviews' })}
                       </Button>
                     </Typography>
                   </>
@@ -311,7 +311,9 @@ export default function ApplicationProgressCard(props) {
                 {application.interview_status === 'Unscheduled' && (
                   <>
                     <Typography variant="p" component="div" sx={{ my: 1 }}>
-                      {t('Please arrange a meeting', { ns: 'interviews' })}
+                      {i18next.t('Please arrange a meeting', {
+                        ns: 'interviews'
+                      })}
                     </Typography>
                     <Typography variant="p" component="div" sx={{ my: 1 }}>
                       <Typography variant="p" component="div" sx={{ my: 1 }}>
@@ -324,7 +326,9 @@ export default function ApplicationProgressCard(props) {
                           target="_blank"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          {t('arrange-a-training', { ns: 'interviews' })}
+                          {i18next.t('arrange-a-training', {
+                            ns: 'interviews'
+                          })}
                         </Link>
                       </Typography>
                     </Typography>
@@ -333,7 +337,9 @@ export default function ApplicationProgressCard(props) {
                 {application.interview_status === 'Scheduled' && (
                   <>
                     <Typography variant="p" component="div" sx={{ my: 1 }}>
-                      {t('Do not forget to attend the interview training')}
+                      {i18next.t(
+                        'Do not forget to attend the interview training'
+                      )}
                     </Typography>
                     <Typography variant="p" component="div" sx={{ my: 1 }}>
                       <Link
@@ -356,7 +362,9 @@ export default function ApplicationProgressCard(props) {
             )}
           {isProgramSubmitted(application) &&
             (application.admission === '-' ? (
-              <Typography>{t('Tell me about your result')} : </Typography>
+              <Typography>
+                {i18next.t('Tell me about your result')} :{' '}
+              </Typography>
             ) : (
               <Button
                 variant="outlined"
@@ -367,7 +375,7 @@ export default function ApplicationProgressCard(props) {
                 startIcon={<UndoIcon />}
                 sx={{ my: 1 }}
               >
-                {t('Change your result')}
+                {i18next.t('Change your result')}
               </Button>
             ))}
           {isProgramSubmitted(application) && application.admission === '-' && (
@@ -380,7 +388,7 @@ export default function ApplicationProgressCard(props) {
                 onClick={(e) => openSetResultModal(e, 'O')}
                 startIcon={<CheckIcon />}
               >
-                {t('Admitted', { ns: 'common' })}
+                {i18next.t('Admitted', { ns: 'common' })}
               </Button>
               <Button
                 variant="outlined"
@@ -389,7 +397,7 @@ export default function ApplicationProgressCard(props) {
                 onClick={(e) => openSetResultModal(e, 'X')}
                 startIcon={<CloseIcon />}
               >
-                {t('Rejected', { ns: 'common' })}
+                {i18next.t('Rejected', { ns: 'common' })}
               </Button>
             </Box>
           )}
@@ -425,10 +433,10 @@ export default function ApplicationProgressCard(props) {
         </Collapse>
       </Card>
       <Dialog open={showUndoModal} onClose={closeUndoModal} size="small">
-        <DialogTitle>{t('Attention')}</DialogTitle>
+        <DialogTitle>{i18next.t('Attention')}</DialogTitle>
         <DialogContent>
           <Typography id="modal-modal-description" sx={{ my: 2 }}>
-            {t('Do you want to reset the result of the application of')}{' '}
+            {i18next.t('Do you want to reset the result of the application of')}{' '}
             <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>
             ?
           </Typography>
@@ -445,7 +453,7 @@ export default function ApplicationProgressCard(props) {
             {isLoading ? (
               <CircularProgress size="small" />
             ) : (
-              t('Confirm', { ns: 'common' })
+              i18next.t('Confirm', { ns: 'common' })
             )}
           </Button>
           <Button
@@ -454,7 +462,7 @@ export default function ApplicationProgressCard(props) {
             title="Undo"
             onClick={closeUndoModal}
           >
-            {t('Cancel', { ns: 'common' })}
+            {i18next.t('Cancel', { ns: 'common' })}
           </Button>
         </DialogActions>
       </Dialog>
@@ -464,27 +472,27 @@ export default function ApplicationProgressCard(props) {
         open={showSetResultModal}
         onClose={closeSetResultModal}
       >
-        <DialogTitle>{t('Attention')}</DialogTitle>
+        <DialogTitle>{i18next.t('Attention')}</DialogTitle>
         <DialogContent>
           {application.admission === '-' && (
             <Typography id="modal-modal-description" sx={{ my: 2 }}>
-              {t('Do you want to set the application of')}{' '}
+              {i18next.t('Do you want to set the application of')}{' '}
               <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>{' '}
               <b>
                 {resultState === 'O'
-                  ? t('Admitted', { ns: 'common' })
-                  : t('Rejected', { ns: 'common' })}
+                  ? i18next.t('Admitted', { ns: 'common' })
+                  : i18next.t('Rejected', { ns: 'common' })}
               </b>
               ?
             </Typography>
           )}
           <Typography sx={{ my: 2 }}>
             {resultState === 'O'
-              ? t(
+              ? i18next.t(
                   'Attach Admission Letter or Admission Email pdf or Email screenshot',
                   { ns: 'admissions' }
                 )
-              : t(
+              : i18next.t(
                   'Attach Rejection Letter or Admission Email pdf or Email screenshot',
                   { ns: 'admissions' }
                 )}
@@ -497,7 +505,7 @@ export default function ApplicationProgressCard(props) {
             sx={{ mb: 2 }}
           />
           <Typography variant="body2" sx={{ mb: 2 }}>
-            {t(
+            {i18next.t(
               'Your agents and editors will receive your application result notification.',
               { ns: 'admissions' }
             )}
@@ -520,8 +528,8 @@ export default function ApplicationProgressCard(props) {
             startIcon={isLoading ? <CircularProgress size={24} /> : null}
           >
             {resultState === 'O'
-              ? t('Admitted', { ns: 'common' })
-              : t('Rejected', { ns: 'common' })}
+              ? i18next.t('Admitted', { ns: 'common' })
+              : i18next.t('Rejected', { ns: 'common' })}
           </Button>
           <Button
             color="secondary"
@@ -530,7 +538,7 @@ export default function ApplicationProgressCard(props) {
             sx={{ ml: 1 }}
             onClick={closeSetResultModal}
           >
-            {t('Cancel', { ns: 'common' })}
+            {i18next.t('Cancel', { ns: 'common' })}
           </Button>
         </DialogActions>
       </Dialog>

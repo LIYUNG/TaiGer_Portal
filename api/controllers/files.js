@@ -1,5 +1,9 @@
 const path = require('path');
-const { Role, DocumentStatusType, is_TaiGer_Student } = require('@taiger-common/core');
+const {
+  Role,
+  DocumentStatusType,
+  is_TaiGer_Student
+} = require('@taiger-common/core');
 
 const { asyncHandler } = require('../middlewares/error-handler');
 const { one_month_cache, two_month_cache } = require('../cache/node-cache');
@@ -306,8 +310,12 @@ const updateVPDPayment = asyncHandler(async (req, res, next) => {
   app.uni_assist.updatedAt = new Date();
   await student.save();
 
+  const updatedApplication = student.applications.find(
+    (application) => application.programId._id.toString() === program_id
+  );
+
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  res.status(201).send({ success: true, data: student });
+  res.status(201).send({ success: true, data: updatedApplication });
   next();
 });
 // () email:
@@ -343,8 +351,11 @@ const updateVPDFileNecessity = asyncHandler(async (req, res, next) => {
   app.uni_assist.vpd_file_path = '';
   await student.save();
 
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  res.status(201).send({ success: true, data: student });
+  const updatedApplication = student.applications.find(
+    (application) => application.programId._id.toString() === program_id
+  );
+
+  res.status(201).send({ success: true, data: updatedApplication });
   next();
 });
 
@@ -373,7 +384,10 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
     app.uni_assist.updatedAt = new Date();
     app.uni_assist.vpd_file_path = req.file.key;
     await student.save();
-    res.status(201).send({ success: true, data: student });
+    const updatedApplication = student.applications.find(
+      (application) => application.programId._id.toString() === program_id
+    );
+    res.status(201).send({ success: true, data: updatedApplication });
 
     return;
   }
@@ -389,9 +403,11 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
   }
 
   await student.save();
-
+  const updatedApplication = student.applications.find(
+    (application) => application.programId._id.toString() === program_id
+  );
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  res.status(201).send({ success: true, data: student });
+  res.status(201).send({ success: true, data: updatedApplication });
 
   const student_updated = await req.db
     .model('Student')
@@ -1081,7 +1097,10 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
     }
     app.uni_assist.updatedAt = new Date();
     student.save();
-    res.status(200).send({ success: true });
+    const updatedApplication = student.applications.find(
+      (application) => application.programId._id.toString() === program_id
+    );
+    res.status(200).send({ success: true, data: updatedApplication });
     next();
   } catch (err) {
     if (err) {

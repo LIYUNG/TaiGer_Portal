@@ -21,7 +21,8 @@ import DEMO from '../../../store/constant';
 import { postProgramRequirements, putProgramRequirement } from '../../../api';
 import {
   // PROGRAM_ANALYSIS_ATTRIBUTES,
-  PROGRAM_SUBJECTS_DETAILED
+  PROGRAM_SUBJECTS_DETAILED,
+  SCORES_TYPE
 } from '../../Utils/contants';
 import SearchableMultiSelect from '../../../components/Input/searchableMuliselect';
 
@@ -34,6 +35,16 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
     requirement?.program_categories ?? []
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [scores, setScores] = useState({
+    gpaScore: requirement?.gpaScore || 0,
+    cvScore: requirement?.cvScore || 0,
+    mlScore: requirement?.mlScore || 0,
+    rlScore: requirement?.rlScore || 0,
+    essayScore: requirement?.essayScore || 0,
+    directRejectionScore: requirement?.directRejectionScore || 0,
+    directAdmissionScore: requirement?.directAdmissionScore || 0
+  });
+
   const [program, setProgram] = useState(
     requirement?.programId[0]
       ? {
@@ -48,7 +59,12 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
   });
 
   const navigate = useNavigate();
-
+  const handleScores = (e) => {
+    setScores((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value
+    }));
+  };
   const handleChangeByField = (field) => (value) => {
     setCheckboxState((prevState) => ({
       ...prevState,
@@ -113,6 +129,7 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
     e.preventDefault();
     setIsSubmitting(true);
     const inputObject = {
+      ...scores,
       program: program,
       attributes: checkboxState.updateAttributesList,
       program_categories: programCategories?.map(
@@ -211,7 +228,28 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
               data={PROGRAM_SUBJECTS_DETAILED}
               value={checkboxState?.updateAttributesList}
               setValue={handleChangeByField('updateAttributesList')}
+              sx={{ mb: 2 }}
             />
+          </Box>
+          <Box>
+            <Grid container spacing={2}>
+              {SCORES_TYPE.map((score) => (
+                <Grid item xs={6} md={4} key={score.label}>
+                  <TextField
+                    label={score.label}
+                    name={score.name}
+                    type="number"
+                    value={scores[score.name]}
+                    onChange={(e) => handleScores(e)}
+                    helperText={score.description}
+                    variant="outlined"
+                    fullWidth
+                    id="categoryName"
+                    size="small"
+                  />
+                </Grid>
+              ))}
+            </Grid>
           </Box>
           <Box>
             {programCategories?.map((programCategory, index) => (
@@ -228,7 +266,7 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                 />
                 <CardContent>
                   <Grid container spacing={2}>
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={4}>
                       <TextField
                         label="Category Name"
                         value={programCategory.program_category}
@@ -274,6 +312,30 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                         variant="outlined"
                         fullWidth
                         id="requiredECTS"
+                        size="small"
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <TextField
+                        label="Points (if applicable)"
+                        value={programCategory.maxScore}
+                        onChange={(e) =>
+                          setProgramCategories((prev) =>
+                            prev.map((pc, i) =>
+                              i === index
+                                ? { ...pc, maxScore: e.target.value }
+                                : pc
+                            )
+                          )
+                        }
+                        type="number"
+                        // error={programCategory.maxScore === 0}
+                        helperText={
+                          'Max. score for this category. (if programs publish entry requirement score like TUM)'
+                        }
+                        variant="outlined"
+                        fullWidth
+                        id="categoryName"
                         size="small"
                       />
                     </Grid>

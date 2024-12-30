@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import {
@@ -13,11 +13,12 @@ import {
   Select
 } from '@mui/material';
 import LanguageIcon from '@mui/icons-material/Language';
+import i18next from 'i18next';
 
 export default function Footer() {
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
-  const { i18n } = useTranslation();
+  // const { i18n } = useTranslation();
 
   const [language, setLanguage] = useState(
     localStorage.getItem('locale') || 'en'
@@ -29,7 +30,8 @@ export default function Footer() {
     if (selectedLanguage === language) return;
 
     if (['en', 'zh-CN', 'zh-TW'].includes(selectedLanguage)) {
-      i18n.changeLanguage(selectedLanguage);
+      i18next.changeLanguage(selectedLanguage);
+      // i18n.changeLanguage(selectedLanguage);
       localStorage.setItem('locale', selectedLanguage);
       setLanguage(selectedLanguage);
     }

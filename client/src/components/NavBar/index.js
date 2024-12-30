@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate, Link as LinkDom } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
@@ -27,6 +26,7 @@ import {
   is_TaiGer_Editor,
   is_TaiGer_Student
 } from '@taiger-common/core';
+import i18next from 'i18next';
 
 import {
   getActiveEventsNumber,
@@ -35,7 +35,6 @@ import {
 import { appConfig } from '../../config';
 import { useAuth } from '../AuthProvider';
 import NavSearch from './NavSearch';
-
 import ChatList from '../ChatList';
 import { stringAvatar } from '../../Demo/Utils/contants';
 import Loading from '../Loading/Loading';
@@ -95,7 +94,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 function NavBar(props) {
-  const { t } = useTranslation();
   const { user, isAuthenticated, isLoaded, logout } = useAuth();
   const theme = useTheme();
   const ismobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -296,13 +294,13 @@ function NavBar(props) {
         <ListItemIcon>
           <Settings fontSize="small" />
         </ListItemIcon>
-        {t('Settings', { ns: 'common' })}
+        {i18next.t('Settings', { ns: 'common' })}
       </MenuItem>
       <MenuItem onClick={handleCloseLogout}>
         <ListItemIcon>
           <Logout fontSize="small" />
         </ListItemIcon>
-        {t('Log Out', { ns: 'common' })}
+        {i18next.t('Log Out', { ns: 'common' })}
       </MenuItem>
     </Menu>
   );
@@ -335,7 +333,7 @@ function NavBar(props) {
               <CalendarMonthIcon />
             </Badge>
           </IconButton>
-          <Typography>{t('Calendar', { ns: 'common' })}</Typography>
+          <Typography>{i18next.t('Calendar', { ns: 'common' })}</Typography>
         </MenuItem>
       )}
       {!is_TaiGer_Editor(user) && (
@@ -351,7 +349,7 @@ function NavBar(props) {
               <MailIcon />
             </Badge>
           </IconButton>
-          <Typography>{t('Messages', { ns: 'common' })}</Typography>
+          <Typography>{i18next.t('Messages', { ns: 'common' })}</Typography>
         </MenuItem>
       )}
       <MenuItem onClick={handleProfileMenuOpen}>
@@ -364,7 +362,7 @@ function NavBar(props) {
         >
           <AccountCircle />
         </IconButton>
-        <Typography>{t('Profile', { ns: 'common' })}</Typography>
+        <Typography>{i18next.t('Profile', { ns: 'common' })}</Typography>
       </MenuItem>
     </Menu>
   );

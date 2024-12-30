@@ -432,12 +432,7 @@ function TaiGerOfficeHours() {
                   {t('Past', { ns: 'common' })}
                 </Typography>
                 <Box>
-                  {_.reverse(
-                    _.sortBy(
-                      events?.filter((event) => !isInTheFuture(event.end)),
-                      ['start']
-                    )
-                  ).map((event, i) => (
+                  {_.reverse(_.sortBy(events, ['start'])).map((event, i) => (
                     <EventConfirmationCard
                       key={i}
                       event={event}

@@ -74,7 +74,7 @@ const EditDownloadFiles = (props) => {
                 href={`${BASE_URL}/api/account/files/template/${template.prop}`}
                 target="_blank"
                 className="text-info"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 <Button color="primary" variant="contained" size="small">
                   {t('Download', { ns: 'common' })}

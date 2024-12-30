@@ -13,8 +13,8 @@ import {
 import TimezoneSelect from 'react-timezone-select';
 import { Link as LinkDom, useParams } from 'react-router-dom';
 import Select from 'react-select';
-import { useTranslation } from 'react-i18next';
 import { is_TaiGer_Student } from '@taiger-common/core';
+import i18next from 'i18next';
 
 import { time_slots } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -28,7 +28,6 @@ import Loading from '../../components/Loading/Loading';
 function AgentProfile() {
   const { user } = useAuth();
   const { user_id } = useParams();
-  const { t } = useTranslation();
   const [agentProfileState, setAgentProfileState] = useState({
     error: '',
     role: '',
@@ -119,13 +118,13 @@ function AgentProfile() {
           <Typography variant="body1">
             Email: {agentProfileState.agent.email}
           </Typography>
-          <Typography variant="h6">{t('Introduction')}</Typography>
+          <Typography variant="h6">{i18next.t('Introduction')}</Typography>
           {agentProfileState.agent.selfIntroduction}
         </Grid>
         <Grid item xs={12}>
           <Box>
-            <Typography variant="h6">{t('Office Hours')}</Typography>
-            <Typography variant="body1">{t('Time zone')}</Typography>
+            <Typography variant="h6">{i18next.t('Office Hours')}</Typography>
+            <Typography variant="body1">{i18next.t('Time zone')}</Typography>
             <TimezoneSelect
               value={agentProfileState.selectedTimezone}
               displayValue="UTC"
@@ -163,7 +162,7 @@ function AgentProfile() {
                     <>
                       <Select
                         id={`${day}`}
-                        label={t('Timeslots')}
+                        label={i18next.t('Timeslots')}
                         options={time_slots}
                         isMulti
                         isDisabled={true}
@@ -173,7 +172,7 @@ function AgentProfile() {
                       />
                     </>
                   ) : (
-                    <Typography>{t('Close', { ns: 'common' })}</Typography>
+                    <Typography>{i18next.t('Close', { ns: 'common' })}</Typography>
                   )}
                 </Grid>
               ))}
@@ -190,7 +189,7 @@ function AgentProfile() {
                   component={LinkDom}
                 >
                   <Button color="primary" variant="contained">
-                    {t('Book')}
+                    {i18next.t('Book')}
                   </Button>
                 </Link>
               </>

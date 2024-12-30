@@ -692,12 +692,11 @@ export default function MyCourses() {
         onClick={onSubmit}
         disabled={statedata.isUpdating}
         sx={{ mb: 2 }}
+        startIcon={statedata.isUpdating && <CircularProgress size={20} />}
       >
-        {statedata.isUpdating ? (
-          <CircularProgress size={16} />
-        ) : (
-          t('Update', { ns: 'common' })
-        )}
+        {statedata.isUpdating
+          ? t('Updating', { ns: 'common' })
+          : t('Update', { ns: 'common' })}
       </Button>
       <Typography variant="body2">
         {t(

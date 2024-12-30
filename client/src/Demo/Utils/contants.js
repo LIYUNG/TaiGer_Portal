@@ -2218,6 +2218,12 @@ export const GENERAL_SCORES_COURSE = {
   description: 'Course score (if applicable)'
 };
 
+export const GENERAL_SCORES_GPA_BOUNDARY = {
+  name: 'gpaScoreBoundaryGPA',
+  label: 'GPA Boundary minimum (3.0 or 2.3 in DE system)',
+  description: 'GPA boundary (if applicable)'
+};
+
 export const GENERAL_SCORES_GPA = {
   name: 'gpaScore',
   label: 'GPA Score',
@@ -2302,16 +2308,24 @@ export const GENERAL_SCORES = [
 ];
 
 export const SCORES_TYPE = [
+  GENERAL_SCORES_GPA_BOUNDARY,
   ...GENERAL_SCORES,
   DIRECT_REJECTION_SCORE,
   DIRECT_ADMISSION_SCORE,
-  DIRECT_ADMISSION_SECOND_SCORE,
-  DIRECT_REJECTION_SECOND_SCORE
+  DIRECT_REJECTION_SECOND_SCORE,
+  DIRECT_ADMISSION_SECOND_SCORE
 ];
+
+export const SCORES_TYPE_OBJ = Object.fromEntries(
+  SCORES_TYPE.map(({ name, label, description }) => [
+    name,
+    { label, description }
+  ])
+);
 
 export const CONSIDRED_SCORES_DETAILED = Object.fromEntries(
   [GENERAL_SCORES_COURSE, ...GENERAL_SCORES].map((score) => [
-    score.label,
+    score.name,
     {
       ...score,
       color: 'primary',

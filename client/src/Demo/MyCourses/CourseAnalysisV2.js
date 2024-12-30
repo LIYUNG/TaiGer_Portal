@@ -16,7 +16,11 @@ import {
   TableCell,
   Grid,
   Stack,
-  Alert
+  Alert,
+  Card,
+  CardHeader,
+  CardContent,
+  Divider
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useNavigate, useParams } from 'react-router-dom';
@@ -30,7 +34,9 @@ import {
   convertDate,
   DIRECT_ADMISSION_SCORE,
   DIRECT_REJECTION_SCORE,
-  GENERAL_SCORES
+  GENERAL_SCORES_COURSE,
+  GENERAL_SCORES_GPA,
+  SCORES_TYPE_OBJ
 } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -45,12 +51,23 @@ import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
 import { green } from '@mui/material/colors';
 import i18next from 'i18next';
+import { Bayerische_Formel } from '../Utils/checking-functions';
 
-export const CourseAnalysisComponent = ({ sheet }) => {
+export const CourseAnalysisComponent = ({ sheet, student }) => {
   const sortedCourses = sheet.sorted;
   const scores = sheet.scores;
+  const firstRoundConsidered = scores.firstRoundConsidered;
   const suggestedCourses = sheet.suggestion;
-
+  const academic_background = student.academic_background;
+  console.log(academic_background);
+  const { Highest_GPA_Uni, Passing_GPA_Uni, My_GPA_Uni } =
+    academic_background?.university
+      ? academic_background.university
+      : { Highest_GPA_Uni: 4.3, Passing_GPA_Uni: 1.7, My_GPA_Uni: 3 };
+  let germanGPA = 3;
+  if (Passing_GPA_Uni && Highest_GPA_Uni && My_GPA_Uni) {
+    germanGPA = Bayerische_Formel(Highest_GPA_Uni, Passing_GPA_Uni, My_GPA_Uni);
+  }
   const acquiredECTS = (table) => {
     return table[table.length - 1].credits;
   };
@@ -86,10 +103,10 @@ export const CourseAnalysisComponent = ({ sheet }) => {
   };
 
   return (
-    <Grid container spacing={0}>
+    <Grid container spacing={1}>
       <Grid item xs={12} md={6}>
         {Object.keys(sortedCourses).map((category, i) => (
-          <Paper key={i} sx={{ p: 2, m: 1 }}>
+          <Paper key={i} sx={{ p: 2, mb: 1 }}>
             <Box
               display="flex"
               alignItems="center"
@@ -229,29 +246,91 @@ export const CourseAnalysisComponent = ({ sheet }) => {
         ))}
       </Grid>
       <Grid item xs={12} md={6}>
-        <Paper sx={{ p: 2, m: 1 }}>
-          <Box>
-            <Typography>
-              Courses Score: {getOverallCourseScoreArray().join(' + ')} ={' '}
-              {getOverallCourseScore()}
-            </Typography>
-            {GENERAL_SCORES.map((score) =>
-              scores[score.name] && scores[score.name] !== 0 ? (
-                <Typography key={score.label}>
-                  {score.label}: {scores[score.name]}
-                </Typography>
-              ) : (
-                <></>
-              )
-            )}
-            <Typography>
-              {DIRECT_REJECTION_SCORE.label}:{scores.directRejectionScore}
-            </Typography>
-            <Typography>
-              {DIRECT_ADMISSION_SCORE.label}: {scores.directAdmissionScore}
-            </Typography>
-          </Box>
-        </Paper>
+        {firstRoundConsidered && firstRoundConsidered?.length > 0 && (
+          <Card>
+            <CardHeader title="Stage 1" subheader="September 14, 2016" />
+            <CardContent>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Score Name</TableCell>
+                      <TableCell>Actual Score</TableCell>
+                      <TableCell>25%</TableCell>
+                      <TableCell>50%</TableCell>
+                      <TableCell>75%</TableCell>
+                      <TableCell>100% (Total)</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {firstRoundConsidered.findIndex(
+                      (consideredScore) =>
+                        consideredScore === GENERAL_SCORES_COURSE.name
+                    ) > -1 && (
+                      <TableRow>
+                        <TableCell>Courses Score</TableCell>
+                        <TableCell>{getOverallCourseScore()}</TableCell>
+                        <TableCell>{getOverallCourseScore()}</TableCell>
+                        <TableCell>{getOverallCourseScore()}</TableCell>
+                        <TableCell>{getOverallCourseScore()}</TableCell>
+                        <TableCell>{getOverallCourseScore()}</TableCell>
+                        {/* {getOverallCourseScoreArray().join(' + ')} ={' '}
+                        {getOverallCourseScore()} */}
+                      </TableRow>
+                    )}
+                    {firstRoundConsidered.map((consideredScore, i) =>
+                      ![
+                        GENERAL_SCORES_COURSE.name,
+                        GENERAL_SCORES_GPA.name
+                      ].includes(consideredScore) ? (
+                        <TableRow key={i}>
+                          <TableCell>
+                            {SCORES_TYPE_OBJ[consideredScore]?.label}
+                          </TableCell>
+                          <TableCell>{scores[consideredScore]} </TableCell>
+                          <TableCell>{scores[consideredScore]} </TableCell>
+                          <TableCell>{scores[consideredScore]} </TableCell>
+                          <TableCell>{scores[consideredScore]} </TableCell>
+                          <TableCell>{scores[consideredScore]} </TableCell>
+                        </TableRow>
+                      ) : (
+                        <></>
+                      )
+                    )}
+                    {firstRoundConsidered.findIndex(
+                      (consideredScore) =>
+                        consideredScore === GENERAL_SCORES_GPA.name
+                    ) > -1 && (
+                      <TableRow>
+                        <TableCell>Your German GPA {germanGPA}</TableCell>
+                        <TableCell>TODO </TableCell>
+                        <TableCell>TODO </TableCell>
+                        <TableCell>TODO </TableCell>
+                        <TableCell>TODO </TableCell>
+                        <TableCell>TODO </TableCell>
+                      </TableRow>
+                    )}
+                    <TableRow>
+                      <TableCell>Total Score </TableCell>
+                      <TableCell>TODO </TableCell>
+                      <TableCell>TODO </TableCell>
+                      <TableCell>TODO </TableCell>
+                      <TableCell>TODO </TableCell>
+                      <TableCell>TODO </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <Divider />
+              <Typography>
+                {DIRECT_REJECTION_SCORE.label}: {scores.directRejectionScore}
+              </Typography>
+              <Typography>
+                {DIRECT_ADMISSION_SCORE.label}: {scores.directAdmissionScore}
+              </Typography>
+            </CardContent>
+          </Card>
+        )}
       </Grid>
     </Grid>
   );
@@ -485,7 +564,10 @@ export default function CourseAnalysisV2() {
         ))}
       </Select>
       {sheetName !== 'General' && (
-        <CourseAnalysisComponent sheet={statedata.sheets?.[sheetName]} />
+        <CourseAnalysisComponent
+          sheet={statedata.sheets?.[sheetName]}
+          student={statedata.student}
+        />
       )}
       {t('Last update', { ns: 'common' })} {convertDate(statedata.timestamp)}
     </Box>

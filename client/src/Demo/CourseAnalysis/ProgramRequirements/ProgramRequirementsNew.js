@@ -36,18 +36,11 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
     requirement?.program_categories ?? []
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [scores, setScores] = useState({
-    gpaScore: requirement?.gpaScore || 0,
-    cvScore: requirement?.cvScore || 0,
-    mlScore: requirement?.mlScore || 0,
-    rlScore: requirement?.rlScore || 0,
-    essayScore: requirement?.essayScore || 0,
-    gmatScore: requirement?.gmatScore || 0,
-    greScore: requirement?.greScore || 0,
-    interviewScore: requirement?.interviewScore || 0,
-    directRejectionScore: requirement?.directRejectionScore || 0,
-    directAdmissionScore: requirement?.directAdmissionScore || 0
-  });
+  const [scores, setScores] = useState(() =>
+    Object.fromEntries(
+      SCORES_TYPE.map(({ name }) => [name, requirement?.[name] || 0])
+    )
+  );
 
   const [program, setProgram] = useState(
     requirement?.programId[0]
@@ -265,7 +258,7 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
           <Box>
             <Grid container spacing={2}>
               {SCORES_TYPE.map((score) => (
-                <Grid item xs={6} md={4} key={score.label}>
+                <Grid item xs={6} md={4} key={score.name}>
                   <TextField
                     label={score.label}
                     name={score.name}

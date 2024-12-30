@@ -2,7 +2,6 @@ const {
   Schema,
   Types: { ObjectId }
 } = require('mongoose');
-const { programRequirementAttributeSchema } = require('./common');
 const { PROGRAM_SUBJECT_KEYS } = require('../constants');
 
 const programRequirementSchema = new Schema(

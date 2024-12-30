@@ -401,9 +401,15 @@ const downloadJson = asyncHandler(async (req, res, next) => {
     params: { studentId }
   } = req;
 
-  const course = await req.db.model('Course').findOne({
-    student_id: studentId
-  });
+  const course = await req.db
+    .model('Course')
+    .findOne({
+      student_id: studentId
+    })
+    .populate(
+      'student_id',
+      'firstname lastname firstname_chinese lastname_chinese role academic_background application_preference'
+    );
   if (!course) {
     logger.error('downloadJson: Invalid student id');
     throw new ErrorResponse(404, 'Course not found');
@@ -436,7 +442,12 @@ const downloadJson = asyncHandler(async (req, res, next) => {
 
     res
       .status(200)
-      .send({ success: true, json: jsonData, fileKey: fileKey_converted });
+      .send({
+        success: true,
+        json: jsonData,
+        student: course.student_id,
+        fileKey: fileKey_converted
+      });
     next();
   } else {
     logger.info('cache hit');
@@ -444,6 +455,7 @@ const downloadJson = asyncHandler(async (req, res, next) => {
     res.status(200).send({
       success: true,
       json: value.jsonData,
+      student: course.student_id,
       fileKey: value.fileKey_converted
     });
     next();

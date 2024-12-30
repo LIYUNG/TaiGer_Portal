@@ -269,7 +269,7 @@ export default function CourseAnalysisV2() {
       : analyzedFileV2Download; // Get the full URI
     downloadFn(user_id).then(
       (resp) => {
-        const { success, json } = resp.data;
+        const { success, json, student } = resp.data;
         if (success) {
           console.log(json);
           const timestamp = json['timestamp'];
@@ -278,6 +278,7 @@ export default function CourseAnalysisV2() {
             ...prevState,
             sheetNames: Object.keys(json),
             sheets: json,
+            student,
             isLoaded: true,
             timestamp
           }));
@@ -358,7 +359,8 @@ export default function CourseAnalysisV2() {
   if (!statedata?.isLoaded) {
     return <Loading />;
   }
-  TabTitle(`Student ${statedata.student_name} || Courses Analysis`);
+  const student_name = `${statedata.student?.firstname} ${statedata.student?.lastname}`;
+  TabTitle(`Student ${student_name} || Courses Analysis`);
   if (statedata.res_status >= 400) {
     return <ErrorPage res_status={statedata.res_status} />;
   }
@@ -381,32 +383,45 @@ export default function CourseAnalysisV2() {
         >
           {appConfig.companyName}
         </Link>
-        {is_TaiGer_role(user) && (
+        {!window.location.href.includes('internal') && is_TaiGer_role(user) && (
           <Link
             underline="hover"
             color="inherit"
             component={LinkDom}
             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-              statedata.studentId,
+              statedata.student?._id?.toString(),
               DEMO.PROFILE_HASH
             )}`}
           >
-            {statedata.student_name}
+            {student_name}
           </Link>
         )}
-        <Link
-          underline="hover"
-          color="inherit"
-          component={LinkDom}
-          to={
-            !user_id
-              ? `${DEMO.COURSES_INPUT_LINK(statedata.studentId)}`
-              : '/internal/widgets/course-analyser'
-          }
-        >
-          {t('My Courses')}
-        </Link>
-        <Typography color="text.primary">{t('Courses Analysis')}</Typography>
+        {window.location.href.includes('internal') && (
+          <Typography>{t('Tools', { ns: 'common' })}</Typography>
+        )}
+        {window.location.href.includes('internal') && (
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.INTERNAL_WIDGET_COURSE_ANALYSER_LINK}`}
+          >
+            {t('Course Analyser', { ns: 'common' })}
+          </Link>
+        )}
+        {!window.location.href.includes('internal') && (
+          <Link
+            underline="hover"
+            color="inherit"
+            component={LinkDom}
+            to={`${DEMO.COURSES_INPUT_LINK(statedata.student?._id?.toString())}`}
+          >
+            {t('My Courses')}
+          </Link>
+        )}
+        <Typography color="text.primary">
+          {t('Courses Analysis')} Beta
+        </Typography>
       </Breadcrumbs>
       <Typography variant="body1" sx={{ pt: 2 }}>
         {t('Course Analysis banner', { ns: 'courses' })}

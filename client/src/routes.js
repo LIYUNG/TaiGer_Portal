@@ -448,13 +448,13 @@ const routes = [
     Component: Download
   },
   {
-    path: '/my-courses/analysis/:student_id',
+    path: '/my-courses/analysis/:user_id',
     exact: true,
     name: 'My Courses Analysis',
     Component: MyCoursesAnalysis
   },
   {
-    path: '/my-courses/analysis/v2/:student_id',
+    path: '/my-courses/analysis/v2/:user_id',
     exact: true,
     name: 'My Courses Analysis',
     Component: MyCoursesAnalysisV2
@@ -521,13 +521,13 @@ const routes = [
     Component: CoursesAnalysisWidget
   },
   {
-    path: '/internal/widgets/course-analyser/v2/:admin_id',
+    path: '/internal/widgets/course-analyser/v2/:user_id',
     exact: true,
     name: 'MyCourses Analysis',
     Component: MyCoursesAnalysisV2
   },
   {
-    path: '/internal/widgets/:admin_id',
+    path: '/internal/widgets/:user_id',
     exact: true,
     name: 'My MyCourses Analysis',
     Component: MyCoursesAnalysis

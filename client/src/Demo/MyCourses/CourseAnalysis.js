@@ -30,7 +30,7 @@ import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
 
 export default function CourseAnalysis() {
-  const { admin_id, student_id } = useParams();
+  const { user_id, student_id } = useParams();
   const { t } = useTranslation();
   const { user } = useAuth();
   const [value, setValue] = useState(0);
@@ -53,7 +53,7 @@ export default function CourseAnalysis() {
   });
   const ref = useRef(null);
   useEffect(() => {
-    if (admin_id) {
+    if (user_id) {
       WidgetanalyzedFileDownload(user._id.toString()).then(
         (resp) => {
           // TODO: timeout? success?
@@ -297,7 +297,7 @@ export default function CourseAnalysis() {
           color="inherit"
           component={LinkDom}
           to={
-            !admin_id
+            !user_id
               ? `${DEMO.COURSES_INPUT_LINK(statedata.studentId)}`
               : '/internal/widgets/course-analyser'
           }

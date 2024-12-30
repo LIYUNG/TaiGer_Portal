@@ -142,6 +142,7 @@ export default function CourseWidgetBody({ programRequirements }) {
       (error) => {
         setSeverity('error');
         setMessage(error.message || 'An error occurred. Please try again.');
+        setOpenSnackbar(true);
         setStatedata((state) => ({
           ...state,
           isAnalysing: false,

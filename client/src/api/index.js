@@ -263,6 +263,8 @@ export const analyzedFileDownload_test = (studentId) =>
   request.get(`/api/courses/transcript/${studentId}`, {
     responseType: 'blob'
   });
+export const analyzedFileV2Download = (user_id) =>
+  request.get(`/api/courses/transcript/v2/${user_id}`);
 
 export const getCourseKeywordSets = () => request.get(`/api/course-keywords`);
 export const getCourseKeywordSet = (keywordsSetId) =>

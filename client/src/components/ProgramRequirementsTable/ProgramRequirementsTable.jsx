@@ -34,7 +34,8 @@ export const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
     }));
   };
 
-  const onAnalyse = async () => {
+  const onAnalyse = async (e) => {
+    e.preventDefault();
     setIsAnalysingV2(true);
     await onAnalyseV2(
       Object.keys(rowSelection)?.map((idx) => data[idx]?._id),

@@ -28,7 +28,10 @@ import FlagIcon from '@mui/icons-material/Flag';
 import { convertDate, GENERAL_SCORES } from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { WidgetanalyzedFileV2Download } from '../../api';
+import {
+  analyzedFileV2Download,
+  WidgetanalyzedFileV2Download
+} from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
@@ -238,7 +241,7 @@ export const CourseAnalysisComponent = ({ sheet }) => {
   );
 };
 export default function CourseAnalysisV2() {
-  const { admin_id } = useParams();
+  const { user_id } = useParams();
   const { t } = useTranslation();
   const { user } = useAuth();
   const [value, setValue] = useState(0);
@@ -261,7 +264,10 @@ export default function CourseAnalysisV2() {
     res_modal_message: ''
   });
   useEffect(() => {
-    WidgetanalyzedFileV2Download(user._id.toString()).then(
+    const downloadFn = window.location.href.includes('internal')
+      ? WidgetanalyzedFileV2Download
+      : analyzedFileV2Download; // Get the full URI
+    downloadFn(user_id).then(
       (resp) => {
         const { success, json } = resp.data;
         if (success) {
@@ -393,7 +399,7 @@ export default function CourseAnalysisV2() {
           color="inherit"
           component={LinkDom}
           to={
-            !admin_id
+            !user_id
               ? `${DEMO.COURSES_INPUT_LINK(statedata.studentId)}`
               : '/internal/widgets/course-analyser'
           }

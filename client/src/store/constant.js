@@ -67,6 +67,9 @@ const DEMO = {
   INTERNAL_WIDGET_V2_LINK: (user_id) => {
     return `/internal/widgets/course-analyser/v2/${user_id}`;
   },
+  COURSES_ANALYSIS_RESULT_V2_LINK: (user_id) => {
+    return `/my-courses/analysis/v2/${user_id}`;
+  },
   INTERNAL_LOGS_LINK: '/internal/logs',
   INTERNAL_LOGS_USER_ID_LINK: (user_id) => {
     return `/internal/logs/${user_id}`;

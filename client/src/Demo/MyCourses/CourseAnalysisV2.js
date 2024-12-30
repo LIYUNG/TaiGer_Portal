@@ -26,7 +26,12 @@ import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import FlagIcon from '@mui/icons-material/Flag';
 
-import { convertDate, GENERAL_SCORES } from '../Utils/contants';
+import {
+  convertDate,
+  DIRECT_ADMISSION_SCORE,
+  DIRECT_REJECTION_SCORE,
+  GENERAL_SCORES
+} from '../Utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {
@@ -230,11 +235,21 @@ export const CourseAnalysisComponent = ({ sheet }) => {
               Courses Score: {getOverallCourseScoreArray().join(' + ')} ={' '}
               {getOverallCourseScore()}
             </Typography>
-            {GENERAL_SCORES.map((score) => (
-              <Typography key={score.label}>
-                {score.label}: {scores[score.name]}
-              </Typography>
-            ))}
+            {GENERAL_SCORES.map((score) =>
+              scores[score.name] && scores[score.name] !== 0 ? (
+                <Typography key={score.label}>
+                  {score.label}: {scores[score.name]}
+                </Typography>
+              ) : (
+                <></>
+              )
+            )}
+            <Typography>
+              {DIRECT_REJECTION_SCORE.label}:{scores.directRejectionScore}
+            </Typography>
+            <Typography>
+              {DIRECT_ADMISSION_SCORE.label}: {scores.directAdmissionScore}
+            </Typography>
           </Box>
         </Paper>
       </Grid>

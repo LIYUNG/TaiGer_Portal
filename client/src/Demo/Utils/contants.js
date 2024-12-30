@@ -2211,43 +2211,94 @@ export const SCHOOL_TAGS_DETAILED = Object.fromEntries(
     }
   ])
 );
+
+export const GENERAL_SCORES_GPA = {
+  name: 'gpaScore',
+  label: 'GPA Score',
+  description: 'GPA score (if applicable)'
+};
+
+export const GENERAL_SCORES_CV = {
+  name: 'cvScore',
+  label: 'CV Score',
+  description: 'CV score (if applicable)'
+};
+
+export const GENERAL_SCORES_ML = {
+  name: 'mlScore',
+  label: 'ML Score',
+  description: 'ML score (if applicable)'
+};
+
+export const GENERAL_SCORES_RL = {
+  name: 'rlScore',
+  label: 'RL Score',
+  description: 'RL score (if applicable)'
+};
+
+export const GENERAL_SCORES_ESSAY = {
+  name: 'essayScore',
+  label: 'Essay Score',
+  description: 'Essay score (if applicable)'
+};
+
+export const GENERAL_SCORES_INTERVIEW = {
+  name: 'interviewScore',
+  label: 'Interview Score',
+  description: 'Interview score (if applicable)'
+};
+
+export const GENERAL_SCORES_GMAT = {
+  name: 'gmatScore',
+  label: 'GMAT Score',
+  description: 'GMAT score (if applicable)'
+};
+
+export const GENERAL_SCORES_GRE = {
+  name: 'greScore',
+  label: 'GRE Score',
+  description: 'GRE score (if applicable)'
+};
+
+export const DIRECT_ADMISSION_SCORE = {
+  name: 'directAdmissionScore',
+  label: 'Direct Admission Score',
+  description: 'Direct Admission score (if applicable)'
+};
+
+export const DIRECT_REJECTION_SCORE = {
+  name: 'directRejectionScore',
+  label: 'Direct Rejection Score',
+  description: 'Direct Rejection score (if applicable)'
+};
+
+export const DIRECT_ADMISSION_SECOND_SCORE = {
+  name: 'directAdmissionSecondScore',
+  label: 'Admission Score in 2. Stage',
+  description: 'Admission score in 2. Stage (if applicable)'
+};
+
+export const DIRECT_REJECTION_SECOND_SCORE = {
+  name: 'directRejectionSecondScore',
+  label: 'Rejection Score in 2. Stage',
+  description: 'Rejection score in 2. Stage (if applicable)'
+};
+
 export const GENERAL_SCORES = [
-  {
-    name: 'gpaScore',
-    label: 'GPA Score',
-    description: 'GPA score (if applicable)'
-  },
-  {
-    name: 'cvScore',
-    label: 'CV Score',
-    description: 'CV score (if applicable)'
-  },
-  {
-    name: 'mlScore',
-    label: 'ML Score',
-    description: 'ML score (if applicable)'
-  },
-  {
-    name: 'rlScore',
-    label: 'RL Score',
-    description: 'RL score (if applicable)'
-  },
-  {
-    name: 'essayScore',
-    label: 'Essay Score',
-    description: 'Essay score (if applicable)'
-  }
+  GENERAL_SCORES_GPA,
+  GENERAL_SCORES_CV,
+  GENERAL_SCORES_ML,
+  GENERAL_SCORES_RL,
+  GENERAL_SCORES_ESSAY,
+  GENERAL_SCORES_INTERVIEW,
+  GENERAL_SCORES_GMAT,
+  GENERAL_SCORES_GRE
 ];
+
 export const SCORES_TYPE = [
   ...GENERAL_SCORES,
-  {
-    name: 'directRejectionScore',
-    label: 'Direct Rejection Score',
-    description: 'Direct Rejection score (if applicable)'
-  },
-  {
-    name: 'directAdmissionScore',
-    label: 'Direct Admission Score',
-    description: 'Direct Admission score (if applicable)'
-  }
+  DIRECT_REJECTION_SCORE,
+  DIRECT_ADMISSION_SCORE,
+  DIRECT_ADMISSION_SECOND_SCORE,
+  DIRECT_REJECTION_SECOND_SCORE
 ];

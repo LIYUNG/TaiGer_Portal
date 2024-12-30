@@ -329,9 +329,9 @@ const processTranscript_api_gatway = asyncHandler(async (req, res, next) => {
     courses.analysis.updatedAtV2 = new Date();
     courses.save();
 
-    const fileKey = `analysed_transcript_${studentId}.json`;
+    const cacheKey = `analysed_transcript_${studentId}.json`;
 
-    const success = one_month_cache.del(fileKey);
+    const success = one_month_cache.del(cacheKey);
     if (success === 1) {
       logger.info('cache key deleted successfully');
     }

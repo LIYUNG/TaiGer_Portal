@@ -45,7 +45,13 @@ const programRequirementSchema = new Schema(
       type: Number,
       default: 0
     },
+    // max.
     gpaScore: {
+      type: Number,
+      default: 0
+    },
+    // min. score at gpaScoreBoundaryGPA. Some program has offset instead of 0
+    gpaMinScore: {
       type: Number,
       default: 0
     },

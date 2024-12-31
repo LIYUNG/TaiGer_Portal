@@ -2230,6 +2230,12 @@ export const GENERAL_SCORES_GPA = {
   description: 'GPA score (if applicable)'
 };
 
+export const GENERAL_SCORES_MIN_GPA = {
+  name: 'gpaMinScore',
+  label: 'GPA Min. Score',
+  description: 'GPA min. score (if applicable)'
+};
+
 export const GENERAL_SCORES_CV = {
   name: 'cvScore',
   label: 'CV Score',
@@ -2304,6 +2310,7 @@ export const DIRECT_REJECTION_SECOND_SCORE = {
 
 export const GENERAL_SCORES = [
   GENERAL_SCORES_GPA,
+  GENERAL_SCORES_MIN_GPA,
   GENERAL_SCORES_CV,
   GENERAL_SCORES_ML,
   GENERAL_SCORES_RL,

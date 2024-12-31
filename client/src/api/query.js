@@ -50,7 +50,7 @@ export const getAllStudentsQuery = () => ({
 });
 
 export const getAllCoursessQuery = () => ({
-  queryKey: ['courses/all'],
+  queryKey: ['all-courses/all'],
   queryFn: () => getAllCourses(),
   staleTime: 1000 * 60 * 5 // 5 minutes
 });

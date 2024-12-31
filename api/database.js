@@ -44,6 +44,7 @@ const { complaintSchema } = require('./models/Complaint');
 const { keywordSetSchema } = require('./models/Keywordset');
 const { programRequirementSchema } = require('./models/Programrequirement');
 const { auditSchema } = require('./models/Audit');
+const { allCourseSchema } = require('./models/Allcourse');
 
 const connections = {};
 const tenantDb = 'Tenant';
@@ -73,6 +74,7 @@ const connectToDatabase = (tenant, uri = null) => {
     const connection = mongoose.createConnection(dbUri, {});
     connections[tenant] = connection;
 
+    connection.model('Allcourse', allCourseSchema);
     connection.model('Audit', auditSchema);
     connection.model('Basedocumentationslink', basedocumentationslinksSchema);
     connection.model('Communication', communicationsSchema);

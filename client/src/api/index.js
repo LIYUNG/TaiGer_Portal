@@ -65,8 +65,6 @@ export const getAllStudents = () => request.get(`/api/students/all`);
 
 export const getAllStudentsV2 = () => getData(`/api/students/all`);
 
-export const getAllCourses = () => getData(`/api/students/all`);
-
 export const getAllActiveStudents = () =>
   request.get(`/api/students/all/active`);
 
@@ -279,6 +277,17 @@ export const putKeywordSet = (keywordsSetId, keywordsSet) =>
   request.put(`/api/course-keywords/${keywordsSetId}`, keywordsSet);
 export const deleteKeywordSet = (keywordsSetId) =>
   request.delete(`/api/course-keywords/${keywordsSetId}`);
+
+// Courses DB
+export const getAllCourses = () => getData(`/api/all-courses`);
+export const getCourse = ({ courseId }) =>
+  getData(`/api/all-courses/${courseId}`);
+export const updateCourse = ({ courseId, payload }) =>
+  putData(`/api/all-courses/${courseId}`, payload);
+export const deleteCourse = ({ courseId }) =>
+  deleteData(`/api/all-courses/${courseId}`);
+export const postCourse = ({ payload }) =>
+  postData(`/api/all-courses`, payload);
 
 export const getProgramRequirements = () =>
   request.get(`/api/program-requirements`);

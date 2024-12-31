@@ -111,14 +111,6 @@ export const ProgramsTable = ({ isLoading, data }) => {
     setOpenAssignDialog(false);
   };
 
-  //   const handleGetSelectedRows = () => {
-  //     const selectedRows = table
-  //       .getSelectedRowModel()
-  //       .rows.map((row) => row.original); // Extract original row data
-  //     console.log('Selected Rows:', selectedRows);
-  //     alert(`Selected Rows: ${JSON.stringify(selectedRows, null, 2)}`);
-  //   };
-
   table.options.renderTopToolbar = (
     <TopToolbar
       table={table}
@@ -126,6 +118,7 @@ export const ProgramsTable = ({ isLoading, data }) => {
       onAssignClick={handleAssignClick}
     />
   );
+
   return (
     <>
       <MaterialReactTable table={table} />

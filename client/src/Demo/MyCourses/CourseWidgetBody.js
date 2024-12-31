@@ -344,7 +344,7 @@ export default function CourseWidgetBody({ programRequirements }) {
           <Button
             variant="contained"
             component={LinkDom}
-            to={`${DEMO.COURSE_DATABASE_EDIT}`}
+            to={`${DEMO.COURSE_DATABASE}`}
             color="success"
             target="_blank"
             sx={{ mr: 2 }}

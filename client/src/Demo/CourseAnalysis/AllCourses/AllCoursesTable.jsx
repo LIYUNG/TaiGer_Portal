@@ -1,4 +1,4 @@
-// import { useState } from 'react';
+import { useState } from 'react';
 import {
   MaterialReactTable,
   // MRT_TopToolbar,
@@ -6,14 +6,14 @@ import {
 } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 import { getTableConfig, useTableStyles } from '../../../components/table';
-
-// import { AssignProgramsToStudentDialog } from './AssignProgramsToStudentDialog';
+import { TopToolbar } from '../../../components/table/all-courses-table/TopToolbar';
+import { DeleteCourseDialog } from './DeleteCourseDialog';
 
 export const AllCoursesTable = ({ isLoading, data }) => {
   const customTableStyles = useTableStyles();
   const { t } = useTranslation();
   const tableConfig = getTableConfig(customTableStyles, isLoading);
-  // const [openAssignDialog, setOpenAssignDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const columns = [
     {
@@ -27,6 +27,18 @@ export const AllCoursesTable = ({ isLoading, data }) => {
       header: t('Course Name (EN)', { ns: 'common' }),
       filterFn: 'contains',
       size: 240
+    },
+    {
+      accessorKey: 'udpatedAt',
+      header: t('Updated at', { ns: 'common' }),
+      filterFn: 'contains',
+      size: 150
+    },
+    {
+      accessorKey: 'createdAt',
+      header: t('Created at', { ns: 'common' }),
+      filterFn: 'contains',
+      size: 150
     }
   ];
 
@@ -37,55 +49,46 @@ export const AllCoursesTable = ({ isLoading, data }) => {
     data: data || []
   });
 
-  // const handleAssignClick = () => {
-  //   setOpenAssignDialog(true);
-  // };
+  const onDeleteClick = () => {
+    setOpenDeleteDialog(true);
+  };
 
-  // const handleDialogClose = () => {
-  //   setOpenAssignDialog(false);
-  // };
+  const handleDialogClose = () => {
+    setOpenDeleteDialog(false);
+  };
 
-  // const handleOnSuccess = () => {
-  //   table.resetRowSelection();
-  //   setOpenAssignDialog(false);
-  // };
+  const handleOnSuccess = () => {
+    table.resetRowSelection();
+    setOpenDeleteDialog(false);
+  };
 
-  //   const handleGetSelectedRows = () => {
-  //     const selectedRows = table
-  //       .getSelectedRowModel()
-  //       .rows.map((row) => row.original); // Extract original row data
-  //     console.log('Selected Rows:', selectedRows);
-  //     alert(`Selected Rows: ${JSON.stringify(selectedRows, null, 2)}`);
-  //   };
+  table.options.renderTopToolbar = (
+    <TopToolbar
+      table={table}
+      toolbarStyle={customTableStyles.toolbarStyle}
+      onDeleteClick={onDeleteClick}
+    />
+  );
 
-  // table.options.renderTopToolbar = (
-  //   <MRT_TopToolbar
-  //     table={table}
-  //     toolbarStyle={customTableStyles.toolbarStyle}
-  //     onAssignClick={handleAssignClick}
-  //   />
-  // );
   return (
     <>
       <MaterialReactTable table={table} />
-      {/* <AssignProgramsToStudentDialog
-        open={openAssignDialog}
+      <DeleteCourseDialog
+        open={openDeleteDialog}
         onClose={handleDialogClose}
-        programs={table
+        courses={table
           .getSelectedRowModel()
           .rows?.map(
             ({
-              original: { _id, school, program_name, degree, semester }
+              original: { _id, all_course_chinese, all_course_english }
             }) => ({
               _id,
-              school,
-              program_name,
-              degree,
-              semester
+              all_course_chinese,
+              all_course_english
             })
           )}
         handleOnSuccess={handleOnSuccess}
-      /> */}
+      />
     </>
   );
 };

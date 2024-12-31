@@ -58,10 +58,14 @@ export const getEditors = () => request.get('/api/editors');
 export const getEssayWriters = () => request.get('/api/essay-writers');
 
 export const getStudents = () => request.get(`/api/students`);
+
 export const getStudentsV2 = () => getData(`/api/students`);
 
 export const getAllStudents = () => request.get(`/api/students/all`);
+
 export const getAllStudentsV2 = () => getData(`/api/students/all`);
+
+export const getAllCourses = () => getData(`/api/students/all`);
 
 export const getAllActiveStudents = () =>
   request.get(`/api/students/all/active`);

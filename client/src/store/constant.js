@@ -61,8 +61,7 @@ const DEMO = {
   INTERVIEW_SINGLE_SURVEY_LINK: (interview_id) => {
     return `/interview-training/${interview_id}/survey`;
   },
-  INTERNAL_WIDGET_COURSE_ANALYSER_LINK:
-    '/internal/widgets/course-analyser',
+  INTERNAL_WIDGET_COURSE_ANALYSER_LINK: '/internal/widgets/course-analyser',
   INTERNAL_WIDGET_LINK: (user_id) => {
     return `/internal/widgets/${user_id}`;
   },
@@ -94,6 +93,7 @@ const DEMO = {
   SCHOOL_CONFIG: '/programs/config',
   NEW_PROGRAM: '/programs/create',
   PROGRAM_EDIT: (program_id) => `/programs/${program_id}/edit`,
+  COURSE_DATABASE_EDIT: '/courses/analysis/courses/all',
   KEYWORDS_EDIT: '/courses/analysis/keywords',
   KEYWORDS_NEW: '/courses/analysis/keywords/new',
   CREATE_NEW_PROGRAM_ANALYSIS: '/courses/analysis/programs/requirements/new',

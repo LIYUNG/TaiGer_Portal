@@ -20,7 +20,8 @@ import {
   getCommunicationThreadLoader,
   getProgramLoader,
   AllActiveStudentsV2Loader,
-  getProgramRequirementsV2Loader
+  getProgramRequirementsV2Loader,
+  getAllCoursesLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
@@ -45,6 +46,10 @@ const DashboardDefault = React.lazy(() => import('./Demo/Dashboard'));
 
 const CourseKeywordsEdit = React.lazy(
   () => import('./Demo/CourseAnalysis/CourseKeywordsEdit')
+);
+
+const AllCourses = React.lazy(
+  () => import('./Demo/CourseAnalysis/AllCourses/AllCourses')
 );
 
 const ProgramRequirements = React.lazy(
@@ -254,8 +259,13 @@ const routes = [
     path: '/dashboard/default',
     errorElement: <DefaultErrorPage />,
     loader: combinedLoader,
-    // loader: getStudentsLoader,
     element: <DashboardDefault />
+  },
+  {
+    path: '/courses/analysis/courses/all',
+    errorElement: <DefaultErrorPage />,
+    loader: getAllCoursesLoader,
+    element: <AllCourses />
   },
   {
     path: '/courses/analysis/keywords',
@@ -272,7 +282,6 @@ const routes = [
     path: '/courses/analysis/programs',
     errorElement: <DefaultErrorPage />,
     loader: getProgramRequirementsLoader,
-    // loader: getStudentsLoader,
     element: <ProgramRequirements />
   },
   {
@@ -313,29 +322,25 @@ const routes = [
   },
   {
     path: '/programs/create',
-    exact: true,
-    name: 'SchoolConfig',
+    errorElement: <DefaultErrorPage />,
     loader: getDistinctSchoolsLoader,
     Component: ProgramCreatePage
   },
   {
     path: '/programs/config',
-    exact: true,
-    name: 'SchoolConfig',
+    errorElement: <DefaultErrorPage />,
     loader: getDistinctSchoolsLoader,
     Component: SchoolConfig
   },
   {
     path: '/programs/:programId',
-    exact: true,
-    name: 'SingleProgram',
+    errorElement: <DefaultErrorPage />,
     loader: getProgramLoader,
     Component: SingleProgram
   },
   {
     path: '/programs/:programId/edit',
-    exact: true,
-    name: 'ProgramEditPage',
+    errorElement: <DefaultErrorPage />,
     loader: getDistinctSchoolsLoader,
     Component: ProgramEditPage
   },
@@ -515,7 +520,7 @@ const routes = [
   },
   {
     path: '/internal/widgets/course-analyser',
-    exact: true,
+    errorElement: <DefaultErrorPage />,
     name: 'Course Analyser',
     loader: getProgramRequirementsV2Loader,
     Component: CoursesAnalysisWidget

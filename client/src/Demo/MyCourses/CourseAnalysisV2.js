@@ -320,7 +320,7 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
   const firstRoundConsidered = scores.firstRoundConsidered;
   const secondRoundConsidered = scores.secondRoundConsidered;
   const suggestedCourses = sheet.suggestion;
-  const academic_background = student.academic_background;
+  const academic_background = student?.academic_background;
 
   const acquiredECTS = (table) => {
     return table[table.length - 1].credits;

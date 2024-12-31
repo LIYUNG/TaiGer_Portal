@@ -15,7 +15,7 @@ import Loading from '../../components/Loading/Loading';
 import MyDocumentCard from './MyDocumentCard';
 import { useSnackBar } from '../../contexts/use-snack-bar';
 
-function BaseDocument_StudentView(props) {
+function BaseDocument_StudentView({ student, base_docs_link }) {
   const { user } = useAuth();
   const { t } = useTranslation();
   const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
@@ -23,7 +23,7 @@ function BaseDocument_StudentView(props) {
   const [baseDocumentStudentViewState, setBaseDocumentStudentViewState] =
     useState({
       error: '',
-      student: props.student,
+      student: student,
       student_id: '',
       isLoaded: {},
       ready: false,
@@ -42,10 +42,10 @@ function BaseDocument_StudentView(props) {
     setBaseDocumentStudentViewState((prevState) => ({
       ...prevState,
       isLoaded: temp_isLoaded,
-      student: props.student,
+      student: student,
       ready: true
     }));
-  }, [props.student._id.toString()]);
+  }, [student._id.toString()]);
 
   const onDeleteFilefromstudent = (category, student_id) => {
     let student_new = { ...baseDocumentStudentViewState.student };
@@ -155,7 +155,9 @@ function BaseDocument_StudentView(props) {
             res_modal_status: status
           }));
           setSeverity('success');
-          setMessage('Uploaded file successfully. Your agent is informed and will check it as soon as possible.');
+          setMessage(
+            'Uploaded file successfully. Your agent is informed and will check it as soon as possible.'
+          );
           setOpenSnackbar(true);
         } else {
           // TODO: what if data is oversize? data type not match?
@@ -239,8 +241,8 @@ function BaseDocument_StudentView(props) {
     object_time_init[key] = '';
   });
   // TODO: what if baseDocumentStudentViewState.student.profile[i].name key not in base_docs_link[i].key?
-  if (props.base_docs_link) {
-    props.base_docs_link.forEach((baseDoc) => {
+  if (base_docs_link) {
+    base_docs_link.forEach((baseDoc) => {
       if (object_init[baseDoc.key]) {
         object_init[baseDoc.key].link = baseDoc.link;
       }

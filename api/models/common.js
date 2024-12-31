@@ -11,18 +11,6 @@ const attributeSchema = new Schema({
   }
 });
 
-const programRequirementAttributeSchema = new Schema({
-  value: {
-    type: String,
-    required: true
-  },
-  name: {
-    type: String,
-    required: true
-  }
-});
-
 module.exports = {
-  attributeSchema,
-  programRequirementAttributeSchema
+  attributeSchema
 };

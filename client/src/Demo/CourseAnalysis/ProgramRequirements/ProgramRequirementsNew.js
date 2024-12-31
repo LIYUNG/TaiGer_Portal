@@ -20,6 +20,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import DEMO from '../../../store/constant';
 import { postProgramRequirements, putProgramRequirement } from '../../../api';
 import {
+  CONSIDRED_SCORES_DETAILED,
   // PROGRAM_ANALYSIS_ATTRIBUTES,
   PROGRAM_SUBJECTS_DETAILED,
   SCORES_TYPE
@@ -35,15 +36,11 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
     requirement?.program_categories ?? []
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [scores, setScores] = useState({
-    gpaScore: requirement?.gpaScore || 0,
-    cvScore: requirement?.cvScore || 0,
-    mlScore: requirement?.mlScore || 0,
-    rlScore: requirement?.rlScore || 0,
-    essayScore: requirement?.essayScore || 0,
-    directRejectionScore: requirement?.directRejectionScore || 0,
-    directAdmissionScore: requirement?.directAdmissionScore || 0
-  });
+  const [scores, setScores] = useState(() =>
+    Object.fromEntries(
+      SCORES_TYPE.map(({ name }) => [name, requirement?.[name] || 0])
+    )
+  );
 
   const [program, setProgram] = useState(
     requirement?.programId[0]
@@ -55,7 +52,9 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
       : {}
   );
   const [checkboxState, setCheckboxState] = useState({
-    updateAttributesList: requirement?.attributes || []
+    updateAttributesList: requirement?.attributes || [],
+    firstRoundConsidered: requirement?.firstRoundConsidered || [],
+    secondRoundConsidered: requirement?.secondRoundConsidered || []
   });
 
   const navigate = useNavigate();
@@ -132,6 +131,8 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
       ...scores,
       program: program,
       attributes: checkboxState.updateAttributesList,
+      firstRoundConsidered: checkboxState.firstRoundConsidered,
+      secondRoundConsidered: checkboxState.secondRoundConsidered,
       program_categories: programCategories?.map(
         (programCategory) => programCategory
       ),
@@ -224,17 +225,40 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
           <Box>
             <SearchableMultiSelect
               name="updateAttributesList"
-              label={null}
+              label={'Category'}
               data={PROGRAM_SUBJECTS_DETAILED}
               value={checkboxState?.updateAttributesList}
               setValue={handleChangeByField('updateAttributesList')}
               sx={{ mb: 2 }}
+              size="small"
+            />
+          </Box>
+          <Box>
+            <SearchableMultiSelect
+              name="firstRoundConsidered"
+              label={'First Round Considered'}
+              data={CONSIDRED_SCORES_DETAILED}
+              value={checkboxState?.firstRoundConsidered}
+              setValue={handleChangeByField('firstRoundConsidered')}
+              sx={{ mb: 2 }}
+              size="small"
+            />
+          </Box>
+          <Box>
+            <SearchableMultiSelect
+              name="secondRoundConsidered"
+              label={'Second Round Considered'}
+              data={CONSIDRED_SCORES_DETAILED}
+              value={checkboxState?.secondRoundConsidered}
+              setValue={handleChangeByField('secondRoundConsidered')}
+              sx={{ mb: 2 }}
+              size="small"
             />
           </Box>
           <Box>
             <Grid container spacing={2}>
               {SCORES_TYPE.map((score) => (
-                <Grid item xs={6} md={4} key={score.label}>
+                <Grid item xs={6} md={4} key={score.name}>
                   <TextField
                     label={score.label}
                     name={score.name}

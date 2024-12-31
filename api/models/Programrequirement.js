@@ -2,7 +2,6 @@ const {
   Schema,
   Types: { ObjectId }
 } = require('mongoose');
-const { programRequirementAttributeSchema } = require('./common');
 const { PROGRAM_SUBJECT_KEYS } = require('../constants');
 
 const programRequirementSchema = new Schema(
@@ -38,7 +37,19 @@ const programRequirementSchema = new Schema(
     fpso: {
       type: String
     },
+    admissionDescription: {
+      type: String,
+      default: ''
+    },
+    gpaScoreBoundaryGPA: {
+      type: Number,
+      default: 0
+    },
     gpaScore: {
+      type: Number,
+      default: 0
+    },
+    coursesScore: {
       type: Number,
       default: 0
     },
@@ -58,11 +69,41 @@ const programRequirementSchema = new Schema(
       type: Number,
       default: 0
     },
+    gmatScore: {
+      type: Number,
+      default: 0
+    },
+    greScore: {
+      type: Number,
+      default: 0
+    },
+    interviewScore: {
+      type: Number,
+      default: 0
+    },
+    firstRoundConsidered: [
+      {
+        type: String
+      }
+    ],
+    secondRoundConsidered: [
+      {
+        type: String
+      }
+    ],
     directRejectionScore: {
       type: Number,
       default: 0
     },
     directAdmissionScore: {
+      type: Number,
+      default: 0
+    },
+    directRejectionSecondScore: {
+      type: Number,
+      default: 0
+    },
+    directAdmissionSecondScore: {
       type: Number,
       default: 0
     }

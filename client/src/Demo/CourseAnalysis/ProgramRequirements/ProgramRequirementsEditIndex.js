@@ -41,7 +41,7 @@ function ProgramRequirementsEditIndex() {
           {i18next.t('Program Requirements', { ns: 'common' })}
         </Link>
         <Typography color="text.primary">
-          {i18next.t('Create', { ns: 'common' })}
+          {i18next.t('Edit', { ns: 'common' })}
         </Typography>
       </Breadcrumbs>
       <Suspense fallback={<Loading />}>

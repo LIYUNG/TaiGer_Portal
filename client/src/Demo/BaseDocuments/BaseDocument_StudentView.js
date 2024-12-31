@@ -271,19 +271,19 @@ function BaseDocument_StudentView({ student, base_docs_link }) {
     });
   }
   const MyDocumentsCard = () =>
-    profile_wtih_doc_link_list_key.map((k, i) => (
+    profile_wtih_doc_link_list_key.map((category, i) => (
       <MyDocumentCard
-        k={k}
+        category={category}
         key={i + 1}
         updateDocLink={updateDocLink}
-        link={object_init[k].link}
-        path={object_init[k].path}
-        status={object_init[k].status}
+        link={object_init[category].link}
+        path={object_init[category].path}
+        status={object_init[category].status}
         user={user}
-        isLoaded={baseDocumentStudentViewState.isLoaded[k]}
-        docName={PROFILE_NAME[k]}
-        message={object_message[k]}
-        time={object_time_init[k]}
+        isLoaded={baseDocumentStudentViewState.isLoaded[category]}
+        docName={PROFILE_NAME[category]}
+        message={object_message[category]}
+        time={object_time_init[category]}
         student={baseDocumentStudentViewState.student}
         onDeleteFilefromstudent={onDeleteFilefromstudent}
         handleGeneralDocSubmit={handleGeneralDocSubmit}

@@ -89,8 +89,8 @@ function MyDocumentCard(props) {
     feedback: '',
     deleteFileWarningModel: false,
     preview_path: '#',
-    num_points: base_documents_checklist[props.k]
-      ? base_documents_checklist[props.k].length
+    num_points: base_documents_checklist[props.category]
+      ? base_documents_checklist[props.category].length
       : 0,
     num_checked_points: 0,
     checkedBoxes: []
@@ -187,7 +187,7 @@ function MyDocumentCard(props) {
     e.preventDefault();
     setBaseDocsflagOffcanvas(true);
 
-    props.updateDocLink(MyDocumentCardState.link, props.k);
+    props.updateDocLink(MyDocumentCardState.link, props.category);
     setBaseDocsflagOffcanvas(false);
     setBaseDocsflagOffcanvasButtonDisable(false);
   };
@@ -344,9 +344,8 @@ function MyDocumentCard(props) {
                 <UploadIconButton
                   user={user}
                   buttonState={MyDocumentCardState}
-                  t={t}
                   handleGeneralDocSubmit={handleGeneralDocSubmit}
-                  k={props.k}
+                  category={props.category}
                 />
               )}
             {(status === DocumentStatusType.Rejected ||
@@ -355,7 +354,6 @@ function MyDocumentCard(props) {
               <DownloadIconButton
                 showPreview={showPreviewD}
                 path={props.path}
-                t={t}
               />
             )}
             {status === DocumentStatusType.Rejected &&
@@ -363,16 +361,14 @@ function MyDocumentCard(props) {
                 <CommentsIconButton
                   buttonState={MyDocumentCardState}
                   openCommentWindow={openCommentWindow}
-                  k={props.k}
-                  t={t}
+                  category={props.category}
                 />
               )}
             {status === DocumentStatusType.NotNeeded && (
               <SetNeededIconButton
                 onUpdateProfileDocStatus={onUpdateProfileDocStatus}
-                k={props.k}
+                category={props.category}
                 buttonState={MyDocumentCardState}
-                t={t}
               />
             )}
             {(status === DocumentStatusType.Uploaded ||
@@ -383,19 +379,17 @@ function MyDocumentCard(props) {
                 <DeleteIconButton
                   isLoaded={MyDocumentCardState.isLoaded}
                   onDeleteFileWarningPopUp={onDeleteFileWarningPopUp}
-                  k={props.k}
+                  category={props.category}
                   student_id={MyDocumentCardState.student_id}
                   docName={props.docName}
-                  t={t}
                 />
               )}
             {status === DocumentStatusType.Missing &&
               is_TaiGer_AdminAgent(user) && (
                 <SetNotNeededIconButton
                   onUpdateProfileDocStatus={onUpdateProfileDocStatus}
-                  k={props.k}
+                  category={props.category}
                   buttonState={MyDocumentCardState}
-                  t={t}
                 />
               )}
           </Stack>
@@ -545,23 +539,25 @@ function MyDocumentCard(props) {
           {is_TaiGer_AdminAgent(user) && (
             <>
               <Typography variant="body1" fontWeight="bold">
-                {base_documents_checklist[props.k] &&
-                  base_documents_checklist[props.k].length !== 0 &&
+                {base_documents_checklist[props.category] &&
+                  base_documents_checklist[props.category].length !== 0 &&
                   'Check list: Please check the following points so that you can flag this document as valid.'}
               </Typography>
-              {base_documents_checklist[props.k]
-                ? base_documents_checklist[props.k].map((check_item, i) => (
-                    <FormControlLabel
-                      key={i}
-                      label={`${check_item}`}
-                      control={
-                        <Checkbox
-                          id={`${check_item}-${i}`}
-                          onChange={(e) => onChecked(e)}
-                        />
-                      }
-                    />
-                  ))
+              {base_documents_checklist[props.category]
+                ? base_documents_checklist[props.category].map(
+                    (check_item, i) => (
+                      <FormControlLabel
+                        key={i}
+                        label={`${check_item}`}
+                        control={
+                          <Checkbox
+                            id={`${check_item}-${i}`}
+                            onChange={(e) => onChecked(e)}
+                          />
+                        }
+                      />
+                    )
+                  )
                 : t('No', { ns: 'common' })}
             </>
           )}
@@ -603,7 +599,7 @@ function MyDocumentCard(props) {
                   onClick={(e) =>
                     onUpdateProfileDocStatus(
                       e,
-                      props.k,
+                      props.category,
                       MyDocumentCardState.student_id,
                       DocumentStatusType.Accepted
                     )
@@ -623,7 +619,7 @@ function MyDocumentCard(props) {
                 onClick={(e) =>
                   onUpdateProfileDocStatus(
                     e,
-                    props.k,
+                    props.category,
                     MyDocumentCardState.student_id,
                     DocumentStatusType.Rejected
                   )

@@ -54,7 +54,11 @@ import {
 } from '../../components/Buttons/Button';
 import Loading from '../../components/Loading/Loading';
 import { useMutation } from '@tanstack/react-query';
-import { updateProfileDocumentStatusV2 } from '../../api';
+import {
+  deleteFileV2,
+  updateProfileDocumentStatusV2,
+  uploadforstudentV2
+} from '../../api';
 import { queryClient } from '../../api/client';
 import { useSnackBar } from '../../contexts/use-snack-bar';
 
@@ -63,6 +67,7 @@ function MyDocumentCard(props) {
   const { t } = useTranslation();
   const [showPreview, setShowPreview] = useState(false);
   const [status, setStatus] = useState(props.status);
+  const [fileName, setFileName] = useState(props.document_name);
   const [rejectProfileFileModelOpen, setRejectProfileFileModelOpen] =
     useState(false);
   const [acceptProfileFileModelOpen, setAcceptProfileFileModelOpen] =
@@ -96,6 +101,10 @@ function MyDocumentCard(props) {
     checkedBoxes: []
   });
 
+  const apiPath = `/api/students/${MyDocumentCardState.student_id.toString()}/files/${
+    fileName
+  }`;
+
   const { mutate, isPending } = useMutation({
     mutationFn: updateProfileDocumentStatusV2,
     onError: (error) => {
@@ -103,13 +112,15 @@ function MyDocumentCard(props) {
       setMessage(error.message || 'An error occurred. Please try again.');
       setOpenSnackbar(true);
     },
-    onSuccess: () => {
+    onSuccess: ({ data }) => {
       setSeverity('success');
       setMessage('Update file status successfully!');
-      // TODO: upload local state: could be improved, see udemy(doest not need to wait onSuccess!)
-      setStatus(MyDocumentCardState.status);
+      setStatus(data.status);
+      const fileName = data.path.split('/')[1];
+      setFileName(fileName);
       queryClient.invalidateQueries({ queryKey: ['students/doc-links'] });
       setOpenSnackbar(true);
+
       setMissingWindowOpen(false);
       setNeededWindowOpen(false);
       setRejectProfileFileModelOpen(false);
@@ -118,8 +129,49 @@ function MyDocumentCard(props) {
     }
   });
 
-  const onUpdateProfileFilefromstudent2 = (e) => {
-    e.preventDefault();
+  const { mutate: mutateUploadFile, isPending: isUploadingFile } = useMutation({
+    mutationFn: uploadforstudentV2,
+    onError: (error) => {
+      setSeverity('error');
+      setMessage(error.message || 'An error occurred. Please try again.');
+      setOpenSnackbar(true);
+    },
+    onSuccess: ({ data }) => {
+      setSeverity('success');
+      setMessage(
+        'Uploaded file successfully. Your agent is informed and will check it as soon as possible.'
+      );
+      setStatus(data.status);
+      const fileName = data.path.split('/')[1];
+      setFileName(fileName);
+      queryClient.invalidateQueries({ queryKey: ['students/doc-links'] });
+      setOpenSnackbar(true);
+    }
+  });
+
+  const { mutate: mutateDeleteFile, isPending: isDeletingFile } = useMutation({
+    mutationFn: deleteFileV2,
+    onError: (error) => {
+      setSeverity('error');
+      setMessage(error.message || 'An error occurred. Please try again.');
+      setOpenSnackbar(true);
+    },
+    onSuccess: ({ data }) => {
+      setSeverity('success');
+      setMessage('Deleted file successfully.');
+      setStatus(data.status);
+      setMyDocumentCardState((prevState) => ({
+        ...prevState,
+        deleteFileWarningModel: false
+      }));
+      const fileName = data.path.split('/')[1];
+      setFileName(fileName);
+      queryClient.invalidateQueries({ queryKey: ['students/doc-links'] });
+      setOpenSnackbar(true);
+    }
+  });
+
+  const onUpdateProfileFilefromstudent2 = () => {
     mutate({
       category: MyDocumentCardState.category,
       student_id: MyDocumentCardState.student_id,
@@ -133,15 +185,6 @@ function MyDocumentCard(props) {
       ...prevState,
       deleteFileWarningModel: false,
       delete_field: ''
-    }));
-  };
-
-  const showPreviewD = (e, path) => {
-    e.preventDefault();
-    setShowPreview(true);
-    setMyDocumentCardState((prevState) => ({
-      ...prevState,
-      preview_path: path
     }));
   };
 
@@ -201,18 +244,6 @@ function MyDocumentCard(props) {
     }));
   };
 
-  const onDeleteFilefromstudent = (e) => {
-    e.preventDefault();
-    props.onDeleteFilefromstudent(
-      MyDocumentCardState.category,
-      MyDocumentCardState.student_id
-    );
-    setMyDocumentCardState((prevState) => ({
-      ...prevState,
-      deleteFileWarningModel: false
-    }));
-  };
-
   const openCommentWindow = (student_id, category) => {
     setRejectProfileFileModelOpen(true);
     setMyDocumentCardState((prevState) => ({
@@ -229,14 +260,18 @@ function MyDocumentCard(props) {
       delete_field: e.target.value
     }));
   };
+  const handleGeneralDocSubmitV2 = (e, category, studentId) => {
+    const formData = new FormData();
+    formData.append('file', e.target.files[0]);
+    mutateUploadFile({ category, studentId, formData });
+  };
 
-  const handleGeneralDocSubmit = (e, k, student_id) => {
+  const onDeleteFilefromstudentV2 = (e) => {
     e.preventDefault();
-    setMyDocumentCardState((prevState) => ({
-      ...prevState,
-      isLoaded: false
-    }));
-    props.handleGeneralDocSubmit(e, k, student_id);
+    mutateDeleteFile({
+      category: MyDocumentCardState.category,
+      studentId: MyDocumentCardState.student_id
+    });
   };
 
   const onChecked = (e) => {
@@ -260,147 +295,149 @@ function MyDocumentCard(props) {
     }));
   };
 
-  const StatusIcon = () => {
-    if (status === DocumentStatusType.Uploaded) {
+  const StatusIcon = ({ st }) => {
+    if (st === DocumentStatusType.Uploaded) {
       return FILE_UPLOADED_SYMBOL;
-    } else if (status === DocumentStatusType.Accepted) {
+    } else if (st === DocumentStatusType.Accepted) {
       return FILE_OK_SYMBOL;
-    } else if (status === DocumentStatusType.Rejected) {
+    } else if (st === DocumentStatusType.Rejected) {
       return FILE_NOT_OK_SYMBOL;
-    } else if (status === DocumentStatusType.NotNeeded) {
+    } else if (st === DocumentStatusType.NotNeeded) {
       return FILE_DONT_CARE_SYMBOL;
-    } else if (status === DocumentStatusType.Missing) {
+    } else if (st === DocumentStatusType.Missing) {
       return FILE_MISSING_SYMBOL;
     }
   };
 
-  const ButttonRow_Uploaded = ((status === DocumentStatusType.NotNeeded &&
-    is_TaiGer_AdminAgent(user)) ||
-    status === DocumentStatusType.Uploaded ||
-    status === DocumentStatusType.Rejected ||
-    status === DocumentStatusType.Missing ||
-    status === DocumentStatusType.Accepted) && (
-    <Box
-      sx={{
-        mb: 1,
-        p: 2,
-        border: '1px solid',
-        borderColor: 'grey.300',
-        borderRadius: 2
-      }}
-    >
-      <Grid container alignItems="center" spacing={2}>
-        <Grid item xs={8} sm={8}>
-          <Stack direction="row" alignItems="center" spacing={1}>
-            <StatusIcon />
-            <Typography variant="body1">
-              {t(props.docName, { ns: 'common' })}
-            </Typography>
-            <Tooltip title={t('Read More')}>
-              <IconButton
-                component={LinkDom}
-                to={
-                  MyDocumentCardState.link && MyDocumentCardState.link !== ''
-                    ? MyDocumentCardState.link
-                    : '/'
-                }
-                target="_blank"
-                size="small"
-                color="primary"
-              >
-                <LaunchIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            {is_TaiGer_Admin(user) && (
-              <Typography
-                component="a"
-                onClick={() => setBaseDocsflagOffcanvas(true)}
-                sx={{ cursor: 'pointer', ml: 1 }}
-                color="primary"
-              >
-                [Edit]
+  const SingleDocumentCard = ({ st }) => {
+    return (st === DocumentStatusType.NotNeeded &&
+      is_TaiGer_AdminAgent(user)) ||
+      st === DocumentStatusType.Uploaded ||
+      st === DocumentStatusType.Rejected ||
+      st === DocumentStatusType.Missing ||
+      st === DocumentStatusType.Accepted ? (
+      <Box
+        sx={{
+          mb: 1,
+          p: 2,
+          border: '1px solid',
+          borderColor: 'grey.300',
+          borderRadius: 2
+        }}
+      >
+        <Grid container alignItems="center" spacing={2}>
+          <Grid item xs={8} sm={8}>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <StatusIcon st={st} />
+              <Typography variant="body1">
+                {t(props.docName, { ns: 'common' })}
+              </Typography>
+              <Tooltip title={t('Read More')}>
+                <IconButton
+                  component={LinkDom}
+                  to={
+                    MyDocumentCardState.link && MyDocumentCardState.link !== ''
+                      ? MyDocumentCardState.link
+                      : '/'
+                  }
+                  target="_blank"
+                  size="small"
+                  color="primary"
+                >
+                  <LaunchIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              {is_TaiGer_Admin(user) && (
+                <Typography
+                  component="a"
+                  onClick={() => setBaseDocsflagOffcanvas(true)}
+                  sx={{ cursor: 'pointer', ml: 1 }}
+                  color="primary"
+                >
+                  [Edit]
+                </Typography>
+              )}
+            </Stack>
+            {st === DocumentStatusType.Rejected && (
+              <Typography variant="body2" fontWeight="bold">
+                {t('Message', { ns: 'common' })}: {MyDocumentCardState.comments}
               </Typography>
             )}
-          </Stack>
-          {status === DocumentStatusType.Rejected && (
-            <Typography variant="body2" fontWeight="bold">
-              {t('Message', { ns: 'common' })}: {MyDocumentCardState.comments}
+            <Typography variant="body2" color="textSecondary">
+              {convertDate(props.time)}
             </Typography>
-          )}
-          <Typography variant="body2" color="textSecondary">
-            {convertDate(props.time)}
-          </Typography>
-        </Grid>
-        <Grid item xs={4} sm={4}>
-          <Stack
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="center"
-            spacing={1}
-          >
-            {(status === DocumentStatusType.Missing ||
-              status === DocumentStatusType.NotNeeded) &&
-              (is_TaiGer_Student(user) || is_TaiGer_AdminAgent(user)) && (
-                <UploadIconButton
-                  user={user}
-                  buttonState={MyDocumentCardState}
-                  handleGeneralDocSubmit={handleGeneralDocSubmit}
-                  category={props.category}
-                />
+          </Grid>
+          <Grid item xs={4} sm={4}>
+            <Stack
+              direction="row"
+              justifyContent="flex-end"
+              alignItems="center"
+              spacing={1}
+            >
+              {(st === DocumentStatusType.Missing ||
+                st === DocumentStatusType.NotNeeded) &&
+                (is_TaiGer_Student(user) || is_TaiGer_AdminAgent(user)) && (
+                  <UploadIconButton
+                    user={user}
+                    isLoading={isUploadingFile}
+                    buttonState={MyDocumentCardState}
+                    handleGeneralDocSubmit={handleGeneralDocSubmitV2}
+                    category={props.category}
+                  />
+                )}
+              {(st === DocumentStatusType.Rejected ||
+                st === DocumentStatusType.Uploaded ||
+                st === DocumentStatusType.Accepted) && (
+                <DownloadIconButton showPreview={() => setShowPreview(true)} />
               )}
-            {(status === DocumentStatusType.Rejected ||
-              status === DocumentStatusType.Uploaded ||
-              status === DocumentStatusType.Accepted) && (
-              <DownloadIconButton
-                showPreview={showPreviewD}
-                path={props.path}
-              />
-            )}
-            {status === DocumentStatusType.Rejected &&
-              !is_TaiGer_Student(user) && (
-                <CommentsIconButton
-                  buttonState={MyDocumentCardState}
-                  openCommentWindow={openCommentWindow}
-                  category={props.category}
-                />
-              )}
-            {status === DocumentStatusType.NotNeeded && (
-              <SetNeededIconButton
-                onUpdateProfileDocStatus={onUpdateProfileDocStatus}
-                category={props.category}
-                buttonState={MyDocumentCardState}
-              />
-            )}
-            {(status === DocumentStatusType.Uploaded ||
-              status === DocumentStatusType.Rejected ||
-              (status === DocumentStatusType.Accepted &&
-                is_TaiGer_AdminAgent(user))) &&
-              !is_TaiGer_Editor(user) && (
-                <DeleteIconButton
-                  isLoaded={MyDocumentCardState.isLoaded}
-                  onDeleteFileWarningPopUp={onDeleteFileWarningPopUp}
-                  category={props.category}
-                  student_id={MyDocumentCardState.student_id}
-                  docName={props.docName}
-                />
-              )}
-            {status === DocumentStatusType.Missing &&
-              is_TaiGer_AdminAgent(user) && (
-                <SetNotNeededIconButton
+              {st === DocumentStatusType.Rejected &&
+                !is_TaiGer_Student(user) && (
+                  <CommentsIconButton
+                    buttonState={MyDocumentCardState}
+                    openCommentWindow={openCommentWindow}
+                    category={props.category}
+                  />
+                )}
+              {st === DocumentStatusType.NotNeeded && (
+                <SetNeededIconButton
                   onUpdateProfileDocStatus={onUpdateProfileDocStatus}
                   category={props.category}
                   buttonState={MyDocumentCardState}
                 />
               )}
-          </Stack>
+              {(st === DocumentStatusType.Uploaded ||
+                st === DocumentStatusType.Rejected ||
+                (st === DocumentStatusType.Accepted &&
+                  is_TaiGer_AdminAgent(user))) &&
+                !is_TaiGer_Editor(user) && (
+                  <DeleteIconButton
+                    isLoading={isDeletingFile}
+                    onDeleteFileWarningPopUp={onDeleteFileWarningPopUp}
+                    category={props.category}
+                    student_id={MyDocumentCardState.student_id}
+                    docName={props.docName}
+                  />
+                )}
+              {st === DocumentStatusType.Missing &&
+                is_TaiGer_AdminAgent(user) && (
+                  <SetNotNeededIconButton
+                    onUpdateProfileDocStatus={onUpdateProfileDocStatus}
+                    category={props.category}
+                    buttonState={MyDocumentCardState}
+                  />
+                )}
+            </Stack>
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
-  );
+      </Box>
+    ) : (
+      <></>
+    );
+  };
 
   return (
     <>
-      {ButttonRow_Uploaded}
+      <SingleDocumentCard st={status} />
       <Dialog
         open={MyDocumentCardState.deleteFileWarningModel}
         onClose={closeWarningWindow}
@@ -431,14 +468,13 @@ function MyDocumentCard(props) {
             variant="contained"
             color="primary"
             disabled={
-              !MyDocumentCardState.isLoaded ||
-              MyDocumentCardState.delete_field !== 'delete'
+              isDeletingFile || MyDocumentCardState.delete_field !== 'delete'
             }
-            onClick={(e) => onDeleteFilefromstudent(e)}
+            onClick={(e) => onDeleteFilefromstudentV2(e)}
             sx={{ mr: 1 }}
           >
-            {!MyDocumentCardState.isLoaded ? (
-              <CircularProgress size={16} />
+            {isDeletingFile ? (
+              <CircularProgress size={20} />
             ) : (
               t('Yes', { ns: 'common' })
             )}
@@ -473,10 +509,10 @@ function MyDocumentCard(props) {
             color="primary"
             variant="contained"
             disabled={MyDocumentCardState.comments === '' || isPending}
-            onClick={(e) => onUpdateProfileFilefromstudent2(e)}
+            onClick={onUpdateProfileFilefromstudent2}
           >
             {isPending ? (
-              <CircularProgress size={16} />
+              <CircularProgress size={20} />
             ) : (
               t('Submit', { ns: 'common' })
             )}
@@ -504,10 +540,10 @@ function MyDocumentCard(props) {
             color="primary"
             variant="contained"
             disabled={isPending}
-            onClick={(e) => onUpdateProfileFilefromstudent2(e)}
+            onClick={onUpdateProfileFilefromstudent2}
           >
             {isPending ? (
-              <CircularProgress size={24} />
+              <CircularProgress size={20} />
             ) : (
               t('Yes', { ns: 'common' })
             )}
@@ -528,12 +564,10 @@ function MyDocumentCard(props) {
         onClose={() => setShowPreview(false)}
         aria-labelledby="contained-modal-title-vcenter2"
       >
-        <DialogTitle>{props.path}</DialogTitle>
+        <DialogTitle>{fileName}</DialogTitle>
         <FilePreview
-          apiFilePath={`/api/students/${MyDocumentCardState.student_id.toString()}/files/${
-            MyDocumentCardState.preview_path
-          }`}
-          path={MyDocumentCardState.preview_path}
+          apiFilePath={apiPath}
+          path={`${MyDocumentCardState.student_id}/${fileName}`}
         />
         <DialogContent>
           {is_TaiGer_AdminAgent(user) && (
@@ -561,11 +595,9 @@ function MyDocumentCard(props) {
                 : t('No', { ns: 'common' })}
             </>
           )}
-          {props.path && props.path.split('.')[1] !== 'pdf' && (
+          {fileName && fileName.split('.')[1] !== 'pdf' && (
             <a
-              href={`${BASE_URL}/api/students/${MyDocumentCardState.student_id.toString()}/files/${
-                props.path
-              }`}
+              href={`${BASE_URL}${apiPath}`}
               download
               target="_blank"
               rel="noopener noreferrer"
@@ -637,7 +669,7 @@ function MyDocumentCard(props) {
             onClick={() => setShowPreview(false)}
           >
             {!MyDocumentCardState.isLoaded ? (
-              <CircularProgress size={24} />
+              <CircularProgress size={20} />
             ) : (
               t('Close', { ns: 'common' })
             )}
@@ -662,7 +694,7 @@ function MyDocumentCard(props) {
           ) : (
             <Button
               disabled={isPending}
-              onClick={(e) => onUpdateProfileFilefromstudent2(e)}
+              onClick={onUpdateProfileFilefromstudent2}
             >
               {t('Yes', { ns: 'common' })}
             </Button>
@@ -690,7 +722,7 @@ function MyDocumentCard(props) {
           <Button
             variant="contained"
             disabled={isPending}
-            onClick={(e) => onUpdateProfileFilefromstudent2(e)}
+            onClick={onUpdateProfileFilefromstudent2}
           >
             {t('Yes', { ns: 'common' })}
           </Button>

@@ -10,9 +10,9 @@ import i18next from 'i18next';
 
 import { DocumentStatusType } from '@taiger-common/core';
 
-export const DownloadIconButton = ({ showPreview, path }) => (
+export const DownloadIconButton = ({ showPreview }) => (
   <Tooltip title={i18next.t('Download', { ns: 'common' })}>
-    <IconButton onClick={(e) => showPreview(e, path)}>
+    <IconButton onClick={showPreview}>
       <FileDownloadIcon />
     </IconButton>
   </Tooltip>
@@ -33,7 +33,7 @@ export const CommentsIconButton = ({
 );
 
 export const DeleteIconButton = ({
-  isLoaded,
+  isLoading,
   onDeleteFileWarningPopUp,
   category,
   student_id,
@@ -44,7 +44,7 @@ export const DeleteIconButton = ({
       <IconButton
         color="error"
         type="submit"
-        disabled={!isLoaded}
+        disabled={isLoading}
         onClick={(e) =>
           onDeleteFileWarningPopUp(e, category, student_id, docName)
         }
@@ -56,11 +56,12 @@ export const DeleteIconButton = ({
 );
 
 export const UploadIconButton = ({
+  isLoading,
   buttonState,
   handleGeneralDocSubmit,
   category
 }) => {
-  return !buttonState.isLoaded ? (
+  return isLoading ? (
     <CircularProgress size={24} />
   ) : (
     <Tooltip title={i18next.t('Upload', { ns: 'common' })}>

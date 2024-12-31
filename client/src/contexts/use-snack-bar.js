@@ -11,11 +11,8 @@ export const SnackBarProvider = ({ children }) => {
   return (
     <SnackBarContext.Provider
       value={{
-        openSnackbar,
         setOpenSnackbar,
-        severity,
         setSeverity,
-        message,
         setMessage
       }}
     >

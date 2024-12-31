@@ -2272,6 +2272,12 @@ export const GENERAL_SCORES_GRE = {
   description: 'GRE score (if applicable)'
 };
 
+export const GENERAL_SCORES_TEST = {
+  name: 'testScore',
+  label: 'Test Score',
+  description: 'Academic test score (if applicable)'
+};
+
 export const DIRECT_ADMISSION_SCORE = {
   name: 'directAdmissionScore',
   label: 'Direct Admission Score',
@@ -2304,7 +2310,8 @@ export const GENERAL_SCORES = [
   GENERAL_SCORES_ESSAY,
   GENERAL_SCORES_INTERVIEW,
   GENERAL_SCORES_GMAT,
-  GENERAL_SCORES_GRE
+  GENERAL_SCORES_GRE,
+  GENERAL_SCORES_TEST
 ];
 
 export const SCORES_TYPE = [

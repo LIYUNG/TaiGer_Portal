@@ -81,6 +81,10 @@ const programRequirementSchema = new Schema(
       type: Number,
       default: 0
     },
+    testScore: {
+      type: Number,
+      default: 0
+    },
     firstRoundConsidered: [
       {
         type: String

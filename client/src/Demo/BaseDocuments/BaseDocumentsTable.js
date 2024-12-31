@@ -65,7 +65,10 @@ export function BaseDocumentsTable(props) {
           const student_index = students_temp.findIndex(
             (student) => student._id === baseDocumentsTableState.student_id
           );
-          students_temp[student_index] = data;
+          const profile_idx = students_temp[student_index].profile?.findIndex(
+            (p) => p.name === baseDocumentsTableState.category
+          );
+          students_temp[student_index].profile[profile_idx] = data;
           setBaseDocumentsTableState((prevState) => ({
             ...prevState,
             students: students_temp,

@@ -88,7 +88,6 @@ export const EstimationCard = ({
       germanGPA = 0;
     }
   }
-
   const acquiredECTS = (table) => {
     return table[table.length - 1].credits;
   };
@@ -184,7 +183,9 @@ export const EstimationCard = ({
     const gpaMinimum = scores[GENERAL_SCORES_GPA_BOUNDARY.name];
     let gpaScore = 0;
     if (gpaMinimum - germanGPA > 0) {
-      gpaScore = ((gpaMinimum - germanGPA) * gpaMaxScore) / (gpaMinimum - 1);
+      gpaScore = Math.round(
+        ((gpaMinimum - germanGPA) * gpaMaxScore) / (gpaMinimum - 1)
+      );
     }
     data.push({
       name: `Your German GPA ${germanGPA}`,
@@ -304,9 +305,8 @@ export const EstimationCard = ({
         {scores[directRej.name] !== scores[directAd.name] &&
           scores[directAd.name] !== 0 && (
             <Typography>
-              If your total score is between {scores[directAd.name]}{' '}
-              and {scores[directRej.name]}, you will get to next round
-              evalution.
+              If your total score is between {scores[directAd.name]} and{' '}
+              {scores[directRej.name]}, you will get to next round evalution.
             </Typography>
           )}
       </CardContent>
@@ -541,7 +541,6 @@ export default function CourseAnalysisV2() {
       (resp) => {
         const { success, json, student } = resp.data;
         if (success) {
-          console.log(json);
           const timestamp = json['timestamp'];
           delete json['timestamp'];
           setStatedata((prevState) => ({

@@ -142,8 +142,8 @@ export const getPdf = (apiPath) =>
     responseType: 'blob'
   });
 
-export const uploadforstudent = (category, studentId, data) =>
-  request.post(`/api/students/${studentId}/files/${category}`, data);
+export const uploadforstudentV2 = ({ category, studentId, formData }) =>
+  postData(`/api/students/${studentId}/files/${category}`, formData);
 
 export const getStudentAndDocLinks = (studentId) =>
   request.get(`/api/students/doc-links/${studentId}`);
@@ -153,8 +153,8 @@ export const getStudentsAndDocLinks2 = () => getData(`/api/students/doc-links`);
 export const updateDocumentationHelperLink = (link, key, category) =>
   request.post(`/api/students/doc-links`, { link, key, category });
 
-export const deleteFile = (category, studentId) =>
-  request.delete(`/api/students/${studentId}/files/${category}`);
+export const deleteFileV2 = ({ category, studentId }) =>
+  deleteData(`/api/students/${studentId}/files/${category}`);
 
 export const uploadVPDforstudentV2 = ({
   studentId,

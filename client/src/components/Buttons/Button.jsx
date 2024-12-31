@@ -6,13 +6,13 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import NotInterestedIcon from '@mui/icons-material/NotInterested'; // using an icon to represent "Set Not Needed"
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn'; // using an icon to represent "Set Needed"
 import MessageIcon from '@mui/icons-material/Message';
+import i18next from 'i18next';
 
-import { VisuallyHiddenInput } from '../Input';
 import { DocumentStatusType } from '@taiger-common/core';
 
-export const DownloadIconButton = ({ showPreview, path, t }) => (
-  <Tooltip title={t('Download', { ns: 'common' })}>
-    <IconButton onClick={(e) => showPreview(e, path)}>
+export const DownloadIconButton = ({ showPreview }) => (
+  <Tooltip title={i18next.t('Download', { ns: 'common' })}>
+    <IconButton onClick={showPreview}>
       <FileDownloadIcon />
     </IconButton>
   </Tooltip>
@@ -21,31 +21,33 @@ export const DownloadIconButton = ({ showPreview, path, t }) => (
 export const CommentsIconButton = ({
   openCommentWindow,
   buttonState,
-  k,
-  t
+  category
 }) => (
-  <Tooltip title={t('Show Comments', { ns: 'common' })}>
-    <IconButton onClick={() => openCommentWindow(buttonState.student_id, k)}>
+  <Tooltip title={i18next.t('Show Comments', { ns: 'common' })}>
+    <IconButton
+      onClick={() => openCommentWindow(buttonState.student_id, category)}
+    >
       <MessageIcon />
     </IconButton>
   </Tooltip>
 );
 
 export const DeleteIconButton = ({
-  isLoaded,
+  isLoading,
   onDeleteFileWarningPopUp,
-  k,
+  category,
   student_id,
-  docName,
-  t
+  docName
 }) => (
-  <Tooltip title={t('Delete', { ns: 'common' })}>
+  <Tooltip title={i18next.t('Delete', { ns: 'common' })}>
     <span>
       <IconButton
         color="error"
         type="submit"
-        disabled={!isLoaded}
-        onClick={(e) => onDeleteFileWarningPopUp(e, k, student_id, docName)}
+        disabled={isLoading}
+        onClick={(e) =>
+          onDeleteFileWarningPopUp(e, category, student_id, docName)
+        }
       >
         <DeleteIcon />
       </IconButton>
@@ -54,22 +56,25 @@ export const DeleteIconButton = ({
 );
 
 export const UploadIconButton = ({
+  isLoading,
   buttonState,
-  t,
   handleGeneralDocSubmit,
-  k
+  category
 }) => {
-  return !buttonState.isLoaded ? (
+  return isLoading ? (
     <CircularProgress size={24} />
   ) : (
-    <Tooltip title={t('Upload', { ns: 'common' })}>
+    <Tooltip title={i18next.t('Upload', { ns: 'common' })}>
       <label>
         <IconButton component="span" variant="outlined">
           <CloudUploadIcon />
         </IconButton>
-        <VisuallyHiddenInput
+        <input
           type="file"
-          onChange={(e) => handleGeneralDocSubmit(e, k, buttonState.student_id)}
+          hidden
+          onChange={(e) =>
+            handleGeneralDocSubmit(e, category, buttonState.student_id)
+          }
         />
       </label>
     </Tooltip>
@@ -78,15 +83,19 @@ export const UploadIconButton = ({
 
 export const SetNotNeededIconButton = ({
   onUpdateProfileDocStatus,
-  k,
-  buttonState,
-  t
+  category,
+  buttonState
 }) => (
-  <Tooltip title={t('Set Not Needed', { ns: 'common' })}>
+  <Tooltip title={i18next.t('Set Not Needed', { ns: 'common' })}>
     <IconButton
       color="secondary"
       onClick={(e) =>
-        onUpdateProfileDocStatus(e, k, buttonState.student_id, DocumentStatusType.NotNeeded)
+        onUpdateProfileDocStatus(
+          e,
+          category,
+          buttonState.student_id,
+          DocumentStatusType.NotNeeded
+        )
       }
     >
       <NotInterestedIcon />
@@ -96,17 +105,16 @@ export const SetNotNeededIconButton = ({
 
 export const SetNeededIconButton = ({
   onUpdateProfileDocStatus,
-  k,
-  buttonState,
-  t
+  category,
+  buttonState
 }) => (
-  <Tooltip title={t('Set Needed', { ns: 'common' })}>
+  <Tooltip title={i18next.t('Set Needed', { ns: 'common' })}>
     <IconButton
       color="secondary"
       onClick={(e) =>
         onUpdateProfileDocStatus(
           e,
-          k,
+          category,
           buttonState.student_id,
           DocumentStatusType.Missing
         )

@@ -153,7 +153,7 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
     document.path = req.file.key;
     student.profile.push(document);
     await student.save();
-    res.status(201).send({ success: true, data: student });
+    res.status(201).send({ success: true, data: document });
     if (is_TaiGer_Student(user)) {
       // TODO: add notification for agents
       for (let i = 0; i < student.agents.length; i += 1) {
@@ -219,7 +219,7 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
     await student.save();
 
     // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-    res.status(201).send({ success: true, data: student });
+    res.status(201).send({ success: true, data: document });
     if (is_TaiGer_Student(user)) {
       // TODO: notify agents
       for (let i = 0; i < student.agents.length; i += 1) {
@@ -617,7 +617,7 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
       document.path = '';
       student.profile.push(document);
       await student.save();
-      res.status(201).send({ success: true, data: student });
+      res.status(201).send({ success: true, data: document });
     } else {
       if (status === DocumentStatusType.Rejected) {
         // rejected file notification set
@@ -632,7 +632,7 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
       document.updatedAt = new Date();
 
       await student.save();
-      res.status(201).send({ success: true, data: student });
+      res.status(201).send({ success: true, data: document });
       // Reminder for Student:
       if (isNotArchiv(student)) {
         if (

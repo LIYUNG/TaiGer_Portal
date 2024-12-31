@@ -5,7 +5,6 @@ import { Box, Breadcrumbs, Card, Link, Typography } from '@mui/material';
 import { is_TaiGer_role } from '@taiger-common/core';
 
 import BaseDocument_StudentView from './BaseDocument_StudentView';
-import { SYMBOL_EXPLANATION } from '../Utils/contants';
 import { TabTitle } from '../Utils/TabTitle';
 import { useAuth } from '../../components/AuthProvider';
 import DEMO from '../../store/constant';
@@ -25,13 +24,14 @@ function BaseDocuments() {
   TabTitle('Base Documents');
 
   const students = data?.data;
+  const base_docs_link = data?.base_docs_link;
 
   const StudentDocoumentsView = () =>
     students?.map((student, i) => (
       <Card key={i}>
         <BaseDocument_StudentView
           student={student}
-          SYMBOL_EXPLANATION={SYMBOL_EXPLANATION}
+          base_docs_link={base_docs_link}
         />
       </Card>
     ));

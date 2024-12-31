@@ -208,7 +208,7 @@ export const EstimationCard = ({
   );
 
   return (
-    <Card>
+    <Card sx={{ mb: 1 }}>
       <CardHeader
         title={`Stage ${stage} Evaluation`}
         subheader={`${subtitle}`}

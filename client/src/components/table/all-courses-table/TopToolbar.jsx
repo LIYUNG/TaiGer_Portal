@@ -32,6 +32,7 @@ export const TopToolbar = ({ table, toolbarStyle, onDeleteClick }) => {
           variant="outlined"
           color="primary"
           component={LinkDom}
+          disabled={table.getSelectedRowModel().rows?.length !== 1}
           to={DEMO.COURSE_DATABASE_EDIT}
           sx={{ mr: 1 }}
         >

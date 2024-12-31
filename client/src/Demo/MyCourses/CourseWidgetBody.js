@@ -346,7 +346,6 @@ export default function CourseWidgetBody({ programRequirements }) {
             component={LinkDom}
             to={`${DEMO.COURSE_DATABASE}`}
             color="success"
-            target="_blank"
             sx={{ mr: 2 }}
           >
             {i18next.t('Edit Courses DB', { ns: 'common' })}

@@ -15,9 +15,14 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  Stack,
+  Popover,
+  IconButton
 } from '@mui/material';
+import HelpIcon from '@mui/icons-material/Help';
 import LinkIcon from '@mui/icons-material/Link';
+import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { is_TaiGer_Admin, is_TaiGer_Student } from '@taiger-common/core';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -56,6 +61,8 @@ import Banner from '../../components/Banner/Banner';
 import SearchableMultiSelect from '../../components/Input/searchableMuliselect';
 import { useAuth } from '../../components/AuthProvider';
 import { useSurvey } from '../../components/SurveyProvider';
+import { grey } from '@mui/material/colors';
+import i18next from 'i18next';
 
 const SurveyEditableComponent = (props) => {
   const {
@@ -79,6 +86,14 @@ const SurveyEditableComponent = (props) => {
     });
   const { user } = useAuth();
   const { t } = useTranslation();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleRowClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   const closeOffcanvasWindow = () => {
     setSurveyEditableComponentState((prevState) => ({
@@ -558,7 +573,90 @@ const SurveyEditableComponent = (props) => {
                 </Grid>
               </>
             )}
-
+            <Grid item xs={12} sm={6}>
+              <Stack direction="row" spacing={1} justifyContent="flex-start">
+                <Typography>
+                  {t('Corresponding German GPA System')}:{' '}
+                </Typography>
+                <Typography>
+                  {survey.academic_background?.university?.My_GPA_Uni &&
+                  survey.academic_background?.university?.Passing_GPA_Uni &&
+                  survey.academic_background?.university?.Highest_GPA_Uni ? (
+                    <>
+                      <b>
+                        {Bayerische_Formel(
+                          survey.academic_background.university.Highest_GPA_Uni,
+                          survey.academic_background.university.Passing_GPA_Uni,
+                          survey.academic_background.university.My_GPA_Uni
+                        )}
+                      </b>
+                    </>
+                  ) : (
+                    0
+                  )}
+                </Typography>
+                <HelpIcon
+                  style={{ color: grey[400] }}
+                  title={i18next.t('explanation', { ns: 'common' })}
+                  onClick={handleRowClick}
+                />
+                <Popover
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left'
+                  }}
+                >
+                  <Typography sx={{ m: 2 }}>
+                    <b>
+                      {Bayerische_Formel(
+                        survey.academic_background.university.Highest_GPA_Uni,
+                        survey.academic_background.university.Passing_GPA_Uni,
+                        survey.academic_background.university.My_GPA_Uni
+                      )}
+                    </b>{' '}
+                    = 1 + (3 * (highest - my)) / (highest - passing) = 1 + (3 *
+                    ({survey.academic_background?.university?.Highest_GPA_Uni} -{' '}
+                    {survey.academic_background?.university?.My_GPA_Uni})) / (
+                    {survey.academic_background?.university?.Highest_GPA_Uni} -{' '}
+                    {survey.academic_background?.university?.Passing_GPA_Uni})
+                  </Typography>
+                </Popover>
+              </Stack>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Stack
+                direction="row"
+                spacing={1}
+                alignItems="center"
+              >
+                <Typography variant="body1">{t('gpa-instructions')}</Typography>
+                <IconButton
+                  size="small"
+                  variant="outlined"
+                  component={LinkDom}
+                  to={
+                    survey.survey_link && survey.survey_link != ''
+                      ? survey.survey_link
+                      : '/'
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <LinkIcon fontSize="small" />
+                </IconButton>
+                {is_TaiGer_Admin(user) && (
+                  <Button
+                    onClick={openOffcanvasWindow}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {t('Edit', { ns: 'common' })}
+                  </Button>
+                )}
+              </Stack>
+            </Grid>
             {['Yes'].includes(
               survey.academic_background?.university?.isGraduated
             ) && (
@@ -850,64 +948,6 @@ const SurveyEditableComponent = (props) => {
                   </MenuItem>
                 ))}
               </TextField>
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <Typography>
-                {t(
-                  'About Higest GPA / Lowest passed GPA and my GPA, please follow this:'
-                )}
-              </Typography>
-              <a
-                href={
-                  survey.survey_link && survey.survey_link != ''
-                    ? survey.survey_link
-                    : '/'
-                }
-                target="_blank"
-                className="text-info"
-                rel="noopener noreferrer"
-              >
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  startIcon={<LinkIcon />}
-                >
-                  {t('Explanation')}
-                </Button>
-              </a>
-              {is_TaiGer_Admin(user) && (
-                <Button
-                  onClick={openOffcanvasWindow}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {t('Edit', { ns: 'common' })}
-                </Button>
-              )}
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <Typography>{t('Corresponding German GPA System')}:</Typography>
-              <Typography>
-                {survey.academic_background?.university?.My_GPA_Uni &&
-                survey.academic_background?.university?.Passing_GPA_Uni &&
-                survey.academic_background?.university?.Highest_GPA_Uni ? (
-                  <>
-                    <b>
-                      {Bayerische_Formel(
-                        survey.academic_background.university.Highest_GPA_Uni,
-                        survey.academic_background.university.Passing_GPA_Uni,
-                        survey.academic_background.university.My_GPA_Uni
-                      )}
-                    </b>{' '}
-                    = 1 + (3 * (highest - my)) / (highest - passing) = 1 + (3 *
-                    ({survey.academic_background?.university?.Highest_GPA_Uni} -{' '}
-                    {survey.academic_background?.university?.My_GPA_Uni})) / (
-                    {survey.academic_background?.university?.Highest_GPA_Uni} -{' '}
-                    {survey.academic_background?.university?.Passing_GPA_Uni})
-                  </>
-                ) : (
-                  0
-                )}
-              </Typography>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="body2" sx={{ mt: 2 }}>

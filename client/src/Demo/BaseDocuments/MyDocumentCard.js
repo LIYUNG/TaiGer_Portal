@@ -351,10 +351,9 @@ function MyDocumentCard(props) {
                 <Typography
                   component="a"
                   onClick={() => setBaseDocsflagOffcanvas(true)}
-                  sx={{ cursor: 'pointer', ml: 1 }}
                   color="primary"
                 >
-                  [Edit]
+                  {t('Edit', { ns: 'common' })}
                 </Typography>
               )}
             </Stack>

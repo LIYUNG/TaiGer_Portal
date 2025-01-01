@@ -4,19 +4,12 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
 
 const getCourses = asyncHandler(async (req, res) => {
-  const courses = await req.db.model('Allcourse').find();
+  const courses = await req.db.model('Allcourse').find().lean();
   res.status(200).send({ success: true, data: courses });
 });
 
 const getCourse = asyncHandler(async (req, res) => {
   const { courseId } = req.params;
-
-  if (!courseId.match(/^[0-9a-fA-F]{24}$/)) {
-    // Check if courseId is a valid ObjectId
-    return res
-      .status(400)
-      .send({ success: false, message: 'Invalid course ID.' });
-  }
 
   const course = await req.db.model('Allcourse').findById(courseId);
 
@@ -31,13 +24,6 @@ const getCourse = asyncHandler(async (req, res) => {
 
 const deleteCourse = asyncHandler(async (req, res) => {
   const { courseId } = req.params;
-
-  if (!courseId.match(/^[0-9a-fA-F]{24}$/)) {
-    // Check if courseId is a valid ObjectId
-    return res
-      .status(400)
-      .send({ success: false, message: 'Invalid course ID.' });
-  }
 
   const course = await req.db.model('Allcourse').findByIdAndDelete(courseId);
 

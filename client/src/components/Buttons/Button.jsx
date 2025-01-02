@@ -6,107 +6,125 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import NotInterestedIcon from '@mui/icons-material/NotInterested'; // using an icon to represent "Set Not Needed"
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn'; // using an icon to represent "Set Needed"
 import MessageIcon from '@mui/icons-material/Message';
+import i18next from 'i18next';
 
-import { VisuallyHiddenInput } from '../Input';
+import { DocumentStatusType } from '@taiger-common/core';
 
-export const DownloadIconButton = ({ showPreview, path, t }) => (
-  <Tooltip title={t('Download', { ns: 'common' })}>
-    <IconButton onClick={(e) => showPreview(e, path)}>
-      <FileDownloadIcon />
-    </IconButton>
-  </Tooltip>
+export const DownloadIconButton = ({ showPreview }) => (
+    <Tooltip title={i18next.t('Download', { ns: 'common' })}>
+        <IconButton onClick={showPreview}>
+            <FileDownloadIcon />
+        </IconButton>
+    </Tooltip>
 );
 
 export const CommentsIconButton = ({
-  openCommentWindow,
-  buttonState,
-  k,
-  t
+    openCommentWindow,
+    buttonState,
+    category
 }) => (
-  <Tooltip title={t('Show Comments', { ns: 'common' })}>
-    <IconButton onClick={() => openCommentWindow(buttonState.student_id, k)}>
-      <MessageIcon />
-    </IconButton>
-  </Tooltip>
+    <Tooltip title={i18next.t('Show Comments', { ns: 'common' })}>
+        <IconButton
+            onClick={() => openCommentWindow(buttonState.student_id, category)}
+        >
+            <MessageIcon />
+        </IconButton>
+    </Tooltip>
 );
 
 export const DeleteIconButton = ({
-  isLoaded,
-  onDeleteFileWarningPopUp,
-  k,
-  student_id,
-  docName,
-  t
+    isLoading,
+    onDeleteFileWarningPopUp,
+    category,
+    student_id,
+    docName
 }) => (
-  <Tooltip title={t('Delete', { ns: 'common' })}>
-    <span>
-      <IconButton
-        color="error"
-        type="submit"
-        disabled={!isLoaded}
-        onClick={(e) => onDeleteFileWarningPopUp(e, k, student_id, docName)}
-      >
-        <DeleteIcon />
-      </IconButton>
-    </span>
-  </Tooltip>
+    <Tooltip title={i18next.t('Delete', { ns: 'common' })}>
+        <span>
+            <IconButton
+                color="error"
+                type="submit"
+                disabled={isLoading}
+                onClick={(e) =>
+                    onDeleteFileWarningPopUp(e, category, student_id, docName)
+                }
+            >
+                <DeleteIcon />
+            </IconButton>
+        </span>
+    </Tooltip>
 );
 
 export const UploadIconButton = ({
-  buttonState,
-  t,
-  handleGeneralDocSubmit,
-  k
+    isLoading,
+    buttonState,
+    handleGeneralDocSubmit,
+    category
 }) => {
-  return !buttonState.isLoaded ? (
-    <CircularProgress size={24} />
-  ) : (
-    <Tooltip title={t('Upload', { ns: 'common' })}>
-      <label>
-        <IconButton component="span" variant="outlined">
-          <CloudUploadIcon />
-        </IconButton>
-        <VisuallyHiddenInput
-          type="file"
-          onChange={(e) => handleGeneralDocSubmit(e, k, buttonState.student_id)}
-        />
-      </label>
-    </Tooltip>
-  );
+    return isLoading ? (
+        <CircularProgress size={24} />
+    ) : (
+        <Tooltip title={i18next.t('Upload', { ns: 'common' })}>
+            <label>
+                <IconButton component="span" variant="outlined">
+                    <CloudUploadIcon />
+                </IconButton>
+                <input
+                    type="file"
+                    hidden
+                    onChange={(e) =>
+                        handleGeneralDocSubmit(
+                            e,
+                            category,
+                            buttonState.student_id
+                        )
+                    }
+                />
+            </label>
+        </Tooltip>
+    );
 };
 
 export const SetNotNeededIconButton = ({
-  onUpdateProfileDocStatus,
-  k,
-  buttonState,
-  t
+    onUpdateProfileDocStatus,
+    category,
+    buttonState
 }) => (
-  <Tooltip title={t('Set Not Needed', { ns: 'common' })}>
-    <IconButton
-      color="secondary"
-      onClick={(e) =>
-        onUpdateProfileDocStatus(e, k, buttonState.student_id, 'notneeded')
-      }
-    >
-      <NotInterestedIcon />
-    </IconButton>
-  </Tooltip>
+    <Tooltip title={i18next.t('Set Not Needed', { ns: 'common' })}>
+        <IconButton
+            color="secondary"
+            onClick={(e) =>
+                onUpdateProfileDocStatus(
+                    e,
+                    category,
+                    buttonState.student_id,
+                    DocumentStatusType.NotNeeded
+                )
+            }
+        >
+            <NotInterestedIcon />
+        </IconButton>
+    </Tooltip>
 );
 
 export const SetNeededIconButton = ({
-  onUpdateProfileDocStatus,
-  k,
-  buttonState,
-  t
+    onUpdateProfileDocStatus,
+    category,
+    buttonState
 }) => (
-  <Tooltip title={t('Set Needed', { ns: 'common' })}>
-    <IconButton
-      color="secondary"
-      onClick={(e) =>
-        onUpdateProfileDocStatus(e, k, buttonState.student_id, 'missing')
-      }
-    >
-      <AssignmentTurnedInIcon />
-    </IconButton>
-  </Tooltip>
+    <Tooltip title={i18next.t('Set Needed', { ns: 'common' })}>
+        <IconButton
+            color="secondary"
+            onClick={(e) =>
+                onUpdateProfileDocStatus(
+                    e,
+                    category,
+                    buttonState.student_id,
+                    DocumentStatusType.Missing
+                )
+            }
+        >
+            <AssignmentTurnedInIcon />
+        </IconButton>
+    </Tooltip>
 );

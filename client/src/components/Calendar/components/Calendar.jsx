@@ -7,51 +7,51 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Popping from './Popping';
 import { useTheme } from '@mui/material';
-import { NoonNightLabel, stringToColor } from '../../../Demo/Utils/contants';
+import { NoonNightLabel, stringToColor } from '../../../utils/contants';
 import { is_TaiGer_Agent, is_TaiGer_Student } from '@taiger-common/core';
 import { useAuth } from '../../AuthProvider';
 
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = (props) => {
-  const { user } = useAuth();
-  const theme = useTheme();
+    const { user } = useAuth();
+    const theme = useTheme();
 
-  const eventPropGetter = (event) => {
-    // Default background color for other events
-    return {
-      style: {
-        color: theme.palette.text.primary,
-        backgroundColor: stringToColor(
-          `${event.provider.firstname} ${event.provider.lastname}`
-        ) // Set a fallback background color for other events
-      }
+    const eventPropGetter = (event) => {
+        // Default background color for other events
+        return {
+            style: {
+                color: theme.palette.text.primary,
+                backgroundColor: stringToColor(
+                    `${event.provider.firstname} ${event.provider.lastname}`
+                ) // Set a fallback background color for other events
+            }
+        };
     };
-  };
-  // const FieldBooked = ({ start, end, title, description, requester_id }) => (
-  //   <div className="flex flex-col items-center justify-center w-full h-full gap-1 my-auto">
-  //     <div className="flex items-center gap-1">
-  //       <span>
-  //         {start?.toLocaleTimeString('en-US', {
-  //           timeStyle: 'short'
-  //         })}
-  //       </span>
-  //       -
-  //       <span>
-  //         {end?.toLocaleTimeString('en-US', {
-  //           timeStyle: 'short'
-  //         })}
-  //       </span>
-  //     </div>
-  //     <div>{title}</div>
-  //     <div>{description}</div>
-  //     <div>{(requester_id ?? [])[0]?.firstname}</div>
-  //   </div>
-  // );
-  // console.log(available_termins);
-  return (
-    <>
-      {/* <Scheduler
+    // const FieldBooked = ({ start, end, title, description, requester_id }) => (
+    //   <div className="flex flex-col items-center justify-center w-full h-full gap-1 my-auto">
+    //     <div className="flex items-center gap-1">
+    //       <span>
+    //         {start?.toLocaleTimeString('en-US', {
+    //           timeStyle: 'short'
+    //         })}
+    //       </span>
+    //       -
+    //       <span>
+    //         {end?.toLocaleTimeString('en-US', {
+    //           timeStyle: 'short'
+    //         })}
+    //       </span>
+    //     </div>
+    //     <div>{title}</div>
+    //     <div>{description}</div>
+    //     <div>{(requester_id ?? [])[0]?.firstname}</div>
+    //   </div>
+    // );
+    // console.log(available_termins);
+    return (
+        <>
+            {/* <Scheduler
         // locale={de}
         view="month"
         events={props.events.map((event) => {
@@ -236,55 +236,59 @@ const MyCalendar = (props) => {
           );
         }}
       /> */}
-      <Calendar
-        localizer={localizer}
-        events={props.events}
-        style={{ height: 600 }}
-        startAccessor="start"
-        endAccessor="end"
-        views={['month', 'week', 'day']}
-        defaultView="month" // Set the default view to "month"
-        // Using the popup to show event details
-        popup
-        // Rendering additional event information in the popup
-        components={{
-          event: ({ event }) =>
-            is_TaiGer_Student(user) ? (
-              <span>
-                {event.start.toLocaleTimeString()} {NoonNightLabel(event.start)}{' '}
-              </span>
-            ) : (
-              <span>
-                {event.start.toLocaleTimeString()} {NoonNightLabel(event.start)}
-                {event.title} - {event.description}
-              </span>
-            )
-        }}
-        // Set the timeslots and step using the custom function
-        timeslots={2}
-        selectable={true}
-        // Handle event click to show the modal
-        onSelectEvent={props.handleSelectEvent}
-        onSelectSlot={is_TaiGer_Agent(user) ? props.handleSelectSlot : () => {}}
-        // Using the eventPropGetter to customize event rendering
-        eventPropGetter={eventPropGetter} // Apply custom styles to events based on the logic
-        // onSelectSlot={() => console.log('Triggered!')}
-      />
+            <Calendar
+                localizer={localizer}
+                events={props.events}
+                style={{ height: 600 }}
+                startAccessor="start"
+                endAccessor="end"
+                views={['month', 'week', 'day']}
+                defaultView="month" // Set the default view to "month"
+                // Using the popup to show event details
+                popup
+                // Rendering additional event information in the popup
+                components={{
+                    event: ({ event }) =>
+                        is_TaiGer_Student(user) ? (
+                            <span>
+                                {event.start.toLocaleTimeString()}{' '}
+                                {NoonNightLabel(event.start)}{' '}
+                            </span>
+                        ) : (
+                            <span>
+                                {event.start.toLocaleTimeString()}{' '}
+                                {NoonNightLabel(event.start)}
+                                {event.title} - {event.description}
+                            </span>
+                        )
+                }}
+                // Set the timeslots and step using the custom function
+                timeslots={2}
+                selectable={true}
+                // Handle event click to show the modal
+                onSelectEvent={props.handleSelectEvent}
+                onSelectSlot={
+                    is_TaiGer_Agent(user) ? props.handleSelectSlot : () => {}
+                }
+                // Using the eventPropGetter to customize event rendering
+                eventPropGetter={eventPropGetter} // Apply custom styles to events based on the logic
+                // onSelectSlot={() => console.log('Triggered!')}
+            />
 
-      <Popping
-        open={props.selectedEvent}
-        handleClose={props.handleModalClose}
-        handleBook={props.handleModalBook}
-        handleChange={props.handleChange}
-        handleChangeReceiver={props.handleChangeReceiver}
-        newReceiver={props.newReceiver}
-        BookButtonDisable={props.BookButtonDisable}
-        newDescription={props.newDescription}
-        event={props.selectedEvent}
-        user={user}
-      />
-    </>
-  );
+            <Popping
+                open={props.selectedEvent}
+                handleClose={props.handleModalClose}
+                handleBook={props.handleModalBook}
+                handleChange={props.handleChange}
+                handleChangeReceiver={props.handleChangeReceiver}
+                newReceiver={props.newReceiver}
+                BookButtonDisable={props.BookButtonDisable}
+                newDescription={props.newDescription}
+                event={props.selectedEvent}
+                user={user}
+            />
+        </>
+    );
 };
 
 export default MyCalendar;

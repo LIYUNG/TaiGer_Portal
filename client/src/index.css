@@ -1,97 +1,97 @@
 body {
-  margin: 0px;
-  padding: 0px;
-  font-family: Roboto;
+    margin: 0px;
+    padding: 0px;
+    font-family: Roboto;
 }
 
 .ce-paragraph[data-placeholder][contenteditable='false']:empty {
-  display: none;
+    display: none;
 }
 
 .ce-block__content,
 .ce-toolbar__content {
-  max-width: unset;
+    max-width: unset;
 }
 
 .ce-inline-toolbar {
-  color: black;
-  background-color: white;
+    color: black;
+    background-color: white;
 }
 
 .cdx-attaches__title {
-  color: black;
-  background-color: white;
+    color: black;
+    background-color: white;
 }
 
 .ce-toolbar__plus {
-  color: black;
-  background-color: white;
+    color: black;
+    background-color: white;
 }
 
 .ce-toolbar__settings-btn {
-  color: black;
-  background-color: white;
+    color: black;
+    background-color: white;
 }
 
 .ct__content:not(.ct__content > *) {
-  /* Your styles for .ct__content */
-  background-color: rgb(255, 255, 255);
-  color: black;
+    /* Your styles for .ct__content */
+    background-color: rgb(255, 255, 255);
+    color: black;
 }
 
 .image-tool__caption {
-  display: none;
+    display: none;
 }
 
 .ce-block--stretched {
-  width: 100%;
+    width: 100%;
 }
 .image-tool--withBackground {
-  width: 100%;
+    width: 100%;
 }
 
 .friend-list:hover {
-  background-color: rgb(214, 214, 214);
+    background-color: rgb(214, 214, 214);
 }
 .mail-icon {
-  /* Default styles */
-  position: relative;
-  color: black;
-  background-color: transparent;
-  cursor: pointer;
+    /* Default styles */
+    position: relative;
+    color: black;
+    background-color: transparent;
+    cursor: pointer;
 }
 
 .mail-icon:hover {
-  /* Add your hover effect styles here */
-  /* Example styles: */
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgb(212, 212, 212);
+    /* Add your hover effect styles here */
+    /* Example styles: */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(212, 212, 212);
 }
 
 .mail-icon-container {
-  /* Default styles */
-  color: black;
-  background-color: transparent;
-  position: relative;
-  display: inline-block;
+    /* Default styles */
+    color: black;
+    background-color: transparent;
+    position: relative;
+    display: inline-block;
 }
 
 .badge {
-  position: absolute;
-  top: 18px;
-  right: 2px;
-  background-color: red;
-  color: white;
-  font-size: 24px;
-  padding: 4px 4px;
-  border-radius: 50%;
-  min-width: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    position: absolute;
+    top: 18px;
+    right: 2px;
+    background-color: red;
+    color: white;
+    font-size: 24px;
+    padding: 4px 4px;
+    border-radius: 50%;
+    min-width: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* .custom-rounded-progress-bar .progress-bar {
@@ -99,31 +99,31 @@ body {
 } */
 
 .custom-progress-bar-container {
-  display: flex;
-  border-radius: 20px; /* Adjust the value to control the roundness of corners */
-  overflow: hidden; /* Ensure rounded corners are visible */
-  background-color: gray; /* Apply gray background color */
+    display: flex;
+    border-radius: 20px; /* Adjust the value to control the roundness of corners */
+    overflow: hidden; /* Ensure rounded corners are visible */
+    background-color: gray; /* Apply gray background color */
 }
 
 .custom-progress-bar-container .progress {
-  border-radius: 20px; /* Same value as the parent container for consistency */
+    border-radius: 20px; /* Same value as the parent container for consistency */
 }
 
 .custom-progress-bar-container .progress-bar {
-  border-radius: 20px; /* Same value as the parent container for consistency */
+    border-radius: 20px; /* Same value as the parent container for consistency */
 }
 
 .card-with-scroll {
-  height: 300px; /* Set the desired height */
-  overflow: hidden; /* Hide content that overflows */
+    height: 300px; /* Set the desired height */
+    overflow: hidden; /* Hide content that overflows */
 }
 
 .card-scrollable-body {
-  overflow-y: scroll; /* Enable vertical scrolling */
-  max-height: calc(300px - 4px); /* Adjusted max height, considering header */
+    overflow-y: scroll; /* Enable vertical scrolling */
+    max-height: calc(300px - 4px); /* Adjusted max height, considering header */
 }
 
 .white-line {
-  border: 1px solid white; /* Set the line color to white */
-  margin: 20px 0; /* Adjust margin as needed */
+    border: 1px solid white; /* Set the line color to white */
+    margin: 20px 0; /* Adjust margin as needed */
 }

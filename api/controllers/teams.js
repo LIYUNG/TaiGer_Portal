@@ -1,9 +1,9 @@
 const _ = require('lodash');
 const { is_TaiGer_Agent } = require('@taiger-common/core');
+const { Role } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../constants');
 const logger = require('../services/logger');
 const { getStudentsByProgram } = require('./programs');
 const { findStudentDeltaGet } = require('../utils/modelHelper/programChange');
@@ -118,7 +118,7 @@ const getTeamMembers = asyncHandler(async (req, res) => {
   const users = await req.db.model('User').aggregate([
     {
       $match: {
-        role: { $in: ['Admin', 'Agent', 'Editor'] },
+        role: { $in: [Role.Admin, Role.Agent, Role.Editor] },
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       }
     },
@@ -418,6 +418,96 @@ const getEditorData = asyncHandler(async (req, editor) => {
     })
     .count();
   return editorData;
+});
+
+const getResponseIntervalByStudent = asyncHandler(async (req, res) => {
+  const studentId = req.params.studentId;
+
+  const studentApplications = await req.db
+    .model('Student')
+    .findById(studentId)
+    .populate({
+      path: 'applications.programId',
+      select: 'school program_name'
+    })
+    .select({
+      'applications.programId': 1,
+      'applications.doc_modification_thread.doc_thread_id': 1
+    })
+    .lean();
+
+  let allDocThreadId = [];
+  if (studentApplications && studentApplications.applications) {
+    studentApplications.applications = studentApplications.applications.map(
+      (app) => ({
+        programId: app.programId,
+        doc_modification_thread: app.doc_modification_thread.map(
+          (thread) => thread.doc_thread_id
+        )
+      })
+    );
+
+    allDocThreadIds = studentApplications.applications.reduce((acc, app) => {
+      return acc.concat(app.doc_modification_thread);
+    }, []);
+  }
+
+  const responseIntervalRecords = await req.db
+    .model('Interval')
+    .find({
+      $or: [{ student_id: studentId }, { thread_id: { $in: allDocThreadIds } }]
+    })
+    .select('-updatedAt -_id -student_id')
+    .lean();
+
+  const intervalsGroupedByThread = responseIntervalRecords.reduce(
+    (acc, item) => {
+      const key = item.thread_id || item.interval_type;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(item);
+      return acc;
+    },
+    {}
+  );
+
+  studentApplications.communicationThreadIntervals =
+    intervalsGroupedByThread?.['communication'];
+
+  studentApplications.applications = studentApplications.applications
+    .map((application) => {
+      const threadIds = application.doc_modification_thread;
+      if (!threadIds) {
+        return;
+      }
+      let intervalsByThreads = [];
+      const threadIntervals = threadIds.forEach((threadId) => {
+        const _id = threadId.toString();
+        if (intervalsGroupedByThread.hasOwnProperty(_id)) {
+          intervalsByThreads.push({
+            threadId: _id,
+            intervalType: intervalsGroupedByThread[_id][0].interval_type,
+            intervals: intervalsGroupedByThread[_id]?.map((interval) => {
+              delete interval.thread_id;
+              delete interval.interval_type;
+              return interval;
+            })
+          });
+        }
+      });
+      if (intervalsByThreads.length === 0) {
+        return;
+      }
+      delete application.doc_modification_thread;
+      application.threadIntervals = intervalsByThreads;
+      const { ['programId']: program, ...rest } = application;
+      application = { ...program, ...rest };
+      return application;
+    })
+    ?.filter((application) => !!application);
+
+  res.status(200).send({ success: true, data: studentApplications });
 });
 
 const getResponseTimeByStudent = asyncHandler(async (req, res) => {
@@ -956,6 +1046,7 @@ module.exports = {
   getTeamMembers,
   getStatistics,
   getAgents,
+  getResponseIntervalByStudent,
   getResponseTimeByStudent,
   getSingleAgent,
   putAgentProfile,

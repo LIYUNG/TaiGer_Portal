@@ -19,6 +19,9 @@ const coursesSchema = new Schema({
     path: { type: String, default: '' },
     analyzed_course: [{ type: String, default: '' }],
     isAnalysed: { type: Boolean, default: false },
+    isAnalysedV2: { type: Boolean, default: false },
+    pathV2: { type: String, default: '' },
+    updatedAtV2: Date,
     updatedAt: Date
   }
 });

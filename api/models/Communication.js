@@ -13,6 +13,7 @@ const communicationsSchema = new Schema(
       default: ''
     },
     readBy: [{ type: ObjectId, ref: 'User' }],
+    timeStampReadBy: Schema.Types.Mixed,
     files: [
       {
         name: {
@@ -26,7 +27,9 @@ const communicationsSchema = new Schema(
       }
     ],
     createdAt: Date,
-    ignore_message: Boolean
+    ignore_message: Boolean,
+    ignoredMessageUpdatedAt: Date,
+    ignoredMessageBy: { type: ObjectId, ref: 'User' }
   },
   { timestamps: true }
 );

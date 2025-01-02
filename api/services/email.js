@@ -1,5 +1,7 @@
 const ical = require('ical-generator');
 const queryString = require('query-string');
+const { DocumentStatusType } = require('@taiger-common/core');
+
 const {
   ACCOUNT_ACTIVATION_URL,
   TEAMS_URL,
@@ -607,7 +609,7 @@ const sendChangedProfileFileStatusEmail = asyncHandler(
   async (recipient, msg) => {
     let subject;
     let message;
-    if (msg.status === 'rejected') {
+    if (msg.status === DocumentStatusType.Rejected) {
       subject = `[Action Required] 文件狀態更新：請再次上傳 ${msg.category} / File Status changes: please upload ${msg.category} again`;
       message = `\
 <p>${ENGLISH_BELOW}</p>

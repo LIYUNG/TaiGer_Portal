@@ -5,7 +5,7 @@ const initialState = {
     isOpen: [], //for active default menu
     isTrigger: [], //for active default menu, set blank for horizontal
     ...config,
-    isFullScreen: false, // static can't change
+    isFullScreen: false // static can't change
 };
 
 const reducer = (state = initialState, action) => {
@@ -25,8 +25,8 @@ const reducer = (state = initialState, action) => {
 
                 const triggerIndex = trigger.indexOf(action.menu.id);
                 if (triggerIndex > -1) {
-                    open = open.filter(item => item !== action.menu.id);
-                    trigger = trigger.filter(item => item !== action.menu.id);
+                    open = open.filter((item) => item !== action.menu.id);
+                    trigger = trigger.filter((item) => item !== action.menu.id);
                 }
 
                 if (triggerIndex === -1) {
@@ -35,9 +35,9 @@ const reducer = (state = initialState, action) => {
                 }
             } else {
                 open = state.isOpen;
-                const triggerIndex = (state.isTrigger).indexOf(action.menu.id);
-                trigger = (triggerIndex === -1) ? [action.menu.id] : [];
-                open = (triggerIndex === -1) ? [action.menu.id] : [];
+                const triggerIndex = state.isTrigger.indexOf(action.menu.id);
+                trigger = triggerIndex === -1 ? [action.menu.id] : [];
+                open = triggerIndex === -1 ? [action.menu.id] : [];
             }
 
             return {
@@ -49,7 +49,7 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isOpen: open,
-                isTrigger: trigger,
+                isTrigger: trigger
             };
         case actionTypes.NAV_COLLAPSE_LEAVE:
             if (action.menu.type === 'sub') {
@@ -58,17 +58,17 @@ const reducer = (state = initialState, action) => {
 
                 const triggerIndex = trigger.indexOf(action.menu.id);
                 if (triggerIndex > -1) {
-                    open = open.filter(item => item !== action.menu.id);
-                    trigger = trigger.filter(item => item !== action.menu.id);
+                    open = open.filter((item) => item !== action.menu.id);
+                    trigger = trigger.filter((item) => item !== action.menu.id);
                 }
                 return {
                     ...state,
                     isOpen: open,
-                    isTrigger: trigger,
+                    isTrigger: trigger
                 };
             }
-            return {...state};
-        case actionTypes.FULL_SCREEN :
+            return { ...state };
+        case actionTypes.FULL_SCREEN:
             return {
                 ...state,
                 isFullScreen: !state.isFullScreen

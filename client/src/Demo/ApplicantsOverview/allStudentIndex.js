@@ -1,49 +1,43 @@
-import React, { Suspense } from 'react';
-import { Await, Link as LinkDom, useLoaderData } from 'react-router-dom';
+import React from 'react';
+import { Link as LinkDom } from 'react-router-dom';
 import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 
 import ApplicationOverviewTabs from './ApplicationOverviewTabs';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
-import Loading from '../../components/Loading/Loading';
+import { useQuery } from '@tanstack/react-query';
+import { getAllActiveStudentsQuery } from '../../api/query';
 
 function AllApplicantsOverview() {
-  const { t } = useTranslation();
-  const { students } = useLoaderData();
+    const { data } = useQuery(getAllActiveStudentsQuery());
 
-  TabTitle('All Applications Overview');
+    TabTitle(i18next.t('All Applications Overview'));
 
-  return (
-    <Box>
-      <Suspense fallback={<Loading />}>
-        <Await resolve={students}>
-          {(loadedData) => (
-            <>
-              <Breadcrumbs aria-label="breadcrumb">
+    return (
+        <Box>
+            <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                  underline="hover"
-                  color="inherit"
-                  component={LinkDom}
-                  to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
+                    color="inherit"
+                    component={LinkDom}
+                    to={`${DEMO.DASHBOARD_LINK}`}
                 >
-                  {appConfig.companyName}
+                    {appConfig.companyName}
                 </Link>
                 <Typography color="text.primary">
-                  {t('All Students', { ns: 'common' })}
+                    {i18next.t('All Students', { ns: 'common' })}
                 </Typography>
                 <Typography color="text.primary">
-                  {t('All Students Applications Overview', { ns: 'common' })}
+                    {i18next.t('All Students Applications Overview', {
+                        ns: 'common'
+                    })}
                 </Typography>
-              </Breadcrumbs>
-              <ApplicationOverviewTabs students={loadedData} />
-            </>
-          )}
-        </Await>
-      </Suspense>
-    </Box>
-  );
+            </Breadcrumbs>
+            <ApplicationOverviewTabs students={data.data} />
+        </Box>
+    );
 }
 
 export default AllApplicantsOverview;

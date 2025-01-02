@@ -4,21 +4,21 @@ import { useTranslation } from 'react-i18next';
 import { is_TaiGer_AdminAgent } from '@taiger-common/core';
 
 import EditorNew from '../../components/EditorJs/EditorNew';
-import { convertDate } from '../Utils/contants';
+import { convertDate } from '../../utils/contants';
 // import Blocks from 'editorjs-blocks-react-renderer';
 // import Output from 'editorjs-react-renderer';
 import { useAuth } from '../../components/AuthProvider';
 
 function DocPageView(props) {
-  const { user } = useAuth();
-  const { t } = useTranslation();
-  return (
-    <>
-      <Card sx={{ p: 2 }}>
-        {/* <section>
+    const { user } = useAuth();
+    const { t } = useTranslation();
+    return (
+        <>
+            <Card sx={{ p: 2 }}>
+                {/* <section>
               <Output data={props.editorState} />
             </section> */}
-        {/* <Blocks
+                {/* <Blocks
               data={props.editorState}
               config={{
                 code: {
@@ -58,34 +58,36 @@ function DocPageView(props) {
                 }
               }}
             /> */}
-        <EditorNew
-          readOnly={true}
-          handleClickSave={props.handleClickSave}
-          handleClickEditToggle={props.handleClickEditToggle}
-          editorState={props.editorState}
-        />
-        {is_TaiGer_AdminAgent(user) && (
-          <>
-            <Typography>
-              {t('Updated at')} {convertDate(props.editorState.time)}
-            </Typography>
-            <Typography>
-              {t('Updated by')} {props.author ? props.author : '-'}
-            </Typography>
-          </>
-        )}
-        {is_TaiGer_AdminAgent(user) && (
-          <Button
-            size="small"
-            color="secondary"
-            variant="contained"
-            onClick={() => props.handleClickEditToggle()}
-          >
-            {t('Edit', { ns: 'common' })}
-          </Button>
-        )}
-      </Card>
-    </>
-  );
+                <EditorNew
+                    readOnly={true}
+                    handleClickSave={props.handleClickSave}
+                    handleClickEditToggle={props.handleClickEditToggle}
+                    editorState={props.editorState}
+                />
+                {is_TaiGer_AdminAgent(user) && (
+                    <>
+                        <Typography>
+                            {t('Updated at')}{' '}
+                            {convertDate(props.editorState.time)}
+                        </Typography>
+                        <Typography>
+                            {t('Updated by')}{' '}
+                            {props.author ? props.author : '-'}
+                        </Typography>
+                    </>
+                )}
+                {is_TaiGer_AdminAgent(user) && (
+                    <Button
+                        size="small"
+                        color="secondary"
+                        variant="contained"
+                        onClick={() => props.handleClickEditToggle()}
+                    >
+                        {t('Edit', { ns: 'common' })}
+                    </Button>
+                )}
+            </Card>
+        </>
+    );
 }
 export default DocPageView;

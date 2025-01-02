@@ -1,11 +1,15 @@
+const {
+  Role,
+  is_TaiGer_Agent,
+  is_TaiGer_Student
+} = require('@taiger-common/core');
+
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { Role } = require('../constants');
 const logger = require('../services/logger');
 const { one_month_cache } = require('../cache/node-cache');
 const { two_weeks_cache } = require('../cache/node-cache');
 const { PROGRAMS_CACHE } = require('../config');
-const { is_TaiGer_Agent } = require('@taiger-common/core');
 
 const getDistinctSchoolsAttributes = async (req, res) => {
   try {
@@ -155,7 +159,7 @@ const getStudentsByProgram = asyncHandler(async (req, programId) => {
 const getProgram = asyncHandler(async (req, res) => {
   const { user } = req;
   // prevent student multitenancy
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     if (
       user.applications.findIndex(
         (app) => app.programId.toString() === req.params.programId
@@ -372,10 +376,11 @@ const deleteProgram = asyncHandler(async (req, res) => {
         }
       }
     })
-    .select('firstname lastname applications.programId');
+    .select('firstname lastname applications.programId')
+    .lean();
   // Check if anyone applied this program
   if (students.length === 0) {
-    logger.info('it can be deleted!');
+    logger.info('it can be safely deleted!');
 
     await req.db
       .model('Program')
@@ -386,14 +391,16 @@ const deleteProgram = asyncHandler(async (req, res) => {
     if (value === 1) {
       logger.info('cache key deleted successfully due to delete');
     }
-    // TODO:
-    // Remove programId from programRequirement programId.
+    await req.db
+      .model('ProgramRequirement')
+      .findOneAndDelete({ programId: { $in: [req.params.programId] } });
   } else {
     logger.error('it can not be deleted!');
     logger.error('The following students have these programs!');
-    // Make sure delete failed to user (Admin)
-    logger.error('deleteProgram: some students have these programs');
-    throw new ErrorResponse(423, 'This program can not be deleted!');
+    logger.error(
+      students.map((std) => `${std.firstname} ${std.lastname}`).join(', ')
+    );
+    throw new ErrorResponse(403, 'This program can not be deleted!');
   }
   res.status(200).send({ success: true });
   if (students.length === 0) {

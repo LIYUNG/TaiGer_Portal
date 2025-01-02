@@ -1,4 +1,5 @@
 const request = require('supertest');
+const { Role } = require('@taiger-common/core');
 
 const { connect, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
@@ -6,7 +7,6 @@ const { programSchema } = require('../../models/Program');
 const { generateProgram } = require('../fixtures/faker');
 const { generateUser } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
-const { Role } = require('../../constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { TENANT_ID } = require('../fixtures/constants');
 

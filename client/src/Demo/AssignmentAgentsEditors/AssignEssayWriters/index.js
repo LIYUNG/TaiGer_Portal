@@ -11,34 +11,36 @@ import { useAuth } from '../../../components/AuthProvider';
 import { appConfig } from '../../../config';
 
 function AssignEssayWriters() {
-  const { user } = useAuth();
-  const { t } = useTranslation();
-  const {
-    data: { data: essayDocumentThreads }
-  } = useLoaderData();
+    const { user } = useAuth();
+    const { t } = useTranslation();
+    const {
+        data: { data: essayDocumentThreads }
+    } = useLoaderData();
 
-  if (!is_TaiGer_role(user)) {
-    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
-  }
+    if (!is_TaiGer_role(user)) {
+        return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+    }
 
-  return (
-    <Box>
-      <Breadcrumbs aria-label="breadcrumb">
-        <Link
-          underline="hover"
-          color="inherit"
-          component={LinkDom}
-          to={`${DEMO.DASHBOARD_LINK}`}
-        >
-          {appConfig.companyName}
-        </Link>
-        <Typography color="text.primary">
-          {t('Assign Essay Writer', { ns: 'common' })}
-        </Typography>
-      </Breadcrumbs>
-      <AssignEssayWritersPage essayDocumentThreads={essayDocumentThreads} />
-    </Box>
-  );
+    return (
+        <Box>
+            <Breadcrumbs aria-label="breadcrumb">
+                <Link
+                    underline="hover"
+                    color="inherit"
+                    component={LinkDom}
+                    to={`${DEMO.DASHBOARD_LINK}`}
+                >
+                    {appConfig.companyName}
+                </Link>
+                <Typography color="text.primary">
+                    {t('Assign Essay Writer', { ns: 'common' })}
+                </Typography>
+            </Breadcrumbs>
+            <AssignEssayWritersPage
+                essayDocumentThreads={essayDocumentThreads}
+            />
+        </Box>
+    );
 }
 
 export default AssignEssayWriters;

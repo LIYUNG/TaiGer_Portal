@@ -10,39 +10,39 @@ import useStudents from '../../../hooks/useStudents';
 import DEMO from '../../../store/constant';
 
 function AssignEditors() {
-  const { user } = useAuth();
-  const {
-    data: { data: fetchedStudents }
-  } = useLoaderData();
-  const {
-    students,
-    res_modal_message,
-    res_modal_status,
-    submitUpdateEditorlist,
-    ConfirmError
-  } = useStudents({
-    students: fetchedStudents
-  });
+    const { user } = useAuth();
+    const {
+        data: { data: fetchedStudents }
+    } = useLoaderData();
+    const {
+        students,
+        res_modal_message,
+        res_modal_status,
+        submitUpdateEditorlist,
+        ConfirmError
+    } = useStudents({
+        students: fetchedStudents
+    });
 
-  if (!is_TaiGer_role(user)) {
-    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
-  }
+    if (!is_TaiGer_role(user)) {
+        return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+    }
 
-  return (
-    <Box data-testid="assignment_editors">
-      {res_modal_status >= 400 && (
-        <ModalMain
-          ConfirmError={ConfirmError}
-          res_modal_status={res_modal_status}
-          res_modal_message={res_modal_message}
-        />
-      )}
-      <AssignEditorsPage
-        students={students}
-        submitUpdateEditorlist={submitUpdateEditorlist}
-      />
-    </Box>
-  );
+    return (
+        <Box data-testid="assignment_editors">
+            {res_modal_status >= 400 && (
+                <ModalMain
+                    ConfirmError={ConfirmError}
+                    res_modal_status={res_modal_status}
+                    res_modal_message={res_modal_message}
+                />
+            )}
+            <AssignEditorsPage
+                students={students}
+                submitUpdateEditorlist={submitUpdateEditorlist}
+            />
+        </Box>
+    );
 }
 
 export default AssignEditors;

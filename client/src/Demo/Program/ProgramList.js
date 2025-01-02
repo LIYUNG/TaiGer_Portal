@@ -13,39 +13,39 @@ import { getProgramsQuery } from '../../api/query';
 import { ProgramsTable } from './ProgramsTable';
 
 function ProgramList() {
-  const { user } = useAuth();
-  const { t } = useTranslation();
-  const { data, isLoading, isError, error } = useQuery(getProgramsQuery());
-  const programs = data?.data?.data;
+    const { user } = useAuth();
+    const { t } = useTranslation();
+    const { data, isLoading, isError, error } = useQuery(getProgramsQuery());
+    const programs = data?.data;
 
-  TabTitle(t('Program List', { ns: 'common' }));
+    TabTitle(t('Program List', { ns: 'common' }));
 
-  if (!is_TaiGer_role(user)) {
-    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
-  }
+    if (!is_TaiGer_role(user)) {
+        return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+    }
 
-  if (isError) {
-    return <>{error}</>;
-  }
+    if (isError) {
+        return <>{error}</>;
+    }
 
-  return (
-    <Box>
-      <Breadcrumbs aria-label="breadcrumb">
-        <Link
-          underline="hover"
-          color="inherit"
-          component={LinkDom}
-          to={`${DEMO.DASHBOARD_LINK}`}
-        >
-          {appConfig.companyName}
-        </Link>
-        <Typography color="text.primary">
-          {t('Program List', { ns: 'common' })}
-        </Typography>
-      </Breadcrumbs>
-      <ProgramsTable isLoading={isLoading} data={programs} />
-    </Box>
-  );
+    return (
+        <Box>
+            <Breadcrumbs aria-label="breadcrumb">
+                <Link
+                    underline="hover"
+                    color="inherit"
+                    component={LinkDom}
+                    to={`${DEMO.DASHBOARD_LINK}`}
+                >
+                    {appConfig.companyName}
+                </Link>
+                <Typography color="text.primary">
+                    {t('Program List', { ns: 'common' })}
+                </Typography>
+            </Breadcrumbs>
+            <ProgramsTable isLoading={isLoading} data={programs} />
+        </Box>
+    );
 }
 
 export default ProgramList;

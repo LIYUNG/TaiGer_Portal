@@ -1,6 +1,4 @@
-const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
-const async = require('async');
 
 const getStudentNotes = asyncHandler(async (req, res) => {
   const { student_id } = req.params;

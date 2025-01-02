@@ -1,13 +1,13 @@
+const { Role, is_TaiGer_Agent } = require('@taiger-common/core');
+
 const { ErrorResponse } = require('../common/errors');
 const { TENANT_SHORT_NAME } = require('../constants/common');
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
-const { Role } = require('../constants');
-const { is_TaiGer_Agent } = require('@taiger-common/core');
 
 const getExpenses = asyncHandler(async (req, res) => {
   const studentsWithExpenses = await req.db.model('Student').aggregate([
-    { $match: { role: { $in: ['Admin', 'Agent', 'Editor'] } } },
+    { $match: { role: { $in: [Role.Admin, Role.Agent, Role.Editor] } } },
     {
       $lookup: {
         from: 'expenses',

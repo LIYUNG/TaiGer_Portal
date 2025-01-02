@@ -1,10 +1,9 @@
 const { Router } = require('express');
+const { Role } = require('@taiger-common/core');
 const { GeneralGETRequestRateLimiter } = require('../middlewares/rate_limiter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 
 const { protect, permit } = require('../middlewares/auth');
-const { Role } = require('../constants');
-
 const {
   getAgents,
   getAgentProfile,

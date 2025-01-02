@@ -1,7 +1,14 @@
 const {
   PROGRAM_SUBJECTS,
   ProfileNameType,
-  SCHOOL_TAGS
+  SCHOOL_TAGS,
+  Role,
+  DocumentStatusType,
+  PROFILE_NAME,
+  is_TaiGer_Editor,
+  is_TaiGer_Student,
+  is_TaiGer_Agent,
+  is_TaiGer_AdminAgent
 } = require('@taiger-common/core');
 const { differenceInDays } = require('date-fns');
 
@@ -72,16 +79,6 @@ const JITSI_MEET_INSTRUCTIONS_URL = new URL(
   ORIGIN
 ).href;
 
-const Role = {
-  Admin: 'Admin',
-  Manager: 'Manager',
-  External: 'External',
-  Guest: 'Guest',
-  Agent: 'Agent',
-  Editor: 'Editor',
-  Student: 'Student'
-};
-
 const TAIGER_SIGNATURE = `
 <p><b>Your ${TENANT_NAME} Team</b></p><p>Website: <a href="${TENANT_WEBSITE}">${TENANT_WEBSITE}</a></p>
 <div class="social-icons">
@@ -115,21 +112,6 @@ const ManagerType = {
   None: 'None'
 };
 
-const DocumentStatus = {
-  Uploaded: 'uploaded',
-  Missing: 'missing',
-  Accepted: 'accepted',
-  Rejected: 'rejected',
-  NotNeeded: 'notneeded'
-};
-
-const CheckListStatus = {
-  NotStarted: 'notstarted',
-  Processing: 'processing',
-  Finished: 'finished',
-  NotNeeded: 'notneeded'
-};
-
 const isNotArchiv = (user) => {
   if (user.archiv === undefined || !user.archiv) {
     return true;
@@ -137,9 +119,7 @@ const isNotArchiv = (user) => {
   return false;
 };
 
-const isArchiv = (user) => {
-  return !!user.archiv;
-};
+const isArchiv = (user) => !!user.archiv;
 
 const application_deadline_calculator = (student, application) => {
   if (application.closed === 'O') {
@@ -195,14 +175,6 @@ const application_deadline_calculator = (student, application) => {
   return `${application_year}/${
     application.programId.application_deadline.split('-')[0]
   }/${application.programId.application_deadline.split('-')[1]}`;
-};
-
-const TaskStatus = {
-  Finished: 'finished',
-  Locked: 'locked',
-  Open: 'Open',
-  Pending: 'pending',
-  NotNeeded: 'notneeded'
 };
 
 const EDITOR_SCOPE = {
@@ -361,7 +333,7 @@ const does_editor_have_pending_tasks = (students, editor) => {
 
 const is_cv_ml_rl_task_response_needed = (student, user) => {
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
-    if (user.role === Role.Editor) {
+    if (is_TaiGer_Editor(user)) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
@@ -370,7 +342,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
       ) {
         return true;
       }
-    } else if (user.role === Role.Student) {
+    } else if (is_TaiGer_Student(user)) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !==
@@ -378,7 +350,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
       ) {
         return true;
       }
-    } else if (user.role === Role.Agent) {
+    } else if (is_TaiGer_Agent(user)) {
       if (!student.generaldocs_threads[i].isFinalVersion) {
         return true;
       }
@@ -391,7 +363,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
         j < student.applications[i].doc_modification_thread.length;
         j += 1
       ) {
-        if (user.role === Role.Editor) {
+        if (is_TaiGer_Editor(user)) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -402,7 +374,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
           ) {
             return true;
           }
-        } else if (user.role === Role.Student) {
+        } else if (is_TaiGer_Student(user)) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -411,7 +383,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
           ) {
             return true;
           }
-        } else if (user.role === Role.Agent) {
+        } else if (is_TaiGer_Agent(user)) {
           if (
             !student.applications[i].doc_modification_thread[j].isFinalVersion
           ) {
@@ -431,7 +403,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
       today,
       student.generaldocs_threads[i].updatedAt
     );
-    if (user.role === Role.Editor) {
+    if (is_TaiGer_Editor(user)) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
@@ -441,7 +413,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
       ) {
         return true;
       }
-    } else if (user.role === Role.Student) {
+    } else if (is_TaiGer_Student(user)) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !==
@@ -450,7 +422,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
       ) {
         return true;
       }
-    } else if (user.role === Role.Agent) {
+    } else if (is_TaiGer_Agent(user)) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         day_diff > trigger_days
@@ -471,7 +443,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
           student.applications[i].doc_modification_thread[j].doc_thread_id
             .updatedAt
         );
-        if (user.role === Role.Editor) {
+        if (is_TaiGer_Editor(user)) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -483,7 +455,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
           ) {
             return true;
           }
-        } else if (user.role === Role.Student) {
+        } else if (is_TaiGer_Student(user)) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -493,7 +465,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
           ) {
             return true;
           }
-        } else if (user.role === Role.Agent) {
+        } else if (is_TaiGer_Agent(user)) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -742,14 +714,14 @@ const ml_essay_escalation_agent_list = (student, user, trigger_days) => {
 
 const cv_ml_rl_escalation_summary = (student, user, trigger_days) => {
   let missing_doc_list = '';
-  if (user.role === Role.Editor) {
+  if (is_TaiGer_Editor(user)) {
     missing_doc_list = `
         The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
         ${cv_rl_escalation_editor_list(student, user, trigger_days)}
         ${ml_essay_escalation_editor_list(student, user, trigger_days)}
         </ul>`;
-  } else if (user.role === Role.Student) {
+  } else if (is_TaiGer_Student(user)) {
     missing_doc_list = `
         The following documents are waiting for your response, please <b>reply</b> it as soon as possible:
         <ul>
@@ -833,7 +805,7 @@ const unsubmitted_applications_escalation_agent_summary = (
 
 const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
   let missing_doc_list = '';
-  if (user.role === Role.Editor) {
+  if (is_TaiGer_Editor(user)) {
     missing_doc_list = `
         <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
       student.firstname
@@ -844,7 +816,7 @@ const cv_ml_rl_editor_escalation_summary = (student, user, trigger_days) => {
         ${ml_essay_escalation_editor_list(student, user, trigger_days)}
         </ul>`;
   }
-  if (user.role === Role.Agent) {
+  if (is_TaiGer_Agent(user)) {
     missing_doc_list = `
         <b><a href="${STUDENT_PROFILE_FOR_AGENT_URL(student._id.toString())}">${
       student.firstname
@@ -864,7 +836,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
   let missing_doc_list = '';
   let kk = 0;
   for (let i = 0; i < student.generaldocs_threads.length; i += 1) {
-    if (user.role === Role.Editor) {
+    if (is_TaiGer_Editor(user)) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !== '' &&
@@ -889,7 +861,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
           }</a></li>`;
         }
       }
-    } else if (user.role === Role.Student) {
+    } else if (is_TaiGer_Student(user)) {
       if (
         !student.generaldocs_threads[i].isFinalVersion &&
         student.generaldocs_threads[i].latest_message_left_by_id !==
@@ -913,7 +885,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
           }</a></li>`;
         }
       }
-    } else if (user.role === Role.Agent) {
+    } else if (is_TaiGer_Agent(user)) {
       if (!student.generaldocs_threads[i].isFinalVersion) {
         if (kk === 0) {
           missing_doc_list = `
@@ -943,7 +915,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
         j < student.applications[i].doc_modification_thread.length;
         j += 1
       ) {
-        if (user.role === Role.Editor) {
+        if (is_TaiGer_Editor(user)) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -976,7 +948,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
               }</a></li>`;
             }
           }
-        } else if (user.role === Role.Student) {
+        } else if (is_TaiGer_Student(user)) {
           if (
             !student.applications[i].doc_modification_thread[j]
               .isFinalVersion &&
@@ -1007,7 +979,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
               }</a></li>`;
             }
           }
-        } else if (user.role === Role.Agent) {
+        } else if (is_TaiGer_Agent(user)) {
           if (
             !student.applications[i].doc_modification_thread[j].isFinalVersion
           ) {
@@ -1044,26 +1016,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
   }
   return missing_doc_list;
 };
-const profile_keys_list = [
-  'High_School_Diploma',
-  'High_School_Transcript',
-  'University_Entrance_Examination_GSAT',
-  'Bachelor_Certificate',
-  'Bachelor_Transcript',
-  'Second_Degree_Certificate',
-  'Second_Degree_Transcript',
-  'Englisch_Certificate',
-  'German_Certificate',
-  'GRE',
-  'GMAT',
-  'ECTS_Conversion',
-  'Course_Description',
-  'Internship',
-  'Exchange_Student_Certificate',
-  'Employment_Certificate',
-  'Passport',
-  'Others'
-];
+const profile_keys_list = Object.keys(ProfileNameType);
 
 const check_english_language_passed = (academic_background) => {
   if (!academic_background || !academic_background.language) {
@@ -1150,7 +1103,7 @@ const missing_academic_background = (student, user) => {
     <li>GMAT Certificate?</li`;
     }
     missing_background_fields += '</ul>';
-    if (user.role === Role.Admin || user.role === Role.Agent) {
+    if (is_TaiGer_AdminAgent(user)) {
       missing_background_fields += `
       <p>請至 <a href="${SURVEY_URL_FOR_AGENT_URL(
         student._id.toString()
@@ -1365,7 +1318,7 @@ const missing_academic_background = (student, user) => {
         }
       }
     }
-    if (user.role === Role.Agent || user.role === Role.Admin) {
+    if (is_TaiGer_AdminAgent(user)) {
       missing_background_fields += `<p>Please go to <a href="${SURVEY_URL_FOR_AGENT_URL(
         student._id.toString()
       )}">Survey</a> and update them.</p>`;
@@ -1404,11 +1357,11 @@ const CVDeadline_Calculator = (student) => {
       }
     }
   }
-  return daysLeftMin === 3000
-    ? hasRolling
-      ? CVDeadlineRolling
-      : '-'
-    : CVDeadline;
+  if (daysLeftMin === 3000) {
+    return hasRolling ? CVDeadlineRolling : '-';
+  }
+
+  return CVDeadline;
 };
 
 const cvmlrl_deadline_within30days_escalation_summary = (student) => {
@@ -1518,49 +1471,49 @@ const base_documents_summary = (student) => {
   let missing_base_documents = '';
   const object_init = {};
   for (let i = 0; i < profile_keys_list.length; i += 1) {
-    object_init[profile_keys_list[i]] = 'missing';
+    object_init[profile_keys_list[i]] = DocumentStatusType.Missing;
   }
   for (let i = 0; i < student.profile.length; i += 1) {
-    if (student.profile[i].status === 'uploaded') {
-      object_init[student.profile[i].name] = 'uploaded';
-    } else if (student.profile[i].status === 'accepted') {
-      object_init[student.profile[i].name] = 'accepted';
-    } else if (student.profile[i].status === 'rejected') {
-      object_init[student.profile[i].name] = 'rejected';
-    } else if (student.profile[i].status === 'missing') {
-      object_init[student.profile[i].name] = 'missing';
-    } else if (student.profile[i].status === 'notneeded') {
-      object_init[student.profile[i].name] = 'notneeded';
+    if (student.profile[i].status === DocumentStatusType.Uploaded) {
+      object_init[student.profile[i].name] = DocumentStatusType.Uploaded;
+    } else if (student.profile[i].status === DocumentStatusType.Accepted) {
+      object_init[student.profile[i].name] = DocumentStatusType.Accepted;
+    } else if (student.profile[i].status === DocumentStatusType.Rejected) {
+      object_init[student.profile[i].name] = DocumentStatusType.Rejected;
+    } else if (student.profile[i].status === DocumentStatusType.Missing) {
+      object_init[student.profile[i].name] = DocumentStatusType.Missing;
+    } else if (student.profile[i].status === DocumentStatusType.NotNeeded) {
+      object_init[student.profile[i].name] = DocumentStatusType.NotNeeded;
     }
   }
   let xx = 0;
   let yy = 0;
   for (let i = 0; i < profile_keys_list.length; i += 1) {
-    if (object_init[profile_keys_list[i]] === 'missing') {
+    if (object_init[profile_keys_list[i]] === DocumentStatusType.Missing) {
       if (xx === 0) {
         xx += 1;
         missing_base_documents = `
         <p>以下文件仍然未上傳, 請<b>盡速上傳</b>:</p>
         <p>The following base documents are still missing, please <b>upload</b> them as soon as possible:</p>
         <ul>
-        <li>${ProfileNameType[profile_keys_list[i]]}</li>`;
+        <li>${PROFILE_NAME[profile_keys_list[i]]}</li>`;
       } else {
         missing_base_documents += `<li>${
-          ProfileNameType[profile_keys_list[i]]
+          PROFILE_NAME[profile_keys_list[i]]
         }</li>`;
       }
     }
-    if (object_init[profile_keys_list[i]] === 'rejected') {
+    if (object_init[profile_keys_list[i]] === DocumentStatusType.Rejected) {
       if (yy === 0) {
         yy += 1;
         rejected_base_documents = `
         <p>以下文件仍然<b>不合格</b>, 請<b>盡速補上</b>:</p>
         <p>The following base documents are <b>not okay</b>, please <b>upload</b> them again as soon as possible:</p>
         <ul>
-        <li>${ProfileNameType[profile_keys_list[i]]}</li>`;
+        <li>${PROFILE_NAME[profile_keys_list[i]]}</li>`;
       } else {
         rejected_base_documents += `<li>${
-          ProfileNameType[profile_keys_list[i]]
+          PROFILE_NAME[profile_keys_list[i]]
         }</li>`;
       }
     }
@@ -1606,9 +1559,6 @@ module.exports = {
   Role,
   TicketStatus,
   ManagerType,
-  DocumentStatus,
-  CheckListStatus,
-  TaskStatus,
   EDITOR_SCOPE,
   ESSAY_WRITER_SCOPE,
   FILE_MAPPING_TABLE,

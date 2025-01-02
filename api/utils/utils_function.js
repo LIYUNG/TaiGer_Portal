@@ -2,6 +2,8 @@ const path = require('path');
 const async = require('async');
 const mammoth = require('mammoth');
 const PdfParse = require('pdf-parse');
+const { Role } = require('@taiger-common/core');
+
 const {
   sendAssignEditorReminderEmail,
   MeetingReminderEmail,
@@ -30,8 +32,7 @@ const {
   is_deadline_within30days_needed,
   is_cv_ml_rl_reminder_needed,
   isNotArchiv,
-  needUpdateCourseSelection,
-  Role
+  needUpdateCourseSelection
 } = require('../constants');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { isProd, AWS_S3_BUCKET_NAME } = require('../config');

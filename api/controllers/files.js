@@ -1,9 +1,14 @@
 const path = require('path');
+const {
+  Role,
+  DocumentStatusType,
+  is_TaiGer_Student
+} = require('@taiger-common/core');
+
 const { asyncHandler } = require('../middlewares/error-handler');
 const { one_month_cache, two_month_cache } = require('../cache/node-cache');
-const { Role } = require('../constants');
 const { ErrorResponse } = require('../common/errors');
-const { DocumentStatus, isNotArchiv } = require('../constants');
+const { isNotArchiv } = require('../constants');
 const {
   deleteTemplateSuccessEmail,
   sendAgentUploadedProfileFilesForStudentEmail,
@@ -142,14 +147,14 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
   let document = student.profile.find(({ name }) => name === category);
   if (!document) {
     document = student.profile.create({ name: category });
-    document.status = DocumentStatus.Uploaded;
+    document.status = DocumentStatusType.Uploaded;
     document.required = true;
     document.updatedAt = new Date();
     document.path = req.file.key;
     student.profile.push(document);
     await student.save();
-    res.status(201).send({ success: true, data: student });
-    if (user.role === Role.Student) {
+    res.status(201).send({ success: true, data: document });
+    if (is_TaiGer_Student(user)) {
       // TODO: add notification for agents
       for (let i = 0; i < student.agents.length; i += 1) {
         const agent = await req.db
@@ -207,15 +212,15 @@ const saveProfileFilePath = asyncHandler(async (req, res, next) => {
       );
     }
   } else {
-    document.status = DocumentStatus.Uploaded;
+    document.status = DocumentStatusType.Uploaded;
     document.required = true;
     document.updatedAt = new Date();
     document.path = req.file.key;
     await student.save();
 
     // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-    res.status(201).send({ success: true, data: student });
-    if (user.role === Role.Student) {
+    res.status(201).send({ success: true, data: document });
+    if (is_TaiGer_Student(user)) {
       // TODO: notify agents
       for (let i = 0; i < student.agents.length; i += 1) {
         const agent = await req.db
@@ -305,8 +310,12 @@ const updateVPDPayment = asyncHandler(async (req, res, next) => {
   app.uni_assist.updatedAt = new Date();
   await student.save();
 
+  const updatedApplication = student.applications.find(
+    (application) => application.programId._id.toString() === program_id
+  );
+
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  res.status(201).send({ success: true, data: student });
+  res.status(201).send({ success: true, data: updatedApplication });
   next();
 });
 // () email:
@@ -333,17 +342,20 @@ const updateVPDFileNecessity = asyncHandler(async (req, res, next) => {
     throw new ErrorResponse(404, 'Application not found');
   }
   // TODO: set bot notneeded and resume needed
-  if (app.uni_assist.status !== DocumentStatus.NotNeeded) {
-    app.uni_assist.status = DocumentStatus.NotNeeded;
+  if (app.uni_assist.status !== DocumentStatusType.NotNeeded) {
+    app.uni_assist.status = DocumentStatusType.NotNeeded;
   } else {
-    app.uni_assist.status = DocumentStatus.Missing;
+    app.uni_assist.status = DocumentStatusType.Missing;
   }
   app.uni_assist.updatedAt = new Date();
   app.uni_assist.vpd_file_path = '';
   await student.save();
 
-  // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  res.status(201).send({ success: true, data: student });
+  const updatedApplication = student.applications.find(
+    (application) => application.programId._id.toString() === program_id
+  );
+
+  res.status(201).send({ success: true, data: updatedApplication });
   next();
 });
 
@@ -368,36 +380,41 @@ const saveVPDFilePath = asyncHandler(async (req, res, next) => {
     (application) => application.programId._id.toString() === program_id
   );
   if (!app) {
-    app.uni_assist.status = DocumentStatus.Uploaded;
+    app.uni_assist.status = DocumentStatusType.Uploaded;
     app.uni_assist.updatedAt = new Date();
     app.uni_assist.vpd_file_path = req.file.key;
     await student.save();
-    res.status(201).send({ success: true, data: student });
+    const updatedApplication = student.applications.find(
+      (application) => application.programId._id.toString() === program_id
+    );
+    res.status(201).send({ success: true, data: updatedApplication });
 
     return;
   }
   if (fileType === 'VPD') {
-    app.uni_assist.status = DocumentStatus.Uploaded;
+    app.uni_assist.status = DocumentStatusType.Uploaded;
     app.uni_assist.updatedAt = new Date();
     app.uni_assist.vpd_file_path = req.file.key;
   }
   if (fileType === 'VPDConfirmation') {
-    // app.uni_assist.status = DocumentStatus.Uploaded;
+    // app.uni_assist.status = DocumentStatusType.Uploaded;
     app.uni_assist.updatedAt = new Date();
     app.uni_assist.vpd_paid_confirmation_file_path = req.file.key;
   }
 
   await student.save();
-
+  const updatedApplication = student.applications.find(
+    (application) => application.programId._id.toString() === program_id
+  );
   // retrieve studentId differently depend on if student or Admin/Agent uploading the file
-  res.status(201).send({ success: true, data: student });
+  res.status(201).send({ success: true, data: updatedApplication });
 
   const student_updated = await req.db
     .model('Student')
     .findById(studentId)
     .populate('agents', 'firstname lastname email archiv');
 
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     // Reminder for Agent:
     for (let i = 0; i < student_updated.agents.length; i += 1) {
       if (isNotArchiv(student_updated.agents[i])) {
@@ -571,7 +588,7 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   const { studentId, category } = req.params;
   const { status, feedback } = req.body;
 
-  if (!Object.values(DocumentStatus).includes(status)) {
+  if (!Object.values(DocumentStatusType).includes(status)) {
     logger.error('updateProfileDocumentStatus: Invalid document status');
     throw new ErrorResponse(403, 'Invalid document status');
   }
@@ -593,21 +610,21 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
   try {
     if (!document) {
       document = student.profile.create({ name: category });
-      document.status = DocumentStatus.NotNeeded;
+      document.status = DocumentStatusType.NotNeeded;
       document.feedback = feedback;
       document.required = true;
       document.updatedAt = new Date();
       document.path = '';
       student.profile.push(document);
       await student.save();
-      res.status(201).send({ success: true, data: student });
+      res.status(201).send({ success: true, data: document });
     } else {
-      if (status === DocumentStatus.Rejected) {
+      if (status === DocumentStatusType.Rejected) {
         // rejected file notification set
         student.notification.isRead_base_documents_rejected = false;
         document.feedback = feedback;
       }
-      if (status === DocumentStatus.Accepted) {
+      if (status === DocumentStatusType.Accepted) {
         document.feedback = '';
       }
 
@@ -615,12 +632,12 @@ const updateProfileDocumentStatus = asyncHandler(async (req, res, next) => {
       document.updatedAt = new Date();
 
       await student.save();
-      res.status(201).send({ success: true, data: student });
+      res.status(201).send({ success: true, data: document });
       // Reminder for Student:
       if (isNotArchiv(student)) {
         if (
-          status !== DocumentStatus.NotNeeded &&
-          status !== DocumentStatus.Missing
+          status !== DocumentStatusType.NotNeeded &&
+          status !== DocumentStatusType.Missing
         ) {
           await sendChangedProfileFileStatusEmail(
             {
@@ -732,7 +749,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     .lean();
 
   res.status(201).send({ success: true, data: student_updated });
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     for (let i = 0; i < student_updated.agents.length; i += 1) {
       if (isNotArchiv(student_updated.agents[i])) {
         await UpdateStudentApplicationsEmail(
@@ -851,7 +868,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
   let updatedStudent;
   if (req.file) {
     const admission_letter_temp = {
-      status: DocumentStatus.Uploaded,
+      status: DocumentStatusType.Uploaded,
       admission_file_path: req.file.key,
       comments: '',
       updatedAt: new Date()
@@ -920,7 +937,7 @@ const updateStudentApplicationResult = asyncHandler(async (req, res, next) => {
     (application) => application.programId?.id.toString() === programId
   );
   res.status(200).send({ success: true, data: udpatedApplication });
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     if (result !== '-') {
       for (let i = 0; i < student.agents?.length; i += 1) {
         if (isNotArchiv(student.agents[i])) {
@@ -995,7 +1012,7 @@ const deleteProfileFile = asyncHandler(async (req, res, next) => {
   const cache_key = `${studentId}${fileKey}`;
   try {
     await deleteS3Object(AWS_S3_BUCKET_NAME, fileKey);
-    document.status = DocumentStatus.Missing;
+    document.status = DocumentStatusType.Missing;
     document.path = '';
     document.updatedAt = new Date();
 
@@ -1072,7 +1089,7 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
       logger.info('VPD cache key deleted successfully');
     }
     if (fileType === 'VPD') {
-      app.uni_assist.status = DocumentStatus.Missing;
+      app.uni_assist.status = DocumentStatusType.Missing;
       app.uni_assist.vpd_file_path = '';
     }
     if (fileType === 'VPDConfirmation') {
@@ -1080,7 +1097,10 @@ const deleteVPDFile = asyncHandler(async (req, res, next) => {
     }
     app.uni_assist.updatedAt = new Date();
     student.save();
-    res.status(200).send({ success: true });
+    const updatedApplication = student.applications.find(
+      (application) => application.programId._id.toString() === program_id
+    );
+    res.status(200).send({ success: true, data: updatedApplication });
     next();
   } catch (err) {
     if (err) {

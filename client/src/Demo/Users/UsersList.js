@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -13,319 +13,324 @@ import UsersListSubpage from './UsersListSubpage';
 import UserDeleteWarning from './UserDeleteWarning';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { deleteUser, changeUserRole, updateArchivUser } from '../../api';
-import { UserlistHeader } from '../Utils/contants';
+import { UserlistHeader } from '../../utils/contants';
 import UserArchivWarning from './UserArchivWarning';
 
 function UsersList(props) {
-  const { t } = useTranslation();
-  const [usersListState, setUsersListState] = useState({
-    error: '',
-    modalShow: false,
-    delete_field: '',
-    firstname: '',
-    lastname: '',
-    selected_user_role: '',
-    selected_user_id: '',
-    archiv: false,
-    data: props.users,
-    modalShowNewProgram: false,
-    deleteUserWarning: false,
-    archivUserWarning: false,
-    success: props.success,
-    isLoaded: props.isLoaded,
-    res_status: 0,
-    res_modal_message: '',
-    res_modal_status: 0
-  });
-
-  useEffect(() => {
-    setUsersListState((prevState) => ({
-      ...prevState,
-      data: props.users
-    }));
-  }, []);
-
-  const setModalShow = (user_firstname, user_lastname, user_role, user_id) => {
-    setUsersListState((prevState) => ({
-      ...prevState,
-      modalShow: true,
-      firstname: user_firstname,
-      lastname: user_lastname,
-      selected_user_role: user_role,
-      selected_user_id: user_id
-    }));
-  };
-
-  const setModalHide = () => {
-    setUsersListState((prevState) => ({
-      ...prevState,
-      modalShow: false
-    }));
-  };
-
-  const setModalArchivHide = () => {
-    setUsersListState((prevState) => ({
-      ...prevState,
-      archivUserWarning: false
-    }));
-  };
-  const setModalHideDDelete = () => {
-    setUsersListState((prevState) => ({
-      ...prevState,
-      deleteUserWarning: false,
-      delete_field: ''
-    }));
-  };
-
-  const setModalShowDelete = (user_firstname, user_lastname, user_id) => {
-    setUsersListState((prevState) => ({
-      ...prevState,
-      deleteUserWarning: true,
-      firstname: user_firstname,
-      lastname: user_lastname,
-      selected_user_id: user_id
-    }));
-  };
-  const setModalArchiv = (user_firstname, user_lastname, user_id, archiv) => {
-    setUsersListState((prevState) => ({
-      ...prevState,
-      archivUserWarning: true,
-      firstname: user_firstname,
-      lastname: user_lastname,
-      selected_user_id: user_id,
-      archiv
-    }));
-  };
-  const handleChange2 = (e) => {
-    const { value } = e.target;
-    setUsersListState((prevState) => ({
-      ...prevState,
-      selected_user_role: value
-    }));
-  };
-
-  const handleDeleteUser = (user_id) => {
-    // TODO: also delete files in file system
-    setUsersListState((prevState) => ({
-      ...prevState,
-      isLoaded: false
-    }));
-
-    deleteUser(user_id).then(
-      (resp) => {
-        const { success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          var array = [...usersListState.data];
-          let idx = usersListState.data.findIndex(
-            (user) => user._id === user_id
-          );
-          if (idx !== -1) {
-            array.splice(idx, 1);
-          }
-          setUsersListState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            success,
-            delete_field: '',
-            deleteUserWarning: false,
-            data: array,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setUsersListState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setUsersListState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
-        }));
-      }
-    );
-  };
-
-  const onChangeDeleteField = (e) => {
-    setUsersListState((prevState) => ({
-      ...prevState,
-      delete_field: e.target.value
-    }));
-  };
-
-  const assignUserAs = (user_data) => {
-    var updated_user = usersListState.data.map((user) => {
-      if (user._id === user_data._id) {
-        return Object.assign(user, user_data);
-      } else {
-        return user;
-      }
+    const { t } = useTranslation();
+    const [usersListState, setUsersListState] = useState({
+        error: '',
+        modalShow: false,
+        delete_field: '',
+        firstname: '',
+        lastname: '',
+        selected_user_role: '',
+        selected_user_id: '',
+        archiv: false,
+        data: props.users,
+        modalShowNewProgram: false,
+        deleteUserWarning: false,
+        archivUserWarning: false,
+        success: props.success,
+        isLoaded: props.isLoaded,
+        res_status: 0,
+        res_modal_message: '',
+        res_modal_status: 0
     });
 
-    changeUserRole(user_data._id, user_data.role).then(
-      (resp) => {
-        const { success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setUsersListState((prevState) => ({
-            ...prevState,
-            modalShow: false,
-            isLoaded: true,
-            success,
-            data: updated_user,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setUsersListState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
+    useEffect(() => {
         setUsersListState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
+            ...prevState,
+            data: props.users
         }));
-      }
-    );
-  };
+    }, []);
 
-  const onSubmit2 = (e) => {
-    e.preventDefault();
-    const user_role = usersListState.selected_user_role;
-    const user_id = usersListState.selected_user_id;
-    assignUserAs({ role: user_role, _id: user_id });
-  };
-
-  const updateUserArchivStatus = (user_id, isArchived) => {
-    updateArchivUser(user_id, isArchived).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setUsersListState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            archivUserWarning: false,
-            data: data,
-            success: success,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setUsersListState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
+    const setModalShow = (
+        user_firstname,
+        user_lastname,
+        user_role,
+        user_id
+    ) => {
         setUsersListState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_modal_status: 500,
-          res_modal_message: ''
+            ...prevState,
+            modalShow: true,
+            firstname: user_firstname,
+            lastname: user_lastname,
+            selected_user_role: user_role,
+            selected_user_id: user_id
         }));
-      }
+    };
+
+    const setModalHide = () => {
+        setUsersListState((prevState) => ({
+            ...prevState,
+            modalShow: false
+        }));
+    };
+
+    const setModalArchivHide = () => {
+        setUsersListState((prevState) => ({
+            ...prevState,
+            archivUserWarning: false
+        }));
+    };
+    const setModalHideDDelete = () => {
+        setUsersListState((prevState) => ({
+            ...prevState,
+            deleteUserWarning: false,
+            delete_field: ''
+        }));
+    };
+
+    const setModalShowDelete = (user_firstname, user_lastname, user_id) => {
+        setUsersListState((prevState) => ({
+            ...prevState,
+            deleteUserWarning: true,
+            firstname: user_firstname,
+            lastname: user_lastname,
+            selected_user_id: user_id
+        }));
+    };
+    const setModalArchiv = (user_firstname, user_lastname, user_id, archiv) => {
+        setUsersListState((prevState) => ({
+            ...prevState,
+            archivUserWarning: true,
+            firstname: user_firstname,
+            lastname: user_lastname,
+            selected_user_id: user_id,
+            archiv
+        }));
+    };
+    const handleChange2 = (e) => {
+        const { value } = e.target;
+        setUsersListState((prevState) => ({
+            ...prevState,
+            selected_user_role: value
+        }));
+    };
+
+    const handleDeleteUser = (user_id) => {
+        // TODO: also delete files in file system
+        setUsersListState((prevState) => ({
+            ...prevState,
+            isLoaded: false
+        }));
+
+        deleteUser(user_id).then(
+            (resp) => {
+                const { success } = resp.data;
+                const { status } = resp;
+                if (success) {
+                    var array = [...usersListState.data];
+                    let idx = usersListState.data.findIndex(
+                        (user) => user._id === user_id
+                    );
+                    if (idx !== -1) {
+                        array.splice(idx, 1);
+                    }
+                    setUsersListState((prevState) => ({
+                        ...prevState,
+                        isLoaded: true,
+                        success,
+                        delete_field: '',
+                        deleteUserWarning: false,
+                        data: array,
+                        res_modal_status: status
+                    }));
+                } else {
+                    const { message } = resp.data;
+                    setUsersListState((prevState) => ({
+                        ...prevState,
+                        isLoaded: true,
+                        res_modal_message: message,
+                        res_modal_status: status
+                    }));
+                }
+            },
+            (error) => {
+                setUsersListState((prevState) => ({
+                    ...prevState,
+                    isLoaded: true,
+                    error,
+                    res_modal_status: 500,
+                    res_modal_message: ''
+                }));
+            }
+        );
+    };
+
+    const onChangeDeleteField = (e) => {
+        setUsersListState((prevState) => ({
+            ...prevState,
+            delete_field: e.target.value
+        }));
+    };
+
+    const assignUserAs = (user_data) => {
+        var updated_user = usersListState.data.map((user) => {
+            if (user._id === user_data._id) {
+                return Object.assign(user, user_data);
+            } else {
+                return user;
+            }
+        });
+
+        changeUserRole(user_data._id, user_data.role).then(
+            (resp) => {
+                const { success } = resp.data;
+                const { status } = resp;
+                if (success) {
+                    setUsersListState((prevState) => ({
+                        ...prevState,
+                        modalShow: false,
+                        isLoaded: true,
+                        success,
+                        data: updated_user,
+                        res_modal_status: status
+                    }));
+                } else {
+                    const { message } = resp.data;
+                    setUsersListState((prevState) => ({
+                        ...prevState,
+                        isLoaded: true,
+                        res_modal_message: message,
+                        res_modal_status: status
+                    }));
+                }
+            },
+            (error) => {
+                setUsersListState((prevState) => ({
+                    ...prevState,
+                    isLoaded: true,
+                    error,
+                    res_modal_status: 500,
+                    res_modal_message: ''
+                }));
+            }
+        );
+    };
+
+    const onSubmit2 = (e) => {
+        e.preventDefault();
+        const user_role = usersListState.selected_user_role;
+        const user_id = usersListState.selected_user_id;
+        assignUserAs({ role: user_role, _id: user_id });
+    };
+
+    const updateUserArchivStatus = (user_id, isArchived) => {
+        updateArchivUser(user_id, isArchived).then(
+            (resp) => {
+                const { data, success } = resp.data;
+                const { status } = resp;
+                if (success) {
+                    setUsersListState((prevState) => ({
+                        ...prevState,
+                        isLoaded: true,
+                        archivUserWarning: false,
+                        data: data,
+                        success: success,
+                        res_modal_status: status
+                    }));
+                } else {
+                    const { message } = resp.data;
+                    setUsersListState((prevState) => ({
+                        ...prevState,
+                        isLoaded: true,
+                        res_modal_message: message,
+                        res_modal_status: status
+                    }));
+                }
+            },
+            (error) => {
+                setUsersListState((prevState) => ({
+                    ...prevState,
+                    isLoaded: true,
+                    error,
+                    res_modal_status: 500,
+                    res_modal_message: ''
+                }));
+            }
+        );
+    };
+
+    const ConfirmError = () => {
+        setUsersListState((prevState) => ({
+            ...prevState,
+            res_modal_status: 0,
+            res_modal_message: ''
+        }));
+    };
+
+    const { res_modal_message, res_modal_status } = usersListState;
+
+    const headers = (
+        <TableRow>
+            <TableCell> </TableCell>
+            {UserlistHeader.map((x, i) => (
+                <TableCell key={i}>{t(`${x.name}`)}</TableCell>
+            ))}
+            <TableCell>{t('Created At')}</TableCell>
+            <TableCell>{t('Last Login', { ns: 'auth' })}</TableCell>
+        </TableRow>
     );
-  };
 
-  const ConfirmError = () => {
-    setUsersListState((prevState) => ({
-      ...prevState,
-      res_modal_status: 0,
-      res_modal_message: ''
-    }));
-  };
-
-  const { res_modal_message, res_modal_status } = usersListState;
-
-  const headers = (
-    <TableRow>
-      <TableCell> </TableCell>
-      {UserlistHeader.map((x, i) => (
-        <TableCell key={i}>{t(`${x.name}`)}</TableCell>
-      ))}
-      <TableCell>{t('Created At')}</TableCell>
-      <TableCell>{t('Last Login', { ns: 'auth' })}</TableCell>
-    </TableRow>
-  );
-
-  const users = usersListState.data.map((user) => (
-    <User
-      key={user._id}
-      user={user}
-      setModalShowDelete={setModalShowDelete}
-      setModalArchiv={setModalArchiv}
-      setModalShow={setModalShow}
-      success={usersListState.success}
-    />
-  ));
-
-  return (
-    <>
-      {res_modal_status >= 400 && (
-        <ModalMain
-          ConfirmError={ConfirmError}
-          res_modal_status={res_modal_status}
-          res_modal_message={res_modal_message}
+    const users = usersListState.data.map((user) => (
+        <User
+            key={user._id}
+            user={user}
+            setModalShowDelete={setModalShowDelete}
+            setModalArchiv={setModalArchiv}
+            setModalShow={setModalShow}
+            success={usersListState.success}
         />
-      )}
-      <Table size="small">
-        <TableHead>{headers}</TableHead>
-        <TableBody>{users}</TableBody>
-      </Table>
-      <UsersListSubpage
-        show={usersListState.modalShow}
-        setModalHide={setModalHide}
-        firstname={usersListState.firstname}
-        lastname={usersListState.lastname}
-        selected_user_role={usersListState.selected_user_role}
-        selected_user_id={usersListState.selected_user_id}
-        handleChange2={handleChange2}
-        onSubmit2={onSubmit2}
-      />
-      <UserDeleteWarning
-        isLoaded={usersListState.isLoaded}
-        deleteUserWarning={usersListState.deleteUserWarning}
-        onChangeDeleteField={onChangeDeleteField}
-        delete_field={usersListState.delete_field}
-        setModalHideDDelete={setModalHideDDelete}
-        firstname={usersListState.firstname}
-        lastname={usersListState.lastname}
-        selected_user_id={usersListState.selected_user_id}
-        handleDeleteUser={handleDeleteUser}
-      />
-      <UserArchivWarning
-        isLoaded={usersListState.isLoaded}
-        archivUserWarning={usersListState.archivUserWarning}
-        archiv={usersListState.archiv}
-        setModalArchivHide={setModalArchivHide}
-        firstname={usersListState.firstname}
-        lastname={usersListState.lastname}
-        selected_user_id={usersListState.selected_user_id}
-        updateUserArchivStatus={updateUserArchivStatus}
-      />
-    </>
-  );
+    ));
+
+    return (
+        <>
+            {res_modal_status >= 400 && (
+                <ModalMain
+                    ConfirmError={ConfirmError}
+                    res_modal_status={res_modal_status}
+                    res_modal_message={res_modal_message}
+                />
+            )}
+            <Table size="small">
+                <TableHead>{headers}</TableHead>
+                <TableBody>{users}</TableBody>
+            </Table>
+            <UsersListSubpage
+                show={usersListState.modalShow}
+                setModalHide={setModalHide}
+                firstname={usersListState.firstname}
+                lastname={usersListState.lastname}
+                selected_user_role={usersListState.selected_user_role}
+                selected_user_id={usersListState.selected_user_id}
+                handleChange2={handleChange2}
+                onSubmit2={onSubmit2}
+            />
+            <UserDeleteWarning
+                isLoaded={usersListState.isLoaded}
+                deleteUserWarning={usersListState.deleteUserWarning}
+                onChangeDeleteField={onChangeDeleteField}
+                delete_field={usersListState.delete_field}
+                setModalHideDDelete={setModalHideDDelete}
+                firstname={usersListState.firstname}
+                lastname={usersListState.lastname}
+                selected_user_id={usersListState.selected_user_id}
+                handleDeleteUser={handleDeleteUser}
+            />
+            <UserArchivWarning
+                isLoaded={usersListState.isLoaded}
+                archivUserWarning={usersListState.archivUserWarning}
+                archiv={usersListState.archiv}
+                setModalArchivHide={setModalArchivHide}
+                firstname={usersListState.firstname}
+                lastname={usersListState.lastname}
+                selected_user_id={usersListState.selected_user_id}
+                updateUserArchivStatus={updateUserArchivStatus}
+            />
+        </>
+    );
 }
 
 export default UsersList;

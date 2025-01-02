@@ -19,261 +19,264 @@ import TextAlign from '@canburaks/text-align-editorjs';
 import { uploadImage, uploadDocumentThreadImage } from '../../api';
 
 const EditorSimple = (props) => {
-  const ejInstance = useRef();
-  // This will run only once
-  var editor;
+    const ejInstance = useRef();
+    // This will run only once
+    var editor;
 
-  let configuration;
-  if (props.imageEnable) {
-    configuration = {
-      holder: `${props.holder}`,
-      logLevel: 'ERROR',
-      data: props.editorState,
-      onReady: () => {
-        ejInstance.current = editor;
-      },
-      onChange: async (api) => {
-        if (!props.readOnly) {
-          api.saver.save().then((outputData) => {
-            props.handleEditorChange(outputData);
-          });
-        }
-      },
-      placeholder:
-        'Please organize your questions and expected help concretely.',
-      readOnly: props.readOnly,
-      // autofocus: true,
-      minHeight: props.defaultHeight,
-      tools: {
-        header: {
-          class: Header,
-          config: {
-            placeholder: 'Enter a header',
-            levels: [2, 3, 4, 5, 6],
-            defaultLevel: 3
-          },
-          inlineToolbar: true
-        },
-        list: {
-          class: List,
-          inlineToolbar: true
-        },
-        underline: Underline,
-        code: CodeTool,
-        // quote: Quote,
-        table: {
-          class: Table,
-          inlineToolbar: true,
-          config: {
-            rows: 2,
-            cols: 3
-          }
-        },
-        Color: {
-          class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
-          config: {
-            colorCollections: [
-              '#000000',
-              '#FF0000',
-              '#00FF00',
-              '#0000FF',
-              '#999999',
-              '#00FFFF',
-              '#FF00FF',
-              '#800080',
-              '#FFF'
-            ],
-            type: 'text'
-          }
-        },
-        Marker: {
-          class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
-          config: {
-            colorCollections: [
-              '#000000',
-              '#FF0000',
-              '#00FF00',
-              '#0000FF',
-              '#999999',
-              '#00FFFF',
-              '#FF00FF',
-              '#800080',
-              '#FFF'
-            ],
-            defaultColor: '#FFF',
-            type: 'marker'
-          }
-        },
-        textAlign: TextAlign,
-        image: {
-          class: ImageTool,
-          config: {
-            // endpoints: {
-            //   byFile: 'https://localhost:3000/api/docs/upload/image', // Your backend file uploader endpoint
-            //   byUrl: 'https://localhost:3000/api/docs/upload/image' // Your endpoint that provides uploading by Url
-            // },
-            uploader: {
-              async uploadByFile(file) {
-                const formData = new FormData();
-                // TODO: collect uploaded files (to be deleted later if cancel editing)
-                formData.append('file', file);
-                let res;
-                if (props.thread) {
-                  res = await uploadDocumentThreadImage(
-                    props.thread._id.toString(),
-                    props.thread.student_id._id.toString(),
-                    formData
-                  );
-                } else {
-                  res = await uploadImage(formData);
+    let configuration;
+    if (props.imageEnable) {
+        configuration = {
+            holder: `${props.holder}`,
+            logLevel: 'ERROR',
+            data: props.editorState,
+            onReady: () => {
+                ejInstance.current = editor;
+            },
+            onChange: async (api) => {
+                if (!props.readOnly) {
+                    api.saver.save().then((outputData) => {
+                        props.handleEditorChange(outputData);
+                    });
                 }
-                return { success: 1, file: { url: res.data.data } };
-              },
-              async uploadByUrl(url) {
-                return {
-                  success: 1,
-                  file: {
-                    url: url
-                  }
-                };
-              }
+            },
+            placeholder:
+                'Please organize your questions and expected help concretely.',
+            readOnly: props.readOnly,
+            // autofocus: true,
+            minHeight: props.defaultHeight,
+            tools: {
+                header: {
+                    class: Header,
+                    config: {
+                        placeholder: 'Enter a header',
+                        levels: [2, 3, 4, 5, 6],
+                        defaultLevel: 3
+                    },
+                    inlineToolbar: true
+                },
+                list: {
+                    class: List,
+                    inlineToolbar: true
+                },
+                underline: Underline,
+                code: CodeTool,
+                // quote: Quote,
+                table: {
+                    class: Table,
+                    inlineToolbar: true,
+                    config: {
+                        rows: 2,
+                        cols: 3
+                    }
+                },
+                Color: {
+                    class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
+                    config: {
+                        colorCollections: [
+                            '#000000',
+                            '#FF0000',
+                            '#00FF00',
+                            '#0000FF',
+                            '#999999',
+                            '#00FFFF',
+                            '#FF00FF',
+                            '#800080',
+                            '#FFF'
+                        ],
+                        type: 'text'
+                    }
+                },
+                Marker: {
+                    class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
+                    config: {
+                        colorCollections: [
+                            '#000000',
+                            '#FF0000',
+                            '#00FF00',
+                            '#0000FF',
+                            '#999999',
+                            '#00FFFF',
+                            '#FF00FF',
+                            '#800080',
+                            '#FFF'
+                        ],
+                        defaultColor: '#FFF',
+                        type: 'marker'
+                    }
+                },
+                textAlign: TextAlign,
+                image: {
+                    class: ImageTool,
+                    config: {
+                        // endpoints: {
+                        //   byFile: 'https://localhost:3000/api/docs/upload/image', // Your backend file uploader endpoint
+                        //   byUrl: 'https://localhost:3000/api/docs/upload/image' // Your endpoint that provides uploading by Url
+                        // },
+                        uploader: {
+                            async uploadByFile(file) {
+                                const formData = new FormData();
+                                // TODO: collect uploaded files (to be deleted later if cancel editing)
+                                formData.append('file', file);
+                                let res;
+                                if (props.thread) {
+                                    res = await uploadDocumentThreadImage(
+                                        props.thread._id.toString(),
+                                        props.thread.student_id._id.toString(),
+                                        formData
+                                    );
+                                } else {
+                                    res = await uploadImage(formData);
+                                }
+                                return {
+                                    success: 1,
+                                    file: { url: res.data.data }
+                                };
+                            },
+                            async uploadByUrl(url) {
+                                return {
+                                    success: 1,
+                                    file: {
+                                        url: url
+                                    }
+                                };
+                            }
+                        }
+                    }
+                },
+                delimiter: Delimiter,
+                embed: {
+                    class: Embed,
+                    inlineToolbar: false,
+                    config: {
+                        services: {
+                            youtube: true,
+                            instagram: true,
+                            imgur: true,
+                            facebook: true,
+                            coub: true
+                        }
+                    }
+                },
+                inlineCode: {
+                    class: InlineCode
+                    // shortcut: 'CMD+SHIFT+M'
+                }
             }
-          }
-        },
-        delimiter: Delimiter,
-        embed: {
-          class: Embed,
-          inlineToolbar: false,
-          config: {
-            services: {
-              youtube: true,
-              instagram: true,
-              imgur: true,
-              facebook: true,
-              coub: true
+        };
+    } else {
+        configuration = {
+            holder: `${props.holder}`,
+            logLevel: 'ERROR',
+            data: props.editorState,
+            onReady: () => {
+                ejInstance.current = editor;
+            },
+            onChange: async (api) => {
+                if (!props.readOnly) {
+                    api.saver.save().then((outputData) => {
+                        props.handleEditorChange(outputData);
+                    });
+                }
+            },
+            placeholder:
+                'Please organize your questions and expected help concretely.',
+            readOnly: props.readOnly,
+            // autofocus: true,
+            minHeight: props.defaultHeight,
+            tools: {
+                header: {
+                    class: Header,
+                    config: {
+                        placeholder: 'Enter a header',
+                        levels: [2, 3, 4, 5, 6],
+                        defaultLevel: 3
+                    },
+                    inlineToolbar: true
+                },
+                list: {
+                    class: List,
+                    inlineToolbar: true
+                },
+                underline: Underline,
+                code: CodeTool,
+                // quote: Quote,
+                table: {
+                    class: Table,
+                    inlineToolbar: true,
+                    config: {
+                        rows: 2,
+                        cols: 3
+                    }
+                },
+                Color: {
+                    class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
+                    config: {
+                        colorCollections: [
+                            '#000000',
+                            '#FF0000',
+                            '#00FF00',
+                            '#0000FF',
+                            '#999999',
+                            '#00FFFF',
+                            '#FF00FF',
+                            '#800080',
+                            '#FFF'
+                        ],
+                        type: 'text'
+                    }
+                },
+                Marker: {
+                    class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
+                    config: {
+                        colorCollections: [
+                            '#000000',
+                            '#FF0000',
+                            '#00FF00',
+                            '#0000FF',
+                            '#999999',
+                            '#00FFFF',
+                            '#FF00FF',
+                            '#800080',
+                            '#FFF'
+                        ],
+                        defaultColor: '#FFF',
+                        type: 'marker'
+                    }
+                },
+                textAlign: TextAlign,
+                delimiter: Delimiter,
+                embed: {
+                    class: Embed,
+                    inlineToolbar: false,
+                    config: {
+                        services: {
+                            youtube: true,
+                            coub: true
+                        }
+                    }
+                },
+                inlineCode: {
+                    class: InlineCode
+                    // shortcut: 'CMD+SHIFT+M'
+                }
             }
-          }
-        },
-        inlineCode: {
-          class: InlineCode
-          // shortcut: 'CMD+SHIFT+M'
-        }
-      }
-    };
-  } else {
-    configuration = {
-      holder: `${props.holder}`,
-      logLevel: 'ERROR',
-      data: props.editorState,
-      onReady: () => {
-        ejInstance.current = editor;
-      },
-      onChange: async (api) => {
-        if (!props.readOnly) {
-          api.saver.save().then((outputData) => {
-            props.handleEditorChange(outputData);
-          });
-        }
-      },
-      placeholder:
-        'Please organize your questions and expected help concretely.',
-      readOnly: props.readOnly,
-      // autofocus: true,
-      minHeight: props.defaultHeight,
-      tools: {
-        header: {
-          class: Header,
-          config: {
-            placeholder: 'Enter a header',
-            levels: [2, 3, 4, 5, 6],
-            defaultLevel: 3
-          },
-          inlineToolbar: true
-        },
-        list: {
-          class: List,
-          inlineToolbar: true
-        },
-        underline: Underline,
-        code: CodeTool,
-        // quote: Quote,
-        table: {
-          class: Table,
-          inlineToolbar: true,
-          config: {
-            rows: 2,
-            cols: 3
-          }
-        },
-        Color: {
-          class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
-          config: {
-            colorCollections: [
-              '#000000',
-              '#FF0000',
-              '#00FF00',
-              '#0000FF',
-              '#999999',
-              '#00FFFF',
-              '#FF00FF',
-              '#800080',
-              '#FFF'
-            ],
-            type: 'text'
-          }
-        },
-        Marker: {
-          class: ColorPlugin, // if load from CDN, please try: window.ColorPlugin
-          config: {
-            colorCollections: [
-              '#000000',
-              '#FF0000',
-              '#00FF00',
-              '#0000FF',
-              '#999999',
-              '#00FFFF',
-              '#FF00FF',
-              '#800080',
-              '#FFF'
-            ],
-            defaultColor: '#FFF',
-            type: 'marker'
-          }
-        },
-        textAlign: TextAlign,
-        delimiter: Delimiter,
-        embed: {
-          class: Embed,
-          inlineToolbar: false,
-          config: {
-            services: {
-              youtube: true,
-              coub: true
-            }
-          }
-        },
-        inlineCode: {
-          class: InlineCode
-          // shortcut: 'CMD+SHIFT+M'
-        }
-      }
-    };
-  }
-
-  useEffect(() => {
-    if (!ejInstance.current) {
-      initEditor();
+        };
     }
-    return () => {
-      ejInstance.current && ejInstance.current.destroy();
-      ejInstance.current = null;
-    };
-  }, [props.editorState]);
-  const initEditor = () => {
-    editor = new EditorJS(configuration);
-  };
 
-  return <div id={`${props.holder}`}></div>;
+    useEffect(() => {
+        if (!ejInstance.current) {
+            initEditor();
+        }
+        return () => {
+            ejInstance.current && ejInstance.current.destroy();
+            ejInstance.current = null;
+        };
+    }, [props.editorState]);
+    const initEditor = () => {
+        editor = new EditorJS(configuration);
+    };
+
+    return <div id={`${props.holder}`}></div>;
 };
 
 export default EditorSimple;

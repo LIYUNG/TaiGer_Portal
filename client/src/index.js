@@ -10,22 +10,25 @@ import './index.css';
 import i18n from './i18n';
 import { CustomThemeProvider } from './components/ThemeProvider';
 import { queryClient } from './api/client';
+import { SnackBarProvider } from './contexts/use-snack-bar';
 
 const storedLanguage = localStorage.getItem('locale') || 'en';
 i18n.changeLanguage(storedLanguage);
 
 const app = (
-  <CustomThemeProvider>
-    <I18nextProvider>
-      <AuthProvider>
-        <QueryClientProvider client={queryClient}>
-          <StrictMode>
-            <App />
-          </StrictMode>
-        </QueryClientProvider>
-      </AuthProvider>
-    </I18nextProvider>
-  </CustomThemeProvider>
+    <CustomThemeProvider>
+        <I18nextProvider>
+            <SnackBarProvider>
+                <AuthProvider>
+                    <QueryClientProvider client={queryClient}>
+                        <StrictMode>
+                            <App />
+                        </StrictMode>
+                    </QueryClientProvider>
+                </AuthProvider>
+            </SnackBarProvider>
+        </I18nextProvider>
+    </CustomThemeProvider>
 );
 
 // Create a root.

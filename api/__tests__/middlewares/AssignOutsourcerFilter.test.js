@@ -1,4 +1,5 @@
-const { Role } = require('../../constants');
+const { Role } = require('@taiger-common/core');
+
 const { Student } = require('../../models/User');
 const {
   AssignOutsourcerFilter

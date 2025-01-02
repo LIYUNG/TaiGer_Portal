@@ -2,6 +2,7 @@ const _ = require('lodash');
 const { spawn } = require('child_process');
 const axios = require('axios');
 const path = require('path');
+const { is_TaiGer_Student, is_TaiGer_Guest } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
@@ -12,7 +13,7 @@ const {
 } = require('../services/email');
 const { one_month_cache } = require('../cache/node-cache');
 const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
-const { isNotArchiv, Role } = require('../constants');
+const { isNotArchiv } = require('../constants');
 const { getTemporaryCredentials, callApiGateway } = require('../aws');
 const { getS3Object } = require('../aws/s3');
 const {
@@ -84,7 +85,7 @@ const createCourse = asyncHandler(async (req, res) => {
     })
     .populate('student_id', 'firstname lastname');
   res.send({ success: true, data: courses2 });
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     // TODO: send course update to Agent
     const student = await req.db
       .model('Student')
@@ -287,7 +288,8 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
 
 const processTranscript_api_gatway = asyncHandler(async (req, res, next) => {
   const {
-    params: { category, studentId, language }
+    params: { category, studentId, language },
+    body: { requirementIds }
   } = req;
 
   try {
@@ -312,20 +314,27 @@ const processTranscript_api_gatway = asyncHandler(async (req, res, next) => {
     student_name = student_name.replace(/ /g, '-');
     const response = await callApiGateway(Credentials, apiGatewayUrl, 'POST', {
       courses: stringified_courses,
-      category,
       student_id: studentId,
       student_name,
       language,
-      courses_taiger_guided: stringified_courses_taiger_guided
+      courses_taiger_guided: stringified_courses_taiger_guided,
+      requirement_ids: JSON.stringify(requirementIds)
     });
 
-    courses.analysis.isAnalysed = true;
-    courses.analysis.path = path.join(
+    courses.analysis.isAnalysedV2 = true;
+    courses.analysis.pathV2 = path.join(
       studentId,
-      `analysed_transcript_${student_name}.xlsx`
+      `analysed_transcript_${student_name}.json`
     );
-    courses.analysis.updatedAt = new Date();
+    courses.analysis.updatedAtV2 = new Date();
     courses.save();
+
+    const cacheKey = `analysed_transcript_${studentId}.json`;
+
+    const success = one_month_cache.del(cacheKey);
+    if (success === 1) {
+      logger.info('cache key deleted successfully');
+    }
 
     res.status(200).send({ success: true, data: courses.analysis });
   } catch (err) {
@@ -344,9 +353,7 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
   } = req;
 
   const studentIdToUse =
-    user.role === Role.Student || user.role === Role.Guest
-      ? user._id
-      : studentId;
+    is_TaiGer_Student(user) || is_TaiGer_Guest(user) ? user._id : studentId;
   const course = await req.db.model('Course').findOne({
     student_id: studentIdToUse.toString()
   });
@@ -389,6 +396,72 @@ const downloadXLSX = asyncHandler(async (req, res, next) => {
   // }
 });
 
+const downloadJson = asyncHandler(async (req, res, next) => {
+  const {
+    params: { studentId }
+  } = req;
+
+  const course = await req.db
+    .model('Course')
+    .findOne({
+      student_id: studentId
+    })
+    .populate(
+      'student_id',
+      'firstname lastname firstname_chinese lastname_chinese role academic_background application_preference'
+    );
+  if (!course) {
+    logger.error('downloadJson: Invalid student id');
+    throw new ErrorResponse(404, 'Course not found');
+  }
+
+  if (!course.analysis.isAnalysedV2 || !course.analysis.pathV2) {
+    logger.error('downloadJson: not analysed yet');
+    throw new ErrorResponse(403, 'Transcript not analysed yet');
+  }
+
+  const fileKey = course.analysis.pathV2.replace(/\\/g, '/');
+  logger.info(`Trying to download transcript excel file ${fileKey}`);
+  const cacheKey = `analysed_transcript_${studentId}.json`;
+
+  const value = one_month_cache.get(cacheKey);
+  if (value === undefined) {
+    const analysedJson = await getS3Object(AWS_S3_BUCKET_NAME, fileKey);
+    const jsonString = Buffer.from(analysedJson).toString('utf-8');
+    const jsonData = JSON.parse(jsonString);
+    const fileKey_converted = encodeURIComponent(fileKey); // Use the encoding necessary
+    const success = one_month_cache.set(fileKey, {
+      jsonData,
+      fileKey_converted
+    });
+    if (success) {
+      logger.info(
+        `Course analysis json cache set successfully: key ${cacheKey}`
+      );
+    }
+
+    res
+      .status(200)
+      .send({
+        success: true,
+        json: jsonData,
+        student: course.student_id,
+        fileKey: fileKey_converted
+      });
+    next();
+  } else {
+    logger.info('cache hit');
+    logger.info(`Course analysis json cache hit ${cacheKey}`);
+    res.status(200).send({
+      success: true,
+      json: value.jsonData,
+      student: course.student_id,
+      fileKey: value.fileKey_converted
+    });
+    next();
+  }
+});
+
 const deleteCourse = asyncHandler(async (req, res) => {
   const course = await req.db.model('Course').findById(req.params.id);
   if (!course) {
@@ -406,5 +479,6 @@ module.exports = {
   processTranscript_api,
   processTranscript_api_gatway,
   downloadXLSX,
+  downloadJson,
   deleteCourse
 };

@@ -1,8 +1,12 @@
 // const path = require('path');
-const { ProfileNameType } = require('@taiger-common/core');
+const {
+  ProfileNameType,
+  DocumentStatusType,
+  is_TaiGer_Student,
+  is_TaiGer_Guest
+} = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
-const { Role, DocumentStatus } = require('../constants');
 const { asyncHandler } = require('../middlewares/error-handler');
 const { updateCredentialsEmail } = require('../services/email');
 const logger = require('../services/logger');
@@ -59,7 +63,7 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
   const { studentId } = req.params;
   // const { _id } = student;
   let student_id;
-  if (user.role === Role.Student || user.role === Role.Guest) {
+  if (is_TaiGer_Student(user) || is_TaiGer_Guest(user)) {
     student_id = user._id.toString();
   } else {
     student_id = studentId;
@@ -94,8 +98,6 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
       let document = studentProfile.find(
         (doc) => doc.name === profileNameList[docName]
       );
-      console.log('document:', document);
-      console.log('desired:', status);
       if (!document) {
         document = studentProfile.create({ name: profileNameList[docName] });
         document.status = status;
@@ -105,13 +107,12 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
         studentProfile.push(document);
       } else if (
         document.status ===
-        (status === DocumentStatus.NotNeeded
-          ? DocumentStatus.Missing
-          : DocumentStatus.NotNeeded)
+        (status === DocumentStatusType.NotNeeded
+          ? DocumentStatusType.Missing
+          : DocumentStatusType.NotNeeded)
       ) {
         document.status = status;
       }
-      console.log('updated document:', document);
     };
     let desiredStatus;
 
@@ -121,9 +122,9 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
         'pending' ||
       updatedStudent.academic_background.university.isGraduated === 'No'
     ) {
-      desiredStatus = DocumentStatus.NotNeeded;
+      desiredStatus = DocumentStatusType.NotNeeded;
     } else {
-      desiredStatus = DocumentStatus.Missing;
+      desiredStatus = DocumentStatusType.Missing;
     }
 
     documentsToEnsure.forEach((docName) => {
@@ -145,9 +146,9 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
         'No' ||
       updatedStudent.academic_background.university.isSecondGraduated === '-'
     ) {
-      desiredSecondDegreeStatus = DocumentStatus.NotNeeded;
+      desiredSecondDegreeStatus = DocumentStatusType.NotNeeded;
     } else {
-      desiredSecondDegreeStatus = DocumentStatus.Missing;
+      desiredSecondDegreeStatus = DocumentStatusType.Missing;
     }
     const secondDegreeDocumentsToEnsure = [
       ProfileNameType.Second_Degree_Certificate,
@@ -165,8 +166,8 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
     const exchangeStatus =
       updatedStudent.academic_background.university.Has_Exchange_Experience ===
       'Yes'
-        ? DocumentStatus.Missing
-        : DocumentStatus.NotNeeded;
+        ? DocumentStatusType.Missing
+        : DocumentStatusType.NotNeeded;
 
     ensureDocumentStatus(
       updatedStudent.profile,
@@ -178,8 +179,8 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
     const internshipStatus =
       updatedStudent.academic_background.university
         .Has_Internship_Experience === 'Yes'
-        ? DocumentStatus.Missing
-        : DocumentStatus.NotNeeded;
+        ? DocumentStatusType.Missing
+        : DocumentStatusType.NotNeeded;
     ensureDocumentStatus(
       updatedStudent.profile,
       ProfileNameType.Internship,
@@ -190,8 +191,8 @@ const updateAcademicBackground = asyncHandler(async (req, res, next) => {
     const workExperienceStatus =
       updatedStudent.academic_background.university.Has_Working_Experience ===
       'Yes'
-        ? DocumentStatus.Missing
-        : DocumentStatus.NotNeeded;
+        ? DocumentStatusType.Missing
+        : DocumentStatusType.NotNeeded;
     ensureDocumentStatus(
       updatedStudent.profile,
       ProfileNameType.Employment_Certificate,
@@ -223,7 +224,7 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
   const { studentId } = req.params;
   let student_id;
 
-  if (user.role === Role.Student || user.role === Role.Guest) {
+  if (is_TaiGer_Student(user) || is_TaiGer_Guest(user)) {
     student_id = user._id.toString();
   } else {
     student_id = studentId;
@@ -268,26 +269,26 @@ const updateLanguageSkill = asyncHandler(async (req, res, next) => {
       if (!certificateDoc) {
         certificateDoc = updatedStudent.profile.create({
           name: docName,
-          status: DocumentStatus.NotNeeded,
+          status: DocumentStatusType.NotNeeded,
           required: true,
           updatedAt: new Date(),
           path: ''
         });
         updatedStudent.profile.push(certificateDoc);
-      } else if (certificateDoc.status === DocumentStatus.Missing) {
-        certificateDoc.status = DocumentStatus.NotNeeded;
+      } else if (certificateDoc.status === DocumentStatusType.Missing) {
+        certificateDoc.status = DocumentStatusType.NotNeeded;
       }
     } else if (!certificateDoc) {
       certificateDoc = updatedStudent.profile.create({
         name: docName,
-        status: DocumentStatus.Missing,
+        status: DocumentStatusType.Missing,
         required: true,
         updatedAt: new Date(),
         path: ''
       });
       updatedStudent.profile.push(certificateDoc);
-    } else if (certificateDoc.status === DocumentStatus.NotNeeded) {
-      certificateDoc.status = DocumentStatus.Missing;
+    } else if (certificateDoc.status === DocumentStatusType.NotNeeded) {
+      certificateDoc.status = DocumentStatusType.Missing;
     }
   };
 
@@ -318,7 +319,7 @@ const updateApplicationPreferenceSkill = asyncHandler(
     } = req;
     const { studentId } = req.params;
     let student_id;
-    if (user.role === Role.Student || user.role === Role.Guest) {
+    if (is_TaiGer_Student(user) || is_TaiGer_Guest(user)) {
       student_id = user._id;
     } else {
       student_id = studentId;

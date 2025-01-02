@@ -1,8 +1,9 @@
 const path = require('path');
+const { is_TaiGer_Student } = require('@taiger-common/core');
+
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
-const { Role } = require('../constants');
 const { isNotArchiv } = require('../constants');
 
 const {
@@ -43,7 +44,7 @@ const getComplaints = asyncHandler(async (req, res) => {
   if (status) {
     query.status = status;
   }
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     const tickets = await req.db
       .model('Complaint')
       .find({ requester_id: user._id })
@@ -176,7 +177,7 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
     throw new ErrorResponse(400, 'message collapse');
   }
   // Check student can only access their own thread!!!!
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     if (ticket.requester_id._id.toString() !== user._id.toString()) {
       logger.error('getMessages: Unauthorized request!');
       throw new ErrorResponse(403, 'Unauthorized request');
@@ -234,7 +235,7 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
     ticket_title: ticket.title
   };
 
-  if (user.role === Role.Student) {
+  if (is_TaiGer_Student(user)) {
     // TODO: Inform Manager
     if (isNotArchiv(student)) {
       const permissions = await getManagers(req);

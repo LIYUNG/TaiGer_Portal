@@ -3,7 +3,7 @@ import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { useQuery } from '@tanstack/react-query';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Divider, Grid, Typography } from '@mui/material';
 
 import { useAuth } from '../../../../components/AuthProvider';
 import { is_TaiGer_role } from '@taiger-common/core';
@@ -156,40 +156,37 @@ function DocumentCommunicationExpandPage() {
           {myMessagesIsLoading ? (
             <Loading />
           ) : (
-            students?.map((student) => (
-              <Typography
-                key={student._id}
-                onClick={() => handleOnClickStudent(student._id)}
-              >
-                {student.firstname}
-              </Typography>
-            ))
+            students
+              ?.sort((a, b) => a.firstname.localeCompare(b.firstname))
+              ?.map((student) => (
+                <Typography
+                  key={student._id}
+                  onClick={() => handleOnClickStudent(student._id)}
+                >
+                  {student.firstname + ' ' + student.lastname}
+                </Typography>
+              ))
           )}
         </Grid>
         <Grid item xs={1.5}>
-          {sortedThreads?.map((thread, index, array) => {
+          {sortedThreads?.map((thread) => {
+            const isFinal = thread?.isFinalVersion;
             const category = getCategory(thread.file_type);
-            const firstIndex = array.findIndex(
-              (t) =>
-                getCategory(t.file_type) === category &&
-                t.file_type === thread.file_type
-            );
-            const typeIndex = index - firstIndex + 1;
-            const displayIndex = categories.General.includes(thread.file_type)
-              ? ''
-              : ` #${typeIndex}`;
             const showCategoryLabel = category !== currentCategory;
             currentCategory = category;
 
             return (
               <React.Fragment key={thread._id}>
                 {showCategoryLabel && (
-                  <Typography variant="h5" style={{ marginTop: '16px' }}>
+                  <Divider textAlign="center" sx={{ p: 3 }}>
                     {category}
-                  </Typography>
+                  </Divider>
                 )}
-                <Typography onClick={() => handleOnClickThread(thread._id)}>
-                  {`${thread.file_type}${displayIndex}`}
+                <Typography
+                  onClick={() => handleOnClickThread(thread._id)}
+                  sx={{ fontStyle: isFinal ? 'italic' : 'normal' }}
+                >
+                  {`${thread.file_type}`}
                 </Typography>
               </React.Fragment>
             );

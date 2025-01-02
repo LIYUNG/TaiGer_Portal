@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { convertDate, convertDateUXFriendly } from '../Utils/contants';
+import { convertDate, convertDateUXFriendly } from '../../utils/contants';
 import DEMO from '../../store/constant';
 
 function MiniAudit({ audit }) {

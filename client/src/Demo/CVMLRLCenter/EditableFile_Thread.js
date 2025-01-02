@@ -20,7 +20,7 @@ import {
   FILE_OK_SYMBOL,
   FILE_MISSING_SYMBOL,
   convertDate
-} from '../Utils/contants';
+} from '../../utils/contants';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 

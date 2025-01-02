@@ -20,7 +20,7 @@ import {
   is_my_fav_message_status,
   is_new_message_status,
   is_pending_status
-} from '../Utils/contants';
+} from '../../utils/contants';
 import { useTranslation } from 'react-i18next';
 
 function AgentSupportDocuments() {

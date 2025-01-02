@@ -9,7 +9,7 @@ import {
   Paper
 } from '@mui/material';
 
-import { academic_background_header } from '../../../Utils/contants';
+import { academic_background_header } from '../../../../utils/contants';
 import { useTranslation } from 'react-i18next';
 import StudentsAgentEditor from '../StudentsAgentEditor/StudentsAgentEditor';
 

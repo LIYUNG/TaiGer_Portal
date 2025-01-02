@@ -17,7 +17,7 @@ import {
 } from '@taiger-common/core';
 
 import EditDownloadFiles from './EditDownloadFiles';
-import { templatelist } from '../Utils/contants';
+import { templatelist } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { deleteTemplateFile, getTemplates, uploadtemplate } from '../../api';

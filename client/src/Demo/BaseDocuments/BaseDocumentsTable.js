@@ -23,7 +23,7 @@ import {
   FILE_NOT_OK_SYMBOL,
   FILE_OK_SYMBOL,
   FILE_UPLOADED_SYMBOL
-} from '../Utils/contants';
+} from '../../utils/contants';
 import { updateProfileDocumentStatus } from '../../api';
 import DEMO from '../../store/constant';
 import AcceptProfileFileModel from './AcceptedFilePreviewModal';

@@ -32,7 +32,7 @@ import {
   isProgramSubmitted,
   isProgramWithdraw
 } from '../Utils/checking-functions';
-import { FILE_OK_SYMBOL, spinner_style2 } from '../Utils/contants';
+import { FILE_OK_SYMBOL, spinner_style2 } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {

@@ -8,7 +8,7 @@ import {
   ADMISSION_STATUS_E,
   DECISION_STATUS_E,
   SUBMISSION_STATUS_E
-} from '../../../Utils/contants';
+} from '../../../../utils/contants';
 import {
   application_deadline_calculator,
   isProgramDecided,

@@ -10,7 +10,7 @@ import {
   SearchIconWrapper,
   StyledInputBase,
   EmbeddedChatListWidth
-} from '../../Demo/Utils/contants';
+} from '../../utils/contants';
 
 const EmbeddedChatList = (props) => {
   const { user } = useAuth();

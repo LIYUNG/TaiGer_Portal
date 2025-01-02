@@ -9,7 +9,7 @@ import {
 } from '../api';
 import { is_TaiGer_Agent, is_TaiGer_Student } from '@taiger-common/core';
 import { useAuth } from '../components/AuthProvider';
-import { getUTCWithDST, time_slots } from '../Demo/Utils/contants';
+import { getUTCWithDST, time_slots } from '../utils/contants';
 
 function useCalendarEvents(props) {
   const { user } = useAuth();

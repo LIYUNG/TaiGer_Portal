@@ -16,7 +16,7 @@ import { Link as LinkDom, useNavigate, useParams } from 'react-router-dom';
 import 'react-datasheet-grid/dist/style.css';
 import { is_TaiGer_role } from '@taiger-common/core';
 
-import { convertDate } from '../Utils/contants';
+import { convertDate } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {

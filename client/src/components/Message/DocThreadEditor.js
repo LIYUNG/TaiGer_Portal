@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import i18next from 'i18next';
 
-import { CVMLRL_DOC_PRECHECK_STATUS_E } from '../../Demo/Utils/contants';
+import { CVMLRL_DOC_PRECHECK_STATUS_E } from '../../utils/contants';
 import { useAuth } from '../AuthProvider';
 import EditorSimple from '../EditorJs/EditorSimple';
 

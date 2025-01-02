@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
-import { valid_categories, valid_internal_categories } from '../Utils/contants';
+import { valid_categories, valid_internal_categories } from '../../utils/contants';
 
 function SingleDocEdit(props) {
   const [singleDocEditState, setSingleDocEdit] = useState({

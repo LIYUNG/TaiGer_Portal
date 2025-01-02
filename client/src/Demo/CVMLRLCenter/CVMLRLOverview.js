@@ -12,7 +12,7 @@ import {
   COLORS,
   THREADS_TABLE_REVERSED_TABS,
   THREADS_TABLE_TABS
-} from '../Utils/contants';
+} from '../../utils/contants';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import Banner from '../../components/Banner/Banner';
 import { useAuth } from '../../components/AuthProvider';

@@ -23,7 +23,7 @@ import { useParams } from 'react-router-dom';
 
 import EditorSimple from '../../components/EditorJs/EditorSimple';
 import { useAuth } from '../../components/AuthProvider';
-import { CVMLRL_DOC_PRECHECK_STATUS_E, stringAvatar } from '../Utils/contants';
+import { CVMLRL_DOC_PRECHECK_STATUS_E, stringAvatar } from '../../utils/contants';
 import { TaiGerChatAssistant } from '../../api';
 import { appConfig } from '../../config';
 

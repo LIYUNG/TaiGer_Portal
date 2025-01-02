@@ -9,7 +9,9 @@ import {
   getAllActiveStudentsV2,
   getAllStudentsV2,
   getStudentUniAssistV2,
-  getProgramRequirementsV2
+  getProgramRequirementsV2,
+  getAllCourses,
+  getCourse
 } from '.';
 
 export const getProgramQuery = ({ programId }) => ({
@@ -45,6 +47,18 @@ export const getAllActiveStudentsQuery = () => ({
 export const getAllStudentsQuery = () => ({
   queryKey: ['students/all'],
   queryFn: () => getAllStudentsV2(),
+  staleTime: 1000 * 60 * 5 // 5 minutes
+});
+
+export const getAllCoursessQuery = () => ({
+  queryKey: ['all-courses/all'],
+  queryFn: () => getAllCourses(),
+  staleTime: 1000 * 60 * 5 // 5 minutes
+});
+
+export const getCoursessQuery = (courseId) => ({
+  queryKey: ['all-courses/all', courseId],
+  queryFn: () => getCourse({ courseId }),
   staleTime: 1000 * 60 * 5 // 5 minutes
 });
 

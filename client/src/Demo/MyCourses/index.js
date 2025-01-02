@@ -34,7 +34,7 @@ import { useTranslation } from 'react-i18next';
 // import 'react-datasheet-grid/dist/style.css';
 import './react-datasheet-customize.css';
 
-import { convertDate, study_group } from '../Utils/contants';
+import { convertDate, study_group } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {

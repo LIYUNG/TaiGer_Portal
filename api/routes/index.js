@@ -3,6 +3,7 @@ const { Router } = require('express');
 const accountRouter = require('./account');
 const admissionsRouter = require('./admissions');
 const agentsRouter = require('./agents');
+const allCoursesRouter = require('./allcourses');
 const authRouter = require('./auth');
 const complaintsRouter = require('./complaints');
 const communicationsRouter = require('./communications');
@@ -38,6 +39,7 @@ const router = (app) => {
   apiRouter.use('/student-applications', studentsApplicationRouter);
   apiRouter.use('/students', studentsRouter);
   apiRouter.use('/agents', agentsRouter);
+  apiRouter.use('/all-courses', allCoursesRouter);
   apiRouter.use('/editors', editorsRouter);
   apiRouter.use('/essay-writers', essayWriterRouter);
   apiRouter.use('/admissions', admissionsRouter);

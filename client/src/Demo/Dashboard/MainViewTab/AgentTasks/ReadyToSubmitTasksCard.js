@@ -25,7 +25,7 @@ import {
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
-import { isInTheFuture } from '../../../Utils/contants';
+import { isInTheFuture } from '../../../../utils/contants';
 
 const ReadyToSubmitTasks = (props) => {
   return (

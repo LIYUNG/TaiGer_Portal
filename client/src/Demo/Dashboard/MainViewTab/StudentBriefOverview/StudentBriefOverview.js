@@ -31,7 +31,7 @@ import { is_User_Archived } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 import EditAttributesSubpage from '../StudDocsOverview/EditAttributesSubpage';
-import { COLORS, stringAvatar } from '../../../Utils/contants';
+import { COLORS, stringAvatar } from '../../../../utils/contants';
 
 function StudentBriefOverview(props) {
   const { user } = useAuth();

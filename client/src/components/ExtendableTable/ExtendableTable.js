@@ -20,7 +20,7 @@ import CheckIcon from '@mui/icons-material/Check';
 
 import { useTranslation } from 'react-i18next';
 
-import { convertDate } from '../../Demo/Utils/contants';
+import { convertDate } from '../../utils/contants';
 import DEMO from '../../store/constant';
 import { green, grey } from '@mui/material/colors';
 

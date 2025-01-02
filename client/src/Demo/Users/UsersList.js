@@ -13,7 +13,7 @@ import UsersListSubpage from './UsersListSubpage';
 import UserDeleteWarning from './UserDeleteWarning';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { deleteUser, changeUserRole, updateArchivUser } from '../../api';
-import { UserlistHeader } from '../Utils/contants';
+import { UserlistHeader } from '../../utils/contants';
 import UserArchivWarning from './UserArchivWarning';
 
 function UsersList(props) {

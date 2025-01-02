@@ -16,7 +16,7 @@ import {
   is_TaiGer_Student
 } from '@taiger-common/core';
 
-import { UserlistHeader, convertDate, getDate } from '../Utils/contants';
+import { UserlistHeader, convertDate, getDate } from '../../utils/contants';
 import DEMO from '../../store/constant';
 
 function User(props) {

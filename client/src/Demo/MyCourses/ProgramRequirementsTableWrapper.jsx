@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getProgramRequirementsQuery } from '../../api/query';
 import { ProgramRequirementsTable } from '../../components/ProgramRequirementsTable/ProgramRequirementsTable';
-import { convertDateUXFriendly } from '../Utils/contants';
+import { convertDateUXFriendly } from '../../utils/contants';
 
 export const ProgramRequirementsTableWrapper = ({ onAnalyseV2 }) => {
   const { data, isLoading } = useQuery(getProgramRequirementsQuery());

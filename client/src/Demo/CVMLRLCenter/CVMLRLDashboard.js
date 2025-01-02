@@ -3,7 +3,7 @@ import { Tabs, Tab, Box, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-import { c1_mrt } from '../Utils/contants';
+import { c1_mrt } from '../../utils/contants';
 import {
   // open_tasks,
   open_tasks_with_editors

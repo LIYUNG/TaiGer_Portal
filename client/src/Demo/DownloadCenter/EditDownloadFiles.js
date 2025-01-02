@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { DocumentStatusType, is_TaiGer_Admin } from '@taiger-common/core';
 
 import { BASE_URL } from '../../api/request';
-import { templatelist } from '../Utils/contants';
+import { templatelist } from '../../utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 
 const EditDownloadFiles = (props) => {

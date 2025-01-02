@@ -18,7 +18,7 @@ import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import BaseDocumentCheckingTasks from '../MainViewTab/AgentTasks/BaseDocumentCheckingTasks';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
 import { updateAgentBanner } from '../../../api';
-import { academic_background_header } from '../../Utils/contants';
+import { academic_background_header } from '../../../utils/contants';
 import {
   anyStudentWithoutApplicationSelection,
   isAnyCVNotAssigned,

@@ -19,7 +19,13 @@ import {
   getProgram
 } from '.';
 import { queryClient } from './client';
-import { getAllActiveStudentsQuery, getAllStudentsQuery, getProgramRequirementsQuery } from './query';
+import {
+  getAllActiveStudentsQuery,
+  getAllCoursessQuery,
+  getAllStudentsQuery,
+  getCoursessQuery,
+  getProgramRequirementsQuery
+} from './query';
 
 export async function getStudentsLoader() {
   const response = await getStudents();
@@ -32,6 +38,15 @@ export async function getStudentsLoader() {
 
 export async function getAllStudentsV2Loader() {
   return queryClient.fetchQuery(getAllStudentsQuery());
+}
+
+export async function getAllCoursesLoader() {
+  return queryClient.fetchQuery(getAllCoursessQuery());
+}
+
+export async function getCourseLoader({ params }) {
+  const courseId = params.courseId;
+  return queryClient.fetchQuery(getCoursessQuery(courseId));
 }
 
 export async function getAllActiveEssaysLoader() {

@@ -32,7 +32,7 @@ import { is_User_Archived } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 import EditAttributesSubpage from '../StudDocsOverview/EditAttributesSubpage';
-import { COLORS } from '../../../Utils/contants';
+import { COLORS } from '../../../../utils/contants';
 
 function StudentsAgentEditor(props) {
   const { user } = useAuth();

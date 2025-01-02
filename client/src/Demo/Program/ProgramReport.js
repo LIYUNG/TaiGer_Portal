@@ -19,7 +19,7 @@ import {
   getProgramTicket,
   updateProgramTicket
 } from '../../api';
-import { convertDate } from '../Utils/contants';
+import { convertDate } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ProgramReportModal from './ProgramReportModal';
 import { LinkableNewlineText } from '../Utils/checking-functions';

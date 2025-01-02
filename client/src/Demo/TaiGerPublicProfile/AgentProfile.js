@@ -16,7 +16,7 @@ import Select from 'react-select';
 import { is_TaiGer_Student } from '@taiger-common/core';
 import i18next from 'i18next';
 
-import { time_slots } from '../Utils/contants';
+import { time_slots } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { getAgentProfile } from '../../api';

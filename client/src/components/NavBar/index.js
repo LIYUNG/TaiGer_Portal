@@ -36,7 +36,7 @@ import { appConfig } from '../../config';
 import { useAuth } from '../AuthProvider';
 import NavSearch from './NavSearch';
 import ChatList from '../ChatList';
-import { stringAvatar } from '../../Demo/Utils/contants';
+import { stringAvatar } from '../../utils/contants';
 import Loading from '../Loading/Loading';
 import DEMO from '../../store/constant';
 import { CustomDrawer } from './Drawer';

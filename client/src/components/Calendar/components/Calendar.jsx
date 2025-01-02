@@ -7,7 +7,7 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Popping from './Popping';
 import { useTheme } from '@mui/material';
-import { NoonNightLabel, stringToColor } from '../../../Demo/Utils/contants';
+import { NoonNightLabel, stringToColor } from '../../../utils/contants';
 import { is_TaiGer_Agent, is_TaiGer_Student } from '@taiger-common/core';
 import { useAuth } from '../../AuthProvider';
 

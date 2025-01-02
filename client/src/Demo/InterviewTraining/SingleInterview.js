@@ -37,7 +37,7 @@ import {
   stringAvatar,
   THREAD_REVERSED_TABS,
   THREAD_TABS
-} from '../Utils/contants';
+} from '../../utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import { TopBar } from '../../components/TopBar/TopBar';
 import { appConfig } from '../../config';

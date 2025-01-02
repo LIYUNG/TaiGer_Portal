@@ -5,7 +5,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HelpIcon from '@mui/icons-material/Help';
 import { DocumentStatusType, ProfileNameType } from '@taiger-common/core';
 
-import { FILE_MISSING_SYMBOL, FILE_OK_SYMBOL } from '../../Demo/Utils/contants';
+import { FILE_MISSING_SYMBOL, FILE_OK_SYMBOL } from '../../utils/contants';
 import { MuiDataGrid } from '../MuiDataGrid';
 import {
   areProgramsDecidedMoreThanContract,

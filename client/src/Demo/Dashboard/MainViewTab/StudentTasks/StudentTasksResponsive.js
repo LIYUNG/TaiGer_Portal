@@ -5,7 +5,7 @@ import { Link, TableCell, TableRow, Typography } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
 
 import DEMO from '../../../../store/constant';
-import { convertDate } from '../../../Utils/contants';
+import { convertDate } from '../../../../utils/contants';
 import {
   check_academic_background_filled,
   check_application_preference_filled,

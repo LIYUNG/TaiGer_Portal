@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { Link as LinkDom } from 'react-router-dom';
 import { deleteKeywordSet, putKeywordSet } from '../../../api';
 import ExampleWithLocalizationProvider from '../../../components/MaterialReactTable';
-import { col_keywords } from '../../Utils/contants';
+import { col_keywords } from '../../../utils/contants';
 import DEMO from '../../../store/constant';
 
 const CourseKeywordsOverview = ({ courseKeywordSets }) => {

@@ -44,7 +44,7 @@ import {
   convertDate,
   isInTheFuture,
   showTimezoneOffset
-} from '../Utils/contants';
+} from '../../utils/contants';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
 function InterviewItems(props) {

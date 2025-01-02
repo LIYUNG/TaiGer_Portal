@@ -24,7 +24,7 @@ import {
   // PROGRAM_ANALYSIS_ATTRIBUTES,
   PROGRAM_SUBJECTS_DETAILED,
   SCORES_TYPE
-} from '../../Utils/contants';
+} from '../../../utils/contants';
 import SearchableMultiSelect from '../../../components/Input/searchableMuliselect';
 
 const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {

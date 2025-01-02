@@ -45,7 +45,7 @@ import {
   FILE_NOT_OK_SYMBOL,
   FILE_OK_SYMBOL,
   convertDate
-} from '../../Demo/Utils/contants';
+} from '../../utils/contants';
 import { appConfig } from '../../config';
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({

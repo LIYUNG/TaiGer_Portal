@@ -50,7 +50,7 @@ import {
   program_fields_special_documents,
   program_fields_special_notes,
   programField2Label
-} from '../Utils/contants';
+} from '../../utils/contants';
 import { HighlightTextDiff } from '../Utils/diffChecker';
 import Banner from '../../components/Banner/Banner';
 import DEMO from '../../store/constant';

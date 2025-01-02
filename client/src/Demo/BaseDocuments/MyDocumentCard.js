@@ -40,7 +40,7 @@ import {
   FILE_UPLOADED_SYMBOL,
   base_documents_checklist,
   convertDate
-} from '../Utils/contants';
+} from '../../utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import FilePreview from '../../components/FilePreview/FilePreview';
 import { BASE_URL } from '../../api/request';
@@ -351,10 +351,9 @@ function MyDocumentCard(props) {
                 <Typography
                   component="a"
                   onClick={() => setBaseDocsflagOffcanvas(true)}
-                  sx={{ cursor: 'pointer', ml: 1 }}
                   color="primary"
                 >
-                  [Edit]
+                  {t('Edit', { ns: 'common' })}
                 </Typography>
               )}
             </Stack>

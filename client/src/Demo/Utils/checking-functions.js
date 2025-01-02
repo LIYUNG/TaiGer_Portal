@@ -6,7 +6,7 @@ import JSZip from 'jszip';
 import * as XLSX from 'xlsx';
 import { differenceInDays } from 'date-fns';
 
-import { convertDate, twoYearsInDays } from './contants';
+import { convertDate, twoYearsInDays } from '../../utils/contants';
 import { pdfjs } from 'react-pdf';
 import {
   DocumentStatusType,

@@ -23,7 +23,7 @@ import { useAuth } from '../../AuthProvider';
 import {
   getLocalTime,
   getUTCTimezoneOffset
-} from '../../../Demo/Utils/contants';
+} from '../../../utils/contants';
 
 export function CreateNewEventModal(props) {
   const [newEventDescription, setNewEventDescription] = useState('');

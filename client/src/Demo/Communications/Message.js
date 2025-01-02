@@ -33,7 +33,7 @@ import { is_TaiGer_AdminAgent, is_TaiGer_Student } from '@taiger-common/core';
 import { FileIcon, defaultStyles } from 'react-file-icon';
 
 import EditorSimple from '../../components/EditorJs/EditorSimple';
-import { stringAvatar, convertDate } from '../Utils/contants';
+import { stringAvatar, convertDate } from '../../utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { IgnoreMessage } from '../../api/index';

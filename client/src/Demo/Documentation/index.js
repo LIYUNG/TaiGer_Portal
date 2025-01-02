@@ -4,7 +4,7 @@ import { Breadcrumbs, Link, Typography } from '@mui/material';
 
 import DocPageView from './DocPageView';
 import DocPageEdit from './DocPageEdit';
-import { valid_categories } from '../Utils/contants';
+import { valid_categories } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {

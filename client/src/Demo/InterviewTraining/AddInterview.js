@@ -33,7 +33,7 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
-import { showTimezoneOffset } from '../Utils/contants';
+import { showTimezoneOffset } from '../../utils/contants';
 
 function AddInterview() {
   const { user } = useAuth();

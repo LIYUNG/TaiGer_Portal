@@ -46,7 +46,7 @@ import {
   GENERAL_SCORES_GPA,
   GENERAL_SCORES_GPA_BOUNDARY,
   SCORES_TYPE_OBJ
-} from '../Utils/contants';
+} from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {

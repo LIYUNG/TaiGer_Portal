@@ -15,7 +15,7 @@ import {
 import {
   convertDateUXFriendly,
   stringAvatar
-} from '../../../../Demo/Utils/contants';
+} from '../../../../utils/contants';
 import DEMO from '../../../../store/constant';
 import { truncateText } from '../../../../Demo/Utils/checking-functions';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';

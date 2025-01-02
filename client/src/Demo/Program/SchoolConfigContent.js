@@ -17,7 +17,7 @@ import ExampleWithLocalizationProvider from '../../components/MaterialReactTable
 import {
   COUNTRIES_ARRAY_OPTIONS,
   SCHOOL_TAGS_DETAILED
-} from '../Utils/contants';
+} from '../../utils/contants';
 import { useTranslation } from 'react-i18next';
 import { updateSchoolAttributes } from '../../api';
 import SearchableMultiSelect from '../../components/Input/searchableMuliselect';

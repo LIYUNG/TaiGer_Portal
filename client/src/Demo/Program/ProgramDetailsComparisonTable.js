@@ -8,7 +8,7 @@ import {
   TableBody,
   Paper
 } from '@mui/material';
-import { program_fields } from '../Utils/contants';
+import { program_fields } from '../../utils/contants';
 import { LinkableNewlineText } from '../Utils/checking-functions';
 
 const ProgramDetailsComparisonTable = ({ applications }) => {

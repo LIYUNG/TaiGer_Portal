@@ -9,7 +9,7 @@ import {
   FILE_MISSING_SYMBOL,
   FILE_OK_SYMBOL,
   convertDateUXFriendly
-} from '../../Demo/Utils/contants';
+} from '../../utils/contants';
 import { red } from '@mui/material/colors';
 
 const DocumentOkIcon = () => {

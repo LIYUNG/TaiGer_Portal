@@ -45,7 +45,7 @@ import {
   TRI_STATE_OPTIONS,
   PROGRAM_SUBJECTS_DETAILED,
   convertDate
-} from '../Utils/contants';
+} from '../../utils/contants';
 import {
   check_academic_background_filled,
   check_languages_filled,
@@ -56,7 +56,7 @@ import {
 import {
   APPLICATION_YEARS_FUTURE,
   EXPECTATION_APPLICATION_YEARS
-} from '../Utils/contants';
+} from '../../utils/contants';
 import Banner from '../../components/Banner/Banner';
 import SearchableMultiSelect from '../../components/Input/searchableMuliselect';
 import { useAuth } from '../../components/AuthProvider';

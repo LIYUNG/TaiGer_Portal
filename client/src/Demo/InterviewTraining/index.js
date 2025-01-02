@@ -14,7 +14,7 @@ import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import { MuiDataGrid } from '../../components/MuiDataGrid';
-import { convertDate, showTimezoneOffset } from '../Utils/contants';
+import { convertDate, showTimezoneOffset } from '../../utils/contants';
 
 function InterviewTraining() {
   const { user } = useAuth();

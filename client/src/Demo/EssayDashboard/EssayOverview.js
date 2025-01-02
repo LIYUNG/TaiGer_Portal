@@ -23,7 +23,7 @@ import { CustomTabPanel, a11yProps } from '../../components/Tabs';
 import { useTranslation } from 'react-i18next';
 import { MuiDataGrid } from '../../components/MuiDataGrid';
 import DEMO from '../../store/constant';
-import { ATTRIBUTES, COLORS } from '../Utils/contants';
+import { ATTRIBUTES, COLORS } from '../../utils/contants';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,

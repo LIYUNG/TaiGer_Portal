@@ -38,7 +38,7 @@ import {
   getTimezoneOffset,
   isInTheFuture,
   getUTCWithDST
-} from '../Utils/contants';
+} from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import Banner from '../../components/Banner/Banner';

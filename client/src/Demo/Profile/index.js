@@ -35,7 +35,7 @@ import { is_TaiGer_Agent } from '@taiger-common/core';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-import { time_slots } from '../Utils/contants';
+import { time_slots } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { updatePersonalData, updateOfficehours, getUser } from '../../api';

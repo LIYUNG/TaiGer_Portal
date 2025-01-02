@@ -13,7 +13,7 @@ import {
   Search,
   SearchIconWrapper,
   StyledInputBase
-} from '../../../Demo/Utils/contants';
+} from '../../../utils/contants';
 import DEMO from '../../../store/constant';
 
 const NavSearch = () => {

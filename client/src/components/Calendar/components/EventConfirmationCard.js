@@ -32,7 +32,7 @@ import {
   getTime,
   isInTheFuture,
   showTimezoneOffset
-} from '../../../Demo/Utils/contants';
+} from '../../../utils/contants';
 import DEMO from '../../../store/constant';
 import EventDateComponent from '../../DateComponent';
 import { useAuth } from '../../AuthProvider';

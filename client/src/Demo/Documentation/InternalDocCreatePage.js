@@ -27,7 +27,7 @@ import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 import {
   valid_internal_categories,
   internal_documentation_categories
-} from '../Utils/contants';
+} from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import {
   getAllInternalDocumentations,

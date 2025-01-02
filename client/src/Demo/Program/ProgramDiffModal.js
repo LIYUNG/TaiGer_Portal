@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 
-import { convertDate } from '../Utils/contants';
+import { convertDate } from '../../utils/contants';
 import ModalNew from '../../components/Modal';
 import ProgramCompare from './ProgramCompare';
 

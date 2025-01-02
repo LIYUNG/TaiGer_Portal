@@ -27,7 +27,7 @@ import i18next from 'i18next';
 
 import { BASE_URL } from '../../../src/api/request';
 import EditorSimple from '../EditorJs/EditorSimple';
-import { stringAvatar, convertDate } from '../../Demo/Utils/contants';
+import { stringAvatar, convertDate } from '../../utils/contants';
 import { useAuth } from '../AuthProvider';
 import Loading from '../Loading/Loading';
 import { IgnoreMessageThread } from '../../../src/api/index';

@@ -30,7 +30,7 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import TasksDistributionBarChart from '../../components/Charts/TasksDistributionBarChart';
 import useStudents from '../../hooks/useStudents';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-import { DECISION_STATUS_E, SUBMISSION_STATUS_E } from '../Utils/contants';
+import { DECISION_STATUS_E, SUBMISSION_STATUS_E } from '../../utils/contants';
 
 CustomTabPanel.propTypes = {
   children: PropTypes.node,

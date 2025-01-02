@@ -24,7 +24,8 @@ import {
   TableContainer,
   IconButton,
   ListItem,
-  Grid
+  Grid,
+  Badge
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -43,8 +44,9 @@ import {
   convertDate,
   programstatuslist,
   SINGLE_STUDENT_TABS,
-  SINGLE_STUDENT_REVERSED_TABS
-} from '../Utils/contants';
+  SINGLE_STUDENT_REVERSED_TABS,
+  TENFOLD_AI_DOMAIN
+} from '../../utils/contants';
 import {
   isProgramDecided,
   needGraduatedApplicantsButStudentNotGraduated,
@@ -477,7 +479,7 @@ export const SingleStudentPageMainContent = ({
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            <Box sx={{ display: 'flex', mx: 2 }}>
+            <Box>
               <Button
                 color="secondary"
                 variant="contained"
@@ -487,6 +489,18 @@ export const SingleStudentPageMainContent = ({
                   ? t('Simple View', { ns: 'common' })
                   : t('Details View', { ns: 'common' })}
               </Button>
+              <Badge badgeContent="new" color="error">
+                <Button
+                  component={LinkDom}
+                  to={`${TENFOLD_AI_DOMAIN}/${singleStudentPage.student._id}`}
+                  color="primary"
+                  target="_blank"
+                  variant="contained"
+                  sx={{ mx: 1 }}
+                >
+                  {t('Program Recommender', { ns: 'common' })}
+                </Button>
+              </Badge>
               {!is_TaiGer_Editor(user) && (
                 <Link
                   to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
@@ -495,7 +509,7 @@ export const SingleStudentPageMainContent = ({
                   component={LinkDom}
                   underline="hover"
                   target="_blank"
-                  sx={{ mx: 2 }}
+                  sx={{ mr: 1 }}
                 >
                   <Button
                     color="secondary"
@@ -507,22 +521,9 @@ export const SingleStudentPageMainContent = ({
                 </Link>
               )}
               <Typography variant="body1">
-                Applications (Selected / Decided / Contract):
-              </Typography>
-              {singleStudentPage.student.applying_program_count ? (
-                singleStudentPage.student.applications.length <
-                singleStudentPage.student.applying_program_count ? (
-                  <Typography className="text-danger">
-                    <b>{singleStudentPage.student.applications.length}</b> /
-                    {
-                      singleStudentPage.student.applications?.filter((app) =>
-                        isProgramDecided(app)
-                      )?.length
-                    }{' '}
-                    /{singleStudentPage.student.applying_program_count}
-                  </Typography>
-                ) : (
-                  <Typography className="text-info">
+                Applications (Selected / Decided / Contract):{' '}
+                {singleStudentPage.student.applying_program_count ? (
+                  <>
                     {singleStudentPage.student.applications.length} /{' '}
                     {
                       singleStudentPage.student.applications?.filter((app) =>
@@ -530,11 +531,11 @@ export const SingleStudentPageMainContent = ({
                       )?.length
                     }{' '}
                     / {singleStudentPage.student.applying_program_count}
-                  </Typography>
-                )
-              ) : (
-                <b className="text-danger">0</b>
-              )}
+                  </>
+                ) : (
+                  <b className="text-danger">0</b>
+                )}
+              </Typography>
             </Box>
             {singleStudentPage.detailedView ? (
               <ProgramDetailsComparisonTable

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { Link, TableCell, TableRow } from '@mui/material';
 
-import { convertDate } from '../../../Utils/contants';
+import { convertDate } from '../../../../utils/contants';
 import DEMO from '../../../../store/constant';
 
 function BaseDocumentCheckingTasks(props) {

@@ -42,7 +42,7 @@ import ProgramSpecificDocumentCheckCard from '../MainViewTab/AgentTasks/ProgramS
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import useStudents from '../../../hooks/useStudents';
 import Banner from '../../../components/Banner/Banner';
-import { is_new_message_status, is_pending_status } from '../../Utils/contants';
+import { is_new_message_status, is_pending_status } from '../../../utils/contants';
 
 function AgentMainView(props) {
   const { user } = useAuth();

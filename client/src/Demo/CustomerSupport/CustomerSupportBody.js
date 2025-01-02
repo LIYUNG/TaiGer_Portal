@@ -22,7 +22,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 
-import { convertDateUXFriendly } from '../Utils/contants';
+import { convertDateUXFriendly } from '../../utils/contants';
 
 function CustomerSupportBody({ complaintTickets }) {
   const { t } = useTranslation();

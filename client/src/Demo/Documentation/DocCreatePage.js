@@ -23,7 +23,7 @@ import { is_TaiGer_AdminAgent, is_TaiGer_role } from '@taiger-common/core';
 
 import DocumentsListItems from './DocumentsListItems';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
-import { valid_categories, documentation_categories } from '../Utils/contants';
+import { valid_categories, documentation_categories } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 

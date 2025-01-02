@@ -16,7 +16,7 @@ import { CustomTabPanel, a11yProps } from '../../../components/Tabs';
 import {
   INTERNAL_DASHBOARD_REVERSED_TABS,
   INTERNAL_DASHBOARD_TABS
-} from '../../Utils/contants.js';
+} from '../../../utils/contants.js';
 import OverviewDashboardTab from './OverviewDashboardTab';
 import AgentDashboard from './AgentDashboard';
 import KPIDashboardTab from './KPIDashboardTab';

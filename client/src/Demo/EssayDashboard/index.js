@@ -21,7 +21,7 @@ import {
   is_my_fav_message_status,
   is_new_message_status,
   is_pending_status
-} from '../Utils/contants';
+} from '../../utils/contants';
 
 function EssayDashboard() {
   const { user } = useAuth();

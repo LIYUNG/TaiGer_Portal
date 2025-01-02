@@ -22,8 +22,8 @@ import {
   cyan
 } from '@mui/material/colors';
 import { Link as LinkDom } from 'react-router-dom';
-import { appConfig } from '../../config';
-import DEMO from '../../store/constant';
+import { appConfig } from '../config';
+import DEMO from '../store/constant';
 import { is_TaiGer_Student } from '@taiger-common/core';
 import i18next from 'i18next';
 
@@ -2347,3 +2347,6 @@ export const CONSIDRED_SCORES_DETAILED = Object.fromEntries(
     }
   ])
 );
+
+export const TENFOLD_AI_DOMAIN =
+  'https://d30kj1nf43udf4.cloudfront.net/recommendation';

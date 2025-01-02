@@ -11,7 +11,7 @@ import { Link } from '@mui/material';
 import DEMO from '../../store/constant';
 import { TopToolbar } from '../../components/table/programs-table/TopToolbar';
 import { AssignProgramsToStudentDialog } from './AssignProgramsToStudentDialog';
-import { COUNTRIES_ARRAY_OPTIONS } from '../Utils/contants';
+import { COUNTRIES_ARRAY_OPTIONS } from '../../utils/contants';
 
 export const ProgramsTable = ({ isLoading, data }) => {
   const customTableStyles = useTableStyles();

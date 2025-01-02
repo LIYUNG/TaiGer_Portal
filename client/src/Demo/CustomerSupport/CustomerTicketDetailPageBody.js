@@ -34,7 +34,7 @@ import {
   updateComplaintsTicket
 } from '../../api';
 import MessageList from '../../components/Message/MessageList';
-import { stringAvatar } from '../Utils/contants';
+import { stringAvatar } from '../../utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import DocThreadEditor from '../../components/Message/DocThreadEditor';
 import { readDOCX, readPDF, readXLSX } from '../Utils/checking-functions';

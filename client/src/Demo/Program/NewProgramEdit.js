@@ -31,7 +31,7 @@ import {
   showFieldAlert,
   PROGRAM_SUBJECTS_DETAILED,
   SCHOOL_TAGS_DETAILED
-} from '../Utils/contants';
+} from '../../utils/contants';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 

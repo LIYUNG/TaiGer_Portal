@@ -47,7 +47,7 @@ import {
   templatelist,
   THREAD_REVERSED_TABS,
   THREAD_TABS
-} from '../../Utils/contants';
+} from '../../../utils/contants';
 import {
   AGENT_SUPPORT_DOCUMENTS_A,
   FILE_TYPE_E,

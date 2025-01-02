@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
 import { is_TaiGer_role } from '@taiger-common/core';
 
-import { isInTheFuture } from '../Utils/contants';
+import { isInTheFuture } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { TabTitle } from '../Utils/TabTitle';

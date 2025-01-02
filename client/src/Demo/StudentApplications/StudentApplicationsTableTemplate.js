@@ -50,7 +50,7 @@ import Banner from '../../components/Banner/Banner';
 import {
   IS_SUBMITTED_STATE_OPTIONS,
   programstatuslist
-} from '../Utils/contants';
+} from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 

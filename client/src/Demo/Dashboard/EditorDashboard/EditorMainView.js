@@ -27,7 +27,7 @@ import {
   academic_background_header,
   is_new_message_status,
   is_pending_status
-} from '../../Utils/contants';
+} from '../../../utils/contants';
 import DEMO from '../../../store/constant';
 import { useAuth } from '../../../components/AuthProvider';
 import { useTranslation } from 'react-i18next';

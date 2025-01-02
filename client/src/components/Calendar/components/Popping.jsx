@@ -20,7 +20,7 @@ import {
   NoonNightLabel,
   convertDate,
   showTimezoneOffset
-} from '../../../Demo/Utils/contants';
+} from '../../../utils/contants';
 
 import { useTranslation } from 'react-i18next';
 

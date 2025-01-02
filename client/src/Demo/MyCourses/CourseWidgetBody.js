@@ -19,7 +19,7 @@ import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
 import 'react-datasheet-grid/dist/style.css';
 import { is_TaiGer_role } from '@taiger-common/core';
 
-import { convertDateUXFriendly, study_group } from '../Utils/contants';
+import { convertDateUXFriendly, study_group } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import {

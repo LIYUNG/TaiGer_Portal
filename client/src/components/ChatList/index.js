@@ -11,7 +11,7 @@ import {
   SearchIconWrapper,
   StyledInputBase,
   menuWidth
-} from '../../Demo/Utils/contants';
+} from '../../utils/contants';
 
 const ChatList = (props) => {
   const { user } = useAuth();

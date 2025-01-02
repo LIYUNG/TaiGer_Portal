@@ -33,7 +33,7 @@ import {
   convertDate,
   convertDateUXFriendly,
   stringAvatar
-} from '../Utils/contants';
+} from '../../utils/contants';
 import MemoizedEmbeddedChatList from '../../components/EmbeddedChatList';
 import { FetchStudentLayer } from '../StudentDatabase/FetchStudentLayer';
 import CommunicationExpandPageMessagesComponent from './CommunicationExpandPageMessagesComponent';

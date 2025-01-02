@@ -19,7 +19,7 @@ import { getProgramChangeRequests, getProgram } from '../../api/index';
 
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
-import { convertDate } from '../Utils/contants';
+import { convertDate } from '../../utils/contants';
 
 function CustomBreadcrumbs({ program }) {
   const { t } = useTranslation();

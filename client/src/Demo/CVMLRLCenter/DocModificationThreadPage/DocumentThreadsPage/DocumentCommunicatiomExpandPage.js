@@ -12,7 +12,8 @@ import {
   Grid,
   Typography,
   Stack,
-  useTheme
+  useTheme,
+  TextField
 } from '@mui/material';
 import { FiberManualRecord as FiberManualRecordIcon } from '@mui/icons-material';
 
@@ -121,6 +122,7 @@ function DocumentCommunicationExpandPage() {
   const thread = threadData?.data?.data || {};
   const { student_id: threadStudent } = thread;
   const [studentId, setStudentId] = useState(null);
+  const [studentSearchTerm, setStudentSearchTerm] = useState('');
 
   useEffect(() => {
     if (threadStudent?._id) {
@@ -205,19 +207,31 @@ function DocumentCommunicationExpandPage() {
           {myMessagesIsLoading ? (
             <Loading />
           ) : (
-            <List>
-              {students
-                ?.sort((a, b) => a.firstname.localeCompare(b.firstname))
-                ?.map((student) => (
-                  <ListItem key={student._id} disablePadding>
-                    <Typography
-                      onClick={() => handleOnClickStudent(student._id)}
-                    >
-                      {student.firstname + ' ' + student.lastname}
-                    </Typography>
-                  </ListItem>
-                ))}
-            </List>
+            <>
+              <TextField
+                label="Name"
+                value={studentSearchTerm}
+                onChange={(e) => setStudentSearchTerm(e.target.value)}
+              />
+              <List>
+                {students
+                  ?.filter((student) => {
+                    return `${student?.firstname} ${student?.lastname}`
+                      .toLowerCase()
+                      .includes(studentSearchTerm.toLowerCase());
+                  })
+                  ?.sort((a, b) => a.firstname.localeCompare(b.firstname))
+                  ?.map((student) => (
+                    <ListItem key={student._id} disablePadding>
+                      <Typography
+                        onClick={() => handleOnClickStudent(student._id)}
+                      >
+                        {student.firstname + ' ' + student.lastname}
+                      </Typography>
+                    </ListItem>
+                  ))}
+              </List>
+            </>
           )}
         </Grid>
         <Grid item xs={1.5}>

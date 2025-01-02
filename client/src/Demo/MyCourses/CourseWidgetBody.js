@@ -12,12 +12,14 @@ import {
   Typography,
   Badge,
   Tabs,
-  Tab
+  Tab,
+  useTheme
 } from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
-import 'react-datasheet-grid/dist/style.css';
+// import 'react-datasheet-grid/dist/style.css';
 import { is_TaiGer_role } from '@taiger-common/core';
+import './react-datasheet-customize.css';
 
 import { convertDateUXFriendly, study_group } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -36,6 +38,7 @@ import { ProgramRequirementsTable } from '../../components/ProgramRequirementsTa
 
 export default function CourseWidgetBody({ programRequirements }) {
   const { user } = useAuth();
+  const theme = useTheme(); // Get the current theme from Material UI
   const { student_id } = useParams();
   const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
   let [statedata, setStatedata] = useState({
@@ -379,7 +382,14 @@ export default function CourseWidgetBody({ programRequirements }) {
           </Typography>
           <DataSheetGrid
             height={1000}
-            style={{ minWidth: '450px' }}
+            style={{
+              minWidth: '450px',
+              '--dsg-selection-border-color': theme.palette.text.primary,
+              '--dsg-cell-color': theme.palette.text.primary,
+              '--dsg-cell-background-color': theme.palette.background.default,
+              '--dsg-header-text-color': theme.palette.text.primary,
+              '--dsg-header-active-text-color': theme.palette.text.primary
+            }}
             disableContextMenu={true}
             disableExpandSelection={false}
             headerRowHeight={30}

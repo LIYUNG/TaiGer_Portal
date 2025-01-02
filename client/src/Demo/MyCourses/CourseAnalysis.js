@@ -7,13 +7,16 @@ import {
   Typography,
   Select,
   MenuItem,
-  TableContainer
+  TableContainer,
+  useTheme
 } from '@mui/material';
 import { DataSheetGrid, textColumn, keyColumn } from 'react-datasheet-grid';
 import * as XLSX from 'xlsx/xlsx.mjs';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useNavigate, useParams } from 'react-router-dom';
-import 'react-datasheet-grid/dist/style.css';
+// import 'react-datasheet-grid/dist/style.css';
+import './react-datasheet-customize.css';
+
 import { is_TaiGer_role } from '@taiger-common/core';
 
 import { convertDate } from '../../utils/contants';
@@ -33,6 +36,8 @@ export default function CourseAnalysis() {
   const { user_id } = useParams();
   const { t } = useTranslation();
   const { user } = useAuth();
+  const theme = useTheme(); // Get the current theme from Material UI
+
   const [value, setValue] = useState(0);
   const navigate = useNavigate();
   let [statedata, setStatedata] = useState({
@@ -311,7 +316,14 @@ export default function CourseAnalysis() {
         <DataSheetGrid
           ref={ref}
           height={6000}
-          style={{ minWidth: '450px' }}
+          style={{
+            minWidth: '450px',
+            '--dsg-selection-border-color': theme.palette.text.primary,
+            '--dsg-cell-color': theme.palette.text.primary,
+            '--dsg-cell-background-color': theme.palette.background.default,
+            '--dsg-header-text-color': theme.palette.text.primary,
+            '--dsg-header-active-text-color': theme.palette.text.primary
+          }}
           disableContextMenu={true}
           disableExpandSelection={false}
           headerRowHeight={30}

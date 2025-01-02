@@ -23,6 +23,7 @@ import {
   getAllActiveStudentsQuery,
   getAllCoursessQuery,
   getAllStudentsQuery,
+  getCoursessQuery,
   getProgramRequirementsQuery
 } from './query';
 
@@ -41,6 +42,11 @@ export async function getAllStudentsV2Loader() {
 
 export async function getAllCoursesLoader() {
   return queryClient.fetchQuery(getAllCoursessQuery());
+}
+
+export async function getCourseLoader({ params }) {
+  const courseId = params.courseId;
+  return queryClient.fetchQuery(getCoursessQuery(courseId));
 }
 
 export async function getAllActiveEssaysLoader() {

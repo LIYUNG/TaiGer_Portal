@@ -94,7 +94,8 @@ const DEMO = {
   NEW_PROGRAM: '/programs/create',
   PROGRAM_EDIT: (program_id) => `/programs/${program_id}/edit`,
   COURSE_DATABASE: '/courses/analysis/courses/all',
-  COURSE_DATABASE_EDIT: '/courses/analysis/courses/edit',
+  COURSE_DATABASE_EDIT: (courseId) =>
+    `/courses/analysis/courses/edit/${courseId}`,
   COURSE_DATABASE_NEW: '/courses/analysis/courses/new',
   KEYWORDS_EDIT: '/courses/analysis/keywords',
   KEYWORDS_NEW: '/courses/analysis/keywords/new',

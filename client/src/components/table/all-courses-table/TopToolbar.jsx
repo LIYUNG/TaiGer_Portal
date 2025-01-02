@@ -5,12 +5,15 @@ import {
   MRT_ToggleFiltersButton
 } from 'material-react-table';
 import DeleteIcon from '@mui/icons-material/Delete';
+import i18next from 'i18next';
 
 import DEMO from '../../../store/constant';
-import { useTranslation } from 'react-i18next';
 
 export const TopToolbar = ({ table, toolbarStyle, onDeleteClick }) => {
-  const { t } = useTranslation();
+  console.log(table.getSelectedRowModel().rows);
+  const selectedRows = table.getSelectedRowModel().rows;
+  const selectedRow = table.getSelectedRowModel().rows[0]?.original;
+
   return (
     <Box sx={toolbarStyle}>
       <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
@@ -22,21 +25,21 @@ export const TopToolbar = ({ table, toolbarStyle, onDeleteClick }) => {
           color="error"
           variant="contained"
           onClick={onDeleteClick}
-          disabled={table.getSelectedRowModel().rows?.length !== 1}
+          disabled={selectedRows?.length !== 1}
           startIcon={<DeleteIcon />}
           sx={{ mr: 1 }}
         >
-          {t('Delete', { ns: 'common' })}
+          {i18next.t('Delete', { ns: 'common' })}
         </Button>
         <Button
           variant="outlined"
           color="primary"
           component={LinkDom}
-          disabled={table.getSelectedRowModel().rows?.length !== 1}
-          to={DEMO.COURSE_DATABASE_EDIT}
+          disabled={selectedRows?.length !== 1}
+          to={DEMO.COURSE_DATABASE_EDIT(selectedRow?._id)}
           sx={{ mr: 1 }}
         >
-          {t('Edit', { ns: 'common' })}
+          {i18next.t('Edit', { ns: 'common' })}
         </Button>
 
         <Button
@@ -45,7 +48,7 @@ export const TopToolbar = ({ table, toolbarStyle, onDeleteClick }) => {
           component={LinkDom}
           to={DEMO.COURSE_DATABASE_NEW}
         >
-          {t('Add New Course')}
+          {i18next.t('Add New Course')}
         </Button>
       </Stack>
     </Box>

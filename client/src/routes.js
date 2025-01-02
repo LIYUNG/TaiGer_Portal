@@ -21,7 +21,8 @@ import {
   getProgramLoader,
   AllActiveStudentsV2Loader,
   getProgramRequirementsV2Loader,
-  getAllCoursesLoader
+  getAllCoursesLoader,
+  getCourseLoader
 } from './api/dataLoader';
 import DefaultErrorPage from './Demo/Utils/DefaultErrorPage';
 import StudentApplicationsAssignPage from './Demo/StudentApplications/assignPage';
@@ -54,6 +55,10 @@ const AllCourses = React.lazy(
 
 const CourseNew = React.lazy(
   () => import('./Demo/CourseAnalysis/AllCourses/CourseNew')
+);
+
+const CourseEdit = React.lazy(
+  () => import('./Demo/CourseAnalysis/AllCourses/CourseEdit')
 );
 
 const ProgramRequirements = React.lazy(
@@ -268,6 +273,12 @@ const routes = [
   {
     path: '/courses/analysis/courses/new',
     element: <CourseNew />
+  },
+  {
+    path: '/courses/analysis/courses/edit/:courseId',
+    errorElement: <DefaultErrorPage />,
+    loader: getCourseLoader,
+    element: <CourseEdit />
   },
   {
     path: '/courses/analysis/courses/all',

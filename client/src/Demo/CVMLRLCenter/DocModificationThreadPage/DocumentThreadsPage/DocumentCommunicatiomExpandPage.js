@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -13,8 +11,6 @@ import DEMO from '../../../../store/constant';
 import Loading from '../../../../components/Loading/Loading';
 
 import DocModificationThreadPage from '../DocModificationThreadPage';
-
-// import MessageList from '../../../../components/Message/MessageList';
 import { getMyThreadMessages, getMessagThread } from '../../../../api';
 
 const getMyThreadMessageQuery = () => ({
@@ -63,12 +59,7 @@ function DocumentCommunicationExpandPage() {
     error: myMessagesError
   } = useQuery(getMyThreadMessageQuery());
 
-  const {
-    data: threadData,
-    isLoading: threadIsLoading
-    // isError: threadIsError,
-    // error: threadError
-  } = useQuery(getThreadMessages(threadId));
+  const { data: threadData } = useQuery(getThreadMessages(threadId));
 
   const { students = [], studentThreads = [] } =
     myMessagesData?.data?.data || {};
@@ -197,25 +188,7 @@ function DocumentCommunicationExpandPage() {
           })}
         </Grid>
         <Grid item xs={9}>
-          {/* <Box>
-            <MessageList
-              isLoading={!threadIsLoading}
-              documentsthreadId={threadId}
-              thread={thread}
-              apiPrefix={'/api/document-threads'}
-              accordionKeys={new Array(thread?.messages?.length)
-                .fill()
-                .map((x, i) => (i === thread?.messages?.length - 1 ? i : -1))}
-            />
-          </Box> */}
-
-          <DocModificationThreadPage threadId={threadId} />
-
-          {/* {messages?.map((msgItem) => (
-            <Typography key={msgItem._id}>
-              {msgItem.message.substring(0, 150)}
-            </Typography>
-          ))} */}
+          {threadId && <DocModificationThreadPage threadId={threadId} />}
         </Grid>
       </Grid>
     </Box>

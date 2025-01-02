@@ -348,7 +348,7 @@ export default function CourseWidgetBody({ programRequirements }) {
             color="success"
             sx={{ mr: 2 }}
           >
-            {i18next.t('Edit Courses DB', { ns: 'common' })}
+            {i18next.t('Courses DB', { ns: 'common' })}
           </Button>
           <Button
             variant="contained"

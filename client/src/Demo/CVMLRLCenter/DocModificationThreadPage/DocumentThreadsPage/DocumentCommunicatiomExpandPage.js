@@ -3,7 +3,18 @@ import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { useQuery } from '@tanstack/react-query';
-import { Box, Checkbox, Divider, Grid, Typography, Stack } from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  Divider,
+  List,
+  ListItem,
+  Grid,
+  Typography,
+  Stack,
+  useTheme
+} from '@mui/material';
+import { FiberManualRecord as FiberManualRecordIcon } from '@mui/icons-material';
 
 import { useAuth } from '../../../../components/AuthProvider';
 import { is_TaiGer_role } from '@taiger-common/core';
@@ -45,18 +56,44 @@ const getThreadMessages = (threadId) => ({
   staleTime: 1000 * 60 // 1 minutes
 });
 
-const ThreadBox = ({ thread, onClick }) => {
+const ThreadItem = ({ thread, onClick }) => {
+  const theme = useTheme();
   const isFinal = thread?.isFinalVersion;
+  const notRepliedByUser =
+    thread.messages?.[0]?.user_id?._id === thread?.student_id;
   return (
-    <Stack direction="row" alignItems="center" spacing={1}>
-      {isFinal ? FILE_OK_SYMBOL : FILE_MISSING_SYMBOL}
-      <Typography
-        onClick={onClick}
-        sx={{ fontStyle: isFinal ? 'italic' : 'normal' }}
-      >
-        {`${thread.file_type}`}
-      </Typography>
-    </Stack>
+    <ListItem
+      sx={{
+        backgroundColor: !notRepliedByUser
+          ? theme.palette.background.default
+          : theme.palette.action.disabled,
+        '&:hover': {
+          backgroundColor: theme.palette.action.hover // Set a different color on hover if needed
+        },
+        transition: 'background-color 0.3s ease-in-out', // Smooth color transitions
+        color: !notRepliedByUser
+          ? theme.palette.text.primary
+          : theme.palette.text.secondary
+      }}
+      disablePadding
+    >
+      <Stack direction="row" alignItems="center" spacing={1}>
+        {isFinal ? FILE_OK_SYMBOL : FILE_MISSING_SYMBOL}
+        <Typography
+          onClick={onClick}
+          sx={{ fontStyle: isFinal ? 'italic' : 'normal' }}
+        >
+          {`${thread.file_type}`}
+        </Typography>
+        {notRepliedByUser && (
+          <FiberManualRecordIcon
+            fontSize="small"
+            title="Not Reply Yet"
+            style={{ marginLeft: '4px' }}
+          />
+        )}
+      </Stack>
+    </ListItem>
   );
 };
 
@@ -168,16 +205,19 @@ function DocumentCommunicationExpandPage() {
           {myMessagesIsLoading ? (
             <Loading />
           ) : (
-            students
-              ?.sort((a, b) => a.firstname.localeCompare(b.firstname))
-              ?.map((student) => (
-                <Typography
-                  key={student._id}
-                  onClick={() => handleOnClickStudent(student._id)}
-                >
-                  {student.firstname + ' ' + student.lastname}
-                </Typography>
-              ))
+            <List>
+              {students
+                ?.sort((a, b) => a.firstname.localeCompare(b.firstname))
+                ?.map((student) => (
+                  <ListItem key={student._id} disablePadding>
+                    <Typography
+                      onClick={() => handleOnClickStudent(student._id)}
+                    >
+                      {student.firstname + ' ' + student.lastname}
+                    </Typography>
+                  </ListItem>
+                ))}
+            </List>
           )}
         </Grid>
         <Grid item xs={1.5}>
@@ -186,27 +226,29 @@ function DocumentCommunicationExpandPage() {
             onChange={() => setShowAllThreads(!showAllThreads)}
           />{' '}
           Show all threads
-          {sortedThreads
-            ?.filter((thread) => showAllThreads || !thread?.isFinalVersion)
-            ?.map((thread) => {
-              const category = getCategory(thread.file_type);
-              const showCategoryLabel = category !== currentCategory;
-              currentCategory = category;
+          <List>
+            {sortedThreads
+              ?.filter((thread) => showAllThreads || !thread?.isFinalVersion)
+              ?.map((thread) => {
+                const category = getCategory(thread.file_type);
+                const showCategoryLabel = category !== currentCategory;
+                currentCategory = category;
 
-              return (
-                <React.Fragment key={thread._id}>
-                  {showCategoryLabel && (
-                    <Divider textAlign="center" sx={{ p: 3 }}>
-                      {category}
-                    </Divider>
-                  )}
-                  <ThreadBox
-                    thread={thread}
-                    onClick={() => handleOnClickThread(thread._id)}
-                  />
-                </React.Fragment>
-              );
-            })}
+                return (
+                  <React.Fragment key={thread._id}>
+                    {showCategoryLabel && (
+                      <Divider textAlign="center" sx={{ p: 3 }}>
+                        {category}
+                      </Divider>
+                    )}
+                    <ThreadItem
+                      thread={thread}
+                      onClick={() => handleOnClickThread(thread._id)}
+                    />
+                  </React.Fragment>
+                );
+              })}
+          </List>
         </Grid>
         <Grid item xs={9}>
           {threadId && <DocModificationThreadPage threadId={threadId} />}

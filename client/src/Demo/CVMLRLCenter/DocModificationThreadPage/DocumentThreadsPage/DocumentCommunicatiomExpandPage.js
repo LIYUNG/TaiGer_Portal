@@ -224,6 +224,7 @@ function DocumentCommunicationExpandPage() {
           <Checkbox
             checked={showAllThreads}
             onChange={() => setShowAllThreads(!showAllThreads)}
+            disabled={sortedThreads.every((thread) => thread?.isFinalVersion)}
           />{' '}
           Show all threads
           <List>

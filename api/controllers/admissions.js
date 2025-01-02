@@ -82,21 +82,90 @@ const getProgramApplicationCounts = asyncHandler(async (req) => {
 
 // TODO: can flatten the result, so that frontend can render in table directly.
 const getAdmissions = asyncHandler(async (req, res) => {
-  const [result, students] = await Promise.all([
+  const [result, applications] = await Promise.all([
     getProgramApplicationCounts(req),
-    req.db
-      .model('Student')
-      .find()
-      .select(
-        '-applications.doc_modification_thread -applications.uni_assist -birthday -applying_program_count -profile -isAccountActivated -updatedAt -generaldocs_threads -taigerai -notification -academic_background'
-      )
-      .populate(
-        'agents editors',
-        'firstname lastname firstname_firstname lastname_lastname'
-      )
-      .populate('applications.programId', 'school program_name semester degree')
+    req.db.model('Student').aggregate([
+      { $match: { applications: { $ne: [] } } },
+      // Lookup for agents and editors
+      {
+        $lookup: {
+          from: 'users', // Adjust collection name if necessary
+          localField: 'agents',
+          foreignField: '_id',
+          as: 'agents'
+        }
+      },
+      {
+        $lookup: {
+          from: 'users', // Adjust collection name if necessary
+          localField: 'editors',
+          foreignField: '_id',
+          as: 'editors'
+        }
+      },
+      // Unwind applications array to process each application
+      { $unwind: { path: '$applications', preserveNullAndEmptyArrays: false } },
+      { $match: { 'applications.decided': 'O' } },
+      // // Lookup for applications.programId
+      {
+        $lookup: {
+          from: 'programs', // Adjust collection name if necessary
+          localField: 'applications.programId',
+          foreignField: '_id',
+          as: 'applications.programDetails'
+        }
+      },
+      // Add fields for agents, editors, and program details
+      {
+        $addFields: {
+          programDetails: {
+            $arrayElemAt: ['$applications.programDetails', 0]
+          }
+        }
+      },
+      // // Flatten the data structure into application-level objects
+      {
+        $project: {
+          firstname: '$firstname',
+          lastname: '$lastname',
+          firstname_chinese: '$firstname_chinese',
+          lastname_chinese: '$lastname_chinese',
+          email: '$email',
+          application_preference: '$application_preference',
+          programId: '$programDetails._id',
+          school: '$programDetails.school',
+          program_name: '$programDetails.program_name',
+          semester: '$programDetails.semester',
+          degree: '$programDetails.degree',
+          decided: '$applications.decided', // Include specific application fields as needed
+          closed: '$applications.closed', // Include specific application fields as needed
+          admission: '$applications.admission', // Include specific application fields as needed
+          finalEnrolment: '$applications.finalEnrolment', // Include specific application fields as needed
+          admission_letter: '$applications.admission_letter', // Include specific application fields as needed
+          agents: {
+            $map: {
+              input: '$agents',
+              as: 'agent',
+              in: { $concat: ['$$agent.firstname'] }
+            }
+          },
+          editors: {
+            $map: {
+              input: '$editors',
+              as: 'editor',
+              in: { $concat: ['$$editor.firstname'] }
+            }
+          }
+        }
+      }
+    ])
   ]);
-  res.status(200).send({ success: true, data: students, result });
+
+  res.status(200).send({
+    success: true,
+    data: applications,
+    result
+  });
 });
 
 const getAdmissionLetter = asyncHandler(async (req, res, next) => {

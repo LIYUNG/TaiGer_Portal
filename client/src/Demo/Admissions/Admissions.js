@@ -24,8 +24,8 @@ function Admissions() {
     setValue(newValue);
   };
 
-  const students = data?.data || [];
   const result = data?.result;
+  const admissions = data?.data || [];
 
   if (!is_TaiGer_role(user)) {
     return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
@@ -78,7 +78,7 @@ function Admissions() {
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            <AdmissionsTable students={students} />
+            <AdmissionsTable admissions={admissions} />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
             <AdmissionsStat result={result} />

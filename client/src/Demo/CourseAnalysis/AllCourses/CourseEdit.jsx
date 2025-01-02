@@ -54,7 +54,6 @@ const CourseEdit = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(course);
     mutate({ courseId, payload: course });
   };
 

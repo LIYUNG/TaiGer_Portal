@@ -51,7 +51,6 @@ const CourseNew = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(course);
     mutate({ payload: course });
   };
 

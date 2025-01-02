@@ -286,8 +286,7 @@ export const updateCourse = ({ courseId, payload }) =>
   putData(`/api/all-courses/${courseId}`, payload);
 export const deleteCourse = ({ courseId }) =>
   deleteData(`/api/all-courses/${courseId}`);
-export const postCourse = ({ payload }) =>
-  postData(`/api/all-courses`, payload);
+export const createCourse = ({ payload }) => postData(`/api/all-courses`, payload);
 
 export const getProgramRequirements = () =>
   request.get(`/api/program-requirements`);

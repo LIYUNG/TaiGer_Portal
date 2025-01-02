@@ -52,6 +52,10 @@ const AllCourses = React.lazy(
   () => import('./Demo/CourseAnalysis/AllCourses/AllCourses')
 );
 
+const CourseNew = React.lazy(
+  () => import('./Demo/CourseAnalysis/AllCourses/CourseNew')
+);
+
 const ProgramRequirements = React.lazy(
   () => import('./Demo/CourseAnalysis/ProgramRequirements')
 );
@@ -260,6 +264,10 @@ const routes = [
     errorElement: <DefaultErrorPage />,
     loader: combinedLoader,
     element: <DashboardDefault />
+  },
+  {
+    path: '/courses/analysis/courses/new',
+    element: <CourseNew />
   },
   {
     path: '/courses/analysis/courses/all',

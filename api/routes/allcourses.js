@@ -7,7 +7,8 @@ const {
   getCourses,
   getCourse,
   deleteCourse,
-  updateCourse
+  updateCourse,
+  createCourse
 } = require('../controllers/allcourses');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { validateCourseId } = require('../common/validation');
@@ -22,7 +23,14 @@ router
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.External),
     getCourses
+  )
+  .post(
+    filter_archiv_user,
+    GeneralGETRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.External),
+    createCourse
   );
+
 router
   .route('/:courseId')
   .get(

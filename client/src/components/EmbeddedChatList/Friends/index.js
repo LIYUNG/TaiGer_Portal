@@ -5,7 +5,6 @@ import i18next from 'i18next';
 import Friend from './Friend';
 
 function Friends(props) {
-
   if (props.students.length === 0) {
     return (
       <Typography

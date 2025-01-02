@@ -8,7 +8,7 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  Select,
+  Select
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 

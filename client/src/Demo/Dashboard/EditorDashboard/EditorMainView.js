@@ -42,8 +42,8 @@ function EditorMainView(props) {
           a.agents.length === 0 && a.agents.length < b.agents.length
             ? -2
             : a.editors.length < b.editors.length
-            ? -1
-            : 1
+              ? -1
+              : 1
         )
         .map((student) => (
           <StudentsAgentEditor
@@ -195,7 +195,9 @@ function EditorMainView(props) {
                       </Link>
                     </TableCell>
                     <TableCell>
-                      {t('Please assign editors', { ns: 'common' })}
+                      {t('Please assign editors', {
+                        ns: 'common'
+                      })}
                     </TableCell>
                     <TableCell></TableCell>
                   </TableRow>
@@ -210,7 +212,9 @@ function EditorMainView(props) {
                           to={`${DEMO.ASSIGN_ESSAY_WRITER_LINK}`}
                           component={LinkDom}
                         >
-                          {t('Assign Essay Writer', { ns: 'common' })}
+                          {t('Assign Essay Writer', {
+                            ns: 'common'
+                          })}
                         </Link>
                       </TableCell>
                       <TableCell>

@@ -138,8 +138,16 @@ function ApplicationOverviewTabs(props) {
         );
       }
     },
-    { field: 'agents', headerName: t('Agent', { ns: 'common' }), width: 180 },
-    { field: 'editors', headerName: t('Editor', { ns: 'common' }), width: 180 },
+    {
+      field: 'agents',
+      headerName: t('Agent', { ns: 'common' }),
+      width: 180
+    },
+    {
+      field: 'editors',
+      headerName: t('Editor', { ns: 'common' }),
+      width: 180
+    },
     {
       field: 'program',
       headerName: t('Program', { ns: 'common' }),

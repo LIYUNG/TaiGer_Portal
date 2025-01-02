@@ -4,7 +4,6 @@ import { userEvent } from '@testing-library/user-event';
 import UsersTable from './UsersTable';
 import 'react-i18next';
 import { getUsers } from '../../api';
-import axios from 'axios';
 import { useAuth } from '../../components/AuthProvider';
 import { MemoryRouter } from 'react-router-dom';
 

@@ -127,7 +127,10 @@ const EditorSimple = (props) => {
                 } else {
                   res = await uploadImage(formData);
                 }
-                return { success: 1, file: { url: res.data.data } };
+                return {
+                  success: 1,
+                  file: { url: res.data.data }
+                };
               },
               async uploadByUrl(url) {
                 return {

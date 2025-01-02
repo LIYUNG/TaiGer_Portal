@@ -215,10 +215,12 @@ export default function EventConfirmationCard(props) {
                   }}
                 >
                   <Typography>
-                    created at:{convertDate(props.event.createdAt)}
+                    created at:
+                    {convertDate(props.event.createdAt)}
                   </Typography>
                   <Typography>
-                    udpated at:{convertDate(props.event.updatedAt)}
+                    udpated at:
+                    {convertDate(props.event.updatedAt)}
                   </Typography>
                 </span>
               </Grid>
@@ -244,7 +246,9 @@ export default function EventConfirmationCard(props) {
                               onClick={(e) => e.stopPropagation()}
                               startIcon={<HourglassBottomIcon />}
                             >
-                              {t('Pending', { ns: 'common' })}
+                              {t('Pending', {
+                                ns: 'common'
+                              })}
                             </Button>
                           )
                         ) : (
@@ -261,7 +265,9 @@ export default function EventConfirmationCard(props) {
                             sx={{ mx: 2 }}
                             startIcon={<CheckIcon />}
                           >
-                            {t('Confirm', { ns: 'common' })}
+                            {t('Confirm', {
+                              ns: 'common'
+                            })}
                           </Button>
                         ))}
                       {is_TaiGer_Agent(user) &&
@@ -276,7 +282,9 @@ export default function EventConfirmationCard(props) {
                               title="Wait for confirmation"
                               startIcon={<HourglassBottomIcon />}
                             >
-                              {t('Pending', { ns: 'common' })}
+                              {t('Pending', {
+                                ns: 'common'
+                              })}
                             </Button>
                           )
                         ) : (
@@ -292,7 +300,9 @@ export default function EventConfirmationCard(props) {
                             }
                             startIcon={<CheckIcon />}
                           >
-                            {t('Confirm', { ns: 'common' })}
+                            {t('Confirm', {
+                              ns: 'common'
+                            })}
                           </Button>
                         ))}
                       <Button

@@ -78,7 +78,10 @@ function useCalendarEvents(props) {
         }
       );
     } else {
-      getEvents({ startTime: props.startTime, endTime: props.endTime }).then(
+      getEvents({
+        startTime: props.startTime,
+        endTime: props.endTime
+      }).then(
         (resp) => {
           const { data, agents, booked_events, students, hasEvents, success } =
             resp.data;

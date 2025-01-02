@@ -65,7 +65,11 @@ export const ProgramsTable = ({ isLoading, data }) => {
       header: t('Country', { ns: 'common' }),
       size: 90
     },
-    { accessorKey: 'degree', header: t('Degree', { ns: 'common' }), size: 90 },
+    {
+      accessorKey: 'degree',
+      header: t('Degree', { ns: 'common' }),
+      size: 90
+    },
     {
       accessorKey: 'semester',
       header: t('Semester', { ns: 'common' }),
@@ -76,8 +80,16 @@ export const ProgramsTable = ({ isLoading, data }) => {
       header: t('Language', { ns: 'common' }),
       size: 120
     },
-    { accessorKey: 'toefl', header: t('TOEFL', { ns: 'common' }), size: 100 },
-    { accessorKey: 'ielts', header: t('IELTS', { ns: 'common' }), size: 100 },
+    {
+      accessorKey: 'toefl',
+      header: t('TOEFL', { ns: 'common' }),
+      size: 100
+    },
+    {
+      accessorKey: 'ielts',
+      header: t('IELTS', { ns: 'common' }),
+      size: 100
+    },
     { accessorKey: 'gre', header: t('GRE', { ns: 'common' }), size: 120 },
     { accessorKey: 'gmat', header: t('GMAT', { ns: 'common' }), size: 120 },
     {

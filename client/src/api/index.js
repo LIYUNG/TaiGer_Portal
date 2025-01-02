@@ -286,7 +286,8 @@ export const updateCourse = ({ courseId, payload }) =>
   putData(`/api/all-courses/${courseId}`, payload);
 export const deleteCourse = ({ courseId }) =>
   deleteData(`/api/all-courses/${courseId}`);
-export const createCourse = ({ payload }) => postData(`/api/all-courses`, payload);
+export const createCourse = ({ payload }) =>
+  postData(`/api/all-courses`, payload);
 
 export const getProgramRequirements = () =>
   request.get(`/api/program-requirements`);
@@ -621,7 +622,9 @@ export const updateAgentBanner = (notification_key, student_id) =>
 
 //Survey:
 export const updateAcademicBackground = (university, student_id) =>
-  request.post(`/api/account/survey/university/${student_id}`, { university });
+  request.post(`/api/account/survey/university/${student_id}`, {
+    university
+  });
 export const updateLanguageSkill = (language, student_id) =>
   request.post(`/api/account/survey/language/${student_id}`, { language });
 export const updateApplicationPreference = (

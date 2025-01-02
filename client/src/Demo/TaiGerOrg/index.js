@@ -408,7 +408,10 @@ function TaiGerOrg() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          {t('tenant-team', { ns: 'common', tenant: appConfig.companyName })}
+          {t('tenant-team', {
+            ns: 'common',
+            tenant: appConfig.companyName
+          })}
         </Typography>
         <Typography color="text.primary">
           {t('Permissions Management', { ns: 'common' })}

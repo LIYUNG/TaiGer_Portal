@@ -135,7 +135,9 @@ function CustomerSupportBody({ complaintTickets }) {
           <Grid item xs={12} md={4}>
             <Paper elevation={3} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
-                {t('Frequently Asked Questions', { ns: 'common' })}
+                {t('Frequently Asked Questions', {
+                  ns: 'common'
+                })}
               </Typography>
               <Accordion disableGutters>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>

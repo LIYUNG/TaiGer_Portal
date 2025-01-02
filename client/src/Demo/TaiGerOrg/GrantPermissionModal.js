@@ -101,7 +101,11 @@ function GrantPermissionModal(props) {
                           }
                           onChange={(e) => onChangePermissions(e)}
                           value={permission[0]}
-                          sx={{ '& .MuiSvgIcon-root': { fontSize: '1.5rem' } }}
+                          sx={{
+                            '& .MuiSvgIcon-root': {
+                              fontSize: '1.5rem'
+                            }
+                          }}
                         />
                       }
                     />

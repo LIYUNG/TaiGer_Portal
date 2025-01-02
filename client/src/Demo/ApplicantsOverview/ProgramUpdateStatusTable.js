@@ -57,7 +57,11 @@ function ProgramUpdateStatusTable(props) {
         );
       }
     },
-    { field: 'degree', headerName: t('Degree', { ns: 'common' }), width: 120 },
+    {
+      field: 'degree',
+      headerName: t('Degree', { ns: 'common' }),
+      width: 120
+    },
     {
       field: 'semester',
       headerName: t('Semester', { ns: 'common' }),

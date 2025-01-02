@@ -99,7 +99,9 @@
 }
 
 .dsg-cell-header.dsg-cell-gutter {
-  box-shadow: 1px 0 var(--dsg-border-color), 0 1px var(--dsg-border-color);
+  box-shadow:
+    1px 0 var(--dsg-border-color),
+    0 1px var(--dsg-border-color);
 }
 
 .dsg-cell-header.dsg-cell-sticky-right {
@@ -164,7 +166,8 @@
   border-bottom: none;
   border-right: none;
   transition: box-shadow 0.3s;
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 0 var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     0 0 var(--dsg-scroll-shadow-width)
@@ -179,7 +182,8 @@
 }
 
 .dsg-scrollable-view-t {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     0 0 var(--dsg-scroll-shadow-width)
@@ -194,7 +198,8 @@
 }
 
 .dsg-scrollable-view-r {
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 0 var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
@@ -209,7 +214,8 @@
 }
 
 .dsg-scrollable-view-b {
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 0 var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     0 0 var(--dsg-scroll-shadow-width)
@@ -224,7 +230,8 @@
 }
 
 .dsg-scrollable-view-l {
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 0 var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     0 0 var(--dsg-scroll-shadow-width)
@@ -239,7 +246,8 @@
 }
 
 .dsg-scrollable-view-t.dsg-scrollable-view-r {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
@@ -254,7 +262,8 @@
 }
 
 .dsg-scrollable-view-r.dsg-scrollable-view-b {
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 0 var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
@@ -269,7 +278,8 @@
 }
 
 .dsg-scrollable-view-b.dsg-scrollable-view-l {
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 0 var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     0 0 var(--dsg-scroll-shadow-width)
@@ -284,7 +294,8 @@
 }
 
 .dsg-scrollable-view-l.dsg-scrollable-view-t {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     0 0 var(--dsg-scroll-shadow-width)
@@ -299,7 +310,8 @@
 }
 
 .dsg-scrollable-view-t.dsg-scrollable-view-b {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     0 0 var(--dsg-scroll-shadow-width)
@@ -314,7 +326,8 @@
 }
 
 .dsg-scrollable-view-l.dsg-scrollable-view-r {
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 0 var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
@@ -329,7 +342,8 @@
 }
 
 .dsg-scrollable-view-t.dsg-scrollable-view-r.dsg-scrollable-view-b {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
@@ -344,7 +358,8 @@
 }
 
 .dsg-scrollable-view-r.dsg-scrollable-view-b.dsg-scrollable-view-l {
-  box-shadow: 0 0 var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 0 var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
@@ -359,7 +374,8 @@
 }
 
 .dsg-scrollable-view-b.dsg-scrollable-view-l.dsg-scrollable-view-t {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     0 0 var(--dsg-scroll-shadow-width)
@@ -374,7 +390,8 @@
 }
 
 .dsg-scrollable-view-l.dsg-scrollable-view-t.dsg-scrollable-view-r {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
@@ -389,7 +406,8 @@
 }
 
 .dsg-scrollable-view-t.dsg-scrollable-view-r.dsg-scrollable-view-b.dsg-scrollable-view-l {
-  box-shadow: 0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
+  box-shadow:
+    0 var(--dsg-scroll-shadow-width) var(--dsg-scroll-shadow-width)
       calc(0px - var(--dsg-scroll-shadow-width)) var(--dsg-scroll-shadow-color)
       inset,
     calc(0px - var(--dsg-scroll-shadow-width)) 0 var(--dsg-scroll-shadow-width)
@@ -526,8 +544,8 @@
   text-align: right;
 }
 
-.dsg-hide-date-picker[type="date"]::-webkit-inner-spin-button,
-.dsg-hide-date-picker[type="date"]::-webkit-calendar-picker-indicator {
+.dsg-hide-date-picker[type='date']::-webkit-inner-spin-button,
+.dsg-hide-date-picker[type='date']::-webkit-calendar-picker-indicator {
   display: none;
   -webkit-appearance: none;
 }

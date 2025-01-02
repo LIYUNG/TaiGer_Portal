@@ -187,7 +187,10 @@ describe('getRequirement', () => {
   it('should return the correct essay requirement', () => {
     const thread = {
       file_type: 'Essay',
-      program_id: { essay_required: 'yes', essay_requirements: '500 words' }
+      program_id: {
+        essay_required: 'yes',
+        essay_requirements: '500 words'
+      }
     };
     expect(getRequirement(thread)).toBe('500 words');
   });
@@ -203,7 +206,10 @@ describe('getRequirement', () => {
   it('should return the correct ML requirement', () => {
     const thread = {
       file_type: 'ML',
-      program_id: { ml_required: 'yes', ml_requirements: 'ML requirement text' }
+      program_id: {
+        ml_required: 'yes',
+        ml_requirements: 'ML requirement text'
+      }
     };
     expect(getRequirement(thread)).toBe('ML requirement text');
   });
@@ -255,7 +261,10 @@ describe('getRequirement', () => {
   it('should return the correct RL requirement', () => {
     const thread = {
       file_type: 'RL',
-      program_id: { rl_required: '2', rl_requirements: 'RL requirement text' }
+      program_id: {
+        rl_required: '2',
+        rl_requirements: 'RL requirement text'
+      }
     };
     expect(getRequirement(thread)).toBe('RL requirement text');
   });
@@ -459,7 +468,9 @@ describe('Language Check Functions', () => {
 
   describe('check_english_language_Notneeded', () => {
     it('should return true if english_isPassed is "--"', () => {
-      const academic_background = { language: { english_isPassed: '--' } };
+      const academic_background = {
+        language: { english_isPassed: '--' }
+      };
       expect(check_english_language_Notneeded(academic_background)).toBe(true);
     });
 
@@ -526,9 +537,18 @@ describe('based_documents_init', () => {
   it('should update document statuses based on student profile', () => {
     const student = {
       profile: [
-        { name: 'High_School_Diploma', status: DocumentStatusType.Uploaded },
-        { name: 'Course_Description', status: DocumentStatusType.Accepted },
-        { name: 'Bachelor_Transcript', status: DocumentStatusType.Rejected }
+        {
+          name: 'High_School_Diploma',
+          status: DocumentStatusType.Uploaded
+        },
+        {
+          name: 'Course_Description',
+          status: DocumentStatusType.Accepted
+        },
+        {
+          name: 'Bachelor_Transcript',
+          status: DocumentStatusType.Rejected
+        }
       ]
     };
     const { object_init } = based_documents_init(student);
@@ -541,7 +561,10 @@ describe('based_documents_init', () => {
   it('should handle documents with status Missing', () => {
     const student = {
       profile: [
-        { name: 'High_School_Diploma', status: DocumentStatusType.Missing }
+        {
+          name: 'High_School_Diploma',
+          status: DocumentStatusType.Missing
+        }
       ]
     };
     const { object_init } = based_documents_init(student);
@@ -552,7 +575,10 @@ describe('based_documents_init', () => {
   it('should handle documents with status NotNeeded', () => {
     const student = {
       profile: [
-        { name: 'High_School_Diploma', status: DocumentStatusType.NotNeeded }
+        {
+          name: 'High_School_Diploma',
+          status: DocumentStatusType.NotNeeded
+        }
       ]
     };
     const { object_init } = based_documents_init(student);
@@ -563,7 +589,10 @@ describe('based_documents_init', () => {
   it('should not change the status of documents not in the student profile', () => {
     const student = {
       profile: [
-        { name: 'High_School_Diploma', status: DocumentStatusType.Uploaded }
+        {
+          name: 'High_School_Diploma',
+          status: DocumentStatusType.Uploaded
+        }
       ]
     };
     const { object_init } = based_documents_init(student);
@@ -579,8 +608,14 @@ describe('based_documents_init', () => {
 describe('is_any_base_documents_uploaded', () => {
   const studentWithUploadedDocument = {
     profile: [
-      { name: 'Bachelor_Transcript', status: DocumentStatusType.Uploaded },
-      { name: 'Englisch_Certificate', status: DocumentStatusType.Accepted },
+      {
+        name: 'Bachelor_Transcript',
+        status: DocumentStatusType.Uploaded
+      },
+      {
+        name: 'Englisch_Certificate',
+        status: DocumentStatusType.Accepted
+      },
       { name: 'High_School_Diploma', status: DocumentStatusType.Missing }
     ]
   };
@@ -599,12 +634,18 @@ describe('is_any_base_documents_uploaded', () => {
     const studentsNoDocs = [
       {
         profile: [
-          { name: 'High_School_Diploma', status: DocumentStatusType.Missing }
+          {
+            name: 'High_School_Diploma',
+            status: DocumentStatusType.Missing
+          }
         ]
       },
       {
         profile: [
-          { name: 'Bachelor_Transcript', status: DocumentStatusType.NotNeeded }
+          {
+            name: 'Bachelor_Transcript',
+            status: DocumentStatusType.NotNeeded
+          }
         ]
       }
     ];
@@ -687,7 +728,10 @@ describe('is_all_uni_assist_vpd_uploaded', () => {
         {
           programId: { uni_assist: ['VPD'] },
           decided: 'O',
-          uni_assist: { status: DocumentStatusType.Missing, vpd_file_path: '' }
+          uni_assist: {
+            status: DocumentStatusType.Missing,
+            vpd_file_path: ''
+          }
         }
       ]
     };
@@ -722,8 +766,6 @@ describe('is_all_uni_assist_vpd_uploaded', () => {
 });
 
 describe('check_languages_filled', () => {
-  const today = new Date();
-
   it('should return false if academic_background or language is not provided', () => {
     expect(check_languages_filled(null)).toBe(false);
     expect(check_languages_filled(undefined)).toBe(false);
@@ -1149,7 +1191,10 @@ describe('isUniAssistVPDNeeded', () => {
   it('returns true when uni_assist includes VPD, status is not Uploaded, and vpd_file_path is empty', () => {
     const application = {
       programId: { uni_assist: 'Yes-VPD' },
-      uni_assist: { status: DocumentStatusType.Pending, vpd_file_path: '' },
+      uni_assist: {
+        status: DocumentStatusType.Pending,
+        vpd_file_path: ''
+      },
       decided: 'O'
     };
     const result = isUniAssistVPDNeeded(application);

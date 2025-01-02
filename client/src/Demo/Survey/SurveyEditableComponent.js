@@ -333,7 +333,9 @@ const SurveyEditableComponent = (props) => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="body1" sx={{ mt: 2 }}>
-                {t('University (Bachelor degree)', { ns: 'survey' })}
+                {t('University (Bachelor degree)', {
+                  ns: 'survey'
+                })}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -597,7 +599,9 @@ const SurveyEditableComponent = (props) => {
                 </Typography>
                 <HelpIcon
                   style={{ color: grey[400] }}
-                  title={i18next.t('explanation', { ns: 'common' })}
+                  title={i18next.t('explanation', {
+                    ns: 'common'
+                  })}
                   onClick={handleRowClick}
                 />
                 <Popover
@@ -619,19 +623,18 @@ const SurveyEditableComponent = (props) => {
                     </b>{' '}
                     = 1 + (3 * (highest - my)) / (highest - passing) = 1 + (3 *
                     ({survey.academic_background?.university?.Highest_GPA_Uni} -{' '}
-                    {survey.academic_background?.university?.My_GPA_Uni})) / (
-                    {survey.academic_background?.university?.Highest_GPA_Uni} -{' '}
+                    {survey.academic_background?.university?.My_GPA_Uni}
+                    )) / (
+                    {
+                      survey.academic_background?.university?.Highest_GPA_Uni
+                    } -{' '}
                     {survey.academic_background?.university?.Passing_GPA_Uni})
                   </Typography>
                 </Popover>
               </Stack>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Stack
-                direction="row"
-                spacing={1}
-                alignItems="center"
-              >
+              <Stack direction="row" spacing={1} alignItems="center">
                 <Typography variant="body1">{t('gpa-instructions')}</Typography>
                 <IconButton
                   size="small"

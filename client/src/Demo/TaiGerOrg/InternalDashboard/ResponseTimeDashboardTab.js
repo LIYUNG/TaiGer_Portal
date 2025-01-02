@@ -236,7 +236,12 @@ const StudentProgramOverview = ({
                     }
                   ]}
                   yAxis={[{ label: 'Duration (days)' }]}
-                  margin={{ top: 20, right: 30, left: 50, bottom: 110 }}
+                  margin={{
+                    top: 20,
+                    right: 30,
+                    left: 50,
+                    bottom: 110
+                  }}
                   height={400}
                 />
               </React.Fragment>

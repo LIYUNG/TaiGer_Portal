@@ -242,7 +242,9 @@ const Questionnaire = () => {
           )}
         </Typography>
         <Typography variant="body2" fontWeight="bold" sx={{ my: 1 }}>
-          {t('1. not agree    5. strongly aggree', { ns: 'interviews' })}
+          {t('1. not agree    5. strongly aggree', {
+            ns: 'interviews'
+          })}
         </Typography>
         <FormControl component="fieldset">
           <FormLabel component="legend">

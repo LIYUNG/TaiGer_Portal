@@ -31,7 +31,9 @@ function NotFound() {
                   {t('Not found', { ns: 'common' })}
                 </Typography>
                 <Typography variant="body1" gutterBottom>
-                  {t('Error loading the ticket!', { ns: 'common' })}
+                  {t('Error loading the ticket!', {
+                    ns: 'common'
+                  })}
                 </Typography>
                 <Button variant="outlined" onClick={returnBack}>
                   {t('Back', { ns: 'common' })}

@@ -256,7 +256,9 @@ function ManagerMainView(props) {
                   <TableRow>
                     <TableCell>{t('Student', { ns: 'common' })}</TableCell>
                     <TableCell>
-                      {t('Base Documents', { ns: 'common' })}
+                      {t('Base Documents', {
+                        ns: 'common'
+                      })}
                     </TableCell>
                     <TableCell>{t('Upload Time', { ns: 'common' })}</TableCell>
                   </TableRow>

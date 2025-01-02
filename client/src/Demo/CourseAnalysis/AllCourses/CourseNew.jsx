@@ -97,7 +97,9 @@ const CourseNew = () => {
             fullWidth
             id="all_course_chinese"
             name="all_course_chinese"
-            label={i18next.t('Course Name in Chinese', { ns: 'common' })}
+            label={i18next.t('Course Name in Chinese', {
+              ns: 'common'
+            })}
             inputProps={{ maxLength: 200 }}
             placeholder="物理"
             value={course.all_course_chinese}
@@ -107,7 +109,9 @@ const CourseNew = () => {
             fullWidth
             id="all_course_english"
             name="all_course_english"
-            label={i18next.t('Course Name in English', { ns: 'common' })}
+            label={i18next.t('Course Name in English', {
+              ns: 'common'
+            })}
             inputProps={{ maxLength: 200 }}
             placeholder="Physics"
             value={course.all_course_english}

@@ -189,7 +189,10 @@ export default function PortalCredentialsCard(props) {
             ...state,
             isLoaded: true,
             isChanged: { ...state.isChanged, [program_id]: false },
-            isUpdateLoaded: { ...state.isUpdateLoaded, [program_id]: true },
+            isUpdateLoaded: {
+              ...state.isUpdateLoaded,
+              [program_id]: true
+            },
             success: success,
             isUpdating: false,
             res_modal_status: status
@@ -327,7 +330,9 @@ export default function PortalCredentialsCard(props) {
                             application.programId._id.toString()
                           ]
                             ? t('Updating')
-                            : t('Update', { ns: 'common' })}
+                            : t('Update', {
+                                ns: 'common'
+                              })}
                         </Button>
                       )}
                     </Typography>
@@ -369,13 +374,25 @@ export default function PortalCredentialsCard(props) {
                       sx={{ marginLeft: 0, marginTop: 0 }}
                     >
                       <Grid item xs={3}>
-                        <b>{t('Account', { ns: 'common' })}</b>
+                        <b>
+                          {t('Account', {
+                            ns: 'common'
+                          })}
+                        </b>
                       </Grid>
                       <Grid item xs={3}>
-                        <b>{t('Password', { ns: 'common' })}</b>
+                        <b>
+                          {t('Password', {
+                            ns: 'common'
+                          })}
+                        </b>
                       </Grid>
                       <Grid item xs={3}>
-                        <b>{t('Link', { ns: 'common' })}</b>
+                        <b>
+                          {t('Link', {
+                            ns: 'common'
+                          })}
+                        </b>
                       </Grid>
                       <Grid item xs={3}>
                         <b>{t('Instructions')}</b>

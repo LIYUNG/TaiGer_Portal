@@ -6,7 +6,7 @@ import { register } from '../../../api';
 import AuthWrapper from '../../../components/AuthWrapper';
 import { Button, CircularProgress, Typography } from '@mui/material';
 
-export default function SignUp1({ userData }) {
+export default function SignUp1() {
   const { t } = useTranslation();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();

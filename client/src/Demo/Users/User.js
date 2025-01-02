@@ -77,8 +77,12 @@ function User(props) {
                   }
                 >
                   {props.user.archiv === true
-                    ? i18next.t('Activate', { ns: 'common' })
-                    : i18next.t('Archive', { ns: 'common' })}
+                    ? i18next.t('Activate', {
+                        ns: 'common'
+                      })
+                    : i18next.t('Archive', {
+                        ns: 'common'
+                      })}
                 </MenuItem>
                 <MenuItem
                   onClick={() =>

@@ -50,7 +50,9 @@ function SchoolConfig() {
                   {t('Program List', { ns: 'common' })}
                 </Link>
                 <Typography color="text.primary">
-                  {t('School Configuration', { ns: 'common' })}
+                  {t('School Configuration', {
+                    ns: 'common'
+                  })}
                 </Typography>
               </Breadcrumbs>
               <SchoolConfigContent data={loadedData} />

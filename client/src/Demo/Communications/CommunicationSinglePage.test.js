@@ -1,21 +1,8 @@
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
-import CommunicationSinglePage from './CommunicationSinglePage';
 import 'react-i18next';
-import { getCommunicationThread } from '../../api';
-import axios from 'axios';
-import { useAuth } from '../../components/AuthProvider';
-import { MemoryRouter, useParams } from 'react-router-dom';
-
-import { dummyStudentMessage } from '../../test/testingCommunicationsData';
 
 jest.mock('axios');
 jest.mock('crypto');
 jest.mock('../../api');
-jest.mock('react-markdown', () => (props) => {
-  return <>{props.children}</>;
-});
 jest.mock('remark-gfm', () => () => {});
 
 jest.mock('react-i18next', () => ({
@@ -39,7 +26,6 @@ jest.mock('crypto', () => ({
 }));
 
 jest.mock('../../components/AuthProvider');
-const mockedAxios = jest.Mocked;
 
 class ResizeObserver {
   observe() {}

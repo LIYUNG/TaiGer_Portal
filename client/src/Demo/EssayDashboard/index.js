@@ -80,16 +80,17 @@ function EssayDashboard() {
   }, []);
 
   const handleFavoriteToggle = (id) => {
-    const updatedOpenTasksArr = essayDashboardState.open_tasks_arr?.map((row) =>
-      row.id === id
-        ? {
-            ...row,
-            flag_by_user_id: toogleItemInArray(
-              row.flag_by_user_id,
-              user._id.toString()
-            )
-          }
-        : row
+    const updatedOpenTasksArr = essayDashboardState.open_tasks_arr?.map(
+      (row) =>
+        row.id === id
+          ? {
+              ...row,
+              flag_by_user_id: toogleItemInArray(
+                row.flag_by_user_id,
+                user._id.toString()
+              )
+            }
+          : row
     );
     setEssayDashboardState((prevState) => ({
       ...prevState,

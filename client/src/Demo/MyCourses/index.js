@@ -636,7 +636,8 @@ export default function MyCourses() {
         }}
       >
         <Typography variant="h6" sx={{ p: 2 }}>
-          <b>表格二</b>：請放 {appConfig.companyName} 服務開始<b>後</b>
+          <b>表格二</b>：請放 {appConfig.companyName} 服務開始
+          <b>後</b>
           所選的修課程
         </Typography>
         <Typography sx={{ px: 2, pb: 2 }}>
@@ -739,19 +740,25 @@ export default function MyCourses() {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <Typography variant="h6">
-                    {t('Courses Analysis', { ns: 'courses' })}
+                    {t('Courses Analysis', {
+                      ns: 'courses'
+                    })}
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
                     <InputLabel id="select-target-group">
-                      {t('Select Target Group', { ns: 'courses' })}
+                      {t('Select Target Group', {
+                        ns: 'courses'
+                      })}
                     </InputLabel>
                     <Select
                       labelId="select-label"
                       id="study_group"
                       value={statedata.study_group}
-                      label={t('Select Target Group', { ns: 'courses' })}
+                      label={t('Select Target Group', {
+                        ns: 'courses'
+                      })}
                       onChange={handleChange_study_group}
                     >
                       <MenuItem value={''}>Select Study Group</MenuItem>
@@ -766,13 +773,17 @@ export default function MyCourses() {
                 <Grid item xs={12}>
                   <FormControl fullWidth sx={{ marginBottom: 1 }}>
                     <InputLabel id="select-language">
-                      {t('Select language', { ns: 'courses' })}
+                      {t('Select language', {
+                        ns: 'courses'
+                      })}
                     </InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="analysis_language"
                       value={statedata.analysis_language}
-                      label={t('Select language', { ns: 'courses' })}
+                      label={t('Select language', {
+                        ns: 'courses'
+                      })}
                       onChange={handleChange_analysis_language}
                     >
                       <MenuItem value={''}>Select Study Group</MenuItem>
@@ -828,12 +839,17 @@ export default function MyCourses() {
                         variant="contained"
                         size="small"
                       >
-                        {t('View Online', { ns: 'courses' })}
+                        {t('View Online', {
+                          ns: 'courses'
+                        })}
                       </Button>
                     </LinkDom>
                   </Typography>
                   <Typography sx={{ mt: 2 }}>
-                    {t('Last analysis at', { ns: 'courses' })}:{' '}
+                    {t('Last analysis at', {
+                      ns: 'courses'
+                    })}
+                    :{' '}
                     {statedata.analysis
                       ? convertDate(statedata.analysis.updatedAtV2)
                       : ''}
@@ -880,12 +896,17 @@ export default function MyCourses() {
                         variant="contained"
                         size="small"
                       >
-                        {t('View Online', { ns: 'courses' })}
+                        {t('View Online', {
+                          ns: 'courses'
+                        })}
                       </Button>
                     </LinkDom>
                   </Typography>
                   <Typography sx={{ mt: 2 }}>
-                    {t('Last analysis at', { ns: 'courses' })}:{' '}
+                    {t('Last analysis at', {
+                      ns: 'courses'
+                    })}
+                    :{' '}
                     {statedata.analysis
                       ? convertDate(statedata.analysis.updatedAt)
                       : ''}

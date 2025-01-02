@@ -205,21 +205,27 @@ export default function ApplicationProgressCard(props) {
                   <>
                     <IconButton>{FILE_OK_SYMBOL}</IconButton>
                     &nbsp;
-                    {i18next.t('Submitted', { ns: 'common' })}
+                    {i18next.t('Submitted', {
+                      ns: 'common'
+                    })}
                   </>
                 )}
                 {isProgramAdmitted(application) && (
                   <>
                     <IconButton>{FILE_OK_SYMBOL}</IconButton>
                     &nbsp;
-                    {i18next.t('Admitted', { ns: 'common' })}
+                    {i18next.t('Admitted', {
+                      ns: 'common'
+                    })}
                   </>
                 )}
                 {isProgramRejected(application) && (
                   <>
                     <IconButton>{FILE_NOT_OK_SYMBOL}</IconButton>
                     &nbsp;
-                    {i18next.t('Rejected', { ns: 'common' })}
+                    {i18next.t('Rejected', {
+                      ns: 'common'
+                    })}
                   </>
                 )}
               </>
@@ -262,7 +268,9 @@ export default function ApplicationProgressCard(props) {
                   sx={{ my: 1 }}
                 >
                   {isProgramAdmitted(application)
-                    ? i18next.t('upload-admission-letter', { ns: 'admissions' })
+                    ? i18next.t('upload-admission-letter', {
+                        ns: 'admissions'
+                      })
                     : i18next.t('upload-rejection-letter', {
                         ns: 'admissions'
                       })}
@@ -282,7 +290,9 @@ export default function ApplicationProgressCard(props) {
                 startIcon={<AddIcon />}
                 sx={{ my: 1 }}
               >
-                {i18next.t('decided-to-study', { ns: 'admissions' })}
+                {i18next.t('decided-to-study', {
+                  ns: 'admissions'
+                })}
               </Button>
             )}
           {appConfig.interviewEnable &&
@@ -303,7 +313,9 @@ export default function ApplicationProgressCard(props) {
                         size="small"
                         onClick={() => navigate(`${DEMO.INTERVIEW_ADD_LINK}`)}
                       >
-                        {i18next.t('Training Request', { ns: 'interviews' })}
+                        {i18next.t('Training Request', {
+                          ns: 'interviews'
+                        })}
                       </Button>
                     </Typography>
                   </>

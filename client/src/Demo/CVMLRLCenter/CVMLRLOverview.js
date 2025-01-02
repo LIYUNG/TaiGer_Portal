@@ -82,12 +82,16 @@ function CVMLRLOverview(props) {
     },
     {
       field: 'number_input_from_editors',
-      headerName: t('Editor Feedback (#Messages/#Files)', { ns: 'common' }),
+      headerName: t('Editor Feedback (#Messages/#Files)', {
+        ns: 'common'
+      }),
       width: 80
     },
     {
       field: 'number_input_from_student',
-      headerName: t('Student Feedback (#Messages/#Files)', { ns: 'common' }),
+      headerName: t('Student Feedback (#Messages/#Files)', {
+        ns: 'common'
+      }),
       width: 80
     },
     {

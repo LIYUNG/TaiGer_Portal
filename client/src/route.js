@@ -4,17 +4,18 @@ import React from 'react';
 //   import('./Demo/Authentication/SignUp/SignUp1')
 // );
 const SignIn = React.lazy(() => import('./Demo/Authentication/SignIn/SignIn'));
-const LandingPage = React.lazy(() =>
-  import('./Demo/Authentication/LandingPage/index')
+const LandingPage = React.lazy(
+  () => import('./Demo/Authentication/LandingPage/index')
 );
-const ResetPasswordRequest = React.lazy(() =>
-  import('./Demo/Authentication/ResetPasswordRequest/ResetPasswordRequest')
+const ResetPasswordRequest = React.lazy(
+  () =>
+    import('./Demo/Authentication/ResetPasswordRequest/ResetPasswordRequest')
 );
-const ResetPassword = React.lazy(() =>
-  import('./Demo/Authentication/ResetPassword/ResetPassword')
+const ResetPassword = React.lazy(
+  () => import('./Demo/Authentication/ResetPassword/ResetPassword')
 );
-const AccountActivation = React.lazy(() =>
-  import('./Demo/Authentication/Activation/Activation')
+const AccountActivation = React.lazy(
+  () => import('./Demo/Authentication/Activation/Activation')
 );
 
 const route = [

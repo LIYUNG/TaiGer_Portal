@@ -422,7 +422,9 @@ export default function CourseWidgetBody({ programRequirements }) {
           <CustomTabPanel value={value} index={0}>
             <FormControl fullWidth>
               <InputLabel id="select-target-group">
-                {i18next.t('Select Target Group', { ns: 'courses' })}
+                {i18next.t('Select Target Group', {
+                  ns: 'courses'
+                })}
               </InputLabel>
               <Select
                 labelId="study_group"
@@ -443,11 +445,15 @@ export default function CourseWidgetBody({ programRequirements }) {
             <br />
             <FormControl fullWidth>
               <InputLabel id="select-language">
-                {i18next.t('Select language', { ns: 'courses' })}
+                {i18next.t('Select language', {
+                  ns: 'courses'
+                })}
               </InputLabel>
               <Select
                 labelId="analysis_language"
-                label={i18next.t('Select language', { ns: 'courses' })}
+                label={i18next.t('Select language', {
+                  ns: 'courses'
+                })}
                 name="analysis_language"
                 id="analysis_language"
                 onChange={(e) => handleChange_analysis_language(e)}
@@ -483,14 +489,18 @@ export default function CourseWidgetBody({ programRequirements }) {
                     onClick={onDownload}
                     disabled={statedata.isDownloading}
                   >
-                    {i18next.t('Download', { ns: 'common' })}
+                    {i18next.t('Download', {
+                      ns: 'common'
+                    })}
                   </Button>
                   <Link
                     to={`${DEMO.INTERNAL_WIDGET_LINK(user._id.toString())}`}
                     target="_blank"
                     component={LinkDom}
                   >
-                    {i18next.t('View Online', { ns: 'courses' })}
+                    {i18next.t('View Online', {
+                      ns: 'courses'
+                    })}
                   </Link>
                 </>
               ) : (
@@ -519,14 +529,18 @@ export default function CourseWidgetBody({ programRequirements }) {
                     onClick={onDownload}
                     disabled={statedata.isDownloading}
                   >
-                    {i18next.t('Download', { ns: 'common' })}
+                    {i18next.t('Download', {
+                      ns: 'common'
+                    })}
                   </Button>
                   <Link
                     to={`${DEMO.INTERNAL_WIDGET_V2_LINK(user._id.toString())}`}
                     target="_blank"
                     component={LinkDom}
                   >
-                    {i18next.t('View Online', { ns: 'courses' })}
+                    {i18next.t('View Online', {
+                      ns: 'courses'
+                    })}
                   </Link>
                 </>
               ) : (

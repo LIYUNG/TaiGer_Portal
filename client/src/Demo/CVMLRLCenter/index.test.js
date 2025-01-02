@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 import CVMLRLCenter from '.';
 import 'react-i18next';
 import { getCVMLRLOverview, getAllActiveEssays } from '../../api';

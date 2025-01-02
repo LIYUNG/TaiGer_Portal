@@ -63,7 +63,11 @@ function DashboardBody({ studentAndEssays }) {
     updateStudentArchivStatus,
     onUpdateProfileFilefromstudent,
     ConfirmError
-  } = useStudents({ students: fetchedStudents, isCoursesFilled, notification });
+  } = useStudents({
+    students: fetchedStudents,
+    isCoursesFilled,
+    notification
+  });
 
   TabTitle('Home Page');
 

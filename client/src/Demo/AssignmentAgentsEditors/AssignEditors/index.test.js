@@ -1,17 +1,10 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 import AssignEditors from './index';
 import 'react-i18next';
-import { getStudents, getProgramTickets } from '../../../api';
-import axios from 'axios';
+import { getProgramTickets } from '../../../api';
 import { useAuth } from '../../../components/AuthProvider/index';
-import {
-  MemoryRouter,
-  Router,
-  createMemoryRouter,
-  useLoaderData
-} from 'react-router-dom';
+import { createMemoryRouter } from 'react-router-dom';
 
 import { mockTwoNoAgentNoStudentsData } from '../../../test/testingNoAgentNoEditorStudentData';
 import { RouterProvider } from 'react-router-dom';
@@ -42,7 +35,9 @@ const routes = [
 
 describe('Admin AssignEditors', () => {
   test('admin assign editor not crash', async () => {
-    getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
+    getProgramTickets.mockResolvedValue({
+      data: { success: true, data: [] }
+    });
     useAuth.mockReturnValue({
       user: { role: 'Admin', _id: '609c498ae2f954388837d2f9' }
     });
@@ -66,7 +61,9 @@ describe('Admin AssignEditors', () => {
   });
 
   test('students rendered correctly', async () => {
-    getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
+    getProgramTickets.mockResolvedValue({
+      data: { success: true, data: [] }
+    });
     useAuth.mockReturnValue({
       user: { role: 'Admin', _id: '609c498ae2f954388837d2f9' }
     });

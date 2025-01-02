@@ -1,10 +1,8 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 import MyCourses from './index';
 import 'react-i18next';
 import { getMycourses } from '../../api';
-import axios from 'axios';
 import { useAuth } from '../../components/AuthProvider';
 import { MemoryRouter, useParams } from 'react-router-dom';
 

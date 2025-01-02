@@ -77,7 +77,9 @@ function MessageEdit(props) {
         sx={{
           p: 2,
           overflowWrap: 'break-word', // Add this line
-          ...(props.isTaiGerView && { maxWidth: window.innerWidth - 664 + 32 }),
+          ...(props.isTaiGerView && {
+            maxWidth: window.innerWidth - 664 + 32
+          }),
           marginTop: '1px',
           '& .MuiAvatar-root': {
             width: 32,

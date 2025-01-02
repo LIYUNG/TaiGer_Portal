@@ -42,7 +42,10 @@ import ProgramSpecificDocumentCheckCard from '../MainViewTab/AgentTasks/ProgramS
 import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import useStudents from '../../../hooks/useStudents';
 import Banner from '../../../components/Banner/Banner';
-import { is_new_message_status, is_pending_status } from '../../../utils/contants';
+import {
+  is_new_message_status,
+  is_pending_status
+} from '../../../utils/contants';
 
 function AgentMainView(props) {
   const { user } = useAuth();
@@ -246,8 +249,10 @@ function AgentMainView(props) {
           <Card>
             <Alert severity="error">
               <Typography>
-                {t('Upcoming Applications', { ns: 'dashboard' })} (
-                {applications_arr?.length}):
+                {t('Upcoming Applications', {
+                  ns: 'dashboard'
+                })}{' '}
+                ({applications_arr?.length}):
               </Typography>
             </Alert>
             <div className="card-scrollable-body">
@@ -327,7 +332,7 @@ function AgentMainView(props) {
         <NoProgramStudentTable students={students} />
         <Grid item xs={12} sm={6} md={4}>
           <ProgramSpecificDocumentCheckCard students={students} />
-        </Grid> 
+        </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <NoEnoughDecidedProgramsTasksCard students={students} user={user} />
         </Grid>

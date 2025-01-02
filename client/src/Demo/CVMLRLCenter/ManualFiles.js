@@ -77,7 +77,10 @@ function ManualFiles(props) {
                 <Typography>
                   {t('General Documents', { ns: 'common' })} (
                   {t('CV', { ns: 'common' })},{' '}
-                  {t('Recommendation Letters', { ns: 'common' })})
+                  {t('Recommendation Letters', {
+                    ns: 'common'
+                  })}
+                  )
                 </Typography>
                 {create_generaldoc_reminder && (
                   <Card sx={{ p: 2, mb: 2 }}>

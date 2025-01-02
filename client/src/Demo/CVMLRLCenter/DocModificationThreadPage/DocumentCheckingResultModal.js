@@ -108,9 +108,7 @@ const DocumentCheckingResultModal = ({
                   </Fragment>
                 ) : (
                   <Fragment>
-                    <Typography variant="h6">
-                      {t('gap-detected')}
-                    </Typography>
+                    <Typography variant="h6">{t('gap-detected')}</Typography>
                     <Typography variant="body1" sx={{ my: 2 }}>
                       The latest {`${student_name} ${docName} `}
                       did not contain pattern and very likely has <b>gap</b>:

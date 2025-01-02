@@ -265,7 +265,9 @@ const SchoolConfigContent = ({ data }) => {
                 {t('University', { ns: 'common' })}
               </MenuItem>
               <MenuItem value={'University_of_Applied_Sciences'}>
-                {t('University of Applied Sciences', { ns: 'common' })}
+                {t('University of Applied Sciences', {
+                  ns: 'common'
+                })}
               </MenuItem>
             </Select>
           </FormControl>

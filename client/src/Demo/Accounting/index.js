@@ -90,7 +90,10 @@ function Accounting() {
           {appConfig.companyName}
         </Link>
         <Typography color="text.primary">
-          {t('tenant-team', { ns: 'common', tenant: appConfig.companyName })}
+          {t('tenant-team', {
+            ns: 'common',
+            tenant: appConfig.companyName
+          })}
         </Typography>
         <Typography color="text.primary">
           {t('tenant-accounting', {

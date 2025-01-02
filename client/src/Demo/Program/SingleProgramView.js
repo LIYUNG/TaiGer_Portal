@@ -140,11 +140,15 @@ function SingleProgramView(props) {
             >
               <Tab label={t('Overview')} {...a11yProps(0)} />
               <Tab
-                label={t('Application Deadline', { ns: 'common' })}
+                label={t('Application Deadline', {
+                  ns: 'common'
+                })}
                 {...a11yProps(1)}
               />
               <Tab
-                label={t('Specific Requirements', { ns: 'common' })}
+                label={t('Specific Requirements', {
+                  ns: 'common'
+                })}
                 {...a11yProps(2)}
               />
               <Tab
@@ -233,32 +237,40 @@ function SingleProgramView(props) {
                       <Grid item xs={3} md={2}>
                         {props.program[`${program_field.prop}_reading`] && (
                           <Typography fontWeight="bold">
-                            {t('Reading', { ns: 'common' })}:{' '}
-                            {props.program[`${program_field.prop}_reading`]}
+                            {t('Reading', {
+                              ns: 'common'
+                            })}
+                            : {props.program[`${program_field.prop}_reading`]}
                           </Typography>
                         )}{' '}
                       </Grid>
                       <Grid item xs={3} md={2}>
                         {props.program[`${program_field.prop}_listening`] && (
                           <Typography fontWeight="bold">
-                            {t('Listening', { ns: 'common' })}:{' '}
-                            {props.program[`${program_field.prop}_listening`]}
+                            {t('Listening', {
+                              ns: 'common'
+                            })}
+                            : {props.program[`${program_field.prop}_listening`]}
                           </Typography>
                         )}{' '}
                       </Grid>
                       <Grid item xs={3} md={2}>
                         {props.program[`${program_field.prop}_speaking`] && (
                           <Typography fontWeight="bold">
-                            {t('Speaking', { ns: 'common' })}:{' '}
-                            {props.program[`${program_field.prop}_speaking`]}
+                            {t('Speaking', {
+                              ns: 'common'
+                            })}
+                            : {props.program[`${program_field.prop}_speaking`]}
                           </Typography>
                         )}{' '}
                       </Grid>
                       <Grid item xs={3} md={2}>
                         {props.program[`${program_field.prop}_writing`] && (
                           <Typography fontWeight="bold">
-                            {t('Writing', { ns: 'common' })}:{' '}
-                            {props.program[`${program_field.prop}_writing`]}
+                            {t('Writing', {
+                              ns: 'common'
+                            })}
+                            : {props.program[`${program_field.prop}_writing`]}
                           </Typography>
                         )}
                       </Grid>
@@ -273,7 +285,9 @@ function SingleProgramView(props) {
                   <Fragment key={i}>
                     <Grid item xs={12} md={4}>
                       <Typography fontWeight="bold">
-                        {t(`${program_field.name}`, { ns: 'common' })}
+                        {t(`${program_field.name}`, {
+                          ns: 'common'
+                        })}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} md={8}>
@@ -333,7 +347,10 @@ function SingleProgramView(props) {
                     <img
                       src={`/assets/logo/country_logo/svg/${props.program.country}.svg`}
                       alt="Logo"
-                      style={{ maxWidth: '32px', maxHeight: '32px' }}
+                      style={{
+                        maxWidth: '32px',
+                        maxHeight: '32px'
+                      }}
                       title={COUNTRIES_MAPPING[props.program.country]}
                     />
                   </span>
@@ -397,7 +414,9 @@ function SingleProgramView(props) {
                   <>
                     <Grid item xs={12} md={4}>
                       <Typography>
-                        {t('Updated by', { ns: 'common' })}
+                        {t('Updated by', {
+                          ns: 'common'
+                        })}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} md={8}>
@@ -429,7 +448,11 @@ function SingleProgramView(props) {
                       <strong>{t('#', { ns: 'common' })}</strong>
                     </TableCell>
                     <TableCell>
-                      <strong>{t('Changed By', { ns: 'common' })}</strong>
+                      <strong>
+                        {t('Changed By', {
+                          ns: 'common'
+                        })}
+                      </strong>
                     </TableCell>
                     <TableCell>
                       <strong>{t('Field', { ns: 'common' })}</strong>
@@ -573,9 +596,21 @@ function SingleProgramView(props) {
                     <Table size="small">
                       <TableHead>
                         <TableRow>
-                          <TableCell>{t('Name', { ns: 'common' })}</TableCell>
-                          <TableCell>{t('Agent', { ns: 'common' })}</TableCell>
-                          <TableCell>{t('Editor', { ns: 'common' })}</TableCell>
+                          <TableCell>
+                            {t('Name', {
+                              ns: 'common'
+                            })}
+                          </TableCell>
+                          <TableCell>
+                            {t('Agent', {
+                              ns: 'common'
+                            })}
+                          </TableCell>
+                          <TableCell>
+                            {t('Editor', {
+                              ns: 'common'
+                            })}
+                          </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -605,7 +640,9 @@ function SingleProgramView(props) {
                                     )}`}
                                     component={LinkDom}
                                     key={agent._id}
-                                    sx={{ mr: 1 }}
+                                    sx={{
+                                      mr: 1
+                                    }}
                                   >
                                     {agent.firstname}
                                   </Link>
@@ -619,7 +656,9 @@ function SingleProgramView(props) {
                                     )}`}
                                     component={LinkDom}
                                     key={editor._id}
-                                    sx={{ mr: 1 }}
+                                    sx={{
+                                      mr: 1
+                                    }}
                                   >
                                     {editor.firstname}
                                   </Link>
@@ -634,10 +673,20 @@ function SingleProgramView(props) {
                     <Table size="small">
                       <TableHead>
                         <TableRow>
-                          <TableCell>{t('Name', { ns: 'common' })}</TableCell>
-                          <TableCell>{t('Year', { ns: 'common' })}</TableCell>
                           <TableCell>
-                            {t('Admission', { ns: 'admissions' })}
+                            {t('Name', {
+                              ns: 'common'
+                            })}
+                          </TableCell>
+                          <TableCell>
+                            {t('Year', {
+                              ns: 'common'
+                            })}
+                          </TableCell>
+                          <TableCell>
+                            {t('Admission', {
+                              ns: 'admissions'
+                            })}
                           </TableCell>
                         </TableRow>
                       </TableHead>
@@ -685,7 +734,9 @@ function SingleProgramView(props) {
                 <CardContent>
                   <Typography>
                     {appConfig.companyName}{' '}
-                    {t('Program Assistant', { ns: 'programList' })}
+                    {t('Program Assistant', {
+                      ns: 'programList'
+                    })}
                   </Typography>
                   <Button
                     color="primary"

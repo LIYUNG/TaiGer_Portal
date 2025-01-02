@@ -309,7 +309,11 @@ export const ImportStudentProgramsCard = (props) => {
                                   ml: 1
                                 }}
                               >
-                                <EmailIcon sx={{ mr: 0.5 }} />
+                                <EmailIcon
+                                  sx={{
+                                    mr: 0.5
+                                  }}
+                                />
                                 {highlightText(
                                   result.email,
                                   importStudentProgramsCard.searchTerm

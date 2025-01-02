@@ -459,10 +459,14 @@ function StudentApplicationsTableTemplate(props) {
                         {t('Not Yet', { ns: 'common' })}
                       </MenuItem>
                       <MenuItem value="X">
-                        {t('Withdraw', { ns: 'common' })}
+                        {t('Withdraw', {
+                          ns: 'common'
+                        })}
                       </MenuItem>
                       <MenuItem value="O">
-                        {t('Submitted', { ns: 'common' })}
+                        {t('Submitted', {
+                          ns: 'common'
+                        })}
                       </MenuItem>
                     </Select>
                   </FormControl>
@@ -509,7 +513,9 @@ function StudentApplicationsTableTemplate(props) {
                   >
                     {IS_SUBMITTED_STATE_OPTIONS.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
-                        {t(option.label, { ns: 'common' })}
+                        {t(option.label, {
+                          ns: 'common'
+                        })}
                       </MenuItem>
                     ))}
                   </Select>
@@ -747,7 +753,9 @@ function StudentApplicationsTableTemplate(props) {
                       {programstatuslist.map((doc, index) => (
                         <TableCell key={index}>
                           <Typography>
-                            {t(doc.name, { ns: 'common' })}
+                            {t(doc.name, {
+                              ns: 'common'
+                            })}
                           </Typography>
                         </TableCell>
                       ))}
@@ -786,7 +794,12 @@ function StudentApplicationsTableTemplate(props) {
             <>
               <Box>
                 <Typography>
-                  <span style={{ display: 'flex', justifyContent: 'center' }}>
+                  <span
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center'
+                    }}
+                  >
                     You want to add more programs to {props.student.firstname}{' '}
                     {props.student.lastname}?
                   </span>
@@ -794,7 +807,12 @@ function StudentApplicationsTableTemplate(props) {
               </Box>
               <Box>
                 <Typography>
-                  <span style={{ display: 'flex', justifyContent: 'center' }}>
+                  <span
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center'
+                    }}
+                  >
                     <Button
                       size="small"
                       color="primary"

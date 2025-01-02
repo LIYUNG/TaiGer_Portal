@@ -371,7 +371,9 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                 >
                   <Box>
                     <Typography variant="h5" gutterBottom>
-                      {t('Ticket Deleted', { ns: 'common' })}
+                      {t('Ticket Deleted', {
+                        ns: 'common'
+                      })}
                     </Typography>
                     <Button variant="outlined" onClick={returnBack}>
                       {t('Back', { ns: 'common' })}
@@ -415,7 +417,9 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                   >
                     <Box>
                       <Typography variant="h6" gutterBottom>
-                        {t('Description', { ns: 'tickets' })}
+                        {t('Description', {
+                          ns: 'tickets'
+                        })}
                       </Typography>
                       <Typography variant="subtitle1" gutterBottom>
                         {complaintTicket.description}
@@ -423,7 +427,9 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                     </Box>
                     <Box>
                       <Typography variant="h6" gutterBottom>
-                        {t('Requester', { ns: 'tickets' })}
+                        {t('Requester', {
+                          ns: 'tickets'
+                        })}
                       </Typography>
                       <Typography variant="body1" gutterBottom>
                         {`${complaintTicket.requester_id?.firstname} ${complaintTicket.requester_id?.lastname}`}
@@ -435,7 +441,9 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
               <Grid item xs={12} md={4}>
                 <Paper elevation={3} sx={{ p: 3 }}>
                   <Typography variant="h6" gutterBottom>
-                    {t('Frequently Asked Questions', { ns: 'common' })}
+                    {t('Frequently Asked Questions', {
+                      ns: 'common'
+                    })}
                   </Typography>
                   <Accordion disableGutters>
                     <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -594,7 +602,9 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
         <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {t('Do you want to delete this ticket?', { ns: 'tickets' })}
+            {t('Do you want to delete this ticket?', {
+              ns: 'tickets'
+            })}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

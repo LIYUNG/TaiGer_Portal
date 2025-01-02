@@ -418,7 +418,9 @@ function TaiGerOfficeHours() {
                           }
                         />
                       ))
-                    : t('No upcoming event', { ns: 'common' })}
+                    : t('No upcoming event', {
+                        ns: 'common'
+                      })}
                 </Box>
               </Card>
             </>

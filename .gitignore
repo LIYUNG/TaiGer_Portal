@@ -66,3 +66,5 @@ globalConfig.json
 /api/python/TaiGerProgramListAICrawler/ipynb/tempDB/
 /api/python/TaiGerProgramListAICrawler/ipynb/vectorDatabase/
 api/python/PortalDataExtractor/output/
+
+.eslintcache

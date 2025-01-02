@@ -137,7 +137,9 @@ const ChatList = (props) => {
       <ListItem onClick={(e) => e.stopPropagation()}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box>
-            <Typography variant="h6">{i18next.t('Chat', { ns: 'common' })}</Typography>
+            <Typography variant="h6">
+              {i18next.t('Chat', { ns: 'common' })}
+            </Typography>
           </Box>
         </Box>
       </ListItem>

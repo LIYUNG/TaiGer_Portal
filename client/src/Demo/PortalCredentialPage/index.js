@@ -15,8 +15,8 @@ export default function PortalCredentialPage(props) {
   const studentId = student_id
     ? student_id
     : is_TaiGer_Student(user)
-    ? user._id.toString()
-    : props.student_id;
+      ? user._id.toString()
+      : props.student_id;
   return (
     <PortalCredentialsCard
       user={user}

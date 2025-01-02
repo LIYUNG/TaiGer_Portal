@@ -30,7 +30,9 @@ function AllApplicantsOverview() {
           {i18next.t('All Students', { ns: 'common' })}
         </Typography>
         <Typography color="text.primary">
-          {i18next.t('All Students Applications Overview', { ns: 'common' })}
+          {i18next.t('All Students Applications Overview', {
+            ns: 'common'
+          })}
         </Typography>
       </Breadcrumbs>
       <ApplicationOverviewTabs students={data.data} />

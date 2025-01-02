@@ -1,22 +1,11 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 import StudentDatabase from '.';
 import 'react-i18next';
 import { getProgramTickets } from '../../api';
-import axios from 'axios';
 import { useAuth } from '../../components/AuthProvider/index';
-import {
-  MemoryRouter,
-  Router,
-  createMemoryRouter,
-  useLoaderData,
-  RouterProvider
-} from 'react-router-dom';
-const students = [
-  { firstname: 'student1', lastname: 'Wang', role: 'Student' },
-  { firstname: 'student2', lastname: 'Lin', role: 'Student' }
-];
+import { createMemoryRouter, RouterProvider } from 'react-router-dom';
+
 import { mockSingleData } from '../../test/testingStudentData';
 import {
   useQuery,
@@ -79,7 +68,9 @@ const routes = [
 describe('StudentDatabase', () => {
   window.ResizeObserver = ResizeObserver;
   test('Student dashboard not crash', async () => {
-    getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
+    getProgramTickets.mockResolvedValue({
+      data: { success: true, data: [] }
+    });
     useAuth.mockReturnValue({
       user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
     });

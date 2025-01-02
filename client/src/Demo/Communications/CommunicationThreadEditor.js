@@ -23,7 +23,10 @@ import { useParams } from 'react-router-dom';
 
 import EditorSimple from '../../components/EditorJs/EditorSimple';
 import { useAuth } from '../../components/AuthProvider';
-import { CVMLRL_DOC_PRECHECK_STATUS_E, stringAvatar } from '../../utils/contants';
+import {
+  CVMLRL_DOC_PRECHECK_STATUS_E,
+  stringAvatar
+} from '../../utils/contants';
 import { TaiGerChatAssistant } from '../../api';
 import { appConfig } from '../../config';
 
@@ -131,8 +134,8 @@ function CommunicationThreadEditor(props) {
                     {props.checkResult[i][ky].value === undefined
                       ? CVMLRL_DOC_PRECHECK_STATUS_E.WARNING_SYMBOK
                       : props.checkResult[i][ky].value
-                      ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
-                      : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
+                        ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
+                        : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
                     {props.checkResult[i][ky].text}
                     {props.checkResult[i][ky].hasMetadata &&
                       props.checkResult[i][ky].metaData}

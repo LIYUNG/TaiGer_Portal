@@ -90,7 +90,10 @@ function NewProgramEdit(props) {
   };
 
   const onClickResultHandler = (result) => {
-    setProgramChanges((preState) => ({ ...preState.program, school: result }));
+    setProgramChanges((preState) => ({
+      ...preState.program,
+      school: result
+    }));
     setSearchTerm(result);
   };
 
@@ -247,7 +250,9 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
-              {t('Only for graduated applicant', { ns: 'common' })}
+              {t('Only for graduated applicant', {
+                ns: 'common'
+              })}
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -265,7 +270,9 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
-              {t('GPA Requirement (German system)', { ns: 'common' })}
+              {t('GPA Requirement (German system)', {
+                ns: 'common'
+              })}
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -299,7 +306,10 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
-              {t('Application Deadline (MM-DD)', { ns: 'common' })} *
+              {t('Application Deadline (MM-DD)', {
+                ns: 'common'
+              })}{' '}
+              *
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -343,7 +353,9 @@ function NewProgramEdit(props) {
           )}
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
-              {t('English Test Can Submit Later', { ns: 'common' })}
+              {t('English Test Can Submit Later', {
+                ns: 'common'
+              })}
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -499,7 +511,9 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
-              {t('German Test Can Submit Later', { ns: 'common' })}
+              {t('German Test Can Submit Later', {
+                ns: 'common'
+              })}
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -758,7 +772,9 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
-              {t('Supplementary Form Required?', { ns: 'common' })}
+              {t('Supplementary Form Required?', {
+                ns: 'common'
+              })}
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -781,7 +797,9 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
-              {t('Supplementary Form Requirements', { ns: 'common' })}
+              {t('Supplementary Form Requirements', {
+                ns: 'common'
+              })}
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -800,7 +818,9 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
-              {t('Curriculum Analysis Required?', { ns: 'common' })}
+              {t('Curriculum Analysis Required?', {
+                ns: 'common'
+              })}
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -823,7 +843,9 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
-              {t('Curriculum Analysis Requirements', { ns: 'common' })}
+              {t('Curriculum Analysis Requirements', {
+                ns: 'common'
+              })}
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -842,7 +864,9 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
-              {t('Scholarship Form / ML Required?', { ns: 'common' })}
+              {t('Scholarship Form / ML Required?', {
+                ns: 'common'
+              })}
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -865,7 +889,9 @@ function NewProgramEdit(props) {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body1">
-              {t('Scholarship Form / ML Requirements', { ns: 'common' })}
+              {t('Scholarship Form / ML Requirements', {
+                ns: 'common'
+              })}
             </Typography>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -1040,12 +1066,18 @@ function NewProgramEdit(props) {
                   <MenuItem
                     key={option.value}
                     value={option.value}
-                    sx={{ display: 'flex', alignItems: 'center' }}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center'
+                    }}
                   >
                     <img
                       src={`/assets/logo/country_logo/svg/${option.value}.svg`}
                       alt="Logo"
-                      style={{ maxWidth: 24, maxHeight: 24 }}
+                      style={{
+                        maxWidth: 24,
+                        maxHeight: 24
+                      }}
                     />
                     &nbsp; &nbsp;
                     {option.label}

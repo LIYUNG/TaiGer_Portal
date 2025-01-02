@@ -151,7 +151,11 @@ function AgentProfile() {
                           checked={
                             agentProfileState.agent.officehours[day]?.active
                           }
-                          sx={{ '& .MuiSvgIcon-root': { fontSize: '1.5rem' } }}
+                          sx={{
+                            '& .MuiSvgIcon-root': {
+                              fontSize: '1.5rem'
+                            }
+                          }}
                         />
                       }
                       label={`${day}`}
@@ -172,7 +176,11 @@ function AgentProfile() {
                       />
                     </>
                   ) : (
-                    <Typography>{i18next.t('Close', { ns: 'common' })}</Typography>
+                    <Typography>
+                      {i18next.t('Close', {
+                        ns: 'common'
+                      })}
+                    </Typography>
                   )}
                 </Grid>
               ))}

@@ -40,8 +40,8 @@ function AdminMainView(props) {
       a.agents.length === 0 && a.agents.length < b.agents.length
         ? -2
         : a.editors.length < b.editors.length
-        ? -1
-        : 1
+          ? -1
+          : 1
     );
 
   const admin_tasks = (

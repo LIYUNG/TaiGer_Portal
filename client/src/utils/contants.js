@@ -649,7 +649,9 @@ export const getNextDayDate = (reorder_weekday, dayOfWeek, timezone, nextN) => {
   let daysToAdd = targetDayIndex % 7;
 
   // Calculate the date of the next Nth occurrence
-  const nextOccurrence = now.plus({ days: daysToAdd + nextN * 7 + bufferDays });
+  const nextOccurrence = now.plus({
+    days: daysToAdd + nextN * 7 + bufferDays
+  });
 
   // const options = {
   //   weekday: 'long',
@@ -963,7 +965,10 @@ export const program_fields_overview = [
   { name: 'Semester', prop: 'semester' },
   { name: 'Teaching Language', prop: 'lang' },
   { name: 'Website', prop: 'website' },
-  { name: 'Only for graduated applicant', prop: 'allowOnlyGraduatedApplicant' },
+  {
+    name: 'Only for graduated applicant',
+    prop: 'allowOnlyGraduatedApplicant'
+  },
   { name: 'Program Subject tags', prop: 'programSubjects' },
   { name: 'Tags', prop: 'tags' }
 ];
@@ -1003,7 +1008,10 @@ export const program_fields_special_documents = [
   { name: 'Essay Requirements', prop: 'essay_requirements' },
   { name: 'Portfolio Required?', prop: 'portfolio_required' },
   { name: 'Portfolio Requirements', prop: 'portfolio_requirements' },
-  { name: 'Supplementary Form Required?', prop: 'supplementary_form_required' },
+  {
+    name: 'Supplementary Form Required?',
+    prop: 'supplementary_form_required'
+  },
   {
     name: 'Supplementary Form Requirements',
     prop: 'supplementary_form_requirements'

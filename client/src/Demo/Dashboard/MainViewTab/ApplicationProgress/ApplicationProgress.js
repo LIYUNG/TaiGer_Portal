@@ -248,11 +248,11 @@ function ApplicationProgress(props) {
           {isProgramSubmitted(application)
             ? '-'
             : application.programId.application_deadline
-            ? differenceInDays(
-                application_deadline_calculator(props.student, application),
-                today
-              )
-            : '-'}
+              ? differenceInDays(
+                  application_deadline_calculator(props.student, application),
+                  today
+                )
+              : '-'}
         </TableCell>
       </TableRow>
     ));

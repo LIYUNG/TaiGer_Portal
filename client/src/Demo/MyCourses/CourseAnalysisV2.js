@@ -115,7 +115,10 @@ export const EstimationCard = ({
   const getOverallCourseScorePairArray = () => {
     const scoreArray = Object.keys(sortedCourses).map((category) =>
       satisfiedRequirement(sortedCourses[category])
-        ? { name: category, got: getMaxScoreECTS(sortedCourses[category]) }
+        ? {
+            name: category,
+            got: getMaxScoreECTS(sortedCourses[category])
+          }
         : { name: category, got: 0 }
     );
 
@@ -231,7 +234,9 @@ export const EstimationCard = ({
                 <Fragment key={index}>
                   <TableRow
                     sx={{
-                      '& > *': { borderBottom: row.expandable ? 'unset' : '' }
+                      '& > *': {
+                        borderBottom: row.expandable ? 'unset' : ''
+                      }
                     }}
                   >
                     <TableCell>
@@ -258,7 +263,10 @@ export const EstimationCard = ({
                   {row.expandable && (
                     <TableRow>
                       <TableCell
-                        style={{ paddingBottom: 0, paddingTop: 0 }}
+                        style={{
+                          paddingBottom: 0,
+                          paddingTop: 0
+                        }}
                         colSpan={6}
                       >
                         <Collapse in={open} timeout="auto" unmountOnExit>
@@ -355,10 +363,18 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
               >
                 {satisfiedRequirement(sortedCourses[category]) ? (
                   <CheckCircleIcon
-                    style={{ color: green[500], marginRight: '8px' }}
+                    style={{
+                      color: green[500],
+                      marginRight: '8px'
+                    }}
                   />
                 ) : (
-                  <WarningIcon style={{ color: 'red', marginRight: '8px' }} />
+                  <WarningIcon
+                    style={{
+                      color: 'red',
+                      marginRight: '8px'
+                    }}
+                  />
                 )}
                 <Typography variant="h5" fontWeight="bold">
                   {category}
@@ -399,7 +415,10 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                     <Box display="flex" alignItems="center">
                       <FlagIcon style={{ marginRight: '8px' }} />
                       <Typography
-                        style={{ fontWeight: 'normal', color: 'inherit' }}
+                        style={{
+                          fontWeight: 'normal',
+                          color: 'inherit'
+                        }}
                       >
                         {i18next.t('required-ects')}:{' '}
                         {requiredECTS(sortedCourses[category])}
@@ -412,9 +431,16 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                     >
                       {satisfiedRequirement(sortedCourses[category]) ? (
                         <>
-                          <CheckCircleIcon style={{ color: green[500] }} />
+                          <CheckCircleIcon
+                            style={{
+                              color: green[500]
+                            }}
+                          />
                           <Typography
-                            style={{ fontWeight: 'normal', color: 'inherit' }}
+                            style={{
+                              fontWeight: 'normal',
+                              color: 'inherit'
+                            }}
                           >
                             {i18next.t('your-acquired-ects')}:{' '}
                             {acquiredECTS(sortedCourses[category])}
@@ -424,7 +450,10 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                         <>
                           <WarningIcon style={{ color: 'red' }} />
                           <Typography
-                            style={{ fontWeight: 'bold', color: 'red' }}
+                            style={{
+                              fontWeight: 'bold',
+                              color: 'red'
+                            }}
                           >
                             {i18next.t('your-acquired-ects')}:{' '}
                             {acquiredECTS(sortedCourses[category])}
@@ -439,13 +468,19 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                     <TableHead>
                       <TableRow>
                         <TableCell>
-                          {i18next.t('Course', { ns: 'common' })}
+                          {i18next.t('Course', {
+                            ns: 'common'
+                          })}
                         </TableCell>
                         <TableCell>
-                          {i18next.t('Credits', { ns: 'common' })}
+                          {i18next.t('Credits', {
+                            ns: 'common'
+                          })}
                         </TableCell>
                         <TableCell>
-                          {i18next.t('Grades', { ns: 'common' })}
+                          {i18next.t('Grades', {
+                            ns: 'common'
+                          })}
                         </TableCell>
                       </TableRow>
                     </TableHead>

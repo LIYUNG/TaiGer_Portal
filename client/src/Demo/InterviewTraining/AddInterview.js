@@ -154,7 +154,9 @@ function AddInterview() {
         )
       }));
     } else {
-      const interviewData_temp = { ...interviewTrainingState.interviewData };
+      const interviewData_temp = {
+        ...interviewTrainingState.interviewData
+      };
       interviewData_temp[e.target.name] = e.target.value;
       setAddInterviewState((prevState) => ({
         ...prevState,
@@ -334,7 +336,9 @@ function AddInterview() {
             <TableRow>
               <TableCell>
                 <Typography>
-                  {t('Interview duration', { ns: 'interviews' })}
+                  {t('Interview duration', {
+                    ns: 'interviews'
+                  })}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -360,7 +364,9 @@ function AddInterview() {
             <TableRow>
               <TableCell>
                 <Typography variant="body1">
-                  {t('Interview program', { ns: 'interviews' })}
+                  {t('Interview program', {
+                    ns: 'interviews'
+                  })}
                 </Typography>
                 <Typography variant="body2">
                   {t(

@@ -292,7 +292,9 @@ function StudentDashboard(props) {
                       ml: 1
                     }}
                   >
-                    {t('Application Overview', { ns: 'common' })}
+                    {t('Application Overview', {
+                      ns: 'common'
+                    })}
                     <LaunchIcon fontSize="small" sx={{ ml: 0.5 }} />
                   </Link>
                 </Typography>
@@ -471,7 +473,9 @@ function StudentDashboard(props) {
                           </Link>
                         ) : (
                           <span className="text-light">
-                            {t('Wait for Agent', { ns: 'common' })}
+                            {t('Wait for Agent', {
+                              ns: 'common'
+                            })}
                           </span>
                         )}
                       </Grid>
@@ -484,7 +488,10 @@ function StudentDashboard(props) {
                       <Grid item xs={12}>
                         <Typography
                           variant="h6"
-                          sx={{ marginLeft: 2, marginTop: 1 }}
+                          sx={{
+                            marginLeft: 2,
+                            marginTop: 1
+                          }}
                         >
                           Pending: 等待 Editor 回復
                         </Typography>
@@ -494,10 +501,14 @@ function StudentDashboard(props) {
                           <TableHead>
                             <TableRow>
                               <TableCell>
-                                {t('Documents', { ns: 'common' })}
+                                {t('Documents', {
+                                  ns: 'common'
+                                })}
                               </TableCell>
                               <TableCell>
-                                {t('Last update', { ns: 'common' })}
+                                {t('Last update', {
+                                  ns: 'common'
+                                })}
                               </TableCell>
                             </TableRow>
                           </TableHead>

@@ -246,7 +246,9 @@ export const UniAssistProgramBlock = ({ application, student }) => {
           {applicationState.uni_assist?.status ===
             DocumentStatusType.NotNeeded && (
             <Typography variant="string">
-              {i18next.t('uni-assist-not-necessary', { ns: 'uniassist' })}
+              {i18next.t('uni-assist-not-necessary', {
+                ns: 'uniassist'
+              })}
             </Typography>
           )}
           {applicationState.uni_assist?.status !==
@@ -312,7 +314,10 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                         )
                       }
                     >
-                      {i18next.t('Upload', { ns: 'common' })} VPD
+                      {i18next.t('Upload', {
+                        ns: 'common'
+                      })}{' '}
+                      VPD
                       <VisuallyHiddenInput
                         type="file"
                         onChange={(e) =>
@@ -334,9 +339,14 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                         variant="contained"
                         size="small"
                         startIcon={<DownloadIcon />}
-                        title={i18next.t('Download', { ns: 'common' })}
+                        title={i18next.t('Download', {
+                          ns: 'common'
+                        })}
                       >
-                        {i18next.t('Download', { ns: 'common' })} VPD
+                        {i18next.t('Download', {
+                          ns: 'common'
+                        })}{' '}
+                        VPD
                       </Button>
                       <Button
                         onClick={(e) => onDeleteVPDFileWarningPopUp(e, 'VPD')}
@@ -346,7 +356,10 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                         size="small"
                         startIcon={<DeleteIcon />}
                       >
-                        {i18next.t('Delete', { ns: 'common' })} VPD
+                        {i18next.t('Delete', {
+                          ns: 'common'
+                        })}{' '}
+                        VPD
                       </Button>
                     </>
                   )}
@@ -389,7 +402,9 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                           variant="outlined"
                           startIcon={<CloudUploadIcon />}
                         >
-                          {i18next.t('Upload file', { ns: 'common' })}
+                          {i18next.t('Upload file', {
+                            ns: 'common'
+                          })}
                           <VisuallyHiddenInput
                             type="file"
                             onChange={(e) =>
@@ -414,9 +429,13 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                         color="primary"
                         size="small"
                         startIcon={<DownloadIcon />}
-                        title={i18next.t('Download', { ns: 'common' })}
+                        title={i18next.t('Download', {
+                          ns: 'common'
+                        })}
                       >
-                        {i18next.t('Download', { ns: 'common' })}
+                        {i18next.t('Download', {
+                          ns: 'common'
+                        })}
                       </Button>
                       <Button
                         color="error"
@@ -428,7 +447,9 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                         size="small"
                         startIcon={<DeleteIcon />}
                       >
-                        {i18next.t('Delete', { ns: 'common' })}
+                        {i18next.t('Delete', {
+                          ns: 'common'
+                        })}
                       </Button>
                     </>
                   )}

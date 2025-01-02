@@ -4,13 +4,8 @@ import { userEvent } from '@testing-library/user-event';
 import ApplicantsOverview from '.';
 import 'react-i18next';
 import { getStudents, getProgramTickets } from '../../api';
-import axios from 'axios';
 import { useAuth } from '../../components/AuthProvider/index';
-import {
-  MemoryRouter,
-  RouterProvider,
-  createMemoryRouter
-} from 'react-router-dom';
+import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 
 import { mockSingleData } from '../../test/testingStudentData';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -71,7 +66,9 @@ describe('ApplicantsOverview', () => {
   window.ResizeObserver = ResizeObserver;
   test('ApplicationsOverview not crash', async () => {
     getStudents.mockResolvedValue({ data: mockSingleData });
-    getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
+    getProgramTickets.mockResolvedValue({
+      data: { success: true, data: [] }
+    });
     useAuth.mockReturnValue({
       user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
     });
@@ -89,7 +86,9 @@ describe('ApplicantsOverview', () => {
 
   test('ApplicationsOverview switching tabs not crash', async () => {
     getStudents.mockResolvedValue({ data: mockSingleData });
-    getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
+    getProgramTickets.mockResolvedValue({
+      data: { success: true, data: [] }
+    });
     useAuth.mockReturnValue({
       user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
     });

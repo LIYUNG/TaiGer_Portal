@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { CustomDrawer } from './Drawer'; // Update the import path accordingly
 import { useAuth } from '../../components/AuthProvider/index';
 import { BrowserRouter } from 'react-router-dom';

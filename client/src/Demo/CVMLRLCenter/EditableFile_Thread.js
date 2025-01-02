@@ -70,8 +70,8 @@ function EditableFile_Thread(props) {
             {!is_TaiGer_role(user)
               ? props.thread.isFinalVersion && FILE_OK_SYMBOL
               : props.thread.isFinalVersion
-              ? FILE_OK_SYMBOL
-              : FILE_MISSING_SYMBOL}
+                ? FILE_OK_SYMBOL
+                : FILE_MISSING_SYMBOL}
             <Link
               to={DEMO.DOCUMENT_MODIFICATION_LINK(
                 props.thread.doc_thread_id?._id
@@ -97,7 +97,11 @@ function EditableFile_Thread(props) {
             spacing={1}
           >
             {is_TaiGer_role(user) && !props.thread.isFinalVersion && (
-              <Tooltip title={t('Set as final version', { ns: 'common' })}>
+              <Tooltip
+                title={t('Set as final version', {
+                  ns: 'common'
+                })}
+              >
                 <IconButton
                   onClick={() => handleAsFinalFileThread(documenName, true)}
                 >

@@ -231,14 +231,20 @@ function StudentsAgentEditor(props) {
                 </MenuItem>
                 {!is_TaiGer_Editor(user) && (
                   <MenuItem onClick={() => startEditingAttributes()}>
-                    {t('Configure Attribute', { ns: 'dashboard' })}
+                    {t('Configure Attribute', {
+                      ns: 'dashboard'
+                    })}
                   </MenuItem>
                 )}
                 {!is_TaiGer_Editor(user) && (
                   <MenuItem onClick={() => setArchivModalOpen()}>
                     {is_User_Archived(props.student)
-                      ? t('Move to Active', { ns: 'common' })
-                      : t('Move to Archive', { ns: 'common' })}
+                      ? t('Move to Active', {
+                          ns: 'common'
+                        })
+                      : t('Move to Archive', {
+                          ns: 'common'
+                        })}
                   </MenuItem>
                 )}
               </Menu>
@@ -397,7 +403,9 @@ function StudentsAgentEditor(props) {
               </DialogTitle>
               <DialogContent>
                 <FormControlLabel
-                  label={t('Inform student for archive', { ns: 'common' })}
+                  label={t('Inform student for archive', {
+                    ns: 'common'
+                  })}
                   control={
                     <Checkbox
                       id={`Inform student`}

@@ -159,11 +159,23 @@ export const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
             justifyContent: 'space-between'
           })}
         >
-          <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: '0.5rem',
+              alignItems: 'center'
+            }}
+          >
             <MRT_GlobalFilterTextField table={table} />
             <MRT_ToggleFiltersButton table={table} />
           </Box>
-          <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: '0.5rem',
+              alignItems: 'center'
+            }}
+          >
             <FormControl component="fieldset">
               <RadioGroup
                 row
@@ -192,7 +204,9 @@ export const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
               >
                 {statedata.isAnalysing
                   ? i18next.t('Analysing', { ns: 'courses' })
-                  : i18next.t('Analyse V2', { ns: 'courses' })}
+                  : i18next.t('Analyse V2', {
+                      ns: 'courses'
+                    })}
               </Button>
             </Box>
           </Box>

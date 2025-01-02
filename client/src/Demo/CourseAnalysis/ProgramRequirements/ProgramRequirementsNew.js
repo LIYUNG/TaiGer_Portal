@@ -187,7 +187,9 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
           <Typography variant="h6">
             {requirementId
               ? t('Update program analysis', { ns: 'common' })
-              : t('Create new program analysis', { ns: 'common' })}
+              : t('Create new program analysis', {
+                  ns: 'common'
+                })}
           </Typography>
           <Box>
             <Button
@@ -298,7 +300,10 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                           setProgramCategories((prev) =>
                             prev.map((pc, i) =>
                               i === index
-                                ? { ...pc, program_category: e.target.value }
+                                ? {
+                                    ...pc,
+                                    program_category: e.target.value
+                                  }
                                 : pc
                             )
                           )
@@ -323,7 +328,10 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                           setProgramCategories((prev) =>
                             prev.map((pc, i) =>
                               i === index
-                                ? { ...pc, requiredECTS: e.target.value }
+                                ? {
+                                    ...pc,
+                                    requiredECTS: e.target.value
+                                  }
                                 : pc
                             )
                           )
@@ -347,7 +355,10 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                           setProgramCategories((prev) =>
                             prev.map((pc, i) =>
                               i === index
-                                ? { ...pc, maxScore: e.target.value }
+                                ? {
+                                    ...pc,
+                                    maxScore: e.target.value
+                                  }
                                 : pc
                             )
                           )
@@ -387,7 +398,11 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                     </Grid>
                     <Grid item xs={12} md={12}>
                       <Box
-                        sx={{ display: 'flex', alignItems: 'center', mb: 2 }}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          mb: 2
+                        }}
                       >
                         <Autocomplete
                           multiple

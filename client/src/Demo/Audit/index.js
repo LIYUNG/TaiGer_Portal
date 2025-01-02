@@ -61,12 +61,12 @@ function Audit({ audit }) {
                           ${record?.targetDocumentThreadId?.program_id?.semester}
                           `
                   : record?.interviewThreadId?.program_id
-                  ? ` - ${record?.interviewThreadId?.program_id?.school}
+                    ? ` - ${record?.interviewThreadId?.program_id?.school}
                           ${record?.interviewThreadId?.program_id?.program_name}
                           ${record?.interviewThreadId?.program_id?.degree}
                           ${record?.interviewThreadId?.program_id?.semester}
                           `
-                  : '';
+                    : '';
                 const fileName =
                   record?.targetDocumentThreadId &&
                   `${record?.targetDocumentThreadId?.file_type}${program_name}

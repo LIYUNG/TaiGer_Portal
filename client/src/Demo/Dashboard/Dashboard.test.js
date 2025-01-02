@@ -1,21 +1,11 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 import Dashboard from './';
 import 'react-i18next';
-import { getStudents, getProgramTickets } from '../../api';
-import axios from 'axios';
+import { getProgramTickets } from '../../api';
 import { useAuth } from '../../components/AuthProvider/index';
-import {
-  MemoryRouter,
-  Router,
-  createMemoryRouter,
-  useLoaderData
-} from 'react-router-dom';
-const students = [
-  { firstname: 'student1', lastname: 'Wang', role: 'Student' },
-  { firstname: 'student2', lastname: 'Lin', role: 'Student' }
-];
+import { createMemoryRouter } from 'react-router-dom';
+
 import { mockSingleData } from '../../test/testingStudentData';
 import { RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -83,7 +73,9 @@ const routes = [
 describe('Dashboard', () => {
   window.ResizeObserver = ResizeObserver;
   test('agent dashboard not crash', async () => {
-    getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
+    getProgramTickets.mockResolvedValue({
+      data: { success: true, data: [] }
+    });
     useAuth.mockReturnValue({
       user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
     });
@@ -105,7 +97,9 @@ describe('Dashboard', () => {
 
 describe('Student Dashboard', () => {
   test('student dashboard not crash', async () => {
-    getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
+    getProgramTickets.mockResolvedValue({
+      data: { success: true, data: [] }
+    });
     useAuth.mockReturnValue({
       user: { role: 'Student', _id: '6366287a94358b085b0fccf7' }
     });
@@ -127,7 +121,9 @@ describe('Student Dashboard', () => {
 
 describe('Editor Dashboard', () => {
   test('editor dashboard not crash', async () => {
-    getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
+    getProgramTickets.mockResolvedValue({
+      data: { success: true, data: [] }
+    });
     useAuth.mockReturnValue({
       user: { role: 'Editor', _id: '639d192f7b10d10a9b4ac97c' }
     });
@@ -154,7 +150,9 @@ describe('Editor Dashboard', () => {
 
 describe('Admin Dashboard', () => {
   test('admin dashboard not crash', async () => {
-    getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
+    getProgramTickets.mockResolvedValue({
+      data: { success: true, data: [] }
+    });
     useAuth.mockReturnValue({
       user: { role: 'Admin', _id: '609c498ae2f954388837d2f9' }
     });

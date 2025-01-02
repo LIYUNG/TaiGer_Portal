@@ -121,7 +121,10 @@ function SingleDoc(props) {
         setSingleDocState({ error });
       }
     );
-    setSingleDocState((prevState) => ({ ...prevState, in_edit_mode: false }));
+    setSingleDocState((prevState) => ({
+      ...prevState,
+      in_edit_mode: false
+    }));
   };
 
   const ConfirmError = () => {

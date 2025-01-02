@@ -144,7 +144,9 @@ function MyDocumentCard(props) {
       setStatus(data.status);
       const fileName = data.path.split('/')[1];
       setFileName(fileName);
-      queryClient.invalidateQueries({ queryKey: ['students/doc-links'] });
+      queryClient.invalidateQueries({
+        queryKey: ['students/doc-links']
+      });
       setOpenSnackbar(true);
     }
   });
@@ -166,7 +168,9 @@ function MyDocumentCard(props) {
       }));
       const fileName = data.path.split('/')[1];
       setFileName(fileName);
-      queryClient.invalidateQueries({ queryKey: ['students/doc-links'] });
+      queryClient.invalidateQueries({
+        queryKey: ['students/doc-links']
+      });
       setOpenSnackbar(true);
     }
   });

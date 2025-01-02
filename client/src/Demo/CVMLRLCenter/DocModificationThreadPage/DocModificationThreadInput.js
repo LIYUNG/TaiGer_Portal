@@ -242,7 +242,11 @@ const InputGenerator = ({
                       type="checkbox"
                       checked={isChecked}
                       onChange={onChange}
-                      sx={{ '& .MuiSvgIcon-root': { fontSize: '1.5rem' } }}
+                      sx={{
+                        '& .MuiSvgIcon-root': {
+                          fontSize: '1.5rem'
+                        }
+                      }}
                     />
                   }
                   label="Use program's requirement"
@@ -482,7 +486,10 @@ function DocModificationThreadInput() {
           status,
           data: { success, data }
         } = await updateSurveyInput(
-          { ...surveyInputs.general, isFinalVersion: genIsFinalVersion },
+          {
+            ...surveyInputs.general,
+            isFinalVersion: genIsFinalVersion
+          },
           genIsFinalVersion
         );
 
@@ -527,7 +534,10 @@ function DocModificationThreadInput() {
     if (!isChanged.general && !isChanged.specific) {
       const alertElement = document.getElementById('alert-message');
       if (alertElement) {
-        alertElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        alertElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
       }
       setShowUnchangeAlert(true);
       return;
@@ -753,7 +763,10 @@ function DocModificationThreadInput() {
                     checked={isFinalLocked || isFinalVersion}
                     disabled={isFinalLocked}
                     onChange={(e) => {
-                      setIsChanged({ general: true, specific: true });
+                      setIsChanged({
+                        general: true,
+                        specific: true
+                      });
                       setIsFinalVersion(e.target.checked);
                     }}
                   />

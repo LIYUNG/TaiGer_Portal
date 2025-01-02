@@ -9,11 +9,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DEMO from '../../../store/constant';
 import { useTranslation } from 'react-i18next';
 
-export const TopToolbar = ({
-  table,
-  toolbarStyle,
-  onAssignClick
-}) => {
+export const TopToolbar = ({ table, toolbarStyle, onAssignClick }) => {
   const { t } = useTranslation();
   return (
     <Box sx={toolbarStyle}>

@@ -14,7 +14,7 @@ function UnrespondedThreads(props) {
   const { user } = useAuth();
   var unread_general_generaldocs = 0;
   var unread_applications_docthread = 0;
-  const { CVDeadline, daysLeftMin } = GetCVDeadline(props.student);
+  const { CVDeadline } = GetCVDeadline(props.student);
 
   if (
     props.student.applications === undefined ||
@@ -89,7 +89,9 @@ function UnrespondedThreads(props) {
                               )}`
                         }
                         className="text-info"
-                        style={{ textDecoration: 'none' }}
+                        style={{
+                          textDecoration: 'none'
+                        }}
                       >
                         {props.student.firstname}
                         {' - '}
@@ -102,7 +104,9 @@ function UnrespondedThreads(props) {
                           application_doc_thread.doc_thread_id._id
                         )}
                         className="text-info"
-                        style={{ textDecoration: 'none' }}
+                        style={{
+                          textDecoration: 'none'
+                        }}
                       >
                         {application_doc_thread.doc_thread_id.file_type}
                         {' - '}

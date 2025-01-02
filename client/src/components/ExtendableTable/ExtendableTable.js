@@ -94,7 +94,9 @@ export function ExtendableTable({ data }) {
                       <TableCell>{t('Currency')}</TableCell>
                       <TableCell>{t('Status')}</TableCell>
                       <TableCell>
-                        {t('Description', { ns: 'common' })}
+                        {t('Description', {
+                          ns: 'common'
+                        })}
                       </TableCell>
                       <TableCell>{t('UpdateAt')}</TableCell>
                     </TableRow>

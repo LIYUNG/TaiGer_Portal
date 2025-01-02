@@ -11,7 +11,6 @@ import Underline from '@editorjs/underline';
 import ColorPlugin from 'editorjs-text-color-plugin';
 import TextAlign from '@canburaks/text-align-editorjs';
 
-
 const EditorNote = (props) => {
   const ejInstance = useRef();
   // This will run only once

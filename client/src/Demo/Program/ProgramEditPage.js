@@ -36,7 +36,9 @@ function ProgramEditPage() {
       setSeverity('success');
       setMessage('Updated program successfully!');
       setOpenSnackbar(true);
-      queryClient.invalidateQueries({ queryKey: ['programs', programId] });
+      queryClient.invalidateQueries({
+        queryKey: ['programs', programId]
+      });
       navigate(DEMO.SINGLE_PROGRAM_LINK(programId));
     }
   });

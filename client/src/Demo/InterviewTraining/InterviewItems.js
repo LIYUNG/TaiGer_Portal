@@ -312,7 +312,10 @@ function InterviewItems(props) {
                   {interview.trainer_id.map((t_id, idx) => (
                     <Box
                       key={idx}
-                      style={{ display: 'flex', alignItems: 'center' }}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}
                     >
                       {t_id.firstname} {t_id.lastname} -&nbsp;
                       <LinkableNewlineText text={t_id.email} />
@@ -345,7 +348,10 @@ function InterviewItems(props) {
                 </>
               )}
               <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
-                {t('Interview Training Time', { ns: 'interviews' })}:&nbsp;
+                {t('Interview Training Time', {
+                  ns: 'interviews'
+                })}
+                :&nbsp;
               </Typography>
               {is_TaiGer_role(user) && (
                 <>
@@ -393,7 +399,9 @@ function InterviewItems(props) {
                   <Typography variant="body1">To be announced</Typography>
                 ))}
               <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
-                {t('Interview Training Meeting Link', { ns: 'interviews' })}
+                {t('Interview Training Meeting Link', {
+                  ns: 'interviews'
+                })}
                 :&nbsp;
               </Typography>
               {props.interview.event_id ? (
@@ -409,7 +417,9 @@ function InterviewItems(props) {
                 <Typography variant="body1">To be announced</Typography>
               )}
               <Typography variant="body1" fontWeight="bold" sx={{ mt: 2 }}>
-                {t('Interview Training Survey', { ns: 'interviews' })}
+                {t('Interview Training Survey', {
+                  ns: 'interviews'
+                })}
                 :&nbsp;
               </Typography>
               <Button

@@ -183,7 +183,9 @@ function StudentBriefOverview(props) {
                   <Tooltip
                     title={
                       is_User_Archived(props.student)
-                        ? t('Activate', { ns: 'common' })
+                        ? t('Activate', {
+                            ns: 'common'
+                          })
                         : t('Archive', { ns: 'common' })
                     }
                     placement="bottom-start"
@@ -229,7 +231,13 @@ function StudentBriefOverview(props) {
                     overflow: 'hidden'
                   }}
                 >
-                  <Avatar sx={{ bgcolor: '000000', width: 24, height: 24 }}>
+                  <Avatar
+                    sx={{
+                      bgcolor: '000000',
+                      width: 24,
+                      height: 24
+                    }}
+                  >
                     +
                   </Avatar>
                 </ButtonBase>
@@ -325,7 +333,9 @@ function StudentBriefOverview(props) {
               </DialogTitle>
               <DialogContent>
                 <FormControlLabel
-                  label={t('Inform student for archive', { ns: 'common' })}
+                  label={t('Inform student for archive', {
+                    ns: 'common'
+                  })}
                   control={
                     <Checkbox
                       id={`Inform student`}

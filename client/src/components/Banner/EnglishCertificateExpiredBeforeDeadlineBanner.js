@@ -17,9 +17,12 @@ export default function EnglishCertificateExpiredBeforeDeadlineBanner(props) {
       <Grid item xs={12} md={12}>
         <Card sx={{ border: '4px solid red' }}>
           <Alert severity="warning">
-            {i18next.t('english-certificate-expired-before-application-deadlines', {
-              ns: 'common'
-            })}
+            {i18next.t(
+              'english-certificate-expired-before-application-deadlines',
+              {
+                ns: 'common'
+              }
+            )}
             &nbsp;:&nbsp;
           </Alert>
           {englishCertificatedExpiredBeforeTheseProgramDeadlines(

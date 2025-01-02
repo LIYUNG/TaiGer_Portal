@@ -145,7 +145,10 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                 {/* Collapsible row for program categories */}
                 <TableRow>
                   <TableCell
-                    style={{ paddingBottom: 0, paddingTop: 0 }}
+                    style={{
+                      paddingBottom: 0,
+                      paddingTop: 0
+                    }}
                     colSpan={8}
                   >
                     <Collapse

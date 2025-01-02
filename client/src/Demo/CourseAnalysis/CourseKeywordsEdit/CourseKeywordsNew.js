@@ -162,7 +162,13 @@ const CourseKeywordsOverviewNew = () => {
             <Typography variant="body1">
               {t('Course Keywords (ZH)', { ns: 'common' })}
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                mb: 2
+              }}
+            >
               <TextField
                 label="Add course keyword here..."
                 variant="outlined"
@@ -201,7 +207,13 @@ const CourseKeywordsOverviewNew = () => {
             <Typography variant="body1">
               {t('Anti-Keywords (ZH)', { ns: 'common' })}
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                mb: 2
+              }}
+            >
               <TextField
                 label="Add course anti-keyword here..."
                 variant="outlined"
@@ -236,7 +248,13 @@ const CourseKeywordsOverviewNew = () => {
             <Typography variant="body1">
               {t('Course Keywords (EN)', { ns: 'common' })}
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                mb: 2
+              }}
+            >
               <TextField
                 label="Add course keyword here..."
                 variant="outlined"
@@ -272,7 +290,13 @@ const CourseKeywordsOverviewNew = () => {
             <Typography variant="body1">
               {t('Anti-Keywords (EN)', { ns: 'common' })}
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                mb: 2
+              }}
+            >
               <TextField
                 label="Add course anti-keyword here..."
                 variant="outlined"
@@ -291,7 +315,14 @@ const CourseKeywordsOverviewNew = () => {
                 + Add (EN)
               </Button>
             </Box>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 1 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 1,
+                mb: 1
+              }}
+            >
               {selectedCategory?.antiKeywords?.en?.map((keyword, index) => (
                 <Chip
                   key={index}

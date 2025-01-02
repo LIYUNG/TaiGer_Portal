@@ -127,7 +127,9 @@ function EditorDocsProgress(props) {
           const { success } = resp.data;
           const { status } = resp;
           if (success) {
-            let student_temp = { ...editorDocsProgressState.student };
+            let student_temp = {
+              ...editorDocsProgressState.student
+            };
             let general_docs_idx = student_temp.generaldocs_threads.findIndex(
               (thread) =>
                 thread.doc_thread_id._id.toString() ===
@@ -179,7 +181,9 @@ function EditorDocsProgress(props) {
           const { success } = resp.data;
           const { status } = resp;
           if (success) {
-            let student_temp = { ...editorDocsProgressState.student };
+            let student_temp = {
+              ...editorDocsProgressState.student
+            };
             let application_idx = student_temp.applications.findIndex(
               (application) =>
                 application.programId._id.toString() ===
@@ -475,7 +479,9 @@ function EditorDocsProgress(props) {
           const { data, success } = resp.data;
           const { status } = resp;
           if (success) {
-            let student_temp = { ...editorDocsProgressState.student };
+            let student_temp = {
+              ...editorDocsProgressState.student
+            };
             student_temp.generaldocs_threads.push(data);
             setEditorDocsProgressState((prevState) => ({
               ...prevState,

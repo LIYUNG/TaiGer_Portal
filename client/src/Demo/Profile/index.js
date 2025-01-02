@@ -318,7 +318,11 @@ function Profile() {
   const personalDataFields = [
     { name: 'firstname', label: `${t('First Name')} (English)`, sm: 6 },
     { name: 'lastname', label: `${t('Last Name')} (English)`, sm: 6 },
-    { name: 'firstname_chinese', label: `${t('First Name')} (中文)`, sm: 6 },
+    {
+      name: 'firstname_chinese',
+      label: `${t('First Name')} (中文)`,
+      sm: 6
+    },
     { name: 'lastname_chinese', label: `${t('Last Name')} (中文)`, sm: 6 },
     {
       name: 'birthday',
@@ -538,7 +542,9 @@ function Profile() {
                             <Checkbox
                               icon={icon}
                               checkedIcon={checkedIcon}
-                              style={{ marginRight: 8 }}
+                              style={{
+                                marginRight: 8
+                              }}
                               checked={selected}
                             />
                             {option.label}
@@ -579,7 +585,9 @@ function Profile() {
       >
         <DialogTitle>{t('Update Successfully', { ns: 'common' })}</DialogTitle>
         <DialogContent>
-          {t('Personal Data is updated successfully!', { ns: 'common' })}
+          {t('Personal Data is updated successfully!', {
+            ns: 'common'
+          })}
         </DialogContent>
         <DialogActions>
           <Button color="primary" variant="contained" onClick={setmodalhide}>

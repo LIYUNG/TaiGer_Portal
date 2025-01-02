@@ -140,7 +140,9 @@ function CommunicationSinglePageBody({ loadedData }) {
                       fontWeight="bold"
                       sx={{ display: 'flex' }}
                     >
-                      {t('My Documents', { ns: 'common' })}{' '}
+                      {t('My Documents', {
+                        ns: 'common'
+                      })}{' '}
                       <LaunchIcon fontSize="small" />
                     </Link>
                     ，文件有的都盡量先掃描上傳，

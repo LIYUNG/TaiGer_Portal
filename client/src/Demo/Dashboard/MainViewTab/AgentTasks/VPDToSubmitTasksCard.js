@@ -48,7 +48,9 @@ function VPDToSubmitTasks(props) {
                   <>
                     <TableCell className="text-warning">
                       {t('Paid', { ns: 'common' })},{' '}
-                      {t('Waiting VPD result', { ns: 'common' })}
+                      {t('Waiting VPD result', {
+                        ns: 'common'
+                      })}
                     </TableCell>
                   </>
                 ) : (

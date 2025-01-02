@@ -215,7 +215,10 @@ const EditorNew = (props) => {
                 // TODO: collect uploaded files (to be deleted later if cancel editing)
                 formData.append('file', file);
                 const res = await uploadImage(formData);
-                return { success: 1, file: { url: res.data.data } };
+                return {
+                  success: 1,
+                  file: { url: res.data.data }
+                };
               },
               async uploadByUrl(url) {
                 return {

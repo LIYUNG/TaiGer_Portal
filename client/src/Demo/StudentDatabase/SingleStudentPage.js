@@ -459,7 +459,9 @@ export const SingleStudentPageMainContent = ({
               aria-label="basic tabs example"
             >
               <Tab
-                label={t('Applications Overview', { ns: 'common' })}
+                label={t('Applications Overview', {
+                  ns: 'common'
+                })}
                 {...a11yProps(0)}
               />
               <Tab label={t('Documents', { ns: 'common' })} {...a11yProps(1)} />

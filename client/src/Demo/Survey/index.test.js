@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
 import Survey from '.';
 import 'react-i18next';
 import {
@@ -8,17 +7,9 @@ import {
   getProgramTickets,
   getMyAcademicBackground
 } from '../../api';
-import axios from 'axios';
 import { useAuth } from '../../components/AuthProvider/index';
-import {
-  MemoryRouter,
-  RouterProvider,
-  createMemoryRouter
-} from 'react-router-dom';
-const students = [
-  { firstname: 'student1', lastname: 'Wang', role: 'Student' },
-  { firstname: 'student2', lastname: 'Lin', role: 'Student' }
-];
+import { RouterProvider, createMemoryRouter } from 'react-router-dom';
+
 import { mockSingleData } from '../../test/testingStudentData';
 import { SurveyProvider } from '../../components/SurveyProvider';
 
@@ -36,7 +27,6 @@ jest.mock('react-i18next', () => ({
 }));
 
 jest.mock('../../components/AuthProvider');
-const mockedAxios = jest.Mocked;
 
 const routes = [
   {
@@ -79,7 +69,9 @@ describe('Survey', () => {
         survey_link: [{ key: 'Grading_System', link: 'some_link' }]
       }
     });
-    getProgramTickets.mockResolvedValue({ data: { success: true, data: [] } });
+    getProgramTickets.mockResolvedValue({
+      data: { success: true, data: [] }
+    });
     useAuth.mockReturnValue({
       user: { role: 'Student', _id: '6366287a94358b085b0fccf7' }
     });

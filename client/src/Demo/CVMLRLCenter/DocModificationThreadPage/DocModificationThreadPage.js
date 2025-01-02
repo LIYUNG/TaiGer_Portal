@@ -897,7 +897,9 @@ function DocModificationThreadPage() {
                 <>
                   <Typography variant="body1">
                     {docModificationThreadPageState.thread.file_type === 'CV'
-                      ? t('cv-instructions', { ns: 'cvmlrl' })
+                      ? t('cv-instructions', {
+                          ns: 'cvmlrl'
+                        })
                       : t('please-fill-template', {
                           tenant: appConfig.companyName
                         })}
@@ -926,7 +928,9 @@ function DocModificationThreadPage() {
                               color="secondary"
                               startIcon={<DownloadIcon />}
                             >
-                              {t('Download', { ns: 'common' })}
+                              {t('Download', {
+                                ns: 'common'
+                              })}
                             </Button>
                           </a>
                           {t('Supervisor')}：
@@ -941,7 +945,9 @@ function DocModificationThreadPage() {
                               color="secondary"
                               startIcon={<DownloadIcon />}
                             >
-                              {t('Download', { ns: 'common' })}
+                              {t('Download', {
+                                ns: 'common'
+                              })}
                             </Button>
                           </a>
                         </b>
@@ -958,7 +964,9 @@ function DocModificationThreadPage() {
                               color="secondary"
                               startIcon={<DownloadIcon />}
                             >
-                              {t('Download', { ns: 'common' })}
+                              {t('Download', {
+                                ns: 'common'
+                              })}
                             </Button>
                           </a>
                           <br />
@@ -972,7 +980,9 @@ function DocModificationThreadPage() {
                                 <Button
                                   color="secondary"
                                   variant="contained"
-                                  sx={{ my: 2 }}
+                                  sx={{
+                                    my: 2
+                                  }}
                                 >
                                   Editor Helper
                                 </Button>
@@ -1032,25 +1042,39 @@ function DocModificationThreadPage() {
                   {docModificationThreadPageState.thread.file_type === 'CV' ? (
                     <>
                       <Typography>
-                        {t('cv-requirements-1', { ns: 'cvmlrl' })}
+                        {t('cv-requirements-1', {
+                          ns: 'cvmlrl'
+                        })}
                         {` `}
-                        <b>{t('cv-requirements-1.1', { ns: 'cvmlrl' })}</b>
+                        <b>
+                          {t('cv-requirements-1.1', {
+                            ns: 'cvmlrl'
+                          })}
+                        </b>
                       </Typography>
                       <Typography>
-                        {t('cv-requirements-2', { ns: 'cvmlrl' })}
+                        {t('cv-requirements-2', {
+                          ns: 'cvmlrl'
+                        })}
                       </Typography>
                       <Typography>
-                        {t('cv-reminder-1', { ns: 'cvmlrl' })}
+                        {t('cv-reminder-1', {
+                          ns: 'cvmlrl'
+                        })}
                       </Typography>
                       <Typography>
-                        {t('cv-reminder-2', { ns: 'cvmlrl' })}
+                        {t('cv-reminder-2', {
+                          ns: 'cvmlrl'
+                        })}
                       </Typography>
                     </>
                   ) : template_obj?.prop.includes('RL') ||
                     template_obj?.alias.includes('Recommendation') ? (
                     <>
                       <Typography>
-                        {t('rl-requirements-1', { ns: 'cvmlrl' })}
+                        {t('rl-requirements-1', {
+                          ns: 'cvmlrl'
+                        })}
                       </Typography>
                     </>
                   ) : (
@@ -1173,7 +1197,10 @@ function DocModificationThreadPage() {
                     {docModificationThreadPageState.thread.program_id.semester}
                   </Typography>
                   <Typography variant="body1" fontWeight="bold">
-                    {t('Program Language', { ns: 'common' })}:
+                    {t('Program Language', {
+                      ns: 'common'
+                    })}
+                    :
                   </Typography>
                   <Typography>
                     {docModificationThreadPageState.thread.program_id.lang}

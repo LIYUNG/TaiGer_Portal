@@ -1,12 +1,14 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
+import { render, waitFor } from '@testing-library/react';
 import SingleProgram from './SingleProgram';
 import 'react-i18next';
 import { getProgram, getProgramTicket } from '../../api';
-import axios from 'axios';
 import { useAuth } from '../../components/AuthProvider';
-import { createMemoryRouter, MemoryRouter, RouterProvider, useParams } from 'react-router-dom';
+import {
+  createMemoryRouter,
+  RouterProvider,
+  useParams
+} from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { mockSingleProgramNoStudentsData } from '../../test/testingSingleProgramPageData';
@@ -54,7 +56,7 @@ const routes = [
     errorElement: <div>Error</div>,
     loader: () => {
       return {
-        studentAndEssays: { data: mockSingleData, essays: { data: [] } }
+        studentAndEssays: { data: [], essays: { data: [] } }
       };
     }
   }
@@ -70,7 +72,9 @@ describe('Single Program Page checking', () => {
   window.ResizeObserver = ResizeObserver;
   test('page not crash', async () => {
     getProgram.mockResolvedValue({ data: mockSingleProgramNoStudentsData });
-    getProgramTicket.mockResolvedValue({ data: { success: true, data: [] } });
+    getProgramTicket.mockResolvedValue({
+      data: { success: true, data: [] }
+    });
     useAuth.mockReturnValue({
       user: { role: 'Student', _id: '639baebf8b84944b872cf648' }
     });

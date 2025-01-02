@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +12,9 @@ import { is_TaiGer_role } from '@taiger-common/core';
 import DEMO from '../../../../store/constant';
 import Loading from '../../../../components/Loading/Loading';
 
-import MessageList from '../../../../components/Message/MessageList';
+import DocModificationThreadPage from '../DocModificationThreadPage';
+
+// import MessageList from '../../../../components/Message/MessageList';
 import { getMyThreadMessages, getMessagThread } from '../../../../api';
 
 const getMyThreadMessageQuery = () => ({
@@ -193,7 +197,7 @@ function DocumentCommunicationExpandPage() {
           })}
         </Grid>
         <Grid item xs={9}>
-          <Box>
+          {/* <Box>
             <MessageList
               isLoading={!threadIsLoading}
               documentsthreadId={threadId}
@@ -203,7 +207,9 @@ function DocumentCommunicationExpandPage() {
                 .fill()
                 .map((x, i) => (i === thread?.messages?.length - 1 ? i : -1))}
             />
-          </Box>
+          </Box> */}
+
+          <DocModificationThreadPage threadId={threadId} />
 
           {/* {messages?.map((msgItem) => (
             <Typography key={msgItem._id}>

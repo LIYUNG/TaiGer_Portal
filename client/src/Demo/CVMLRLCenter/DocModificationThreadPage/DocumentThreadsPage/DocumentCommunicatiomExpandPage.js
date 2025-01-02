@@ -3,7 +3,7 @@ import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { useQuery } from '@tanstack/react-query';
-import { Box, Divider, Grid, Typography } from '@mui/material';
+import { Box, Checkbox, Divider, Grid, Typography, Stack } from '@mui/material';
 
 import { useAuth } from '../../../../components/AuthProvider';
 import { is_TaiGer_role } from '@taiger-common/core';
@@ -11,6 +11,7 @@ import DEMO from '../../../../store/constant';
 import Loading from '../../../../components/Loading/Loading';
 
 import DocModificationThreadPage from '../DocModificationThreadPage';
+import { FILE_OK_SYMBOL, FILE_MISSING_SYMBOL } from '../../../Utils/contants';
 import { getMyThreadMessages, getMessagThread } from '../../../../api';
 
 const getMyThreadMessageQuery = () => ({
@@ -44,12 +45,28 @@ const getThreadMessages = (threadId) => ({
   staleTime: 1000 * 60 // 1 minutes
 });
 
+const ThreadBox = ({ thread, onClick }) => {
+  const isFinal = thread?.isFinalVersion;
+  return (
+    <Stack direction="row" alignItems="center" spacing={1}>
+      {isFinal ? FILE_OK_SYMBOL : FILE_MISSING_SYMBOL}
+      <Typography
+        onClick={onClick}
+        sx={{ fontStyle: isFinal ? 'italic' : 'normal' }}
+      >
+        {`${thread.file_type}`}
+      </Typography>
+    </Stack>
+  );
+};
+
 function DocumentCommunicationExpandPage() {
   const { threadId: paramThreadId } = useParams();
   const navigate = useNavigate();
 
   const { user } = useAuth();
   const { t } = useTranslation();
+  const [showAllThreads, setShowAllThreads] = useState(true);
   const [threadId, setThreadId] = useState(paramThreadId || null);
 
   const {
@@ -164,28 +181,32 @@ function DocumentCommunicationExpandPage() {
           )}
         </Grid>
         <Grid item xs={1.5}>
-          {sortedThreads?.map((thread) => {
-            const isFinal = thread?.isFinalVersion;
-            const category = getCategory(thread.file_type);
-            const showCategoryLabel = category !== currentCategory;
-            currentCategory = category;
+          <Checkbox
+            checked={showAllThreads}
+            onChange={() => setShowAllThreads(!showAllThreads)}
+          />{' '}
+          Show all threads
+          {sortedThreads
+            ?.filter((thread) => showAllThreads || !thread?.isFinalVersion)
+            ?.map((thread) => {
+              const category = getCategory(thread.file_type);
+              const showCategoryLabel = category !== currentCategory;
+              currentCategory = category;
 
-            return (
-              <React.Fragment key={thread._id}>
-                {showCategoryLabel && (
-                  <Divider textAlign="center" sx={{ p: 3 }}>
-                    {category}
-                  </Divider>
-                )}
-                <Typography
-                  onClick={() => handleOnClickThread(thread._id)}
-                  sx={{ fontStyle: isFinal ? 'italic' : 'normal' }}
-                >
-                  {`${thread.file_type}`}
-                </Typography>
-              </React.Fragment>
-            );
-          })}
+              return (
+                <React.Fragment key={thread._id}>
+                  {showCategoryLabel && (
+                    <Divider textAlign="center" sx={{ p: 3 }}>
+                      {category}
+                    </Divider>
+                  )}
+                  <ThreadBox
+                    thread={thread}
+                    onClick={() => handleOnClickThread(thread._id)}
+                  />
+                </React.Fragment>
+              );
+            })}
         </Grid>
         <Grid item xs={9}>
           {threadId && <DocModificationThreadPage threadId={threadId} />}

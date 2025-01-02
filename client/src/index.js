@@ -16,19 +16,19 @@ const storedLanguage = localStorage.getItem('locale') || 'en';
 i18n.changeLanguage(storedLanguage);
 
 const app = (
-  <CustomThemeProvider>
-    <I18nextProvider>
-      <SnackBarProvider>
-        <AuthProvider>
-          <QueryClientProvider client={queryClient}>
-            <StrictMode>
-              <App />
-            </StrictMode>
-          </QueryClientProvider>
-        </AuthProvider>
-      </SnackBarProvider>
-    </I18nextProvider>
-  </CustomThemeProvider>
+    <CustomThemeProvider>
+        <I18nextProvider>
+            <SnackBarProvider>
+                <AuthProvider>
+                    <QueryClientProvider client={queryClient}>
+                        <StrictMode>
+                            <App />
+                        </StrictMode>
+                    </QueryClientProvider>
+                </AuthProvider>
+            </SnackBarProvider>
+        </I18nextProvider>
+    </CustomThemeProvider>
 );
 
 // Create a root.

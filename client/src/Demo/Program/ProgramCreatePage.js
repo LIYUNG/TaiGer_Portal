@@ -11,52 +11,52 @@ import { queryClient } from '../../api/client';
 import { useSnackBar } from '../../contexts/use-snack-bar';
 
 function ProgramCreatePage() {
-  const { distinctSchools } = useLoaderData();
-  const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
-  const navigate = useNavigate();
+    const { distinctSchools } = useLoaderData();
+    const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
+    const navigate = useNavigate();
 
-  const onClickIsCreateApplicationMode = () => {
-    navigate(DEMO.PROGRAMS);
-  };
+    const onClickIsCreateApplicationMode = () => {
+        navigate(DEMO.PROGRAMS);
+    };
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: createProgramV2,
-    onError: (error) => {
-      setSeverity('error');
-      setMessage(error.message || 'An error occurred. Please try again.');
-      setOpenSnackbar(true);
-    },
-    onSuccess: () => {
-      setSeverity('success');
-      setMessage('Created program successfully!');
-      setOpenSnackbar(true);
-      queryClient.invalidateQueries({ queryKey: ['programs'] });
-      navigate(DEMO.PROGRAMS);
-    }
-  });
+    const { mutate, isPending } = useMutation({
+        mutationFn: createProgramV2,
+        onError: (error) => {
+            setSeverity('error');
+            setMessage(error.message || 'An error occurred. Please try again.');
+            setOpenSnackbar(true);
+        },
+        onSuccess: () => {
+            setSeverity('success');
+            setMessage('Created program successfully!');
+            setOpenSnackbar(true);
+            queryClient.invalidateQueries({ queryKey: ['programs'] });
+            navigate(DEMO.PROGRAMS);
+        }
+    });
 
-  const handleSubmitProgram = (program) => {
-    mutate({ program });
-  };
+    const handleSubmitProgram = (program) => {
+        mutate({ program });
+    };
 
-  return (
-    <Box>
-      <Suspense fallback={<Loading />}>
-        <Await resolve={distinctSchools}>
-          {(loadedData) => (
-            <>
-              <NewProgramEdit
-                handleClick={onClickIsCreateApplicationMode}
-                handleSubmit_Program={handleSubmitProgram}
-                programs={loadedData}
-                isSubmitting={isPending}
-                type={'create'}
-              />
-            </>
-          )}
-        </Await>
-      </Suspense>
-    </Box>
-  );
+    return (
+        <Box>
+            <Suspense fallback={<Loading />}>
+                <Await resolve={distinctSchools}>
+                    {(loadedData) => (
+                        <>
+                            <NewProgramEdit
+                                handleClick={onClickIsCreateApplicationMode}
+                                handleSubmit_Program={handleSubmitProgram}
+                                programs={loadedData}
+                                isSubmitting={isPending}
+                                type={'create'}
+                            />
+                        </>
+                    )}
+                </Await>
+            </Suspense>
+        </Box>
+    );
 }
 export default ProgramCreatePage;

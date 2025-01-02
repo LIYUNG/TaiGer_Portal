@@ -11,62 +11,62 @@ import { mockAdmissionsData } from '../../test/testingAdmissionsData';
 
 jest.mock('axios');
 jest.mock('../../api', () => ({
-  ...jest.requireActual('../../api'),
-  getAdmissions: jest.fn()
+    ...jest.requireActual('../../api'),
+    getAdmissions: jest.fn()
 }));
 
 jest.mock('react-i18next', () => ({
-  useTranslation: () => {
-    return {
-      t: (str) => str,
-      i18n: { changeLanguage: () => new Promise(() => {}) }
-    };
-  },
-  initReactI18next: { type: '3rdParty', init: () => {} }
+    useTranslation: () => {
+        return {
+            t: (str) => str,
+            i18n: { changeLanguage: () => new Promise(() => {}) }
+        };
+    },
+    initReactI18next: { type: '3rdParty', init: () => {} }
 }));
 
 jest.mock('../../components/AuthProvider');
 
 const createTestQueryClient = () =>
-  new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false // Disable retries for faster tests
-      }
-    }
-  });
+    new QueryClient({
+        defaultOptions: {
+            queries: {
+                retry: false // Disable retries for faster tests
+            }
+        }
+    });
 
 const renderWithQueryClient = (ui) => {
-  const testQueryClient = createTestQueryClient();
-  return render(
-    <QueryClientProvider client={testQueryClient}>{ui}</QueryClientProvider>
-  );
+    const testQueryClient = createTestQueryClient();
+    return render(
+        <QueryClientProvider client={testQueryClient}>{ui}</QueryClientProvider>
+    );
 };
 
 class ResizeObserver {
-  observe() {}
-  disconnect() {}
-  unobserve() {}
+    observe() {}
+    disconnect() {}
+    unobserve() {}
 }
 
 describe('Admissions page checking', () => {
-  window.ResizeObserver = ResizeObserver;
-  test('Admissions page not crash', async () => {
-    getAdmissions.mockResolvedValue({ data: mockAdmissionsData });
-    useAuth.mockReturnValue({
-      user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
-    });
-    renderWithQueryClient(
-      <MemoryRouter>
-        <Admissions />
-      </MemoryRouter>
-    );
+    window.ResizeObserver = ResizeObserver;
+    test('Admissions page not crash', async () => {
+        getAdmissions.mockResolvedValue({ data: mockAdmissionsData });
+        useAuth.mockReturnValue({
+            user: { role: 'Agent', _id: '639baebf8b84944b872cf648' }
+        });
+        renderWithQueryClient(
+            <MemoryRouter>
+                <Admissions />
+            </MemoryRouter>
+        );
 
-    await waitFor(() => {
-      // TODO
-      expect(screen.getByTestId('admissinos_page')).toHaveTextContent(
-        'Admissions'
-      );
+        await waitFor(() => {
+            // TODO
+            expect(screen.getByTestId('admissinos_page')).toHaveTextContent(
+                'Admissions'
+            );
+        });
     });
-  });
 });

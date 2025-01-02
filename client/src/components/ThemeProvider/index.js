@@ -7,25 +7,25 @@ import { ThemeProvider } from '@mui/material';
 const CustomThemeContext = createContext();
 
 export const CustomThemeProvider = ({ children }) => {
-  const isStoredDarkMode = localStorage.getItem('mode') === 'dark';
-  const [isDarkMode, setIsDarkMode] = useState(isStoredDarkMode);
+    const isStoredDarkMode = localStorage.getItem('mode') === 'dark';
+    const [isDarkMode, setIsDarkMode] = useState(isStoredDarkMode);
 
-  const toggleDarkMode = () => {
-    localStorage.setItem('mode', !isDarkMode ? 'dark' : 'light');
-    setIsDarkMode(!isDarkMode);
-  };
+    const toggleDarkMode = () => {
+        localStorage.setItem('mode', !isDarkMode ? 'dark' : 'light');
+        setIsDarkMode(!isDarkMode);
+    };
 
-  const themeData = { isDarkMode, toggleDarkMode };
+    const themeData = { isDarkMode, toggleDarkMode };
 
-  return (
-    <CustomThemeContext.Provider value={themeData}>
-      <ThemeProvider theme={isDarkMode ? themeDark : themeLight}>
-        {children}
-      </ThemeProvider>
-    </CustomThemeContext.Provider>
-  );
+    return (
+        <CustomThemeContext.Provider value={themeData}>
+            <ThemeProvider theme={isDarkMode ? themeDark : themeLight}>
+                {children}
+            </ThemeProvider>
+        </CustomThemeContext.Provider>
+    );
 };
 
 export const useCustomTheme = () => {
-  return useContext(CustomThemeContext);
+    return useContext(CustomThemeContext);
 };

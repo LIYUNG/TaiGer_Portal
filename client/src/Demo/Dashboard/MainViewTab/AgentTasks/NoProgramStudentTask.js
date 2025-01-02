@@ -6,38 +6,38 @@ import { hasApplications } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 
 function NoProgramStudentTask(props) {
-  return (
-    <>
-      {/* check if no program selected */}
-      {!hasApplications(props.student) && (
-        <TableRow>
-          <TableCell>
-            <Link
-              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                props.student._id.toString(),
-                DEMO.APPLICATION_HASH
-              )}`}
-              component={LinkDom}
-            >
-              {props.student.firstname} {props.student.lastname}
-            </Link>
-          </TableCell>
-          <TableCell>
-            {' '}
-            {props.student.application_preference
-              ?.expected_application_date || (
-              <span className="text-danger">TBD</span>
+    return (
+        <>
+            {/* check if no program selected */}
+            {!hasApplications(props.student) && (
+                <TableRow>
+                    <TableCell>
+                        <Link
+                            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                props.student._id.toString(),
+                                DEMO.APPLICATION_HASH
+                            )}`}
+                            component={LinkDom}
+                        >
+                            {props.student.firstname} {props.student.lastname}
+                        </Link>
+                    </TableCell>
+                    <TableCell>
+                        {' '}
+                        {props.student.application_preference
+                            ?.expected_application_date || (
+                            <span className="text-danger">TBD</span>
+                        )}
+                        {'/'}
+                        {props.student.application_preference
+                            ?.expected_application_semester || (
+                            <span className="text-danger">TBD</span>
+                        )}
+                    </TableCell>
+                </TableRow>
             )}
-            {'/'}
-            {props.student.application_preference
-              ?.expected_application_semester || (
-              <span className="text-danger">TBD</span>
-            )}
-          </TableCell>
-        </TableRow>
-      )}
-    </>
-  );
+        </>
+    );
 }
 
 export default NoProgramStudentTask;

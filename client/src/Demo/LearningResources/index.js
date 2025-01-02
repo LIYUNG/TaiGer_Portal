@@ -8,21 +8,21 @@ import { useAuth } from '../../components/AuthProvider';
 import { is_TaiGer_Student, is_TaiGer_role } from '@taiger-common/core';
 
 function LearningResources() {
-  const { user } = useAuth();
+    const { user } = useAuth();
 
-  if (!is_TaiGer_role(user) && !is_TaiGer_Student(user)) {
-    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
-  }
-  TabTitle('Learning Resources');
+    if (!is_TaiGer_role(user) && !is_TaiGer_Student(user)) {
+        return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+    }
+    TabTitle('Learning Resources');
 
-  return (
-    <Box>
-      <Card>
-        <Typography>Resources A</Typography>
-        <Typography>Comming soon!</Typography>
-      </Card>
-    </Box>
-  );
+    return (
+        <Box>
+            <Card>
+                <Typography>Resources A</Typography>
+                <Typography>Comming soon!</Typography>
+            </Card>
+        </Box>
+    );
 }
 
 export default LearningResources;

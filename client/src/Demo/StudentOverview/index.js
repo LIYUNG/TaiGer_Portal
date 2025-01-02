@@ -13,36 +13,40 @@ import { appConfig } from '../../config';
 import { getAllActiveStudentsQuery } from '../../api/query';
 
 function StudentOverviewPage() {
-  const { user } = useAuth();
-  const { data } = useQuery(getAllActiveStudentsQuery());
+    const { user } = useAuth();
+    const { data } = useQuery(getAllActiveStudentsQuery());
 
-  if (!is_TaiGer_role(user)) {
-    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
-  }
-  TabTitle(i18next.t('Students Overview', { ns: 'common' }));
+    if (!is_TaiGer_role(user)) {
+        return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+    }
+    TabTitle(i18next.t('Students Overview', { ns: 'common' }));
 
-  return (
-    <Box data-testid="student_overview">
-      <Breadcrumbs aria-label="breadcrumb">
-        <Link
-          underline="hover"
-          color="inherit"
-          component={LinkDom}
-          to={`${DEMO.DASHBOARD_LINK}`}
-        >
-          {appConfig.companyName}
-        </Link>
-        <Typography color="text.primary">
-          {i18next.t('All Students', { ns: 'common' })}
-        </Typography>
-        <Typography color="text.primary">
-          {i18next.t('All Active Student Overview', { ns: 'common' })} (
-          {data?.data?.length})
-        </Typography>
-      </Breadcrumbs>
-      <StudentOverviewTable title="All" students={data?.data} user={user} />
-    </Box>
-  );
+    return (
+        <Box data-testid="student_overview">
+            <Breadcrumbs aria-label="breadcrumb">
+                <Link
+                    underline="hover"
+                    color="inherit"
+                    component={LinkDom}
+                    to={`${DEMO.DASHBOARD_LINK}`}
+                >
+                    {appConfig.companyName}
+                </Link>
+                <Typography color="text.primary">
+                    {i18next.t('All Students', { ns: 'common' })}
+                </Typography>
+                <Typography color="text.primary">
+                    {i18next.t('All Active Student Overview', { ns: 'common' })}{' '}
+                    ({data?.data?.length})
+                </Typography>
+            </Breadcrumbs>
+            <StudentOverviewTable
+                title="All"
+                students={data?.data}
+                user={user}
+            />
+        </Box>
+    );
 }
 
 export default StudentOverviewPage;

@@ -7,86 +7,99 @@ import { convertDate } from '../../../../utils/contants';
 import { isProgramDecided } from '../../../Utils/checking-functions';
 
 function RespondedThreads(props) {
-  var unread_general_generaldocs;
-  var unread_applications_docthread;
+    var unread_general_generaldocs;
+    var unread_applications_docthread;
 
-  if (
-    props.student.applications === undefined ||
-    props.student.applications.length === 0
-  ) {
-    unread_general_generaldocs = <></>;
-    unread_applications_docthread = <></>;
-  } else {
-    unread_general_generaldocs = props.student.generaldocs_threads.map(
-      (generaldocs_threads, i) => (
-        <TableRow key={i}>
-          {!generaldocs_threads.isFinalVersion &&
-            generaldocs_threads.latest_message_left_by_id ===
-              props.student._id.toString() && (
-              <>
-                <TableCell>
-                  <Link
-                    underline="hover"
-                    to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                      generaldocs_threads.doc_thread_id._id
-                    )}
-                    component={LinkDom}
-                  >
-                    {generaldocs_threads.doc_thread_id.file_type}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  {' '}
-                  {convertDate(generaldocs_threads.updatedAt)}
-                </TableCell>
-              </>
-            )}
-        </TableRow>
-      )
-    );
-
-    unread_applications_docthread = props.student.applications.map(
-      (application) =>
-        application.doc_modification_thread.map(
-          (application_doc_thread, idx) => (
-            <TableRow key={idx}>
-              {!application_doc_thread.isFinalVersion &&
-                application_doc_thread.latest_message_left_by_id ===
-                  props.student._id.toString() &&
-                isProgramDecided(application) && (
-                  <>
-                    <TableCell>
-                      <Link
-                        underline="hover"
-                        to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                          application_doc_thread.doc_thread_id._id
+    if (
+        props.student.applications === undefined ||
+        props.student.applications.length === 0
+    ) {
+        unread_general_generaldocs = <></>;
+        unread_applications_docthread = <></>;
+    } else {
+        unread_general_generaldocs = props.student.generaldocs_threads.map(
+            (generaldocs_threads, i) => (
+                <TableRow key={i}>
+                    {!generaldocs_threads.isFinalVersion &&
+                        generaldocs_threads.latest_message_left_by_id ===
+                            props.student._id.toString() && (
+                            <>
+                                <TableCell>
+                                    <Link
+                                        underline="hover"
+                                        to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                                            generaldocs_threads.doc_thread_id
+                                                ._id
+                                        )}
+                                        component={LinkDom}
+                                    >
+                                        {
+                                            generaldocs_threads.doc_thread_id
+                                                .file_type
+                                        }
+                                    </Link>
+                                </TableCell>
+                                <TableCell>
+                                    {' '}
+                                    {convertDate(generaldocs_threads.updatedAt)}
+                                </TableCell>
+                            </>
                         )}
-                        component={LinkDom}
-                      >
-                        {application_doc_thread.doc_thread_id.file_type}
-                        {' - '}
-                        {application.programId.school}
-                        {' - '}
-                        {application.programId.program_name}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      {convertDate(application_doc_thread.updatedAt)}
-                    </TableCell>
-                  </>
-                )}
-            </TableRow>
-          )
-        )
-    );
-  }
+                </TableRow>
+            )
+        );
 
-  return (
-    <>
-      {unread_general_generaldocs}
-      {unread_applications_docthread}
-    </>
-  );
+        unread_applications_docthread = props.student.applications.map(
+            (application) =>
+                application.doc_modification_thread.map(
+                    (application_doc_thread, idx) => (
+                        <TableRow key={idx}>
+                            {!application_doc_thread.isFinalVersion &&
+                                application_doc_thread.latest_message_left_by_id ===
+                                    props.student._id.toString() &&
+                                isProgramDecided(application) && (
+                                    <>
+                                        <TableCell>
+                                            <Link
+                                                underline="hover"
+                                                to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                                                    application_doc_thread
+                                                        .doc_thread_id._id
+                                                )}
+                                                component={LinkDom}
+                                            >
+                                                {
+                                                    application_doc_thread
+                                                        .doc_thread_id.file_type
+                                                }
+                                                {' - '}
+                                                {application.programId.school}
+                                                {' - '}
+                                                {
+                                                    application.programId
+                                                        .program_name
+                                                }
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell>
+                                            {convertDate(
+                                                application_doc_thread.updatedAt
+                                            )}
+                                        </TableCell>
+                                    </>
+                                )}
+                        </TableRow>
+                    )
+                )
+        );
+    }
+
+    return (
+        <>
+            {unread_general_generaldocs}
+            {unread_applications_docthread}
+        </>
+    );
 }
 
 export default RespondedThreads;

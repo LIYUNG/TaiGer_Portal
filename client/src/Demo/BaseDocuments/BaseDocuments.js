@@ -15,64 +15,64 @@ import { useQuery } from '@tanstack/react-query';
 import { getStudentsAndDocLinks2Query } from '../../api/query';
 
 function BaseDocuments() {
-  const { user } = useAuth();
-  const { t } = useTranslation();
-  const { data, isLoading, isError, error } = useQuery(
-    getStudentsAndDocLinks2Query()
-  );
+    const { user } = useAuth();
+    const { t } = useTranslation();
+    const { data, isLoading, isError, error } = useQuery(
+        getStudentsAndDocLinks2Query()
+    );
 
-  TabTitle('Base Documents');
+    TabTitle('Base Documents');
 
-  const students = data?.data;
-  const base_docs_link = data?.base_docs_link;
+    const students = data?.data;
+    const base_docs_link = data?.base_docs_link;
 
-  const StudentDocoumentsView = () =>
-    students?.map((student, i) => (
-      <Card key={i}>
-        <BaseDocument_StudentView
-          student={student}
-          base_docs_link={base_docs_link}
-        />
-      </Card>
-    ));
+    const StudentDocoumentsView = () =>
+        students?.map((student, i) => (
+            <Card key={i}>
+                <BaseDocument_StudentView
+                    student={student}
+                    base_docs_link={base_docs_link}
+                />
+            </Card>
+        ));
 
-  return (
-    <Box>
-      <Breadcrumbs aria-label="breadcrumb">
-        <Link
-          underline="hover"
-          color="inherit"
-          component={LinkDom}
-          to={`${DEMO.DASHBOARD_LINK}`}
-        >
-          {appConfig.companyName}
-        </Link>
-        {is_TaiGer_role(user) && (
-          <Typography color="text.primary">
-            {t('My Students', { ns: 'common' })}
-          </Typography>
-        )}
-        {is_TaiGer_role(user) ? (
-          <Typography color="text.primary">
-            {t('Base Documents', { ns: 'common' })}
-          </Typography>
-        ) : (
-          <Typography color="text.primary">
-            {t('My Documents', { ns: 'common' })}
-          </Typography>
-        )}
-      </Breadcrumbs>
-      {isLoading && <Loading />}
-      {isError && <>{error}</>}
-      {!isLoading &&
-        !isError &&
-        (is_TaiGer_role(user) ? (
-          <BaseDocumentsTable students={students} />
-        ) : (
-          <StudentDocoumentsView />
-        ))}
-    </Box>
-  );
+    return (
+        <Box>
+            <Breadcrumbs aria-label="breadcrumb">
+                <Link
+                    underline="hover"
+                    color="inherit"
+                    component={LinkDom}
+                    to={`${DEMO.DASHBOARD_LINK}`}
+                >
+                    {appConfig.companyName}
+                </Link>
+                {is_TaiGer_role(user) && (
+                    <Typography color="text.primary">
+                        {t('My Students', { ns: 'common' })}
+                    </Typography>
+                )}
+                {is_TaiGer_role(user) ? (
+                    <Typography color="text.primary">
+                        {t('Base Documents', { ns: 'common' })}
+                    </Typography>
+                ) : (
+                    <Typography color="text.primary">
+                        {t('My Documents', { ns: 'common' })}
+                    </Typography>
+                )}
+            </Breadcrumbs>
+            {isLoading && <Loading />}
+            {isError && <>{error}</>}
+            {!isLoading &&
+                !isError &&
+                (is_TaiGer_role(user) ? (
+                    <BaseDocumentsTable students={students} />
+                ) : (
+                    <StudentDocoumentsView />
+                ))}
+        </Box>
+    );
 }
 
 export default BaseDocuments;

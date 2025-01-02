@@ -49,100 +49,104 @@ import { Autocomplete, TextField, Chip, Box } from '@mui/material';
  * />
  */
 const SearchableMultiSelect = ({
-  data,
-  value,
-  setValue,
-  label = 'Select Options',
-  ...props
+    data,
+    value,
+    setValue,
+    label = 'Select Options',
+    ...props
 }) => {
-  const handleValueChange = (event, newValue) => {
-    setValue(newValue);
-  };
+    const handleValueChange = (event, newValue) => {
+        setValue(newValue);
+    };
 
-  const options = Array.isArray(data) ? data : Object.keys(data);
-  return (
-    <div>
-      <Autocomplete
-        multiple
-        id="searchable-multi-select"
-        options={options}
-        value={value}
-        onChange={handleValueChange}
-        disableCloseOnSelect
-        renderInput={(params) => <TextField {...params} label={label} />}
-        // customize dropdown options
-        renderOption={(props, option) => {
-          const { key, ...rest } = props;
-          const isSelected = value?.includes(option);
+    const options = Array.isArray(data) ? data : Object.keys(data);
+    return (
+        <div>
+            <Autocomplete
+                multiple
+                id="searchable-multi-select"
+                options={options}
+                value={value}
+                onChange={handleValueChange}
+                disableCloseOnSelect
+                renderInput={(params) => (
+                    <TextField {...params} label={label} />
+                )}
+                // customize dropdown options
+                renderOption={(props, option) => {
+                    const { key, ...rest } = props;
+                    const isSelected = value?.includes(option);
 
-          return (
-            <li
-              key={key}
-              {...rest}
-              style={{
-                fontWeight: isSelected ? 700 : 400,
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '8px',
-                gap: '16px'
-              }}
-            >
-              {!Array.isArray(data) && data?.[option]?.label && (
-                <span>{data?.[option].label}</span>
-              )}
-              <span>{option}</span>
-            </li>
-          );
-        }}
-        // customize selected tags
-        renderTags={(value, getTagProps) => (
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-            {value.map((option, index) => {
-              const { key, ...tagProps } = getTagProps({ index });
-              return (
-                <Chip
-                  key={key}
-                  label={option}
-                  sx={{
-                    backgroundColor: Array.isArray(data)
-                      ? 'primary'
-                      : data?.[option]?.color || 'primary'
-                  }}
-                  {...tagProps}
-                />
-              );
-            })}
-          </Box>
-        )}
-        // filter dropdown options based on search input -> display selected options first
-        filterOptions={(options, { inputValue }) => {
-          const searchString = inputValue.toLowerCase();
-          const getSearchTarget = (option) =>
-            Array.isArray(data)
-              ? option
-              : option?.concat(data?.[option]?.label || '');
+                    return (
+                        <li
+                            key={key}
+                            {...rest}
+                            style={{
+                                fontWeight: isSelected ? 700 : 400,
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: '8px',
+                                gap: '16px'
+                            }}
+                        >
+                            {!Array.isArray(data) && data?.[option]?.label && (
+                                <span>{data?.[option].label}</span>
+                            )}
+                            <span>{option}</span>
+                        </li>
+                    );
+                }}
+                // customize selected tags
+                renderTags={(value, getTagProps) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {value.map((option, index) => {
+                            const { key, ...tagProps } = getTagProps({ index });
+                            return (
+                                <Chip
+                                    key={key}
+                                    label={option}
+                                    sx={{
+                                        backgroundColor: Array.isArray(data)
+                                            ? 'primary'
+                                            : data?.[option]?.color || 'primary'
+                                    }}
+                                    {...tagProps}
+                                />
+                            );
+                        })}
+                    </Box>
+                )}
+                // filter dropdown options based on search input -> display selected options first
+                filterOptions={(options, { inputValue }) => {
+                    const searchString = inputValue.toLowerCase();
+                    const getSearchTarget = (option) =>
+                        Array.isArray(data)
+                            ? option
+                            : option?.concat(data?.[option]?.label || '');
 
-          const filteredSelected =
-            value?.filter((option) => {
-              return getSearchTarget(option)
-                ?.toLowerCase()
-                .includes(searchString);
-            }) || [];
+                    const filteredSelected =
+                        value?.filter((option) => {
+                            return getSearchTarget(option)
+                                ?.toLowerCase()
+                                .includes(searchString);
+                        }) || [];
 
-          const filteredUnselected =
-            options?.filter(
-              (option) =>
-                !value?.includes(option) &&
-                getSearchTarget(option).toLowerCase().includes(searchString)
-            ) || [];
+                    const filteredUnselected =
+                        options?.filter(
+                            (option) =>
+                                !value?.includes(option) &&
+                                getSearchTarget(option)
+                                    .toLowerCase()
+                                    .includes(searchString)
+                        ) || [];
 
-          return [...filteredSelected, ...filteredUnselected];
-        }}
-        {...props}
-      />
-    </div>
-  );
+                    return [...filteredSelected, ...filteredUnselected];
+                }}
+                {...props}
+            />
+        </div>
+    );
 };
 
 export default SearchableMultiSelect;

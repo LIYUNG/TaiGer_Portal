@@ -6,35 +6,35 @@ import { useTranslation } from 'react-i18next';
 import { menuWidth } from '../../../utils/contants';
 
 function Friends(props) {
-  const { t } = useTranslation();
+    const { t } = useTranslation();
 
-  if (props.students.length === 0) {
-    return (
-      <Typography
-        sx={{
-          width: menuWidth,
-          marginLeft: '10px',
-          marginTop: '10px',
-          marginBottom: '10px',
-          textAlign: 'center'
-        }}
-      >
-        {t('No students found')}
-      </Typography>
-    );
-  }
-  const friendList = props.students.map((f) => {
-    return (
-      <Friend
-        key={f._id}
-        data={f}
-        activeId={props.user._id.toString()}
-        handleCloseChat={props.handleCloseChat}
-      />
-    );
-  });
+    if (props.students.length === 0) {
+        return (
+            <Typography
+                sx={{
+                    width: menuWidth,
+                    marginLeft: '10px',
+                    marginTop: '10px',
+                    marginBottom: '10px',
+                    textAlign: 'center'
+                }}
+            >
+                {t('No students found')}
+            </Typography>
+        );
+    }
+    const friendList = props.students.map((f) => {
+        return (
+            <Friend
+                key={f._id}
+                data={f}
+                activeId={props.user._id.toString()}
+                handleCloseChat={props.handleCloseChat}
+            />
+        );
+    });
 
-  return <Box>{friendList}</Box>;
+    return <Box>{friendList}</Box>;
 }
 
 export default Friends;

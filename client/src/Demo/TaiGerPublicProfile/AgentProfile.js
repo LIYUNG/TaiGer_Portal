@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Box,
-  Button,
-  Card,
-  Link,
-  Grid,
-  Typography,
-  Checkbox,
-  FormControl,
-  FormControlLabel
+    Box,
+    Button,
+    Card,
+    Link,
+    Grid,
+    Typography,
+    Checkbox,
+    FormControl,
+    FormControlLabel
 } from '@mui/material';
 import TimezoneSelect from 'react-timezone-select';
 import { Link as LinkDom, useParams } from 'react-router-dom';
@@ -26,187 +26,198 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 
 function AgentProfile() {
-  const { user } = useAuth();
-  const { user_id } = useParams();
-  const [agentProfileState, setAgentProfileState] = useState({
-    error: '',
-    role: '',
-    isLoaded: false,
-    data: null,
-    success: false,
-    agent: {},
-    selectedTimezone:
-      user.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
-    updateconfirmed: false,
-    updatecredentialconfirmed: false,
-    res_status: 0,
-    res_modal_message: '',
-    res_modal_status: 0
-  });
+    const { user } = useAuth();
+    const { user_id } = useParams();
+    const [agentProfileState, setAgentProfileState] = useState({
+        error: '',
+        role: '',
+        isLoaded: false,
+        data: null,
+        success: false,
+        agent: {},
+        selectedTimezone:
+            user.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
+        updateconfirmed: false,
+        updatecredentialconfirmed: false,
+        res_status: 0,
+        res_modal_message: '',
+        res_modal_status: 0
+    });
 
-  useEffect(() => {
-    getAgentProfile(user_id).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setAgentProfileState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            agent: data,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          setAgentProfileState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
+    useEffect(() => {
+        getAgentProfile(user_id).then(
+            (resp) => {
+                const { data, success } = resp.data;
+                const { status } = resp;
+                if (success) {
+                    setAgentProfileState((prevState) => ({
+                        ...prevState,
+                        isLoaded: true,
+                        agent: data,
+                        success: success,
+                        res_status: status
+                    }));
+                } else {
+                    setAgentProfileState((prevState) => ({
+                        ...prevState,
+                        isLoaded: true,
+                        res_status: status
+                    }));
+                }
+            },
+            (error) => {
+                setAgentProfileState((prevState) => ({
+                    ...prevState,
+                    isLoaded: true,
+                    error,
+                    res_status: 500
+                }));
+            }
+        );
+    }, [user_id]);
+
+    const ConfirmError = () => {
         setAgentProfileState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_status: 500
+            ...prevState,
+            res_modal_status: 0,
+            res_modal_message: ''
         }));
-      }
-    );
-  }, [user_id]);
+    };
 
-  const ConfirmError = () => {
-    setAgentProfileState((prevState) => ({
-      ...prevState,
-      res_modal_status: 0,
-      res_modal_message: ''
-    }));
-  };
+    const { res_status, isLoaded, res_modal_status, res_modal_message } =
+        agentProfileState;
 
-  const { res_status, isLoaded, res_modal_status, res_modal_message } =
-    agentProfileState;
+    if (!isLoaded) {
+        return <Loading />;
+    }
+    TabTitle(`Agent Profile`);
+    if (res_status >= 400) {
+        return <ErrorPage res_status={res_status} />;
+    }
 
-  if (!isLoaded) {
-    return <Loading />;
-  }
-  TabTitle(`Agent Profile`);
-  if (res_status >= 400) {
-    return <ErrorPage res_status={res_status} />;
-  }
-
-  return (
-    <Box>
-      {res_modal_status >= 400 && (
-        <ModalMain
-          ConfirmError={ConfirmError}
-          res_modal_status={res_modal_status}
-          res_modal_message={res_modal_message}
-        />
-      )}
-
-      <Card sx={{ p: 2 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h5">
-              {agentProfileState.agent.firstname}{' '}
-              {agentProfileState.agent.lastname} Profile
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="body1">
-            Email: {agentProfileState.agent.email}
-          </Typography>
-          <Typography variant="h6">{i18next.t('Introduction')}</Typography>
-          {agentProfileState.agent.selfIntroduction}
-        </Grid>
-        <Grid item xs={12}>
-          <Box>
-            <Typography variant="h6">{i18next.t('Office Hours')}</Typography>
-            <Typography variant="body1">{i18next.t('Time zone')}</Typography>
-            <TimezoneSelect
-              value={agentProfileState.selectedTimezone}
-              displayValue="UTC"
-              isDisabled={true}
-            />
-            <br />
-            <Grid container spacing={2}>
-              {[
-                'Monday',
-                'Tuesday',
-                'Wednesday',
-                'Thursday',
-                'Friday',
-                'Saturday',
-                'Sunday'
-              ].map((day, i) => (
-                <Grid item xs={12} key={i}>
-                  <FormControl>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          name="useProgramRequirementData"
-                          type="checkbox"
-                          checked={
-                            agentProfileState.agent.officehours[day]?.active
-                          }
-                          sx={{
-                            '& .MuiSvgIcon-root': {
-                              fontSize: '1.5rem'
-                            }
-                          }}
-                        />
-                      }
-                      label={`${day}`}
-                    />
-                  </FormControl>
-                  {agentProfileState.agent.officehours &&
-                  agentProfileState.agent.officehours[day]?.active ? (
-                    <>
-                      <Select
-                        id={`${day}`}
-                        label={i18next.t('Timeslots')}
-                        options={time_slots}
-                        isMulti
-                        isDisabled={true}
-                        value={
-                          agentProfileState.agent.officehours[day].time_slots
-                        }
-                      />
-                    </>
-                  ) : (
-                    <Typography>
-                      {i18next.t('Close', {
-                        ns: 'common'
-                      })}
-                    </Typography>
-                  )}
-                </Grid>
-              ))}
-            </Grid>
-            {is_TaiGer_Student(user) && (
-              <>
-                <Typography variant="body1" sx={{ my: 2 }}>
-                  想要與顧問討論？
-                </Typography>
-                <Link
-                  to={`${DEMO.EVENT_STUDENT_STUDENTID_LINK(
-                    user._id.toString()
-                  )}`}
-                  component={LinkDom}
-                >
-                  <Button color="primary" variant="contained">
-                    {i18next.t('Book')}
-                  </Button>
-                </Link>
-              </>
+    return (
+        <Box>
+            {res_modal_status >= 400 && (
+                <ModalMain
+                    ConfirmError={ConfirmError}
+                    res_modal_status={res_modal_status}
+                    res_modal_message={res_modal_message}
+                />
             )}
-          </Box>
-        </Grid>
-      </Card>
-    </Box>
-  );
+
+            <Card sx={{ p: 2 }}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <Typography variant="h5">
+                            {agentProfileState.agent.firstname}{' '}
+                            {agentProfileState.agent.lastname} Profile
+                        </Typography>
+                    </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography variant="body1">
+                        Email: {agentProfileState.agent.email}
+                    </Typography>
+                    <Typography variant="h6">
+                        {i18next.t('Introduction')}
+                    </Typography>
+                    {agentProfileState.agent.selfIntroduction}
+                </Grid>
+                <Grid item xs={12}>
+                    <Box>
+                        <Typography variant="h6">
+                            {i18next.t('Office Hours')}
+                        </Typography>
+                        <Typography variant="body1">
+                            {i18next.t('Time zone')}
+                        </Typography>
+                        <TimezoneSelect
+                            value={agentProfileState.selectedTimezone}
+                            displayValue="UTC"
+                            isDisabled={true}
+                        />
+                        <br />
+                        <Grid container spacing={2}>
+                            {[
+                                'Monday',
+                                'Tuesday',
+                                'Wednesday',
+                                'Thursday',
+                                'Friday',
+                                'Saturday',
+                                'Sunday'
+                            ].map((day, i) => (
+                                <Grid item xs={12} key={i}>
+                                    <FormControl>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    name="useProgramRequirementData"
+                                                    type="checkbox"
+                                                    checked={
+                                                        agentProfileState.agent
+                                                            .officehours[day]
+                                                            ?.active
+                                                    }
+                                                    sx={{
+                                                        '& .MuiSvgIcon-root': {
+                                                            fontSize: '1.5rem'
+                                                        }
+                                                    }}
+                                                />
+                                            }
+                                            label={`${day}`}
+                                        />
+                                    </FormControl>
+                                    {agentProfileState.agent.officehours &&
+                                    agentProfileState.agent.officehours[day]
+                                        ?.active ? (
+                                        <>
+                                            <Select
+                                                id={`${day}`}
+                                                label={i18next.t('Timeslots')}
+                                                options={time_slots}
+                                                isMulti
+                                                isDisabled={true}
+                                                value={
+                                                    agentProfileState.agent
+                                                        .officehours[day]
+                                                        .time_slots
+                                                }
+                                            />
+                                        </>
+                                    ) : (
+                                        <Typography>
+                                            {i18next.t('Close', {
+                                                ns: 'common'
+                                            })}
+                                        </Typography>
+                                    )}
+                                </Grid>
+                            ))}
+                        </Grid>
+                        {is_TaiGer_Student(user) && (
+                            <>
+                                <Typography variant="body1" sx={{ my: 2 }}>
+                                    想要與顧問討論？
+                                </Typography>
+                                <Link
+                                    to={`${DEMO.EVENT_STUDENT_STUDENTID_LINK(
+                                        user._id.toString()
+                                    )}`}
+                                    component={LinkDom}
+                                >
+                                    <Button color="primary" variant="contained">
+                                        {i18next.t('Book')}
+                                    </Button>
+                                </Link>
+                            </>
+                        )}
+                    </Box>
+                </Grid>
+            </Card>
+        </Box>
+    );
 }
 
 export default AgentProfile;

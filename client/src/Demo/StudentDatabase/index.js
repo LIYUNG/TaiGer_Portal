@@ -15,68 +15,69 @@ import { useQuery } from '@tanstack/react-query';
 import { getAllStudentsQuery } from '../../api/query';
 
 function StudentDatabase() {
-  const { user } = useAuth();
-  const { t } = useTranslation();
-  const {
-    data: { data: fetchedAllStudents }
-  } = useQuery(getAllStudentsQuery());
+    const { user } = useAuth();
+    const { t } = useTranslation();
+    const {
+        data: { data: fetchedAllStudents }
+    } = useQuery(getAllStudentsQuery());
 
-  const {
-    res_modal_status,
-    res_modal_message,
-    ConfirmError,
-    students,
-    submitUpdateAgentlist,
-    submitUpdateEditorlist,
-    submitUpdateAttributeslist,
-    updateStudentArchivStatus
-  } = useStudents({
-    students: fetchedAllStudents
-  });
+    const {
+        res_modal_status,
+        res_modal_message,
+        ConfirmError,
+        students,
+        submitUpdateAgentlist,
+        submitUpdateEditorlist,
+        submitUpdateAttributeslist,
+        updateStudentArchivStatus
+    } = useStudents({
+        students: fetchedAllStudents
+    });
 
-  if (!is_TaiGer_role(user)) {
-    return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
-  }
+    if (!is_TaiGer_role(user)) {
+        return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+    }
 
-  TabTitle(t('Students Database', { ns: 'common' }));
-  return (
-    <Box data-testid="student_datdabase">
-      <Breadcrumbs aria-label="breadcrumb">
-        <Link
-          underline="hover"
-          color="inherit"
-          component={LinkDom}
-          to={`${DEMO.DASHBOARD_LINK}`}
-        >
-          {appConfig.companyName}
-        </Link>
-        <Typography color="text.primary">
-          {t('All Students', { ns: 'common' })}
-        </Typography>
-        <Typography color="text.primary">
-          {t('Students Database', { ns: 'common' })} ({students?.length})
-        </Typography>
-      </Breadcrumbs>
-      <Box>
-        <Card>
-          <TabStudBackgroundDashboard
-            students={students}
-            submitUpdateAgentlist={submitUpdateAgentlist}
-            submitUpdateEditorlist={submitUpdateEditorlist}
-            submitUpdateAttributeslist={submitUpdateAttributeslist}
-            updateStudentArchivStatus={updateStudentArchivStatus}
-          />
-        </Card>
-      </Box>
-      {res_modal_status >= 400 && (
-        <ModalMain
-          ConfirmError={ConfirmError}
-          res_modal_status={res_modal_status}
-          res_modal_message={res_modal_message}
-        />
-      )}
-    </Box>
-  );
+    TabTitle(t('Students Database', { ns: 'common' }));
+    return (
+        <Box data-testid="student_datdabase">
+            <Breadcrumbs aria-label="breadcrumb">
+                <Link
+                    underline="hover"
+                    color="inherit"
+                    component={LinkDom}
+                    to={`${DEMO.DASHBOARD_LINK}`}
+                >
+                    {appConfig.companyName}
+                </Link>
+                <Typography color="text.primary">
+                    {t('All Students', { ns: 'common' })}
+                </Typography>
+                <Typography color="text.primary">
+                    {t('Students Database', { ns: 'common' })} (
+                    {students?.length})
+                </Typography>
+            </Breadcrumbs>
+            <Box>
+                <Card>
+                    <TabStudBackgroundDashboard
+                        students={students}
+                        submitUpdateAgentlist={submitUpdateAgentlist}
+                        submitUpdateEditorlist={submitUpdateEditorlist}
+                        submitUpdateAttributeslist={submitUpdateAttributeslist}
+                        updateStudentArchivStatus={updateStudentArchivStatus}
+                    />
+                </Card>
+            </Box>
+            {res_modal_status >= 400 && (
+                <ModalMain
+                    ConfirmError={ConfirmError}
+                    res_modal_status={res_modal_status}
+                    res_modal_message={res_modal_message}
+                />
+            )}
+        </Box>
+    );
 }
 
 export default StudentDatabase;

@@ -10,43 +10,45 @@ import { appConfig } from '../../../config';
 import { useTranslation } from 'react-i18next';
 
 function ProgramRequirements() {
-  const { t } = useTranslation();
-  const { programRequirements } = useLoaderData();
+    const { t } = useTranslation();
+    const { programRequirements } = useLoaderData();
 
-  TabTitle('Program Requirement Edit');
+    TabTitle('Program Requirement Edit');
 
-  return (
-    <Box data-testid="dashoboard_component">
-      <Breadcrumbs aria-label="breadcrumb">
-        <Link
-          underline="hover"
-          color="inherit"
-          component={LinkDom}
-          to={`${DEMO.DASHBOARD_LINK}`}
-        >
-          {appConfig.companyName}
-        </Link>
-        <Link
-          underline="hover"
-          color="inherit"
-          component={LinkDom}
-          to={`${DEMO.PROGRAMS}`}
-        >
-          {t('Program List', { ns: 'common' })}
-        </Link>
-        <Typography color="text.primary">
-          {t('Program Requirements', { ns: 'common' })}
-        </Typography>
-      </Breadcrumbs>
-      <Suspense fallback={<Loading />}>
-        <Await resolve={programRequirements}>
-          {(loadedData) => (
-            <ProgramRequirementsOverview programRequirements={loadedData} />
-          )}
-        </Await>
-      </Suspense>
-    </Box>
-  );
+    return (
+        <Box data-testid="dashoboard_component">
+            <Breadcrumbs aria-label="breadcrumb">
+                <Link
+                    underline="hover"
+                    color="inherit"
+                    component={LinkDom}
+                    to={`${DEMO.DASHBOARD_LINK}`}
+                >
+                    {appConfig.companyName}
+                </Link>
+                <Link
+                    underline="hover"
+                    color="inherit"
+                    component={LinkDom}
+                    to={`${DEMO.PROGRAMS}`}
+                >
+                    {t('Program List', { ns: 'common' })}
+                </Link>
+                <Typography color="text.primary">
+                    {t('Program Requirements', { ns: 'common' })}
+                </Typography>
+            </Breadcrumbs>
+            <Suspense fallback={<Loading />}>
+                <Await resolve={programRequirements}>
+                    {(loadedData) => (
+                        <ProgramRequirementsOverview
+                            programRequirements={loadedData}
+                        />
+                    )}
+                </Await>
+            </Suspense>
+        </Box>
+    );
 }
 
 export default ProgramRequirements;

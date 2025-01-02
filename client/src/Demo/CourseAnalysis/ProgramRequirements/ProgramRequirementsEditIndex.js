@@ -10,49 +10,51 @@ import { appConfig } from '../../../config';
 import ProgramRequirementsNew from './ProgramRequirementsNew';
 
 function ProgramRequirementsEditIndex() {
-  const { programRequirement } = useLoaderData();
-  TabTitle(i18next.t('Program Requirement Edit'));
+    const { programRequirement } = useLoaderData();
+    TabTitle(i18next.t('Program Requirement Edit'));
 
-  return (
-    <Box data-testid="dashoboard_component">
-      <Breadcrumbs aria-label="breadcrumb">
-        <Link
-          underline="hover"
-          color="inherit"
-          component={LinkDom}
-          to={`${DEMO.DASHBOARD_LINK}`}
-        >
-          {appConfig.companyName}
-        </Link>
-        <Link
-          underline="hover"
-          color="inherit"
-          component={LinkDom}
-          to={`${DEMO.PROGRAMS}`}
-        >
-          {i18next.t('Program List', { ns: 'common' })}
-        </Link>
-        <Link
-          underline="hover"
-          color="inherit"
-          component={LinkDom}
-          to={`${DEMO.PROGRAM_ANALYSIS}`}
-        >
-          {i18next.t('Program Requirements', { ns: 'common' })}
-        </Link>
-        <Typography color="text.primary">
-          {i18next.t('Edit', { ns: 'common' })}
-        </Typography>
-      </Breadcrumbs>
-      <Suspense fallback={<Loading />}>
-        <Await resolve={programRequirement}>
-          {(loadedData) => (
-            <ProgramRequirementsNew programsAndCourseKeywordSets={loadedData} />
-          )}
-        </Await>
-      </Suspense>
-    </Box>
-  );
+    return (
+        <Box data-testid="dashoboard_component">
+            <Breadcrumbs aria-label="breadcrumb">
+                <Link
+                    underline="hover"
+                    color="inherit"
+                    component={LinkDom}
+                    to={`${DEMO.DASHBOARD_LINK}`}
+                >
+                    {appConfig.companyName}
+                </Link>
+                <Link
+                    underline="hover"
+                    color="inherit"
+                    component={LinkDom}
+                    to={`${DEMO.PROGRAMS}`}
+                >
+                    {i18next.t('Program List', { ns: 'common' })}
+                </Link>
+                <Link
+                    underline="hover"
+                    color="inherit"
+                    component={LinkDom}
+                    to={`${DEMO.PROGRAM_ANALYSIS}`}
+                >
+                    {i18next.t('Program Requirements', { ns: 'common' })}
+                </Link>
+                <Typography color="text.primary">
+                    {i18next.t('Edit', { ns: 'common' })}
+                </Typography>
+            </Breadcrumbs>
+            <Suspense fallback={<Loading />}>
+                <Await resolve={programRequirement}>
+                    {(loadedData) => (
+                        <ProgramRequirementsNew
+                            programsAndCourseKeywordSets={loadedData}
+                        />
+                    )}
+                </Await>
+            </Suspense>
+        </Box>
+    );
 }
 
 export default ProgramRequirementsEditIndex;

@@ -5,11 +5,13 @@ import { appConfig } from '../../config';
 
 // Status 403: Forbidden requests
 function UnauthorizedError() {
-  return (
-    <Box>
-      <Card>Permission Denied. 請跟您的 {appConfig.companyName} 顧問聯繫</Card>
-    </Box>
-  );
+    return (
+        <Box>
+            <Card>
+                Permission Denied. 請跟您的 {appConfig.companyName} 顧問聯繫
+            </Card>
+        </Box>
+    );
 }
 
 export default UnauthorizedError;

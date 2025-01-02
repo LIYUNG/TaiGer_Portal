@@ -14,227 +14,227 @@ import { documentation_categories } from '../../utils/contants';
 import DocPageView from './DocPageView';
 
 function SingleDoc(props) {
-  const { documentation_id } = useParams();
-  const [singleDocState, setSingleDocState] = useState({
-    error: '',
-    author: '',
-    isLoaded: false,
-    success: false,
-    editorState: null,
-    isEdit: false,
-    res_status: 0,
-    res_modal_message: '',
-    res_modal_status: 0
-  });
-  useEffect(() => {
-    getDocumentation(documentation_id).then(
-      (resp) => {
-        const { data, success } = resp.data;
-        const { status } = resp;
-        if (!data) {
-          setSingleDocState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_status: 404
-          }));
-          return;
-        }
-        if (success) {
-          var initialEditorState = null;
-          const author = data?.author;
-          if (data?.text) {
-            initialEditorState = JSON.parse(data.text);
-          } else {
-            initialEditorState = {};
-          }
-          // initialEditorState = JSON.parse(data.text);
-          setSingleDocState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            document_title: data?.title,
-            category: data?.category,
-            editorState: initialEditorState,
-            author,
-            success: success,
-            res_status: status
-          }));
-        } else {
-          setSingleDocState((prevState) => ({
-            ...prevState,
-            isLoaded: true,
-            res_status: status
-          }));
-        }
-      },
-      (error) => {
+    const { documentation_id } = useParams();
+    const [singleDocState, setSingleDocState] = useState({
+        error: '',
+        author: '',
+        isLoaded: false,
+        success: false,
+        editorState: null,
+        isEdit: false,
+        res_status: 0,
+        res_modal_message: '',
+        res_modal_status: 0
+    });
+    useEffect(() => {
+        getDocumentation(documentation_id).then(
+            (resp) => {
+                const { data, success } = resp.data;
+                const { status } = resp;
+                if (!data) {
+                    setSingleDocState((prevState) => ({
+                        ...prevState,
+                        isLoaded: true,
+                        res_status: 404
+                    }));
+                    return;
+                }
+                if (success) {
+                    var initialEditorState = null;
+                    const author = data?.author;
+                    if (data?.text) {
+                        initialEditorState = JSON.parse(data.text);
+                    } else {
+                        initialEditorState = {};
+                    }
+                    // initialEditorState = JSON.parse(data.text);
+                    setSingleDocState((prevState) => ({
+                        ...prevState,
+                        isLoaded: true,
+                        document_title: data?.title,
+                        category: data?.category,
+                        editorState: initialEditorState,
+                        author,
+                        success: success,
+                        res_status: status
+                    }));
+                } else {
+                    setSingleDocState((prevState) => ({
+                        ...prevState,
+                        isLoaded: true,
+                        res_status: status
+                    }));
+                }
+            },
+            (error) => {
+                setSingleDocState((prevState) => ({
+                    ...prevState,
+                    isLoaded: true,
+                    error,
+                    res_status: 500
+                }));
+            }
+        );
+    }, [documentation_id]);
+
+    const handleClickEditToggle = () => {
         setSingleDocState((prevState) => ({
-          ...prevState,
-          isLoaded: true,
-          error,
-          res_status: 500
+            ...prevState,
+            isEdit: !singleDocState.isEdit
         }));
-      }
-    );
-  }, [documentation_id]);
-
-  const handleClickEditToggle = () => {
-    setSingleDocState((prevState) => ({
-      ...prevState,
-      isEdit: !singleDocState.isEdit
-    }));
-  };
-  const handleClickSave = (e, category, doc_title, editorState) => {
-    e.preventDefault();
-    const message = JSON.stringify(editorState);
-    const msg = {
-      title: doc_title,
-      category,
-      prop: props.item,
-      text: message
     };
-    updateDocumentation(documentation_id, msg).then(
-      (resp) => {
-        const { success, data } = resp.data;
-        const { status } = resp;
-        if (success) {
-          setSingleDocState((prevState) => ({
+    const handleClickSave = (e, category, doc_title, editorState) => {
+        e.preventDefault();
+        const message = JSON.stringify(editorState);
+        const msg = {
+            title: doc_title,
+            category,
+            prop: props.item,
+            text: message
+        };
+        updateDocumentation(documentation_id, msg).then(
+            (resp) => {
+                const { success, data } = resp.data;
+                const { status } = resp;
+                if (success) {
+                    setSingleDocState((prevState) => ({
+                        ...prevState,
+                        success,
+                        document_title: data.title,
+                        editorState,
+                        isEdit: !singleDocState.isEdit,
+                        author: data.author,
+                        isLoaded: true,
+                        res_modal_status: status
+                    }));
+                } else {
+                    const { message } = resp.data;
+                    setSingleDocState((prevState) => ({
+                        ...prevState,
+                        isLoaded: true,
+                        res_modal_message: message,
+                        res_modal_status: status
+                    }));
+                }
+            },
+            (error) => {
+                setSingleDocState({ error });
+            }
+        );
+        setSingleDocState((prevState) => ({
             ...prevState,
-            success,
-            document_title: data.title,
-            editorState,
-            isEdit: !singleDocState.isEdit,
-            author: data.author,
-            isLoaded: true,
-            res_modal_status: status
-          }));
-        } else {
-          const { message } = resp.data;
-          setSingleDocState((prevState) => ({
+            in_edit_mode: false
+        }));
+    };
+
+    const ConfirmError = () => {
+        setSingleDocState((prevState) => ({
             ...prevState,
-            isLoaded: true,
-            res_modal_message: message,
-            res_modal_status: status
-          }));
-        }
-      },
-      (error) => {
-        setSingleDocState({ error });
-      }
-    );
-    setSingleDocState((prevState) => ({
-      ...prevState,
-      in_edit_mode: false
-    }));
-  };
+            res_modal_status: 0,
+            res_modal_message: ''
+        }));
+    };
 
-  const ConfirmError = () => {
-    setSingleDocState((prevState) => ({
-      ...prevState,
-      res_modal_status: 0,
-      res_modal_message: ''
-    }));
-  };
+    const {
+        res_status,
+        editorState,
+        isLoaded,
+        res_modal_status,
+        res_modal_message
+    } = singleDocState;
 
-  const {
-    res_status,
-    editorState,
-    isLoaded,
-    res_modal_status,
-    res_modal_message
-  } = singleDocState;
+    if (!isLoaded && !editorState) {
+        return <Loading />;
+    }
 
-  if (!isLoaded && !editorState) {
-    return <Loading />;
-  }
-
-  if (res_status >= 400) {
-    return <ErrorPage res_status={res_status} />;
-  }
-  TabTitle(`Doc: ${singleDocState.document_title}`);
-  if (singleDocState.isEdit) {
-    return (
-      <>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link
-            underline="hover"
-            color="inherit"
-            component={LinkDom}
-            to={`${DEMO.DASHBOARD_LINK}`}
-          >
-            {appConfig.companyName}
-          </Link>
-          <Link
-            underline="hover"
-            color="inherit"
-            component={LinkDom}
-            to={`${DEMO.DOCS_ROOT_LINK(singleDocState.category)}`}
-          >
-            {documentation_categories[singleDocState.category]}
-          </Link>
-          <Typography color="text.primary">
-            {singleDocState.document_title}
-          </Typography>
-        </Breadcrumbs>
-        <SingleDocEdit
-          category={singleDocState.category}
-          document={document}
-          document_title={singleDocState.document_title}
-          editorState={singleDocState.editorState}
-          author={singleDocState.author}
-          isLoaded={isLoaded}
-          handleClickEditToggle={handleClickEditToggle}
-          handleClickSave={handleClickSave}
-        />
-      </>
-    );
-  } else {
-    return (
-      <>
-        {res_modal_status >= 400 && (
-          <ModalMain
-            ConfirmError={ConfirmError}
-            res_modal_status={res_modal_status}
-            res_modal_message={res_modal_message}
-          />
-        )}
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link
-            underline="hover"
-            color="inherit"
-            component={LinkDom}
-            to={`${DEMO.DASHBOARD_LINK}`}
-          >
-            {appConfig.companyName}
-          </Link>
-          <Link
-            underline="hover"
-            color="inherit"
-            component={LinkDom}
-            to={`${DEMO.DOCS_ROOT_LINK(singleDocState.category)}`}
-          >
-            {documentation_categories[singleDocState.category]}
-          </Link>
-          <Typography color="text.primary">
-            {singleDocState.document_title}
-          </Typography>
-        </Breadcrumbs>
-        <DocPageView
-          category={singleDocState.category}
-          document={document}
-          document_title={singleDocState.document_title}
-          editorState={singleDocState.editorState}
-          author={singleDocState.author}
-          handleClickEditToggle={handleClickEditToggle}
-        />
-      </>
-    );
-  }
+    if (res_status >= 400) {
+        return <ErrorPage res_status={res_status} />;
+    }
+    TabTitle(`Doc: ${singleDocState.document_title}`);
+    if (singleDocState.isEdit) {
+        return (
+            <>
+                {res_modal_status >= 400 && (
+                    <ModalMain
+                        ConfirmError={ConfirmError}
+                        res_modal_status={res_modal_status}
+                        res_modal_message={res_modal_message}
+                    />
+                )}
+                <Breadcrumbs aria-label="breadcrumb">
+                    <Link
+                        underline="hover"
+                        color="inherit"
+                        component={LinkDom}
+                        to={`${DEMO.DASHBOARD_LINK}`}
+                    >
+                        {appConfig.companyName}
+                    </Link>
+                    <Link
+                        underline="hover"
+                        color="inherit"
+                        component={LinkDom}
+                        to={`${DEMO.DOCS_ROOT_LINK(singleDocState.category)}`}
+                    >
+                        {documentation_categories[singleDocState.category]}
+                    </Link>
+                    <Typography color="text.primary">
+                        {singleDocState.document_title}
+                    </Typography>
+                </Breadcrumbs>
+                <SingleDocEdit
+                    category={singleDocState.category}
+                    document={document}
+                    document_title={singleDocState.document_title}
+                    editorState={singleDocState.editorState}
+                    author={singleDocState.author}
+                    isLoaded={isLoaded}
+                    handleClickEditToggle={handleClickEditToggle}
+                    handleClickSave={handleClickSave}
+                />
+            </>
+        );
+    } else {
+        return (
+            <>
+                {res_modal_status >= 400 && (
+                    <ModalMain
+                        ConfirmError={ConfirmError}
+                        res_modal_status={res_modal_status}
+                        res_modal_message={res_modal_message}
+                    />
+                )}
+                <Breadcrumbs aria-label="breadcrumb">
+                    <Link
+                        underline="hover"
+                        color="inherit"
+                        component={LinkDom}
+                        to={`${DEMO.DASHBOARD_LINK}`}
+                    >
+                        {appConfig.companyName}
+                    </Link>
+                    <Link
+                        underline="hover"
+                        color="inherit"
+                        component={LinkDom}
+                        to={`${DEMO.DOCS_ROOT_LINK(singleDocState.category)}`}
+                    >
+                        {documentation_categories[singleDocState.category]}
+                    </Link>
+                    <Typography color="text.primary">
+                        {singleDocState.document_title}
+                    </Typography>
+                </Breadcrumbs>
+                <DocPageView
+                    category={singleDocState.category}
+                    document={document}
+                    document_title={singleDocState.document_title}
+                    editorState={singleDocState.editorState}
+                    author={singleDocState.author}
+                    handleClickEditToggle={handleClickEditToggle}
+                />
+            </>
+        );
+    }
 }
 export default SingleDoc;

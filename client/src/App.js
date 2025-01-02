@@ -1,10 +1,10 @@
 import React, { Suspense } from 'react';
 import {
-  Navigate,
-  Outlet,
-  RouterProvider,
-  createBrowserRouter,
-  useNavigation
+    Navigate,
+    Outlet,
+    RouterProvider,
+    createBrowserRouter,
+    useNavigation
 } from 'react-router-dom';
 import '@fontsource/roboto'; // Defaults to weight 400
 import '@fontsource/roboto/400.css'; // Specify weight
@@ -19,61 +19,61 @@ import { useAuth } from './components/AuthProvider';
 import Loading from './components/Loading/Loading';
 
 function Layout() {
-  const navigation = useNavigation();
-  return (
-    <>
-      <CssBaseline />
-      <NavBar>
-        <main>
-          {navigation.state === 'loading' ? (
-            <Loading />
-          ) : (
-            <Suspense fallback={<Loading />}>
-              <Outlet />
-            </Suspense>
-          )}
-        </main>
-      </NavBar>
-    </>
-  );
+    const navigation = useNavigation();
+    return (
+        <>
+            <CssBaseline />
+            <NavBar>
+                <main>
+                    {navigation.state === 'loading' ? (
+                        <Loading />
+                    ) : (
+                        <Suspense fallback={<Loading />}>
+                            <Outlet />
+                        </Suspense>
+                    )}
+                </main>
+            </NavBar>
+        </>
+    );
 }
 
 function WrapperPublic() {
-  const { isAuthenticated } = useAuth();
-  const query = new URLSearchParams(window.location.search);
+    const { isAuthenticated } = useAuth();
+    const query = new URLSearchParams(window.location.search);
 
-  return isAuthenticated ? (
-    query.get('p') ? (
-      <Navigate to={query.get('p')} />
+    return isAuthenticated ? (
+        query.get('p') ? (
+            <Navigate to={query.get('p')} />
+        ) : (
+            <Navigate to={`${DEMO.DASHBOARD_LINK}`} />
+        )
     ) : (
-      <Navigate to={`${DEMO.DASHBOARD_LINK}`} />
-    )
-  ) : (
-    <Suspense fallback={<Loading />}>
-      <Outlet />
-    </Suspense>
-  );
+        <Suspense fallback={<Loading />}>
+            <Outlet />
+        </Suspense>
+    );
 }
 
 const router = createBrowserRouter([
-  {
-    path: '/account',
-    element: <WrapperPublic />,
-    children: [...routes2]
-  },
-  {
-    path: '/',
-    element: <Layout />,
-    children: [...routes]
-  },
-  {
-    path: '*',
-    element: <Navigate to={DEMO.LOGIN_LINK} replace />
-  }
+    {
+        path: '/account',
+        element: <WrapperPublic />,
+        children: [...routes2]
+    },
+    {
+        path: '/',
+        element: <Layout />,
+        children: [...routes]
+    },
+    {
+        path: '*',
+        element: <Navigate to={DEMO.LOGIN_LINK} replace />
+    }
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+    return <RouterProvider router={router} />;
 }
 
 export default App;

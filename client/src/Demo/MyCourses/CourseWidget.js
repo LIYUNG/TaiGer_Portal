@@ -16,45 +16,47 @@ import { useQuery } from '@tanstack/react-query';
 import { getProgramRequirementsQuery } from '../../api/query';
 
 export default function CourseWidget() {
-  const { user } = useAuth();
-  const { student_id } = useParams();
-  const { t } = useTranslation();
+    const { user } = useAuth();
+    const { student_id } = useParams();
+    const { t } = useTranslation();
 
-  const { data } = useQuery(getProgramRequirementsQuery());
+    const { data } = useQuery(getProgramRequirementsQuery());
 
-  if (!student_id) {
-    if (!is_TaiGer_role(user)) {
-      return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+    if (!student_id) {
+        if (!is_TaiGer_role(user)) {
+            return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
+        }
     }
-  }
 
-  TabTitle(i18next.t('Course Analyser', { ns: 'common' }));
+    TabTitle(i18next.t('Course Analyser', { ns: 'common' }));
 
-  return (
-    <Box>
-      <Breadcrumbs aria-label="breadcrumb">
-        <Link
-          underline="hover"
-          color="inherit"
-          component={LinkDom}
-          to={`${DEMO.DASHBOARD_LINK}`}
-        >
-          {appConfig.companyName}
-        </Link>
-        <Typography color="text.primary">
-          {t('Tools', { ns: 'common' })}
-        </Typography>
-        <Typography color="text.primary">
-          {t('Course Analyser', { ns: 'common' })}
-        </Typography>
-      </Breadcrumbs>
-      <Suspense fallback={<Loading />}>
-        <Await resolve={data}>
-          {(loadedData) => (
-            <CourseWidgetBody programRequirements={loadedData.data} />
-          )}
-        </Await>
-      </Suspense>
-    </Box>
-  );
+    return (
+        <Box>
+            <Breadcrumbs aria-label="breadcrumb">
+                <Link
+                    underline="hover"
+                    color="inherit"
+                    component={LinkDom}
+                    to={`${DEMO.DASHBOARD_LINK}`}
+                >
+                    {appConfig.companyName}
+                </Link>
+                <Typography color="text.primary">
+                    {t('Tools', { ns: 'common' })}
+                </Typography>
+                <Typography color="text.primary">
+                    {t('Course Analyser', { ns: 'common' })}
+                </Typography>
+            </Breadcrumbs>
+            <Suspense fallback={<Loading />}>
+                <Await resolve={data}>
+                    {(loadedData) => (
+                        <CourseWidgetBody
+                            programRequirements={loadedData.data}
+                        />
+                    )}
+                </Await>
+            </Suspense>
+        </Box>
+    );
 }

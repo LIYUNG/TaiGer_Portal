@@ -4,11 +4,11 @@ import { useLoaderData } from 'react-router-dom';
 import StudentApplicationsAssignProgramlistPage from './StudentApplicationsAssignProgramlistPage';
 
 function StudentApplicationsAssignPage() {
-  const {
-    data: { data: student }
-  } = useLoaderData();
+    const {
+        data: { data: student }
+    } = useLoaderData();
 
-  return <StudentApplicationsAssignProgramlistPage student={student} />;
+    return <StudentApplicationsAssignProgramlistPage student={student} />;
 }
 
 export default StudentApplicationsAssignPage;

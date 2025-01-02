@@ -12,64 +12,64 @@ import { getProgramQuery } from '../../api/query';
 import { useSnackBar } from '../../contexts/use-snack-bar';
 
 function ProgramEditPage() {
-  const { distinctSchools } = useLoaderData();
-  const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
+    const { distinctSchools } = useLoaderData();
+    const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
 
-  const navigate = useNavigate();
-  const { programId } = useParams();
-  const { data, isLoading } = useQuery({
-    ...getProgramQuery({ programId })
-  });
+    const navigate = useNavigate();
+    const { programId } = useParams();
+    const { data, isLoading } = useQuery({
+        ...getProgramQuery({ programId })
+    });
 
-  const onClickIToSingleProgramPage = () => {
-    navigate(DEMO.SINGLE_PROGRAM_LINK(programId));
-  };
+    const onClickIToSingleProgramPage = () => {
+        navigate(DEMO.SINGLE_PROGRAM_LINK(programId));
+    };
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: updateProgramV2,
-    onError: (error) => {
-      setSeverity('error');
-      setMessage(error.message || 'An error occurred. Please try again.');
-      setOpenSnackbar(true);
-    },
-    onSuccess: () => {
-      setSeverity('success');
-      setMessage('Updated program successfully!');
-      setOpenSnackbar(true);
-      queryClient.invalidateQueries({
-        queryKey: ['programs', programId]
-      });
-      navigate(DEMO.SINGLE_PROGRAM_LINK(programId));
-    }
-  });
+    const { mutate, isPending } = useMutation({
+        mutationFn: updateProgramV2,
+        onError: (error) => {
+            setSeverity('error');
+            setMessage(error.message || 'An error occurred. Please try again.');
+            setOpenSnackbar(true);
+        },
+        onSuccess: () => {
+            setSeverity('success');
+            setMessage('Updated program successfully!');
+            setOpenSnackbar(true);
+            queryClient.invalidateQueries({
+                queryKey: ['programs', programId]
+            });
+            navigate(DEMO.SINGLE_PROGRAM_LINK(programId));
+        }
+    });
 
-  const handleSubmitProgram = (program) => {
-    mutate({ program });
-  };
+    const handleSubmitProgram = (program) => {
+        mutate({ program });
+    };
 
-  return (
-    <Box>
-      <Suspense fallback={<Loading />}>
-        <Await resolve={distinctSchools}>
-          {(loadedData) => (
-            <>
-              {isLoading && <Loading />}
-              {!isLoading && (
-                <NewProgramEdit
-                  handleClick={onClickIToSingleProgramPage}
-                  handleSubmit_Program={handleSubmitProgram}
-                  programs={loadedData}
-                  program={data?.data}
-                  isLoading={isLoading}
-                  isSubmitting={isPending}
-                  type={'edit'}
-                />
-              )}
-            </>
-          )}
-        </Await>
-      </Suspense>
-    </Box>
-  );
+    return (
+        <Box>
+            <Suspense fallback={<Loading />}>
+                <Await resolve={distinctSchools}>
+                    {(loadedData) => (
+                        <>
+                            {isLoading && <Loading />}
+                            {!isLoading && (
+                                <NewProgramEdit
+                                    handleClick={onClickIToSingleProgramPage}
+                                    handleSubmit_Program={handleSubmitProgram}
+                                    programs={loadedData}
+                                    program={data?.data}
+                                    isLoading={isLoading}
+                                    isSubmitting={isPending}
+                                    type={'edit'}
+                                />
+                            )}
+                        </>
+                    )}
+                </Await>
+            </Suspense>
+        </Box>
+    );
 }
 export default ProgramEditPage;

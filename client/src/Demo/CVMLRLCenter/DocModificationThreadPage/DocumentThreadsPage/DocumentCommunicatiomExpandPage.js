@@ -32,7 +32,10 @@ import {
     FILE_OK_SYMBOL,
     FILE_MISSING_SYMBOL
 } from '../../../../utils/contants';
-import { getMyThreadMessages, getThreadsByStudent } from '../../../../api';
+import {
+    getMyStudentThreadMetrics,
+    getThreadsByStudent
+} from '../../../../api';
 
 const categories = {
     General: [
@@ -63,12 +66,12 @@ const getCategory = (fileType) => {
     return 'Others'; // Default category if not found
 };
 
-const getMyThreadMessageQuery = () => ({
-    queryKey: ['myThreadMessages'],
+const getStudentMetricsQuery = () => ({
+    queryKey: ['myStudentThreadMetrics'],
     queryFn: async () => {
         try {
             // await new Promise((resolve) => setTimeout(resolve, 10000));
-            const response = await getMyThreadMessages();
+            const response = await getMyStudentThreadMetrics();
             return response;
         } catch (error) {
             console.log(error);
@@ -243,13 +246,13 @@ function DocumentCommunicationExpandPage() {
     const [studentSearchTerm, setStudentSearchTerm] = useState('');
 
     const {
-        data: myMessagesData,
-        isLoading: myMessagesIsLoading,
-        isError: myMessagesIsError,
-        error: myMessagesError
-    } = useQuery(getMyThreadMessageQuery());
+        data: studentMetricsData,
+        isLoading: studentMetricsIsLoading,
+        isError: studentMetricsIsError,
+        error: studentMetricsError
+    } = useQuery(getStudentMetricsQuery());
 
-    const { students = [] } = myMessagesData?.data?.data || {};
+    const { students = [] } = studentMetricsData?.data?.data || {};
 
     const { data: studentThreadsData } = useQuery(
         getThreadByStudentQuery(studentId)
@@ -298,8 +301,8 @@ function DocumentCommunicationExpandPage() {
         return <Navigate to={`${DEMO.DASHBOARD_LINK}`} />;
     }
 
-    if (myMessagesIsError) {
-        return <>{myMessagesError}</>;
+    if (studentMetricsIsError) {
+        return <>{studentMetricsError}</>;
     }
 
     return (
@@ -310,7 +313,7 @@ function DocumentCommunicationExpandPage() {
 
             <Grid container spacing={3}>
                 <Grid item xs={1.5}>
-                    {myMessagesIsLoading ? (
+                    {studentMetricsIsLoading ? (
                         <Loading />
                     ) : (
                         <>

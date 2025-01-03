@@ -2349,7 +2349,7 @@ const getThreadsByStudent = asyncHandler(async (req, res, next) => {
   next();
 });
 
-const getMyThreadMessages = asyncHandler(async (req, res, next) => {
+const getMyStudentMetrics = asyncHandler(async (req, res, next) => {
   const students = await getMyStudents(req);
   const studentIds = students.map((stud, i) => stud._id);
   const studentThreads = await getThreadsByStudentIds(req.db, studentIds);
@@ -2379,8 +2379,7 @@ const getMyThreadMessages = asyncHandler(async (req, res, next) => {
   res.status(200).send({
     success: true,
     data: {
-      students: studentsWithCount,
-      studentThreads: studentThreads
+      students: studentsWithCount
     }
   });
 
@@ -2397,7 +2396,7 @@ module.exports = {
   initGeneralMessagesThread,
   initApplicationMessagesThread,
   getMessages,
-  getMyThreadMessages,
+  getMyStudentMetrics,
   getThreadsByStudent,
   getMessageImageDownload,
   getMessageFileDownload,

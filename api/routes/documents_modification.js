@@ -52,7 +52,7 @@ const {
   putThreadFavorite,
   IgnoreMessageInDocumentThread,
   checkDocumentPattern,
-  getMyThreadMessages,
+  getMyStudentMetrics,
   getThreadsByStudent
 } = require('../controllers/documents_modification');
 const {
@@ -83,11 +83,11 @@ router
   );
 
 router
-  .route('/overview/all-messages')
+  .route('/overview/my-student-metrics')
   .get(
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    getMyThreadMessages,
+    getMyStudentMetrics,
     logAccess
   );
 

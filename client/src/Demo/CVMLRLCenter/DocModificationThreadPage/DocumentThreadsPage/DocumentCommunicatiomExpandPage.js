@@ -79,17 +79,18 @@ const ThreadItem = ({ thread, onClick }) => {
     const isFinal = thread?.isFinalVersion;
     const notRepliedByUser =
         thread.messages?.[0]?.user_id?._id === thread?.student_id;
+    const highlightItem = !isFinal && notRepliedByUser;
     return (
         <ListItem
             sx={{
-                backgroundColor: !notRepliedByUser
+                backgroundColor: !highlightItem
                     ? theme.palette.background.default
                     : theme.palette.action.disabled,
                 '&:hover': {
                     backgroundColor: theme.palette.action.hover // Set a different color on hover if needed
                 },
                 transition: 'background-color 0.3s ease-in-out', // Smooth color transitions
-                color: !notRepliedByUser
+                color: !highlightItem
                     ? theme.palette.text.primary
                     : theme.palette.text.secondary
             }}
@@ -103,7 +104,7 @@ const ThreadItem = ({ thread, onClick }) => {
                 >
                     {`${thread.file_type}`}
                 </Typography>
-                {notRepliedByUser && (
+                {highlightItem && (
                     <FiberManualRecordIcon
                         fontSize="tiny"
                         title="Not Reply Yet"

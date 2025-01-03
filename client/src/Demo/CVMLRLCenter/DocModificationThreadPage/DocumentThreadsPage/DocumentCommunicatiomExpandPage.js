@@ -304,6 +304,10 @@ function DocumentCommunicationExpandPage() {
             const categoryA = getCategory(a.file_type);
             const categoryB = getCategory(b.file_type);
             if (categoryA === categoryB) {
+                if (a.file_type === b.file_type) {
+                    // Sort by isFinalVersion, false first then true
+                    return a.isFinalVersion - b.isFinalVersion;
+                }
                 return a.file_type.localeCompare(b.file_type);
             }
             return (

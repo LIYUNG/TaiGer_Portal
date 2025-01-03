@@ -856,21 +856,23 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                         </span>
                     </Breadcrumbs>
                 </Box>
-                <Box style={{ textAlign: 'left' }}>
-                    <Button
-                        component={LinkDom}
-                        color="primary"
-                        variant="contained"
-                        size="small"
-                        to={
-                            isEmbedded
-                                ? `/document-modification/${documentsthreadId}`
-                                : `/doc-communications/${documentsthreadId}`
-                        }
-                    >
-                        {t('Switch View', { ns: 'common' })}
-                    </Button>
-                </Box>
+                {!is_TaiGer_Student(user) && (
+                    <Box style={{ textAlign: 'left' }}>
+                        <Button
+                            component={LinkDom}
+                            color="primary"
+                            variant="contained"
+                            size="small"
+                            to={
+                                isEmbedded
+                                    ? `/document-modification/${documentsthreadId}`
+                                    : `/doc-communications/${documentsthreadId}`
+                            }
+                        >
+                            {t('Switch View', { ns: 'common' })}
+                        </Button>
+                    </Box>
+                )}
             </Box>
             <Dialog
                 open={isFilesListOpen}

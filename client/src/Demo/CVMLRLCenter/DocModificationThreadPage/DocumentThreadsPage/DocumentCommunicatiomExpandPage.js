@@ -400,7 +400,7 @@ function DocumentCommunicationExpandPage() {
                             (thread) => thread?.isFinalVersion
                         )}
                     />{' '}
-                    Show all threads
+                    Show completed threads
                     <List>
                         {sortedThreads
                             ?.filter(

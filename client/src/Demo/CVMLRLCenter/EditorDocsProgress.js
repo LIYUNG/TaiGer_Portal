@@ -651,6 +651,16 @@ function EditorDocsProgress(props) {
                     res_modal_message={res_modal_message}
                 />
             )}
+            <Button
+                component={LinkDom}
+                color="primary"
+                variant="contained"
+                size="small"
+                to={`/doc-communications/`}
+            >
+                {t('Switch View', { ns: 'common' })}
+            </Button>
+            <Divider sx={{ marginY: 2 }} />
             <ManualFiles
                 onDeleteFileThread={onDeleteFileThread}
                 handleAsFinalFile={handleAsFinalFile}

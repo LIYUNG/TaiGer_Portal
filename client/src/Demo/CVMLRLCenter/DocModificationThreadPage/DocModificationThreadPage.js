@@ -81,7 +81,7 @@ import DocumentCheckingResultModal from './DocumentCheckingResultModal';
 import { a11yProps, CustomTabPanel } from '../../../components/Tabs';
 import Audit from '../../Audit';
 
-function DocModificationThreadPage({ threadId }) {
+function DocModificationThreadPage({ threadId, isEmbedded = false }) {
     const { user } = useAuth();
     const theme = useTheme();
     const { t } = useTranslation();
@@ -847,6 +847,19 @@ function DocModificationThreadPage({ threadId }) {
                             {t('Expand')}
                         </Button>
                     )}
+                    <Button
+                        component={LinkDom}
+                        color="primary"
+                        variant="contained"
+                        size="small"
+                        to={
+                            isEmbedded
+                                ? `/document-modification/${documentsthreadId}`
+                                : `/doc-communications/${documentsthreadId}`
+                        }
+                    >
+                        {t('Switch View', { ns: 'common' })}
+                    </Button>
                 </span>
             </Breadcrumbs>
             <Dialog

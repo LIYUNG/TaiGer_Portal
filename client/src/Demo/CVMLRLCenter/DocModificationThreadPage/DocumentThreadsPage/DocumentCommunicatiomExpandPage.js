@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 
 import { useQuery } from '@tanstack/react-query';
 import {
@@ -204,8 +204,8 @@ const ThreadItem = ({ thread, onClick }) => {
                             <Typography
                                 sx={{
                                     fontStyle: isFinal ? 'italic' : 'normal',
-                                    whiteSpace: 'nowrap', 
-                                    overflow: 'hidden', 
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
                                     textOverflow: 'ellipsis'
                                 }}
                             >
@@ -245,7 +245,7 @@ function DocumentCommunicationExpandPage() {
     const navigate = useNavigate();
 
     const { user } = useAuth();
-    const { t } = useTranslation();
+    // const { t } = useTranslation();
     const [showAllThreads, setShowAllThreads] = useState(true);
     const [studentId, setStudentId] = useState(null);
     const [threadId, setThreadId] = useState(paramThreadId || null);
@@ -326,10 +326,6 @@ function DocumentCommunicationExpandPage() {
 
     return (
         <Box>
-            <Typography variant="h5" sx={{ mb: 1 }}>
-                {t('CommunicationExpandPage - ') + threadId + ' - ' + studentId}
-            </Typography>
-
             <Grid container spacing={1.5}>
                 <Grid item xs={1.5}>
                     {studentMetricsIsLoading ? (
@@ -343,7 +339,6 @@ function DocumentCommunicationExpandPage() {
                             >
                                 <SearchIcon />
                                 <InputBase
-                                    label="Name"
                                     value={studentSearchTerm}
                                     onChange={(e) =>
                                         setStudentSearchTerm(e.target.value)
@@ -444,7 +439,10 @@ function DocumentCommunicationExpandPage() {
                 </Grid>
                 <Grid item xs={8}>
                     {threadId && (
-                        <DocModificationThreadPage threadId={threadId} />
+                        <DocModificationThreadPage
+                            threadId={threadId}
+                            isEmbedded
+                        />
                     )}
                 </Grid>
             </Grid>

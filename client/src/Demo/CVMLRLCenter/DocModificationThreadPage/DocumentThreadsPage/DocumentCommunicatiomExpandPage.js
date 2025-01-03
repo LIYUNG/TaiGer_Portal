@@ -94,9 +94,8 @@ const ThreadItem = ({ thread, onClick }) => {
                 </Typography>
                 {notRepliedByUser && (
                     <FiberManualRecordIcon
-                        fontSize="small"
+                        fontSize="tiny"
                         title="Not Reply Yet"
-                        style={{ marginLeft: '4px' }}
                     />
                 )}
             </Stack>
@@ -204,11 +203,11 @@ function DocumentCommunicationExpandPage() {
 
     return (
         <Box>
-            <Typography variant="h1">
+            <Typography variant="h5" sx={{ mb: 1 }}>
                 {t('CommunicationExpandPage - ') + threadId + ' - ' + studentId}
             </Typography>
 
-            <Grid container spacing={3} sx={{ mt: 3 }}>
+            <Grid container spacing={3}>
                 <Grid item xs={1.5}>
                     {myMessagesIsLoading ? (
                         <Loading />

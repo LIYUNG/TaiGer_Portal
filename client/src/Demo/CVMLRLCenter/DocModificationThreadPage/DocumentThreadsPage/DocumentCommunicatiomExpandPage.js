@@ -7,15 +7,18 @@ import {
     Box,
     Checkbox,
     Divider,
+    InputBase,
     List,
     ListItem,
     Grid,
     Typography,
     Stack,
-    useTheme,
-    TextField
+    useTheme
 } from '@mui/material';
-import { FiberManualRecord as FiberManualRecordIcon } from '@mui/icons-material';
+import {
+    Search as SearchIcon,
+    FiberManualRecord as FiberManualRecordIcon
+} from '@mui/icons-material';
 
 import { useAuth } from '../../../../components/AuthProvider';
 import { is_TaiGer_role } from '@taiger-common/core';
@@ -211,13 +214,20 @@ function DocumentCommunicationExpandPage() {
                         <Loading />
                     ) : (
                         <>
-                            <TextField
-                                label="Name"
-                                value={studentSearchTerm}
-                                onChange={(e) =>
-                                    setStudentSearchTerm(e.target.value)
-                                }
-                            />
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                spacing={1}
+                            >
+                                <SearchIcon />
+                                <InputBase
+                                    label="Name"
+                                    value={studentSearchTerm}
+                                    onChange={(e) =>
+                                        setStudentSearchTerm(e.target.value)
+                                    }
+                                />
+                            </Stack>
                             <List>
                                 {students
                                     ?.filter((student) => {

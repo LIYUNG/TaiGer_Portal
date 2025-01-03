@@ -2297,19 +2297,13 @@ const getMyStudents = async (req) => {
   const students = await req.db
     .model('Student')
     .find(studentQuery)
-    .select('firstname lastname role')
+    .select('firstname lastname firstname_chinese lastname_chinese -role')
     .lean();
   return students;
 };
 
-const getMyStudentsByThreads = asyncHandler(async (req, res, next) => {
-  return await getMyStudents(req);
-});
-
-const getMyThreadMessages = asyncHandler(async (req, res, next) => {
-  const students = await getMyStudents(req);
-  const studentIds = students.map((stud, i) => stud._id);
-  const studentThreads = await req.db
+const getThreadsByStudentIds = async (db, studentIds) => {
+  return await db
     .model('Documentthread')
     .find({
       student_id: { $in: studentIds },
@@ -2326,19 +2320,42 @@ const getMyThreadMessages = asyncHandler(async (req, res, next) => {
       updatedAt: 1
     })
     .populate('messages.user_id', 'firstname lastname role');
+};
 
-  const studentIdsFromThreads = [
-    ...new Set(studentThreads.map((thread) => String(thread.student_id)))
-  ];
+const getMyStudentsByThreads = asyncHandler(async (req, res, next) => {
+  return await getMyStudents(req);
+});
 
-  const studentsWithThreads = students.filter((student) =>
-    studentIdsFromThreads.includes(String(student._id))
-  );
+const getMyThreadMessages = asyncHandler(async (req, res, next) => {
+  const students = await getMyStudents(req);
+  const studentIds = students.map((stud, i) => stud._id);
+  const studentThreads = await getThreadsByStudentIds(req.db, studentIds);
+
+  const studentsWithCount = students.map((student) => {
+    const studentId = String(student._id);
+    const threads = studentThreads.filter(
+      (thread) => String(thread.student_id) === studentId
+    );
+
+    student.threadCount = threads.length;
+    student.completeThreadCount = threads.filter(
+      (thread) => thread.isFinalVersion
+    ).length;
+
+    student.needToReply = threads.some((thread) => {
+      const lastMessage = thread.messages?.[0];
+      return (
+        lastMessage?.user_id?.toString() !== studentId && thread?.isFinalVersion
+      );
+    });
+
+    return student;
+  });
 
   res.status(200).send({
     success: true,
     data: {
-      students: studentsWithThreads,
+      students: studentsWithCount,
       studentThreads: studentThreads
     }
   });

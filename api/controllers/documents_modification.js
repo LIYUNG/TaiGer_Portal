@@ -2345,7 +2345,8 @@ const getMyThreadMessages = asyncHandler(async (req, res, next) => {
     student.needToReply = threads.some((thread) => {
       const lastMessage = thread.messages?.[0];
       return (
-        lastMessage?.user_id?.toString() !== studentId && thread?.isFinalVersion
+        lastMessage?.user_id?._id?.toString() === studentId &&
+        !thread.isFinalVersion
       );
     });
 

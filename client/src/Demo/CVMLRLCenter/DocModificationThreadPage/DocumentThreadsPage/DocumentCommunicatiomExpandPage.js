@@ -78,6 +78,31 @@ const getMyThreadMessageQuery = () => ({
     staleTime: 1000 * 60 // 1 minutes
 });
 
+const StudentItem = ({ student, selectedStudentId, onClick }) => {
+    return (
+        <ListItem disablePadding>
+            <ListItemButton sx={{ paddingY: 0 }} onClick={onClick}>
+                <ListItemText
+                    primary={
+                        <Typography
+                            variant="body1"
+                            style={{
+                                fontWeight:
+                                    student?._id?.toString() ===
+                                    selectedStudentId?.toString()
+                                        ? 900
+                                        : 'normal'
+                            }}
+                        >
+                            {`${student.firstname} ${student.lastname} (${student?.completeThreadCount}/${student?.threadCount})`}
+                        </Typography>
+                    }
+                />
+            </ListItemButton>
+        </ListItem>
+    );
+};
+
 const ThreadItem = ({ thread, onClick }) => {
     const theme = useTheme();
     const isFinal = thread?.isFinalVersion;
@@ -237,36 +262,16 @@ function DocumentCommunicationExpandPage() {
                                         a.firstname.localeCompare(b.firstname)
                                     )
                                     ?.map((student) => (
-                                        <ListItem
+                                        <StudentItem
                                             key={student._id}
-                                            disablePadding
-                                        >
-                                            <ListItemButton
-                                                sx={{ paddingY: 0 }}
-                                                onClick={() =>
-                                                    handleOnClickStudent(
-                                                        student._id
-                                                    )
-                                                }
-                                            >
-                                                <ListItemText
-                                                    primary={
-                                                        <Typography
-                                                            variant="body1"
-                                                            style={{
-                                                                fontWeight:
-                                                                    student?._id?.toString() ===
-                                                                    studentId
-                                                                        ? 900
-                                                                        : 'normal'
-                                                            }}
-                                                        >
-                                                            {`${student.firstname} ${student.lastname} (${student?.completeThreadCount}/${student?.threadCount})`}
-                                                        </Typography>
-                                                    }
-                                                />
-                                            </ListItemButton>
-                                        </ListItem>
+                                            student={student}
+                                            selectedStudentId={studentId}
+                                            onClick={() =>
+                                                handleOnClickStudent(
+                                                    student._id
+                                                )
+                                            }
+                                        />
                                     ))}
                             </List>
                         </>

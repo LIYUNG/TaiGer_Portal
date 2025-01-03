@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link as LinkDom, useLocation, useParams } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -81,6 +82,21 @@ import DocumentCheckingResultModal from './DocumentCheckingResultModal';
 import { a11yProps, CustomTabPanel } from '../../../components/Tabs';
 import Audit from '../../Audit';
 
+const getMessagThreadQuery = (threadId) => ({
+    queryKey: ['MessageThread', threadId],
+    queryFn: async () => {
+        try {
+            const response = await getMessagThread(threadId);
+            return response;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
+    staleTime: 1000 * 60, // 1 minutes
+    cacheTime: 10 * 60 * 1000 // 10 minutes
+});
+
 function DocModificationThreadPage({ threadId, isEmbedded = false }) {
     const { user } = useAuth();
     const theme = useTheme();
@@ -117,67 +133,69 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
     const [originAuthorConfirmed, setOriginAuthorConfirmed] = useState(false);
     const [originAuthorCheckboxConfirmed, setOriginAuthorCheckboxConfirmed] =
         useState(false);
+    const { data, error } = useQuery(getMessagThreadQuery(documentsthreadId));
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const resp = await getMessagThread(documentsthreadId);
-                const {
+        if (data) {
+            const {
+                success,
+                data: threadData,
+                editors,
+                agents,
+                threadAuditLog,
+                deadline,
+                conflict_list
+            } = data.data;
+            const { status } = data;
+
+            if (success) {
+                setOriginAuthorConfirmed(
+                    threadData?.isOriginAuthorDeclarationConfirmedByStudent
+                );
+
+                setDocModificationThreadPageState((prevState) => ({
+                    ...prevState,
                     success,
-                    data,
+                    thread: threadData,
+                    threadAuditLog,
                     editors,
                     agents,
-                    threadAuditLog,
                     deadline,
-                    conflict_list
-                } = resp.data;
-                const { status } = resp;
-                if (success) {
-                    setOriginAuthorConfirmed(
-                        data?.isOriginAuthorDeclarationConfirmedByStudent
-                    );
-
-                    setDocModificationThreadPageState((prevState) => ({
-                        ...prevState,
-                        success,
-                        thread: data,
-                        threadAuditLog,
-                        editors,
-                        agents,
-                        deadline,
-                        conflict_list,
-                        isLoaded: true,
-                        documentsthreadId: documentsthreadId,
-                        file: null,
-                        // accordionKeys: new Array(data.messages.length)
-                        //   .fill()
-                        //   .map((x, i) => i) // to expand all
-                        accordionKeys: new Array(data.messages.length)
-                            .fill()
-                            .map((x, i) =>
-                                i === data.messages.length - 1 ? i : -1
-                            ), // to collapse all
-                        res_status: status
-                    }));
-                } else {
-                    setDocModificationThreadPageState((prevState) => ({
-                        ...prevState,
-                        isLoaded: true,
-                        res_status: status
-                    }));
-                }
-            } catch (error) {
+                    conflict_list,
+                    isLoaded: true,
+                    documentsthreadId: documentsthreadId,
+                    file: null,
+                    accordionKeys: new Array(threadData.messages.length)
+                        .fill()
+                        .map((x, i) =>
+                            i === threadData.messages.length - 1 ? i : -1
+                        ), // to collapse all
+                    res_status: status
+                }));
+            } else {
                 setDocModificationThreadPageState((prevState) => ({
                     ...prevState,
                     isLoaded: true,
-                    error,
-                    res_status: 500
+                    res_status: status
                 }));
             }
-        };
+        }
+
+        if (error) {
+            setDocModificationThreadPageState((prevState) => ({
+                ...prevState,
+                isLoaded: true,
+                error,
+                res_status: 500
+            }));
+        }
 
         document.addEventListener('mousedown', handleClickOutside);
-        fetchData();
-    }, [documentsthreadId]);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [data, error]);
 
     const closeSetAsFinalFileModelWindow = () => {
         setDocModificationThreadPageState((prevState) => ({

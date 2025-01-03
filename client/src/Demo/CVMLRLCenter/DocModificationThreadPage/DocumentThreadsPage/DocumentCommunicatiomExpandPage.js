@@ -78,7 +78,8 @@ const getStudentMetricsQuery = () => ({
             throw error;
         }
     },
-    staleTime: 1000 * 60 // 1 minutes
+    staleTime: 1000 * 60, // 1 minutes
+    cacheTime: 10 * 60 * 1000 // 10 minutes
 });
 
 const getThreadByStudentQuery = (studentId) => ({
@@ -86,6 +87,7 @@ const getThreadByStudentQuery = (studentId) => ({
     queryFn: async () => {
         try {
             // await new Promise((resolve) => setTimeout(resolve, 10000));
+            console.log('Fetching threads for student:', studentId);
             const response = await getThreadsByStudent(studentId);
             return response;
         } catch (error) {
@@ -94,7 +96,8 @@ const getThreadByStudentQuery = (studentId) => ({
         }
     },
     enabled: !!studentId,
-    staleTime: 1000 * 60 // 1 minutes
+    staleTime: 1000 * 60, // 1 minutes
+    cacheTime: 10 * 60 * 1000 // 10 minutes
 });
 
 const StudentItem = ({ student, selectedStudentId, onClick }) => {
@@ -269,7 +272,7 @@ function DocumentCommunicationExpandPage() {
         if (!threadId) {
             return;
         }
-        navigate(`/doc-communications/${threadId}`);
+        navigate(`/doc-communications/${threadId}`, { replace: true });
         // get student id by thread id
         const studentId = students?.find((student) =>
             student?.threads?.includes(threadId)

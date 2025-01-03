@@ -83,6 +83,7 @@ const ThreadItem = ({ thread, onClick }) => {
     return (
         <ListItem
             sx={{
+                paddingY: 0,
                 backgroundColor: !highlightItem
                     ? theme.palette.background.default
                     : theme.palette.action.disabled,
@@ -92,15 +93,26 @@ const ThreadItem = ({ thread, onClick }) => {
                 transition: 'background-color 0.3s ease-in-out', // Smooth color transitions
                 color: !highlightItem
                     ? theme.palette.text.primary
-                    : theme.palette.text.secondary
+                    : theme.palette.text.secondary,
+                width: '100%' // Make the item 100% width
             }}
-            disablePadding
         >
-            <Stack direction="row" alignItems="center" spacing={1}>
+            <Stack
+                direction="row"
+                alignItems="center"
+                spacing={1}
+                sx={{ width: '100%' }}
+            >
                 {isFinal ? FILE_OK_SYMBOL : FILE_MISSING_SYMBOL}
                 <Typography
                     onClick={onClick}
-                    sx={{ fontStyle: isFinal ? 'italic' : 'normal' }}
+                    sx={{
+                        fontStyle: isFinal ? 'italic' : 'normal',
+                        flexGrow: 1, // Allow Typography to take available space
+                        whiteSpace: 'nowrap', // Prevent text from wrapping
+                        overflow: 'hidden', // Hide overflow text
+                        textOverflow: 'ellipsis' // Add ellipsis for overflow text
+                    }}
                 >
                     {`${thread.file_type}`}
                 </Typography>

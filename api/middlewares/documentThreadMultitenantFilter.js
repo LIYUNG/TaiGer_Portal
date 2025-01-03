@@ -1,4 +1,8 @@
-const { Role, is_TaiGer_Student, is_TaiGer_Guest } = require('@taiger-common/core');
+const {
+  Role,
+  is_TaiGer_Student,
+  is_TaiGer_Guest
+} = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
 const logger = require('../services/logger');

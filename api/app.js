@@ -12,7 +12,10 @@ const router = require('./routes');
 const { errorHandler } = require('./middlewares/error-handler');
 const { isDev, isProd } = require('./config');
 const httpLogger = require('./services/httpLogger');
-const { tenantMiddleware, checkTenantDBMiddleware } = require('./middlewares/tenantMiddleware');
+const {
+  tenantMiddleware,
+  checkTenantDBMiddleware
+} = require('./middlewares/tenantMiddleware');
 const {
   decryptCookieMiddleware
 } = require('./middlewares/decryptCookieMiddleware');

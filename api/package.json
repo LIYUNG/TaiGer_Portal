@@ -6,6 +6,8 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json index.js",
     "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles --coverage --watch",
+    "test:ci": "cross-env NODE_ENV=test jest --ci --watchAll=false",
+    "format": "prettier --write --cache . --ignore-path .prettierignore",
     "deploy-s3": "aws s3 sync . s3://taiger-file-storage-production-backend-server --exclude \".env.production\" --exclude \"__tests__/*\" --exclude \"node_modules/*\" --exclude \"cert/*\" --exclude \"logs/*\"",
     "deploy-ec2": "aws ec2 run-instances --launch-template LaunchTemplateId=\"lt-00b01e82ef9ebd817\" --region us-west-2",
     "deploy": "npm run deploy-s3 && npm run deploy-ec2",

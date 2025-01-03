@@ -43,11 +43,13 @@ router
     WidgetProcessTranscript
   );
 
-router.route('/transcript/v2/:adminId').get(
-  GeneralGETRequestRateLimiter,
-  permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
-  WidgetdownloadJson
-);
+router
+  .route('/transcript/v2/:adminId')
+  .get(
+    GeneralGETRequestRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.External),
+    WidgetdownloadJson
+  );
 
 router
   .route('/transcript/:adminId')

@@ -6,7 +6,6 @@ const {
 } = require('../middlewares/rate_limiter');
 const { protect, permit } = require('../middlewares/auth');
 
-
 const {
   getQueryResults,
   getQueryPublicResults,

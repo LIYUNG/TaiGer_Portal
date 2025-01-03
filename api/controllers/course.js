@@ -440,14 +440,12 @@ const downloadJson = asyncHandler(async (req, res, next) => {
       );
     }
 
-    res
-      .status(200)
-      .send({
-        success: true,
-        json: jsonData,
-        student: course.student_id,
-        fileKey: fileKey_converted
-      });
+    res.status(200).send({
+      success: true,
+      json: jsonData,
+      student: course.student_id,
+      fileKey: fileKey_converted
+    });
     next();
   } else {
     logger.info('cache hit');

@@ -55,11 +55,13 @@ router
     GeneralDELETERequestRateLimiter,
     deleteUser
   );
-router.route('/archiv/:user_id').post(
-  filter_archiv_user,
-  permit(Role.Admin),
-  GeneralPOSTRequestRateLimiter,
-  updateUserArchivStatus
-);
+router
+  .route('/archiv/:user_id')
+  .post(
+    filter_archiv_user,
+    permit(Role.Admin),
+    GeneralPOSTRequestRateLimiter,
+    updateUserArchivStatus
+  );
 
 module.exports = router;

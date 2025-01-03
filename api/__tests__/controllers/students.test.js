@@ -384,21 +384,15 @@ describe('POST /api/students/:studentId/files/:category', () => {
     expect(status).toBe(201);
     expect(body.success).toBe(true);
 
-    const updatedStudent = body.data;
-    const profile_file_idx = updatedStudent.profile.findIndex(({ name }) =>
-      name.includes(category)
-    );
+    const updatedFile = body.data;
+
     temp_name = `${student.lastname}_${
       student.firstname
-    }_${category}${path.extname(
-      updatedStudent.profile[profile_file_idx].path
-    )}`;
+    }_${category}${path.extname(updatedFile.path)}`;
 
-    const file_name_inDB = path.basename(
-      updatedStudent.profile[profile_file_idx].path
-    );
+    const file_name_inDB = path.basename(updatedFile.path);
 
-    expect(updatedStudent.profile[profile_file_idx].name).toBe(category);
+    expect(updatedFile.name).toBe(category);
     expect(file_name_inDB).toBe(temp_name);
 
     // Test Download:
@@ -496,21 +490,14 @@ describe('POST /api/students/:studentId/files/:category', () => {
     expect(status).toBe(201);
     expect(body.success).toBe(true);
 
-    const updatedStudent = body.data;
-    const profile_file_idx = updatedStudent.profile.findIndex(({ name }) =>
-      name.includes(category)
-    );
+    const updatedFile = body.data;
     temp_name = `${student.lastname}_${
       student.firstname
-    }_${category}${path.extname(
-      updatedStudent.profile[profile_file_idx].path
-    )}`;
+    }_${category}${path.extname(updatedFile.path)}`;
 
-    const file_name_inDB = path.basename(
-      updatedStudent.profile[profile_file_idx].path
-    );
+    const file_name_inDB = path.basename(updatedFile.path);
 
-    expect(updatedStudent.profile[profile_file_idx].name).toBe(category);
+    expect(updatedFile.name).toBe(category);
     expect(file_name_inDB).toBe(temp_name);
 
     // Test Download:
@@ -540,13 +527,10 @@ describe('POST /api/students/:studentId/files/:category', () => {
       .set('tenantId', TENANT_ID)
       .send({ status: 'rejected', feedback: feedback_str });
     expect(resp5.status).toBe(201);
-    var updatedStudent2 = resp5.body.data;
-    const updated_doc_idx = updatedStudent2.profile.findIndex(({ name }) =>
-      name.includes(category)
-    );
-    const updated_doc = updatedStudent2.profile[updated_doc_idx];
+    const updatedFile2 = resp5.body.data;
+
     expect(resp5.body.success).toBe(true);
-    expect(updated_doc.feedback).toBe(feedback_str);
+    expect(updatedFile2.feedback).toBe(feedback_str);
 
     // test delete
     const resp4 = await request(app)

@@ -12,7 +12,6 @@ const {
 } = require('../middlewares/InnerTaigerMultitenantFilter');
 const { protect, permit, prohibit } = require('../middlewares/auth');
 
-
 const {
   createPortalCredentials,
   getPortalCredentials

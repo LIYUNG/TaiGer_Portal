@@ -29,7 +29,7 @@
     "operator-linebreak": "off",
     "indent": "off",
     "function-paren-newline": "off",
-    "linebreak-style": ["error", "windows"],
+    "linebreak-style": ["off", "windows"],
     "camelcase": "off",
     "no-await-in-loop": "off",
     "object-curly-newline": "off",

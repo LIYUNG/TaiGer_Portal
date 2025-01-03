@@ -57,6 +57,7 @@ const {
 } = require('../utils/utils_function');
 const { getS3Object } = require('../aws/s3');
 const { getPermission } = require('../utils/queryFunctions');
+const { get } = require('lodash');
 
 const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   const students = await req.db
@@ -2276,7 +2277,7 @@ const isAdminOrAccessAllChat = async (req) => {
   );
 };
 
-const getMyThreadMessages = asyncHandler(async (req, res, next) => {
+const getMyStudents = async (req) => {
   const { user } = req;
   const studentQuery = {
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
@@ -2298,6 +2299,15 @@ const getMyThreadMessages = asyncHandler(async (req, res, next) => {
     .find(studentQuery)
     .select('firstname lastname role')
     .lean();
+  return students;
+};
+
+const getMyStudentsByThreads = asyncHandler(async (req, res, next) => {
+  return await getMyStudents(req);
+});
+
+const getMyThreadMessages = asyncHandler(async (req, res, next) => {
+  const students = await getMyStudents(req);
   const studentIds = students.map((stud, i) => stud._id);
   const studentThreads = await req.db
     .model('Documentthread')

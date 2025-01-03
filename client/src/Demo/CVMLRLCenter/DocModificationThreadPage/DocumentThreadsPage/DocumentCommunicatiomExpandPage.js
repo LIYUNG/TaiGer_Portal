@@ -167,7 +167,7 @@ const ThreadItem = ({ thread, onClick }) => {
         ? `${thread?.program_id?.school} - ${thread?.program_id?.program_name}`
         : '';
     const notRepliedByUser =
-        thread.messages?.[0]?.user_id?._id === thread?.student_id;
+        thread.messages?.[0]?.user_id === thread?.student_id;
     const highlightItem = !isFinal && notRepliedByUser;
     return (
         <ListItem

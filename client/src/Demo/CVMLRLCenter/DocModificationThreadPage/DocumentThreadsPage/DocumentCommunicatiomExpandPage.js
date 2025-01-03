@@ -30,7 +30,7 @@ import {
     FILE_OK_SYMBOL,
     FILE_MISSING_SYMBOL
 } from '../../../../utils/contants';
-import { getMyThreadMessages, getMessagThread } from '../../../../api';
+import { getMyThreadMessages } from '../../../../api';
 
 const getMyThreadMessageQuery = () => ({
     queryKey: ['myThreadMessages'],
@@ -44,22 +44,6 @@ const getMyThreadMessageQuery = () => ({
             throw error;
         }
     },
-    staleTime: 1000 * 60 // 1 minutes
-});
-
-const getThreadMessages = (threadId) => ({
-    queryKey: ['threadMessages', threadId],
-    queryFn: async () => {
-        try {
-            console.log('threadId:', threadId);
-            const response = await getMessagThread(threadId);
-            return response;
-        } catch (error) {
-            console.log(error);
-            throw error;
-        }
-    },
-    enabled: !!threadId,
     staleTime: 1000 * 60 // 1 minutes
 });
 
@@ -110,7 +94,9 @@ function DocumentCommunicationExpandPage() {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [showAllThreads, setShowAllThreads] = useState(true);
+    const [studentId, setStudentId] = useState(null);
     const [threadId, setThreadId] = useState(paramThreadId || null);
+    const [studentSearchTerm, setStudentSearchTerm] = useState('');
 
     const {
         data: myMessagesData,
@@ -119,27 +105,19 @@ function DocumentCommunicationExpandPage() {
         error: myMessagesError
     } = useQuery(getMyThreadMessageQuery());
 
-    const { data: threadData } = useQuery(getThreadMessages(threadId));
-
     const { students = [], studentThreads = [] } =
         myMessagesData?.data?.data || {};
 
-    const thread = threadData?.data?.data || {};
-    const { student_id: threadStudent } = thread;
-    const [studentId, setStudentId] = useState(null);
-    const [studentSearchTerm, setStudentSearchTerm] = useState('');
-
     useEffect(() => {
-        if (threadStudent?._id) {
-            setStudentId(threadStudent._id);
+        if (!threadId) {
+            return;
         }
-    }, [threadStudent]);
-
-    useEffect(() => {
-        if (threadId) {
-            navigate(`/doc-communications/${threadId}`);
-        }
-    }, [threadId, navigate]);
+        navigate(`/doc-communications/${threadId}`);
+        const studentId = studentThreads?.find(
+            (thread) => thread._id === threadId
+        )?.student_id;
+        setStudentId(studentId);
+    }, [threadId, navigate, studentThreads]);
 
     const handleOnClickStudent = (id) => {
         setStudentId(id);

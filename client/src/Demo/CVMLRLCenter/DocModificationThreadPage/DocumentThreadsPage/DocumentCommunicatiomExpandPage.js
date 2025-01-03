@@ -125,7 +125,7 @@ const StudentItem = ({ student, selectedStudentId, onClick }) => {
                             </Typography>
                         }
                         secondary={
-                            <Typography>
+                            <Typography variant="body2">
                                 {`${student?.completeThreadCount}/${student?.threadCount}`}
                             </Typography>
                         }
@@ -319,11 +319,15 @@ function DocumentCommunicationExpandPage() {
                                             key={student._id}
                                             student={student}
                                             selectedStudentId={studentId}
-                                            onClick={() =>
+                                            onClick={() => {
                                                 handleOnClickStudent(
                                                     student._id
-                                                )
-                                            }
+                                                );
+                                                window.scrollTo({
+                                                    top: 0,
+                                                    behavior: 'smooth'
+                                                });
+                                            }}
                                         />
                                     ))}
                             </List>
@@ -363,9 +367,9 @@ function DocumentCommunicationExpandPage() {
                                         )}
                                         <ThreadItem
                                             thread={thread}
-                                            onClick={() =>
-                                                handleOnClickThread(thread._id)
-                                            }
+                                            onClick={() => {
+                                                handleOnClickThread(thread._id);
+                                            }}
                                         />
                                     </React.Fragment>
                                 );

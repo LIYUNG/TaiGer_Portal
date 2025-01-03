@@ -261,7 +261,7 @@ function DocumentCommunicationExpandPage() {
                                                                         : 'normal'
                                                             }}
                                                         >
-                                                            {`${student.firstname} ${student.lastname}`}
+                                                            {`${student.firstname} ${student.lastname} (${student?.completeThreadCount}/${student?.threadCount})`}
                                                         </Typography>
                                                     }
                                                 />

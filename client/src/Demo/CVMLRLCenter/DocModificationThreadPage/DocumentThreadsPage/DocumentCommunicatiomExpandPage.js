@@ -99,6 +99,7 @@ const StudentItem = ({ student, selectedStudentId, onClick }) => {
                 width: '100%'
             }}
             disablePadding
+            divider
         >
             <ListItemButton sx={{ paddingY: 0 }} onClick={onClick}>
                 <Stack

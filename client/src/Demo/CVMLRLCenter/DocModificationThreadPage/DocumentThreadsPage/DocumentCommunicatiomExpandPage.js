@@ -91,11 +91,11 @@ const ThreadItem = ({ thread, onClick }) => {
                 '&:hover': {
                     backgroundColor: theme.palette.action.hover // Set a different color on hover if needed
                 },
-                transition: 'background-color 0.3s ease-in-out', // Smooth color transitions
+                transition: 'background-color 0.3s ease-in-out',
                 color: !highlightItem
                     ? theme.palette.text.primary
                     : theme.palette.text.secondary,
-                width: '100%' // Make the item 100% width
+                width: '100%'
             }}
             disablePadding
         >
@@ -156,6 +156,7 @@ function DocumentCommunicationExpandPage() {
             return;
         }
         navigate(`/doc-communications/${threadId}`);
+        // get student id from thread information
         const studentId = studentThreads?.find(
             (thread) => thread._id === threadId
         )?.student_id;
@@ -247,7 +248,20 @@ function DocumentCommunicationExpandPage() {
                                                 }
                                             >
                                                 <ListItemText
-                                                    primary={`${student.firstname} ${student.lastname}`}
+                                                    primary={
+                                                        <Typography
+                                                            variant="body1"
+                                                            style={{
+                                                                fontWeight:
+                                                                    student?._id?.toString() ===
+                                                                    studentId
+                                                                        ? 900
+                                                                        : 'normal'
+                                                            }}
+                                                        >
+                                                            {`${student.firstname} ${student.lastname}`}
+                                                        </Typography>
+                                                    }
                                                 />
                                             </ListItemButton>
                                         </ListItem>

@@ -10,6 +10,8 @@ import {
     InputBase,
     List,
     ListItem,
+    ListItemButton,
+    ListItemText,
     Grid,
     Typography,
     Stack,
@@ -83,7 +85,6 @@ const ThreadItem = ({ thread, onClick }) => {
     return (
         <ListItem
             sx={{
-                paddingY: 0,
                 backgroundColor: !highlightItem
                     ? theme.palette.background.default
                     : theme.palette.action.disabled,
@@ -96,33 +97,35 @@ const ThreadItem = ({ thread, onClick }) => {
                     : theme.palette.text.secondary,
                 width: '100%' // Make the item 100% width
             }}
+            disablePadding
         >
-            <Stack
-                direction="row"
-                alignItems="center"
-                spacing={1}
-                sx={{ width: '100%' }}
-            >
-                {isFinal ? FILE_OK_SYMBOL : FILE_MISSING_SYMBOL}
-                <Typography
-                    onClick={onClick}
-                    sx={{
-                        fontStyle: isFinal ? 'italic' : 'normal',
-                        flexGrow: 1, // Allow Typography to take available space
-                        whiteSpace: 'nowrap', // Prevent text from wrapping
-                        overflow: 'hidden', // Hide overflow text
-                        textOverflow: 'ellipsis' // Add ellipsis for overflow text
-                    }}
+            <ListItemButton sx={{ paddingY: 0 }} onClick={onClick}>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={1}
+                    sx={{ width: '100%' }}
                 >
-                    {`${thread.file_type}`}
-                </Typography>
-                {highlightItem && (
-                    <FiberManualRecordIcon
-                        fontSize="tiny"
-                        title="Not Reply Yet"
-                    />
-                )}
-            </Stack>
+                    {isFinal ? FILE_OK_SYMBOL : FILE_MISSING_SYMBOL}
+                    <Typography
+                        sx={{
+                            fontStyle: isFinal ? 'italic' : 'normal',
+                            flexGrow: 1, // Allow Typography to take available space
+                            whiteSpace: 'nowrap', // Prevent text from wrapping
+                            overflow: 'hidden', // Hide overflow text
+                            textOverflow: 'ellipsis' // Add ellipsis for overflow text
+                        }}
+                    >
+                        {`${thread.file_type}`}
+                    </Typography>
+                    {highlightItem && (
+                        <FiberManualRecordIcon
+                            fontSize="tiny"
+                            title="Not Reply Yet"
+                        />
+                    )}
+                </Stack>
+            </ListItemButton>
         </ListItem>
     );
 };
@@ -235,17 +238,18 @@ function DocumentCommunicationExpandPage() {
                                             key={student._id}
                                             disablePadding
                                         >
-                                            <Typography
+                                            <ListItemButton
+                                                sx={{ paddingY: 0 }}
                                                 onClick={() =>
                                                     handleOnClickStudent(
                                                         student._id
                                                     )
                                                 }
                                             >
-                                                {student.firstname +
-                                                    ' ' +
-                                                    student.lastname}
-                                            </Typography>
+                                                <ListItemText
+                                                    primary={`${student.firstname} ${student.lastname}`}
+                                                />
+                                            </ListItemButton>
                                         </ListItem>
                                     ))}
                             </List>

@@ -291,6 +291,9 @@ function DocumentCommunicationExpandPage() {
     }, [studentId]);
 
     const handleOnClickStudent = (id) => {
+        if (id === studentId) {
+            return;
+        }
         setStudentId(id);
         setThreadId(null);
     };

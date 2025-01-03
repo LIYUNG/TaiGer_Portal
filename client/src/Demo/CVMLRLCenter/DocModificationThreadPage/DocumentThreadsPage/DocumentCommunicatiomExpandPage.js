@@ -79,25 +79,58 @@ const getMyThreadMessageQuery = () => ({
 });
 
 const StudentItem = ({ student, selectedStudentId, onClick }) => {
+    const theme = useTheme();
+    const isStudentComplete =
+        student?.threadCount === student?.completeThreadCount;
+    const highlightItem = !isStudentComplete && student.needToReply;
     return (
-        <ListItem disablePadding>
+        <ListItem
+            sx={{
+                backgroundColor: !highlightItem
+                    ? theme.palette.background.default
+                    : theme.palette.action.disabled,
+                '&:hover': {
+                    backgroundColor: theme.palette.action.hover // Set a different color on hover if needed
+                },
+                transition: 'background-color 0.3s ease-in-out',
+                color: !highlightItem
+                    ? theme.palette.text.primary
+                    : theme.palette.text.secondary,
+                width: '100%'
+            }}
+            disablePadding
+        >
             <ListItemButton sx={{ paddingY: 0 }} onClick={onClick}>
-                <ListItemText
-                    primary={
-                        <Typography
-                            variant="body1"
-                            style={{
-                                fontWeight:
-                                    student?._id?.toString() ===
-                                    selectedStudentId?.toString()
-                                        ? 900
-                                        : 'normal'
-                            }}
-                        >
-                            {`${student.firstname} ${student.lastname} (${student?.completeThreadCount}/${student?.threadCount})`}
-                        </Typography>
-                    }
-                />
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={1}
+                    sx={{ width: '100%' }}
+                >
+                    {isStudentComplete ? FILE_OK_SYMBOL : FILE_MISSING_SYMBOL}
+                    <ListItemText
+                        primary={
+                            <Typography
+                                variant="body1"
+                                style={{
+                                    fontWeight:
+                                        student?._id?.toString() ===
+                                        selectedStudentId?.toString()
+                                            ? 900
+                                            : 'normal'
+                                }}
+                            >
+                                {`${student.firstname} ${student.lastname} (${student?.completeThreadCount}/${student?.threadCount})`}
+                            </Typography>
+                        }
+                    />
+                    {highlightItem && (
+                        <FiberManualRecordIcon
+                            fontSize="tiny"
+                            title="Not Reply Yet"
+                        />
+                    )}
+                </Stack>
             </ListItemButton>
         </ListItem>
     );

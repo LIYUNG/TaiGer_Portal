@@ -795,58 +795,68 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
             )}
             {/* TODO */}
             {false && <button onClick={generatePDF}>Generate PDF</button>}
-            <Breadcrumbs aria-label="breadcrumb">
-                <Link
-                    underline="hover"
-                    color="inherit"
-                    component={LinkDom}
-                    to={`${DEMO.DASHBOARD_LINK}`}
-                >
-                    {appConfig.companyName}
-                </Link>
-                <Link
-                    underline="hover"
-                    color="inherit"
-                    component={LinkDom}
-                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                        docModificationThreadPageState.thread.student_id._id.toString(),
-                        DEMO.CVMLRL_HASH
-                    )}`}
-                >
-                    {student_name}
-                </Link>
-                <Typography variant="body1" color="text.primary">
-                    {docName}
-                    {t('discussion-thread', { ns: 'common' })}
-                </Typography>
-                <span style={{ float: 'right' }}>
-                    <Button
-                        variant="outlined"
-                        size="small"
-                        color="secondary"
-                        onClick={handleOpenFileList}
-                    >
-                        {t('View all Files')}
-                    </Button>
-                    {docModificationThreadPageState.expand ? (
-                        <Button
-                            color="secondary"
-                            variant="outlined"
-                            size="small"
-                            onClick={() => AllCollapsetHandler()}
+            <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+            >
+                <Box>
+                    <Breadcrumbs aria-label="breadcrumb">
+                        <Link
+                            underline="hover"
+                            color="inherit"
+                            component={LinkDom}
+                            to={`${DEMO.DASHBOARD_LINK}`}
                         >
-                            {t('Collapse')}
-                        </Button>
-                    ) : (
-                        <Button
-                            color="secondary"
-                            variant="outlined"
-                            size="small"
-                            onClick={() => AllExpandtHandler()}
+                            {appConfig.companyName}
+                        </Link>
+                        <Link
+                            underline="hover"
+                            color="inherit"
+                            component={LinkDom}
+                            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                docModificationThreadPageState.thread.student_id._id.toString(),
+                                DEMO.CVMLRL_HASH
+                            )}`}
                         >
-                            {t('Expand')}
-                        </Button>
-                    )}
+                            {student_name}
+                        </Link>
+                        <Typography variant="body1" color="text.primary">
+                            {docName}
+                            {t('discussion-thread', { ns: 'common' })}
+                        </Typography>
+                        <span style={{ float: 'right' }}>
+                            <Button
+                                variant="outlined"
+                                size="small"
+                                color="secondary"
+                                onClick={handleOpenFileList}
+                            >
+                                {t('View all Files')}
+                            </Button>
+                            {docModificationThreadPageState.expand ? (
+                                <Button
+                                    color="secondary"
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={() => AllCollapsetHandler()}
+                                >
+                                    {t('Collapse')}
+                                </Button>
+                            ) : (
+                                <Button
+                                    color="secondary"
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={() => AllExpandtHandler()}
+                                >
+                                    {t('Expand')}
+                                </Button>
+                            )}
+                        </span>
+                    </Breadcrumbs>
+                </Box>
+                <Box style={{ textAlign: 'left' }}>
                     <Button
                         component={LinkDom}
                         color="primary"
@@ -860,8 +870,8 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                     >
                         {t('Switch View', { ns: 'common' })}
                     </Button>
-                </span>
-            </Breadcrumbs>
+                </Box>
+            </Box>
             <Dialog
                 open={isFilesListOpen}
                 onClose={handleCloseFileList}

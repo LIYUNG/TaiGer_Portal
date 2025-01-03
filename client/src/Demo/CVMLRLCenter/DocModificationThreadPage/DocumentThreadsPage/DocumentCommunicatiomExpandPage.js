@@ -85,6 +85,7 @@ const getThreadByStudentQuery = (studentId) => ({
     queryKey: ['threadsByStudent', studentId],
     queryFn: async () => {
         try {
+            // await new Promise((resolve) => setTimeout(resolve, 10000));
             const response = await getThreadsByStudent(studentId);
             return response;
         } catch (error) {
@@ -261,9 +262,8 @@ function DocumentCommunicationExpandPage() {
 
     const { students = [] } = studentMetricsData?.data?.data || {};
 
-    const { data: studentThreadsData } = useQuery(
-        getThreadByStudentQuery(studentId)
-    );
+    const { data: studentThreadsData, isLoading: studentThreadIsLoading } =
+        useQuery(getThreadByStudentQuery(studentId));
     const { threads: studentThreads = [] } =
         studentThreadsData?.data?.data || {};
 
@@ -278,6 +278,16 @@ function DocumentCommunicationExpandPage() {
         )?._id;
         setStudentId(studentId);
     }, [students, threadId, navigate]);
+
+    useEffect(() => {
+        if (!studentId) {
+            return;
+        }
+        const firstThreadId = students?.find(
+            (student) => student._id === studentId
+        )?.threads?.[0];
+        setThreadId(firstThreadId);
+    }, [studentId]);
 
     const handleOnClickStudent = (id) => {
         setStudentId(id);
@@ -318,7 +328,7 @@ function DocumentCommunicationExpandPage() {
                 {t('CommunicationExpandPage - ') + threadId + ' - ' + studentId}
             </Typography>
 
-            <Grid container spacing={3}>
+            <Grid container spacing={1.5}>
                 <Grid item xs={1.5}>
                     {studentMetricsIsLoading ? (
                         <Loading />
@@ -385,6 +395,7 @@ function DocumentCommunicationExpandPage() {
                     )}
                 </Grid>
                 <Grid item xs={1.5}>
+                    {studentThreadIsLoading && <Loading />}
                     <Checkbox
                         checked={showAllThreads}
                         onChange={() => setShowAllThreads(!showAllThreads)}

@@ -120,7 +120,12 @@ const StudentItem = ({ student, selectedStudentId, onClick }) => {
                                             : 'normal'
                                 }}
                             >
-                                {`${student.firstname} ${student.lastname} (${student?.completeThreadCount}/${student?.threadCount})`}
+                                {`${student.firstname} ${student.lastname}`}
+                            </Typography>
+                        }
+                        secondary={
+                            <Typography>
+                                {`${student?.completeThreadCount}/${student?.threadCount}`}
                             </Typography>
                         }
                     />

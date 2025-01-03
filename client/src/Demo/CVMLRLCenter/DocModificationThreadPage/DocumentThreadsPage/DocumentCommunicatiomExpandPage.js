@@ -41,7 +41,9 @@ const categories = {
         'Recommendation_Letter_B',
         'Recommendation_Letter_C'
     ],
-    Editors: ['ML', 'RL_A', 'RL_B', 'RL_C', 'Essay'],
+    RL: ['RL_A', 'RL_B', 'RL_C'],
+    ML: ['ML'],
+    Essay: ['Essay'],
     Others: [
         'Interview',
         'Others',

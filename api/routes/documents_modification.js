@@ -52,7 +52,8 @@ const {
   putThreadFavorite,
   IgnoreMessageInDocumentThread,
   checkDocumentPattern,
-  getMyThreadMessages
+  getMyThreadMessages,
+  getThreadsByStudent
 } = require('../controllers/documents_modification');
 const {
   docThreadMultitenant_filter,
@@ -128,6 +129,14 @@ router
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getCVMLRLOverview
+  );
+
+router
+  .route('/student-threads/:studentId')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    getThreadsByStudent
   );
 
 router

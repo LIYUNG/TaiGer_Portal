@@ -2306,8 +2306,8 @@ const getThreadsByStudentIds = async (db, studentIds) => {
   return await db
     .model('Documentthread')
     .find({
-      student_id: { $in: studentIds },
-      messages: { $exists: true, $not: { $size: 0 } } // ensure messages array is not empty
+      student_id: { $in: studentIds }
+      // messages: { $exists: true, $not: { $size: 0 } } // ensure messages array is not empty
     })
     .sort({ updatedAt: -1 })
     .select({
@@ -2322,8 +2322,31 @@ const getThreadsByStudentIds = async (db, studentIds) => {
     .populate('messages.user_id', 'firstname lastname role');
 };
 
-const getMyStudentsByThreads = asyncHandler(async (req, res, next) => {
-  return await getMyStudents(req);
+const getThreadsByStudent = asyncHandler(async (req, res, next) => {
+  const studentId = req.params.studentId;
+  const threads = await req.db
+    .model('Documentthread')
+    .find({ student_id: studentId })
+    .sort({ updatedAt: -1 })
+    .select({
+      _id: 1,
+      student_id: 1,
+      file_type: 1,
+      program_id: 1,
+      isFinalVersion: 1,
+      messages: { $slice: -1 }, // only get the last message
+      updatedAt: 1
+    })
+    .populate('program_id', 'school program_name');
+
+  res.status(200).send({
+    success: true,
+    data: {
+      threads: threads
+    }
+  });
+
+  next();
 });
 
 const getMyThreadMessages = asyncHandler(async (req, res, next) => {
@@ -2375,6 +2398,7 @@ module.exports = {
   initApplicationMessagesThread,
   getMessages,
   getMyThreadMessages,
+  getThreadsByStudent,
   getMessageImageDownload,
   getMessageFileDownload,
   postImageInThread,

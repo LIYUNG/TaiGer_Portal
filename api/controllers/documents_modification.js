@@ -2339,7 +2339,7 @@ const getThreadsByStudent = asyncHandler(async (req, res, next) => {
       messages: { $slice: -1 }, // only get the last message
       updatedAt: 1
     })
-    .populate('program_id', 'school program_name');
+    .populate('program_id', 'school program_name application_deadline');
 
   res.status(200).send({
     success: true,

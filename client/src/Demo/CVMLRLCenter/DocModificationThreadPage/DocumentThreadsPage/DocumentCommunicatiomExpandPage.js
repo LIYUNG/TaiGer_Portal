@@ -204,10 +204,9 @@ const ThreadItem = ({ thread, onClick }) => {
                             <Typography
                                 sx={{
                                     fontStyle: isFinal ? 'italic' : 'normal',
-                                    flexGrow: 1, // Allow Typography to take available space
-                                    whiteSpace: 'nowrap', // Prevent text from wrapping
-                                    overflow: 'hidden', // Hide overflow text
-                                    textOverflow: 'ellipsis' // Add ellipsis for overflow text
+                                    whiteSpace: 'nowrap', 
+                                    overflow: 'hidden', 
+                                    textOverflow: 'ellipsis'
                                 }}
                             >
                                 {`${thread.file_type}`}
@@ -218,10 +217,9 @@ const ThreadItem = ({ thread, onClick }) => {
                                 <Typography
                                     variant="body2"
                                     sx={{
-                                        flexGrow: 1, // Allow Typography to take available space
-                                        whiteSpace: 'nowrap', // Prevent text from wrapping
-                                        overflow: 'hidden', // Hide overflow text
-                                        textOverflow: 'ellipsis' // Add ellipsis for overflow text
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis'
                                     }}
                                 >
                                     {programName}
@@ -398,7 +396,7 @@ function DocumentCommunicationExpandPage() {
                         </>
                     )}
                 </Grid>
-                <Grid item xs={1.5}>
+                <Grid item xs={2.5}>
                     {studentThreadIsLoading && <Loading />}
                     <Checkbox
                         checked={showAllThreads}
@@ -444,7 +442,7 @@ function DocumentCommunicationExpandPage() {
                             })}
                     </List>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={8}>
                     {threadId && (
                         <DocModificationThreadPage threadId={threadId} />
                     )}

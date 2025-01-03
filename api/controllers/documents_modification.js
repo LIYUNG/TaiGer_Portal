@@ -2360,7 +2360,9 @@ const getMyStudentMetrics = asyncHandler(async (req, res, next) => {
       (thread) => String(thread.student_id) === studentId
     );
 
-    student.threads = threads.map((thread) => thread?._id);
+    student.threads = threads
+      ?.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+      ?.map((thread) => thread?._id);
     student.threadCount = threads.length;
     student.completeThreadCount = threads.filter(
       (thread) => thread.isFinalVersion

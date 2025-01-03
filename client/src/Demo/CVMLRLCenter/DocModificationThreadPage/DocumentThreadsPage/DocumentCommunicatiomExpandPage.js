@@ -425,7 +425,10 @@ function DocumentCommunicationExpandPage() {
                                         {showCategoryLabel && (
                                             <Divider
                                                 textAlign="center"
-                                                sx={{ p: 3 }}
+                                                sx={{
+                                                    paddingX: 3,
+                                                    paddingY: 1
+                                                }}
                                             >
                                                 {category}
                                             </Divider>

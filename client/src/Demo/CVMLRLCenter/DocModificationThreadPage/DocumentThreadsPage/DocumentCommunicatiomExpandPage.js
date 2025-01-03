@@ -292,12 +292,21 @@ function DocumentCommunicationExpandPage() {
                                             );
                                     })
                                     ?.sort((a, b) => {
-                                        if (a.needToReply === b.needToReply) {
-                                            return a.firstname.localeCompare(
-                                                b.firstname
-                                            );
+                                        const isAcompleted =
+                                            a.threadCount ===
+                                            a.completeThreadCount;
+                                        const isBcompleted =
+                                            b.threadCount ===
+                                            b.completeThreadCount;
+                                        if (a.needToReply !== b.needToReply) {
+                                            return a.needToReply ? -1 : 1;
                                         }
-                                        return a.needToReply ? -1 : 1;
+                                        if (isAcompleted !== isBcompleted) {
+                                            return isAcompleted ? 1 : -1;
+                                        }
+                                        return a.firstname.localeCompare(
+                                            b.firstname
+                                        );
                                     })
                                     ?.map((student) => (
                                         <StudentItem

@@ -272,12 +272,12 @@ function DocumentCommunicationExpandPage() {
             return;
         }
         navigate(`/doc-communications/${threadId}`);
-        // get student id from thread information
-        const studentId = studentThreads?.find(
-            (thread) => thread._id === threadId
-        )?.student_id;
+        // get student id by thread id
+        const studentId = students?.find((student) =>
+            student?.threads?.includes(threadId)
+        )?._id;
         setStudentId(studentId);
-    }, [studentThreads, threadId, navigate]);
+    }, [students, threadId, navigate]);
 
     const handleOnClickStudent = (id) => {
         setStudentId(id);

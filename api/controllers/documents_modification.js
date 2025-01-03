@@ -2360,6 +2360,7 @@ const getMyStudentMetrics = asyncHandler(async (req, res, next) => {
       (thread) => String(thread.student_id) === studentId
     );
 
+    student.threads = threads.map((thread) => thread?._id);
     student.threadCount = threads.length;
     student.completeThreadCount = threads.filter(
       (thread) => thread.isFinalVersion

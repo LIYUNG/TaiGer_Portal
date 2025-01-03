@@ -291,9 +291,14 @@ function DocumentCommunicationExpandPage() {
                                                 studentSearchTerm.toLowerCase()
                                             );
                                     })
-                                    ?.sort((a, b) =>
-                                        a.firstname.localeCompare(b.firstname)
-                                    )
+                                    ?.sort((a, b) => {
+                                        if (a.needToReply === b.needToReply) {
+                                            return a.firstname.localeCompare(
+                                                b.firstname
+                                            );
+                                        }
+                                        return a.needToReply ? -1 : 1;
+                                    })
                                     ?.map((student) => (
                                         <StudentItem
                                             key={student._id}

@@ -5,7 +5,6 @@ import {
     isCVFinished,
     calculateDisplayLength,
     truncateText,
-    Bayerische_Formel,
     isProgramDecided,
     isProgramSubmitted,
     isProgramWithdraw,
@@ -61,69 +60,6 @@ describe('Role checking', () => {
         const text_2 = '中文 abcabcabcabcabcabc';
         expect(truncateText(text_1, 5)).toEqual('中文 ...');
         expect(truncateText(text_2, 100)).toEqual('中文 abcabcabcabcabcabc');
-    });
-
-    test('Bayerische_Formel', () => {
-        const system_1_1 = { high: 4, low: 2, my: 2 };
-        const system_1_2 = { high: 4, low: 2, my: 4 };
-        const system_1_3 = { high: 4, low: 2, my: 3 };
-        const system_2_1 = { high: 4.3, low: 1.7, my: 4.3 };
-        const system_2_2 = { high: 4.3, low: 1.7, my: 1.7 };
-        const system_2_3 = { high: 4.3, low: 1.7, my: 3 };
-        expect(
-            parseFloat(
-                Bayerische_Formel(
-                    system_1_1.high,
-                    system_1_1.low,
-                    system_1_1.my
-                )
-            )
-        ).toEqual(4);
-        expect(
-            parseFloat(
-                Bayerische_Formel(
-                    system_1_2.high,
-                    system_1_2.low,
-                    system_1_2.my
-                )
-            )
-        ).toEqual(1);
-        expect(
-            parseFloat(
-                Bayerische_Formel(
-                    system_1_3.high,
-                    system_1_3.low,
-                    system_1_3.my
-                )
-            )
-        ).toEqual(2.5);
-        expect(
-            parseFloat(
-                Bayerische_Formel(
-                    system_2_1.high,
-                    system_2_1.low,
-                    system_2_1.my
-                )
-            )
-        ).toEqual(1);
-        expect(
-            parseFloat(
-                Bayerische_Formel(
-                    system_2_2.high,
-                    system_2_2.low,
-                    system_2_2.my
-                )
-            )
-        ).toEqual(4);
-        expect(
-            parseFloat(
-                Bayerische_Formel(
-                    system_2_3.high,
-                    system_2_3.low,
-                    system_2_3.my
-                )
-            )
-        ).toEqual(2.5);
     });
 
     test('isCVFinished', () => {

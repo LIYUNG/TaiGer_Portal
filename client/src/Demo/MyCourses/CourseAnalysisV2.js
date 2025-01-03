@@ -31,7 +31,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useNavigate, useParams } from 'react-router-dom';
 import 'react-datasheet-grid/dist/style.css';
-import { is_TaiGer_role } from '@taiger-common/core';
+import { Bayerische_Formel, is_TaiGer_role } from '@taiger-common/core';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import FlagIcon from '@mui/icons-material/Flag';
@@ -60,7 +60,6 @@ import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
 import { green } from '@mui/material/colors';
 import i18next from 'i18next';
-import { Bayerische_Formel } from '../Utils/checking-functions';
 
 export const EstimationCard = ({
     round,

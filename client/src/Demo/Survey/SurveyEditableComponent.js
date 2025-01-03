@@ -24,7 +24,7 @@ import HelpIcon from '@mui/icons-material/Help';
 import LinkIcon from '@mui/icons-material/Link';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { is_TaiGer_Admin, is_TaiGer_Student } from '@taiger-common/core';
+import { Bayerische_Formel, is_TaiGer_Admin, is_TaiGer_Student } from '@taiger-common/core';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
@@ -50,7 +50,6 @@ import {
     check_academic_background_filled,
     check_languages_filled,
     check_application_preference_filled,
-    Bayerische_Formel,
     MissingSurveyFieldsListArray
 } from '../Utils/checking-functions';
 import {

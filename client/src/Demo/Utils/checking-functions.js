@@ -99,15 +99,6 @@ export const LinkableNewlineText = ({ text }) => {
 };
 
 // Tested
-export const Bayerische_Formel = (high, low, my) => {
-    if (high - low !== 0) {
-        var Germen_note = 1 + (3 * (high - my)) / (high - low);
-        return Germen_note.toFixed(2);
-    }
-    return 0;
-};
-
-// Tested
 export const getRequirement = (thread) => {
     if (!thread) return false;
 

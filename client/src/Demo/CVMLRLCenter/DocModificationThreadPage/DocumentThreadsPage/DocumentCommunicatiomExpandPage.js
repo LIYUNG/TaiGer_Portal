@@ -32,7 +32,7 @@ import {
     FILE_OK_SYMBOL,
     FILE_MISSING_SYMBOL
 } from '../../../../utils/contants';
-import { getMyThreadMessages } from '../../../../api';
+import { getMyThreadMessages, getThreadsByStudent } from '../../../../api';
 
 const categories = {
     General: [
@@ -75,6 +75,21 @@ const getMyThreadMessageQuery = () => ({
             throw error;
         }
     },
+    staleTime: 1000 * 60 // 1 minutes
+});
+
+const getThreadByStudentQuery = (studentId) => ({
+    queryKey: ['threadsByStudent', studentId],
+    queryFn: async () => {
+        try {
+            const response = await getThreadsByStudent(studentId);
+            return response;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    },
+    enabled: !!studentId,
     staleTime: 1000 * 60 // 1 minutes
 });
 
@@ -173,17 +188,37 @@ const ThreadItem = ({ thread, onClick }) => {
                     sx={{ width: '100%' }}
                 >
                     {isFinal ? FILE_OK_SYMBOL : FILE_MISSING_SYMBOL}
-                    <Typography
-                        sx={{
-                            fontStyle: isFinal ? 'italic' : 'normal',
-                            flexGrow: 1, // Allow Typography to take available space
-                            whiteSpace: 'nowrap', // Prevent text from wrapping
-                            overflow: 'hidden', // Hide overflow text
-                            textOverflow: 'ellipsis' // Add ellipsis for overflow text
-                        }}
-                    >
-                        {`${thread.file_type}`}
-                    </Typography>
+                    <ListItemText
+                        primary={
+                            <Typography
+                                sx={{
+                                    fontStyle: isFinal ? 'italic' : 'normal',
+                                    flexGrow: 1, // Allow Typography to take available space
+                                    whiteSpace: 'nowrap', // Prevent text from wrapping
+                                    overflow: 'hidden', // Hide overflow text
+                                    textOverflow: 'ellipsis' // Add ellipsis for overflow text
+                                }}
+                            >
+                                {`${thread.file_type}`}
+                            </Typography>
+                        }
+                        secondary={
+                            thread?.program_id && (
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        flexGrow: 1, // Allow Typography to take available space
+                                        whiteSpace: 'nowrap', // Prevent text from wrapping
+                                        overflow: 'hidden', // Hide overflow text
+                                        textOverflow: 'ellipsis' // Add ellipsis for overflow text
+                                    }}
+                                >
+                                    {`${thread?.program_id?.school} - ${thread?.program_id?.program_name}`}
+                                </Typography>
+                            )
+                        }
+                    />
+
                     {highlightItem && (
                         <FiberManualRecordIcon
                             fontSize="tiny"
@@ -214,8 +249,13 @@ function DocumentCommunicationExpandPage() {
         error: myMessagesError
     } = useQuery(getMyThreadMessageQuery());
 
-    const { students = [], studentThreads = [] } =
-        myMessagesData?.data?.data || {};
+    const { students = [] } = myMessagesData?.data?.data || {};
+
+    const { data: studentThreadsData } = useQuery(
+        getThreadByStudentQuery(studentId)
+    );
+    const { threads: studentThreads = [] } =
+        studentThreadsData?.data?.data || {};
 
     useEffect(() => {
         if (!threadId) {
@@ -227,7 +267,7 @@ function DocumentCommunicationExpandPage() {
             (thread) => thread._id === threadId
         )?.student_id;
         setStudentId(studentId);
-    }, [threadId, navigate, studentThreads]);
+    }, [studentThreads, threadId, navigate]);
 
     const handleOnClickStudent = (id) => {
         setStudentId(id);

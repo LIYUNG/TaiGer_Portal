@@ -350,7 +350,10 @@ export const getAllCVMLRLOverview = () =>
     request.get(`/api/document-threads/overview/all`);
 
 export const getMyThreadMessages = () =>
-  request.get(`/api/document-threads/overview/all-messages`);
+    request.get(`/api/document-threads/overview/all-messages`);
+
+export const getThreadsByStudent = (studentId) =>
+    request.get(`/api/document-threads/student-threads/${studentId}`);
 
 export const getCVMLRLOverview = () =>
     request.get(`/api/document-threads/overview`);

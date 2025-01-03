@@ -3,6 +3,7 @@ const path = require('path');
 const {
   Role,
   is_TaiGer_Agent,
+  is_TaiGer_Editor,
   is_TaiGer_External,
   is_TaiGer_Admin,
   is_TaiGer_Student
@@ -2283,7 +2284,8 @@ const getMyStudents = async (req) => {
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   };
 
-  if (!isAdminOrAccessAllChat(req, user)) {
+  const hasAllChatAccess = await isAdminOrAccessAllChat(req);
+  if (!hasAllChatAccess) {
     if (is_TaiGer_Agent(user)) {
       studentQuery.agents = user._id.toString();
     } else if (is_TaiGer_Editor(user)) {

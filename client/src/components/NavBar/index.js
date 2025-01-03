@@ -24,7 +24,8 @@ import {
     is_TaiGer_Agent,
     is_TaiGer_Admin,
     is_TaiGer_Editor,
-    is_TaiGer_Student
+    is_TaiGer_Student,
+    is_TaiGer_AdminAgent
 } from '@taiger-common/core';
 import i18next from 'i18next';
 
@@ -119,39 +120,43 @@ function NavBar(props) {
     const navigate = useNavigate();
     useEffect(() => {
         // Start the periodic polling after the component is mounted
-        getMyCommunicationUnreadNumber()
-            .then((resp) => {
-                // Assuming the backend returns JSON data, update the state with the received data
-                const { data } = resp;
-                setNavState((prevState) => ({
-                    ...prevState,
-                    unreadCount: data.data,
-                    isLoaded: true
-                }));
-            })
-            .catch((error) => {
-                // Handle errors, if any
-                setNavState({ error, isLoaded: true });
-            });
-        // }
+        if (is_TaiGer_AdminAgent(user) || is_TaiGer_Student(user)) {
+            getMyCommunicationUnreadNumber()
+                .then((resp) => {
+                    // Assuming the backend returns JSON data, update the state with the received data
+                    const { data } = resp;
+                    setNavState((prevState) => ({
+                        ...prevState,
+                        unreadCount: data.data,
+                        isLoaded: true
+                    }));
+                })
+                .catch((error) => {
+                    // Handle errors, if any
+                    setNavState({ error, isLoaded: true });
+                });
+        }
     }, [isLoaded, user]);
 
     useEffect(() => {
         // Start the periodic polling after the component is mounted
-        getActiveEventsNumber()
-            .then((resp) => {
-                // Assuming the backend returns JSON data, update the state with the received data
-                const { data } = resp;
-                setNavState((prevState) => ({
-                    ...prevState,
-                    activeEventCount: data.data,
-                    isLoaded: true
-                }));
-            })
-            .catch((error) => {
-                // Handle errors, if any
-                setNavState({ error, isLoaded: true });
-            });
+        if (is_TaiGer_AdminAgent(user) || is_TaiGer_Student(user)) {
+            getActiveEventsNumber()
+                .then((resp) => {
+                    // Assuming the backend returns JSON data, update the state with the received data
+                    const { data } = resp;
+                    setNavState((prevState) => ({
+                        ...prevState,
+                        activeEventCount: data.data,
+                        isLoaded: true
+                    }));
+                })
+                .catch((error) => {
+                    // Handle errors, if any
+                    setNavState({ error, isLoaded: true });
+                });
+        }
+
         // }
     }, [isLoaded, user]);
 
@@ -341,7 +346,7 @@ function NavBar(props) {
                     </Typography>
                 </MenuItem>
             )}
-            {!is_TaiGer_Editor(user) && (
+            {(is_TaiGer_AdminAgent(user) || is_TaiGer_Student(user)) && (
                 <MenuItem onClick={handleOpenChat}>
                     <IconButton
                         size="large"
@@ -448,7 +453,8 @@ function NavBar(props) {
                                 </Badge>
                             </IconButton>
                         )}
-                        {!is_TaiGer_Editor(user) && (
+                        {(is_TaiGer_AdminAgent(user) ||
+                            is_TaiGer_Student(user)) && (
                             <IconButton
                                 size="large"
                                 aria-label="show unread new messages"
@@ -504,7 +510,8 @@ function NavBar(props) {
                                 </Badge>
                             </IconButton>
                         )}
-                        {!is_TaiGer_Editor(user) && (
+                        {(is_TaiGer_AdminAgent(user) ||
+                            is_TaiGer_Student(user)) && (
                             <IconButton
                                 size="large"
                                 aria-label="show unread new messages"

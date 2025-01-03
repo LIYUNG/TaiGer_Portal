@@ -11,8 +11,8 @@
   },
   "lint-staged": {
     "client/src/**/*.{js,jsx}": [
-      "prettier --list-different",
-      "eslint"
+      "prettier --write",
+      "eslint --fix"
     ]
   },
   "devDependencies": {

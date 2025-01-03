@@ -163,6 +163,9 @@ const StudentItem = ({ student, selectedStudentId, onClick }) => {
 const ThreadItem = ({ thread, onClick }) => {
     const theme = useTheme();
     const isFinal = thread?.isFinalVersion;
+    const programName = thread?.program_id
+        ? `${thread?.program_id?.school} - ${thread?.program_id?.program_name}`
+        : '';
     const notRepliedByUser =
         thread.messages?.[0]?.user_id?._id === thread?.student_id;
     const highlightItem = !isFinal && notRepliedByUser;
@@ -183,7 +186,11 @@ const ThreadItem = ({ thread, onClick }) => {
             }}
             disablePadding
         >
-            <ListItemButton sx={{ paddingY: 0 }} onClick={onClick}>
+            <ListItemButton
+                sx={{ paddingY: 0 }}
+                onClick={onClick}
+                title={programName}
+            >
                 <Stack
                     direction="row"
                     alignItems="center"
@@ -216,7 +223,7 @@ const ThreadItem = ({ thread, onClick }) => {
                                         textOverflow: 'ellipsis' // Add ellipsis for overflow text
                                     }}
                                 >
-                                    {`${thread?.program_id?.school} - ${thread?.program_id?.program_name}`}
+                                    {programName}
                                 </Typography>
                             )
                         }

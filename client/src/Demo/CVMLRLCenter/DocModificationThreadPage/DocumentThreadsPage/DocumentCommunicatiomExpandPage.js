@@ -32,6 +32,33 @@ import {
 } from '../../../../utils/contants';
 import { getMyThreadMessages } from '../../../../api';
 
+const categories = {
+    General: [
+        'CV',
+        'Recommendation_Letter_A',
+        'Recommendation_Letter_B',
+        'Recommendation_Letter_C'
+    ],
+    Editors: ['ML', 'RL_A', 'RL_B', 'RL_C', 'Essay'],
+    Others: [
+        'Interview',
+        'Others',
+        'Internship_Form',
+        'Scholarship_Form',
+        'Portfolio'
+    ],
+    Agents: ['Supplementary_Form', 'Curriculum_Analysis']
+};
+
+const getCategory = (fileType) => {
+    for (const [category, types] of Object.entries(categories)) {
+        if (types.includes(fileType)) {
+            return category;
+        }
+    }
+    return 'Others'; // Default category if not found
+};
+
 const getMyThreadMessageQuery = () => ({
     queryKey: ['myThreadMessages'],
     queryFn: async () => {
@@ -126,33 +153,6 @@ function DocumentCommunicationExpandPage() {
 
     const handleOnClickThread = (id) => {
         setThreadId(id);
-    };
-
-    const categories = {
-        General: [
-            'CV',
-            'Recommendation_Letter_A',
-            'Recommendation_Letter_B',
-            'Recommendation_Letter_C'
-        ],
-        Editors: ['ML', 'RL_A', 'RL_B', 'RL_C', 'Essay'],
-        Others: [
-            'Interview',
-            'Others',
-            'Internship_Form',
-            'Scholarship_Form',
-            'Portfolio'
-        ],
-        Agents: ['Supplementary_Form', 'Curriculum_Analysis']
-    };
-
-    const getCategory = (fileType) => {
-        for (const [category, types] of Object.entries(categories)) {
-            if (types.includes(fileType)) {
-                return category;
-            }
-        }
-        return 'Others'; // Default category if not found
     };
 
     const sortedThreads = studentThreads

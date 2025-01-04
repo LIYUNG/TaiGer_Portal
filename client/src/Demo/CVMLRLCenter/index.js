@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Box, Card, Breadcrumbs, Link, Typography } from '@mui/material';
+import {
+    Box,
+    Card,
+    Breadcrumbs,
+    Button,
+    Link,
+    Typography
+} from '@mui/material';
 import { is_TaiGer_Editor, is_TaiGer_role } from '@taiger-common/core';
 
 import CVMLRLOverview from './CVMLRLOverview';
@@ -231,24 +238,37 @@ function CVMLRLCenter() {
 
     return (
         <Box data-testid="cvmlrlcenter_component">
-            <Breadcrumbs aria-label="breadcrumb">
-                <Link
-                    underline="hover"
-                    color="inherit"
-                    component={LinkDom}
-                    to={`${DEMO.DASHBOARD_LINK}`}
-                >
-                    {appConfig.companyName}
-                </Link>
-                {is_TaiGer_role(user) && (
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Breadcrumbs aria-label="breadcrumb">
+                    <Link
+                        underline="hover"
+                        color="inherit"
+                        component={LinkDom}
+                        to={`${DEMO.DASHBOARD_LINK}`}
+                    >
+                        {appConfig.companyName}
+                    </Link>
+                    {is_TaiGer_role(user) && (
+                        <Typography color="text.primary">
+                            {t('My Students', { ns: 'common' })}
+                        </Typography>
+                    )}
                     <Typography color="text.primary">
-                        {t('My Students', { ns: 'common' })}
+                        {t('CV/ML/RL Center', { ns: 'common' })}
                     </Typography>
+                </Breadcrumbs>
+                {is_TaiGer_role(user) && (
+                    <Button
+                        component={LinkDom}
+                        color="primary"
+                        variant="contained"
+                        size="small"
+                        to={`/doc-communications/`}
+                    >
+                        {t('Switch View', { ns: 'common' })}
+                    </Button>
                 )}
-                <Typography color="text.primary">
-                    {t('CV/ML/RL Center', { ns: 'common' })}
-                </Typography>
-            </Breadcrumbs>
+            </Box>
             {!is_TaiGer_role(user) && (
                 <Card sx={{ p: 2 }}>
                     <Typography variant="body1">Instructions</Typography>

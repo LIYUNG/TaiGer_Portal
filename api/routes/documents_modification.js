@@ -51,7 +51,9 @@ const {
   putOriginAuthorConfirmedByStudent,
   putThreadFavorite,
   IgnoreMessageInDocumentThread,
-  checkDocumentPattern
+  checkDocumentPattern,
+  getMyStudentMetrics,
+  getThreadsByStudent
 } = require('../controllers/documents_modification');
 const {
   docThreadMultitenant_filter,
@@ -68,7 +70,6 @@ const {
   AssignOutsourcerFilter
 } = require('../middlewares/AssignOutsourcerFilter');
 const { auditLog } = require('../utils/log/auditLog');
-
 const router = Router();
 
 router.use(protect);
@@ -79,6 +80,15 @@ router
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     checkDocumentPattern
+  );
+
+router
+  .route('/overview/my-student-metrics')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    getMyStudentMetrics,
+    logAccess
   );
 
 router
@@ -119,6 +129,14 @@ router
     getMessagesRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     getCVMLRLOverview
+  );
+
+router
+  .route('/student-threads/:studentId')
+  .get(
+    getMessagesRateLimiter,
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
+    getThreadsByStudent
   );
 
 router

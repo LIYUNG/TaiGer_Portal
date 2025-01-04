@@ -349,6 +349,12 @@ export const getCheckDocumentPatternIsPassed = (thread_id, file_type) =>
 export const getAllCVMLRLOverview = () =>
     request.get(`/api/document-threads/overview/all`);
 
+export const getMyStudentThreadMetrics = () =>
+    request.get(`/api/document-threads/overview/my-student-metrics`);
+
+export const getThreadsByStudent = (studentId) =>
+    request.get(`/api/document-threads/student-threads/${studentId}`);
+
 export const getCVMLRLOverview = () =>
     request.get(`/api/document-threads/overview`);
 

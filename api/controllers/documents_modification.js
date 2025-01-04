@@ -3,6 +3,7 @@ const path = require('path');
 const {
   Role,
   is_TaiGer_Agent,
+  is_TaiGer_Editor,
   is_TaiGer_External,
   is_TaiGer_Admin,
   is_TaiGer_Student
@@ -56,6 +57,8 @@ const {
   userChangesHelperFunction
 } = require('../utils/utils_function');
 const { getS3Object } = require('../aws/s3');
+const { getPermission } = require('../utils/queryFunctions');
+const { get } = require('lodash');
 
 const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   const students = await req.db
@@ -2265,6 +2268,129 @@ const IgnoreMessageInDocumentThread = asyncHandler(async (req, res, next) => {
   next();
 });
 
+const isAdminOrAccessAllChat = async (req) => {
+  const { user } = req;
+  const permissions = await getPermission(req, user);
+  return (
+    user.role === Role.Admin ||
+    ((is_TaiGer_Agent(user) || is_TaiGer_Editor(user)) &&
+      permissions?.canAccessAllChat)
+  );
+};
+
+const getMyStudents = async (req) => {
+  const { user } = req;
+  const studentQuery = {
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  };
+
+  const hasAllChatAccess = await isAdminOrAccessAllChat(req);
+  if (!hasAllChatAccess) {
+    if (is_TaiGer_Agent(user)) {
+      studentQuery.agents = user._id.toString();
+    } else if (is_TaiGer_Editor(user)) {
+      studentQuery.editors = user._id.toString();
+    } else {
+      logger.error(`getMyMessages: not ${TENANT_SHORT_NAME} user!`);
+      throw new ErrorResponse(401, `Invalid ${TENANT_SHORT_NAME} user`);
+    }
+  }
+
+  const students = await req.db
+    .model('Student')
+    .find(studentQuery)
+    .select('firstname lastname firstname_chinese lastname_chinese -role')
+    .lean();
+  return students;
+};
+
+const getThreadsByStudentIds = async (db, studentIds) => {
+  return await db
+    .model('Documentthread')
+    .find({
+      student_id: { $in: studentIds }
+      // messages: { $exists: true, $not: { $size: 0 } } // ensure messages array is not empty
+    })
+    .sort({ updatedAt: -1 })
+    .select({
+      _id: 1,
+      student_id: 1,
+      file_type: 1,
+      program_id: 1,
+      isFinalVersion: 1,
+      messages: { $slice: -1 }, // only get the last message
+      updatedAt: 1
+    })
+    .populate('messages.user_id', 'firstname lastname role');
+};
+
+const getThreadsByStudent = asyncHandler(async (req, res, next) => {
+  const studentId = req.params.studentId;
+  const threads = await req.db
+    .model('Documentthread')
+    .find({ student_id: studentId })
+    .sort({ updatedAt: -1 })
+    .select({
+      _id: 1,
+      student_id: 1,
+      file_type: 1,
+      program_id: 1,
+      isFinalVersion: 1,
+      messages: { $slice: -1 }, // only get the last message
+      updatedAt: 1
+    })
+    .populate('program_id', 'school program_name application_deadline');
+
+  res.status(200).send({
+    success: true,
+    data: {
+      threads: threads
+    }
+  });
+
+  next();
+});
+
+const getMyStudentMetrics = asyncHandler(async (req, res, next) => {
+  const students = await getMyStudents(req);
+  const studentIds = students.map((stud, i) => stud._id);
+  const studentThreads = await getThreadsByStudentIds(req.db, studentIds);
+
+  const studentsWithCount = students.map((student) => {
+    const studentId = String(student._id);
+    const threads = studentThreads.filter(
+      (thread) => String(thread.student_id) === studentId
+    );
+
+    student.threads = threads
+      ?.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+      ?.map((thread) => thread?._id);
+    student.threadCount = threads.length;
+    student.completeThreadCount = threads.filter(
+      (thread) => thread.isFinalVersion
+    ).length;
+
+    student.needToReply = threads.some((thread) => {
+      const lastMessage = thread.messages?.[0];
+      return (
+        lastMessage?.user_id?._id?.toString() === studentId &&
+        !thread.isFinalVersion
+      );
+    });
+
+    return student;
+  });
+
+  res.status(200).send({
+    success: true,
+    data: {
+      students: studentsWithCount
+    }
+  });
+
+  next();
+});
+
 module.exports = {
   getAllCVMLRLOverview,
   getSurveyInputs,
@@ -2275,6 +2401,8 @@ module.exports = {
   initGeneralMessagesThread,
   initApplicationMessagesThread,
   getMessages,
+  getMyStudentMetrics,
+  getThreadsByStudent,
   getMessageImageDownload,
   getMessageFileDownload,
   postImageInThread,

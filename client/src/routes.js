@@ -78,6 +78,13 @@ const CommunicationExpandPage = React.lazy(
     () => import('./Demo/Communications/CommunicationExpandPage')
 );
 
+const DocumentCommunicatiomExpandPage = React.lazy(
+  () =>
+    import(
+      './Demo/CVMLRLCenter/DocModificationThreadPage/DocumentThreadsPage/DocumentCommunicatiomExpandPage'
+    )
+);
+
 const UniAssist = React.lazy(() => import('./Demo/UniAssist/index'));
 const PortalCredentialPage = React.lazy(
     () => import('./Demo/PortalCredentialPage/index')
@@ -786,18 +793,23 @@ if (appConfig.meetingEnable) {
 }
 
 if (appConfig.messengerEnable) {
-    routes.push({
-        path: '/communications/std/:student_id',
-        errorElement: <DefaultErrorPage />,
-        loader: getCommunicationThreadLoader,
-        element: <CommunicationSinglePage />
-    });
-    routes.push({
-        path: '/communications/t/:student_id',
-        exact: true,
-        name: 'All Chat',
-        Component: CommunicationExpandPage
-    });
+  routes.push({
+    path: '/communications/std/:student_id',
+    errorElement: <DefaultErrorPage />,
+    loader: getCommunicationThreadLoader,
+    element: <CommunicationSinglePage />
+  });
+  routes.push({
+    path: '/communications/t/:student_id',
+    exact: true,
+    name: 'All Chat',
+    Component: CommunicationExpandPage
+  });
+  routes.push({
+    path: '/doc-communications/:threadId?',
+    name: 'All Chat',
+    Component: DocumentCommunicatiomExpandPage
+  });
 }
 
 export default routes;

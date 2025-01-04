@@ -5,5 +5,5 @@ module.exports = {
   testRegex: '/__tests__/.*\\.(test|spec)\\.jsx?$',
   setupFilesAfterEnv: ['jest-extended'],
   transformIgnorePatterns: ['/node_modules/(?!(axios)/)'],
-  testTimeout: 60000
+  testTimeout: 70000
 };

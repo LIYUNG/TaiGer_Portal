@@ -2266,6 +2266,7 @@ const SurveyEditableComponent = (props) => {
                                         fullWidth
                                         id="gmat_score"
                                         name="gmat_score"
+                                        type="number"
                                         label={t('GMAT Test Score')}
                                         variant="outlined"
                                         placeholder="(i.e. 550, 620) "

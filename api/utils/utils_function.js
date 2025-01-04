@@ -505,6 +505,7 @@ const UrgentTasksReminderEmails_Editor_core = asyncHandler(async (req) => {
   }
 });
 
+// TODO: to be deprecated (migrated to lambda, testing)
 const AssignEditorTasksReminderEmails = asyncHandler(async () => {
   const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
   const req = {};

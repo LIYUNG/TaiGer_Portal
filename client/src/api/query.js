@@ -12,7 +12,8 @@ import {
     getProgramRequirementsV2,
     getAllCourses,
     getCourse,
-    getCommunicationThreadV2
+    getCommunicationThreadV2,
+    getPdfV2
 } from '.';
 
 export const getProgramQuery = ({ programId }) => ({
@@ -67,6 +68,12 @@ export const getCommunicationQuery = (studentId) => ({
     queryKey: ['communications', studentId],
     queryFn: () => getCommunicationThreadV2({ studentId }),
     staleTime: 1000 * 50 // 50 seconds
+});
+
+export const getPDFQuery = (apiPath) => ({
+    queryKey: ['get-pdf', apiPath],
+    queryFn: () => getPdfV2({ apiPath }),
+    staleTime: 1000 * 60 * 1 // 50 seconds
 });
 
 export const getProgramRequirementsQuery = () => ({

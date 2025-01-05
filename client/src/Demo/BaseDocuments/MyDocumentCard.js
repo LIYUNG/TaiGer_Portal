@@ -116,7 +116,7 @@ function MyDocumentCard(props) {
             setSeverity('success');
             setMessage('Update file status successfully!');
             setStatus(data.status);
-            const fileName = data.path.split('/')[1];
+            const fileName = data.path?.replace(/\\/g, '/').split('/')[1];
             setFileName(fileName);
             queryClient.invalidateQueries({ queryKey: ['students/doc-links'] });
             setOpenSnackbar(true);

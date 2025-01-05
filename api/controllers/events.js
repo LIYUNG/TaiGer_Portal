@@ -1,9 +1,4 @@
-const async = require('async');
-const {
-  Role,
-  is_TaiGer_Agent,
-  is_TaiGer_Student
-} = require('@taiger-common/core');
+const { is_TaiGer_Agent, is_TaiGer_Student } = require('@taiger-common/core');
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const {
@@ -198,29 +193,21 @@ const getEvents = asyncHandler(async (req, res, next) => {
     .select('firstname lastname email selfIntroduction officehours timezone');
 
   res.status(200).send(response);
-  next();
+  return next();
 });
 
-const getActiveEventsNumber = asyncHandler(async (req, res, next) => {
+const getActiveEventsNumber = asyncHandler(async (req, res) => {
   const { user } = req;
-  if (
-    is_TaiGer_Student(user) ||
-    is_TaiGer_Agent(user) ||
-    user.role === Role.Admin
-  ) {
-    const futureEvents = await req.db
-      .model('Event')
-      .find({
-        $or: [{ requester_id: user._id }, { receiver_id: user._id }],
-        isConfirmedReceiver: true,
-        isConfirmedRequester: true,
-        start: { $gt: new Date() }
-      })
-      .lean();
-    res.status(200).send({ success: true, data: futureEvents.length });
-  } else {
-    res.status(200).send({ success: true });
-  }
+  const futureEvents = await req.db
+    .model('Event')
+    .find({
+      $or: [{ requester_id: user._id }, { receiver_id: user._id }],
+      isConfirmedReceiver: true,
+      isConfirmedRequester: true,
+      start: { $gt: new Date() }
+    })
+    .lean();
+  res.status(200).send({ success: true, data: futureEvents.length });
 });
 
 const getAllEvents = asyncHandler(async (req, res, next) => {

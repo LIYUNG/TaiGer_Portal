@@ -40,7 +40,7 @@ router
   .route('/ping')
   .get(
     GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
     getActiveEventsNumber
   );
 
@@ -55,7 +55,8 @@ router
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student), // TODO: prevent student change receiver_id!
+    // TODO: prevent student change receiver_id!
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     postEvent,
     logAccess
   );

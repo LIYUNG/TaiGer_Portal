@@ -2,6 +2,7 @@ import {
     BASE_URL,
     deleteData,
     getData,
+    getDataBlob,
     postData,
     putData,
     request
@@ -139,8 +140,8 @@ export const downloadProfile = (category, studentId) =>
         responseType: 'blob'
     });
 
-export const getPdf = (apiPath) =>
-    request.get(apiPath, {
+export const getPdfV2 = ({ apiPath }) =>
+    getDataBlob(apiPath, {
         responseType: 'blob'
     });
 

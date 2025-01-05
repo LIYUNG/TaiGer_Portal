@@ -1,30 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { pdfjs, Document, Page } from 'react-pdf';
 import { Box, Button, Typography } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 
-import { getPdf } from '../../api';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import { getPDFQuery } from '../../api/query';
+import { useQuery } from '@tanstack/react-query';
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 const PDFViewer = (apiFilePath, path) => {
-    const [pdfData, setPdfData] = useState(null);
+    const { data, isLoading } = useQuery(getPDFQuery(apiFilePath));
+    const pdfData = data;
     const [pageWidth, setPageWidth] = useState(null);
     const [numPages, setNumPages] = useState(null);
     const containerRef = useRef(null);
     const [zoomLevel, setZoomLevel] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
 
-    useEffect(() => {
-        const fetchPdfData = async () => {
-            const pdf = await getPdf(apiFilePath);
-            setPdfData(pdf.data); // Set the PDF data in the state
-        };
-
-        fetchPdfData();
-    }, [apiFilePath]);
     const onDocumentLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);
         setPageWidth(containerRef.current.offsetWidth - 30);
@@ -58,7 +52,9 @@ const PDFViewer = (apiFilePath, path) => {
 
     return (
         <Box>
-            {pdfData ? (
+            {isLoading ? (
+                <Box>Loading PDF...</Box>
+            ) : (
                 <>
                     <Box
                         ref={containerRef}
@@ -107,8 +103,6 @@ const PDFViewer = (apiFilePath, path) => {
                         </Box>
                     </Box>
                 </>
-            ) : (
-                <Box>Loading PDF...</Box>
             )}
         </Box>
     );

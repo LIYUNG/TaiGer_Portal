@@ -74,7 +74,7 @@ export const getCommunicationQuery = (studentId) => ({
 export const getMyCommunicationQuery = () => ({
     queryKey: ['communications', 'my'],
     queryFn: () => getMyCommunicationThreadV2(),
-    staleTime: 1000 * 50 // 50 seconds
+    staleTime: 1000 * 30 // 30 seconds
 });
 
 export const getPDFQuery = (apiPath) => ({

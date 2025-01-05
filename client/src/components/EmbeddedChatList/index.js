@@ -13,8 +13,9 @@ import {
 } from '../../utils/contants';
 import { getMyCommunicationQuery } from '../../api/query';
 import { useQuery } from '@tanstack/react-query';
+import { queryClient } from '../../api/client';
 
-const EmbeddedChatList = () => {
+const EmbeddedChatList = ({ student_id }) => {
     const { user } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -79,6 +80,11 @@ const EmbeddedChatList = () => {
         }
     }, [searchTerm, chatListState.searchMode]);
 
+    useEffect(() => {
+        queryClient.invalidateQueries({
+            queryKey: ['communications', 'my']
+        });
+    }, [student_id]);
     const handleInputChange = (e) => {
         if (e.target.value !== '') {
             setSearchTerm(e.target.value);
@@ -139,6 +145,5 @@ const EmbeddedChatList = () => {
         </Box>
     );
 };
-
 
 export default EmbeddedChatList;

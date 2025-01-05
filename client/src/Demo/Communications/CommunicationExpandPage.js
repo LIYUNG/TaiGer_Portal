@@ -35,7 +35,7 @@ import {
     convertDateUXFriendly,
     stringAvatar
 } from '../../utils/contants';
-import MemoizedEmbeddedChatList from '../../components/EmbeddedChatList';
+import EmbeddedChatList from '../../components/EmbeddedChatList';
 import { FetchStudentLayer } from '../StudentDatabase/FetchStudentLayer';
 import CommunicationExpandPageMessagesComponent from './CommunicationExpandPageMessagesComponent';
 import { truncateText } from '../Utils/checking-functions';
@@ -375,7 +375,7 @@ function CommunicationExpandPage() {
                             maxWidth: '300px' // Responsive width
                         }}
                     >
-                        <MemoizedEmbeddedChatList />
+                        <EmbeddedChatList student_id={student_id} />
                     </Box>
                 </Grid>
                 <Grid item xs={12} md>
@@ -455,7 +455,7 @@ function CommunicationExpandPage() {
                             }}
                             onClick={(e) => handleDrawerOpen(e)}
                         >
-                            <MemoizedEmbeddedChatList />
+                            <EmbeddedChatList student_id={student_id} />
                         </Box>
                     )}
                 </Grid>

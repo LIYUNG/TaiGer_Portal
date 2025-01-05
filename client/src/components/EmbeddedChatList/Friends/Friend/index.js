@@ -43,18 +43,17 @@ const Friend = (props) => {
                   ?.join('')
                   .replace(/<\/?[^>]+(>|$)|&[^;]+;?/g, '') || ''
             : '';
+    const backgroundColor =
+        props.data?.latestCommunication?.readBy?.includes(props.activeId) ||
+        props.data?.latestCommunication?.user_id?.toString() ===
+            user._id?.toString()
+            ? theme.palette.background.default
+            : theme.palette.action.disabled; // Set your desired background color
     return (
         <ListItem
             key={props.data?._id?.toString()}
             sx={{
-                backgroundColor:
-                    props.data?.latestCommunication?.readBy?.includes(
-                        props.activeId
-                    ) ||
-                    props.data?.latestCommunication?.user_id?.toString() ===
-                        user._id?.toString()
-                        ? theme.palette.background.default
-                        : theme.palette.action.disabled, // Set your desired background color
+                backgroundColor: backgroundColor,
                 '&:hover': {
                     backgroundColor: theme.palette.action.hover // Set a different color on hover if needed
                 },

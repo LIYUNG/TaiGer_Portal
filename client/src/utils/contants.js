@@ -2341,6 +2341,18 @@ export const DIRECT_REJECTION_SECOND_SCORE = {
     description: 'Rejection score in 2. Stage (if applicable)'
 };
 
+export const FPSO = {
+    name: 'fpso',
+    label: 'FPSO link or website',
+    description: 'FPSO link or website (if applicable)'
+};
+
+export const ADMISSION_DESCRIPTION = {
+    name: 'admissionDescription',
+    label: 'Description',
+    description: 'Admission Description (if applicable)'
+};
+
 export const GENERAL_SCORES = [
     GENERAL_SCORES_GPA,
     GENERAL_SCORES_MIN_GPA,

@@ -20,7 +20,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import DEMO from '../../../store/constant';
 import { postProgramRequirements, putProgramRequirement } from '../../../api';
 import {
+    ADMISSION_DESCRIPTION,
     CONSIDRED_SCORES_DETAILED,
+    FPSO,
     // PROGRAM_ANALYSIS_ATTRIBUTES,
     PROGRAM_SUBJECTS_DETAILED,
     SCORES_TYPE
@@ -36,6 +38,10 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
         requirement?.program_categories ?? []
     );
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [fpso, setFpso] = useState(requirement?.fpso || '');
+    const [admissionDescription, setAdmissionDescription] = useState(
+        requirement?.admissionDescription || ''
+    );
     const [scores, setScores] = useState(() =>
         Object.fromEntries(
             SCORES_TYPE.map(({ name }) => [name, requirement?.[name] || 0])
@@ -136,7 +142,8 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
             program_categories: programCategories?.map(
                 (programCategory) => programCategory
             ),
-            fpso: ''
+            fpso: fpso,
+            admissionDescription: admissionDescription
         };
         try {
             if (requirementId) {
@@ -286,6 +293,36 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                                     />
                                 </Grid>
                             ))}
+                            <Grid item xs={12} md={12}>
+                                <TextField
+                                    label={FPSO.label}
+                                    name={FPSO.name}
+                                    value={fpso}
+                                    onChange={(e) => setFpso(e.target.value)}
+                                    helperText={FPSO.description}
+                                    variant="outlined"
+                                    fullWidth
+                                    size="small"
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={12}>
+                                <TextField
+                                    label={ADMISSION_DESCRIPTION.label}
+                                    name={ADMISSION_DESCRIPTION.name}
+                                    value={admissionDescription}
+                                    onChange={(e) =>
+                                        setAdmissionDescription(e.target.value)
+                                    }
+                                    helperText={
+                                        ADMISSION_DESCRIPTION.description
+                                    }
+                                    variant="outlined"
+                                    fullWidth
+                                    size="small"
+                                    multiline
+                                    minRows={3}
+                                />
+                            </Grid>
                         </Grid>
                     </Box>
                     <Box>

@@ -36,10 +36,13 @@ import EditorSimple from '../../components/EditorJs/EditorSimple';
 import { stringAvatar, convertDate } from '../../utils/contants';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
-import { IgnoreMessage } from '../../api/index';
+import { IgnoreMessageV2 } from '../../api/index';
 import { BASE_URL } from '../../api/request';
 import FilePreview from '../../components/FilePreview/FilePreview';
 import { appConfig } from '../../config';
+import { useMutation } from '@tanstack/react-query';
+import { useSnackBar } from '../../contexts/use-snack-bar';
+import { queryClient } from '../../api/client';
 
 function Message(props) {
     // const onlyWidth = useWindowWidth();
@@ -62,6 +65,21 @@ function Message(props) {
     });
     const theme = useTheme();
     const ismobile = useMediaQuery(theme.breakpoints.down('md'));
+    const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
+
+    const { mutate } = useMutation({
+        mutationFn: IgnoreMessageV2,
+        onError: (error) => {
+            setSeverity('error');
+            setMessage(error.message || 'An error occurred. Please try again.');
+            setOpenSnackbar(true);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ['communications', 'my']
+            });
+        }
+    });
     useEffect(() => {
         var initialEditorState = null;
         if (props.message.message && props.message.message !== '{}') {
@@ -133,18 +151,12 @@ function Message(props) {
             ignoredMessageUpdatedAt: new Date()
         }));
         const message = props.message;
-        const updateIgnoreMessage = async () => {
-            const resp = await IgnoreMessage(
-                message.student_id._id.toString(),
-                message._id,
-                message.message,
-                ignoreMessageState
-            );
-            if (resp) {
-                console.log('nice');
-            }
-        };
-        await updateIgnoreMessage();
+        mutate({
+            student_id: message.student_id._id.toString(),
+            communication_messageId: message._id,
+            message: message.message,
+            ignoreMessageState: ignoreMessageState
+        });
     };
 
     if (!messageState.isLoaded && !messageState.editorState) {

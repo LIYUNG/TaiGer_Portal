@@ -13,7 +13,8 @@ import {
     getAllCourses,
     getCourse,
     getCommunicationThreadV2,
-    getPdfV2
+    getPdfV2,
+    getMyCommunicationThreadV2
 } from '.';
 
 export const getProgramQuery = ({ programId }) => ({
@@ -67,6 +68,12 @@ export const getCoursessQuery = (courseId) => ({
 export const getCommunicationQuery = (studentId) => ({
     queryKey: ['communications', studentId],
     queryFn: () => getCommunicationThreadV2({ studentId }),
+    staleTime: 1000 * 50 // 50 seconds
+});
+
+export const getMyCommunicationQuery = () => ({
+    queryKey: ['communications', 'my'],
+    queryFn: () => getMyCommunicationThreadV2(),
     staleTime: 1000 * 50 // 50 seconds
 });
 

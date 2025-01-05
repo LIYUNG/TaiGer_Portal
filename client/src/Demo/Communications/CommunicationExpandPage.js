@@ -142,20 +142,6 @@ function CommunicationExpandPage() {
     const student = data?.student;
     const thread = data?.data;
     const APP_BAR_HEIGHT = 64;
-    const [communicationExpandPageState, setCommunicationExpandPageState] =
-        useState({
-            error: '',
-            thread: data?.data,
-            student: data?.student,
-            count: 1,
-            files: [],
-            expand: true,
-            pageNumber: 1,
-            accordionKeys: [0], // to expand all]
-            res_status: 0,
-            res_modal_status: 0,
-            res_modal_message: ''
-        });
 
     const [open, setOpen] = useState(ismobile);
     const [anchorStudentDetailEl, setAnchorStudentDetailEl] = useState(null);
@@ -226,13 +212,6 @@ function CommunicationExpandPage() {
 
     const handleDrawerClose = () => {
         setOpen(false);
-    };
-
-    const countIncrease = () => {
-        setCommunicationExpandPageState((prevState) => ({
-            ...prevState,
-            count: prevState.count + 1
-        }));
     };
 
     const agentsEditorsDropdownId = 'primary-agents-editors-modal';
@@ -396,9 +375,7 @@ function CommunicationExpandPage() {
                             maxWidth: '300px' // Responsive width
                         }}
                     >
-                        <MemoizedEmbeddedChatList
-                            count={communicationExpandPageState.count}
-                        />
+                        <MemoizedEmbeddedChatList />
                     </Box>
                 </Grid>
                 <Grid item xs={12} md>
@@ -431,7 +408,6 @@ function CommunicationExpandPage() {
                                             student={student}
                                             data={thread}
                                             student_id={student_id}
-                                            countIncrease={countIncrease}
                                         />
                                     </Box>
                                 ))}
@@ -465,7 +441,6 @@ function CommunicationExpandPage() {
                                         student={student}
                                         data={thread}
                                         student_id={student_id}
-                                        countIncrease={countIncrease}
                                     />
                                 </Box>
                             </Box>
@@ -480,9 +455,7 @@ function CommunicationExpandPage() {
                             }}
                             onClick={(e) => handleDrawerOpen(e)}
                         >
-                            <MemoizedEmbeddedChatList
-                                count={communicationExpandPageState.count}
-                            />
+                            <MemoizedEmbeddedChatList />
                         </Box>
                     )}
                 </Grid>

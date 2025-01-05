@@ -48,6 +48,9 @@ function useCommunications({ data, student }) {
                     communicationsState.student._id.toString()
                 ]
             });
+            queryClient.invalidateQueries({
+                queryKey: ['communications', 'my']
+            });
             setCommunicationsState((prevState) => ({
                 ...prevState,
                 editorState: {},
@@ -75,6 +78,9 @@ function useCommunications({ data, student }) {
                     'communications',
                     communicationsState.student._id.toString()
                 ]
+            });
+            queryClient.invalidateQueries({
+                queryKey: ['communications', 'my']
             });
             // TODO: remove that message
             const new_messages = [...communicationsState.thread];

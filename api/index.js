@@ -3,7 +3,6 @@ const https = require('https');
 const fs = require('fs');
 
 const { app } = require('./app');
-// const { connectToDatabase, disconnectFromDatabase } = require('./database');
 const {
   PORT,
   isProd,
@@ -24,7 +23,6 @@ const {
   COURSE_SELECTION_TASKS_REMINDER_NOVEMBER_SCHEDULE,
   AVERAGE_RESPONSE_TIME_CALCULATION_SCHEDULE
 } = require('./config');
-
 const logger = require('./services/logger');
 // const {
 //   DocumentationS3GarbageCollector
@@ -69,13 +67,6 @@ const launch = async () => {
       logger.error('S3 bucket name not consistent for Prod');
       return;
     }
-  }
-  try {
-    // const conn = await connectToDatabase(MONGODB_URI, 5000);
-    // logger.info(`Database connected: ${conn.host}`);
-  } catch (err) {
-    logger.error('Failed to connect to database: ', err);
-    process.exit(1);
   }
 
   // setInterval(foo, 1000 * 100);
@@ -192,13 +183,9 @@ const launch = async () => {
       logger.info(`HTTPS_KEY: ${HTTPS_KEY}`);
     }
 
-    https.createServer(httpsOption, app).listen(HTTPS_PORT, function () {
+    https.createServer(httpsOption, app).listen(HTTPS_PORT, () => {
       logger.info(
-        'Example app listening on port ' +
-          HTTPS_PORT +
-          ' ! Go to https://localhost:' +
-          HTTPS_PORT +
-          '/'
+        `Example app listening on port ${HTTPS_PORT} ! Go to https://localhost:${HTTPS_PORT}/`
       );
     });
   }

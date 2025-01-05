@@ -3,7 +3,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Box, MenuItem, Skeleton } from '@mui/material';
 
 import Friends from './Friends';
-import { getMyCommunicationThread, getQueryStudentResults } from '../../api';
+import { getQueryStudentResults } from '../../api';
 import { useAuth } from '../AuthProvider';
 import {
     Search,
@@ -11,48 +11,20 @@ import {
     StyledInputBase,
     EmbeddedChatListWidth
 } from '../../utils/contants';
+import { getMyCommunicationQuery } from '../../api/query';
+import { useQuery } from '@tanstack/react-query';
 
-const EmbeddedChatList = (props) => {
+const EmbeddedChatList = () => {
     const { user } = useAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
+    const { data, isLoading } = useQuery(getMyCommunicationQuery());
     const [chatListState, setEmbeddedChatListState] = useState({
         success: false,
         searchMode: false,
         students: [],
         isLoaded: false
     });
-    useEffect(() => {
-        getMyCommunicationThread().then(
-            (resp) => {
-                const { success, data } = resp.data;
-                const { status } = resp;
-                if (success) {
-                    setEmbeddedChatListState((prevState) => ({
-                        ...prevState,
-                        success,
-                        students: data.students,
-                        isLoaded: true,
-                        res_status: status
-                    }));
-                } else {
-                    setEmbeddedChatListState((prevState) => ({
-                        ...prevState,
-                        isLoaded: true,
-                        res_status: status
-                    }));
-                }
-            },
-            (error) => {
-                setEmbeddedChatListState((prevState) => ({
-                    ...prevState,
-                    isLoaded: true,
-                    error,
-                    res_status: 500
-                }));
-            }
-        );
-    }, [props.count]);
 
     useEffect(() => {
         const fetchSearchResults = async () => {
@@ -140,7 +112,7 @@ const EmbeddedChatList = (props) => {
                     onChange={handleInputChange}
                 />
             </Search>
-            {!chatListState.isLoaded &&
+            {isLoading &&
                 [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
                     <MenuItem key={i}>
                         <Skeleton variant="circular" width={40} height={40} />
@@ -154,13 +126,13 @@ const EmbeddedChatList = (props) => {
                         />
                     </MenuItem>
                 ))}
-            {chatListState.isLoaded && (
+            {!isLoading && (
                 <Friends
                     user={user}
                     students={
                         chatListState.searchMode
                             ? searchResults
-                            : chatListState.students
+                            : data?.data?.students || []
                     }
                 />
             )}
@@ -168,6 +140,5 @@ const EmbeddedChatList = (props) => {
     );
 };
 
-const MemoizedEmbeddedChatList = React.memo(EmbeddedChatList);
 
-export default MemoizedEmbeddedChatList;
+export default EmbeddedChatList;

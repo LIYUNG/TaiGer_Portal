@@ -519,6 +519,8 @@ export const getMyCommunicationUnreadNumber = () =>
     request.get('/api/communications/ping/all');
 export const getMyCommunicationThread = () =>
     request.get('/api/communications/all');
+export const getMyCommunicationThreadV2 = () =>
+    getData('/api/communications/all');
 export const getCommunicationThread = (studentId) =>
     request.get(`/api/communications/${studentId}`);
 export const getCommunicationThreadV2 = ({ studentId }) =>
@@ -557,6 +559,17 @@ export const IgnoreMessage = (
     ignoreMessageState
 ) =>
     request.put(
+        `/api/communications/${student_id}/${communication_messageId}/${ignoreMessageState}/ignore`,
+        message
+    );
+
+export const IgnoreMessageV2 = ({
+    student_id,
+    communication_messageId,
+    message,
+    ignoreMessageState
+}) =>
+    putData(
         `/api/communications/${student_id}/${communication_messageId}/${ignoreMessageState}/ignore`,
         message
     );

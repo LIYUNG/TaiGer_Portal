@@ -30,7 +30,6 @@ const uniassistRouter = require('./uniassist');
 const usersRouter = require('./users');
 const userlogsRouter = require('./userlogs');
 const widgetsRouter = require('./widget');
-const googleapisRouter = require('./googleapis');
 const essayWriterRouter = require('./essay-writers');
 
 const router = (app) => {
@@ -51,7 +50,6 @@ const router = (app) => {
   apiRouter.use('/document-threads', docsModiRouter);
   apiRouter.use('/expenses', expensesRouter);
   apiRouter.use('/events', eventsRouter);
-  apiRouter.use('/google', googleapisRouter);
   apiRouter.use('/interviews', interviewsRouter);
   apiRouter.use('/notes', notesRouter);
   apiRouter.use('/portal-informations', portalsRouter);

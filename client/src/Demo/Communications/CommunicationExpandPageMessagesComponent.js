@@ -8,11 +8,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { useAuth } from '../../components/AuthProvider';
 import useCommunications from '../../hooks/useCommunications';
 
-function CommunicationExpandPageMessagesComponent({
-    data,
-    student,
-    countIncrease
-}) {
+function CommunicationExpandPageMessagesComponent({ data, student }) {
     const { user } = useAuth();
     const { t } = useTranslation();
     const theme = useTheme();
@@ -58,7 +54,6 @@ function CommunicationExpandPageMessagesComponent({
     });
 
     const handleSave = (e, editorState) => {
-        countIncrease();
         handleClickSave(e, editorState);
     };
 

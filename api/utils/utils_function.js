@@ -505,79 +505,6 @@ const UrgentTasksReminderEmails_Editor_core = asyncHandler(async (req) => {
   }
 });
 
-// TODO: to be deprecated (migrated to lambda, testing)
-const AssignEditorTasksReminderEmails = asyncHandler(async () => {
-  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
-  const req = {};
-  req.db = connectToDatabase(tenantId);
-  req.VCModel = req.db.model('VC');
-  const students = await req.db
-    .model('Student')
-    .find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
-    .populate('agents editors', 'firstname lastname email archiv')
-    .populate('applications.programId')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    )
-    .select('-notification')
-    .lean(); // Only active student, not archiv
-  for (let i = 0; i < students.length; i += 1) {
-    if (!students[i].editors || students[i].editors.length === 0) {
-      for (let j = 0; j < students[i].agents.length; j += 1) {
-        // inform active-agent
-        if (isNotArchiv(students[i])) {
-          if (isNotArchiv(students[i].agents[j])) {
-            if (students[i].needEditor) {
-              sendAssignEditorReminderEmail(
-                {
-                  firstname: students[i].agents[j].firstname,
-                  lastname: students[i].agents[j].lastname,
-                  address: students[i].agents[j].email
-                },
-                {
-                  student_firstname: students[i].firstname,
-                  student_id: students[i]._id.toString(),
-                  student_lastname: students[i].lastname
-                }
-              );
-            }
-          }
-        }
-      }
-      // inform editor-lead
-      const permissions = await req.db
-        .model('Permission')
-        .find({
-          canAssignEditors: true
-        })
-        .populate('user_id', 'firstname lastname email')
-        .lean();
-      if (permissions) {
-        for (let x = 0; x < permissions.length; x += 1) {
-          if (students[i].needEditor) {
-            sendAssignEditorReminderEmail(
-              {
-                firstname: permissions[x].user_id.firstname,
-                lastname: permissions[x].user_id.lastname,
-                address: permissions[x].user_id.email
-              },
-              {
-                student_firstname: students[i].firstname,
-                student_id: students[i]._id.toString(),
-                student_lastname: students[i].lastname
-              }
-            );
-          }
-        }
-      }
-      logger.info('Assign editor reminded');
-    }
-  }
-});
-
 const UrgentTasksReminderEmails = asyncHandler(async () => {
   const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
   const req = {};
@@ -1599,7 +1526,6 @@ const userChangesHelperFunction = async (req, newUserIds, existingUsers) => {
 module.exports = {
   threadS3GarbageCollector,
   TasksReminderEmails,
-  AssignEditorTasksReminderEmails,
   UrgentTasksReminderEmails,
   NextSemesterCourseSelectionReminderEmails,
   numStudentYearDistribution,

@@ -238,7 +238,11 @@ function CVMLRLCenter() {
 
     return (
         <Box data-testid="cvmlrlcenter_component">
-            <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+            >
                 <Breadcrumbs aria-label="breadcrumb">
                     <Link
                         underline="hover"

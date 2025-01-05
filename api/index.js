@@ -33,7 +33,6 @@ const logger = require('./services/logger');
 const {
   TasksReminderEmails,
   UrgentTasksReminderEmails,
-  AssignEditorTasksReminderEmails,
   NextSemesterCourseSelectionReminderEmails,
   // UpdateStatisticsData,
   MeetingDailyReminderChecker,
@@ -115,12 +114,6 @@ const launch = async () => {
   const job4 = schedule.scheduleJob(
     WEEKLY_TASKS_REMINDER_SCHEDULE,
     UrgentTasksReminderEmails
-  );
-
-  // Remind editor lead when input provided, but no editors.
-  const job6 = schedule.scheduleJob(
-    DAILY_TASKS_REMINDER_SCHEDULE,
-    AssignEditorTasksReminderEmails
   );
 
   // Remind Student to select next semester courses 6-7 month, 11-12 month.

@@ -11,7 +11,8 @@ import {
     getStudentUniAssistV2,
     getProgramRequirementsV2,
     getAllCourses,
-    getCourse
+    getCourse,
+    getCommunicationThreadV2
 } from '.';
 
 export const getProgramQuery = ({ programId }) => ({
@@ -62,11 +63,18 @@ export const getCoursessQuery = (courseId) => ({
     staleTime: 1000 * 60 * 5 // 5 minutes
 });
 
+export const getCommunicationQuery = (studentId) => ({
+    queryKey: ['communications', studentId],
+    queryFn: () => getCommunicationThreadV2({ studentId }),
+    staleTime: 1000 * 50 // 50 seconds
+});
+
 export const getProgramRequirementsQuery = () => ({
     queryKey: ['students/all'],
     queryFn: () => getProgramRequirementsV2(),
     staleTime: 1000 * 60 * 5 // 5 minutes
 });
+
 export const getProgramsQuery = () => ({
     queryKey: ['programs'],
     queryFn: getProgramsV2,

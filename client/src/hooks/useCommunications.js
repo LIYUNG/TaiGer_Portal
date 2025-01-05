@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { is_TaiGer_role } from '@taiger-common/core';
 
 import { useAuth } from '../components/AuthProvider';
 import { readDOCX, readPDF, readXLSX } from '../Demo/Utils/checking-functions';
 import {
-    deleteAMessageInCommunicationThread,
+    deleteAMessageInCommunicationThreadV2,
     loadCommunicationThread,
-    postCommunicationThread
+    postCommunicationThreadV2
 } from '../api';
+import { useSnackBar } from '../contexts/use-snack-bar';
+import { queryClient } from '../api/client';
+import { useMutation } from '@tanstack/react-query';
 
 function useCommunications({ data, student }) {
     const { user } = useAuth();
@@ -17,7 +20,6 @@ function useCommunications({ data, student }) {
         isLoaded: true,
         thread: data,
         upperThread: [],
-        buttonDisabled: false,
         editorState: {},
         files: [],
         student,
@@ -30,6 +32,92 @@ function useCommunications({ data, student }) {
         res_modal_status: 0,
         res_modal_message: ''
     });
+    const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: postCommunicationThreadV2,
+        onError: (error) => {
+            setSeverity('error');
+            setMessage(error.message || 'An error occurred. Please try again.');
+            setOpenSnackbar(true);
+        },
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({
+                queryKey: [
+                    'communications',
+                    communicationsState.student._id.toString()
+                ]
+            });
+            setCommunicationsState((prevState) => ({
+                ...prevState,
+                editorState: {},
+                thread: [...communicationsState.thread, ...data.data],
+                files: [],
+                accordionKeys: [
+                    ...communicationsState.accordionKeys,
+                    communicationsState.accordionKeys.length
+                ]
+            }));
+        }
+    });
+
+    const { mutate: mutateDelete, isPending: isDeleting } = useMutation({
+        mutationFn: deleteAMessageInCommunicationThreadV2,
+        onError: (error) => {
+            setSeverity('error');
+            setMessage(error.message || 'An error occurred. Please try again.');
+            setOpenSnackbar(true);
+        },
+        onSuccess: (data, variables) => {
+            const { communication_messageId: message_id } = variables; // Extract message_id
+            queryClient.invalidateQueries({
+                queryKey: [
+                    'communications',
+                    communicationsState.student._id.toString()
+                ]
+            });
+            // TODO: remove that message
+            const new_messages = [...communicationsState.thread];
+            let idx = new_messages.findIndex(
+                (message) => message._id.toString() === message_id
+            );
+            if (idx !== -1) {
+                new_messages.splice(idx, 1);
+            }
+            const new_upper_messages = [...communicationsState.upperThread];
+            let idx2 = new_upper_messages.findIndex(
+                (message) => message._id.toString() === message_id
+            );
+            if (idx2 !== -1) {
+                new_upper_messages.splice(idx2, 1);
+            }
+            setCommunicationsState((prevState) => ({
+                ...prevState,
+                // success,
+                isLoaded: true,
+                upperThread: new_upper_messages,
+                thread: new_messages,
+                buttonDisabled: false,
+                res_modal_status: status
+            }));
+        }
+    });
+
+    useEffect(() => {
+        setCommunicationsState((prevState) => ({
+            ...prevState,
+            upperThread: [],
+            editorState: {},
+            files: [],
+            student,
+            thread: data,
+            pageNumber: 1,
+            accordionKeys: new Array(data.length)
+                .fill()
+                .map((x, i) => (i >= data.length - 2 ? i : -1)), // only expand latest 2
+            loadButtonDisabled: false
+        }));
+    }, [data]);
 
     const handleLoadMessages = () => {
         setCommunicationsState((prevState) => ({
@@ -91,66 +179,10 @@ function useCommunications({ data, student }) {
 
     const onDeleteSingleMessage = (e, message_id) => {
         e.preventDefault();
-        setCommunicationsState((prevState) => ({
-            ...prevState,
-            isLoaded: false
-        }));
-        deleteAMessageInCommunicationThread(
-            student._id?.toString(),
-            message_id
-        ).then(
-            (resp) => {
-                const { success } = resp.data;
-                const { status } = resp;
-                if (success) {
-                    // TODO: remove that message
-                    const new_messages = [...communicationsState.thread];
-                    let idx = new_messages.findIndex(
-                        (message) => message._id.toString() === message_id
-                    );
-                    if (idx !== -1) {
-                        new_messages.splice(idx, 1);
-                    }
-                    const new_upper_messages = [
-                        ...communicationsState.upperThread
-                    ];
-                    let idx2 = new_upper_messages.findIndex(
-                        (message) => message._id.toString() === message_id
-                    );
-                    if (idx2 !== -1) {
-                        new_upper_messages.splice(idx2, 1);
-                    }
-                    setCommunicationsState((prevState) => ({
-                        ...prevState,
-                        success,
-                        isLoaded: true,
-                        upperThread: new_upper_messages,
-                        thread: new_messages,
-                        buttonDisabled: false,
-                        res_modal_status: status
-                    }));
-                } else {
-                    // TODO: what if data is oversize? data type not match?
-                    const { message } = resp.data;
-                    setCommunicationsState((prevState) => ({
-                        ...prevState,
-                        isLoaded: true,
-                        buttonDisabled: false,
-                        res_modal_message: message,
-                        res_modal_status: status
-                    }));
-                }
-            },
-            (error) => {
-                setCommunicationsState((prevState) => ({
-                    ...prevState,
-                    isLoaded: true,
-                    error,
-                    res_modal_status: 500,
-                    res_modal_message: ''
-                }));
-            }
-        );
+        mutateDelete({
+            student_id: student._id?.toString(),
+            communication_messageId: message_id
+        });
     };
 
     const onFileChange = (e) => {
@@ -209,10 +241,6 @@ function useCommunications({ data, student }) {
 
     const handleClickSave = (e, editorState) => {
         e.preventDefault();
-        setCommunicationsState((prevState) => ({
-            ...prevState,
-            buttonDisabled: true
-        }));
         var message = JSON.stringify(editorState);
 
         const formData = new FormData();
@@ -224,57 +252,16 @@ function useCommunications({ data, student }) {
         }
 
         formData.append('message', message);
-
-        postCommunicationThread(
-            communicationsState.student._id.toString(),
+        mutate({
+            studentId: communicationsState.student._id.toString(),
             formData
-        ).then(
-            (resp) => {
-                const { success, data } = resp.data;
-                const { status } = resp;
-                if (success) {
-                    setCommunicationsState((prevState) => ({
-                        ...prevState,
-                        success,
-                        editorState: {},
-                        thread: [...communicationsState.thread, ...data],
-                        isLoaded: true,
-                        files: [],
-                        buttonDisabled: false,
-                        accordionKeys: [
-                            ...communicationsState.accordionKeys,
-                            communicationsState.accordionKeys.length
-                        ],
-                        res_modal_status: status
-                    }));
-                } else {
-                    // TODO: what if data is oversize? data type not match?
-                    const { message } = resp.data;
-                    setCommunicationsState((prevState) => ({
-                        ...prevState,
-                        isLoaded: true,
-                        buttonDisabled: false,
-                        res_modal_message: message,
-                        res_modal_status: status
-                    }));
-                }
-            },
-            (error) => {
-                setCommunicationsState((prevState) => ({
-                    ...prevState,
-                    isLoaded: true,
-                    error,
-                    res_modal_status: 500,
-                    res_modal_message: error
-                }));
-            }
-        );
+        });
     };
 
     return {
-        buttonDisabled: communicationsState.buttonDisabled,
+        buttonDisabled: isPending,
         loadButtonDisabled: communicationsState.loadButtonDisabled,
-        isLoaded: communicationsState.isLoaded,
+        isLoaded: !isDeleting,
         files: communicationsState.files,
         editorState: communicationsState.editorState,
         checkResult,

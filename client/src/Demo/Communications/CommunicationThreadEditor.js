@@ -125,7 +125,13 @@ function CommunicationThreadEditor(props) {
             <Box>
                 {is_TaiGer_role(user) &&
                     props.files?.map((fl, i) => (
-                        <Box key={`${fl.name}${i}`}>
+                        <Box
+                            key={`${fl.name}${i}`}
+                            sx={{
+                                wordBreak: 'break-word', // Breaks the word to avoid overflow
+                                overflowWrap: 'break-word' // Add this line
+                            }}
+                        >
                             <Typography variant="body1">{fl.name} :</Typography>
                             {props.checkResult?.length &&
                                 Object.keys(props.checkResult[i]).map((ky) => (
@@ -149,7 +155,14 @@ function CommunicationThreadEditor(props) {
                 {is_TaiGer_Student(user) &&
                     props.files?.map((fl, i) => (
                         <Box key={`${fl.name}${i}`}>
-                            <Typography variant="body1">{fl.name}</Typography>
+                            <Typography
+                                variant="body1"
+                                sx={{
+                                    overflowWrap: 'break-word' // Add this line
+                                }}
+                            >
+                                {fl.name}
+                            </Typography>
                         </Box>
                     ))}
             </Box>

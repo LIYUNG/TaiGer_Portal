@@ -520,16 +520,18 @@ export const getMyCommunicationThread = () =>
     request.get('/api/communications/all');
 export const getCommunicationThread = (studentId) =>
     request.get(`/api/communications/${studentId}`);
+export const getCommunicationThreadV2 = ({ studentId }) =>
+    getData(`/api/communications/${studentId}`);
 export const loadCommunicationThread = (studentId, pageNumber) =>
     request.get(`/api/communications/${studentId}/pages/${pageNumber}`);
-export const postCommunicationThread = (studentId, formData) =>
-    request.post(`/api/communications/${studentId}`, formData);
-export const updateAMessageInCommunicationThread = (
+export const postCommunicationThreadV2 = ({ studentId, formData }) =>
+    postData(`/api/communications/${studentId}`, formData);
+export const updateAMessageInCommunicationThreadV2 = ({
     communication_id,
     communication_messageId,
     message
-) =>
-    request.put(
+}) =>
+    putData(
         `/api/communications/${communication_id}/${communication_messageId}`,
         { message }
     );
@@ -540,6 +542,12 @@ export const deleteAMessageInCommunicationThread = (
     request.delete(
         `/api/communications/${student_id}/${communication_messageId}`
     );
+
+export const deleteAMessageInCommunicationThreadV2 = ({
+    student_id,
+    communication_messageId
+}) =>
+    deleteData(`/api/communications/${student_id}/${communication_messageId}`);
 
 export const IgnoreMessage = (
     student_id,

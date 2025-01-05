@@ -1,12 +1,15 @@
 import React, { Suspense } from 'react';
-import { Await, useLoaderData } from 'react-router-dom';
+import { Await, useParams } from 'react-router-dom';
 import { Box } from '@mui/material';
 
 import Loading from '../../components/Loading/Loading';
 import CommunicationSinglePageBody from './CommunicationSinglePageBody';
+import { getCommunicationQuery } from '../../api/query';
+import { useQuery } from '@tanstack/react-query';
 
 function CommunicationSinglePage() {
-    const { data } = useLoaderData();
+    const { student_id } = useParams();
+    const { data } = useQuery(getCommunicationQuery(student_id));
 
     return (
         <Box data-testid="communication_student_page">

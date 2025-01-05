@@ -23,6 +23,7 @@ import {
     getAllActiveStudentsQuery,
     getAllCoursessQuery,
     getAllStudentsQuery,
+    getCommunicationQuery,
     getCoursessQuery,
     getProgramRequirementsQuery
 } from './query';
@@ -80,7 +81,9 @@ export async function CommunicationThreadLoader({ params }) {
 }
 
 export function getCommunicationThreadLoader({ params }) {
-    return defer({ data: CommunicationThreadLoader({ params }) });
+    const student_id = params.student_id;
+    return queryClient.fetchQuery(getCommunicationQuery(student_id));
+    //  return defer({ data: CommunicationThreadLoader({ params }) });
 }
 
 //

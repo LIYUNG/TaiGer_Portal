@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link as LinkDom, Navigate, useParams } from 'react-router-dom';
 import {
     Avatar,
@@ -24,7 +25,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { is_TaiGer_role } from '@taiger-common/core';
 
-import { getCommunicationThread, WidgetExportMessagePDF } from '../../api';
+import { WidgetExportMessagePDF } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
@@ -37,8 +38,8 @@ import {
 import MemoizedEmbeddedChatList from '../../components/EmbeddedChatList';
 import { FetchStudentLayer } from '../StudentDatabase/FetchStudentLayer';
 import CommunicationExpandPageMessagesComponent from './CommunicationExpandPageMessagesComponent';
-import ErrorPage from '../Utils/ErrorPage';
 import { truncateText } from '../Utils/checking-functions';
+import { getCommunicationQuery } from '../../api/query';
 
 const StudentDetailModal = ({
     open,
@@ -137,21 +138,20 @@ function CommunicationExpandPage() {
     const { t } = useTranslation();
     const theme = useTheme();
     const ismobile = useMediaQuery(theme.breakpoints.down('md'));
+    const { data, isLoading } = useQuery(getCommunicationQuery(student_id));
+    const student = data?.student;
+    const thread = data?.data;
     const APP_BAR_HEIGHT = 64;
     const [communicationExpandPageState, setCommunicationExpandPageState] =
         useState({
             error: '',
-            isLoaded: false,
-            messagesLoaded: false,
-            thread: null,
+            thread: data?.data,
+            student: data?.student,
             count: 1,
-            editorState: {},
             files: [],
             expand: true,
             pageNumber: 1,
-            uppderaccordionKeys: [], // to expand all]
             accordionKeys: [0], // to expand all]
-            loadButtonDisabled: false,
             res_status: 0,
             res_modal_status: 0,
             res_modal_message: ''
@@ -171,60 +171,6 @@ function CommunicationExpandPage() {
                 scrollableRef.current.scrollHeight;
         }
     };
-
-    useEffect(() => {
-        if (!student_id) {
-            setCommunicationExpandPageState((prevState) => ({
-                ...prevState,
-                isLoaded: true
-            }));
-        }
-        setCommunicationExpandPageState((prevState) => ({
-            ...prevState,
-            messagesLoaded: false
-        }));
-        getCommunicationThread(student_id).then(
-            (resp) => {
-                const { success, data, student } = resp.data;
-                const { status } = resp;
-                if (success) {
-                    setCommunicationExpandPageState((prevState) => ({
-                        ...prevState,
-                        success,
-                        thread: data,
-                        messagesLoaded: true,
-                        isLoaded: true,
-                        count: prevState.count + 1,
-                        student_id: student_id,
-                        student,
-                        accordionKeys: new Array(data.length)
-                            .fill()
-                            .map((x, i) => (i >= data.length - 2 ? i : -1)), // only expand latest 2
-                        res_status: status
-                    }));
-                    scrollToBottom();
-                } else {
-                    setCommunicationExpandPageState((prevState) => ({
-                        ...prevState,
-                        count: prevState.count + 1,
-                        messagesLoaded: true,
-                        isLoaded: true,
-                        res_status: status
-                    }));
-                }
-            },
-            (error) => {
-                setCommunicationExpandPageState((prevState) => ({
-                    ...prevState,
-                    count: prevState.count + 1,
-                    messagesLoaded: true,
-                    isLoaded: true,
-                    error,
-                    res_status: 500
-                }));
-            }
-        );
-    }, [student_id]);
 
     const handleDrawerOpen = (e) => {
         e.stopPropagation();
@@ -293,135 +239,132 @@ function CommunicationExpandPage() {
 
     const TopBar = () => {
         return (
-            <Box
-                className="sticky-top"
-                sx={{
-                    my: 1,
-                    display: 'flex'
-                }}
-            >
+            !isLoading && (
                 <Box
+                    className="sticky-top"
                     sx={{
+                        my: 1,
                         display: 'flex'
                     }}
                 >
-                    {ismobile && (
-                        <IconButton
-                            color="inherit"
-                            aria-label="open drawer"
-                            style={{ marginLeft: '4px' }}
-                            onClick={(e) => handleDrawerClose(e)}
-                            edge="start"
-                        >
-                            <ArrowBackIcon />
-                        </IconButton>
-                    )}
-                    <Avatar {...stringAvatar(student_name_english)}></Avatar>
-                    <Box>
-                        <Link
-                            to={DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                student_id,
-                                DEMO.PROFILE_HASH
-                            )}
-                            component={LinkDom}
-                        >
-                            <Typography
-                                variant="body1"
-                                fontWeight="bold"
-                                sx={{ ml: 1 }}
-                            >
-                                {truncateText(student_name_english, 24)}
-                            </Typography>
-                        </Link>
-                        <LastLoginTime date={student.lastLoginAt} />
-                    </Box>
-                </Box>
-                <Box sx={{ flexGrow: 1 }} />
-                <Box sx={{ mr: 2, md: 'flex' }}>
-                    <Stack
-                        direction="row"
-                        justifyContent="flex-end"
-                        alignItems="center"
-                        spacing={1}
+                    <Box
+                        sx={{
+                            display: 'flex'
+                        }}
                     >
-                        <Tooltip title={t('Agents Editors', { ns: 'common' })}>
+                        {ismobile && (
                             <IconButton
                                 color="inherit"
-                                aria-label="open-more-1"
-                                aria-controls={agentsEditorsDropdownId}
-                                aria-haspopup="true"
-                                edge="end"
-                                onClick={handleAgentsEditorsModalOpen}
+                                aria-label="open drawer"
+                                style={{ marginLeft: '4px' }}
+                                onClick={(e) => handleDrawerClose(e)}
+                                edge="start"
                             >
-                                <PeopleAltIcon />
+                                <ArrowBackIcon />
                             </IconButton>
-                        </Tooltip>
-                        <Tooltip title={t('Export messages', { ns: 'common' })}>
-                            <IconButton
-                                color="inherit"
-                                aria-label="open-more"
-                                aria-controls={dropdownId}
-                                aria-haspopup="true"
-                                onClick={handleExportMessages}
-                                edge="end"
-                                disabled={isExportingMessageDisabled}
-                            >
-                                {isExportingMessageDisabled ? (
-                                    <CircularProgress size={16} />
-                                ) : (
-                                    <FileDownloadIcon />
+                        )}
+                        <Avatar
+                            {...stringAvatar(student_name_english)}
+                        ></Avatar>
+                        <Box>
+                            <Link
+                                to={DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                    student_id,
+                                    DEMO.PROFILE_HASH
                                 )}
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title={t('More', { ns: 'common' })}>
-                            <IconButton
-                                color="inherit"
-                                aria-label="open-more"
-                                aria-controls={dropdownId}
-                                aria-haspopup="true"
-                                onClick={handleStudentDetailModalOpen}
-                                edge="end"
+                                component={LinkDom}
                             >
-                                <MoreVertIcon />
-                            </IconButton>
-                        </Tooltip>
-                    </Stack>
+                                <Typography
+                                    variant="body1"
+                                    fontWeight="bold"
+                                    sx={{ ml: 1 }}
+                                >
+                                    {truncateText(student_name_english, 24)}
+                                </Typography>
+                            </Link>
+                            <LastLoginTime date={student.lastLoginAt} />
+                        </Box>
+                    </Box>
+                    <Box sx={{ flexGrow: 1 }} />
+                    <Box sx={{ mr: 2, md: 'flex' }}>
+                        <Stack
+                            direction="row"
+                            justifyContent="flex-end"
+                            alignItems="center"
+                            spacing={1}
+                        >
+                            <Tooltip
+                                title={t('Agents Editors', { ns: 'common' })}
+                            >
+                                <IconButton
+                                    color="inherit"
+                                    aria-label="open-more-1"
+                                    aria-controls={agentsEditorsDropdownId}
+                                    aria-haspopup="true"
+                                    edge="end"
+                                    onClick={handleAgentsEditorsModalOpen}
+                                >
+                                    <PeopleAltIcon />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip
+                                title={t('Export messages', { ns: 'common' })}
+                            >
+                                <IconButton
+                                    color="inherit"
+                                    aria-label="open-more"
+                                    aria-controls={dropdownId}
+                                    aria-haspopup="true"
+                                    onClick={handleExportMessages}
+                                    edge="end"
+                                    disabled={isExportingMessageDisabled}
+                                >
+                                    {isExportingMessageDisabled ? (
+                                        <CircularProgress size={16} />
+                                    ) : (
+                                        <FileDownloadIcon />
+                                    )}
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title={t('More', { ns: 'common' })}>
+                                <IconButton
+                                    color="inherit"
+                                    aria-label="open-more"
+                                    aria-controls={dropdownId}
+                                    aria-haspopup="true"
+                                    onClick={handleStudentDetailModalOpen}
+                                    edge="end"
+                                >
+                                    <MoreVertIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </Stack>
+                    </Box>
+                    <AgentsEditorsModal
+                        open={isAgentsEditorsModalOpen}
+                        student={student}
+                        agentsEditorsDropdownId={agentsEditorsDropdownId}
+                        anchorAgentsEditorsEl={isAgentsEditorsModalOpen}
+                        handleAgentsEditorsStudentDetailModalClose={
+                            handleAgentsEditorsModalClose
+                        }
+                    />
                 </Box>
-                <AgentsEditorsModal
-                    open={isAgentsEditorsModalOpen}
-                    student={student}
-                    agentsEditorsDropdownId={agentsEditorsDropdownId}
-                    anchorAgentsEditorsEl={isAgentsEditorsModalOpen}
-                    handleAgentsEditorsStudentDetailModalClose={
-                        handleAgentsEditorsModalClose
-                    }
-                />
-            </Box>
+            )
         );
     };
-    // const DrawerChatMemo = () => {
-    //   return (
-    //     <MemoizedEmbeddedChatList count={communicationExpandPageState.count} />
-    //   );
-    // };
 
     const dropdownId = 'primary-student-modal';
 
-    const { messagesLoaded, student, isLoaded, res_status } =
-        communicationExpandPageState;
+    scrollToBottom();
 
-    if (!isLoaded && !communicationExpandPageState.thread) {
-        return <></>;
-    }
-
-    if (res_status >= 400) {
-        return <ErrorPage res_status={res_status} />;
-    }
-
-    const student_name = `${student.firstname} ${student.lastname} ${
-        student.firstname_chinese ? student.firstname_chinese : ''
-    } ${student.lastname_chinese ? student.lastname_chinese : ''}`;
-    const student_name_english = `${student.firstname} ${student.lastname}`;
+    const student_name =
+        !isLoading &&
+        `${student.firstname} ${student.lastname} ${
+            student.firstname_chinese ? student.firstname_chinese : ''
+        } ${student.lastname_chinese ? student.lastname_chinese : ''}`;
+    const student_name_english =
+        !isLoading && `${student.firstname} ${student.lastname}`;
 
     TabTitle(`${student_name}`);
     if (!is_TaiGer_role(user)) {
@@ -474,7 +417,9 @@ function CommunicationExpandPage() {
                         >
                             <TopBar />
                             {student_id &&
-                                (messagesLoaded ? (
+                                (isLoading ? (
+                                    <Loading />
+                                ) : (
                                     <Box
                                         sx={{
                                             height: `calc(100vh - ${APP_BAR_HEIGHT - 8}px)`, // Subtract header
@@ -483,24 +428,29 @@ function CommunicationExpandPage() {
                                         ref={scrollableRef}
                                     >
                                         <CommunicationExpandPageMessagesComponent
-                                            student={
-                                                communicationExpandPageState.student
-                                            }
-                                            data={
-                                                communicationExpandPageState.thread
-                                            }
+                                            student={student}
+                                            data={thread}
                                             student_id={student_id}
                                             countIncrease={countIncrease}
                                         />
                                     </Box>
-                                ) : (
-                                    <Loading />
                                 ))}
                         </Drawer>
                     )}
                     {!ismobile &&
                         student_id &&
-                        (messagesLoaded ? (
+                        (isLoading ? (
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    height: '100%'
+                                }}
+                            >
+                                <Loading />
+                            </Box>
+                        ) : (
                             <Box>
                                 <TopBar />
                                 <Box
@@ -512,27 +462,12 @@ function CommunicationExpandPage() {
                                     ref={scrollableRef}
                                 >
                                     <CommunicationExpandPageMessagesComponent
-                                        student={
-                                            communicationExpandPageState.student
-                                        }
-                                        data={
-                                            communicationExpandPageState.thread
-                                        }
+                                        student={student}
+                                        data={thread}
                                         student_id={student_id}
                                         countIncrease={countIncrease}
                                     />
                                 </Box>
-                            </Box>
-                        ) : (
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    height: '100%'
-                                }}
-                            >
-                                <Loading />
                             </Box>
                         ))}
                     {!student_id && <Typography>Empty</Typography>}

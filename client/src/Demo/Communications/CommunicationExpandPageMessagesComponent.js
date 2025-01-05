@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Card, Button, Grid, useMediaQuery, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -56,20 +56,6 @@ function CommunicationExpandPageMessagesComponent({
         res_modal_status: 0,
         res_modal_message: ''
     });
-
-    const [windowInnerWidth, setWindowInnerWidth] = useState(window.innerWidth);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowInnerWidth(window.innerWidth);
-        };
-
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, [windowInnerWidth]);
 
     const handleSave = (e, editorState) => {
         countIncrease();

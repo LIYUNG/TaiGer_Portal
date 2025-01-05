@@ -982,25 +982,21 @@ const GroupCommunicationByStudent = asyncHandler(async (req) => {
       .find()
       .populate('student_id user_id', 'firstname lastname email archiv')
       .lean();
-    const groupCommunication = {};
-    for (const singleCommunicaiton of communications) {
-      if (
-        singleCommunicaiton.student_id &&
-        singleCommunicaiton.student_id.archiv !== true
-      ) {
-        if (
-          !groupCommunication[singleCommunicaiton.student_id._id.toString()]
-        ) {
-          groupCommunication[singleCommunicaiton.student_id._id.toString()] = [
-            singleCommunicaiton
-          ];
+    const groupCommunication = communications.reduce((acc, communication) => {
+      const student = communication.student_id;
+
+      if (student && !student.archiv) {
+        const studentId = student._id.toString();
+
+        if (!acc[studentId]) {
+          acc[studentId] = [communication];
         } else {
-          groupCommunication[
-            singleCommunicaiton.student_id._id.toString()
-          ].push(singleCommunicaiton);
+          acc[studentId].push(communication);
         }
       }
-    }
+
+      return acc;
+    }, {});
     return groupCommunication;
   } catch (error) {
     logger.error('error grouping communications');
@@ -1031,7 +1027,7 @@ const CreateIntervalMessageOperation = (student_id, msg1, msg2) => {
   return {
     updateOne: {
       filter: queryData,
-      update: update,
+      update,
       upsert: true
     }
   };

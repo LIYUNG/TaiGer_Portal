@@ -6,7 +6,9 @@ const isTest = () => process.env.NODE_ENV === 'test';
 const isDev = () =>
   process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
 
-if (isDev() || isTest()) {
+// TODO: if later use Docker CICD, .env is not needed and env variables are
+// injected from secret manager during deployment
+if (isDev() || isTest() || isProd()) {
   dotenv.config({
     path: path.join(__dirname, `./.env.${process.env.NODE_ENV}`)
   });

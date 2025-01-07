@@ -7,8 +7,14 @@ FROM public.ecr.aws/docker/library/node:18.20.5-alpine
 RUN apk add --no-cache bash curl
 
 WORKDIR /app
+
+# Copy the rest of the application
 COPY . .
+
 RUN npm install --production 
+
+# Expose the port the app is listening on (default for Express is 3000)
+EXPOSE 3000
 
 USER node
 CMD [ "npm", "start" ]

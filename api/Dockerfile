@@ -1,7 +1,10 @@
 # FROM node:18-alpine
 
 # Test aws ecr
-FROM public.ecr.aws/lts/nodejs:18-alpine
+FROM node:18
+
+# Install Node.js 18.x and npm for amazon linux
+RUN yum install -y nodejs
 
 WORKDIR /app
 COPY . .

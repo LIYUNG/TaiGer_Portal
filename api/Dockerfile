@@ -1,7 +1,7 @@
 # FROM node:18-alpine
 
 # Test aws ecr
-FROM public.ecr.aws/amazonlinux/amazonlinux:2.0.20241217.0-arm64v8
+FROM public.ecr.aws/docker/library/node:18.20.5-alpine
 
 # Install Node.js 18.x and npm using NodeSource
 RUN curl -sL https://rpm.nodesource.com/setup_18.x | bash - && \

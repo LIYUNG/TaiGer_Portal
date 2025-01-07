@@ -1,14 +1,16 @@
 const path = require('path');
 const dotenv = require('dotenv');
 
-dotenv.config({
-  path: path.join(__dirname, `./.env.${process.env.NODE_ENV}`)
-});
-
 const isProd = () => process.env.NODE_ENV === 'production';
 const isTest = () => process.env.NODE_ENV === 'test';
 const isDev = () =>
   process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
+
+if (isDev() || isTest()) {
+  dotenv.config({
+    path: path.join(__dirname, `./.env.${process.env.NODE_ENV}`)
+  });
+}
 
 // FIXME: throw error if both env variable and default not set
 const env = (name, default_) => process.env[name] || default_;

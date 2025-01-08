@@ -19,8 +19,7 @@ const {
 const {
   decryptCookieMiddleware
 } = require('./middlewares/decryptCookieMiddleware');
-console.log(process.env.NODE_ENV);
-console.log(process.env.AWS_LOG_GROUP);
+
 const app = express();
 app.set('trust proxy', 1);
 app.use(helmet.contentSecurityPolicy());
@@ -46,6 +45,10 @@ app.use(
   })
 );
 app.use(cookieParser());
+app.get('/health', (req, res) => {
+  console.log('healthy check');
+  res.status(200).json({ status: 'healthy', timestamp: new Date() });
+});
 app.use(decryptCookieMiddleware);
 app.use(checkTenantDBMiddleware);
 app.use(tenantMiddleware);

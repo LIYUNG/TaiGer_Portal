@@ -56,6 +56,8 @@ function CommunicationThreadEditor(props) {
         document.getElementById('file-input').click();
     };
 
+    console.log('logggg')
+
     const onSubmit = async () => {
         setStatedata((prevState) => ({
             ...prevState,
@@ -111,7 +113,7 @@ function CommunicationThreadEditor(props) {
                 }}
             >
                 <EditorSimple
-                    holder={'editorjs'}
+                    holder={props.editorState?.toString()}
                     thread={props.thread}
                     defaultHeight={0}
                     readOnly={false}
@@ -210,21 +212,23 @@ function CommunicationThreadEditor(props) {
                     </Button>
                 )}
                 <Tooltip title={t('Attach files')} placement="top">
-                    <input
-                        id="file-input"
-                        type="file"
-                        multiple
-                        style={{ display: 'none' }}
-                        onChange={(e) => props.onFileChange(e)}
-                    />
-                    <IconButton
-                        color="primary"
-                        aria-label="attach file"
-                        component="span"
-                        onClick={handleClick}
-                    >
-                        <AttachFileIcon />
-                    </IconButton>
+                    <span>
+                        <input
+                            id="file-input"
+                            type="file"
+                            multiple
+                            style={{ display: 'none' }}
+                            onChange={(e) => props.onFileChange(e)}
+                        />
+                        <IconButton
+                            color="primary"
+                            aria-label="attach file"
+                            component="span"
+                            onClick={handleClick}
+                        >
+                            <AttachFileIcon />
+                        </IconButton>
+                    </span>
                 </Tooltip>
                 {appConfig.AIEnable && is_TaiGer_role(user) && (
                     <IconButton

@@ -9,12 +9,7 @@ const apiGatewayUrl = isProd()
   ? 'https://prod.taigerconsultancy-portal.com/analyze'
   : 'https://beta.taigerconsultancy-portal.com/analyze'; // Replace with your API Gateway URL
 
-const apiGatewayHelloUrl = isProd()
-  ? 'https://prod.taigerconsultancy-portal.com/hello'
-  : 'https://beta.taigerconsultancy-portal.com/hello'; // Replace with your API Gateway URL
-
 module.exports = {
   roleToAssumeForCourseAnalyzerAPIG,
-  apiGatewayUrl,
-  apiGatewayHelloUrl
+  apiGatewayUrl
 };

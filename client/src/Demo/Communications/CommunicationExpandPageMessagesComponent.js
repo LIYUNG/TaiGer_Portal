@@ -68,6 +68,7 @@ function CommunicationExpandPageMessagesComponent({ data, student }) {
     const { res_modal_status, res_modal_message } =
         communicationExpandPageComponentState;
 
+    console.log('layer2')
     return (
         <Fragment>
             <Grid container>

@@ -78,5 +78,6 @@ module.exports = {
     ''
   ),
   AWS_S3_BUCKET_NAME: env('AWS_S3_BUCKET_NAME', ''),
+  AWS_LOG_GROUP: env('AWS_S3_BUCKET_NAME', 'taiger-portal-dev'),
   OPENAI_API_KEY: env('OPENAI_API_KEY', '')
 };

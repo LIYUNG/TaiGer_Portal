@@ -17,4 +17,4 @@ RUN npm install --production
 EXPOSE 3000
 
 USER node
-CMD [ "npm", "run-script", "prod" ]
+CMD [ "npm", "run", "prod" ]

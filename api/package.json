@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
+    "prod": "NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json index.js",
     "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles --coverage --watch",
     "test:ci": "cross-env NODE_ENV=test jest --ci --watchAll=false",

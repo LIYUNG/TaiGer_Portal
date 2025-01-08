@@ -19,7 +19,8 @@ const {
 const {
   decryptCookieMiddleware
 } = require('./middlewares/decryptCookieMiddleware');
-
+console.log(process.env.NODE_ENV);
+console.log(process.env.AWS_LOG_GROUP);
 const app = express();
 app.set('trust proxy', 1);
 app.use(helmet.contentSecurityPolicy());

@@ -63,17 +63,8 @@ const launch = async () => {
       return;
     }
   }
-  if (isProd()) {
-    if (
-      !AWS_S3_BUCKET_NAME.includes('production') ||
-      !AWS_S3_PUBLIC_BUCKET_NAME.includes('production')
-    ) {
-      logger.error('S3 bucket name not consistent for Prod');
-      return;
-    }
-  }
 
-  // setInterval(foo, 1000 * 100);
+  // // setInterval(foo, 1000 * 100);
 
   //   *    *    *    *    *    *
   //   ┬    ┬    ┬    ┬    ┬    ┬

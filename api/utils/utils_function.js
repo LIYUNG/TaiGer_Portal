@@ -1258,7 +1258,7 @@ const ProcessThread = (thread) => {
 
 const FindIntervalInCommunicationsAndSave = asyncHandler(async (req) => {
   try {
-    // TODO: active student's message only
+    // TODO: active student's message only (should already done, please check GroupCommunicationByStudent)
     const groupCommunication = await GroupCommunicationByStudent(req);
     const bulkOps = [];
 

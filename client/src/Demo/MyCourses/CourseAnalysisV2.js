@@ -61,6 +61,22 @@ import { appConfig } from '../../config';
 import { green } from '@mui/material/colors';
 import i18next from 'i18next';
 
+const acquiredECTS = (table) => {
+    return table[table.length - 1].credits;
+};
+
+const requiredECTS = (table) => {
+    return table[table.length - 1].requiredECTS;
+};
+
+const satisfiedRequirement = (table) => {
+    return acquiredECTS(table) >= requiredECTS(table);
+};
+
+const getMaxScoreECTS = (table) => {
+    return table[table.length - 1].maxScore || 0;
+};
+
 export const EstimationCard = ({
     round,
     sortedCourses,
@@ -354,22 +370,6 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
     const suggestedCourses = sheet.suggestion;
     const academic_background = student?.academic_background;
 
-    const acquiredECTS = (table) => {
-        return table[table.length - 1].credits;
-    };
-
-    const requiredECTS = (table) => {
-        return table[table.length - 1].requiredECTS;
-    };
-
-    const satisfiedRequirement = (table) => {
-        return acquiredECTS(table) >= requiredECTS(table);
-    };
-
-    const getMaxScoreECTS = (table) => {
-        return table[table.length - 1].maxScore || 0;
-    };
-
     return (
         <Grid container spacing={1}>
             <Grid item xs={12} md={6}>
@@ -619,6 +619,81 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
         </Grid>
     );
 };
+
+const allRequiredECTSCrossPrograms = (programSheetsArray) => {
+    let sum = 0;
+    for (let i = 0; i < programSheetsArray?.length; i += 1) {
+        const sortedCourses = programSheetsArray[i]?.value?.sorted;
+        sum += Object.keys(sortedCourses)
+            ?.map((category) =>
+                category !== 'Others'
+                    ? requiredECTS(sortedCourses[category])
+                    : 0
+            )
+            ?.reduce((sum, i) => sum + i, 0);
+    }
+    return sum;
+};
+
+const allAcquiredECTSCrossPrograms = (programSheetsArray) => {
+    let sum = 0;
+    for (let i = 0; i < programSheetsArray?.length; i += 1) {
+        const sortedCourses = programSheetsArray[i]?.value?.sorted;
+        sum += Object.keys(sortedCourses)
+            ?.map((category) =>
+                category !== 'Others'
+                    ? acquiredECTS(sortedCourses[category]) >
+                      requiredECTS(sortedCourses[category])
+                        ? requiredECTS(sortedCourses[category])
+                        : acquiredECTS(sortedCourses[category])
+                    : 0
+            )
+            ?.reduce((sum, i) => sum + i, 0);
+    }
+    return sum;
+};
+
+// [
+//     Object.keys(
+//         programSheetsArray.map((programSheet) => programSheet?.sorted)
+//     ).filter((k) => k !== 'Others')
+// ].map((key) => sheets.reduce((sum, row) => sum + row[key], 0));
+
+export const GeneralCourseAnalysisComponent = ({ sheets, student }) => {
+    console.log(student);
+    console.log(sheets);
+    const programSheetsArray = Object.entries(sheets)
+        .filter(([key]) => !['General'].includes(key))
+        .map(([key, value]) => ({ key, value }));
+    console.log(programSheetsArray);
+    console.log(allRequiredECTSCrossPrograms(programSheetsArray));
+    console.log(allAcquiredECTSCrossPrograms(programSheetsArray));
+    const matchingOverallECTSPercentage =
+        allRequiredECTSCrossPrograms(programSheetsArray) > 0
+            ? (allAcquiredECTSCrossPrograms(programSheetsArray) * 100) /
+              allRequiredECTSCrossPrograms(programSheetsArray)
+            : 0;
+    const numPrograms = Object.entries(sheets).filter(
+        ([key]) => !['General'].includes(key)
+    )?.length;
+    console.log(matchingOverallECTSPercentage.toFixed(0)); // 0.xx
+    console.log(numPrograms);
+    // Convert to key-value pair array excluding specific fields
+
+    return (
+        <Grid container spacing={1}>
+            <Grid item xs={12} md={6}>
+                <Card sx={{ p: 2 }}>Analysed Programs {numPrograms}</Card>
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <Card sx={{ p: 2 }}>
+                    Overall Matching Score: {matchingOverallECTSPercentage.toFixed(0)}%
+                </Card>
+            </Grid>
+        </Grid>
+    );
+};
+
 export default function CourseAnalysisV2() {
     const { user_id } = useParams();
     const { t } = useTranslation();
@@ -847,6 +922,12 @@ export default function CourseAnalysisV2() {
                     </MenuItem>
                 ))}
             </Select>
+            {sheetName === 'General' && (
+                <GeneralCourseAnalysisComponent
+                    sheets={statedata.sheets}
+                    student={statedata.student}
+                />
+            )}
             {sheetName !== 'General' && (
                 <CourseAnalysisComponent
                     sheet={statedata.sheets?.[sheetName]}

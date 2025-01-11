@@ -230,10 +230,6 @@ function MessageCard(props) {
                 <AccordionDetails
                     in={props.accordionKeys[props.idx] === props.idx}
                 >
-                    {/* {JSON.stringify(messageState.editorState)} */}
-                    {/* <section>
-              <Output data={messageState.editorState} />
-            </section> */}
                     <EditorSimple
                         holder={`${props.message._id.toString()}`}
                         readOnly={true}

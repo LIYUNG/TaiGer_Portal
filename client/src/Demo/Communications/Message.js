@@ -329,7 +329,7 @@ function Message(props) {
                                     .map((usr) => (
                                         <Tooltip
                                             title={`Read by ${usr?.firstname} ${usr?.lastname} at ${convertDate(props.message.timeStampReadBy?.[usr._id?.toString()])}`}
-                                            key={user._id?.toString()}
+                                            key={usr._id?.toString()}
                                         >
                                             <Avatar
                                                 {...stringAvatar(

@@ -414,6 +414,21 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
     const suggestedCourses = sheet.suggestion;
     const academic_background = student?.academic_background;
 
+    const requiredects = Object.keys(sortedCourses).reduce(
+        (sum, category) => sum + requiredECTS(sortedCourses[category]),
+        0
+    );
+    const acquiredects = Object.keys(sortedCourses).reduce(
+        (sum, category) =>
+            sum +
+            (satisfiedRequirement(sortedCourses[category])
+                ? requiredECTS(sortedCourses[category])
+                : acquiredECTS(sortedCourses[category])),
+        0
+    );
+    const matchingOverallECTSPercentage =
+        requiredects > 0 ? (acquiredects * 100) / requiredects : 0;
+
     return (
         <Grid container spacing={1}>
             <Grid item xs={12} md={6}>
@@ -601,6 +616,31 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                 ))}
             </Grid>
             <Grid item xs={12} md={6}>
+                <Card sx={{ height: 300, mb: 1 }}>
+                    <CardHeader
+                        title={'Course Matching Score'}
+                        subheader={
+                            'Course requirement covergage for this program'
+                        }
+                    />{' '}
+                    <CardContent>
+                        <Stack spacing={1} direction="row" alignItems="center">
+                            <Gauge
+                                {...settings}
+                                value={matchingOverallECTSPercentage.toFixed(0)}
+                                startAngle={-110}
+                                endAngle={110}
+                                sx={{
+                                    [`& .${gaugeClasses.valueText}`]: {
+                                        fontSize: 40,
+                                        transform: 'translate(0px, 0px)'
+                                    }
+                                }}
+                                text={({ value }) => `${value}%`}
+                            />
+                        </Stack>
+                    </CardContent>
+                </Card>
                 {firstRoundConsidered && firstRoundConsidered?.length > 0 && (
                     <EstimationCard
                         round={firstRoundConsidered}
@@ -667,6 +707,7 @@ export const GeneralCourseAnalysisComponent = ({ sheets, student }) => {
     const programSheetsArray = Object.entries(sheets)
         .filter(([key]) => !['General'].includes(key))
         .map(([key, value]) => ({ key, value }));
+    console.log(programSheetsArray);
     const generalSheetKeysArray = Object.keys(sheets.General);
     const myGermanGPA = Bayerische_Formel(
         student?.academic_background?.university?.Highest_GPA_Uni,
@@ -685,7 +726,7 @@ export const GeneralCourseAnalysisComponent = ({ sheets, student }) => {
     return (
         <Grid container spacing={1}>
             <Grid item xs={12} md={4}>
-                <Card sx={{ p: 2, height: 300 }}>
+                <Card sx={{ height: 250 }}>
                     <CardHeader title={'Analysed Programs'} />
                     <CardContent>
                         <Stack
@@ -699,7 +740,7 @@ export const GeneralCourseAnalysisComponent = ({ sheets, student }) => {
                 </Card>
             </Grid>
             <Grid item xs={12} md={4}>
-                <Card sx={{ p: 2, height: 300 }}>
+                <Card sx={{ height: 250 }}>
                     <CardHeader title={'Overall Matching Score'} />{' '}
                     <CardContent>
                         <Stack spacing={1} direction="row" alignItems="center">
@@ -721,7 +762,7 @@ export const GeneralCourseAnalysisComponent = ({ sheets, student }) => {
                 </Card>
             </Grid>
             <Grid item xs={12} md={4}>
-                <Card sx={{ p: 2, height: 300 }}>
+                <Card sx={{ height: 250 }}>
                     <CardContent>
                         <Typography>
                             My GPA:{' '}

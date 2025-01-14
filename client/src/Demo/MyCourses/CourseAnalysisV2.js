@@ -669,9 +669,9 @@ export const GeneralCourseAnalysisComponent = ({ sheets, student }) => {
         .map(([key, value]) => ({ key, value }));
     const generalSheetKeysArray = Object.keys(sheets.General);
     const myGermanGPA = Bayerische_Formel(
-        student.academic_background?.university?.Highest_GPA_Uni,
-        student.academic_background?.university?.Passing_GPA_Uni,
-        student.academic_background?.university?.My_GPA_Uni
+        student?.academic_background?.university?.Highest_GPA_Uni,
+        student?.academic_background?.university?.Passing_GPA_Uni,
+        student?.academic_background?.university?.My_GPA_Uni
     );
     const matchingOverallECTSPercentage =
         allRequiredECTSCrossPrograms(programSheetsArray) > 0
@@ -726,7 +726,7 @@ export const GeneralCourseAnalysisComponent = ({ sheets, student }) => {
                         <Typography>
                             My GPA:{' '}
                             {
-                                student.academic_background?.university
+                                student?.academic_background?.university
                                     ?.My_GPA_Uni
                             }
                         </Typography>

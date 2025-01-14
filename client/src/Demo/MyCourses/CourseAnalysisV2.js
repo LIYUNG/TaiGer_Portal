@@ -26,6 +26,7 @@ import {
     IconButton,
     ListItem
 } from '@mui/material';
+import { Gauge, gaugeClasses } from '@mui/x-charts/Gauge';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useTranslation } from 'react-i18next';
@@ -61,6 +62,12 @@ import { appConfig } from '../../config';
 import { green } from '@mui/material/colors';
 import i18next from 'i18next';
 
+const settings = {
+    display: 'flex',
+    width: 150,
+    height: 150
+};
+
 const acquiredECTS = (table) => {
     return table[table.length - 1].credits;
 };
@@ -75,6 +82,43 @@ const satisfiedRequirement = (table) => {
 
 const getMaxScoreECTS = (table) => {
     return table[table.length - 1].maxScore || 0;
+};
+
+const CourseTable = ({ data = [], tableKey }) => {
+    return (
+        <TableContainer style={{ overflowX: 'auto' }}>
+            <Table size="small">
+                <TableHead>
+                    <TableRow>
+                        <TableCell>
+                            {i18next.t('Course', {
+                                ns: 'common'
+                            })}
+                        </TableCell>
+                        <TableCell>
+                            {i18next.t('Credits', {
+                                ns: 'common'
+                            })}
+                        </TableCell>
+                        <TableCell>
+                            {i18next.t('Grades', {
+                                ns: 'common'
+                            })}
+                        </TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {data.map((course, index) => (
+                        <TableRow key={index}>
+                            <TableCell>{course[tableKey]}</TableCell>
+                            <TableCell>{course.credits}</TableCell>
+                            <TableCell>{course.grades}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
 };
 
 export const EstimationCard = ({
@@ -525,46 +569,10 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                                         </Stack>
                                     </Box>
                                 </Box>
-                                <TableContainer style={{ overflowX: 'auto' }}>
-                                    <Table size="small">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>
-                                                    {i18next.t('Course', {
-                                                        ns: 'common'
-                                                    })}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {i18next.t('Credits', {
-                                                        ns: 'common'
-                                                    })}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {i18next.t('Grades', {
-                                                        ns: 'common'
-                                                    })}
-                                                </TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {sortedCourses[category]
-                                                ?.slice(0, -1)
-                                                .map((course, index) => (
-                                                    <TableRow key={index}>
-                                                        <TableCell>
-                                                            {course[category]}
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            {course.credits}
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            {course.grades}
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                <CourseTable
+                                    data={sortedCourses[category]?.slice(0, -1)}
+                                    tableKey={category}
+                                />
                             </Box>
                         )}
 
@@ -577,7 +585,9 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                                     gap={2}
                                 >
                                     <Typography variant="h6">
-                                        Suggested Courses
+                                        {i18next.t('Suggested Courses', {
+                                            ns: 'courses'
+                                        })}
                                     </Typography>
                                     <Typography variant="body1">
                                         {suggestedCourses[category]
@@ -653,21 +663,16 @@ const allAcquiredECTSCrossPrograms = (programSheetsArray) => {
     return sum;
 };
 
-// [
-//     Object.keys(
-//         programSheetsArray.map((programSheet) => programSheet?.sorted)
-//     ).filter((k) => k !== 'Others')
-// ].map((key) => sheets.reduce((sum, row) => sum + row[key], 0));
-
 export const GeneralCourseAnalysisComponent = ({ sheets, student }) => {
-    console.log(student);
-    console.log(sheets);
     const programSheetsArray = Object.entries(sheets)
         .filter(([key]) => !['General'].includes(key))
         .map(([key, value]) => ({ key, value }));
-    console.log(programSheetsArray);
-    console.log(allRequiredECTSCrossPrograms(programSheetsArray));
-    console.log(allAcquiredECTSCrossPrograms(programSheetsArray));
+    const generalSheetKeysArray = Object.keys(sheets.General);
+    const myGermanGPA = Bayerische_Formel(
+        student.academic_background?.university?.Highest_GPA_Uni,
+        student.academic_background?.university?.Passing_GPA_Uni,
+        student.academic_background?.university?.My_GPA_Uni
+    );
     const matchingOverallECTSPercentage =
         allRequiredECTSCrossPrograms(programSheetsArray) > 0
             ? (allAcquiredECTSCrossPrograms(programSheetsArray) * 100) /
@@ -676,20 +681,72 @@ export const GeneralCourseAnalysisComponent = ({ sheets, student }) => {
     const numPrograms = Object.entries(sheets).filter(
         ([key]) => !['General'].includes(key)
     )?.length;
-    console.log(matchingOverallECTSPercentage.toFixed(0)); // 0.xx
-    console.log(numPrograms);
-    // Convert to key-value pair array excluding specific fields
 
     return (
         <Grid container spacing={1}>
-            <Grid item xs={12} md={6}>
-                <Card sx={{ p: 2 }}>Analysed Programs {numPrograms}</Card>
-            </Grid>
-            <Grid item xs={12} md={6}>
-                <Card sx={{ p: 2 }}>
-                    Overall Matching Score: {matchingOverallECTSPercentage.toFixed(0)}%
+            <Grid item xs={12} md={4}>
+                <Card sx={{ p: 2, height: 300 }}>
+                    <CardHeader title={'Analysed Programs'} />
+                    <CardContent>
+                        <Stack
+                            spacing={1}
+                            direction="column"
+                            alignItems="center"
+                        >
+                            <Typography variant="h3">{numPrograms}</Typography>
+                        </Stack>
+                    </CardContent>
                 </Card>
             </Grid>
+            <Grid item xs={12} md={4}>
+                <Card sx={{ p: 2, height: 300 }}>
+                    <CardHeader title={'Overall Matching Score'} />{' '}
+                    <CardContent>
+                        <Stack spacing={1} direction="row" alignItems="center">
+                            <Gauge
+                                {...settings}
+                                value={matchingOverallECTSPercentage.toFixed(0)}
+                                startAngle={-110}
+                                endAngle={110}
+                                sx={{
+                                    [`& .${gaugeClasses.valueText}`]: {
+                                        fontSize: 40,
+                                        transform: 'translate(0px, 0px)'
+                                    }
+                                }}
+                                text={({ value }) => `${value}%`}
+                            />
+                        </Stack>
+                    </CardContent>
+                </Card>
+            </Grid>
+            <Grid item xs={12} md={4}>
+                <Card sx={{ p: 2, height: 300 }}>
+                    <CardContent>
+                        <Typography>
+                            My GPA:{' '}
+                            {
+                                student.academic_background?.university
+                                    ?.My_GPA_Uni
+                            }
+                        </Typography>
+                        <Typography>My German GPA: {myGermanGPA}</Typography>
+                    </CardContent>
+                </Card>
+            </Grid>
+            {generalSheetKeysArray?.map((keyName) => (
+                <Grid item xs={12} md={12} key={keyName}>
+                    <Card sx={{ p: 2 }}>
+                        <Typography>
+                            {sheets.General?.[keyName][0][keyName]}
+                        </Typography>
+                        <CourseTable
+                            data={sheets.General?.[keyName] || []}
+                            tableKey={'courses'}
+                        />
+                    </Card>
+                </Grid>
+            ))}
         </Grid>
     );
 };
@@ -882,9 +939,6 @@ export default function CourseAnalysisV2() {
             </Alert>
             <Typography variant="body1" sx={{ pt: 1 }}>
                 {t('Course Analysis banner', { ns: 'courses' })}
-            </Typography>
-            <Typography variant="body1" sx={{ py: 1 }}>
-                {t('Course Analysis description', { ns: 'courses' })}
             </Typography>
             <Button
                 size="small"

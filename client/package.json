@@ -81,7 +81,6 @@
         "invalid": "aws cloudfront create-invalidation --distribution-id E31WYFO0IE8GZL --paths \"/*\"",
         "prod": "npm run-script build && npm run-script deploy && npm run-script invalid",
         "format": "eslint --fix --cache src/** --ignore-pattern src/build --ignore-pattern src/i18n --ignore-pattern src/**/*css && prettier --write --cache src/** --ignore-path .prettierignore",
-        "prebuild": "npm run-script format",
         "translations-scan": "i18next-scanner --config i18next-scanner.config.engine.js",
         "test": "react-scripts test",
         "test:ci": "react-scripts test --ci --watchAll=false",

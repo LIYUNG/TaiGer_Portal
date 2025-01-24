@@ -31,11 +31,10 @@ function FileItem(props) {
             <span>
                 <Link
                     underline="hover"
-                    to={`${BASE_URL}/api/document-threads/${
-                        props.documentsthreadId
-                    }/${props.message._id.toString()}/${
-                        file.path.replace(/\\/g, '/').split('/')[2]
-                    }`}
+                    to={`${BASE_URL}/api/document-threads/${file.path.replace(
+                        /\\/g,
+                        '/'
+                    )}`}
                     component={LinkDom}
                     target="_blank"
                 >

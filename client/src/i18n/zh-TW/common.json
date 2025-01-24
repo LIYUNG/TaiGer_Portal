@@ -383,6 +383,7 @@
     "essay-responsibility-declaration-signature": "您的 {{tenant}}",
     "explanation": "說明",
     "file-upload-notice": "每個檔案都有注意事項。請務必上傳文件前，點選各文件名稱旁的說明連結圖示，並查看文件要求，照著我們的要求上傳，顧問會再檢查文件是否沒問題。",
+    "files": "檔案",
     "hello-students": "親愛的{{tenant}}同學您好",
     "i-declare-without-help-of-ai": "我 {{studentFullName}} 確認 {{docName} 這份文件皆無用 AI 輔助完成，我同意此條款並對編修後的內容全權負責。",
     "loading": "載入中",

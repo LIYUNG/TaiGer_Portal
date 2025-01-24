@@ -109,7 +109,6 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
             file: null,
             componentRef: React.createRef(),
             isLoaded: false,
-            isFilesListOpen: false,
             showEditorPage: false,
             isSubmissionLoaded: true,
             thread: null,
@@ -189,12 +188,6 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                 res_status: 500
             }));
         }
-
-        document.addEventListener('mousedown', handleClickOutside);
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
     }, [data, error]);
 
     const closeSetAsFinalFileModelWindow = () => {
@@ -567,25 +560,6 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
         }));
     };
 
-    const handleClickOutside = (event) => {
-        if (
-            docModificationThreadPageState.componentRef.current &&
-            !docModificationThreadPageState.componentRef.current.contains(
-                event.target
-            )
-        ) {
-            // Clicked outside the component, trigger props.closed
-            handleCloseFileList();
-        }
-    };
-
-    const handleOpenFileList = () => {
-        setDocModificationThreadPageState((prevState) => ({
-            ...prevState,
-            isFilesListOpen: true
-        }));
-    };
-
     const setEditorModalhide = () => {
         setDocModificationThreadPageState((prevState) => ({
             ...prevState,
@@ -681,16 +655,8 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
         );
     };
 
-    const handleCloseFileList = () => {
-        setDocModificationThreadPageState((prevState) => ({
-            ...prevState,
-            isFilesListOpen: false
-        }));
-    };
-
     const {
         isLoaded,
-        isFilesListOpen,
         isSubmissionLoaded,
         conflict_list,
         threadAuditLog,
@@ -844,14 +810,6 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                             {t('discussion-thread', { ns: 'common' })}
                         </Typography>
                         <span style={{ float: 'right' }}>
-                            <Button
-                                variant="outlined"
-                                size="small"
-                                color="secondary"
-                                onClick={handleOpenFileList}
-                            >
-                                {t('View all Files')}
-                            </Button>
                             {docModificationThreadPageState.expand ? (
                                 <Button
                                     color="secondary"
@@ -892,28 +850,6 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                     </Box>
                 )}
             </Box>
-            <Dialog
-                open={isFilesListOpen}
-                onClose={handleCloseFileList}
-                // ref={docModificationThreadPageState.componentRef}
-            >
-                <DialogTitle>Files Overview</DialogTitle>
-                <DialogContent>
-                    <FilesList
-                        documentsthreadId={
-                            docModificationThreadPageState.documentsthreadId
-                        }
-                        accordionKeys={
-                            docModificationThreadPageState.accordionKeys
-                        }
-                        singleExpandtHandler={singleExpandtHandler}
-                        thread={docModificationThreadPageState.thread}
-                        isLoaded={docModificationThreadPageState.isLoaded}
-                        user={user}
-                        onDeleteSingleMessage={onDeleteSingleMessage}
-                    />
-                </DialogContent>
-            </Dialog>
             {docModificationThreadPageState.thread.isFinalVersion && <TopBar />}
             <Tabs
                 value={value}
@@ -927,7 +863,8 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                     label={t('discussion-thread', { ns: 'common' })}
                     {...a11yProps(0)}
                 />
-                <Tab label={t('Audit', { ns: 'common' })} {...a11yProps(1)} />
+                <Tab label={t('files', { ns: 'common' })} {...a11yProps(1)} />
+                <Tab label={t('Audit', { ns: 'common' })} {...a11yProps(2)} />
             </Tabs>
             <CustomTabPanel value={value} index={0}>
                 <Card sx={{ p: 2 }}>
@@ -1534,9 +1471,22 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                     ))}
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
+                Files Overview
+                <FilesList
+                    documentsthreadId={
+                        docModificationThreadPageState.documentsthreadId
+                    }
+                    accordionKeys={docModificationThreadPageState.accordionKeys}
+                    singleExpandtHandler={singleExpandtHandler}
+                    thread={docModificationThreadPageState.thread}
+                    isLoaded={docModificationThreadPageState.isLoaded}
+                    user={user}
+                    onDeleteSingleMessage={onDeleteSingleMessage}
+                />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={2}>
                 <Audit audit={threadAuditLog} />
             </CustomTabPanel>
-
             <Dialog
                 open={
                     (docModificationThreadPageState.thread.file_type ===

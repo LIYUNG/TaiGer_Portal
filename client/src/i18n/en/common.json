@@ -384,6 +384,7 @@
     "essay-responsibility-declaration-signature": "Sincerely,  {{tenant}}",
     "explanation": "Explanation",
     "file-upload-notice": "Each document has specific requirements. Before uploading, click the description link icon next to each file name to view the requirements, and upload accordingly. Our agents will review the files.",
+    "files": "Files",
     "hello-students": "Dear {{tenant}} customers,",
     "i-declare-without-help-of-ai": "I {{studentFullName}} hereby declare that {{docName}} has been prepared without the assistance of generative AI. I accept the terms and conditions and take full responsibility for any decisions made by the admission committee.",
     "loading": "Loading, please wait...",

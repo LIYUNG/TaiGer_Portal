@@ -37,6 +37,74 @@ const formatDate = (date) => {
   return `${year}-${month}-${day}-${hours}-${minutes}-${seconds}`;
 };
 
+const fileFilter1 = (req, file, cb) => {
+  if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+    return cb(
+      new ErrorResponse(
+        415,
+        'Only .xls .xlsx .xlsm .pdf .png, .jpg and .jpeg .docx format are allowed!'
+      )
+    );
+  }
+  const fileSize = parseInt(req.headers['content-length'], 10);
+  if (fileSize > MAX_DOC_FILE_SIZE_MB) {
+    return cb(
+      new ErrorResponse(
+        413,
+        `您的檔案不得超過 ${
+          MAX_DOC_FILE_SIZE_MB / (1024 * 1024)
+        } MB / File size is limited to ${
+          MAX_DOC_FILE_SIZE_MB / (1024 * 1024)
+        } MB!`
+      )
+    );
+  }
+  cb(null, true);
+};
+
+const fileFilter2 = (req, file, cb) => {
+  if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+    return cb(
+      new ErrorResponse(
+        415,
+        'Only .xls .xlsx .xlsm .pdf .png, .jpg and .jpeg .docx format are allowed!'
+      )
+    );
+  }
+  const fileSize = parseInt(req.headers['content-length'], 10);
+  if (fileSize > MAX_FILE_SIZE_MB) {
+    return cb(
+      new ErrorResponse(
+        413,
+        `您的檔案不得超過 ${
+          MAX_FILE_SIZE_MB / (1024 * 1024)
+        } MB / File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+      )
+    );
+  }
+  cb(null, true);
+};
+
+const fileImageFilter = (req, file, cb) => {
+  if (!ALLOWED_MIME_IMAGE_TYPES.includes(file.mimetype)) {
+    return cb(
+      new ErrorResponse(415, 'Only .png, .jpg and .jpeg format are allowed')
+    );
+  }
+  const fileSize = parseInt(req.headers['content-length'], 10);
+  if (fileSize > MAX_FILE_SIZE_MB) {
+    return cb(
+      new ErrorResponse(
+        413,
+        `您的檔案不得超過 ${
+          MAX_FILE_SIZE_MB / (1024 * 1024)
+        } MB / File size is limited to ${MAX_FILE_SIZE_MB / (1024 * 1024)} MB!`
+      )
+    );
+  }
+  cb(null, true);
+};
+
 // Template file upload
 const template_storage_s3 = multerS3({
   s3: s3Client,
@@ -61,31 +129,7 @@ const template_storage_s3 = multerS3({
 const upload_template_s3 = multer({
   storage: template_storage_s3,
   limits: { fileSize: MAX_FILE_SIZE_MB },
-  fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      return cb(
-        new ErrorResponse(
-          415,
-          'Only .xls .xlsx .xlsm .pdf .png, .jpg and .jpeg .docx format are allowed'
-        )
-      );
-    }
-
-    const fileSize = parseInt(req.headers['content-length'], 10);
-    if (fileSize > MAX_FILE_SIZE_MB) {
-      return cb(
-        new ErrorResponse(
-          413,
-          `您的檔案不得超過 ${
-            MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${
-            MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB!`
-        )
-      );
-    }
-    cb(null, true);
-  }
+  fileFilter: fileFilter2
 });
 
 // VPD file upload
@@ -269,57 +313,13 @@ const upload_admission_letter_s3 = multer({
 const upload_doc_image_s3 = multer({
   storage: doc_image_s3,
   limits: { fileSize: MAX_FILE_SIZE_MB },
-  fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_IMAGE_TYPES.includes(file.mimetype)) {
-      return cb(
-        new ErrorResponse(415, 'Only .png, .jpg and .jpeg format are allowed')
-      );
-    }
-    const fileSize = parseInt(req.headers['content-length'], 10);
-    if (fileSize > MAX_FILE_SIZE_MB) {
-      return cb(
-        new ErrorResponse(
-          413,
-          `您的檔案不得超過 ${
-            MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${
-            MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB!`
-        )
-      );
-    }
-    cb(null, true);
-  }
+  fileFilter: fileImageFilter
 });
 
 const upload_doc_docs_s3 = multer({
   storage: doc_docs_s3,
   limits: { fileSize: MAX_FILE_SIZE_MB },
-  fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      return cb(
-        new ErrorResponse(
-          415,
-          'Only .xls .xlsx .xlsm .pdf .png, .jpg and .jpeg .docx format are allowed'
-        )
-      );
-    }
-
-    const fileSize = parseInt(req.headers['content-length'], 10);
-    if (fileSize > MAX_FILE_SIZE_MB) {
-      return cb(
-        new ErrorResponse(
-          413,
-          `您的檔案不得超過 ${
-            MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${
-            MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB!`
-        )
-      );
-    }
-    cb(null, true);
-  }
+  fileFilter: fileFilter2
 });
 
 const upload_vpd_s3 = multer({
@@ -555,114 +555,25 @@ const storage_messagesthread_image_s3 = multerS3({
 const upload_messagesticket_file_s3 = multer({
   storage: storage_messagesticket_file_s3,
   limits: { fileSize: MAX_DOC_FILE_SIZE_MB },
-  fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      return cb(
-        new ErrorResponse(
-          415,
-          'Only .xls .xlsx .xlsm .pdf .png, .jpg and .jpeg .docx format are allowed'
-        )
-      );
-    }
-    const fileSize = parseInt(req.headers['content-length'], 10);
-    if (fileSize > MAX_DOC_FILE_SIZE_MB) {
-      return cb(
-        new ErrorResponse(
-          413,
-          `您的檔案不得超過 ${
-            MAX_DOC_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${
-            MAX_DOC_FILE_SIZE_MB / (1024 * 1024)
-          } MB!`
-        )
-      );
-    }
-    cb(null, true);
-  }
+  fileFilter: fileFilter1
 });
 
 const upload_messagesthread_file_s3 = multer({
   storage: storage_messagesthread_file_s3,
   limits: { fileSize: MAX_DOC_FILE_SIZE_MB },
-  fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      return cb(
-        new ErrorResponse(
-          415,
-          'Only .xls .xlsx .xlsm .pdf .png, .jpg and .jpeg .docx format are allowed'
-        )
-      );
-    }
-    const fileSize = parseInt(req.headers['content-length'], 10);
-    if (fileSize > MAX_DOC_FILE_SIZE_MB) {
-      return cb(
-        new ErrorResponse(
-          413,
-          `您的檔案不得超過 ${
-            MAX_DOC_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${
-            MAX_DOC_FILE_SIZE_MB / (1024 * 1024)
-          } MB!`
-        )
-      );
-    }
-    cb(null, true);
-  }
+  fileFilter: fileFilter1
 });
 
 const upload_messagesChat_file_s3 = multer({
   storage: storage_messagesChat_file_s3,
   limits: { fileSize: MAX_DOC_FILE_SIZE_MB },
-  fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      return cb(
-        new ErrorResponse(
-          415,
-          'Only .xls .xlsx .xlsm .pdf .png, .jpg and .jpeg .docx format are allowed'
-        )
-      );
-    }
-    const fileSize = parseInt(req.headers['content-length'], 10);
-    if (fileSize > MAX_DOC_FILE_SIZE_MB) {
-      return cb(
-        new ErrorResponse(
-          413,
-          `您的檔案不得超過 ${
-            MAX_DOC_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${
-            MAX_DOC_FILE_SIZE_MB / (1024 * 1024)
-          } MB!`
-        )
-      );
-    }
-    cb(null, true);
-  }
+  fileFilter: fileFilter1
 });
 
 const upload_messagesthread_image_s3 = multer({
   storage: storage_messagesthread_image_s3,
   limits: { fileSize: MAX_FILE_SIZE_MB },
-  fileFilter: (req, file, cb) => {
-    if (!ALLOWED_MIME_IMAGE_TYPES.includes(file.mimetype)) {
-      return cb(
-        new ErrorResponse(415, 'Only .png, .jpg and .jpeg format are allowed')
-      );
-    }
-    const fileSize = parseInt(req.headers['content-length'], 10);
-    if (fileSize > MAX_FILE_SIZE_MB) {
-      return cb(
-        new ErrorResponse(
-          413,
-          `您的檔案不得超過 ${
-            MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${
-            MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB!`
-        )
-      );
-    }
-    cb(null, true);
-  }
+  fileFilter: fileImageFilter
 });
 
 const storage = multer.diskStorage({

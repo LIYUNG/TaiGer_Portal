@@ -188,9 +188,29 @@ const listS3ObjectsV2 = async ({ bucketName, Prefix }) => {
   }
 };
 
+async function uploadJsonToS3(responseJson, bucketName, fileName) {
+  try {
+    // Prepare the file content
+    const jsonData = JSON.stringify(responseJson);
+
+    // Upload to S3
+    const result = await putS3Object({
+      bucketName,
+      key: fileName,
+      Body: jsonData,
+      ContentType: 'application/json'
+    });
+    console.log('File uploaded successfully');
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   s3Client,
   putS3Object,
+  uploadJsonToS3,
   getS3Object,
   deleteS3Object,
   deleteS3Objects,

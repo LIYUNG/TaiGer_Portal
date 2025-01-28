@@ -9,7 +9,7 @@ const { asyncHandler } = require('../middlewares/error-handler');
 const logger = require('../services/logger');
 const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
 const { font } = require('../utils/NotoSansTC-VariableFont_wght-normal');
-const { getS3Object } = require('../aws/s3');
+const { getS3Object, uploadJsonToS3 } = require('../aws/s3');
 const {
   roleToAssumeForCourseAnalyzerAPIG,
   apiGatewayUrl
@@ -42,20 +42,23 @@ const WidgetProcessTranscriptV2 = asyncHandler(async (req, res, next) => {
       courses_taiger_guided: '"[]"',
       requirement_ids: JSON.stringify(requirementIds)
     });
-
-    const metadata = {
-      analysis: { isAnalysed: false, path: '', updatedAt: new Date() }
-    };
-    metadata.analysis.isAnalysed = true;
-    metadata.analysis.path = path.join(
-      studentId,
-      `analysed_transcript_${student_name}.xlsx`
+    console.log('response: ', response);
+    await uploadJsonToS3(
+      response.result,
+      AWS_S3_BUCKET_NAME,
+      `${studentId}/analysed_transcript_${student_name}.json`
     );
-
+    const metadata = {
+      analysis: { isAnalysedV2: false, pathV2: '', updatedAt: new Date() }
+    };
+    metadata.analysis.isAnalysedV2 = true;
     const fileKey = path
       .join(studentId, `analysed_transcript_${student_name}.json`)
       .replace(/\\/g, '/');
 
+    metadata.analysis.pathV2 = fileKey;
+
+    // TODO: update json to S3
     const success = one_month_cache.del(fileKey);
     if (success === 1) {
       logger.info('cache key deleted successfully');

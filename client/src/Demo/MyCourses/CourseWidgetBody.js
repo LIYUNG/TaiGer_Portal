@@ -547,7 +547,7 @@ export default function CourseWidgetBody({ programRequirements }) {
                         />
                         <Typography>
                             {statedata.analysis &&
-                            statedata.analysis.isAnalysed ? (
+                            statedata.analysis.isAnalysedV2 ? (
                                 <>
                                     <Button
                                         onClick={onDownload}

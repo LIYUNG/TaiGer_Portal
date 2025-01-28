@@ -15,7 +15,7 @@ const { one_month_cache } = require('../cache/node-cache');
 const { AWS_S3_BUCKET_NAME, isProd } = require('../config');
 const { isNotArchiv } = require('../constants');
 const { getTemporaryCredentials, callApiGateway } = require('../aws');
-const { getS3Object } = require('../aws/s3');
+const { getS3Object, uploadJsonToS3 } = require('../aws/s3');
 const {
   roleToAssumeForCourseAnalyzerAPIG,
   apiGatewayUrl
@@ -320,6 +320,13 @@ const processTranscript_api_gatway = asyncHandler(async (req, res, next) => {
       courses_taiger_guided: stringified_courses_taiger_guided,
       requirement_ids: JSON.stringify(requirementIds)
     });
+    console.log(response);
+    // TODO: update json to S3
+    await uploadJsonToS3(
+      response.result,
+      AWS_S3_BUCKET_NAME,
+      `${studentId}/analysed_transcript_${student_name}.json`
+    );
 
     courses.analysis.isAnalysedV2 = true;
     courses.analysis.pathV2 = path.join(

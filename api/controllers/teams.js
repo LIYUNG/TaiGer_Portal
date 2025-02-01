@@ -935,7 +935,7 @@ const getEditors = asyncHandler(async (req, res, next) => {
 const getSingleEditor = asyncHandler(async (req, res, next) => {
   const { editor_id } = req.params;
   const editorPromise = req.db
-    .model('Editor')
+    .model('User')
     .findById(editor_id)
     .select('firstname lastname');
   // query by agents field: student.editors include editor_id

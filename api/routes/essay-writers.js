@@ -11,10 +11,7 @@ const {
 
 const router = Router();
 
-router.use(
-  protect,
-  permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor)
-);
+router.use(protect, permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor));
 
 router
   .route('/')

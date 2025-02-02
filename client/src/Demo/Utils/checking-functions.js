@@ -1429,26 +1429,27 @@ export const isLanguageNotMatchedInAnyProgram = (student) => {
     if (!applications) {
         return false;
     }
-
-    for (let app of applications) {
-        if (!isProgramDecided(app)) {
-            continue;
-        }
-
+    const decidedApplications = applications.filter((app) =>
+        isProgramDecided(app)
+    );
+    for (let app of decidedApplications) {
         const programLang = app.programId.lang?.toLowerCase();
-
         if (
-            programLang?.includes('german') &&
-            check_german_language_Notneeded(academic_background)
+            check_german_language_Notneeded(academic_background) &&
+            check_english_language_Notneeded(academic_background) &&
+            (programLang.includes('german') || programLang.includes('english'))
         ) {
             return true;
         }
-
-        if (
-            programLang?.includes('english') &&
-            check_english_language_Notneeded(academic_background)
-        ) {
-            return true;
+        if (programLang?.includes('german-and') || programLang === 'german') {
+            if (check_german_language_Notneeded(academic_background)) {
+                return true;
+            }
+        }
+        if (programLang?.includes('and-english') || programLang === 'english') {
+            if (check_english_language_Notneeded(academic_background)) {
+                return true;
+            }
         }
     }
 
@@ -1492,17 +1493,24 @@ export const isEnglishCertificateExpiredBeforeDeadline = (student) => {
 };
 
 export const languageNotMatchedPrograms = (student) => {
-    return student.applications?.filter(
+    const decidedApplications = student.applications?.filter((app) =>
+        isProgramDecided(app)
+    );
+
+    return decidedApplications?.filter(
         (app) =>
-            isProgramDecided(app) &&
-            ((app.programId.lang?.toLowerCase().includes('english') &&
+            (check_german_language_Notneeded(student.academic_background) &&
+                check_english_language_Notneeded(student.academic_background) &&
+                (app.programId.lang?.toLowerCase().includes('german') ||
+                    app.programId.lang?.toLowerCase().includes('english'))) ||
+            ((app.programId.lang?.toLowerCase().includes('and-english') ||
+                app.programId.lang?.toLowerCase() === 'english') &&
                 check_english_language_Notneeded(
                     student.academic_background
                 )) ||
-                (app.programId.lang?.toLowerCase().includes('german') &&
-                    check_german_language_Notneeded(
-                        student.academic_background
-                    )))
+            ((app.programId.lang?.toLowerCase().includes('german-and') ||
+                app.programId.lang?.toLowerCase() === 'german') &&
+                check_german_language_Notneeded(student.academic_background))
     );
 };
 

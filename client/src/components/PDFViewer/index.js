@@ -37,7 +37,8 @@ const PDFViewer = (apiFilePath, path) => {
     const handleDownload = () => {
         const downloadLink = document.createElement('a');
         downloadLink.href = URL.createObjectURL(pdfData);
-        downloadLink.download = path;
+        const fileName = path.split('/').pop();
+        downloadLink.download = fileName;
         downloadLink.click();
     };
 

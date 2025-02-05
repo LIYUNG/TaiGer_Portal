@@ -107,7 +107,6 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
         useState({
             error: '',
             file: null,
-            componentRef: React.createRef(),
             isLoaded: false,
             showEditorPage: false,
             isSubmissionLoaded: true,

@@ -4,7 +4,6 @@ import { Link as LinkDom, useLocation, useParams } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import DownloadIcon from '@mui/icons-material/Download';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { useTranslation } from 'react-i18next';
 import { green, grey } from '@mui/material/colors';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HelpIcon from '@mui/icons-material/Help';
@@ -81,6 +80,7 @@ import MessageList from '../../../components/Message/MessageList';
 import DocumentCheckingResultModal from './DocumentCheckingResultModal';
 import { a11yProps, CustomTabPanel } from '../../../components/Tabs';
 import Audit from '../../Audit';
+import i18next from 'i18next';
 
 const getMessagThreadQuery = (threadId) => ({
     queryKey: ['MessageThread', threadId],
@@ -97,10 +97,219 @@ const getMessagThreadQuery = (threadId) => ({
     cacheTime: 10 * 60 * 1000 // 10 minutes
 });
 
+const DescriptionBlock = ({ thread, template_obj, documentsthreadId }) => {
+    const { user } = useAuth();
+    return (
+        <Box>
+            {template_obj ? (
+                <>
+                    <Typography variant="body1">
+                        {thread.file_type === 'CV'
+                            ? i18next.t('cv-instructions', {
+                                  ns: 'cvmlrl'
+                              })
+                            : i18next.t('please-fill-template', {
+                                  tenant: appConfig.companyName
+                              })}
+                        :
+                    </Typography>
+                    <LinkDom to={`${DEMO.CV_ML_RL_DOCS_LINK}`}>
+                        <Button size="small" variant="contained" color="info">
+                            {i18next.t('Read More')}
+                        </Button>
+                    </LinkDom>
+                    <Typography variant="body1">
+                        {i18next.t('Download template')}:{' '}
+                        {template_obj ? (
+                            template_obj.prop.includes('RL') ||
+                            template_obj.alias.includes('Recommendation') ? (
+                                <b>
+                                    {i18next.t('Professor')}：
+                                    <a
+                                        href={`${BASE_URL}/api/account/files/template/${'RL_academic_survey_lock'}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            color="secondary"
+                                            startIcon={<DownloadIcon />}
+                                        >
+                                            {i18next.t('Download', {
+                                                ns: 'common'
+                                            })}
+                                        </Button>
+                                    </a>
+                                    {i18next.t('Supervisor')}：
+                                    <a
+                                        href={`${BASE_URL}/api/account/files/template/${`RL_employer_survey_lock`}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            color="secondary"
+                                            startIcon={<DownloadIcon />}
+                                        >
+                                            {i18next.t('Download', {
+                                                ns: 'common'
+                                            })}
+                                        </Button>
+                                    </a>
+                                </b>
+                            ) : (
+                                <b>
+                                    <a
+                                        href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            color="secondary"
+                                            startIcon={<DownloadIcon />}
+                                        >
+                                            {i18next.t('Download', {
+                                                ns: 'common'
+                                            })}
+                                        </Button>
+                                    </a>
+                                    <br />
+                                    {is_TaiGer_role(user) && (
+                                        <>
+                                            <LinkDom
+                                                to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
+                                                    documentsthreadId
+                                                )}`}
+                                            >
+                                                <Button
+                                                    color="secondary"
+                                                    variant="contained"
+                                                    sx={{
+                                                        my: 2
+                                                    }}
+                                                >
+                                                    Editor Helper
+                                                </Button>
+                                            </LinkDom>
+                                        </>
+                                    )}
+                                </b>
+                            )
+                        ) : (
+                            <>Not available</>
+                        )}
+                    </Typography>
+                </>
+            ) : (
+                <>
+                    <Typography>
+                        {thread.file_type === 'Portfolio'
+                            ? 'Please upload the portfolio in Microsoft Word form here so that your Editor can help you for the text modification'
+                            : thread.file_type === 'Supplementary_Form'
+                              ? '請填好這個 program 的 Supplementory Form，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
+                              : thread.file_type === 'Curriculum_Analysis'
+                                ? '請填好這個 program 的 Curriculum Analysis，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
+                                : '-'}
+                    </Typography>
+                </>
+            )}
+        </Box>
+    );
+};
+const RequirementsBlock = ({ thread, template_obj }) => {
+    const { user } = useAuth();
+    return (
+        <Box>
+            <Box sx={{ display: 'flex' }}>
+                <Typography variant="body1" fontWeight="bold">
+                    {i18next.t('Requirements')}:
+                </Typography>
+                &nbsp;
+                {is_TaiGer_AdminAgent(user) && thread.program_id && (
+                    <Link
+                        underline="hover"
+                        to={`${DEMO.SINGLE_PROGRAM_LINK(
+                            thread.program_id._id.toString()
+                        )}`}
+                        component={LinkDom}
+                        target="_blank"
+                    >
+                        [
+                        {i18next.t('Update', {
+                            ns: 'common'
+                        })}
+                        ]
+                    </Link>
+                )}
+            </Box>
+            <Box>
+                {thread.program_id ? (
+                    <>
+                        <LinkableNewlineText text={getRequirement(thread)} />
+                    </>
+                ) : (
+                    <>
+                        {thread.file_type === 'CV' ? (
+                            <>
+                                <Typography>
+                                    {i18next.t('cv-requirements-1', {
+                                        ns: 'cvmlrl'
+                                    })}
+                                    {` `}
+                                    <b>
+                                        {i18next.t('cv-requirements-1.1', {
+                                            ns: 'cvmlrl'
+                                        })}
+                                    </b>
+                                </Typography>
+                                <Typography>
+                                    {i18next.t('cv-requirements-2', {
+                                        ns: 'cvmlrl'
+                                    })}
+                                </Typography>
+                                <Typography>
+                                    {i18next.t('cv-reminder-1', {
+                                        ns: 'cvmlrl'
+                                    })}
+                                </Typography>
+                                <Typography>
+                                    {i18next.t('cv-reminder-2', {
+                                        ns: 'cvmlrl'
+                                    })}
+                                </Typography>
+                            </>
+                        ) : template_obj?.prop.includes('RL') ||
+                          template_obj?.alias.includes('Recommendation') ? (
+                            <>
+                                <Typography>
+                                    {i18next.t('rl-requirements-1', {
+                                        ns: 'cvmlrl'
+                                    })}
+                                </Typography>
+                            </>
+                        ) : (
+                            <>
+                                <Typography>
+                                    {i18next.t('No', {
+                                        ns: 'common'
+                                    })}
+                                </Typography>
+                            </>
+                        )}
+                    </>
+                )}
+            </Box>
+        </Box>
+    );
+};
+
 function DocModificationThreadPage({ threadId, isEmbedded = false }) {
     const { user } = useAuth();
     const theme = useTheme();
-    const { t } = useTranslation();
     const { documentsthreadId: paramDocumentsthreadId } = useParams();
     const documentsthreadId = threadId || paramDocumentsthreadId;
     const [docModificationThreadPageState, setDocModificationThreadPageState] =
@@ -659,12 +868,13 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
         isSubmissionLoaded,
         conflict_list,
         threadAuditLog,
+        thread,
         res_status,
         res_modal_status,
         res_modal_message
     } = docModificationThreadPageState;
 
-    if (!isLoaded && !docModificationThreadPageState.thread) {
+    if (!isLoaded || !thread) {
         return <Loading />;
     }
 
@@ -672,7 +882,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
         return <ErrorPage res_status={res_status} />;
     }
     let widths = [];
-    if (docModificationThreadPageState.thread.file_type === 'CV') {
+    if (thread.file_type === 'CV') {
         widths = [8, 2, 2];
     } else {
         if (is_TaiGer_Student(user)) {
@@ -685,33 +895,25 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
     // Only CV, ML RL has instructions and template.
     let template_obj = templatelist.find(
         ({ prop, alias }) =>
-            prop.includes(
-                docModificationThreadPageState.thread.file_type.split('_')[0]
-            ) ||
-            alias.includes(
-                docModificationThreadPageState.thread.file_type.split('_')[0]
-            )
+            prop.includes(thread.file_type.split('_')[0]) ||
+            alias.includes(thread.file_type.split('_')[0])
     );
     let docName;
-    const student_name = `${docModificationThreadPageState.thread.student_id.firstname} ${docModificationThreadPageState.thread.student_id.lastname}`;
-    const student_name_zh = `${docModificationThreadPageState.thread.student_id.lastname_chinese}${docModificationThreadPageState.thread.student_id.firstname_chinese}`;
-    if (docModificationThreadPageState.thread.program_id) {
-        docName =
-            docModificationThreadPageState.thread.program_id.school +
-            '-(' +
-            docModificationThreadPageState.thread.program_id.degree +
-            ') ' +
-            docModificationThreadPageState.thread.program_id.program_name +
-            ' ' +
-            docModificationThreadPageState.thread.file_type;
+    const student_name = `${thread.student_id.firstname} ${thread.student_id.lastname}`;
+    const student_name_zh = `${thread.student_id.lastname_chinese}${thread.student_id.firstname_chinese}`;
+    if (thread.program_id) {
+        const { school, degree, program_name } = thread.program_id;
+        docName = `${school} - ${degree} - ${program_name} ${thread.file_type}`;
     } else {
-        docName = docModificationThreadPageState.thread.file_type;
+        docName = thread.file_type;
     }
+
+    const isFavorite = thread.flag_by_user_id?.includes(user._id.toString());
     TabTitle(`${student_name} ${docName}`);
     return (
         <Box>
             {!isLoaded && <Loading />}
-            {docModificationThreadPageState.thread?.file_type === 'Essay' && (
+            {thread?.file_type === 'Essay' && (
                 <Box className="sticky-top">
                     <Stack direction="row" alignItems="center" spacing={1}>
                         {originAuthorConfirmed ? (
@@ -722,7 +924,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                     title="Agree"
                                 />
                                 <Typography variant="body1">
-                                    {t('confirmDocument', {
+                                    {i18next.t('confirmDocument', {
                                         ns: 'documents',
                                         studentName: student_name,
                                         studentNameZh: student_name_zh,
@@ -739,7 +941,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                             cursor: 'pointer'
                                         }}
                                     >
-                                        {t('Read More')}
+                                        {i18next.t('Read More')}
                                     </span>
                                 </Typography>
                             </>
@@ -750,7 +952,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                     style={{ color: grey[400] }}
                                 />
                                 <Typography variant="body1">
-                                    {t('notConfirmDocument', {
+                                    {i18next.t('notConfirmDocument', {
                                         ns: 'documents',
                                         studentName: student_name,
                                         studentNameZh: student_name_zh,
@@ -768,7 +970,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                             cursor: 'pointer'
                                         }}
                                     >
-                                        {t('Read More')}
+                                        {i18next.t('Read More')}
                                     </span>
                                 </Typography>
                             </>
@@ -806,7 +1008,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                         </Link>
                         <Typography variant="body1" color="text.primary">
                             {docName}
-                            {t('discussion-thread', { ns: 'common' })}
+                            {i18next.t('discussion-thread', { ns: 'common' })}
                         </Typography>
                         <span style={{ float: 'right' }}>
                             {docModificationThreadPageState.expand ? (
@@ -816,7 +1018,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                     size="small"
                                     onClick={() => AllCollapsetHandler()}
                                 >
-                                    {t('Collapse')}
+                                    {i18next.t('Collapse')}
                                 </Button>
                             ) : (
                                 <Button
@@ -825,7 +1027,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                     size="small"
                                     onClick={() => AllExpandtHandler()}
                                 >
-                                    {t('Expand')}
+                                    {i18next.t('Expand')}
                                 </Button>
                             )}
                         </span>
@@ -844,7 +1046,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                     : `/doc-communications/${documentsthreadId}`
                             }
                         >
-                            {t('Switch View', { ns: 'common' })}
+                            {i18next.t('Switch View', { ns: 'common' })}
                         </Button>
                     </Box>
                 )}
@@ -859,18 +1061,26 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                 aria-label="basic tabs example"
             >
                 <Tab
-                    label={t('discussion-thread', { ns: 'common' })}
+                    label={i18next.t('discussion-thread', { ns: 'common' })}
                     {...a11yProps(0)}
                 />
-                <Tab label={t('files', { ns: 'common' })} {...a11yProps(1)} />
-                <Tab label={t('Audit', { ns: 'common' })} {...a11yProps(2)} />
+                <Tab
+                    label={i18next.t('files', { ns: 'common' })}
+                    {...a11yProps(1)}
+                />
+                <Tab
+                    label={i18next.t('Audit', { ns: 'common' })}
+                    {...a11yProps(2)}
+                />
             </Tabs>
             <CustomTabPanel value={value} index={0}>
                 <Card sx={{ p: 2 }}>
                     <Grid container spacing={2}>
                         <Grid item md={widths[0]}>
-                            <Typography variant="h6" fontWeight="bold">
-                                {t('Instructions')}
+                            <Stack direction="row" alignItems="center">
+                                <Typography variant="h6" fontWeight="bold">
+                                    {i18next.t('Instructions')}
+                                </Typography>
                                 <IconButton
                                     onClick={() =>
                                         handleFavoriteToggle(
@@ -879,235 +1089,26 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                         )
                                     }
                                 >
-                                    {docModificationThreadPageState.thread.flag_by_user_id?.includes(
-                                        user._id.toString()
-                                    ) ? (
+                                    {isFavorite ? (
                                         <StarRoundedIcon />
                                     ) : (
                                         <StarBorderRoundedIcon />
                                     )}
                                 </IconButton>
-                            </Typography>
-                            {template_obj ? (
-                                <>
-                                    <Typography variant="body1">
-                                        {docModificationThreadPageState.thread
-                                            .file_type === 'CV'
-                                            ? t('cv-instructions', {
-                                                  ns: 'cvmlrl'
-                                              })
-                                            : t('please-fill-template', {
-                                                  tenant: appConfig.companyName
-                                              })}
-                                        :
-                                    </Typography>
-                                    <LinkDom to={`${DEMO.CV_ML_RL_DOCS_LINK}`}>
-                                        <Button
-                                            size="small"
-                                            variant="contained"
-                                            color="info"
-                                        >
-                                            {t('Read More')}
-                                        </Button>
-                                    </LinkDom>
-                                    <Typography variant="body1">
-                                        {t('Download template')}:{' '}
-                                        {template_obj ? (
-                                            template_obj.prop.includes('RL') ||
-                                            template_obj.alias.includes(
-                                                'Recommendation'
-                                            ) ? (
-                                                <b>
-                                                    {t('Professor')}：
-                                                    <a
-                                                        href={`${BASE_URL}/api/account/files/template/${'RL_academic_survey_lock'}`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        <Button
-                                                            variant="contained"
-                                                            size="small"
-                                                            color="secondary"
-                                                            startIcon={
-                                                                <DownloadIcon />
-                                                            }
-                                                        >
-                                                            {t('Download', {
-                                                                ns: 'common'
-                                                            })}
-                                                        </Button>
-                                                    </a>
-                                                    {t('Supervisor')}：
-                                                    <a
-                                                        href={`${BASE_URL}/api/account/files/template/${`RL_employer_survey_lock`}`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        <Button
-                                                            variant="contained"
-                                                            size="small"
-                                                            color="secondary"
-                                                            startIcon={
-                                                                <DownloadIcon />
-                                                            }
-                                                        >
-                                                            {t('Download', {
-                                                                ns: 'common'
-                                                            })}
-                                                        </Button>
-                                                    </a>
-                                                </b>
-                                            ) : (
-                                                <b>
-                                                    <a
-                                                        href={`${BASE_URL}/api/account/files/template/${template_obj.prop}`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        <Button
-                                                            variant="contained"
-                                                            size="small"
-                                                            color="secondary"
-                                                            startIcon={
-                                                                <DownloadIcon />
-                                                            }
-                                                        >
-                                                            {t('Download', {
-                                                                ns: 'common'
-                                                            })}
-                                                        </Button>
-                                                    </a>
-                                                    <br />
-                                                    {is_TaiGer_role(user) && (
-                                                        <>
-                                                            <LinkDom
-                                                                to={`${DEMO.DOCUMENT_MODIFICATION_INPUT_LINK(
-                                                                    docModificationThreadPageState.documentsthreadId
-                                                                )}`}
-                                                            >
-                                                                <Button
-                                                                    color="secondary"
-                                                                    variant="contained"
-                                                                    sx={{
-                                                                        my: 2
-                                                                    }}
-                                                                >
-                                                                    Editor
-                                                                    Helper
-                                                                </Button>
-                                                            </LinkDom>
-                                                        </>
-                                                    )}
-                                                </b>
-                                            )
-                                        ) : (
-                                            <>Not available</>
-                                        )}
-                                    </Typography>
-                                </>
-                            ) : (
-                                <>
-                                    <Typography>
-                                        {docModificationThreadPageState.thread
-                                            .file_type === 'Portfolio'
-                                            ? 'Please upload the portfolio in Microsoft Word form here so that your Editor can help you for the text modification'
-                                            : docModificationThreadPageState
-                                                    .thread.file_type ===
-                                                'Supplementary_Form'
-                                              ? '請填好這個 program 的 Supplementory Form，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
-                                              : docModificationThreadPageState
-                                                      .thread.file_type ===
-                                                  'Curriculum_Analysis'
-                                                ? '請填好這個 program 的 Curriculum Analysis，並在這討論串夾帶該檔案 (通常為 .xls, xlsm, .pdf 檔) 上傳。'
-                                                : '-'}
-                                    </Typography>
-                                </>
-                            )}
-                            <Box sx={{ display: 'flex' }}>
-                                <Typography variant="body1" fontWeight="bold">
-                                    {t('Requirements')}:
-                                </Typography>
-                                &nbsp;
-                                {is_TaiGer_AdminAgent(user) &&
-                                    docModificationThreadPageState.thread
-                                        .program_id && (
-                                        <Link
-                                            underline="hover"
-                                            to={`${DEMO.SINGLE_PROGRAM_LINK(
-                                                docModificationThreadPageState.thread.program_id._id.toString()
-                                            )}`}
-                                            component={LinkDom}
-                                            target="_blank"
-                                        >
-                                            [{t('Update', { ns: 'common' })}]
-                                        </Link>
-                                    )}
-                            </Box>
-                            {docModificationThreadPageState.thread
-                                .program_id ? (
-                                <>
-                                    <LinkableNewlineText
-                                        text={getRequirement(
-                                            docModificationThreadPageState.thread
-                                        )}
-                                    />
-                                </>
-                            ) : (
-                                <>
-                                    {docModificationThreadPageState.thread
-                                        .file_type === 'CV' ? (
-                                        <>
-                                            <Typography>
-                                                {t('cv-requirements-1', {
-                                                    ns: 'cvmlrl'
-                                                })}
-                                                {` `}
-                                                <b>
-                                                    {t('cv-requirements-1.1', {
-                                                        ns: 'cvmlrl'
-                                                    })}
-                                                </b>
-                                            </Typography>
-                                            <Typography>
-                                                {t('cv-requirements-2', {
-                                                    ns: 'cvmlrl'
-                                                })}
-                                            </Typography>
-                                            <Typography>
-                                                {t('cv-reminder-1', {
-                                                    ns: 'cvmlrl'
-                                                })}
-                                            </Typography>
-                                            <Typography>
-                                                {t('cv-reminder-2', {
-                                                    ns: 'cvmlrl'
-                                                })}
-                                            </Typography>
-                                        </>
-                                    ) : template_obj?.prop.includes('RL') ||
-                                      template_obj?.alias.includes(
-                                          'Recommendation'
-                                      ) ? (
-                                        <>
-                                            <Typography>
-                                                {t('rl-requirements-1', {
-                                                    ns: 'cvmlrl'
-                                                })}
-                                            </Typography>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Typography>
-                                                {t('No', { ns: 'common' })}
-                                            </Typography>
-                                        </>
-                                    )}
-                                </>
-                            )}
+                            </Stack>
+                            <DescriptionBlock
+                                thread={thread}
+                                template_obj={template_obj}
+                                documentsthreadId={documentsthreadId}
+                            />
+                            <RequirementsBlock
+                                thread={thread}
+                                template_obj={template_obj}
+                            />
                         </Grid>
                         <Grid item md={widths[1]}>
                             <Typography variant="body1" fontWeight="bold">
-                                {t('Agent', { ns: 'common' })}:
+                                {i18next.t('Agent', { ns: 'common' })}:
                             </Typography>
                             {docModificationThreadPageState.agents.map(
                                 (agent, i) => (
@@ -1132,21 +1133,19 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                 )
                             )}
                             <Typography variant="body1" fontWeight="bold">
-                                {docModificationThreadPageState.thread
-                                    .file_type === 'Essay'
-                                    ? t('Essay Writer', { ns: 'common' })
-                                    : t('Editor', { ns: 'common' })}
+                                {thread.file_type === 'Essay'
+                                    ? i18next.t('Essay Writer', {
+                                          ns: 'common'
+                                      })
+                                    : i18next.t('Editor', { ns: 'common' })}
                                 :
                             </Typography>
                             {[
                                 ...AGENT_SUPPORT_DOCUMENTS_A,
                                 FILE_TYPE_E.essay_required
-                            ].includes(
-                                docModificationThreadPageState.thread.file_type
-                            ) &&
-                                (docModificationThreadPageState.thread
-                                    ?.outsourced_user_id?.length > 0 ? (
-                                    docModificationThreadPageState.thread?.outsourced_user_id?.map(
+                            ].includes(thread.file_type) &&
+                                (thread?.outsourced_user_id?.length > 0 ? (
+                                    thread?.outsourced_user_id?.map(
                                         (outsourcer) => (
                                             <Typography key={outsourcer._id}>
                                                 {is_TaiGer_role(user) ? (
@@ -1174,10 +1173,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                     <Typography>
                                         {[
                                             ...AGENT_SUPPORT_DOCUMENTS_A
-                                        ].includes(
-                                            docModificationThreadPageState
-                                                .thread.file_type
-                                        )
+                                        ].includes(thread.file_type)
                                             ? 'If needed, editor can be added'
                                             : 'To Be Assigned'}
                                     </Typography>
@@ -1185,9 +1181,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                             {![
                                 ...AGENT_SUPPORT_DOCUMENTS_A,
                                 FILE_TYPE_E.essay_required
-                            ].includes(
-                                docModificationThreadPageState.thread.file_type
-                            ) &&
+                            ].includes(thread.file_type) &&
                                 docModificationThreadPageState.editors.map(
                                     (editor, i) => (
                                         <Typography key={i}>
@@ -1214,30 +1208,28 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                 [
                                     ...AGENT_SUPPORT_DOCUMENTS_A,
                                     FILE_TYPE_E.essay_required
-                                ].includes(
-                                    docModificationThreadPageState.thread
-                                        .file_type
-                                ) && (
+                                ].includes(thread.file_type) && (
                                     <Button
                                         size="small"
                                         color="primary"
                                         variant="contained"
                                         onClick={startEditingEditor}
                                     >
-                                        {docModificationThreadPageState.thread
-                                            .file_type === 'Essay'
-                                            ? t('Add Essay Writer')
-                                            : t('Add Editor')}
+                                        {thread.file_type === 'Essay'
+                                            ? i18next.t('Add Essay Writer')
+                                            : i18next.t('Add Editor')}
                                     </Button>
                                 )}
-                            {docModificationThreadPageState.thread
-                                .program_id && (
+                            {thread.program_id && (
                                 <>
                                     <Typography
                                         variant="body1"
                                         fontWeight="bold"
                                     >
-                                        {t('Semester', { ns: 'common' })}:
+                                        {i18next.t('Semester', {
+                                            ns: 'common'
+                                        })}
+                                        :
                                     </Typography>
                                     <Typography>
                                         {
@@ -1249,7 +1241,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                         variant="body1"
                                         fontWeight="bold"
                                     >
-                                        {t('Program Language', {
+                                        {i18next.t('Program Language', {
                                             ns: 'common'
                                         })}
                                         :
@@ -1264,15 +1256,16 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                             )}
 
                             <Typography variant="body1">
-                                <b>{t('Deadline', { ns: 'common' })}:</b>
+                                <b>
+                                    {i18next.t('Deadline', { ns: 'common' })}:
+                                </b>
                                 {is_TaiGer_AdminAgent(user) &&
-                                    docModificationThreadPageState.thread
-                                        .program_id && (
+                                    thread.program_id && (
                                         <Link
                                             underline="hover"
                                             component={LinkDom}
                                             to={`${DEMO.SINGLE_PROGRAM_LINK(
-                                                docModificationThreadPageState.thread.program_id._id.toString()
+                                                thread.program_id._id.toString()
                                             )}`}
                                             target="_blank"
                                         >
@@ -1285,13 +1278,12 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                 {docModificationThreadPageState.deadline}
                             </Typography>
                         </Grid>
-                        {docModificationThreadPageState.thread.file_type ===
-                        'CV' ? (
+                        {thread.file_type === 'CV' ? (
                             <Grid item md={widths[2]}>
                                 <Typography variant="h6">
                                     <b>Profile photo:</b>
                                     <img
-                                        src={`${BASE_URL}/api/students/${docModificationThreadPageState.thread.student_id._id}/files/Passport_Photo`}
+                                        src={`${BASE_URL}/api/students/${thread.student_id._id}/files/Passport_Photo`}
                                         height="100%"
                                         width="100%"
                                     />
@@ -1313,7 +1305,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                             !is_TaiGer_Student(user) && (
                                 <Grid item md={widths[2]}>
                                     <Typography variant="body1">
-                                        {t('Conflict')}:
+                                        {i18next.t('Conflict')}:
                                     </Typography>
                                     {conflict_list.length === 0
                                         ? 'None'
@@ -1349,7 +1341,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                     }
                     accordionKeys={docModificationThreadPageState.accordionKeys}
                     singleExpandtHandler={singleExpandtHandler}
-                    thread={docModificationThreadPageState.thread}
+                    thread={thread}
                     isLoaded={docModificationThreadPageState.isLoaded}
                     user={user}
                     onDeleteSingleMessage={onDeleteSingleMessage}
@@ -1370,9 +1362,8 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                             }
                         }}
                     >
-                        {docModificationThreadPageState.thread
-                            .isFinalVersion ? (
-                            <Typography>{t('thread-close')}</Typography>
+                        {thread.isFinalVersion ? (
+                            <Typography>{i18next.t('thread-close')}</Typography>
                         ) : (
                             <>
                                 <Avatar
@@ -1390,9 +1381,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                     </b>
                                 </Typography>
                                 <DocThreadEditor
-                                    thread={
-                                        docModificationThreadPageState.thread
-                                    }
+                                    thread={thread}
                                     buttonDisabled={
                                         docModificationThreadPageState.buttonDisabled
                                     }
@@ -1419,26 +1408,23 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                     </Card>
                 )}
                 {is_TaiGer_role(user) &&
-                    (!docModificationThreadPageState.thread.isFinalVersion ? (
+                    (!thread.isFinalVersion ? (
                         <Button
                             fullWidth
                             variant="contained"
                             color="success"
                             onClick={() =>
                                 handleAsFinalFile(
-                                    docModificationThreadPageState.thread._id,
-                                    docModificationThreadPageState.thread
-                                        .student_id._id,
-                                    docModificationThreadPageState.thread
-                                        .program_id,
-                                    docModificationThreadPageState.thread
-                                        .isFinalVersion
+                                    thread._id,
+                                    thread.student_id._id,
+                                    thread.program_id,
+                                    thread.isFinalVersion
                                 )
                             }
                             sx={{ mt: 2 }}
                         >
                             {isSubmissionLoaded ? (
-                                t('Mark as finished')
+                                i18next.t('Mark as finished')
                             ) : (
                                 <CircularProgress />
                             )}
@@ -1450,19 +1436,16 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                             color="secondary"
                             onClick={() =>
                                 handleAsFinalFile(
-                                    docModificationThreadPageState.thread._id,
-                                    docModificationThreadPageState.thread
-                                        .student_id._id,
-                                    docModificationThreadPageState.thread
-                                        .program_id,
-                                    docModificationThreadPageState.thread
-                                        .isFinalVersion
+                                    thread._id,
+                                    thread.student_id._id,
+                                    thread.program_id,
+                                    thread.isFinalVersion
                                 )
                             }
                             sx={{ mt: 2 }}
                         >
                             {isSubmissionLoaded ? (
-                                t('Mark as open')
+                                i18next.t('Mark as open')
                             ) : (
                                 <CircularProgress />
                             )}
@@ -1477,7 +1460,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                     }
                     accordionKeys={docModificationThreadPageState.accordionKeys}
                     singleExpandtHandler={singleExpandtHandler}
-                    thread={docModificationThreadPageState.thread}
+                    thread={thread}
                     isLoaded={docModificationThreadPageState.isLoaded}
                     user={user}
                     onDeleteSingleMessage={onDeleteSingleMessage}
@@ -1488,8 +1471,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
             </CustomTabPanel>
             <Dialog
                 open={
-                    (docModificationThreadPageState.thread.file_type ===
-                        'Essay' &&
+                    (thread.file_type === 'Essay' &&
                         is_TaiGer_Student(user) &&
                         !originAuthorConfirmed) ||
                     openOriginAuthorModal
@@ -1497,46 +1479,55 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                 onClose={() => {}}
                 aria-labelledby="modal-orginal-declaration"
             >
-                <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+                <DialogTitle>
+                    {i18next.t('Warning', { ns: 'common' })}
+                </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         <Typography variant="body1" sx={{ my: 2 }}>
-                            {t('hello-students', {
+                            {i18next.t('hello-students', {
                                 ns: 'common',
                                 tenant: appConfig.companyName
                             })}
                         </Typography>
                         <Typography variant="body1" sx={{ my: 2 }}>
-                            {t('essay-responsibility-declaration-content', {
-                                ns: 'common',
-                                tenant: appConfig.companyFullName
-                            })}
+                            {i18next.t(
+                                'essay-responsibility-declaration-content',
+                                {
+                                    ns: 'common',
+                                    tenant: appConfig.companyFullName
+                                }
+                            )}
                         </Typography>
                         <Typography variant="body1" sx={{ my: 2 }}>
-                            {t('essay-responsibility-declaration-signature', {
-                                ns: 'common',
-                                tenant: appConfig.companyFullName
-                            })}
+                            {i18next.t(
+                                'essay-responsibility-declaration-signature',
+                                {
+                                    ns: 'common',
+                                    tenant: appConfig.companyFullName
+                                }
+                            )}
                         </Typography>
                     </DialogContentText>
                     {is_TaiGer_Student(user) && (
                         <FormControlLabel
-                            label={`${t('i-declare-without-help-of-ai', {
-                                ns: 'common',
-                                studentFullName: `${student_name} ${student_name_zh}`,
-                                docName: docName
-                            })}`}
+                            label={`${i18next.t(
+                                'i-declare-without-help-of-ai',
+                                {
+                                    ns: 'common',
+                                    studentFullName: `${student_name} ${student_name_zh}`,
+                                    docName: docName
+                                }
+                            )}`}
                             sx={{ my: 2 }}
                             control={
                                 <Checkbox
                                     checked={
                                         originAuthorCheckboxConfirmed ||
-                                        docModificationThreadPageState.thread
-                                            .isOriginAuthorDeclarationConfirmedByStudent
+                                        thread.isOriginAuthorDeclarationConfirmedByStudent
                                     }
                                     disabled={
-                                        docModificationThreadPageState.thread
-                                            .isOriginAuthorDeclarationConfirmedByStudent
+                                        thread.isOriginAuthorDeclarationConfirmedByStudent
                                     }
                                     onChange={() =>
                                         setOriginAuthorCheckboxConfirmed(
@@ -1549,8 +1540,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                     )}
                     <br />
                     {is_TaiGer_Student(user) ? (
-                        docModificationThreadPageState.thread
-                            ?.isOriginAuthorDeclarationConfirmedByStudent ? (
+                        thread?.isOriginAuthorDeclarationConfirmedByStudent ? (
                             <Button
                                 fullWidth
                                 color="primary"
@@ -1562,7 +1552,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                 }
                                 sx={{ mr: 2 }}
                             >
-                                {t('Close', { ns: 'common' })}
+                                {i18next.t('Close', { ns: 'common' })}
                             </Button>
                         ) : (
                             <Button
@@ -1578,7 +1568,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                                 sx={{ mr: 2 }}
                             >
                                 {isSubmissionLoaded ? (
-                                    t('I Agree', { ns: 'common' })
+                                    i18next.t('I Agree', { ns: 'common' })
                                 ) : (
                                     <CircularProgress />
                                 )}
@@ -1594,20 +1584,18 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                             }
                             sx={{ mr: 2 }}
                         >
-                            {t('Close', { ns: 'common' })}
+                            {i18next.t('Close', { ns: 'common' })}
                         </Button>
                     )}
                 </DialogContent>
             </Dialog>
             <DocumentCheckingResultModal
                 open={docModificationThreadPageState.SetAsFinalFileModel}
-                thread_id={docModificationThreadPageState.thread._id}
-                file_type={docModificationThreadPageState.thread.file_type}
-                isFinalVersion={
-                    docModificationThreadPageState.thread.isFinalVersion
-                }
+                thread_id={thread._id}
+                file_type={thread.file_type}
+                isFinalVersion={thread.isFinalVersion}
                 onClose={closeSetAsFinalFileModelWindow}
-                title={t('Warning', { ns: 'common' })}
+                title={i18next.t('Warning', { ns: 'common' })}
                 onConfirm={(e) => ConfirmSetAsFinalFileHandler(e)}
                 student_name={student_name}
                 docName={docName}
@@ -1619,7 +1607,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                         onHide={setEditorModalhide}
                         actor={
                             [FILE_TYPE_E.essay_required].includes(
-                                docModificationThreadPageState.thread.file_type
+                                thread.file_type
                             )
                                 ? 'Essay Writer'
                                 : 'Editor'
@@ -1628,9 +1616,7 @@ function DocModificationThreadPage({ threadId, isEmbedded = false }) {
                         submitUpdateEssayWriterlist={
                             submitUpdateEssayWriterlist
                         }
-                        essayDocumentThread={
-                            docModificationThreadPageState.thread
-                        }
+                        essayDocumentThread={thread}
                         editors={docModificationThreadPageState.editors}
                     />
                 )}

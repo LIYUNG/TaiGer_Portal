@@ -220,55 +220,61 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 
   // delete from agent/editor
-  if (user_deleting.role === Role.Agent) {
-    // remove agent from students
+  if (user_deleting.role === Role.Agent || user_deleting.role === Role.Editor) {
+    // remove agent / editor from students
     const students = await req.db.model('Student').updateMany(
       {
-        agents: { $in: user_id }
+        $or: [{ agents: user_id }, { editors: user_id }]
       },
       {
-        $pull: { agents: user_id }
+        $pull: {
+          agents: user_id,
+          editors: user_id
+        }
       },
       { multi: true }
     );
     await req.db.model('User').findByIdAndDelete(user_id);
-    logger.info('delete agent user');
+    logger.info(`deleted userid ${user_id}`);
     logger.info(students);
-  }
-
-  if (user_deleting.role === Role.Editor) {
-    // remove editor from students
-    const students = await req.db.model('Student').updateMany(
-      {
-        editors: { $in: user_id }
-      },
-      {
-        $pull: { editors: user_id }
-      },
-      { multi: true }
-    );
-    await req.db.model('User').findByIdAndDelete(user_id);
-    logger.info('delete editor user');
   }
 
   if (
     user_deleting.role === Role.Student ||
     user_deleting.role === Role.Guest
   ) {
-    // Delete all S3 data of the student
-    logger.info('Trying to delete student and their S3 files');
-    emptyS3Directory(AWS_S3_BUCKET_NAME, `${user_id}/`);
+    const session = await req.db.startSession();
+    session.startTransaction();
+    try {
+      // Delete all S3 data of the student
+      logger.info('Trying to delete student and their S3 files');
+      emptyS3Directory(AWS_S3_BUCKET_NAME, `${user_id}/`);
 
-    // Delete thread that user has
-    await req.db.model('Documentthread').deleteMany({ student_id: user_id });
-    logger.info('Threads deleted');
-    // Delete course that user has
-    await req.db.model('Course').deleteMany({ student_id: user_id });
-    logger.info('Courses deleted');
+      // Delete thread that user has
+      await req.db.model('Documentthread').deleteMany({ student_id: user_id });
+      logger.info('Threads deleted');
 
-    // delete user in database
-    await req.db.model('User').findByIdAndDelete(user_id);
-    logger.info('studnet deleted');
+      // Delete course that user has
+      await req.db.model('Course').deleteMany({ student_id: user_id });
+      logger.info('Courses deleted');
+
+      // delete user chat
+      await req.db.model('Communication').deleteMany({ student_id: user_id });
+      logger.info('Chat deleted');
+
+      // delete user in database
+      await req.db.model('User').findByIdAndDelete(user_id);
+      logger.info('studnet deleted');
+
+      await session.commitTransaction();
+      await session.endSession();
+    } catch (error) {
+      // If any operation fails, abort the transaction
+      await session.abortTransaction();
+      await session.endSession();
+      logger.error('Failed to delete user ', error);
+      throw error;
+    }
   }
   res.status(200).send({ success: true });
 });

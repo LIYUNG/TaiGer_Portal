@@ -18,6 +18,7 @@ function useCommunications({ data, student }) {
     const [communicationsState, setCommunicationsState] = useState({
         error: '',
         thread: data,
+        count: 0,
         upperThread: [],
         editorState: {},
         files: [],
@@ -53,6 +54,7 @@ function useCommunications({ data, student }) {
             setCommunicationsState((prevState) => ({
                 ...prevState,
                 editorState: {},
+                count: prevState.count + 1,
                 thread: [...communicationsState.thread, ...data.data],
                 files: [],
                 accordionKeys: [
@@ -81,7 +83,7 @@ function useCommunications({ data, student }) {
             queryClient.invalidateQueries({
                 queryKey: ['communications', 'my']
             });
-            // TODO: remove that message
+            // remove that message
             const new_messages = [...communicationsState.thread];
             let idx = new_messages.findIndex(
                 (message) => message._id.toString() === message_id
@@ -104,6 +106,9 @@ function useCommunications({ data, student }) {
                 buttonDisabled: false,
                 res_modal_status: status
             }));
+            setSeverity('success');
+            setMessage('Delete the message successfully');
+            setOpenSnackbar(true);
         }
     });
 
@@ -264,6 +269,7 @@ function useCommunications({ data, student }) {
         loadButtonDisabled: communicationsState.loadButtonDisabled,
         isDeleting: isDeleting,
         files: communicationsState.files,
+        count: communicationsState.count,
         editorState: communicationsState.editorState,
         checkResult,
         accordionKeys: communicationsState.accordionKeys,

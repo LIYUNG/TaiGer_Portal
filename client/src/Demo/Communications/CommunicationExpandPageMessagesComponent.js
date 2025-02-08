@@ -24,16 +24,13 @@ function CommunicationExpandPageMessagesComponent({ data, student }) {
         uppderaccordionKeys,
         upperThread,
         thread,
+        count,
         handleLoadMessages,
         onDeleteSingleMessage,
         onFileChange,
         handleClickSave
     } = useCommunications({ data, student });
 
-    const handleSave = (e, editorState) => {
-        handleClickSave(e, editorState);
-    };
-    console.log('layer2');
     return (
         <Fragment>
             <Grid container>
@@ -92,13 +89,14 @@ function CommunicationExpandPageMessagesComponent({ data, student }) {
                             }}
                         >
                             <CommunicationThreadEditor
+                                count={count}
                                 thread={thread}
                                 buttonDisabled={buttonDisabled}
                                 editorState={editorState}
                                 files={files}
                                 onFileChange={onFileChange}
                                 checkResult={checkResult}
-                                handleClickSave={handleSave}
+                                handleClickSave={handleClickSave}
                             />
                         </Card>
                     ) : (

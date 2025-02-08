@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     Avatar,
     Box,
@@ -56,8 +56,6 @@ function CommunicationThreadEditor(props) {
         document.getElementById('file-input').click();
     };
 
-    console.log('logggg')
-
     const onSubmit = async () => {
         setStatedata((prevState) => ({
             ...prevState,
@@ -87,6 +85,22 @@ function CommunicationThreadEditor(props) {
             isGenerating: false
         }));
     };
+
+    const EditorV2 = useCallback(() => {
+        return (
+            <EditorSimple
+                holder={props.editorState?.toString()}
+                thread={props.thread}
+                defaultHeight={0}
+                readOnly={false}
+                imageEnable={false}
+                handleEditorChange={handleEditorChange}
+                handleClickSave={props.handleClickSave}
+                editorState={props.editorState}
+                setStatedata={setStatedata}
+            />
+        );
+    }, [props.count]);
     return (
         <>
             <Box
@@ -112,17 +126,7 @@ function CommunicationThreadEditor(props) {
                     border: '1px solid #ccc'
                 }}
             >
-                <EditorSimple
-                    holder={props.editorState?.toString()}
-                    thread={props.thread}
-                    defaultHeight={0}
-                    readOnly={false}
-                    imageEnable={false}
-                    handleEditorChange={handleEditorChange}
-                    handleClickSave={props.handleClickSave}
-                    editorState={props.editorState}
-                    setStatedata={setStatedata}
-                />
+                <EditorV2 />
             </Box>
             <Box>
                 {is_TaiGer_role(user) &&

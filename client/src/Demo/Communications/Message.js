@@ -410,13 +410,13 @@ function Message(props) {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        disabled={!props.isLoaded}
+                        disabled={props.isDeleting}
                         variant="contained"
                         onClick={onDeleteSingleMessage}
                     >
-                        {props.isLoaded
-                            ? t('Delete', { ns: 'common' })
-                            : t('Pending', { ns: 'common' })}
+                        {props.isDeleting
+                            ? t('Pending', { ns: 'common' })
+                            : t('Delete', { ns: 'common' })}
                     </Button>
                     <Button
                         variant="outlined"

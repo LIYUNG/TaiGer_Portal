@@ -12,7 +12,7 @@ function MessageList(props) {
             message={message}
             onTrashClick={props.onTrashClick}
             lastupdate={props.lastupdate}
-            isLoaded={props.isLoaded}
+            isDeleting={props.isDeleting}
             onDeleteSingleMessage={props.onDeleteSingleMessage}
             isTaiGerView={props.isTaiGerView}
         />

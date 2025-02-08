@@ -31,7 +31,7 @@ function CommunicationSinglePageBody({ loadedData }) {
     const {
         buttonDisabled,
         loadButtonDisabled,
-        isLoaded,
+        isDeleting,
         files,
         editorState,
         checkResult,
@@ -211,7 +211,7 @@ function CommunicationSinglePageBody({ loadedData }) {
                         student_id={student._id.toString()}
                         isUpperMessagList={true}
                         thread={upperThread}
-                        isLoaded={isLoaded}
+                        isDeleting={isDeleting}
                         user={user}
                         onDeleteSingleMessage={onDeleteSingleMessage}
                     />
@@ -221,7 +221,7 @@ function CommunicationSinglePageBody({ loadedData }) {
                     student_id={student._id.toString()}
                     isUpperMessagList={false}
                     thread={thread}
-                    isLoaded={isLoaded}
+                    isDeleting={isDeleting}
                     user={user}
                     onDeleteSingleMessage={onDeleteSingleMessage}
                 />

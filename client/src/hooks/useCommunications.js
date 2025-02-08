@@ -17,7 +17,6 @@ function useCommunications({ data, student }) {
     const [checkResult, setCheckResult] = useState([]);
     const [communicationsState, setCommunicationsState] = useState({
         error: '',
-        isLoaded: true,
         thread: data,
         upperThread: [],
         editorState: {},
@@ -100,7 +99,6 @@ function useCommunications({ data, student }) {
             setCommunicationsState((prevState) => ({
                 ...prevState,
                 // success,
-                isLoaded: true,
                 upperThread: new_upper_messages,
                 thread: new_messages,
                 buttonDisabled: false,
@@ -144,7 +142,6 @@ function useCommunications({ data, student }) {
                             ...data,
                             ...communicationsState.upperThread
                         ],
-                        isLoaded: true,
                         student,
                         pageNumber: communicationsState.pageNumber + 1,
                         uppderaccordionKeys: [
@@ -168,15 +165,13 @@ function useCommunications({ data, student }) {
                     }));
                 } else {
                     setCommunicationsState((prevState) => ({
-                        ...prevState,
-                        isLoaded: true
+                        ...prevState
                     }));
                 }
             },
             (error) => {
                 setCommunicationsState((prevState) => ({
                     ...prevState,
-                    isLoaded: true,
                     error
                 }));
             }
@@ -267,7 +262,7 @@ function useCommunications({ data, student }) {
     return {
         buttonDisabled: isPending,
         loadButtonDisabled: communicationsState.loadButtonDisabled,
-        isLoaded: !isDeleting,
+        isDeleting: isDeleting,
         files: communicationsState.files,
         editorState: communicationsState.editorState,
         checkResult,

@@ -65,9 +65,7 @@ function MessageContainer(props) {
         }
         setMessageContainerState((prevState) => ({
             ...prevState,
-            editorState: initialEditorState,
-            isLoaded: true
-            //   deleteMessageModalShow: false
+            editorState: initialEditorState
         }));
     }, []);
 
@@ -114,7 +112,7 @@ function MessageContainer(props) {
                         editorState={messageContainerState.editorState}
                         onTrashClick={props.onTrashClick}
                         lastupdate={props.lastupdate}
-                        isLoaded={props.isLoaded}
+                        isDeleting={props.isDeleting}
                         full_name={full_name}
                         message={props.message}
                         editable={editable}
@@ -132,7 +130,7 @@ function MessageContainer(props) {
                     message={messageContainerState.message}
                     onTrashClick={props.onTrashClick}
                     lastupdate={props.lastupdate}
-                    isLoaded={props.isLoaded}
+                    isDeleting={props.isDeleting}
                     onDeleteSingleMessage={props.onDeleteSingleMessage}
                     onEditMode={onEditMode}
                     isTaiGerView={props.isTaiGerView}

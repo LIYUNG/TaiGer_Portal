@@ -16,7 +16,7 @@ import { deleteUser, changeUserRole, updateArchivUser } from '../../api';
 import { UserlistHeader } from '../../utils/contants';
 import UserArchivWarning from './UserArchivWarning';
 
-function UsersList(props) {
+const UsersList = (props) => {
     const { t } = useTranslation();
     const [usersListState, setUsersListState] = useState({
         error: '',
@@ -43,7 +43,7 @@ function UsersList(props) {
             ...prevState,
             data: props.users
         }));
-    }, []);
+    }, [props.users]);
 
     const setModalShow = (
         user_firstname,
@@ -277,56 +277,54 @@ function UsersList(props) {
     const users = usersListState.data.map((user) => (
         <User
             key={user._id}
-            user={user}
-            setModalShowDelete={setModalShowDelete}
             setModalArchiv={setModalArchiv}
             setModalShow={setModalShow}
+            setModalShowDelete={setModalShowDelete}
             success={usersListState.success}
+            user={user}
         />
     ));
 
     return (
         <>
-            {res_modal_status >= 400 && (
-                <ModalMain
+            {res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
-                />
-            )}
+                    res_modal_status={res_modal_status}
+                /> : null}
             <Table size="small">
                 <TableHead>{headers}</TableHead>
                 <TableBody>{users}</TableBody>
             </Table>
             <UsersListSubpage
-                show={usersListState.modalShow}
-                setModalHide={setModalHide}
                 firstname={usersListState.firstname}
-                lastname={usersListState.lastname}
-                selected_user_role={usersListState.selected_user_role}
-                selected_user_id={usersListState.selected_user_id}
                 handleChange2={handleChange2}
+                lastname={usersListState.lastname}
                 onSubmit2={onSubmit2}
+                selected_user_id={usersListState.selected_user_id}
+                selected_user_role={usersListState.selected_user_role}
+                setModalHide={setModalHide}
+                show={usersListState.modalShow}
             />
             <UserDeleteWarning
-                isLoaded={usersListState.isLoaded}
                 deleteUserWarning={usersListState.deleteUserWarning}
-                onChangeDeleteField={onChangeDeleteField}
                 delete_field={usersListState.delete_field}
-                setModalHideDDelete={setModalHideDDelete}
                 firstname={usersListState.firstname}
-                lastname={usersListState.lastname}
-                selected_user_id={usersListState.selected_user_id}
                 handleDeleteUser={handleDeleteUser}
+                isLoaded={usersListState.isLoaded}
+                lastname={usersListState.lastname}
+                onChangeDeleteField={onChangeDeleteField}
+                selected_user_id={usersListState.selected_user_id}
+                setModalHideDDelete={setModalHideDDelete}
             />
             <UserArchivWarning
-                isLoaded={usersListState.isLoaded}
-                archivUserWarning={usersListState.archivUserWarning}
                 archiv={usersListState.archiv}
-                setModalArchivHide={setModalArchivHide}
+                archivUserWarning={usersListState.archivUserWarning}
                 firstname={usersListState.firstname}
+                isLoaded={usersListState.isLoaded}
                 lastname={usersListState.lastname}
                 selected_user_id={usersListState.selected_user_id}
+                setModalArchivHide={setModalArchivHide}
                 updateUserArchivStatus={updateUserArchivStatus}
             />
         </>

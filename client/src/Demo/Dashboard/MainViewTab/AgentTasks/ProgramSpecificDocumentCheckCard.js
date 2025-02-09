@@ -11,7 +11,7 @@ import {
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 
-function ProgramSpecificDocumentCheckCard(props) {
+const ProgramSpecificDocumentCheckCard = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
 
@@ -38,11 +38,11 @@ function ProgramSpecificDocumentCheckCard(props) {
                 )}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
                         title={params.value}
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>
@@ -64,10 +64,10 @@ function ProgramSpecificDocumentCheckCard(props) {
                 )}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>
@@ -84,18 +84,18 @@ function ProgramSpecificDocumentCheckCard(props) {
                 </Typography>
             </Alert>
             <DataGrid
+                columns={programUpdateColumn}
                 density="compact"
-                rows={[...no_programs_student_tasks]}
                 disableColumnFilter
                 disableColumnMenu
                 disableDensitySelector
-                columns={programUpdateColumn}
-                pageSizeOptions={[6, 12, 20, 50]}
                 initialState={{
                     pagination: {
                         paginationModel: { page: 0, pageSize: 6 }
                     }
                 }}
+                pageSizeOptions={[6, 12, 20, 50]}
+                rows={[...no_programs_student_tasks]}
             />
         </Card>
     );

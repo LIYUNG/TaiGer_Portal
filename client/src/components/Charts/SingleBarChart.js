@@ -6,6 +6,8 @@ const SingleBarChart = ({ data, label, yLabel }) => {
     const active_a = data.map((d) => d.uv);
     return (
         <BarChart
+            barLabel="value"
+            height={300}
             series={[{ data: active_a, label: label }]}
             xAxis={[
                 {
@@ -20,8 +22,6 @@ const SingleBarChart = ({ data, label, yLabel }) => {
                     label: yLabel
                 }
             ]}
-            barLabel="value"
-            height={300}
         />
     );
 };

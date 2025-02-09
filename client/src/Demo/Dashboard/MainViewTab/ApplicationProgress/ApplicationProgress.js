@@ -55,12 +55,12 @@ function ApplicationProgress(props) {
             <TableRow key={i}>
                 <TableCell>
                     <Link
+                        component={LinkDom}
+                        target="_blank"
                         to={DEMO.SINGLE_PROGRAM_LINK(
                             application.programId._id.toString()
                         )}
-                        component={LinkDom}
                         underline="hover"
-                        target="_blank"
                     >
                         <Typography
                             color={
@@ -78,12 +78,12 @@ function ApplicationProgress(props) {
                 </TableCell>
                 <TableCell>
                     <Link
+                        component={LinkDom}
+                        target="_blank"
                         to={DEMO.SINGLE_PROGRAM_LINK(
                             application.programId._id.toString()
                         )}
-                        component={LinkDom}
                         underline="hover"
-                        target="_blank"
                     >
                         <Typography
                             color={
@@ -101,12 +101,12 @@ function ApplicationProgress(props) {
                 </TableCell>
                 <TableCell>
                     <Link
+                        component={LinkDom}
+                        target="_blank"
                         to={DEMO.SINGLE_PROGRAM_LINK(
                             application.programId._id.toString()
                         )}
-                        component={LinkDom}
                         underline="hover"
-                        target="_blank"
                     >
                         <Typography
                             color={

@@ -14,7 +14,7 @@ import {
     valid_internal_categories
 } from '../../utils/contants';
 
-function SingleDocEdit(props) {
+const SingleDocEdit = (props) => {
     const [singleDocEditState, setSingleDocEdit] = useState({
         doc_title: props.document_title,
         category: props.category
@@ -58,8 +58,7 @@ function SingleDocEdit(props) {
     };
 
     return (
-        <>
-            <Card sx={{ px: 8, py: 2, mt: 2 }}>
+        <Card sx={{ px: 8, py: 2, mt: 2 }}>
                 {props.internal ? (
                     <>
                         <Typography variant="body1">
@@ -67,14 +66,14 @@ function SingleDocEdit(props) {
                         </Typography>
                         <FormControl fullWidth>
                             <Select
-                                size="small"
+                                id="category"
                                 labelId="category"
                                 name="category"
-                                id="category"
                                 onChange={(e) => handleChange_category(e)}
+                                size="small"
                                 value={singleDocEditState.category || ''}
                             >
-                                <MenuItem value={''}>
+                                <MenuItem value="">
                                     Select Document Category
                                 </MenuItem>
                                 {valid_internal_categories.map((cat, i) => (
@@ -92,14 +91,14 @@ function SingleDocEdit(props) {
                         </Typography>
                         <FormControl fullWidth>
                             <Select
-                                size="small"
+                                id="category"
                                 labelId="category"
                                 name="category"
-                                id="category"
                                 onChange={(e) => handleChange_category(e)}
+                                size="small"
                                 value={singleDocEditState.category || ''}
                             >
-                                <MenuItem value={''}>
+                                <MenuItem value="">
                                     Select Document Category
                                 </MenuItem>
                                 {valid_categories.map((cat, i) => (
@@ -112,21 +111,20 @@ function SingleDocEdit(props) {
                     </>
                 )}
                 <TextField
+                    defaultValue={props.document_title}
                     fullWidth
+                    onChange={(e) => handleChange(e)}
+                    placeholder="Title"
                     size="small"
                     type="text"
-                    placeholder="Title"
-                    onChange={(e) => handleChange(e)}
-                    defaultValue={props.document_title}
                 />
                 <DocumentsListItemsEditor
                     doc_title={singleDocEditState.doc_title}
                     editorState={props.editorState}
-                    handleClickSave={handleClickSave}
                     handleClickEditToggle={props.handleClickEditToggle}
+                    handleClickSave={handleClickSave}
                 />
             </Card>
-        </>
     );
 }
 export default SingleDocEdit;

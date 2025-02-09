@@ -17,7 +17,7 @@ import {
 import { useAuth } from '../../components/AuthProvider';
 import DEMO from '../../store/constant';
 
-function ManualFiles(props) {
+const ManualFiles = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [categoryState, setCategory] = useState('');
@@ -68,12 +68,10 @@ function ManualFiles(props) {
     const required_doc_keys = Object.keys(file_category_const);
 
     return (
-        <>
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={10}>
+        <Grid container spacing={2}>
+                <Grid item md={10} xs={12}>
                     <Grid container spacing={2}>
-                        {props.filetype === 'General' && (
-                            <Grid item xs={12}>
+                        {props.filetype === 'General' ? <Grid item xs={12}>
                                 <Typography>
                                     {t('General Documents', { ns: 'common' })} (
                                     {t('CV', { ns: 'common' })},{' '}
@@ -82,8 +80,7 @@ function ManualFiles(props) {
                                     })}
                                     )
                                 </Typography>
-                                {create_generaldoc_reminder && (
-                                    <Card sx={{ p: 2, mb: 2 }}>
+                                {create_generaldoc_reminder ? <Card sx={{ p: 2, mb: 2 }}>
                                         <Typography>
                                             The following general documents are
                                             not started yet, please{' '}
@@ -95,21 +92,15 @@ function ManualFiles(props) {
                                                     (thread) =>
                                                         thread.doc_thread_id
                                                             .file_type === 'CV'
-                                                ) === -1 && (
-                                                    <li>
+                                                ) === -1 ? <li>
                                                         <b>{t('CV')}</b>
-                                                    </li>
-                                                )}
+                                                    </li> : null}
                                         </Typography>
-                                    </Card>
-                                )}
-                            </Grid>
-                        )}
-                        {props.filetype === 'ProgramSpecific' && (
-                            <>
+                                    </Card> : null}
+                            </Grid> : null}
+                        {props.filetype === 'ProgramSpecific' ? <>
                                 <Grid item xs={12}>
-                                    {missingDocs.length > 0 && (
-                                        <Alert severity="error">
+                                    {missingDocs.length > 0 ? <Alert severity="error">
                                             <Typography variant="string">
                                                 Please assign the following
                                                 missing document for this
@@ -121,12 +112,10 @@ function ManualFiles(props) {
                                                     <b>{doc}</b>
                                                 </li>
                                             ))}
-                                        </Alert>
-                                    )}
+                                        </Alert> : null}
                                 </Grid>
                                 <Grid item xs={12}>
-                                    {extraDocs.length > 0 && (
-                                        <Alert severity="warning">
+                                    {extraDocs.length > 0 ? <Alert severity="warning">
                                             <Typography variant="string">
                                                 The following document is not
                                                 required for this application:
@@ -137,26 +126,23 @@ function ManualFiles(props) {
                                                     <b>{doc}</b>
                                                 </li>
                                             ))}
-                                        </Alert>
-                                    )}
+                                        </Alert> : null}
                                 </Grid>
-                            </>
-                        )}
+                            </> : null}
                         {props.filetype === 'ProgramSpecific' &&
-                            !isProgramDecided(props.application) && (
-                                <Grid item xs={12}>
-                                    <Typography variant="string" sx={{ my: 2 }}>
+                            !isProgramDecided(props.application) ? <Grid item xs={12}>
+                                    <Typography sx={{ my: 2 }} variant="string">
                                         <b>
                                             This following tasks are not visible
                                             in tasks dashboard and
                                             CV/ML/RL/Center. Please
                                             {
                                                 <Link
+                                                    component={LinkDom}
+                                                    target="_blank"
                                                     to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
                                                         props.student._id.toString()
                                                     )}`}
-                                                    component={LinkDom}
-                                                    target="_blank"
                                                 >
                                                     {' '}
                                                     click here
@@ -165,56 +151,46 @@ function ManualFiles(props) {
                                             to activate the application.
                                         </b>
                                     </Typography>
-                                </Grid>
-                            )}
+                                </Grid> : null}
                         <Grid item xs={12}>
                             <ManualFilesList
-                                student={props.student}
-                                onDeleteFileThread={props.onDeleteFileThread}
-                                handleAsFinalFile={props.handleAsFinalFile}
                                 application={props.application}
+                                handleAsFinalFile={props.handleAsFinalFile}
+                                onDeleteFileThread={props.onDeleteFileThread}
+                                student={props.student}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             {is_TaiGer_role(user) &&
                                 (!props.application ||
                                     (props.application &&
-                                        props.application.closed !== 'O')) && (
-                                    <ToggleableUploadFileForm
-                                        user={user}
-                                        student={props.student}
-                                        handleSelect={handleSelect}
+                                        props.application.closed !== 'O')) ? <ToggleableUploadFileForm
+                                        application={props.application}
+                                        category={categoryState}
+                                        filetype={props.filetype}
                                         handleCreateGeneralMessageThread={
                                             handleCreateGeneralMessageThread
                                         }
                                         handleCreateProgramSpecificMessageThread={
                                             handleCreateProgramSpecificMessageThread
                                         }
-                                        category={categoryState}
-                                        filetype={props.filetype}
-                                        application={props.application}
-                                    />
-                                )}
+                                        handleSelect={handleSelect}
+                                        student={props.student}
+                                        user={user}
+                                    /> : null}
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={12} md={2}>
-                    {props.filetype === 'ProgramSpecific' && (
-                        <>
-                            {props.application?.decided === 'O' && (
-                                <Button
-                                    fullWidth
+                <Grid item md={2} xs={12}>
+                    {props.filetype === 'ProgramSpecific' ? <>
+                            {props.application?.decided === 'O' ? <Button
                                     color="primary"
                                     disabled={
                                         !is_program_ml_rl_essay_finished(
                                             props.application
                                         )
                                     }
-                                    variant={
-                                        is_program_closed(props.application)
-                                            ? 'outlined'
-                                            : 'contained'
-                                    }
+                                    fullWidth
                                     onClick={() =>
                                         props.handleProgramStatus(
                                             props.student._id.toString(),
@@ -222,12 +198,16 @@ function ManualFiles(props) {
                                             is_program_closed(props.application)
                                         )
                                     }
+                                    variant={
+                                        is_program_closed(props.application)
+                                            ? 'outlined'
+                                            : 'contained'
+                                    }
                                 >
                                     {is_program_closed(props.application)
                                         ? 'Reopen'
                                         : 'Mark Submitted'}
-                                </Button>
-                            )}
+                                </Button> : null}
                             <Typography>Veiw requirements:</Typography>
                             {required_doc_keys.map(
                                 (doc_reqired_key, i) =>
@@ -235,12 +215,9 @@ function ManualFiles(props) {
                                         doc_reqired_key
                                     ] === 'yes' && (
                                         <Button
-                                            key={i}
-                                            fullWidth
-                                            size="small"
-                                            title={`${file_category_const[doc_reqired_key]}`}
-                                            variant="contained"
                                             color="secondary"
+                                            fullWidth
+                                            key={i}
                                             onClick={() =>
                                                 props.openRequirements_ModalWindow(
                                                     props.application.programId[
@@ -251,6 +228,9 @@ function ManualFiles(props) {
                                                     ]
                                                 )
                                             }
+                                            size="small"
+                                            title={`${file_category_const[doc_reqired_key]}`}
+                                            variant="contained"
                                         >
                                             {
                                                 file_category_const[
@@ -260,28 +240,24 @@ function ManualFiles(props) {
                                         </Button>
                                     )
                             )}
-                            {props.application.programId.rl_required > 0 && (
-                                <Button
-                                    fullWidth
-                                    size="small"
-                                    title="RL"
-                                    variant="contained"
+                            {props.application.programId.rl_required > 0 ? <Button
                                     color="info"
+                                    fullWidth
                                     onClick={() =>
                                         props.openRequirements_ModalWindow(
                                             props.application.programId
                                                 .rl_requirements
                                         )
                                     }
+                                    size="small"
+                                    title="RL"
+                                    variant="contained"
                                 >
                                     RL
-                                </Button>
-                            )}
-                        </>
-                    )}
+                                </Button> : null}
+                        </> : null}
                 </Grid>
             </Grid>
-        </>
     );
 }
 

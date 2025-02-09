@@ -20,7 +20,7 @@ import TabStudBackgroundDashboard from '../MainViewTab/StudDocsOverview/TabStudB
 import ProgramReportCard from '../../Program/ProgramReportCard';
 import MiniAudit from '../../Audit/MiniAudit';
 
-function AdminMainView(props) {
+const AdminMainView = (props) => {
     const { t } = useTranslation();
     const {
         res_modal_status,
@@ -46,15 +46,15 @@ function AdminMainView(props) {
 
     const admin_tasks = (
         <AdminTasks
-            students={students}
             essayDocumentThreads={props.essayDocumentThreads}
+            students={students}
         />
     );
 
     return (
         <>
             <Grid container spacing={2} sx={{ mt: 0 }}>
-                <Grid item xs={12} md={4}>
+                <Grid item md={4} xs={12}>
                     <Card style={{ height: '40vh', overflow: 'auto' }}>
                         <Typography variant="h6">
                             <Alert severity="warning">
@@ -76,10 +76,10 @@ function AdminMainView(props) {
                         </Table>
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item md={4} xs={12}>
                     <ProgramReportCard />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item md={4} xs={12}>
                     <Card style={{ height: '40vh', overflow: 'auto' }}>
                         <MiniAudit audit={props.auditLog || []} />
                     </Card>
@@ -90,19 +90,17 @@ function AdminMainView(props) {
                             (student) => !student.archiv
                         )}
                         submitUpdateAgentlist={submitUpdateAgentlist}
-                        submitUpdateEditorlist={submitUpdateEditorlist}
                         submitUpdateAttributeslist={submitUpdateAttributeslist}
+                        submitUpdateEditorlist={submitUpdateEditorlist}
                         updateStudentArchivStatus={updateStudentArchivStatus}
                     />
                 </Grid>
             </Grid>
-            {res_modal_status >= 400 && (
-                <ModalMain
+            {res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
-                />
-            )}
+                    res_modal_status={res_modal_status}
+                /> : null}
         </>
     );
 }

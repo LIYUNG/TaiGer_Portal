@@ -12,9 +12,9 @@ import {
 } from 'recharts';
 import { appConfig } from '../../../config';
 
-function ProgramDistributionChart({ data, x_key }) {
+const ProgramDistributionChart = ({ data, x_key }) => {
     return (
-        <ResponsiveContainer width="100%" height={200}>
+        <ResponsiveContainer height={200} width="100%">
             <BarChart
                 data={data}
                 margin={{
@@ -41,8 +41,7 @@ function ProgramDistributionChart({ data, x_key }) {
 
 const ProgramListDashboardTab = ({ data }) => {
     return (
-        <>
-            <Card sx={{ p: 2 }}>
+        <Card sx={{ p: 2 }}>
                 <Box>
                     {appConfig.companyName} ProgramList Distribution By Country:
                     <ProgramDistributionChart
@@ -76,7 +75,6 @@ const ProgramListDashboardTab = ({ data }) => {
                     />
                 </Box>
             </Card>
-        </>
     );
 };
 

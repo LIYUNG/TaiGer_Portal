@@ -22,7 +22,7 @@ const LandingPage = () => {
         <div>
             <AppBar position="static">
                 <Toolbar>
-                    <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                    <Typography sx={{ flexGrow: 1 }} variant="h6">
                         TaiGer
                     </Typography>
                     <Button color="inherit" href="/login">
@@ -40,24 +40,24 @@ const LandingPage = () => {
                     }}
                 >
                     <img
-                        src={logoLink}
                         alt="Logo"
+                        src={logoLink}
                         style={{ maxWidth: '100%' }}
                     />
                     <Typography
-                        component="h2"
-                        variant="h3"
                         align="center"
                         color="textPrimary"
+                        component="h2"
                         gutterBottom
+                        variant="h3"
                     >
                         Welcome to TaiGer Consultancy Portal
                     </Typography>
                     <Typography
-                        variant="h5"
                         align="center"
                         color="textSecondary"
                         paragraph
+                        variant="h5"
                     >
                         Your gateway to international education. We provide
                         comprehensive support and resources to help you achieve
@@ -65,24 +65,24 @@ const LandingPage = () => {
                     </Typography>
                     <Grid
                         container
-                        spacing={2}
                         justifyContent="center"
+                        spacing={2}
                         sx={{ marginTop: 4 }}
                     >
                         <Grid item>
                             <Button
-                                variant="contained"
                                 color="primary"
                                 href={DEMO.LOGIN_LINK}
+                                variant="contained"
                             >
                                 Student Login
                             </Button>
                         </Grid>
                         <Grid item>
                             <Button
-                                variant="outlined"
                                 color="primary"
                                 href={appConfig.companycompanyLandingPage}
+                                variant="outlined"
                             >
                                 Learn More
                             </Button>
@@ -91,7 +91,7 @@ const LandingPage = () => {
                 </Container>
                 <Container sx={{ paddingTop: 8, paddingBottom: 8 }}>
                     <Grid container spacing={4}>
-                        <Grid item xs={12} sm={6} md={4}>
+                        <Grid item md={4} sm={6} xs={12}>
                             <Paper
                                 sx={{
                                     height: '100%',
@@ -101,9 +101,9 @@ const LandingPage = () => {
                                 }}
                             >
                                 <Typography
+                                    component="h2"
                                     gutterBottom
                                     variant="h5"
-                                    component="h2"
                                 >
                                     Our Services
                                 </Typography>
@@ -114,7 +114,7 @@ const LandingPage = () => {
                                 </Typography>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={4}>
+                        <Grid item md={4} sm={6} xs={12}>
                             <Paper
                                 sx={{
                                     height: '100%',
@@ -124,9 +124,9 @@ const LandingPage = () => {
                                 }}
                             >
                                 <Typography
+                                    component="h2"
                                     gutterBottom
                                     variant="h5"
-                                    component="h2"
                                 >
                                     Testimonials
                                 </Typography>
@@ -136,7 +136,7 @@ const LandingPage = () => {
                                 </Typography>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={4}>
+                        <Grid item md={4} sm={6} xs={12}>
                             <Paper
                                 sx={{
                                     height: '100%',
@@ -146,9 +146,9 @@ const LandingPage = () => {
                                 }}
                             >
                                 <Typography
+                                    component="h2"
                                     gutterBottom
                                     variant="h5"
-                                    component="h2"
                                 >
                                     Contact Us
                                 </Typography>

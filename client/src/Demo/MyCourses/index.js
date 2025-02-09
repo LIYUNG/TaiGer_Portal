@@ -518,47 +518,41 @@ export default function MyCourses() {
 
     return (
         <Box data-testid="student_course_view">
-            {statedata.res_modal_status >= 400 && (
-                <ModalMain
+            {statedata.res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={statedata.res_modal_status}
                     res_modal_message={statedata.res_modal_message}
-                />
-            )}
-            {statedata.student.archiv && (
-                <Box className="sticky-top">
+                    res_modal_status={statedata.res_modal_status}
+                /> : null}
+            {statedata.student.archiv ? <Box className="sticky-top">
                     <TopBar />
-                </Box>
-            )}
+                </Box> : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
-                {is_TaiGer_role(user) && (
-                    <Link
-                        underline="hover"
+                {is_TaiGer_role(user) ? <Link
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                             statedata.student._id.toString(),
                             DEMO.PROFILE_HASH
                         )}`}
+                        underline="hover"
                     >
                         {statedata.student.firstname}{' '}
                         {statedata.student.lastname}
-                    </Link>
-                )}
+                    </Link> : null}
                 <Typography color="text.primary">
                     {t('My Courses', { ns: 'common' })}
                 </Typography>
             </Breadcrumbs>
             {/* <Card sx={{ mt: 2, padding: 2, minWidth: '450px' }}> */}
-            <Typography variant="h6" sx={{ pt: 2 }}>
+            <Typography sx={{ pt: 2 }} variant="h6">
                 請把大學及碩士成績單 上面出現的所有課程填入這個表單內
             </Typography>
             <Box>
@@ -615,7 +609,19 @@ export default function MyCourses() {
             </Typography>
             <TableContainer style={{ overflowX: 'auto' }}>
                 <DataSheetGrid
+                    autoAddRow={true}
+                    columns={columns}
+                    disableContextMenu={false}
+                    disableExpandSelection={false}
+                    headerRowHeight={30}
+                    height={6000}
                     id={1}
+                    onChange={
+                        statedata.table_data_string_locked
+                            ? onChange_ReadOnly
+                            : onChange
+                    }
+                    rowHeight={25}
                     style={{
                         minWidth: '450px',
                         '--dsg-selection-border-color':
@@ -627,19 +633,7 @@ export default function MyCourses() {
                         '--dsg-header-active-text-color':
                             theme.palette.text.primary
                     }}
-                    height={6000}
-                    disableContextMenu={false}
-                    disableExpandSelection={false}
-                    headerRowHeight={30}
-                    rowHeight={25}
                     value={statedata.coursesdata}
-                    autoAddRow={true}
-                    onChange={
-                        statedata.table_data_string_locked
-                            ? onChange_ReadOnly
-                            : onChange
-                    }
-                    columns={columns}
                 />
             </TableContainer>
             <Card
@@ -649,7 +643,7 @@ export default function MyCourses() {
                     backgroundColor: theme.palette.primary.main
                 }}
             >
-                <Typography variant="h6" sx={{ p: 2 }}>
+                <Typography sx={{ p: 2 }} variant="h6">
                     <b>表格二</b>：請放 {appConfig.companyName} 服務開始
                     <b>後</b>
                     所選的修課程
@@ -661,7 +655,15 @@ export default function MyCourses() {
                 </Typography>
                 <TableContainer style={{ overflowX: 'auto' }}>
                     <DataSheetGrid
+                        autoAddRow={true}
+                        columns={columns}
+                        disableContextMenu={true}
+                        disableExpandSelection={false}
+                        headerRowHeight={30}
+                        height={6000}
                         id={2}
+                        onChange={onChange_taiger_guided}
+                        rowHeight={25}
                         style={{
                             minWidth: '450px',
                             '--dsg-selection-border-color':
@@ -674,46 +676,36 @@ export default function MyCourses() {
                             '--dsg-header-active-text-color':
                                 theme.palette.text.primary
                         }}
-                        height={6000}
-                        disableContextMenu={true}
-                        disableExpandSelection={false}
-                        headerRowHeight={30}
-                        rowHeight={25}
                         value={statedata.coursesdata_taiger_guided}
-                        autoAddRow={true}
-                        onChange={onChange_taiger_guided}
-                        columns={columns}
                     />
                 </TableContainer>
             </Card>
-            {is_TaiGer_AdminAgent(user) && (
-                <Box sx={{ mt: 2 }}>
+            {is_TaiGer_AdminAgent(user) ? <Box sx={{ mt: 2 }}>
                     <FormControlLabel
-                        label={`Lock Table 1 preventing student modifying it.`}
                         control={
                             <Checkbox
                                 checked={statedata.table_data_string_locked}
                                 onChange={(e) => handleLockTable(e)}
-                                value={'is locked'}
+                                value="is locked"
                             />
                         }
+                        label="Lock Table 1 preventing student modifying it."
                     />
-                </Box>
-            )}
-            <Typography variant="body2" sx={{ my: 2 }}>
+                </Box> : null}
+            <Typography sx={{ my: 2 }} variant="body2">
                 {t('Last update', { ns: 'common' })}&nbsp;
                 {convertDate(statedata.updatedAt)}
             </Typography>
             <Button
                 color="primary"
-                variant="contained"
-                size="small"
-                onClick={onSubmit}
                 disabled={statedata.isUpdating}
-                sx={{ mb: 2 }}
+                onClick={onSubmit}
+                size="small"
                 startIcon={
-                    statedata.isUpdating && <CircularProgress size={20} />
+                    statedata.isUpdating ? <CircularProgress size={20} /> : null
                 }
+                sx={{ mb: 2 }}
+                variant="contained"
             >
                 {statedata.isUpdating
                     ? t('Updating', { ns: 'common' })
@@ -725,31 +717,28 @@ export default function MyCourses() {
                     { ns: 'courses' }
                 )}
             </Typography>
-            {is_TaiGer_Guest(user) && (
-                <Card sx={{ mt: 2 }}>
+            {is_TaiGer_Guest(user) ? <Card sx={{ mt: 2 }}>
                     <Typography>
                         Do you want to see result? Contact our consultant!
                     </Typography>
                     <br />
-                </Card>
-            )}
+                </Card> : null}
 
             <Card sx={{ mt: 2, p: 2 }}>
-                {is_TaiGer_AdminAgent(user) && (
-                    <>
+                {is_TaiGer_AdminAgent(user) ? <>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <Tabs
-                                value={value}
-                                onChange={handleChangeValue}
-                                variant="scrollable"
-                                scrollButtons="auto"
                                 aria-label="basic tabs example"
+                                onChange={handleChangeValue}
+                                scrollButtons="auto"
+                                value={value}
+                                variant="scrollable"
                             >
                                 <Tab label="Default" {...a11yProps(0)} />
                                 <Tab
                                     label={
                                         <Badge
-                                            badgeContent={'V2'}
+                                            badgeContent="V2"
                                             color="error"
                                         >
                                             New Analyzer
@@ -759,7 +748,7 @@ export default function MyCourses() {
                                 />
                             </Tabs>
                         </Box>
-                        <CustomTabPanel value={value} index={0}>
+                        <CustomTabPanel index={0} value={value}>
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <Typography variant="h6">
@@ -776,21 +765,21 @@ export default function MyCourses() {
                                             })}
                                         </InputLabel>
                                         <Select
-                                            labelId="select-label"
                                             id="study_group"
-                                            value={statedata.study_group}
                                             label={t('Select Target Group', {
                                                 ns: 'courses'
                                             })}
+                                            labelId="select-label"
                                             onChange={handleChange_study_group}
+                                            value={statedata.study_group}
                                         >
-                                            <MenuItem value={''}>
+                                            <MenuItem value="">
                                                 Select Study Group
                                             </MenuItem>
                                             {study_group.map((cat, i) => (
                                                 <MenuItem
-                                                    value={cat.key}
                                                     key={i}
+                                                    value={cat.key}
                                                 >
                                                     {cat.value}
                                                 </MenuItem>
@@ -809,23 +798,23 @@ export default function MyCourses() {
                                             })}
                                         </InputLabel>
                                         <Select
-                                            labelId="demo-simple-select-label"
                                             id="analysis_language"
-                                            value={statedata.analysis_language}
                                             label={t('Select language', {
                                                 ns: 'courses'
                                             })}
+                                            labelId="demo-simple-select-label"
                                             onChange={
                                                 handleChange_analysis_language
                                             }
+                                            value={statedata.analysis_language}
                                         >
-                                            <MenuItem value={''}>
+                                            <MenuItem value="">
                                                 Select Study Group
                                             </MenuItem>
-                                            <MenuItem value={'zh'}>
+                                            <MenuItem value="zh">
                                                 中文
                                             </MenuItem>
-                                            <MenuItem value={'en'}>
+                                            <MenuItem value="en">
                                                 English (Beta Version)
                                             </MenuItem>
                                         </Select>
@@ -834,8 +823,6 @@ export default function MyCourses() {
                                 <Grid item xs={12}>
                                     <Button
                                         color="primary"
-                                        variant="contained"
-                                        onClick={onAnalyse}
                                         disabled={
                                             statedata.isAnalysing ||
                                             statedata.study_group === '' ||
@@ -848,7 +835,9 @@ export default function MyCourses() {
                                                 <></>
                                             )
                                         }
+                                        onClick={onAnalyse}
                                         sx={{ mr: 2 }}
+                                        variant="contained"
                                     >
                                         {statedata.isAnalysing
                                             ? t('Analysing', { ns: 'courses' })
@@ -857,7 +846,7 @@ export default function MyCourses() {
                                 </Grid>
                             </Grid>
                         </CustomTabPanel>
-                        <CustomTabPanel value={value} index={1}>
+                        <CustomTabPanel index={1} value={value}>
                             <Typography variant="h5">
                                 Attention: This is <b>NOT</b> production ready
                                 and student WILL NOT be informed and see any
@@ -871,15 +860,15 @@ export default function MyCourses() {
                                 <>
                                     <Typography>
                                         <LinkDom
+                                            target="_blank"
                                             to={`${DEMO.COURSES_ANALYSIS_RESULT_V2_LINK(
                                                 statedata.student._id.toString()
                                             )}`}
-                                            target="_blank"
                                         >
                                             <Button
                                                 color="secondary"
-                                                variant="contained"
                                                 size="small"
+                                                variant="contained"
                                             >
                                                 {t('View Online', {
                                                     ns: 'courses'
@@ -905,10 +894,8 @@ export default function MyCourses() {
                                 </Typography>
                             )}
                         </CustomTabPanel>
-                    </>
-                )}
-                {value === 0 && (
-                    <Grid container spacing={2}>
+                    </> : null}
+                {value === 0 ? <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <Typography variant="h6">
                                 {t('Courses Analysis', { ns: 'courses' })}
@@ -921,25 +908,25 @@ export default function MyCourses() {
                                     <Typography>
                                         <Button
                                             color="primary"
-                                            variant="contained"
-                                            size="small"
-                                            onClick={onDownload}
                                             disabled={statedata.isDownloading}
+                                            onClick={onDownload}
+                                            size="small"
                                             startIcon={<DownloadIcon />}
                                             sx={{ marginRight: 2 }}
+                                            variant="contained"
                                         >
                                             {t('Download', { ns: 'common' })}
                                         </Button>
                                         <LinkDom
+                                            target="_blank"
                                             to={`${DEMO.COURSES_ANALYSIS_RESULT_LINK(
                                                 statedata.student._id.toString()
                                             )}`}
-                                            target="_blank"
                                         >
                                             <Button
                                                 color="secondary"
-                                                variant="contained"
                                                 size="small"
+                                                variant="contained"
                                             >
                                                 {t('View Online', {
                                                     ns: 'courses'
@@ -965,13 +952,12 @@ export default function MyCourses() {
                                 </Typography>
                             )}
                         </Grid>
-                    </Grid>
-                )}
+                    </Grid> : null}
             </Card>
 
             <Dialog
-                open={statedata.confirmModalWindowOpen}
                 onClose={closeModal}
+                open={statedata.confirmModalWindowOpen}
             >
                 <DialogTitle>{t('Confirmation', { ns: 'common' })}</DialogTitle>
                 <DialogContent>
@@ -985,16 +971,16 @@ export default function MyCourses() {
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         onClick={closeModal}
+                        variant="contained"
                     >
                         {t('Close', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>
             <Dialog
-                open={statedata.analysisSuccessModalWindowOpen}
                 onClose={closeanalysisSuccessModal}
+                open={statedata.analysisSuccessModalWindowOpen}
             >
                 <DialogTitle>
                     {t('Success', { ns: 'common' }, { ns: 'common' })}
@@ -1019,8 +1005,8 @@ export default function MyCourses() {
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         onClick={closeanalysisSuccessModal}
+                        variant="contained"
                     >
                         {t('Close', { ns: 'common' })}
                     </Button>

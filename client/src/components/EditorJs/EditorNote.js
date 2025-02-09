@@ -128,7 +128,7 @@ const EditorNote = (props) => {
         editor = new EditorJS(configuration);
     };
 
-    return <div id={`${props.holder}`}></div>;
+    return <div id={`${props.holder}`} />;
 };
 
 export default EditorNote;

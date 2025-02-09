@@ -230,37 +230,32 @@ export default function CourseAnalysis() {
 
     return (
         <Box>
-            {statedata.res_modal_status >= 400 && (
-                <ModalMain
+            {statedata.res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={statedata.res_modal_status}
                     res_modal_message={statedata.res_modal_message}
-                />
-            )}
+                    res_modal_status={statedata.res_modal_status}
+                /> : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
-                {is_TaiGer_role(user) && (
-                    <Link
-                        underline="hover"
+                {is_TaiGer_role(user) ? <Link
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                             statedata.studentId,
                             DEMO.PROFILE_HASH
                         )}`}
+                        underline="hover"
                     >
                         {statedata.student_name}
-                    </Link>
-                )}
+                    </Link> : null}
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={
@@ -268,6 +263,7 @@ export default function CourseAnalysis() {
                             ? `${DEMO.COURSES_INPUT_LINK(statedata.studentId)}`
                             : '/internal/widgets/course-analyser'
                     }
+                    underline="hover"
                 >
                     {t('My Courses')}
                 </Link>
@@ -276,39 +272,39 @@ export default function CourseAnalysis() {
                 </Typography>
             </Breadcrumbs>
             {/* <Card sx={{ p: 2 }}> */}
-            <Typography variant="body1" sx={{ pt: 2 }}>
+            <Typography sx={{ pt: 2 }} variant="body1">
                 {t('Course Analysis banner', { ns: 'courses' })}
             </Typography>
-            <Typography variant="body1" sx={{ py: 2 }}>
+            <Typography sx={{ py: 2 }} variant="body1">
                 {t('Course Analysis description', { ns: 'courses' })}
             </Typography>
             <Button
-                size="small"
                 color="primary"
-                variant="contained"
                 onClick={() => navigate(DEMO.COURSES_ANALYSIS_EXPLANATION_LINK)}
+                size="small"
                 sx={{ mr: 2 }}
+                variant="contained"
             >
                 {t('Course Analysis explanation button')}
             </Button>
             <Button
-                size="small"
                 color="secondary"
-                variant="contained"
                 onClick={() => onDownload()}
+                size="small"
+                variant="contained"
             >
                 {t('Download', { ns: 'common' })} Excel
             </Button>
-            <Typography variant="body1" sx={{ pt: 2, pb: 1 }}>
+            <Typography sx={{ pt: 2, pb: 1 }} variant="body1">
                 {t('Programs')}:
             </Typography>
             <Select
-                fullWidth
-                size="small"
-                value={value}
-                onChange={handleChange}
                 aria-label="course analysis tabs"
+                fullWidth
+                onChange={handleChange}
+                size="small"
                 sx={{ mb: 2 }}
+                value={value}
             >
                 {statedata.sheetNames.map((sheetName, i) => (
                     <MenuItem key={sheetName} value={i}>
@@ -318,8 +314,13 @@ export default function CourseAnalysis() {
             </Select>
             <TableContainer style={{ overflowX: 'auto' }}>
                 <DataSheetGrid
-                    ref={ref}
+                    columns={columns}
+                    disableContextMenu={true}
+                    disableExpandSelection={false}
+                    headerRowHeight={30}
                     height={6000}
+                    ref={ref}
+                    rowHeight={25}
                     style={{
                         minWidth: '450px',
                         '--dsg-selection-border-color':
@@ -331,14 +332,9 @@ export default function CourseAnalysis() {
                         '--dsg-header-active-text-color':
                             theme.palette.text.primary
                     }}
-                    disableContextMenu={true}
-                    disableExpandSelection={false}
-                    headerRowHeight={30}
-                    rowHeight={25}
                     value={statedata.sheets[statedata.sheetNames[value]]}
                     // autoAddRow={true}
                     disabled={true}
-                    columns={columns}
                 />
             </TableContainer>
             {t('Last update', { ns: 'common' })}{' '}

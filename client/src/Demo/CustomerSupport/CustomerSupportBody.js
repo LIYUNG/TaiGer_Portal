@@ -24,7 +24,7 @@ import DEMO from '../../store/constant';
 
 import { convertDateUXFriendly } from '../../utils/contants';
 
-function CustomerSupportBody({ complaintTickets }) {
+const CustomerSupportBody = ({ complaintTickets }) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
 
@@ -36,10 +36,10 @@ function CustomerSupportBody({ complaintTickets }) {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -52,60 +52,57 @@ function CustomerSupportBody({ complaintTickets }) {
             </Breadcrumbs>
             <Box>
                 <Box
+                    alignItems="center"
                     display="flex"
                     justifyContent="space-between"
-                    alignItems="center"
                     my={2}
                 >
                     <Box>
-                        <Typography variant="h5" gutterBottom>
+                        <Typography gutterBottom variant="h5">
                             {t('What is the purpose of the Customer Center?', {
                                 ns: 'customerCenter'
                             })}
                         </Typography>
-                        <Typography variant="subtitle1" gutterBottom>
+                        <Typography gutterBottom variant="subtitle1">
                             {t('explanation_customer_center', {
                                 ns: 'customerCenter'
                             })}
                         </Typography>
                     </Box>
-                    <Box display="flex" alignItems="center">
+                    <Box alignItems="center" display="flex">
                         <Button
-                            variant="contained"
-                            startIcon={<AddIcon />}
                             onClick={handleAddTicketClick}
+                            startIcon={<AddIcon />}
                             sx={{ minWidth: '140px' }}
+                            variant="contained"
                         >
                             {t('Add Ticket', { ns: 'customerCenter' })}
                         </Button>
                     </Box>
                 </Box>
                 <Grid container spacing={3}>
-                    <Grid item xs={12} md={8}>
+                    <Grid item md={8} xs={12}>
                         <Paper
                             elevation={3}
                             sx={{ p: 3, maxHeight: 600, overflow: 'auto' }}
                         >
                             <Box
+                                alignItems="center"
                                 display="flex"
                                 justifyContent="space-between"
-                                alignItems="center"
                                 mb={2}
                             >
                                 <Typography variant="h6">
                                     Latest Support History
                                 </Typography>
                             </Box>
-                            <Typography variant="body2" gutterBottom>
+                            <Typography gutterBottom variant="body2">
                                 Here is your most recent history
                             </Typography>
                             <List>
                                 {complaintTickets.map((ticket) => (
                                     <ListItemButton
                                         component={LinkDom}
-                                        to={`${DEMO.CUSTOMER_CENTER_TICKET_DETAIL_PAGE_LINK(
-                                            ticket._id
-                                        )}`}
                                         key={ticket._id}
                                         sx={{
                                             '&:hover': {
@@ -119,6 +116,9 @@ function CustomerSupportBody({ complaintTickets }) {
                                                 }
                                             }
                                         }}
+                                        to={`${DEMO.CUSTOMER_CENTER_TICKET_DETAIL_PAGE_LINK(
+                                            ticket._id
+                                        )}`}
                                     >
                                         <ListItemText
                                             primary={`${ticket.title} - ${ticket.requester_id?.firstname}`}
@@ -127,8 +127,8 @@ function CustomerSupportBody({ complaintTickets }) {
                                             } - ${convertDateUXFriendly(ticket.updatedAt)}`}
                                         />
                                         <Typography
-                                            variant="body2"
                                             color="textSecondary"
+                                            variant="body2"
                                         >
                                             {ticket.status}
                                         </Typography>
@@ -138,9 +138,9 @@ function CustomerSupportBody({ complaintTickets }) {
                         </Paper>
                     </Grid>
 
-                    <Grid item xs={12} md={4}>
+                    <Grid item md={4} xs={12}>
                         <Paper elevation={3} sx={{ p: 3 }}>
-                            <Typography variant="h6" gutterBottom>
+                            <Typography gutterBottom variant="h6">
                                 {t('Frequently Asked Questions', {
                                     ns: 'common'
                                 })}

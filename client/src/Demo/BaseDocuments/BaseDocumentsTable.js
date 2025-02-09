@@ -28,7 +28,7 @@ import { updateProfileDocumentStatus } from '../../api';
 import DEMO from '../../store/constant';
 import AcceptProfileFileModel from './AcceptedFilePreviewModal';
 
-export function BaseDocumentsTable(props) {
+export const BaseDocumentsTable = (props) => {
     const [baseDocumentsTableState, setBaseDocumentsTableState] = useState({
         students: props.students,
         isLoaded: true,
@@ -206,11 +206,11 @@ export function BaseDocumentsTable(props) {
                 if (params.value?.status === DocumentStatusType.Uploaded) {
                     return (
                         <Link
-                            underline="hover"
-                            to={''}
                             component={LinkDom}
                             target="_blank"
                             title={params.value?.status}
+                            to=""
+                            underline="hover"
                         >
                             <IconButton>{FILE_UPLOADED_SYMBOL}</IconButton>
                             {`${params.value?.status || ''}`}
@@ -262,9 +262,7 @@ export function BaseDocumentsTable(props) {
                     );
                 } else {
                     return (
-                        <>
-                            <IconButton>{FILE_MISSING_SYMBOL}</IconButton>
-                        </>
+                        <IconButton>{FILE_MISSING_SYMBOL}</IconButton>
                     );
                 }
             }
@@ -282,17 +280,15 @@ export function BaseDocumentsTable(props) {
                     DEMO.PROFILE_HASH
                 )}`;
                 return (
-                    <>
-                        <Link
-                            underline="hover"
-                            to={linkUrl}
+                    <Link
                             component={LinkDom}
                             target="_blank"
                             title={params.value}
+                            to={linkUrl}
+                            underline="hover"
                         >
                             {params.value}
                         </Link>
-                    </>
                 );
             }
         },
@@ -303,12 +299,12 @@ export function BaseDocumentsTable(props) {
             renderCell: (params) => {
                 return params.value?.map((agent) => (
                     <Link
-                        underline="hover"
-                        to={DEMO.TEAM_AGENT_LINK(agent._id.toString())}
                         component={LinkDom}
+                        key={`${agent._id.toString()}`}
                         target="_blank"
                         title={agent.firstname}
-                        key={`${agent._id.toString()}`}
+                        to={DEMO.TEAM_AGENT_LINK(agent._id.toString())}
+                        underline="hover"
                     >
                         {`${agent.firstname} `}
                     </Link>
@@ -325,19 +321,19 @@ export function BaseDocumentsTable(props) {
                 rows={student_profile_transformed}
             />
             <AcceptProfileFileModel
-                showPreview={baseDocumentsTableState.showPreview}
                 closePreviewWindow={closePreviewWindow}
-                path={baseDocumentsTableState.preview_path}
-                preview_path={baseDocumentsTableState.preview_path}
-                student_id={baseDocumentsTableState.student_id}
                 isLoaded={baseDocumentsTableState.isLoaded}
                 k={baseDocumentsTableState.doc_key}
                 onUpdateProfileDocStatus={onUpdateProfileDocStatus}
+                path={baseDocumentsTableState.preview_path}
+                preview_path={baseDocumentsTableState.preview_path}
+                showPreview={baseDocumentsTableState.showPreview}
+                student_id={baseDocumentsTableState.student_id}
             />
             <Dialog
-                open={baseDocumentsTableState.rejectProfileFileModel}
-                onClose={closeRejectWarningWindow}
                 aria-labelledby="contained-modal-title-vcenter"
+                onClose={closeRejectWarningWindow}
+                open={baseDocumentsTableState.rejectProfileFileModel}
             >
                 <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                 <DialogContent>
@@ -346,9 +342,9 @@ export function BaseDocumentsTable(props) {
                         {baseDocumentsTableState.category} is invalied?
                     </DialogContentText>
                     <TextField
-                        type="text"
-                        placeholder="ex. Poor scanned quality."
                         onChange={(e) => handleRejectMessage(e, e.target.value)}
+                        placeholder="ex. Poor scanned quality."
+                        type="text"
                     />
                 </DialogContent>
                 <DialogActions>

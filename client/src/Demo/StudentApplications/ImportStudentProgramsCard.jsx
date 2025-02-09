@@ -266,18 +266,17 @@ export const ImportStudentProgramsCard = (props) => {
                 </Typography>
                 <Box sx={{ position: 'relative' }}>
                     <TextField
-                        fullWidth
-                        variant="outlined"
-                        type="text"
-                        size="small"
                         className="search-input"
-                        placeholder={t('Search student...')}
-                        value={importStudentProgramsCard.searchTerm}
-                        onMouseDown={handleInputBlur}
+                        fullWidth
                         onChange={handleInputChange}
+                        onMouseDown={handleInputBlur}
+                        placeholder={t('Search student...')}
+                        size="small"
+                        type="text"
+                        value={importStudentProgramsCard.searchTerm}
+                        variant="outlined"
                     />
-                    {importStudentProgramsCard.isResultsVisible &&
-                        (importStudentProgramsCard.searchResults?.length > 0 ? (
+                    {importStudentProgramsCard.isResultsVisible ? importStudentProgramsCard.searchResults?.length > 0 ? (
                             <Paper
                                 sx={{
                                     marginTop: '5px',
@@ -293,13 +292,13 @@ export const ImportStudentProgramsCard = (props) => {
                                     {importStudentProgramsCard.searchResults?.map(
                                         (result, i) => (
                                             <ListItem
+                                                button
+                                                key={i}
                                                 onClick={() =>
                                                     onClickStudentHandler(
                                                         result
                                                     )
                                                 }
-                                                key={i}
-                                                button
                                             >
                                                 <ListItemText
                                                     primary={
@@ -311,8 +310,7 @@ export const ImportStudentProgramsCard = (props) => {
                                                                 } ${result.lastname_chinese || ''}`,
                                                                 importStudentProgramsCard.searchTerm
                                                             )}
-                                                            {result.email && (
-                                                                <Box
+                                                            {result.email ? <Box
                                                                     component="span"
                                                                     sx={{
                                                                         display:
@@ -331,8 +329,7 @@ export const ImportStudentProgramsCard = (props) => {
                                                                         result.email,
                                                                         importStudentProgramsCard.searchTerm
                                                                     )}
-                                                                </Box>
-                                                            )}
+                                                                </Box> : null}
                                                         </>
                                                     }
                                                 />
@@ -353,18 +350,18 @@ export const ImportStudentProgramsCard = (props) => {
                             >
                                 <List>
                                     <ListItem button>
-                                        <ListItemText primary={'No result'} />
+                                        <ListItemText primary="No result" />
                                     </ListItem>
                                 </List>
                             </Paper>
-                        ))}
+                        ) : null}
                 </Box>
             </Card>
             <Dialog
-                open={importStudentProgramsCard.importedStudentModalOpen}
-                onClose={onHideimportedStudentModalOpen}
-                size="xl"
                 aria-labelledby="contained-modal-title-vcenter"
+                onClose={onHideimportedStudentModalOpen}
+                open={importStudentProgramsCard.importedStudentModalOpen}
+                size="xl"
             >
                 <DialogTitle>
                     Import programs from{' '}
@@ -383,8 +380,8 @@ export const ImportStudentProgramsCard = (props) => {
                             {importStudentProgramsCard.importedStudentPrograms?.map(
                                 (app, i) => (
                                     <ListItemButton
+                                        dense
                                         key={i}
-                                        role={undefined}
                                         onClick={() =>
                                             modifyImportingPrograms(
                                                 app.programId._id.toString(),
@@ -395,18 +392,18 @@ export const ImportStudentProgramsCard = (props) => {
                                                 )
                                             )
                                         }
-                                        dense
+                                        role={undefined}
                                     >
                                         <ListItemIcon>
                                             <Checkbox
-                                                edge="start"
                                                 checked={importStudentProgramsCard.program_ids?.some(
                                                     (program_id) =>
                                                         program_id ===
                                                         app.programId._id.toString()
                                                 )}
-                                                tabIndex={-1}
                                                 disableRipple
+                                                edge="start"
+                                                tabIndex={-1}
                                             />
                                         </ListItemIcon>
                                         <ListItemText
@@ -421,9 +418,9 @@ export const ImportStudentProgramsCard = (props) => {
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         disabled={importStudentProgramsCard.isButtonDisable}
                         onClick={handleImportProgramsConfirm}
+                        variant="contained"
                     >
                         {importStudentProgramsCard.isButtonDisable ? (
                             <CircularProgress size={16} />
@@ -433,16 +430,16 @@ export const ImportStudentProgramsCard = (props) => {
                     </Button>
                     <Button
                         color="primary"
-                        variant="outlined"
                         onClick={onHideimportedStudentModalOpen}
+                        variant="outlined"
                     >
                         {t('No', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>
             <Dialog
-                open={importStudentProgramsCard.modalShowAssignSuccessWindow}
                 onClose={onHideAssignSuccessWindow}
+                open={importStudentProgramsCard.modalShowAssignSuccessWindow}
             >
                 <DialogTitle>{t('Success', { ns: 'common' })}</DialogTitle>
                 <DialogContent>

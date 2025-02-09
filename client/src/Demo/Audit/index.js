@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { convertDate } from '../../utils/contants';
 import DEMO from '../../store/constant';
 
-function Audit({ audit }) {
+const Audit = ({ audit }) => {
     const { t } = useTranslation();
 
     return (
@@ -117,28 +117,24 @@ function Audit({ audit }) {
                                                 : ''}
                                         </TableCell>
                                         <TableCell>
-                                            {record?.targetDocumentThreadId && (
-                                                <Link
+                                            {record?.targetDocumentThreadId ? <Link
+                                                    component={LinkDom}
+                                                    target="_blank"
                                                     to={DEMO.DOCUMENT_MODIFICATION_LINK(
                                                         record?.targetDocumentThreadId._id?.toString()
                                                     )}
-                                                    component={LinkDom}
-                                                    target="_blank"
                                                 >
                                                     {fileName}
-                                                </Link>
-                                            )}
-                                            {record?.interviewThreadId && (
-                                                <Link
+                                                </Link> : null}
+                                            {record?.interviewThreadId ? <Link
+                                                    component={LinkDom}
+                                                    target="_blank"
                                                     to={DEMO.INTERVIEW_SINGLE_LINK(
                                                         record?.interviewThreadId._id?.toString()
                                                     )}
-                                                    component={LinkDom}
-                                                    target="_blank"
                                                 >
                                                     {interview_name}
-                                                </Link>
-                                            )}
+                                                </Link> : null}
                                         </TableCell>
                                         <TableCell>
                                             {convertDate(record.createdAt)}

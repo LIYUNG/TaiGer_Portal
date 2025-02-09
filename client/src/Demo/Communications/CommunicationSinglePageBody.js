@@ -24,7 +24,7 @@ import { useAuth } from '../../components/AuthProvider';
 import { TopBar } from '../../components/TopBar/TopBar';
 import useCommunications from '../../hooks/useCommunications';
 
-function CommunicationSinglePageBody({ loadedData }) {
+const CommunicationSinglePageBody = ({ loadedData }) => {
     const { data, student } = loadedData;
     const { user } = useAuth();
     const { t } = useTranslation();
@@ -67,38 +67,36 @@ function CommunicationSinglePageBody({ loadedData }) {
 
     return (
         <Box>
-            {student?.archiv && <TopBar />}
+            {student?.archiv ? <TopBar /> : null}
             <>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <Breadcrumbs aria-label="breadcrumb">
                             <Link
-                                underline="hover"
                                 color="inherit"
                                 component={LinkDom}
                                 to={`${DEMO.DASHBOARD_LINK}`}
+                                underline="hover"
                             >
                                 {appConfig.companyName}
                             </Link>
-                            {is_TaiGer_role(user) && (
-                                <Link
-                                    underline="hover"
+                            {is_TaiGer_role(user) ? <Link
                                     color="inherit"
                                     component={LinkDom}
                                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                         student._id.toString(),
                                         DEMO.PROFILE_HASH
                                     )}`}
+                                    underline="hover"
                                 >
                                     {student_name}
-                                </Link>
-                            )}
+                                </Link> : null}
                             <Typography color="text.primary">
                                 {t('Message', { ns: 'common' })}
                             </Typography>
                         </Breadcrumbs>
                     </Grid>
-                    <Grid item xs={12} sm={9}>
+                    <Grid item sm={9} xs={12}>
                         <Typography variant="h6">
                             {t('Instructions')}:
                         </Typography>
@@ -111,6 +109,10 @@ function CommunicationSinglePageBody({ loadedData }) {
                                     <Typography sx={{ display: 'flex' }}>
                                         1. 請把
                                         <Link
+                                            component={LinkDom}
+                                            fontWeight="bold"
+                                            sx={{ display: 'flex' }}
+                                            target="_blank"
                                             to={
                                                 is_TaiGer_Student(user)
                                                     ? `${DEMO.SURVEY_LINK}`
@@ -119,16 +121,16 @@ function CommunicationSinglePageBody({ loadedData }) {
                                                           DEMO.SURVEY_HASH
                                                       )}`
                                             }
-                                            component={LinkDom}
-                                            target="_blank"
-                                            sx={{ display: 'flex' }}
-                                            fontWeight="bold"
                                         >
                                             {t('Profile', { ns: 'common' })}{' '}
                                             <LaunchIcon fontSize="small" />
                                         </Link>
                                         填好，
                                         <Link
+                                            component={LinkDom}
+                                            fontWeight="bold"
+                                            sx={{ display: 'flex' }}
+                                            target="_blank"
                                             to={
                                                 is_TaiGer_Student(user)
                                                     ? `${DEMO.BASE_DOCUMENTS_LINK}`
@@ -137,10 +139,6 @@ function CommunicationSinglePageBody({ loadedData }) {
                                                           DEMO.PROFILE_HASH
                                                       )}`
                                             }
-                                            component={LinkDom}
-                                            target="_blank"
-                                            fontWeight="bold"
-                                            sx={{ display: 'flex' }}
                                         >
                                             {t('My Documents', {
                                                 ns: 'common'
@@ -149,11 +147,11 @@ function CommunicationSinglePageBody({ loadedData }) {
                                         </Link>
                                         ，文件有的都盡量先掃描上傳，
                                         <Link
-                                            to={`${DEMO.COURSES_LINK}/${student._id?.toString()}`}
                                             component={LinkDom}
-                                            target="_blank"
-                                            sx={{ display: 'flex' }}
                                             fontWeight="bold"
+                                            sx={{ display: 'flex' }}
+                                            target="_blank"
+                                            to={`${DEMO.COURSES_LINK}/${student._id?.toString()}`}
                                         >
                                             {t('My Courses', { ns: 'common' })}{' '}
                                             <LaunchIcon fontSize="small" />
@@ -179,15 +177,15 @@ function CommunicationSinglePageBody({ loadedData }) {
                             </List>
                         </Box>
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item sm={3} xs={12}>
                         <Typography fontWeight="bold">
                             {t('Agents', { ns: 'common' })}:
                         </Typography>
                         {student?.agents?.map((agent, i) => (
                             <Typography key={i}>
                                 <Link
-                                    to={`${DEMO.TEAM_AGENT_PROFILE_LINK(agent._id.toString())}`}
                                     component={LinkDom}
+                                    to={`${DEMO.TEAM_AGENT_PROFILE_LINK(agent._id.toString())}`}
                                 >{`${agent.firstname} ${agent.lastname}`}</Link>
                             </Typography>
                         ))}
@@ -195,35 +193,33 @@ function CommunicationSinglePageBody({ loadedData }) {
                 </Grid>
             </>
             <Button
-                fullWidth
                 color="secondary"
-                variant="outlined"
-                onClick={handleLoadMessages}
                 disabled={loadButtonDisabled}
+                fullWidth
+                onClick={handleLoadMessages}
                 sx={{ mb: 2 }}
+                variant="outlined"
             >
                 {t('Load')}
             </Button>
             <Box>
-                {upperThread.length > 0 && (
-                    <MessageList
+                {upperThread.length > 0 ? <MessageList
                         accordionKeys={uppderaccordionKeys}
-                        student_id={student._id.toString()}
-                        isUpperMessagList={true}
-                        thread={upperThread}
                         isDeleting={isDeleting}
-                        user={user}
+                        isUpperMessagList={true}
                         onDeleteSingleMessage={onDeleteSingleMessage}
-                    />
-                )}
+                        student_id={student._id.toString()}
+                        thread={upperThread}
+                        user={user}
+                    /> : null}
                 <MessageList
                     accordionKeys={accordionKeys}
-                    student_id={student._id.toString()}
-                    isUpperMessagList={false}
-                    thread={thread}
                     isDeleting={isDeleting}
-                    user={user}
+                    isUpperMessagList={false}
                     onDeleteSingleMessage={onDeleteSingleMessage}
+                    student_id={student._id.toString()}
+                    thread={thread}
+                    user={user}
                 />
             </Box>
             {student.archiv !== true ? (
@@ -245,13 +241,13 @@ function CommunicationSinglePageBody({ loadedData }) {
                                 }}
                             >
                                 <CommunicationThreadEditor
-                                    thread={thread}
                                     buttonDisabled={buttonDisabled}
+                                    checkResult={checkResult}
                                     editorState={editorState}
                                     files={files}
-                                    onFileChange={onFileChange}
-                                    checkResult={checkResult}
                                     handleClickSave={handleClickSave}
+                                    onFileChange={onFileChange}
+                                    thread={thread}
                                 />
                             </Card>
                         </Grid>

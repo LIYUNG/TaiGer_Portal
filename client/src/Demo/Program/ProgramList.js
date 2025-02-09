@@ -12,7 +12,7 @@ import { appConfig } from '../../config';
 import { getProgramsQuery } from '../../api/query';
 import { ProgramsTable } from './ProgramsTable';
 
-function ProgramList() {
+const ProgramList = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const { data, isLoading, isError, error } = useQuery(getProgramsQuery());
@@ -32,10 +32,10 @@ function ProgramList() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -43,7 +43,7 @@ function ProgramList() {
                     {t('Program List', { ns: 'common' })}
                 </Typography>
             </Breadcrumbs>
-            <ProgramsTable isLoading={isLoading} data={programs} />
+            <ProgramsTable data={programs} isLoading={isLoading} />
         </Box>
     );
 }

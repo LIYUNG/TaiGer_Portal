@@ -21,31 +21,31 @@ import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import { convertDate } from '../../utils/contants';
 
-function CustomBreadcrumbs({ program }) {
+const CustomBreadcrumbs = ({ program }) => {
     const { t } = useTranslation();
     return (
         <Breadcrumbs aria-label="breadcrumb">
             <Link
-                underline="hover"
                 color="inherit"
                 component={LinkDom}
                 to={`${DEMO.DASHBOARD_LINK}`}
+                underline="hover"
             >
                 {appConfig.companyName}
             </Link>
             <Link
-                underline="hover"
                 color="inherit"
                 component={LinkDom}
                 to={`${DEMO.PROGRAMS}`}
+                underline="hover"
             >
                 {t('Program List', { ns: 'common' })}
             </Link>
             <Link
-                underline="hover"
                 color="inherit"
                 component={LinkDom}
                 to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
+                underline="hover"
             >
                 {`${program.school}-${program.program_name}`}
             </Link>
@@ -56,7 +56,7 @@ function CustomBreadcrumbs({ program }) {
     );
 }
 
-function ProgramChangeRequestPage() {
+const ProgramChangeRequestPage = () => {
     const navigate = useNavigate();
     const { programId } = useParams();
     const [originalProgram, setOriginalProgram] = useState({});
@@ -94,8 +94,8 @@ function ProgramChangeRequestPage() {
         <>
             <CustomBreadcrumbs program={originalProgram} />
             <Box sx={{ my: 3 }}>
-                <Card variant="outlined" sx={{ padding: 2 }}>
-                    <Typography variant="caption" color="text.secondary">
+                <Card sx={{ padding: 2 }} variant="outlined">
+                    <Typography color="text.secondary" variant="caption">
                         <Stack sx={{ mb: 3 }}>
                             <div>School: {originalProgram.school}</div>
                             <div>Program: {originalProgram.program_name}</div>
@@ -109,14 +109,13 @@ function ProgramChangeRequestPage() {
                             incomingChanges?.length || 0
                         })`}</InputLabel>
                         <Select
-                            labelId="request-select-label"
                             id="request-select"
-                            value={changeIndex}
                             label={`Requests (${incomingChanges?.length || 0})`}
+                            labelId="request-select-label"
                             onChange={(e) => setChangeIndex(e.target.value)}
+                            value={changeIndex}
                         >
-                            {incomingChanges.length > 0 &&
-                                incomingChanges.map((change, index) => {
+                            {incomingChanges.length > 0 ? incomingChanges.map((change, index) => {
                                     return (
                                         <MenuItem key={index} value={index}>
                                             {convertDate(change?.updatedAt)} -{' '}
@@ -125,14 +124,14 @@ function ProgramChangeRequestPage() {
                                                 : 'External Source'}
                                         </MenuItem>
                                     );
-                                })}
+                                }) : null}
                         </Select>
                     </FormControl>
                 </Card>
             </Box>
             <ProgramCompare
-                originalProgram={originalProgram || {}}
                 incomingChanges={incomingChanges[changeIndex] || {}}
+                originalProgram={originalProgram || {}}
                 submitCallBack={removeRequestFn(
                     incomingChanges[changeIndex]?._id
                 )}

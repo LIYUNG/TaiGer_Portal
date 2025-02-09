@@ -32,7 +32,7 @@ const PROGRAM_SPECIFIC_FILTE_TYPE = [
     { name: 'RL (Referee C)', value: 'RL_C' },
     { name: 'Others', value: 'Others' }
 ];
-function ToggleableUploadFileForm(props) {
+const ToggleableUploadFileForm = (props) => {
     const { t } = useTranslation();
 
     const drop_list = (
@@ -41,12 +41,12 @@ function ToggleableUploadFileForm(props) {
                 {t('Category', { ns: 'common' })}
             </InputLabel>
             <Select
+                id="thread_category"
+                label={t('Category', { ns: 'common' })}
                 labelId="thread_category"
                 name="thread_category"
-                id="thread_category"
-                value={props.category}
-                label={t('Category', { ns: 'common' })}
                 onChange={(e) => props.handleSelect(e)}
+                value={props.category}
             >
                 {(props.filetype === 'General'
                     ? GENERAL_FILTE_TYPE
@@ -62,13 +62,12 @@ function ToggleableUploadFileForm(props) {
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={12} md={8}>
+            <Grid item md={8} xs={12}>
                 {drop_list}
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item md={4} xs={12}>
                 <Button
                     color="primary"
-                    variant="contained"
                     onClick={(e) =>
                         props.filetype === 'General'
                             ? props.handleCreateGeneralMessageThread(
@@ -83,6 +82,7 @@ function ToggleableUploadFileForm(props) {
                                   props.category
                               )
                     }
+                    variant="contained"
                 >
                     {t('Add Task', { ns: 'common' })}
                 </Button>

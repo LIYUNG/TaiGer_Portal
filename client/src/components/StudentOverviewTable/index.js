@@ -43,15 +43,15 @@ import DEMO from '../../store/constant';
 import { green, grey } from '@mui/material/colors';
 import { useTranslation } from 'react-i18next';
 
-function StudentOverviewTable(props) {
+const StudentOverviewTable = ({ students }) => {
     const { t } = useTranslation();
-    const tranform = (students) => {
+    const tranform = (stds) => {
         const transformedStudents = [];
-        if (!students) {
+        if (!stds) {
             return [];
         }
 
-        for (const student of students) {
+        for (const student of stds) {
             let keys = Object.keys(ProfileNameType);
             let object_init = {};
             for (let i = 0; i < keys.length; i++) {
@@ -269,17 +269,15 @@ function StudentOverviewTable(props) {
                         DEMO.PROFILE_HASH
                     )}`;
                     return (
-                        <>
-                            <Link
-                                underline="hover"
-                                to={linkUrl}
-                                component={LinkDom}
-                                target="_blank"
-                                title={params.value}
-                            >
-                                {params.value}
-                            </Link>
-                        </>
+                        <Link
+                            component={LinkDom}
+                            target="_blank"
+                            title={params.value}
+                            to={linkUrl}
+                            underline="hover"
+                        >
+                            {params.value}
+                        </Link>
                     );
                 }
             },
@@ -304,12 +302,12 @@ function StudentOverviewTable(props) {
                 renderCell: (params) => {
                     return params.row.agents?.map((agent) => (
                         <Link
-                            underline="hover"
-                            to={DEMO.TEAM_AGENT_LINK(agent._id.toString())}
                             component={LinkDom}
+                            key={`${agent._id.toString()}`}
                             target="_blank"
                             title={agent.firstname}
-                            key={`${agent._id.toString()}`}
+                            to={DEMO.TEAM_AGENT_LINK(agent._id.toString())}
+                            underline="hover"
                         >
                             {`${agent.firstname} `}
                         </Link>
@@ -323,12 +321,12 @@ function StudentOverviewTable(props) {
                 renderCell: (params) => {
                     return params.row.editors?.map((editor) => (
                         <Link
-                            underline="hover"
-                            to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
                             component={LinkDom}
+                            key={`${editor._id.toString()}`}
                             target="_blank"
                             title={editor.firstname}
-                            key={`${editor._id.toString()}`}
+                            to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
+                            underline="hover"
                         >
                             {`${editor.firstname} `}
                         </Link>
@@ -347,8 +345,8 @@ function StudentOverviewTable(props) {
                 renderCell: (params) => {
                     return (
                         <Link
-                            to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(params.row.id)}`}
                             component={LinkDom}
+                            to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(params.row.id)}`}
                         >
                             <Typography>
                                 {params.row.areProgramsAllDecided ? (
@@ -378,8 +376,8 @@ function StudentOverviewTable(props) {
                 renderCell: (params) => {
                     return (
                         <Link
-                            to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(params.row.id)}`}
                             component={LinkDom}
+                            to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(params.row.id)}`}
                         >
                             {params.row.is_All_Applications_Submitted ? (
                                 <Typography>
@@ -447,12 +445,12 @@ function StudentOverviewTable(props) {
                 renderCell: (params) => {
                     return (
                         <Link
+                            component={LinkDom}
+                            style={{ textDecoration: 'none' }}
                             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                 params.row.id,
                                 DEMO.PROFILE_HASH
                             )}`}
-                            component={LinkDom}
-                            style={{ textDecoration: 'none' }}
                         >
                             {params.value}
                         </Link>
@@ -466,11 +464,11 @@ function StudentOverviewTable(props) {
                 renderCell: (params) => {
                     return (
                         <Link
+                            component={LinkDom}
                             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                 params.row.id,
                                 DEMO.PROFILE_HASH
                             )}`}
-                            component={LinkDom}
                         >
                             {params.value}
                         </Link>
@@ -486,11 +484,11 @@ function StudentOverviewTable(props) {
                         params.row.academic_background
                     ) ? (
                         <Link
+                            component={LinkDom}
                             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                 params.row.id,
                                 DEMO.PROFILE_HASH
                             )}`}
-                            component={LinkDom}
                         >
                             <Typography>No info</Typography>
                         </Link>
@@ -498,13 +496,13 @@ function StudentOverviewTable(props) {
                         <>
                             {isEnglishLanguageInfoComplete(
                                 params.row.academic_background
-                            ) && (
+                            ) ? (
                                 <Link
+                                    component={LinkDom}
                                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                         params.row.id,
                                         DEMO.SURVEY_HASH
                                     )}`}
-                                    component={LinkDom}
                                 >
                                     E:
                                     {params.row.isEnglishPassed ? (
@@ -530,16 +528,16 @@ function StudentOverviewTable(props) {
                                         )
                                     )}
                                 </Link>
-                            )}
+                            ) : null}
                             {check_if_there_is_german_language_info(
                                 params.row.academic_background
-                            ) && (
+                            ) ? (
                                 <Link
+                                    component={LinkDom}
                                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                         params.row.id,
                                         DEMO.SURVEY_HASH
                                     )}`}
-                                    component={LinkDom}
                                 >
                                     D:
                                     {params.row.isGermanPassed ? (
@@ -563,11 +561,12 @@ function StudentOverviewTable(props) {
                                     )}
                                     {params.row.academic_background?.language
                                         .english_isPassed === '--' &&
-                                        params.row.academic_background?.language
-                                            .german_isPassed === '--' &&
-                                        'Not needed'}
+                                    params.row.academic_background?.language
+                                        .german_isPassed === '--'
+                                        ? 'Not needed'
+                                        : null}
                                 </Link>
-                            )}
+                            ) : null}
                         </>
                     );
                 }
@@ -579,8 +578,8 @@ function StudentOverviewTable(props) {
                 renderCell: (params) => {
                     return (
                         <Link
-                            to={`${DEMO.COURSES_INPUT_LINK(params.row.id)}`}
                             component={LinkDom}
+                            to={`${DEMO.COURSES_INPUT_LINK(params.row.id)}`}
                         >
                             {params.value}
                         </Link>
@@ -594,11 +593,11 @@ function StudentOverviewTable(props) {
                 renderCell: (params) => {
                     return (
                         <Link
+                            component={LinkDom}
                             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                 params.row.id,
                                 DEMO.CVMLRL_HASH
                             )}`}
-                            component={LinkDom}
                         >
                             {params.value}
                         </Link>
@@ -612,12 +611,11 @@ function StudentOverviewTable(props) {
                 renderCell: (params) => {
                     return (
                         <Link
+                            component={LinkDom}
                             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                 params.row.id,
                                 DEMO.CVMLRL_HASH
                             )}`}
-                            className="text-info"
-                            component={LinkDom}
                         >
                             {params.value}
                         </Link>
@@ -631,11 +629,11 @@ function StudentOverviewTable(props) {
                 renderCell: (params) => {
                     return (
                         <Link
+                            component={LinkDom}
                             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                 params.row.id,
                                 DEMO.CVMLRL_HASH
                             )}`}
-                            component={LinkDom}
                         >
                             {params.value}
                         </Link>
@@ -649,11 +647,11 @@ function StudentOverviewTable(props) {
                 renderCell: (params) => {
                     return (
                         <Link
+                            component={LinkDom}
                             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                 params.row.id,
                                 DEMO.CVMLRL_HASH
                             )}`}
-                            component={LinkDom}
                         >
                             {params.value}
                         </Link>
@@ -667,8 +665,8 @@ function StudentOverviewTable(props) {
                 renderCell: (params) => {
                     return (
                         <Link
-                            to={`${DEMO.PORTALS_MANAGEMENT_STUDENTID_LINK(params.row.id)}`}
                             component={LinkDom}
+                            to={`${DEMO.PORTALS_MANAGEMENT_STUDENTID_LINK(params.row.id)}`}
                         >
                             {params.value}
                         </Link>
@@ -682,11 +680,11 @@ function StudentOverviewTable(props) {
                 renderCell: (params) => {
                     return (
                         <Link
+                            component={LinkDom}
                             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                 params.row.id,
                                 DEMO.UNIASSIST_HASH
                             )}`}
-                            component={LinkDom}
                         >
                             {params.value}
                         </Link>
@@ -698,10 +696,11 @@ function StudentOverviewTable(props) {
                 headerName: t('open/offer/reject', { ns: 'common' }),
                 width: 100,
                 renderCell: (params) => {
+                    const { row } = params;
                     return (
                         <>
                             {
-                                params.row.student.applications.filter(
+                                row.student.applications.filter(
                                     (application) =>
                                         isProgramSubmitted(application) &&
                                         isProgramDecided(application) &&
@@ -710,7 +709,7 @@ function StudentOverviewTable(props) {
                             }
                             /
                             {
-                                params.row.student.applications.filter(
+                                row.student.applications.filter(
                                     (application) =>
                                         isProgramSubmitted(application) &&
                                         isProgramDecided(application) &&
@@ -719,7 +718,7 @@ function StudentOverviewTable(props) {
                             }
                             /
                             {
-                                params.row.student.applications.filter(
+                                row.student.applications.filter(
                                     (application) =>
                                         isProgramSubmitted(application) &&
                                         isProgramDecided(application) &&
@@ -733,12 +732,12 @@ function StudentOverviewTable(props) {
         ];
     }, [t]);
 
-    const rows = tranform(props.students);
+    const rows = tranform(students);
     return (
         <Card>
-            <MuiDataGrid rows={rows} columns={memoizedColumns} />
+            <MuiDataGrid columns={memoizedColumns} rows={rows} />
         </Card>
     );
-}
+};
 
 export default StudentOverviewTable;

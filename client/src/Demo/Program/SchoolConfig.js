@@ -16,7 +16,7 @@ import Loading from '../../components/Loading/Loading';
 import { useTranslation } from 'react-i18next';
 import SchoolConfigContent from './SchoolConfigContent';
 
-function SchoolConfig() {
+const SchoolConfig = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const { distinctSchools } = useLoaderData();
@@ -34,18 +34,18 @@ function SchoolConfig() {
                         <>
                             <Breadcrumbs aria-label="breadcrumb">
                                 <Link
-                                    underline="hover"
                                     color="inherit"
                                     component={LinkDom}
                                     to={`${DEMO.DASHBOARD_LINK}`}
+                                    underline="hover"
                                 >
                                     {appConfig.companyName}
                                 </Link>
                                 <Link
-                                    underline="hover"
                                     color="inherit"
                                     component={LinkDom}
                                     to={`${DEMO.PROGRAMS}`}
+                                    underline="hover"
                                 >
                                     {t('Program List', { ns: 'common' })}
                                 </Link>

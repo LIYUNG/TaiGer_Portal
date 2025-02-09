@@ -25,22 +25,22 @@ const FilePreview = ({ path, apiFilePath }) => {
                         }}
                     >
                         <img
+                            height="60%"
                             src={`${BASE_URL}${apiFilePath}`}
                             width="90%"
-                            height="60%"
                         />
                     </div>
                     <div>
                         <a
                             href={`${BASE_URL}${apiFilePath}`}
-                            target="_blank"
                             rel="noopener noreferrer"
+                            target="_blank"
                         >
                             <Button
-                                variant="contained"
-                                size="small"
                                 color="secondary"
+                                size="small"
                                 startIcon={<DownloadIcon />}
+                                variant="contained"
                             >
                                 {i18next.t('Download', { ns: 'common' })}
                             </Button>

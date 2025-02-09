@@ -22,18 +22,17 @@ const DocumentMissingIcon = () => {
 
 export default function ApplicationProgressCardBody(props) {
     return (
-        <>
-            <List variant="flush">
+        <List variant="flush">
                 {props.student?.generaldocs_threads?.map((thread, idx) => (
                     <ListItem key={idx}>
                         <Typography>
                             <Link
-                                underline="hover"
                                 color="inherit"
                                 component={LinkDom}
                                 to={DEMO.DOCUMENT_MODIFICATION_LINK(
                                     thread.doc_thread_id._id.toString()
                                 )}
+                                underline="hover"
                             >
                                 {thread.isFinalVersion ? (
                                     <IconButton>
@@ -65,10 +64,10 @@ export default function ApplicationProgressCardBody(props) {
                             <ListItem>
                                 <Typography>
                                     <Link
-                                        underline="hover"
                                         color="inherit"
                                         component={LinkDom}
                                         to={`${DEMO.SURVEY_LINK}`}
+                                        underline="hover"
                                     >
                                         <IconButton>
                                             <DocumentOkIcon />
@@ -91,10 +90,10 @@ export default function ApplicationProgressCardBody(props) {
                             <ListItem title="English Requirements not met with your input in Profile">
                                 <Typography>
                                     <Link
-                                        underline="hover"
                                         color="inherit"
                                         component={LinkDom}
                                         to={`${DEMO.SURVEY_LINK}`}
+                                        underline="hover"
                                     >
                                         <IconButton>
                                             <WarningIcon
@@ -121,10 +120,10 @@ export default function ApplicationProgressCardBody(props) {
                         <ListItem>
                             <Typography>
                                 <Link
-                                    underline="hover"
                                     color="inherit"
                                     component={LinkDom}
                                     to={`${DEMO.SURVEY_LINK}`}
+                                    underline="hover"
                                 >
                                     <IconButton>
                                         <DocumentMissingIcon />
@@ -142,18 +141,17 @@ export default function ApplicationProgressCardBody(props) {
                 ) : (
                     <></>
                 )}
-                {props.application?.programId?.testdaf &&
-                    (props.application?.programId?.testdaf === '-' ? (
+                {props.application?.programId?.testdaf ? props.application?.programId?.testdaf === '-' ? (
                         <></>
                     ) : props.student?.academic_background?.language
                           ?.german_isPassed === 'O' ? (
                         <ListItem>
                             <Typography>
                                 <Link
-                                    underline="hover"
                                     color="inherit"
                                     component={LinkDom}
                                     to={`${DEMO.SURVEY_LINK}`}
+                                    underline="hover"
                                 >
                                     <IconButton>
                                         <DocumentOkIcon />
@@ -166,10 +164,10 @@ export default function ApplicationProgressCardBody(props) {
                         <ListItem>
                             <Typography>
                                 <Link
-                                    underline="hover"
                                     color="inherit"
                                     component={LinkDom}
                                     to={`${DEMO.SURVEY_LINK}`}
+                                    underline="hover"
                                 >
                                     <IconButton>
                                         <DocumentMissingIcon />
@@ -178,19 +176,18 @@ export default function ApplicationProgressCardBody(props) {
                                 </Link>
                             </Typography>
                         </ListItem>
-                    ))}
-                {props.application?.programId?.gre &&
-                    (props.application?.programId?.gre === '-' ? (
+                    ) : null}
+                {props.application?.programId?.gre ? props.application?.programId?.gre === '-' ? (
                         <></>
                     ) : props.student?.academic_background?.language
                           ?.gre_isPassed === 'O' ? (
                         <ListItem>
                             <Typography>
                                 <Link
-                                    underline="hover"
                                     color="inherit"
                                     component={LinkDom}
                                     to={`${DEMO.SURVEY_LINK}`}
+                                    underline="hover"
                                 >
                                     <IconButton>
                                         <DocumentOkIcon />
@@ -203,10 +200,10 @@ export default function ApplicationProgressCardBody(props) {
                         <ListItem>
                             <Typography>
                                 <Link
-                                    underline="hover"
                                     color="inherit"
                                     component={LinkDom}
                                     to={`${DEMO.SURVEY_LINK}`}
+                                    underline="hover"
                                 >
                                     <IconButton>
                                         <DocumentMissingIcon />
@@ -215,19 +212,18 @@ export default function ApplicationProgressCardBody(props) {
                                 </Link>
                             </Typography>
                         </ListItem>
-                    ))}
-                {props.application?.programId?.gmat &&
-                    (props.application?.programId?.gmat === '-' ? (
+                    ) : null}
+                {props.application?.programId?.gmat ? props.application?.programId?.gmat === '-' ? (
                         <></>
                     ) : props.student?.academic_background?.language
                           ?.gmat_isPassed === 'O' ? (
                         <ListItem>
                             <Typography>
                                 <Link
-                                    underline="hover"
                                     color="inherit"
                                     component={LinkDom}
                                     to={`${DEMO.SURVEY_LINK}`}
+                                    underline="hover"
                                 >
                                     <IconButton>
                                         <DocumentOkIcon />
@@ -240,10 +236,10 @@ export default function ApplicationProgressCardBody(props) {
                         <ListItem>
                             <Typography>
                                 <Link
-                                    underline="hover"
                                     color="inherit"
                                     component={LinkDom}
                                     to={`${DEMO.SURVEY_LINK}`}
+                                    underline="hover"
                                 >
                                     <IconButton>
                                         <DocumentMissingIcon />
@@ -252,18 +248,17 @@ export default function ApplicationProgressCardBody(props) {
                                 </Link>
                             </Typography>
                         </ListItem>
-                    ))}
+                    ) : null}
                 {(props.application?.programId?.application_portal_a ||
-                    props.application?.programId?.application_portal_b) && (
-                    <ListItem>
+                    props.application?.programId?.application_portal_b) ? <ListItem>
                         <Typography>
                             <Link
-                                underline="hover"
                                 color="inherit"
                                 component={LinkDom}
                                 to={`${DEMO.PORTALS_MANAGEMENT_STUDENTID_LINK(
                                     props.student._id.toString()
                                 )}`}
+                                underline="hover"
                             >
                                 {(props.application?.programId
                                     ?.application_portal_a &&
@@ -282,19 +277,18 @@ export default function ApplicationProgressCardBody(props) {
                                 Register University Portal
                             </Link>
                         </Typography>
-                    </ListItem>
-                )}
+                    </ListItem> : null}
                 {props.application?.doc_modification_thread?.map(
                     (thread, idx) => (
                         <ListItem key={idx}>
                             <Typography>
                                 <Link
-                                    underline="hover"
                                     color="inherit"
                                     component={LinkDom}
                                     to={DEMO.DOCUMENT_MODIFICATION_LINK(
                                         thread.doc_thread_id._id.toString()
                                     )}
+                                    underline="hover"
                                 >
                                     {thread.isFinalVersion ? (
                                         <IconButton>
@@ -319,14 +313,13 @@ export default function ApplicationProgressCardBody(props) {
                     )
                 )}
 
-                {props.application?.programId?.uni_assist?.includes('VPD') && (
-                    <ListItem>
+                {props.application?.programId?.uni_assist?.includes('VPD') ? <ListItem>
                         <Typography>
                             <Link
-                                underline="hover"
                                 color="inherit"
                                 component={LinkDom}
                                 to={`${DEMO.UNI_ASSIST_LINK}`}
+                                underline="hover"
                             >
                                 {props.application?.uni_assist?.status ===
                                 'notstarted' ? (
@@ -345,18 +338,17 @@ export default function ApplicationProgressCardBody(props) {
                                 )}
                             </Link>
                         </Typography>
-                    </ListItem>
-                )}
+                    </ListItem> : null}
 
                 <ListItem>
                     <Typography>
                         <Link
-                            underline="hover"
                             color="inherit"
                             component={LinkDom}
                             to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
                                 props.student._id.toString()
                             )}`}
+                            underline="hover"
                         >
                             {isProgramSubmitted(props.application) ? (
                                 <IconButton>
@@ -372,6 +364,5 @@ export default function ApplicationProgressCardBody(props) {
                     </Typography>
                 </ListItem>
             </List>
-        </>
     );
 }

@@ -19,7 +19,7 @@ import NoEditorsStudentsCard from '../../Dashboard/MainViewTab/NoEditorsStudents
 import { appConfig } from '../../../config';
 import DEMO from '../../../store/constant';
 
-function AssignEditorsPage(props) {
+const AssignEditorsPage = (props) => {
     const { t } = useTranslation();
     const no_editor_students = props.students.map((student, i) => (
         <NoEditorsStudentsCard
@@ -33,10 +33,10 @@ function AssignEditorsPage(props) {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -48,7 +48,7 @@ function AssignEditorsPage(props) {
                     <Table size="small">
                         <TableHead>
                             <TableRow>
-                                <TableCell></TableCell>
+                                <TableCell />
                                 <TableCell>
                                     {t('First-, Last Name', { ns: 'common' })}
                                 </TableCell>

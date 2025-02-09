@@ -42,7 +42,7 @@ import Loading from '../../components/Loading/Loading';
 import { useTranslation } from 'react-i18next';
 import { appConfig } from '../../config';
 
-function DocCreatePage(props) {
+const DocCreatePage = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [DocCreatePageState, setDocCreatePage] = useState({
@@ -278,31 +278,29 @@ function DocCreatePage(props) {
         );
         return sections[`${cat}`].map((document, i) => (
             <DocumentsListItems
+                document={document}
                 idx={i}
                 key={i}
-                path={'/docs/search'}
-                document={document}
-                user={user}
                 openDeleteDocModalWindow={openDeleteDocModalWindow}
+                path="/docs/search"
+                user={user}
             />
         ));
     };
     TabTitle('Docs Database');
     return (
         <Box>
-            {res_modal_status >= 400 && (
-                <ModalMain
+            {res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
-                />
-            )}
+                    res_modal_status={res_modal_status}
+                /> : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -315,38 +313,37 @@ function DocCreatePage(props) {
             </Breadcrumbs>
 
             {DocCreatePageState.isEdit ? (
-                <>
-                    <Card sx={{ mt: 2, p: 4 }}>
+                <Card sx={{ mt: 2, p: 4 }}>
                         <FormControl fullWidth size="small">
                             <InputLabel id="select-target-group">
                                 {t('Select Target Group')}
                             </InputLabel>
                             <Select
-                                labelId="decided"
-                                label="Select target group"
-                                name="decided"
                                 id="decided"
+                                label="Select target group"
+                                labelId="decided"
+                                name="decided"
                                 onChange={(e) => handleChange_category(e)}
                             >
-                                <MenuItem value={''}>
+                                <MenuItem value="">
                                     Select Document Category
                                 </MenuItem>
                                 {valid_categories.map((cat, i) => (
-                                    <MenuItem value={cat.key} key={i}>
+                                    <MenuItem key={i} value={cat.key}>
                                         {cat.value}
                                     </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
                         <TextField
-                            size="small"
-                            id={'doc_title'}
-                            label={'title'}
-                            type="text"
-                            placeholder="title"
-                            defaultValue={''}
+                            defaultValue=""
+                            id="doc_title"
+                            label="title"
                             onChange={(e) => handleChange_doc_title(e)}
+                            placeholder="title"
+                            size="small"
                             sx={{ mt: 1 }}
+                            type="text"
                         />
                         <DocumentsListItemsEditor
                             category={DocCreatePageState.category}
@@ -358,13 +355,12 @@ function DocCreatePage(props) {
                             role={props.role}
                         />
                     </Card>
-                </>
             ) : (
                 <Grid container spacing={2} sx={{ mt: 1 }}>
                     {documentlist_key.map((catego, i) => (
-                        <Grid item xs={12} md={6} lg={4} xl={3} key={i}>
+                        <Grid item key={i} lg={4} md={6} xl={3} xs={12}>
                             <Card>
-                                <Typography variant="h6" sx={{ m: 2 }}>
+                                <Typography sx={{ m: 2 }} variant="h6">
                                     {documentation_categories[`${catego}`]}
                                 </Typography>
                                 {document_list(catego)}
@@ -372,21 +368,19 @@ function DocCreatePage(props) {
                         </Grid>
                     ))}
                     <Grid item xs={12}>
-                        {is_TaiGer_AdminAgent(user) && (
-                            <Button
+                        {is_TaiGer_AdminAgent(user) ? <Button
                                 color="primary"
-                                variant="contained"
                                 onClick={handleClick}
+                                variant="contained"
                             >
                                 {t('Add', { ns: 'common' })}
-                            </Button>
-                        )}
+                            </Button> : null}
                     </Grid>
                 </Grid>
             )}
             <Dialog
-                open={DocCreatePageState.SetDeleteDocModel}
                 onClose={closeDeleteDocModalWindow}
+                open={DocCreatePageState.SetDeleteDocModel}
             >
                 <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                 <DialogContent>

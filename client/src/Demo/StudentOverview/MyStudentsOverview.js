@@ -11,7 +11,7 @@ import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
 import { appConfig } from '../../config';
 import { useTranslation } from 'react-i18next';
 
-function MyStudentsOverview() {
+const MyStudentsOverview = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const {
@@ -28,10 +28,10 @@ function MyStudentsOverview() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -53,7 +53,6 @@ function MyStudentsOverview() {
                 </Typography>
             </Breadcrumbs>
             <StudentOverviewTable
-                title="All"
                 students={students?.filter(
                     (student) =>
                         student.editors.some(
@@ -63,6 +62,7 @@ function MyStudentsOverview() {
                             (agent) => agent._id === user._id.toString()
                         )
                 )}
+                title="All"
                 user={user}
             />
         </Box>

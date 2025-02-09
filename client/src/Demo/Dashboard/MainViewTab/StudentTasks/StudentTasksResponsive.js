@@ -21,7 +21,7 @@ import {
 } from '../../../Utils/checking-functions';
 import { appConfig } from '../../../../config';
 
-function StudentTasksResponsive(props) {
+const StudentTasksResponsive = (props) => {
     const { t } = useTranslation();
     let unread_general_generaldocs = <></>;
     let unread_applications_docthread = <></>;
@@ -33,16 +33,15 @@ function StudentTasksResponsive(props) {
                 <TableRow key={i}>
                     {!generaldocs_threads.isFinalVersion &&
                         generaldocs_threads.latest_message_left_by_id !==
-                            props.student._id.toString() && (
-                            <>
+                            props.student._id.toString() ? <>
                                 <TableCell>
                                     <Link
-                                        underline="hover"
+                                        component={LinkDom}
                                         to={DEMO.DOCUMENT_MODIFICATION_LINK(
                                             generaldocs_threads.doc_thread_id
                                                 ._id
                                         )}
-                                        component={LinkDom}
+                                        underline="hover"
                                     >
                                         {
                                             generaldocs_threads.doc_thread_id
@@ -52,12 +51,12 @@ function StudentTasksResponsive(props) {
                                 </TableCell>
                                 <TableCell>
                                     <Link
-                                        underline="hover"
+                                        component={LinkDom}
                                         to={DEMO.DOCUMENT_MODIFICATION_LINK(
                                             generaldocs_threads.doc_thread_id
                                                 ._id
                                         )}
-                                        component={LinkDom}
+                                        underline="hover"
                                     >
                                         My{' '}
                                         {
@@ -70,8 +69,7 @@ function StudentTasksResponsive(props) {
                                     {' '}
                                     {convertDate(generaldocs_threads.updatedAt)}
                                 </TableCell>
-                            </>
-                        )}
+                            </> : null}
                 </TableRow>
             )
         );
@@ -87,16 +85,15 @@ function StudentTasksResponsive(props) {
                               <TableRow key={idx}>
                                   {!application_doc_thread.isFinalVersion &&
                                       application_doc_thread.latest_message_left_by_id !==
-                                          props.student._id.toString() && (
-                                          <>
+                                          props.student._id.toString() ? <>
                                               <TableCell>
                                                   <Link
-                                                      underline="hover"
+                                                      component={LinkDom}
                                                       to={DEMO.DOCUMENT_MODIFICATION_LINK(
                                                           application_doc_thread
                                                               .doc_thread_id._id
                                                       )}
-                                                      component={LinkDom}
+                                                      underline="hover"
                                                   >
                                                       {
                                                           application_doc_thread
@@ -107,12 +104,12 @@ function StudentTasksResponsive(props) {
                                               </TableCell>
                                               <TableCell>
                                                   <Link
-                                                      underline="hover"
+                                                      component={LinkDom}
                                                       to={DEMO.DOCUMENT_MODIFICATION_LINK(
                                                           application_doc_thread
                                                               .doc_thread_id._id
                                                       )}
-                                                      component={LinkDom}
+                                                      underline="hover"
                                                   >
                                                       {
                                                           application.programId
@@ -130,8 +127,7 @@ function StudentTasksResponsive(props) {
                                                       application_doc_thread.updatedAt
                                                   )}
                                               </TableCell>
-                                          </>
-                                      )}
+                                          </> : null}
                               </TableRow>
                           )
                       )
@@ -146,17 +142,16 @@ function StudentTasksResponsive(props) {
                 !check_application_preference_filled(
                     props.student.application_preference
                 ) ||
-                !check_languages_filled(props.student.academic_background)) && (
-                <TableRow>
+                !check_languages_filled(props.student.academic_background)) ? <TableRow>
                     <TableCell>
                         <Link
-                            underline="hover"
-                            to={`${DEMO.SURVEY_LINK}`}
                             component={LinkDom}
+                            to={`${DEMO.SURVEY_LINK}`}
+                            underline="hover"
                         >
                             <Typography
-                                variant="body2"
                                 sx={{ display: 'flex' }}
+                                variant="body2"
                             >
                                 {t('Profile', { ns: 'common' })}
                                 <LaunchIcon fontSize="small" />
@@ -164,31 +159,29 @@ function StudentTasksResponsive(props) {
                         </Link>
                     </TableCell>
                     <TableCell>
-                        <Typography variant="body2" sx={{ display: 'flex' }}>
+                        <Typography sx={{ display: 'flex' }} variant="body2">
                             {t(
                                 'Please complete Profile so that your agent can understand your situation',
                                 { ns: 'dashboard' }
                             )}
                         </Typography>
                     </TableCell>
-                    <TableCell></TableCell>
-                </TableRow>
-            )}
+                    <TableCell />
+                </TableRow> : null}
             {!props.isCoursesFilled &&
                 (props.student.academic_background?.university?.isGraduated ===
                     'pending' ||
                     props.student.academic_background?.university
-                        ?.isGraduated === 'Yes') && (
-                    <TableRow>
+                        ?.isGraduated === 'Yes') ? <TableRow>
                         <TableCell>
                             <Link
-                                underline="hover"
-                                to={`${DEMO.COURSES_LINK}`}
                                 component={LinkDom}
+                                to={`${DEMO.COURSES_LINK}`}
+                                underline="hover"
                             >
                                 <Typography
-                                    variant="body2"
                                     sx={{ display: 'flex' }}
+                                    variant="body2"
                                 >
                                     {t('My Courses', { ns: 'common' })}
                                     <LaunchIcon fontSize="small" />
@@ -197,8 +190,8 @@ function StudentTasksResponsive(props) {
                         </TableCell>
                         <TableCell>
                             <Typography
-                                variant="body2"
                                 sx={{ display: 'flex' }}
+                                variant="body2"
                             >
                                 {t(
                                     'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.',
@@ -206,20 +199,18 @@ function StudentTasksResponsive(props) {
                                 )}
                             </Typography>
                         </TableCell>
-                        <TableCell></TableCell>
-                    </TableRow>
-                )}
-            {!check_applications_to_decided(props.student) && (
-                <TableRow>
+                        <TableCell />
+                    </TableRow> : null}
+            {!check_applications_to_decided(props.student) ? <TableRow>
                     <TableCell>
                         <Link
-                            underline="hover"
-                            to={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
                             component={LinkDom}
+                            to={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
+                            underline="hover"
                         >
                             <Typography
-                                variant="body2"
                                 sx={{ display: 'flex' }}
+                                variant="body2"
                             >
                                 {t('My Applications', { ns: 'common' })}
                                 <LaunchIcon fontSize="small" />
@@ -227,27 +218,25 @@ function StudentTasksResponsive(props) {
                         </Link>
                     </TableCell>
                     <TableCell>
-                        <Typography variant="body2" sx={{ display: 'flex' }}>
+                        <Typography sx={{ display: 'flex' }} variant="body2">
                             {t(
                                 "Please refer to the programs provided by the agent and visit the school's program website for detailed information. Complete the school selection before the start of the application season.",
                                 { ns: 'courses' }
                             )}
                         </Typography>
                     </TableCell>
-                    <TableCell></TableCell>
-                </TableRow>
-            )}
-            {!all_applications_results_updated(props.student) && (
-                <TableRow>
+                    <TableCell />
+                </TableRow> : null}
+            {!all_applications_results_updated(props.student) ? <TableRow>
                     <TableCell>
                         <Link
-                            underline="hover"
-                            to={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
                             component={LinkDom}
+                            to={`${DEMO.STUDENT_APPLICATIONS_LINK}`}
+                            underline="hover"
                         >
                             <Typography
-                                variant="body2"
                                 sx={{ display: 'flex' }}
+                                variant="body2"
                             >
                                 {t('Application Results', { ns: 'common' })}
                                 <LaunchIcon fontSize="small" />
@@ -255,7 +244,7 @@ function StudentTasksResponsive(props) {
                         </Link>
                     </TableCell>
                     <TableCell>
-                        <Typography variant="body2" sx={{ display: 'flex' }}>
+                        <Typography sx={{ display: 'flex' }} variant="body2">
                             {t(
                                 'Please update your applications results to the corresponding program in this page below',
                                 {
@@ -264,20 +253,18 @@ function StudentTasksResponsive(props) {
                             )}
                         </Typography>
                     </TableCell>
-                    <TableCell></TableCell>
-                </TableRow>
-            )}
-            {has_admissions(props.student) && (
-                <TableRow>
+                    <TableCell />
+                </TableRow> : null}
+            {has_admissions(props.student) ? <TableRow>
                     <TableCell>
                         <Link
-                            underline="hover"
-                            to={`${DEMO.VISA_DOCS_LINK}`}
                             component={LinkDom}
+                            to={`${DEMO.VISA_DOCS_LINK}`}
+                            underline="hover"
                         >
                             <Typography
-                                variant="body2"
                                 sx={{ display: 'flex' }}
+                                variant="body2"
                             >
                                 {t('Visa', { ns: 'common' })}
                                 <LaunchIcon fontSize="small" />
@@ -285,7 +272,7 @@ function StudentTasksResponsive(props) {
                         </Link>
                     </TableCell>
                     <TableCell>
-                        <Typography variant="body2" sx={{ display: 'flex' }}>
+                        <Typography sx={{ display: 'flex' }} variant="body2">
                             {t(
                                 'Please consider working on visa, if you decide the offer.',
                                 {
@@ -294,22 +281,20 @@ function StudentTasksResponsive(props) {
                             )}
                         </Typography>
                     </TableCell>
-                    <TableCell></TableCell>
-                </TableRow>
-            )}
+                    <TableCell />
+                </TableRow> : null}
             {/* check uni-assist */}
             {appConfig.vpdEnable &&
-                !is_all_uni_assist_vpd_uploaded(props.student) && (
-                    <TableRow>
+                !is_all_uni_assist_vpd_uploaded(props.student) ? <TableRow>
                         <TableCell>
                             <Link
-                                underline="hover"
-                                to={`${DEMO.UNI_ASSIST_LINK}`}
                                 component={LinkDom}
+                                to={`${DEMO.UNI_ASSIST_LINK}`}
+                                underline="hover"
                             >
                                 <Typography
-                                    variant="body2"
                                     sx={{ display: 'flex' }}
+                                    variant="body2"
                                 >
                                     Uni-Assist
                                     <LaunchIcon fontSize="small" />
@@ -318,8 +303,8 @@ function StudentTasksResponsive(props) {
                         </TableCell>
                         <TableCell>
                             <Typography
-                                variant="body2"
                                 sx={{ display: 'flex' }}
+                                variant="body2"
                             >
                                 {t(
                                     'Please go to the Uni-Assist section, follow the instructions to complete',
@@ -327,20 +312,18 @@ function StudentTasksResponsive(props) {
                                 )}
                             </Typography>
                         </TableCell>
-                        <TableCell></TableCell>
-                    </TableRow>
-                )}
-            {!is_personal_data_filled(props.student) && (
-                <TableRow>
+                        <TableCell />
+                    </TableRow> : null}
+            {!is_personal_data_filled(props.student) ? <TableRow>
                     <TableCell>
                         <Link
-                            underline="hover"
-                            to={`${DEMO.PROFILE}`}
                             component={LinkDom}
+                            to={`${DEMO.PROFILE}`}
+                            underline="hover"
                         >
                             <Typography
-                                variant="body2"
                                 sx={{ display: 'flex' }}
+                                variant="body2"
                             >
                                 {t('Personal Data', { ns: 'common' })}
                                 <LaunchIcon fontSize="small" />
@@ -348,27 +331,25 @@ function StudentTasksResponsive(props) {
                         </Link>
                     </TableCell>
                     <TableCell>
-                        <Typography variant="body2" sx={{ display: 'flex' }}>
+                        <Typography sx={{ display: 'flex' }} variant="body2">
                             {t(
                                 'Please be sure to update your Chinese and English names, as well as your date of birth information. This will affect the preparation of formal documents by the editor for you.',
                                 { ns: 'courses' }
                             )}
                         </Typography>
                     </TableCell>
-                    <TableCell></TableCell>
-                </TableRow>
-            )}
-            {are_base_documents_missing(props.student) && (
-                <TableRow>
+                    <TableCell />
+                </TableRow> : null}
+            {are_base_documents_missing(props.student) ? <TableRow>
                     <TableCell>
                         <Link
-                            underline="hover"
-                            to={`${DEMO.BASE_DOCUMENTS_LINK}`}
                             component={LinkDom}
+                            to={`${DEMO.BASE_DOCUMENTS_LINK}`}
+                            underline="hover"
                         >
                             <Typography
-                                variant="body2"
                                 sx={{ display: 'flex' }}
+                                variant="body2"
                             >
                                 {t('My Documents', { ns: 'common' })}
                                 <LaunchIcon fontSize="small" />
@@ -376,27 +357,25 @@ function StudentTasksResponsive(props) {
                         </Link>
                     </TableCell>
                     <TableCell>
-                        <Typography variant="body2" sx={{ display: 'flex' }}>
+                        <Typography sx={{ display: 'flex' }} variant="body2">
                             {t(
                                 'Please upload documents as soon as possible. The agent needs them to understand your academic background.',
                                 { ns: 'courses' }
                             )}
                         </Typography>
                     </TableCell>
-                    <TableCell></TableCell>
-                </TableRow>
-            )}
-            {to_register_application_portals(props.student) && (
-                <TableRow>
+                    <TableCell />
+                </TableRow> : null}
+            {to_register_application_portals(props.student) ? <TableRow>
                     <TableCell>
                         <Link
-                            underline="hover"
-                            to={`${DEMO.PORTALS_MANAGEMENT_LINK}`}
                             component={LinkDom}
+                            to={`${DEMO.PORTALS_MANAGEMENT_LINK}`}
+                            underline="hover"
                         >
                             <Typography
-                                variant="body2"
                                 sx={{ display: 'flex' }}
+                                variant="body2"
                             >
                                 {t('Portals Management', { ns: 'common' })}
                                 <LaunchIcon fontSize="small" />
@@ -404,16 +383,15 @@ function StudentTasksResponsive(props) {
                         </Link>
                     </TableCell>
                     <TableCell>
-                        <Typography variant="body2" sx={{ display: 'flex' }}>
+                        <Typography sx={{ display: 'flex' }} variant="body2">
                             {t(
                                 "Please go to each school's website to create an account and provide your login credentials. This will facilitate the agent in conducting pre-submission checks for you in the future.",
                                 { ns: 'courses' }
                             )}
                         </Typography>
                     </TableCell>
-                    <TableCell></TableCell>
-                </TableRow>
-            )}
+                    <TableCell />
+                </TableRow> : null}
             {unread_general_generaldocs}
             {unread_applications_docthread}
         </>

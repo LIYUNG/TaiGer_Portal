@@ -210,19 +210,17 @@ const DownloadPage = () => {
 
     return (
         <Box>
-            {res_modal_status >= 400 && (
-                <ModalMain
+            {res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
-                />
-            )}
+                    res_modal_status={res_modal_status}
+                /> : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -234,22 +232,23 @@ const DownloadPage = () => {
                 <Card>
                     <Banner
                         ReadOnlyMode={true}
-                        bg={'primary'}
-                        title={'info'}
-                        path={`${DEMO.CV_ML_RL_DOCS_LINK}`}
-                        text={`This is ${appConfig.companyName} templates helping you finish your CV ML RL tasks. Please download, fill and upload them to the corresponding task.`}
-                        link_name={'Read More'}
-                        removeBanner={null}
+                        bg="primary"
+                        link_name="Read More"
                         notification_key={undefined}
+                        path={`${DEMO.CV_ML_RL_DOCS_LINK}`}
+                        removeBanner={null}
+                        text={`This is ${appConfig.companyName} templates helping you finish your CV ML RL tasks. Please download, fill and upload them to the corresponding task.`}
+                        title="info"
                     />
 
                     <EditDownloadFiles
-                        templates={downloadPageState.templates}
-                        submitFile={submitFile}
-                        onFileChange={onFileChange}
-                        templatelist={templatelist}
                         areLoaded={downloadPageState.areLoaded}
                         onDeleteTemplateFile={onDeleteTemplateFile}
+                        onFileChange={onFileChange}
+                        submitFile={submitFile}
+                        templatelist={templatelist}
+                        templates={downloadPageState.templates}
+                        user={user}
                     />
                 </Card>
             </Box>

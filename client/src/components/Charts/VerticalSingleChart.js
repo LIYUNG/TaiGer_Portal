@@ -6,6 +6,10 @@ const VerticalSingleBarChart = ({ data, xLabel }) => {
     const active_a = data.map((d) => d.student_num);
     return (
         <BarChart
+            barLabel="value"
+            grid={{ vertical: true }}
+            height={300}
+            layout="horizontal"
             series={[{ data: active_a, label: 'Active' }]}
             xAxis={[
                 {
@@ -20,10 +24,6 @@ const VerticalSingleBarChart = ({ data, xLabel }) => {
                     interval: 0
                 }
             ]}
-            barLabel="value"
-            layout="horizontal"
-            grid={{ vertical: true }}
-            height={300}
         />
     );
 };

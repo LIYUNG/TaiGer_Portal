@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import DocumentsListItemsEditor from './DocumentsListItemsEditor';
 import { Card } from '@mui/material';
 
-function DocPageEdit(props) {
+const DocPageEdit = (props) => {
     const [docPageEditState, setDocPageEditState] = useState({
         doc_title: props.document_title
     });
@@ -19,17 +19,15 @@ function DocPageEdit(props) {
         props.handleClickSave(e, docPageEditState.doc_title, editorState);
     };
     return (
-        <>
-            <Card sx={{ px: 8, py: 2, mt: 2 }}>
+        <Card sx={{ px: 8, py: 2, mt: 2 }}>
                 <DocumentsListItemsEditor
                     category={props.category}
-                    doc_title={'not_used'}
+                    doc_title="not_used"
                     editorState={props.editorState}
-                    handleClickSave={handleClickSave}
                     handleClickEditToggle={props.handleClickEditToggle}
+                    handleClickSave={handleClickSave}
                 />
             </Card>
-        </>
     );
 }
 export default DocPageEdit;

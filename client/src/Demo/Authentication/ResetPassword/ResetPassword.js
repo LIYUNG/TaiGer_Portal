@@ -77,7 +77,7 @@ export default function ResetPassword() {
                     <Typography>
                         {t('Please login with your new password')}
                     </Typography>
-                    <NavLink to={DEMO.LOGIN_LINK} sx={{ mb: 2 }}>
+                    <NavLink sx={{ mb: 2 }} to={DEMO.LOGIN_LINK}>
                         <Typography>{t('Login', { ns: 'auth' })}</Typography>
                     </NavLink>
                 </>
@@ -95,32 +95,32 @@ export default function ResetPassword() {
                         <br />- length of 8 - 20 characters
                     </Typography>
                     <TextField
-                        id="password-input"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label={t('Enter New Password')}
-                        type="password"
                         autoComplete="password"
+                        fullWidth
+                        id="password-input"
+                        label={t('Enter New Password')}
+                        margin="normal"
                         onChange={(e) => setPassword(e.target.value)}
+                        required
+                        type="password"
                     />
                     <TextField
-                        id="password-again-input"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label={t('Enter New Password Again')}
-                        type="password"
                         autoComplete="password"
+                        fullWidth
+                        id="password-again-input"
+                        label={t('Enter New Password Again')}
+                        margin="normal"
                         onChange={(e) => setPasswordRepeat(e.target.value)}
+                        required
                         sx={{ mb: 2 }}
+                        type="password"
                     />
                     <Button
                         color="primary"
-                        variant="contained"
-                        onClick={handleSubmit}
                         disabled={buttonDisable}
+                        onClick={handleSubmit}
                         sx={{ mb: 2 }}
+                        variant="contained"
                     >
                         {buttonDisable ? (
                             <CircularProgress />
@@ -129,16 +129,16 @@ export default function ResetPassword() {
                         )}
                     </Button>
                     <Grid container spacing={2} sx={{ my: 2 }}>
-                        <Grid item xs={6} sx={{ textAlign: 'right' }}>
+                        <Grid item sx={{ textAlign: 'right' }} xs={6}>
                             <Typography sx={{ mb: 2 }}>
                                 {t('Already have an account')}?{' '}
                             </Typography>{' '}
                         </Grid>
                         <Grid item xs={6}>
                             <Link
-                                to={DEMO.LOGIN_LINK}
-                                sx={{ mb: 2 }}
                                 component={NavLink}
+                                sx={{ mb: 2 }}
+                                to={DEMO.LOGIN_LINK}
                             >
                                 <Typography>
                                     {t('Login', { ns: 'auth' })}

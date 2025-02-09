@@ -21,7 +21,7 @@ import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 
-function CVMLRLGenerator() {
+const CVMLRLGenerator = () => {
     const { user } = useAuth();
     const [cVMLRLGeneratorState, setCVMLRLGeneratorState] = useState({
         error: '',
@@ -96,13 +96,13 @@ function CVMLRLGenerator() {
 
     return (
         <Box>
-            {!isLoaded && <Loading />}
+            {!isLoaded ? <Loading /> : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -111,21 +111,21 @@ function CVMLRLGenerator() {
                 </Typography>
             </Breadcrumbs>
             <TextField
-                size="small"
                 fullWidth
-                multiline
                 minRows={6}
-                placeholder={'How many train stations in Germany?'}
+                multiline
                 onChange={onChange}
+                placeholder="How many train stations in Germany?"
+                size="small"
                 sx={{ my: 2 }}
             />
             <br />
             <Button
                 color="primary"
-                variant="contained"
                 disabled={cVMLRLGeneratorState.isGenerating}
                 onClick={onSubmit}
                 sx={{ mb: 2 }}
+                variant="contained"
             >
                 {cVMLRLGeneratorState.isGenerating ? (
                     <CircularProgress size={16} />

@@ -17,16 +17,16 @@ export const SnackBarProvider = ({ children }) => {
             }}
         >
             <Snackbar
-                open={openSnackbar}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 autoHideDuration={6000}
                 onClose={() => setOpenSnackbar(false)}
+                open={openSnackbar}
             >
                 <Alert
                     onClose={() => setOpenSnackbar(false)}
-                    variant="filled"
                     severity={severity}
                     sx={{ width: '100%' }}
+                    variant="filled"
                 >
                     {message}
                 </Alert>

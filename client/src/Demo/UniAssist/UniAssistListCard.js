@@ -6,7 +6,7 @@ import { isProgramDecided } from '@taiger-common/core';
 import { check_student_needs_uni_assist } from '../Utils/checking-functions';
 import { UniAssistProgramBlock } from './UniAssistProgramBlock';
 
-function UniAssistListCard(props) {
+const UniAssistListCard = (props) => {
     const { t } = useTranslation();
 
     const app_name = props.student.applications

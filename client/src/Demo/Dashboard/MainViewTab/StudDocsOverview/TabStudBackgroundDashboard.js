@@ -13,7 +13,7 @@ import { academic_background_header } from '../../../../utils/contants';
 import { useTranslation } from 'react-i18next';
 import StudentsAgentEditor from '../StudentsAgentEditor/StudentsAgentEditor';
 
-function TabStudBackgroundDashboard(props) {
+const TabStudBackgroundDashboard = (props) => {
     const { t } = useTranslation();
     const stdlist = (
         <TableBody>
@@ -21,12 +21,12 @@ function TabStudBackgroundDashboard(props) {
                 <StudentsAgentEditor
                     key={i}
                     student={student}
-                    updateStudentArchivStatus={props.updateStudentArchivStatus}
                     submitUpdateAgentlist={props.submitUpdateAgentlist}
-                    submitUpdateEditorlist={props.submitUpdateEditorlist}
                     submitUpdateAttributeslist={
                         props.submitUpdateAttributeslist
                     }
+                    submitUpdateEditorlist={props.submitUpdateEditorlist}
+                    updateStudentArchivStatus={props.updateStudentArchivStatus}
                 />
             ))}
         </TableBody>
@@ -37,9 +37,9 @@ function TabStudBackgroundDashboard(props) {
             <Table size="small">
                 <TableHead>
                     <TableRow>
-                        <TableCell></TableCell>
+                        <TableCell />
                         {header.map((name, index) => (
-                            <TableCell key={index} align="left">
+                            <TableCell align="left" key={index}>
                                 {t(`${name}`, { ns: 'common' })}
                             </TableCell>
                         ))}

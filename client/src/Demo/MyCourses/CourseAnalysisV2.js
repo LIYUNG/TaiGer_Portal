@@ -36,6 +36,8 @@ import { Bayerische_Formel, is_TaiGer_role } from '@taiger-common/core';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import FlagIcon from '@mui/icons-material/Flag';
+import { green } from '@mui/material/colors';
+import i18next from 'i18next';
 
 import {
     convertDate,
@@ -59,8 +61,6 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
-import { green } from '@mui/material/colors';
-import i18next from 'i18next';
 
 const settings = {
     display: 'flex',
@@ -273,15 +273,15 @@ export const EstimationCard = ({
     return (
         <Card sx={{ mb: 1 }}>
             <CardHeader
-                title={`Stage ${stage} Evaluation`}
                 subheader={`${subtitle}`}
+                title={`Stage ${stage} Evaluation`}
             />
             <CardContent>
                 <TableContainer>
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell></TableCell>
+                                <TableCell />
                                 <TableCell>Evaluation</TableCell>
                                 <TableCell align="right">
                                     Pessimistic (25%)
@@ -306,21 +306,19 @@ export const EstimationCard = ({
                                         }}
                                     >
                                         <TableCell>
-                                            {row.expandable && (
-                                                <IconButton
+                                            {row.expandable ? <IconButton
                                                     aria-label="expand row"
-                                                    size="small"
                                                     onClick={() =>
                                                         setOpen(!open)
                                                     }
+                                                    size="small"
                                                 >
                                                     {open ? (
                                                         <KeyboardArrowUpIcon />
                                                     ) : (
                                                         <KeyboardArrowDownIcon />
                                                     )}
-                                                </IconButton>
-                                            )}
+                                                </IconButton> : null}
                                         </TableCell>
                                         <TableCell>{row.name}</TableCell>
                                         <TableCell align="right">
@@ -336,14 +334,13 @@ export const EstimationCard = ({
                                             {row.value100}
                                         </TableCell>
                                     </TableRow>
-                                    {row.expandable && (
-                                        <TableRow>
+                                    {row.expandable ? <TableRow>
                                             <TableCell
+                                                colSpan={6}
                                                 style={{
                                                     paddingBottom: 0,
                                                     paddingTop: 0
                                                 }}
-                                                colSpan={6}
                                             >
                                                 <Collapse
                                                     in={open}
@@ -352,25 +349,24 @@ export const EstimationCard = ({
                                                 >
                                                     <Box sx={{ margin: 1 }}>
                                                         <Typography
-                                                            gutterBottom
                                                             component="div"
+                                                            gutterBottom
                                                         >
                                                             {row.description}
                                                         </Typography>
                                                     </Box>
                                                 </Collapse>
                                             </TableCell>
-                                        </TableRow>
-                                    )}
+                                        </TableRow> : null}
                                 </Fragment>
                             ))}
                         </TableBody>
                         <TableFooter>
                             <TableRow>
-                                <TableCell></TableCell>
+                                <TableCell />
                                 <TableCell>Total</TableCell>
                                 {columnSums.map((sum, index) => (
-                                    <TableCell key={index} align="right">
+                                    <TableCell align="right" key={index}>
                                         {sum}
                                     </TableCell>
                                 ))}
@@ -394,13 +390,11 @@ export const EstimationCard = ({
                     you will get directly rejected.
                 </Typography>
                 {scores[directRej.name] !== scores[directAd.name] &&
-                    scores[directAd.name] !== 0 && (
-                        <Typography>
+                    scores[directAd.name] !== 0 ? <Typography>
                             If your total score is between{' '}
                             {scores[directAd.name]} and {scores[directRej.name]}
                             , you will get to next round evalution.
-                        </Typography>
-                    )}
+                        </Typography> : null}
             </CardContent>
         </Card>
     );
@@ -431,18 +425,18 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
 
     return (
         <Grid container spacing={1}>
-            <Grid item xs={12} md={6}>
+            <Grid item md={6} xs={12}>
                 {Object.keys(sortedCourses).map((category, i) => (
                     <Paper key={i} sx={{ p: 2, mb: 1 }}>
                         <Box
-                            display="flex"
                             alignItems="center"
+                            display="flex"
                             justifyContent="space-between"
                         >
                             <Stack
+                                alignItems="center"
                                 direction="row"
                                 justifyContent="flex-start"
-                                alignItems="center"
                             >
                                 {satisfiedRequirement(
                                     sortedCourses[category]
@@ -461,18 +455,17 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                                         }}
                                     />
                                 )}
-                                <Typography variant="h5" fontWeight="bold">
+                                <Typography fontWeight="bold" variant="h5">
                                     {category}
                                 </Typography>
                             </Stack>
                             <Stack
+                                alignItems="center"
                                 direction="row"
                                 justifyContent="flex-end"
-                                alignItems="center"
                             >
                                 {getMaxScoreECTS(sortedCourses[category]) !==
-                                    0 && (
-                                    <Typography variant="h5" fontWeight="bold">
+                                    0 ? <Typography fontWeight="bold" variant="h5">
                                         {i18next.t('acquired-score')}:{' '}
                                         {satisfiedRequirement(
                                             sortedCourses[category]
@@ -485,23 +478,21 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                                         {getMaxScoreECTS(
                                             sortedCourses[category]
                                         )}
-                                    </Typography>
-                                )}
+                                    </Typography> : null}
                             </Stack>
                         </Box>
 
                         {/* Sorted Courses */}
-                        {sortedCourses[category].length > 0 && (
-                            <Box
+                        {sortedCourses[category].length > 0 ? <Box
                                 display="flex"
                                 flexDirection="column"
                                 gap={2}
                                 sx={{ mb: 3 }}
                             >
                                 <Box
+                                    alignItems="center"
                                     display="flex"
                                     justifyContent="space-between"
-                                    alignItems="center"
                                 >
                                     <Box sx={{ ml: 2 }}>
                                         <Typography variant="body1">
@@ -510,7 +501,7 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                                         </Typography>
                                     </Box>
                                     <Box>
-                                        <Box display="flex" alignItems="center">
+                                        <Box alignItems="center" display="flex">
                                             <FlagIcon
                                                 style={{ marginRight: '8px' }}
                                             />
@@ -527,9 +518,9 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                                             </Typography>
                                         </Box>
                                         <Stack
+                                            alignItems="center"
                                             direction="row"
                                             justifyContent="flex-end"
-                                            alignItems="center"
                                         >
                                             {satisfiedRequirement(
                                                 sortedCourses[category]
@@ -588,13 +579,11 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                                     data={sortedCourses[category]?.slice(0, -1)}
                                     tableKey={category}
                                 />
-                            </Box>
-                        )}
+                            </Box> : null}
 
                         {/* Suggested Courses */}
                         {suggestedCourses[category] &&
-                            suggestedCourses[category].length > 0 && (
-                                <Box
+                            suggestedCourses[category].length > 0 ? <Box
                                     display="flex"
                                     flexDirection="column"
                                     gap={2}
@@ -610,26 +599,22 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                                             .filter((sug) => sug)
                                             .join('， ')}
                                     </Typography>
-                                </Box>
-                            )}
+                                </Box> : null}
                     </Paper>
                 ))}
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item md={6} xs={12}>
                 <Card sx={{ height: 300, mb: 1 }}>
                     <CardHeader
-                        title={'Course Matching Score'}
-                        subheader={
-                            'Course requirement covergage for this program'
-                        }
+                        subheader="Course requirement covergage for this program"
+                        title="Course Matching Score"
                     />{' '}
                     <CardContent>
-                        <Stack spacing={1} direction="row" alignItems="center">
+                        <Stack alignItems="center" direction="row" spacing={1}>
                             <Gauge
                                 {...settings}
-                                value={matchingOverallECTSPercentage.toFixed(0)}
-                                startAngle={-110}
                                 endAngle={110}
+                                startAngle={-110}
                                 sx={{
                                     [`& .${gaugeClasses.valueText}`]: {
                                         fontSize: 40,
@@ -637,34 +622,31 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                                     }
                                 }}
                                 text={({ value }) => `${value}%`}
+                                value={matchingOverallECTSPercentage.toFixed(0)}
                             />
                         </Stack>
                     </CardContent>
                 </Card>
-                {firstRoundConsidered && firstRoundConsidered?.length > 0 && (
-                    <EstimationCard
-                        round={firstRoundConsidered}
-                        sortedCourses={sortedCourses}
-                        scores={scores}
+                {firstRoundConsidered && firstRoundConsidered?.length > 0 ? <EstimationCard
                         academic_background={academic_background}
                         directAd={DIRECT_ADMISSION_SCORE}
                         directRej={DIRECT_REJECTION_SCORE}
-                        stage={1}
-                        subtitle={'Basic Academic background check'}
-                    />
-                )}
-                {secondRoundConsidered && secondRoundConsidered?.length > 0 && (
-                    <EstimationCard
-                        round={secondRoundConsidered}
-                        sortedCourses={sortedCourses}
+                        round={firstRoundConsidered}
                         scores={scores}
+                        sortedCourses={sortedCourses}
+                        stage={1}
+                        subtitle="Basic Academic background check"
+                    /> : null}
+                {secondRoundConsidered && secondRoundConsidered?.length > 0 ? <EstimationCard
                         academic_background={academic_background}
                         directAd={DIRECT_ADMISSION_SECOND_SCORE}
                         directRej={DIRECT_REJECTION_SECOND_SCORE}
+                        round={secondRoundConsidered}
+                        scores={scores}
+                        sortedCourses={sortedCourses}
                         stage={2}
-                        subtitle={'Advanced academic background check'}
-                    />
-                )}
+                        subtitle="Advanced academic background check"
+                    /> : null}
             </Grid>
         </Grid>
     );
@@ -725,30 +707,29 @@ export const GeneralCourseAnalysisComponent = ({ sheets, student }) => {
 
     return (
         <Grid container spacing={1}>
-            <Grid item xs={12} md={4}>
+            <Grid item md={4} xs={12}>
                 <Card sx={{ height: 250 }}>
-                    <CardHeader title={'Analysed Programs'} />
+                    <CardHeader title="Analysed Programs" />
                     <CardContent>
                         <Stack
-                            spacing={1}
-                            direction="column"
                             alignItems="center"
+                            direction="column"
+                            spacing={1}
                         >
                             <Typography variant="h3">{numPrograms}</Typography>
                         </Stack>
                     </CardContent>
                 </Card>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item md={4} xs={12}>
                 <Card sx={{ height: 250 }}>
-                    <CardHeader title={'Overall Matching Score'} />{' '}
+                    <CardHeader title="Overall Matching Score" />{' '}
                     <CardContent>
-                        <Stack spacing={1} direction="row" alignItems="center">
+                        <Stack alignItems="center" direction="row" spacing={1}>
                             <Gauge
                                 {...settings}
-                                value={matchingOverallECTSPercentage.toFixed(0)}
-                                startAngle={-110}
                                 endAngle={110}
+                                startAngle={-110}
                                 sx={{
                                     [`& .${gaugeClasses.valueText}`]: {
                                         fontSize: 40,
@@ -756,12 +737,13 @@ export const GeneralCourseAnalysisComponent = ({ sheets, student }) => {
                                     }
                                 }}
                                 text={({ value }) => `${value}%`}
+                                value={matchingOverallECTSPercentage.toFixed(0)}
                             />
                         </Stack>
                     </CardContent>
                 </Card>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item md={4} xs={12}>
                 <Card sx={{ height: 250 }}>
                     <CardContent>
                         <Typography>
@@ -776,14 +758,14 @@ export const GeneralCourseAnalysisComponent = ({ sheets, student }) => {
                 </Card>
             </Grid>
             {generalSheetKeysArray?.map((keyName) => (
-                <Grid item xs={12} md={12} key={keyName}>
+                <Grid item key={keyName} md={12} xs={12}>
                     <Card sx={{ p: 2 }}>
                         <Typography>
                             {sheets.General?.[keyName][0][keyName]}
                         </Typography>
                         <CourseTable
                             data={sheets.General?.[keyName] || []}
-                            tableKey={'courses'}
+                            tableKey="courses"
                         />
                     </Card>
                 </Grid>
@@ -918,59 +900,49 @@ export default function CourseAnalysisV2() {
 
     return (
         <Box>
-            {statedata.res_modal_status >= 400 && (
-                <ModalMain
+            {statedata.res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={statedata.res_modal_status}
                     res_modal_message={statedata.res_modal_message}
-                />
-            )}
+                    res_modal_status={statedata.res_modal_status}
+                /> : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 {!window.location.href.includes('internal') &&
-                    is_TaiGer_role(user) && (
-                        <Link
-                            underline="hover"
+                    is_TaiGer_role(user) ? <Link
                             color="inherit"
                             component={LinkDom}
                             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                 statedata.student?._id?.toString(),
                                 DEMO.PROFILE_HASH
                             )}`}
+                            underline="hover"
                         >
                             {student_name}
-                        </Link>
-                    )}
-                {window.location.href.includes('internal') && (
-                    <Typography>{t('Tools', { ns: 'common' })}</Typography>
-                )}
-                {window.location.href.includes('internal') && (
-                    <Link
-                        underline="hover"
+                        </Link> : null}
+                {window.location.href.includes('internal') ? <Typography>{t('Tools', { ns: 'common' })}</Typography> : null}
+                {window.location.href.includes('internal') ? <Link
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.INTERNAL_WIDGET_COURSE_ANALYSER_LINK}`}
+                        underline="hover"
                     >
                         {t('Course Analyser', { ns: 'common' })}
-                    </Link>
-                )}
-                {!window.location.href.includes('internal') && (
-                    <Link
-                        underline="hover"
+                    </Link> : null}
+                {!window.location.href.includes('internal') ? <Link
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.COURSES_INPUT_LINK(statedata.student?._id?.toString())}`}
+                        underline="hover"
                     >
                         {t('My Courses')}
-                    </Link>
-                )}
+                    </Link> : null}
                 <Typography color="text.primary">
                     {t('Courses Analysis')} Beta
                 </Typography>
@@ -978,57 +950,53 @@ export default function CourseAnalysisV2() {
             <Alert severity="warning" sx={{ mt: 1 }}>
                 This is internal testing only. Student will not see this.
             </Alert>
-            <Typography variant="body1" sx={{ pt: 1 }}>
+            <Typography sx={{ pt: 1 }} variant="body1">
                 {t('Course Analysis banner', { ns: 'courses' })}
             </Typography>
             <Button
-                size="small"
                 color="primary"
-                variant="contained"
                 disabled
                 onClick={() => navigate(DEMO.COURSES_ANALYSIS_EXPLANATION_LINK)}
+                size="small"
                 sx={{ mr: 2 }}
+                variant="contained"
             >
                 {t('Course Analysis explanation button')}
             </Button>
             <Button
-                size="small"
                 color="secondary"
-                variant="contained"
                 disabled
                 onClick={() => onDownload()}
+                size="small"
+                variant="contained"
             >
                 {t('Download', { ns: 'common' })} Report
             </Button>
-            <Typography variant="body1" sx={{ pt: 2, pb: 1 }}>
+            <Typography sx={{ pt: 2, pb: 1 }} variant="body1">
                 {t('Programs')}:
             </Typography>
             <Select
-                fullWidth
-                size="small"
-                value={value}
-                onChange={handleChange}
                 aria-label="course analysis tabs"
+                fullWidth
+                onChange={handleChange}
+                size="small"
                 sx={{ mb: 2 }}
+                value={value}
             >
                 {statedata.sheetNames.map((sn, i) => (
-                    <MenuItem key={sn} value={i} name={sn}>
+                    <MenuItem key={sn} name={sn} value={i}>
                         {sn}
                     </MenuItem>
                 ))}
             </Select>
-            {sheetName === 'General' && (
-                <GeneralCourseAnalysisComponent
+            {sheetName === 'General' ? <GeneralCourseAnalysisComponent
                     sheets={statedata.sheets}
                     student={statedata.student}
-                />
-            )}
-            {sheetName !== 'General' && (
-                <CourseAnalysisComponent
+                /> : null}
+            {sheetName !== 'General' ? <CourseAnalysisComponent
                     sheet={statedata.sheets?.[sheetName]}
                     student={statedata.student}
-                />
-            )}
+                /> : null}
             {t('Last update', { ns: 'common' })}{' '}
             {convertDate(statedata.timestamp)}
         </Box>

@@ -25,18 +25,18 @@ const AgentBarCharts = ({ agentDistr }) => {
         <Box>
             <Typography variant="h6">{agentDistr.name}</Typography>
             <MuiBarChart
+                height={250}
+                series={[
+                    { label: 'No Offer', data: noAdmissionDataset },
+                    { label: 'Has Offer', data: admissionDataset }
+                ]}
+                width={400}
                 xAxis={[{ scaleType: 'band', data: combinedKeys }]}
                 yAxis={[
                     {
                         label: 'Student'
                     }
                 ]}
-                series={[
-                    { label: 'No Offer', data: noAdmissionDataset },
-                    { label: 'Has Offer', data: admissionDataset }
-                ]}
-                height={250}
-                width={400}
             />
         </Box>
     );
@@ -51,7 +51,7 @@ const AgentDashboard = ({ agentStudentDistribution }) => {
                 </Typography>
             </Grid>
             {agentStudentDistribution.map((agentDistr, idx) => (
-                <Grid item xs={12} md={4} key={idx}>
+                <Grid item key={idx} md={4} xs={12}>
                     <AgentBarCharts agentDistr={agentDistr} />
                 </Grid>
             ))}

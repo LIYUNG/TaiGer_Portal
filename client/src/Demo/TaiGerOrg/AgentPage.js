@@ -13,7 +13,7 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 
 // TODO TEST_CASE
-function AgentPage() {
+const AgentPage = () => {
     const { user_id } = useParams();
     const { user } = useAuth();
     const [agentPageState, setAgentPageState] = useState({
@@ -82,18 +82,18 @@ function AgentPage() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.TEAM_MEMBERS_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName} Team
                 </Link>
@@ -110,7 +110,7 @@ function AgentPage() {
                     agentPageState.agent._id.toString()
                 )}`}
             >
-                <Button variant="contained" color="primary">
+                <Button color="primary" variant="contained">
                     See Archiv Student
                 </Button>
             </Link>

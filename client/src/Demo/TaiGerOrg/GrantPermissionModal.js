@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-function GrantPermissionModal(props) {
+const GrantPermissionModal = (props) => {
     const { t } = useTranslation();
     const [grantPermissionModalState, setGrantPermissionModalState] = useState({
         permissions:
@@ -71,9 +71,9 @@ function GrantPermissionModal(props) {
 
     return (
         <Dialog
-            open={props.modalShow}
-            onClose={props.setModalHide}
             aria-labelledby="contained-modal-title-vcenter"
+            onClose={props.setModalHide}
+            open={props.modalShow}
         >
             <DialogTitle>
                 Edit {props.firstname} - {props.lastname} permissions:
@@ -95,7 +95,6 @@ function GrantPermissionModal(props) {
                                         <FormControlLabel
                                             control={
                                                 <Checkbox
-                                                    type="checkbox"
                                                     checked={
                                                         grantPermissionModalState
                                                             .permissions[
@@ -105,12 +104,13 @@ function GrantPermissionModal(props) {
                                                     onChange={(e) =>
                                                         onChangePermissions(e)
                                                     }
-                                                    value={permission[0]}
                                                     sx={{
                                                         '& .MuiSvgIcon-root': {
                                                             fontSize: '1.5rem'
                                                         }
                                                     }}
+                                                    type="checkbox"
+                                                    value={permission[0]}
                                                 />
                                             }
                                         />
@@ -124,19 +124,19 @@ function GrantPermissionModal(props) {
                                 <TableCell>
                                     <TextField
                                         fullWidth
-                                        placeholder="1000"
                                         id={permission_quota[0]}
-                                        name={permission_quota[0]}
                                         label="Quota"
+                                        name={permission_quota[0]}
+                                        onChange={(e) =>
+                                            onChangePermissions_Quota(e)
+                                        }
+                                        placeholder="1000"
                                         type="number"
                                         value={
                                             grantPermissionModalState
                                                 .permissions[
                                                 permission_quota[0]
                                             ]
-                                        }
-                                        onChange={(e) =>
-                                            onChangePermissions_Quota(e)
                                         }
                                     />
                                 </TableCell>
@@ -148,16 +148,16 @@ function GrantPermissionModal(props) {
             <DialogActions>
                 <Button
                     color="primary"
-                    variant="contained"
                     disabled={!grantPermissionModalState.changed}
                     onClick={(e) => onSubmitHandler(e)}
+                    variant="contained"
                 >
                     {t('Update', { ns: 'common' })}
                 </Button>
                 <Button
                     color="primary"
-                    variant="outlined"
                     onClick={props.setModalHide}
+                    variant="outlined"
                 >
                     {t('Cancel', { ns: 'common' })}
                 </Button>

@@ -86,11 +86,11 @@ export const LinkableNewlineText = ({ text }) => {
             <Linkify
                 componentDecorator={(decoratedHref, decoratedText, key) => (
                     <Link
-                        underline="hover"
-                        to={decoratedHref}
                         component={LinkDom}
                         key={key}
                         target="_blank"
+                        to={decoratedHref}
+                        underline="hover"
                     >
                         {decoratedText}
                     </Link>

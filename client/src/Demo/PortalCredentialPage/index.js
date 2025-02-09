@@ -19,9 +19,9 @@ export default function PortalCredentialPage(props) {
           : props.student_id;
     return (
         <PortalCredentialsCard
-            user={user}
-            student_id={studentId}
             showTitle={props.showTitle | false}
+            student_id={studentId}
+            user={user}
         />
     );
 }

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import DEMO from '../../store/constant';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
-function ProgramUpdateStatusTable(props) {
+const ProgramUpdateStatusTable = (props) => {
     const { t } = useTranslation();
     let result = [];
     var set = new Set();
@@ -29,10 +29,10 @@ function ProgramUpdateStatusTable(props) {
                 const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.id)}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>
@@ -47,10 +47,10 @@ function ProgramUpdateStatusTable(props) {
                 const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.id)}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>
@@ -82,18 +82,18 @@ function ProgramUpdateStatusTable(props) {
     return (
         <Box>
             <DataGrid
+                columns={programUpdateColumn}
                 density="compact"
-                rows={[...result]}
                 disableColumnFilter
                 disableColumnMenu
                 disableDensitySelector
-                columns={programUpdateColumn}
-                slots={{ toolbar: GridToolbar }}
+                rows={[...result]}
                 slotProps={{
                     toolbar: {
                         showQuickFilter: true
                     }
                 }}
+                slots={{ toolbar: GridToolbar }}
             />
         </Box>
     );

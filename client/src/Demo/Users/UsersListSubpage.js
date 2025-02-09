@@ -13,11 +13,11 @@ import {
 
 import { useTranslation } from 'react-i18next';
 
-function UsersListSubpage(props) {
+const UsersListSubpage = (props) => {
     const { t } = useTranslation();
     const user_roles = ['Student', 'Editor', 'Agent', 'External'];
     return (
-        <Dialog open={props.show} onClose={props.setModalHide} centered>
+        <Dialog centered onClose={props.setModalHide} open={props.show}>
             <DialogTitle>
                 Assign {props.firstname} - {props.lastname} as
             </DialogTitle>
@@ -26,16 +26,16 @@ function UsersListSubpage(props) {
                     <RadioGroup
                         aria-labelledby="demo-controlled-radio-buttons-group"
                         name="controlled-radio-buttons-group"
-                        value={props.selected_user_role}
                         onChange={props.handleChange2}
+                        value={props.selected_user_role}
                     >
                         {user_roles.map((role, i) => (
                             <FormControlLabel
-                                key={i + 1}
                                 control={<Radio />}
-                                value={role}
+                                key={i + 1}
                                 label={role}
                                 onChange={props.handleChange2}
+                                value={role}
                             />
                         ))}
                     </RadioGroup>
@@ -44,16 +44,16 @@ function UsersListSubpage(props) {
             <DialogActions>
                 <Button
                     color="primary"
-                    variant="contained"
                     onClick={(e) => props.onSubmit2(e)}
                     sx={{ mr: 2 }}
+                    variant="contained"
                 >
                     {t('Assign', { ns: 'common' })}
                 </Button>
                 <Button
                     color="primary"
-                    variant="outlined"
                     onClick={props.setModalHide}
+                    variant="outlined"
                 >
                     {t('Cancel', { ns: 'common' })}
                 </Button>

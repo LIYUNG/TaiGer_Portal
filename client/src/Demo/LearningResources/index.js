@@ -7,7 +7,7 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { is_TaiGer_Student, is_TaiGer_role } from '@taiger-common/core';
 
-function LearningResources() {
+const LearningResources = () => {
     const { user } = useAuth();
 
     if (!is_TaiGer_role(user) && !is_TaiGer_Student(user)) {

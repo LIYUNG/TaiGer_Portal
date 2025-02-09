@@ -5,7 +5,6 @@ const PdfParse = require('pdf-parse');
 const { Role, isProgramDecided } = require('@taiger-common/core');
 
 const {
-  sendAssignEditorReminderEmail,
   MeetingReminderEmail,
   UnconfirmedMeetingReminderEmail,
   sendNoTrainerInterviewRequestsReminderEmail,
@@ -191,7 +190,7 @@ const TasksReminderEmails_Editor_core = asyncHandler(async (req) => {
           lastname: editor.lastname,
           address: editor.email
         },
-        { students: editor_students, editor: editor }
+        { students: editor_students, editor }
       );
     }
   });
@@ -1312,7 +1311,7 @@ const CalculateAverageResponseTimeAndSave = asyncHandler(async (req) => {
         bulkOps.push({
           updateOne: {
             filter: query,
-            update: update,
+            update,
             upsert: true
           }
         });

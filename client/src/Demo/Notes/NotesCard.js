@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import NotesEditor from './NotesEditor';
 import { updateStudentNotes } from '../../api';
 
-function NotesCard(props) {
+const NotesCard = (props) => {
     const [notesCardState, setNotesCardState] = useState({
         editorState: props.notes,
         isLoaded: false,
@@ -76,17 +76,15 @@ function NotesCard(props) {
     };
 
     return (
-        <>
-            <NotesEditor
-                thread={notesCardState.thread}
-                notes_id={`notes-${props.student_id}`}
-                handleEditorChange={handleEditorChange}
+        <NotesEditor
                 buttonDisabled={notesCardState.buttonDisabled}
                 editorState={notesCardState.editorState}
-                unique_id={props.student_id}
                 handleClickSave={handleClickSave}
+                handleEditorChange={handleEditorChange}
+                notes_id={`notes-${props.student_id}`}
+                thread={notesCardState.thread}
+                unique_id={props.student_id}
             />
-        </>
     );
 }
 

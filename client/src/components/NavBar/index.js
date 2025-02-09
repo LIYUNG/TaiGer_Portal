@@ -94,7 +94,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     justifyContent: 'flex-end'
 }));
 
-function NavBar(props) {
+const NavBar = (props) => {
     const { user, isAuthenticated, isLoaded, logout } = useAuth();
     const theme = useTheme();
     const ismobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -233,10 +233,11 @@ function NavBar(props) {
     const RenderChatList = (
         <Menu
             anchorEl={anchorChatListEl}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             id={chatId}
-            open={isChatListOpen}
-            onClose={handleCloseChat}
             onClick={handleCloseChat}
+            onClose={handleCloseChat}
+            open={isChatListOpen}
             sx={{
                 filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
                 mt: 1.5,
@@ -251,7 +252,6 @@ function NavBar(props) {
                 }
             }}
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
             <ChatList handleCloseChat={handleCloseChat} />
         </Menu>
@@ -260,10 +260,11 @@ function NavBar(props) {
     const RenderMenu = () => (
         <Menu
             anchorEl={anchorEl}
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             id="account-menu"
-            open={isMenuOpen}
-            onClose={handleClose}
             onClick={handleClose}
+            onClose={handleClose}
+            open={isMenuOpen}
             sx={{
                 // overflow: 'visible',
                 filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
@@ -288,7 +289,6 @@ function NavBar(props) {
                 }
             }}
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
             <MenuItem onClick={handleCloseProfile}>
                 <Avatar />
@@ -320,19 +320,18 @@ function NavBar(props) {
             }}
             id={mobileMenuId}
             keepMounted
+            onClose={handleMobileMenuClose}
+            open={isMobileMenuOpen}
             transformOrigin={{
                 vertical: 'top',
                 horizontal: 'right'
             }}
-            open={isMobileMenuOpen}
-            onClose={handleMobileMenuClose}
         >
-            {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) && (
-                <MenuItem onClick={handleNavigateCalendar}>
+            {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) ? <MenuItem onClick={handleNavigateCalendar}>
                     <IconButton
-                        size="large"
                         aria-label="show upcoming meeting event"
                         color="inherit"
+                        size="large"
                     >
                         <Badge
                             badgeContent={navState.activeEventCount}
@@ -344,16 +343,14 @@ function NavBar(props) {
                     <Typography>
                         {i18next.t('Calendar', { ns: 'common' })}
                     </Typography>
-                </MenuItem>
-            )}
-            {(is_TaiGer_AdminAgent(user) || is_TaiGer_Student(user)) && (
-                <MenuItem onClick={handleOpenChat}>
+                </MenuItem> : null}
+            {(is_TaiGer_AdminAgent(user) || is_TaiGer_Student(user)) ? <MenuItem onClick={handleOpenChat}>
                     <IconButton
-                        size="large"
-                        aria-label="show unread new messages"
                         aria-controls={menuId}
                         aria-haspopup="true"
+                        aria-label="show unread new messages"
                         color="inherit"
+                        size="large"
                     >
                         <Badge
                             badgeContent={navState.unreadCount}
@@ -365,15 +362,14 @@ function NavBar(props) {
                     <Typography>
                         {i18next.t('Messages', { ns: 'common' })}
                     </Typography>
-                </MenuItem>
-            )}
+                </MenuItem> : null}
             <MenuItem onClick={handleProfileMenuOpen}>
                 <IconButton
-                    size="large"
-                    aria-label="account of current user"
                     aria-controls="primary-search-account-menu"
                     aria-haspopup="true"
+                    aria-label="account of current user"
                     color="inherit"
+                    size="large"
                 >
                     <AccountCircle />
                 </IconButton>
@@ -399,51 +395,50 @@ function NavBar(props) {
     }
     return (
         <Box
-            sx={{
-                // minHeight: '100vh',
-                display: 'flex'
-            }}
+            data-testid="navbar_component"
             onClick={() => {
                 if (ismobile) {
                     handleDrawerClose();
                 }
             }}
-            data-testid="navbar_component"
+            sx={{
+                // minHeight: '100vh',
+                display: 'flex'
+            }}
         >
             <CssBaseline />
-            <AppBar position="fixed" open={open} ismobile={ismobile.toString()}>
+            <AppBar ismobile={ismobile.toString()} open={open} position="fixed">
                 <Toolbar>
                     <IconButton
-                        color="inherit"
                         aria-label="open drawer"
-                        onClick={(e) => handleDrawerOpen(e)}
+                        color="inherit"
                         edge="start"
+                        onClick={(e) => handleDrawerOpen(e)}
                         sx={{ ...(!ismobile && open && { display: 'none' }) }}
                     >
                         <MenuIcon />
                     </IconButton>
                     <Link
                         component={LinkDom}
-                        to={DEMO.DASHBOARD_LINK}
                         style={{ textDecoration: 'none' }}
+                        to={DEMO.DASHBOARD_LINK}
                     >
                         <img
-                            src={logoLink}
                             alt="Logo"
+                            src={logoLink}
                             style={{ maxHeight: '48px', marginRight: '2px' }}
                         />
                     </Link>
                     {(is_TaiGer_Agent(user) ||
                         is_TaiGer_Editor(user) ||
-                        is_TaiGer_Admin(user)) && <NavSearch />}
+                        is_TaiGer_Admin(user)) ? <NavSearch /> : null}
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) && (
-                            <IconButton
-                                size="large"
+                        {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) ? <IconButton
                                 aria-label="show active event"
-                                onClick={handleNavigateCalendar}
                                 color="inherit"
+                                onClick={handleNavigateCalendar}
+                                size="large"
                             >
                                 <Badge
                                     badgeContent={navState.activeEventCount}
@@ -451,17 +446,15 @@ function NavBar(props) {
                                 >
                                     <CalendarMonthIcon />
                                 </Badge>
-                            </IconButton>
-                        )}
+                            </IconButton> : null}
                         {(is_TaiGer_AdminAgent(user) ||
-                            is_TaiGer_Student(user)) && (
-                            <IconButton
-                                size="large"
-                                aria-label="show unread new messages"
+                            is_TaiGer_Student(user)) ? <IconButton
                                 aria-controls={chatId}
                                 aria-haspopup="true"
-                                onClick={handleOpenChat}
+                                aria-label="show unread new messages"
                                 color="inherit"
+                                onClick={handleOpenChat}
+                                size="large"
                             >
                                 <Badge
                                     badgeContent={navState.unreadCount}
@@ -469,20 +462,19 @@ function NavBar(props) {
                                 >
                                     <MailIcon />
                                 </Badge>
-                            </IconButton>
-                        )}
+                            </IconButton> : null}
                         <Tooltip
-                            title="Account settings"
                             placement="bottom-start"
+                            title="Account settings"
                         >
                             <IconButton
-                                size="large"
-                                edge="end"
-                                aria-label="account of current user"
                                 aria-controls={menuId}
                                 aria-haspopup="true"
-                                onClick={handleProfileMenuOpen}
+                                aria-label="account of current user"
                                 color="inherit"
+                                edge="end"
+                                onClick={handleProfileMenuOpen}
+                                size="large"
                             >
                                 <Avatar
                                     {...stringAvatar(
@@ -495,12 +487,11 @@ function NavBar(props) {
                         </Tooltip>
                     </Box>
                     <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                        {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) && (
-                            <IconButton
-                                size="large"
+                        {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) ? <IconButton
                                 aria-label="show active event"
-                                onClick={handleNavigateCalendar}
                                 color="inherit"
+                                onClick={handleNavigateCalendar}
+                                size="large"
                             >
                                 <Badge
                                     badgeContent={navState.activeEventCount}
@@ -508,17 +499,15 @@ function NavBar(props) {
                                 >
                                     <CalendarMonthIcon />
                                 </Badge>
-                            </IconButton>
-                        )}
+                            </IconButton> : null}
                         {(is_TaiGer_AdminAgent(user) ||
-                            is_TaiGer_Student(user)) && (
-                            <IconButton
-                                size="large"
-                                aria-label="show unread new messages"
+                            is_TaiGer_Student(user)) ? <IconButton
                                 aria-controls={chatId}
                                 aria-haspopup="true"
-                                onClick={handleOpenChat}
+                                aria-label="show unread new messages"
                                 color="inherit"
+                                onClick={handleOpenChat}
+                                size="large"
                             >
                                 <Badge
                                     badgeContent={navState.unreadCount}
@@ -526,20 +515,19 @@ function NavBar(props) {
                                 >
                                     <MailIcon />
                                 </Badge>
-                            </IconButton>
-                        )}
+                            </IconButton> : null}
                         <Tooltip
-                            title="Account settings"
                             placement="bottom-start"
+                            title="Account settings"
                         >
                             <IconButton
-                                size="large"
-                                edge="end"
-                                aria-label="account of current user"
                                 aria-controls={menuId}
                                 aria-haspopup="true"
-                                onClick={handleProfileMenuOpen}
+                                aria-label="account of current user"
                                 color="inherit"
+                                edge="end"
+                                onClick={handleProfileMenuOpen}
+                                size="large"
                                 sx={{
                                     '& .MuiAvatar-root': {
                                         width: 32,
@@ -562,12 +550,12 @@ function NavBar(props) {
                 </Toolbar>
             </AppBar>
             <CustomDrawer
-                open={open}
-                ismobile={ismobile}
                 handleDrawerClose={handleDrawerClose}
+                ismobile={ismobile}
+                open={open}
                 theme={theme}
             />
-            <Main open={open} ismobile={ismobile.toString()}>
+            <Main ismobile={ismobile.toString()} open={open}>
                 <DrawerHeader />
                 {props.children}
                 {renderMobileMenu}

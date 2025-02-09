@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { getEssayWriters } from '../../../../api';
 import { FILE_TYPE_E } from '../../../Utils/checking-functions';
 
-function EditEssayWritersSubpage(props) {
+const EditEssayWritersSubpage = (props) => {
     const [checkboxState, setCheckboxState] = useState({});
     const [isLoaded, setIsLoaded] = useState(false);
     const { t } = useTranslation();
@@ -95,7 +95,7 @@ function EditEssayWritersSubpage(props) {
     };
 
     return (
-        <Dialog open={props.show} onClose={props.onHide}>
+        <Dialog onClose={props.onHide} open={props.show}>
             {isLoaded ? (
                 <>
                     <DialogTitle>
@@ -116,7 +116,6 @@ function EditEssayWritersSubpage(props) {
                                         <TableRow key={i + 1}>
                                             <TableCell>
                                                 <FormControlLabel
-                                                    label={`${editor.lastname} ${editor.firstname}`}
                                                     control={
                                                         <Checkbox
                                                             checked={
@@ -133,9 +132,10 @@ function EditEssayWritersSubpage(props) {
                                                             value={editor._id}
                                                         />
                                                     }
+                                                    label={`${editor.lastname} ${editor.firstname}`}
                                                 />
                                             </TableCell>
-                                            <TableCell></TableCell>
+                                            <TableCell />
                                         </TableRow>
                                     ))
                                 ) : (
@@ -153,7 +153,6 @@ function EditEssayWritersSubpage(props) {
                     <DialogActions>
                         <Button
                             color="primary"
-                            variant="contained"
                             disabled={
                                 !checkboxState.updateEditorList ||
                                 checkboxState.updateEditorList?.length === 0
@@ -165,10 +164,11 @@ function EditEssayWritersSubpage(props) {
                                     props.essayDocumentThread._id
                                 )
                             }
+                            variant="contained"
                         >
                             {t('Update', { ns: 'common' })}
                         </Button>
-                        <Button variant="outlined" onClick={props.onHide}>
+                        <Button onClick={props.onHide} variant="outlined">
                             {t('Cancel', { ns: 'common' })}
                         </Button>
                     </DialogActions>

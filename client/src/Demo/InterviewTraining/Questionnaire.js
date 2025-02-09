@@ -200,28 +200,28 @@ const Questionnaire = () => {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.INTERVIEW_LINK}`}
+                    underline="hover"
                 >
                     {is_TaiGer_role(user)
                         ? t('All Interviews', { ns: 'interviews' })
                         : t('My Interviews', { ns: 'interviews' })}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.INTERVIEW_SINGLE_LINK(interview_id)}`}
+                    underline="hover"
                 >
                     {interview_name}
                 </Link>
@@ -229,9 +229,9 @@ const Questionnaire = () => {
                     {t('Survey', { ns: 'common' })}
                 </Typography>
             </Breadcrumbs>
-            {values.isFinal && <TopBar />}
+            {values.isFinal ? <TopBar /> : null}
             <Box sx={{ mb: 1 }}>
-                <Typography variant="h6" fontWeight="bold">
+                <Typography fontWeight="bold" variant="h6">
                     {t('Interview Training Survey', { ns: 'interviews' })}
                 </Typography>
                 <Typography variant="h6">{interview_name}</Typography>
@@ -241,7 +241,7 @@ const Questionnaire = () => {
                         { ns: 'interviews' }
                     )}
                 </Typography>
-                <Typography variant="body2" fontWeight="bold" sx={{ my: 1 }}>
+                <Typography fontWeight="bold" sx={{ my: 1 }} variant="body2">
                     {t('1. not agree    5. strongly aggree', {
                         ns: 'interviews'
                     })}
@@ -254,20 +254,20 @@ const Questionnaire = () => {
                         )}
                     </FormLabel>
                     <RadioGroup
-                        row
                         aria-label="q1"
                         name="q1"
-                        value={values.q1}
                         onChange={handleChange}
+                        row
+                        value={values.q1}
                     >
                         {[1, 2, 3, 4, 5].map((value) => (
                             <FormControlLabel
-                                key={value}
-                                value={String(value)}
                                 control={<Radio />}
+                                disabled={values.isFinal}
+                                key={value}
                                 label={String(value)}
                                 labelPlacement="top"
-                                disabled={values.isFinal}
+                                value={String(value)}
                             />
                         ))}
                     </RadioGroup>
@@ -282,20 +282,20 @@ const Questionnaire = () => {
                         )}
                     </FormLabel>
                     <RadioGroup
-                        row
                         aria-label="q2"
                         name="q2"
-                        value={values.q2}
                         onChange={handleChange}
+                        row
+                        value={values.q2}
                     >
                         {[1, 2, 3, 4, 5].map((value) => (
                             <FormControlLabel
-                                key={value}
-                                value={String(value)}
                                 control={<Radio />}
+                                disabled={values.isFinal}
+                                key={value}
                                 label={String(value)}
                                 labelPlacement="top"
-                                disabled={values.isFinal}
+                                value={String(value)}
                             />
                         ))}
                     </RadioGroup>
@@ -310,20 +310,20 @@ const Questionnaire = () => {
                         )}
                     </FormLabel>
                     <RadioGroup
-                        row
                         aria-label="q3"
                         name="q3"
-                        value={values.q3}
                         onChange={handleChange}
+                        row
+                        value={values.q3}
                     >
                         {[1, 2, 3, 4, 5].map((value) => (
                             <FormControlLabel
-                                key={value}
-                                value={String(value)}
                                 control={<Radio />}
+                                disabled={values.isFinal}
+                                key={value}
                                 label={String(value)}
                                 labelPlacement="top"
-                                disabled={values.isFinal}
+                                value={String(value)}
                             />
                         ))}
                     </RadioGroup>
@@ -341,18 +341,18 @@ const Questionnaire = () => {
                         )}
                     </FormLabel>
                     <TextField
-                        fullWidth
-                        type="textarea"
-                        maxLength={2000}
-                        multiline
-                        name="interviewQuestions"
-                        rows="10"
-                        placeholder="example questions"
-                        value={values.interviewQuestions}
-                        onChange={handleChange}
                         InputProps={{
                             readOnly: values.isFinal
                         }}
+                        fullWidth
+                        maxLength={2000}
+                        multiline
+                        name="interviewQuestions"
+                        onChange={handleChange}
+                        placeholder="example questions"
+                        rows="10"
+                        type="textarea"
+                        value={values.interviewQuestions}
                     />
                     <Badge bg={`${'primary'}`}>
                         {values.interviewQuestions?.length || 0}/{2000}
@@ -371,18 +371,18 @@ const Questionnaire = () => {
                         )}
                     </FormLabel>
                     <TextField
-                        fullWidth
-                        type="textarea"
-                        maxLength={2000}
-                        multiline
-                        name="interviewFeedback"
-                        rows="8"
-                        placeholder="example feedback"
-                        value={values.interviewFeedback}
-                        onChange={handleChange}
                         InputProps={{
                             readOnly: values.isFinal
                         }}
+                        fullWidth
+                        maxLength={2000}
+                        multiline
+                        name="interviewFeedback"
+                        onChange={handleChange}
+                        placeholder="example feedback"
+                        rows="8"
+                        type="textarea"
+                        value={values.interviewFeedback}
                     />
                     <Badge bg={`${'primary'}`}>
                         {values.interviewFeedback?.length || 0}/{2000}
@@ -390,25 +390,25 @@ const Questionnaire = () => {
                 </FormControl>
             </Box>
             <Button
-                fullWidth
-                variant="outlined"
                 color="primary"
                 disabled={values.isFinal || !isChanged}
+                fullWidth
                 onClick={handleSaveDraft}
                 sx={{ mb: 1 }}
+                variant="outlined"
             >
                 {t('Save draft', { ns: 'interviews' })}
             </Button>
             <Button
-                fullWidth
-                variant="contained"
                 color="primary"
                 disabled={values.isFinal || !formValidator()}
+                fullWidth
                 onClick={() => setIsModalOpen(true)}
+                variant="contained"
             >
                 {t('Submit', { ns: 'common' })}
             </Button>
-            <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <Dialog onClose={() => setIsModalOpen(false)} open={isModalOpen}>
                 <DialogTitle>{t('Attention')}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -425,11 +425,11 @@ const Questionnaire = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        fullWidth
-                        variant="contained"
                         color="primary"
                         disabled={values.isFinal}
+                        fullWidth
                         onClick={handleSubmit}
+                        variant="contained"
                     >
                         {t('Submit', { ns: 'common' })}
                     </Button>

@@ -10,13 +10,13 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-function ProgramDeleteWarning(props) {
+const ProgramDeleteWarning = (props) => {
     const { t } = useTranslation();
     return (
         <Dialog
-            open={props.deleteProgramWarning}
-            onClose={() => props.setDeleteProgramWarningOpen(false)}
             aria-labelledby="contained-modal-title-vcenter"
+            onClose={() => props.setDeleteProgramWarningOpen(false)}
+            open={props.deleteProgramWarning}
         >
             <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
             <DialogContent>
@@ -30,12 +30,12 @@ function ProgramDeleteWarning(props) {
             <DialogActions>
                 <Button
                     color="primary"
-                    variant="contained"
                     disabled={props.isPending}
                     onClick={() => props.RemoveProgramHandler(props.program_id)}
                     startIcon={
                         props.isPending ? <CircularProgress size={20} /> : null
                     }
+                    variant="contained"
                 >
                     {props.isPending
                         ? t('Deleting', { ns: 'common' })
@@ -43,8 +43,8 @@ function ProgramDeleteWarning(props) {
                 </Button>
                 <Button
                     color="secondary"
-                    variant="outlined"
                     onClick={() => props.setDeleteProgramWarningOpen(false)}
+                    variant="outlined"
                 >
                     {t('No', { ns: 'common' })}
                 </Button>

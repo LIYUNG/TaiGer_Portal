@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Card } from '@mui/material';
 // Status 401: cookies expired/ invalid cookie/ invalid authentication
-function UnauthenticatedError() {
+const UnauthenticatedError = () => {
     return (
         <Box>
             <Card>

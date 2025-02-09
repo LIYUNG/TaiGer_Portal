@@ -58,26 +58,26 @@ const CourseNew = () => {
         <>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.INTERNAL_WIDGET_COURSE_ANALYSER_LINK}`}
+                    underline="hover"
                 >
                     {i18next.t('Course Analyser', { ns: 'common' })}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.COURSE_DATABASE}`}
+                    underline="hover"
                 >
                     {i18next.t('All Courses DB', { ns: 'common' })}
                 </Link>
@@ -86,46 +86,46 @@ const CourseNew = () => {
                 </Typography>
             </Breadcrumbs>
             <Box>
-                <Typography variant="h5" sx={{ mb: 2 }}>
+                <Typography sx={{ mb: 2 }} variant="h5">
                     {i18next.t('New Course', { ns: 'common' })}
                 </Typography>
-                <Typography variant="body1" sx={{ mb: 2 }}>
+                <Typography sx={{ mb: 2 }} variant="body1">
                     {i18next.t('Create a new course', { ns: 'common' })}
                 </Typography>
                 <form onSubmit={(e) => onSubmit(e)}>
                     <TextField
                         fullWidth
                         id="all_course_chinese"
-                        name="all_course_chinese"
+                        inputProps={{ maxLength: 200 }}
                         label={i18next.t('Course Name in Chinese', {
                             ns: 'common'
                         })}
-                        inputProps={{ maxLength: 200 }}
+                        name="all_course_chinese"
+                        onChange={handleChange}
                         placeholder="物理"
                         value={course.all_course_chinese}
-                        onChange={handleChange}
                     />
                     <TextField
                         fullWidth
                         id="all_course_english"
-                        name="all_course_english"
+                        inputProps={{ maxLength: 200 }}
                         label={i18next.t('Course Name in English', {
                             ns: 'common'
                         })}
-                        inputProps={{ maxLength: 200 }}
-                        placeholder="Physics"
-                        value={course.all_course_english}
+                        name="all_course_english"
                         onChange={handleChange}
+                        placeholder="Physics"
                         sx={{ my: 1 }}
+                        value={course.all_course_english}
                     />
                     <Button
-                        type="submit"
-                        variant="contained"
                         disabled={
                             course.all_course_chinese === '' ||
                             course.all_course_english === ''
                         }
-                        startIcon={isPending && <CircularProgress size={20} />}
+                        startIcon={isPending ? <CircularProgress size={20} /> : null}
+                        type="submit"
+                        variant="contained"
                     >
                         {i18next.t('Create', { ns: 'common' })}
                     </Button>

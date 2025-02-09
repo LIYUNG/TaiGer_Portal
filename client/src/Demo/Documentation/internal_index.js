@@ -17,7 +17,7 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { useTranslation } from 'react-i18next';
 
-function InternaldocsPage(props) {
+const InternaldocsPage = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [internalDocsPageState, setInternalDocsPageState] = useState({
@@ -158,35 +158,33 @@ function InternaldocsPage(props) {
     TabTitle(t('Internal Documentation', { ns: 'common' }));
     return (
         <>
-            {res_modal_status >= 400 && (
-                <ModalMain
+            {res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
-                />
-            )}
+                    res_modal_status={res_modal_status}
+                /> : null}
             <Alert severity="info">
                 {t('Internal Documentation', { ns: 'common' })}
             </Alert>
             {internalDocsPageState.isEdit ? (
                 <DocPageEdit
-                    category={'category'}
+                    category="category"
                     document={document}
                     document_title={internalDocsPageState.document_title}
                     editorState={internalDocsPageState.editorState}
-                    isLoaded={isLoaded}
                     handleClickEditToggle={handleClickEditToggle}
                     handleClickSave={handleClickSave}
+                    isLoaded={isLoaded}
                 />
             ) : (
                 <DocPageView
+                    author={internalDocsPageState.author}
                     document={document}
                     document_title={internalDocsPageState.document_title}
                     editorState={internalDocsPageState.editorState}
-                    isLoaded={isLoaded}
-                    author={internalDocsPageState.author}
-                    user={user}
                     handleClickEditToggle={handleClickEditToggle}
+                    isLoaded={isLoaded}
+                    user={user}
                 />
             )}
         </>

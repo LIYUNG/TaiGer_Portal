@@ -2,35 +2,44 @@ import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { Alert, Box, Link, Typography } from '@mui/material';
 
-export default function Banner(props) {
+const Banner = ({
+    bg,
+    link_name,
+    removeBanner,
+    notification_key,
+    path,
+    text,
+    title
+}) => {
     return (
         <Alert
-            severity={props.title}
-            bg={props.bg ? props.bg : 'primary'}
+            bg={bg ? bg : 'primary'}
             onClose={
-                props.notification_key
-                    ? (e) => props.removeBanner(e, props.notification_key)
+                notification_key
+                    ? (e) => removeBanner(e, notification_key)
                     : undefined
             }
+            severity={title}
         >
             <Box sx={{ display: 'flex' }}>
                 <Typography
-                    variant="body2"
                     fontWeight="bold"
                     style={{ textAlign: 'left' }}
+                    variant="body2"
                 >
-                    {props.title ? props.title : 'Reminder'}
-                    {':'}
+                    {title ? title : 'Reminder'}:
                 </Typography>
-                <Typography variant="body2" style={{ textAlign: 'left' }}>
-                    {props.text}
+                <Typography style={{ textAlign: 'left' }} variant="body2">
+                    {text}
                 </Typography>
-                <Typography variant="body2" style={{ textAlign: 'left' }}>
-                    <Link to={`${props.path}`} component={LinkDom}>
-                        {props.link_name}
+                <Typography style={{ textAlign: 'left' }} variant="body2">
+                    <Link component={LinkDom} to={`${path}`}>
+                        {link_name}
                     </Link>{' '}
                 </Typography>
             </Box>
         </Alert>
     );
-}
+};
+
+export default Banner;

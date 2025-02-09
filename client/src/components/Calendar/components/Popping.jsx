@@ -44,21 +44,21 @@ const Popping = ({
 
         const modal = () => {
             return (
-                <Dialog open={open} size="xl" onClose={handleClose} centered>
+                <Dialog centered onClose={handleClose} open={open} size="xl">
                     <DialogTitle>{title}</DialogTitle>
                     <DialogContent>
                         請寫下想討論的主題
                         <TextField
                             fullWidth
-                            type="textarea"
                             inputProps={{ maxLength: textLimit }}
-                            multiline
-                            minRows={5}
-                            placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
-                            value={newDescription || ''}
                             isInvalid={newDescription?.length > textLimit}
+                            minRows={5}
+                            multiline
                             onChange={handleChange}
-                        ></TextField>
+                            placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
+                            type="textarea"
+                            value={newDescription || ''}
+                         />
                         <br />
                         <Badge
                             bg={`${
@@ -74,9 +74,11 @@ const Popping = ({
                                 {t('Agent', { ns: 'common' })}
                             </InputLabel>
                             <Select
+                                id="Agent"
+                                label={t('Agent', { ns: 'common' })}
                                 labelId="Agent"
                                 name="Agent"
-                                id="Agent"
+                                onChange={handleChangeReceiver}
                                 value={
                                     is_TaiGer_Student(user)
                                         ? user.agents.length > 0
@@ -84,14 +86,10 @@ const Popping = ({
                                             : ''
                                         : ''
                                 }
-                                label={t('Agent', { ns: 'common' })}
-                                onChange={handleChangeReceiver}
                             >
-                                {is_TaiGer_Student(user) && (
-                                    <MenuItem value={''}>
+                                {is_TaiGer_Student(user) ? <MenuItem value="">
                                         Please Select
-                                    </MenuItem>
-                                )}
+                                    </MenuItem> : null}
                                 {is_TaiGer_Student(user) ? (
                                     <MenuItem
                                         value={event.provider._id.toString()}
@@ -107,8 +105,8 @@ const Popping = ({
                                 ) : (
                                     user.agents.map((agent, i) => (
                                         <MenuItem
-                                            value={agent._id.toString()}
                                             key={i}
+                                            value={agent._id.toString()}
                                         >
                                             {agent.firstname}
                                             {agent.lastname}
@@ -142,16 +140,16 @@ const Popping = ({
                     </DialogContent>
                     <DialogActions>
                         <Button
-                            variant="contained"
                             color="primary"
-                            size="small"
-                            onClick={handleBook}
                             disabled={
                                 newDescription?.length === 0 ||
                                 newReceiver === '' ||
                                 BookButtonDisable
                             }
+                            onClick={handleBook}
+                            size="small"
                             sx={{ mr: 2 }}
+                            variant="contained"
                         >
                             {BookButtonDisable ? (
                                 <CircularProgress />
@@ -160,10 +158,10 @@ const Popping = ({
                             )}
                         </Button>
                         <Button
-                            variant="outlined"
                             color="secondary"
-                            size="small"
                             onClick={handleClose}
+                            size="small"
+                            variant="outlined"
                         >
                             {t('Close', { ns: 'common' })}
                         </Button>

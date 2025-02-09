@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { getProgramTicketsQuery } from '../../api/query';
 import { useQuery } from '@tanstack/react-query';
 
-function ProgramReportCard() {
+const ProgramReportCard = () => {
     const { t } = useTranslation();
     const { data, isLoading } = useQuery({
         ...getProgramTicketsQuery({ type: 'program', status: 'open' })
@@ -47,30 +47,30 @@ function ProgramReportCard() {
             <TableRow key={i}>
                 <TableCell>
                     <Link
-                        to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
                         component={LinkDom}
+                        to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
                     >
                         {i + 1}.
                     </Link>
                 </TableCell>
                 <TableCell>
                     <Link
-                        to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
                         component={LinkDom}
                         title={`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`}
+                        to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
                     >
                         {`${ticket.program_id?.school} - ${ticket.program_id?.program_name}`.substring(
                             0,
                             30
                         )}
-                        {`...`}
+                        ...
                     </Link>
                 </TableCell>
                 <TableCell>
                     <Link
-                        to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
                         component={LinkDom}
                         title={ticket.description}
+                        to={`${DEMO.SINGLE_PROGRAM_LINK(ticket.program_id?._id.toString())}`}
                     >
                         {`${ticket.description}`.substring(0, 50)}
                         {ticket.description?.length > 50 ? ` ...` : ''}

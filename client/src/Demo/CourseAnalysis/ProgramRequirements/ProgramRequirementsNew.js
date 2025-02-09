@@ -186,12 +186,11 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
         JSON.stringify(program) === '{}';
 
     return (
-        <>
-            <form onSubmit={onSubmitHandler}>
+        <form onSubmit={onSubmitHandler}>
                 <Box
+                    alignItems="center"
                     display="flex"
                     justifyContent="space-between"
-                    alignItems="center"
                     sx={{ my: 1 }}
                 >
                     <Typography variant="h6">
@@ -203,12 +202,12 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                     </Typography>
                     <Box>
                         <Button
-                            variant="outlined"
-                            component={LinkDom}
-                            to={`${DEMO.KEYWORDS_EDIT}`}
                             color="primary"
-                            target="_blank"
+                            component={LinkDom}
                             sx={{ mr: 2 }}
+                            target="_blank"
+                            to={`${DEMO.KEYWORDS_EDIT}`}
+                            variant="outlined"
                         >
                             {t('Edit Keywords', { ns: 'common' })}
                         </Button>
@@ -217,110 +216,110 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                 <Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                         <Autocomplete
-                            label={t('Add Keyword Set', { ns: 'common' })}
-                            value={program}
                             disabled={requirementId ? true : false}
-                            variant="outlined"
-                            options={distinctPrograms || []}
+                            filterOptions={filterOptions}
+                            fullWidth
                             getOptionLabel={(option) =>
                                 `${option.school} ${option.program_name} ${option.degree}`
                             }
+                            label={t('Add Keyword Set', { ns: 'common' })}
+                            options={distinctPrograms || []}
                             onChange={(e, newValue) =>
                                 handleAddProgram(newValue)
                             } // `newValue` will be the selected object
-                            filterOptions={filterOptions}
-                            fullWidth
                             renderInput={(params) => (
                                 <TextField {...params} label="Program" />
                             )}
                             size="small"
+                            value={program}
+                            variant="outlined"
                         />
                     </Box>
                     <Box>
                         <SearchableMultiSelect
-                            name="updateAttributesList"
-                            label={'Category'}
                             data={PROGRAM_SUBJECTS_DETAILED}
-                            value={checkboxState?.updateAttributesList}
+                            label="Category"
+                            name="updateAttributesList"
                             setValue={handleChangeByField(
                                 'updateAttributesList'
                             )}
-                            sx={{ mb: 2 }}
                             size="small"
+                            sx={{ mb: 2 }}
+                            value={checkboxState?.updateAttributesList}
                         />
                     </Box>
                     <Box>
                         <SearchableMultiSelect
-                            name="firstRoundConsidered"
-                            label={'First Round Considered'}
                             data={CONSIDRED_SCORES_DETAILED}
-                            value={checkboxState?.firstRoundConsidered}
+                            label="First Round Considered"
+                            name="firstRoundConsidered"
                             setValue={handleChangeByField(
                                 'firstRoundConsidered'
                             )}
-                            sx={{ mb: 2 }}
                             size="small"
+                            sx={{ mb: 2 }}
+                            value={checkboxState?.firstRoundConsidered}
                         />
                     </Box>
                     <Box>
                         <SearchableMultiSelect
-                            name="secondRoundConsidered"
-                            label={'Second Round Considered'}
                             data={CONSIDRED_SCORES_DETAILED}
-                            value={checkboxState?.secondRoundConsidered}
+                            label="Second Round Considered"
+                            name="secondRoundConsidered"
                             setValue={handleChangeByField(
                                 'secondRoundConsidered'
                             )}
-                            sx={{ mb: 2 }}
                             size="small"
+                            sx={{ mb: 2 }}
+                            value={checkboxState?.secondRoundConsidered}
                         />
                     </Box>
                     <Box>
                         <Grid container spacing={2}>
                             {SCORES_TYPE.map((score) => (
-                                <Grid item xs={6} md={4} key={score.name}>
+                                <Grid item key={score.name} md={4} xs={6}>
                                     <TextField
+                                        fullWidth
+                                        helperText={score.description}
+                                        id="categoryName"
                                         label={score.label}
                                         name={score.name}
+                                        onChange={(e) => handleScores(e)}
+                                        size="small"
                                         type="number"
                                         value={scores[score.name]}
-                                        onChange={(e) => handleScores(e)}
-                                        helperText={score.description}
                                         variant="outlined"
-                                        fullWidth
-                                        id="categoryName"
-                                        size="small"
                                     />
                                 </Grid>
                             ))}
-                            <Grid item xs={12} md={12}>
+                            <Grid item md={12} xs={12}>
                                 <TextField
+                                    fullWidth
+                                    helperText={FPSO.description}
                                     label={FPSO.label}
                                     name={FPSO.name}
-                                    value={fpso}
                                     onChange={(e) => setFpso(e.target.value)}
-                                    helperText={FPSO.description}
-                                    variant="outlined"
-                                    fullWidth
                                     size="small"
+                                    value={fpso}
+                                    variant="outlined"
                                 />
                             </Grid>
-                            <Grid item xs={12} md={12}>
+                            <Grid item md={12} xs={12}>
                                 <TextField
-                                    label={ADMISSION_DESCRIPTION.label}
-                                    name={ADMISSION_DESCRIPTION.name}
-                                    value={admissionDescription}
-                                    onChange={(e) =>
-                                        setAdmissionDescription(e.target.value)
-                                    }
+                                    fullWidth
                                     helperText={
                                         ADMISSION_DESCRIPTION.description
                                     }
-                                    variant="outlined"
-                                    fullWidth
-                                    size="small"
-                                    multiline
+                                    label={ADMISSION_DESCRIPTION.label}
                                     minRows={3}
+                                    multiline
+                                    name={ADMISSION_DESCRIPTION.name}
+                                    onChange={(e) =>
+                                        setAdmissionDescription(e.target.value)
+                                    }
+                                    size="small"
+                                    value={admissionDescription}
+                                    variant="outlined"
                                 />
                             </Grid>
                         </Grid>
@@ -342,12 +341,19 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                                 />
                                 <CardContent>
                                     <Grid container spacing={2}>
-                                        <Grid item xs={12} md={4}>
+                                        <Grid item md={4} xs={12}>
                                             <TextField
-                                                label="Category Name"
-                                                value={
-                                                    programCategory.program_category
+                                                error={
+                                                    programCategory.program_category ===
+                                                    ''
                                                 }
+                                                fullWidth
+                                                helperText={
+                                                    programCategory.program_category ===
+                                                        '' ? 'Please name the course category specified by the program' : null
+                                                }
+                                                id="categoryName"
+                                                label="Category Name"
                                                 onChange={(e) =>
                                                     setProgramCategories(
                                                         (prev) =>
@@ -364,28 +370,26 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                                                             )
                                                     )
                                                 }
-                                                error={
-                                                    programCategory.program_category ===
-                                                    ''
-                                                }
-                                                helperText={
-                                                    programCategory.program_category ===
-                                                        '' &&
-                                                    'Please name the course category specified by the program'
+                                                size="small"
+                                                value={
+                                                    programCategory.program_category
                                                 }
                                                 variant="outlined"
-                                                fullWidth
-                                                id="categoryName"
-                                                size="small"
                                             />
                                         </Grid>
-                                        <Grid item xs={12} md={4}>
+                                        <Grid item md={4} xs={12}>
                                             <TextField
-                                                label="Required ECTS"
-                                                type="number"
-                                                value={
-                                                    programCategory.requiredECTS
+                                                error={
+                                                    programCategory.requiredECTS <=
+                                                    0
                                                 }
+                                                fullWidth
+                                                helperText={
+                                                    programCategory.requiredECTS <=
+                                                        0 ? 'ECTS should more than 0' : null
+                                                }
+                                                id="requiredECTS"
+                                                label="Required ECTS"
                                                 onChange={(e) =>
                                                     setProgramCategories(
                                                         (prev) =>
@@ -402,25 +406,19 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                                                             )
                                                     )
                                                 }
-                                                error={
-                                                    programCategory.requiredECTS <=
-                                                    0
-                                                }
-                                                helperText={
-                                                    programCategory.requiredECTS <=
-                                                        0 &&
-                                                    'ECTS should more than 0'
+                                                size="small"
+                                                type="number"
+                                                value={
+                                                    programCategory.requiredECTS
                                                 }
                                                 variant="outlined"
-                                                fullWidth
-                                                id="requiredECTS"
-                                                size="small"
                                             />
                                         </Grid>
-                                        <Grid item xs={12} md={4}>
+                                        <Grid item md={4} xs={12}>
                                             <TextField
+                                                fullWidth
+                                                id="categoryName"
                                                 label="Points (if applicable)"
-                                                value={programCategory.maxScore}
                                                 onChange={(e) =>
                                                     setProgramCategories(
                                                         (prev) =>
@@ -437,23 +435,21 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                                                             )
                                                     )
                                                 }
+                                                size="small"
+                                                value={programCategory.maxScore}
+                                                variant="outlined"
                                                 type="number"
                                                 // error={programCategory.maxScore === 0}
                                                 helperText={
                                                     'Max. score for this category. (if programs publish entry requirement score like TUM)'
                                                 }
-                                                variant="outlined"
-                                                fullWidth
-                                                id="categoryName"
-                                                size="small"
                                             />
                                         </Grid>
-                                        <Grid item xs={12} md={12}>
+                                        <Grid item md={12} xs={12}>
                                             <TextField
+                                                fullWidth
+                                                id="category_description"
                                                 label="Category Description"
-                                                value={
-                                                    programCategory.category_description
-                                                }
                                                 onChange={(e) =>
                                                     setProgramCategories(
                                                         (prev) =>
@@ -470,13 +466,14 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                                                             )
                                                     )
                                                 }
-                                                variant="outlined"
-                                                fullWidth
-                                                id="category_description"
                                                 size="small"
+                                                value={
+                                                    programCategory.category_description
+                                                }
+                                                variant="outlined"
                                             />
                                         </Grid>
-                                        <Grid item xs={12} md={12}>
+                                        <Grid item md={12} xs={12}>
                                             <Box
                                                 sx={{
                                                     display: 'flex',
@@ -485,34 +482,30 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                                                 }}
                                             >
                                                 <Autocomplete
-                                                    multiple
-                                                    variant="outlined"
-                                                    value={
-                                                        programCategory.keywordSets
+                                                    disableCloseOnSelect
+                                                    filterOptions={
+                                                        filterKeywordOptions
                                                     }
+                                                    fullWidth
                                                     getOptionLabel={(option) =>
                                                         `${option.categoryName} ${option.keywords?.zh?.join(
                                                             ', '
                                                         )} ${option.keywords?.en?.join(', ')} `
                                                     }
-                                                    options={keywordsets || []}
-                                                    disableCloseOnSelect
                                                     isOptionEqualToValue={(
                                                         option,
                                                         value
                                                     ) =>
                                                         option._id === value._id
                                                     }
+                                                    multiple
                                                     onChange={(e, newValue) =>
                                                         handleAddKeywordSet(
                                                             newValue,
                                                             index
                                                         )
                                                     }
-                                                    filterOptions={
-                                                        filterKeywordOptions
-                                                    }
-                                                    fullWidth
+                                                    options={keywordsets || []}
                                                     renderInput={(params) => (
                                                         <TextField
                                                             {...params}
@@ -528,8 +521,7 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                                                                     index
                                                                 ]?.keywordSets
                                                                     ?.length <=
-                                                                    0 &&
-                                                                'Please provide at least 1 keyword set'
+                                                                    0 ? 'Please provide at least 1 keyword set' : null
                                                             }
                                                             label="With categories"
                                                         />
@@ -556,10 +548,10 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                                                                         key={
                                                                             _id
                                                                         }
-                                                                        variant="outlined"
                                                                         label={
                                                                             option.categoryName
                                                                         }
+                                                                        variant="outlined"
                                                                         {...tagProps}
                                                                     />
                                                                 );
@@ -567,6 +559,10 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                                                         )
                                                     }
                                                     size="small"
+                                                    value={
+                                                        programCategory.keywordSets
+                                                    }
+                                                    variant="outlined"
                                                 />
                                             </Box>
                                         </Grid>
@@ -578,27 +574,27 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                 </Box>
                 <Box>
                     <Button
-                        variant="contained"
                         color="secondary"
                         onClick={handleAddCategory}
+                        variant="contained"
                     >
                         {t('Add Category', { ns: 'common' })}
                     </Button>
                 </Box>
-                <Box display="flex" justifyContent="flex-end" gap={2}>
+                <Box display="flex" gap={2} justifyContent="flex-end">
                     <Button
-                        variant="outlined"
-                        color="secondary"
                         as={LinkDom}
+                        color="secondary"
                         to={DEMO.PROGRAM_ANALYSIS}
+                        variant="outlined"
                     >
                         {t('Cancel', { ns: 'common' })}
                     </Button>
                     <Button
-                        variant="contained"
                         color="primary"
-                        type="submit"
                         disabled={isSubmitDisabled}
+                        type="submit"
+                        variant="contained"
                     >
                         {requirementId
                             ? t('Update', { ns: 'common' })
@@ -606,7 +602,6 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                     </Button>
                 </Box>
             </form>
-        </>
     );
 };
 

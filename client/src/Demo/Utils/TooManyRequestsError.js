@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Box } from '@mui/material';
 
-function TooManyRequestsError() {
+const TooManyRequestsError = () => {
     return (
         <Box>
             <Card>Too many requests. Please try later.</Card>

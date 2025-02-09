@@ -11,7 +11,7 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 
-function Notes(props) {
+const Notes = (props) => {
     const { user } = useAuth();
     const [notesState, setNotesState] = useState({
         error: '',
@@ -81,10 +81,10 @@ function Notes(props) {
     return (
         <Box>
             <NotesCard
-                notes={notesState.notes}
                 isLoaded={notesState.isLoaded}
-                user={user}
+                notes={notesState.notes}
                 student_id={props.student_id}
+                user={user}
             />
         </Box>
     );

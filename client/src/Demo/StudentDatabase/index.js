@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { getAllStudentsQuery } from '../../api/query';
 
-function StudentDatabase() {
+const StudentDatabase = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const {
@@ -43,10 +43,10 @@ function StudentDatabase() {
         <Box data-testid="student_datdabase">
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -63,19 +63,17 @@ function StudentDatabase() {
                     <TabStudBackgroundDashboard
                         students={students}
                         submitUpdateAgentlist={submitUpdateAgentlist}
-                        submitUpdateEditorlist={submitUpdateEditorlist}
                         submitUpdateAttributeslist={submitUpdateAttributeslist}
+                        submitUpdateEditorlist={submitUpdateEditorlist}
                         updateStudentArchivStatus={updateStudentArchivStatus}
                     />
                 </Card>
             </Box>
-            {res_modal_status >= 400 && (
-                <ModalMain
+            {res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
-                />
-            )}
+                    res_modal_status={res_modal_status}
+                /> : null}
         </Box>
     );
 }

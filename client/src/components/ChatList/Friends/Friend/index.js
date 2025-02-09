@@ -68,7 +68,7 @@ const Friend = (props) => {
                 props.data.firstname
             } ${props.data.lastname}`}
         >
-            <Grid container justifyContent="space-between" alignItems="center">
+            <Grid alignItems="center" container justifyContent="space-between">
                 <Grid item style={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar
                         alt={`${props.data.firstname} ${props.data.lastname}`}
@@ -86,9 +86,9 @@ const Friend = (props) => {
                         }}
                     >
                         <Typography
-                            variant="body1"
-                            fontWeight="bold"
                             color="text.primary"
+                            fontWeight="bold"
+                            variant="body1"
                         >
                             {truncateText(
                                 `${
@@ -128,13 +128,11 @@ const Friend = (props) => {
                             {props.data?.latestCommunication?.user_id ===
                                 props.data?.latestCommunication?.student_id &&
                                 props.data?.latestCommunication
-                                    ?.ignore_message !== true && (
-                                    <FiberManualRecordIcon
+                                    ?.ignore_message !== true ? <FiberManualRecordIcon
                                         fontSize="small"
-                                        title="Not Reply Yet"
                                         style={{ marginLeft: '4px' }}
-                                    />
-                                )}
+                                        title="Not Reply Yet"
+                                    /> : null}
                         </Typography>
                     </Box>
                 </Grid>

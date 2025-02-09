@@ -15,7 +15,7 @@ import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import { getStudentUniAssistQuery } from '../../api/query';
 
-function UniAssistList() {
+const UniAssistList = () => {
     const { user } = useAuth();
     const { data, isLoading } = useQuery(
         getStudentUniAssistQuery({ studentId: user._id.toString() })
@@ -34,10 +34,10 @@ function UniAssistList() {
         <>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -46,23 +46,23 @@ function UniAssistList() {
                 </Typography>
             </Breadcrumbs>
             {check_student_needs_uni_assist(data.data) ? (
-                <Fragment>
+                <>
                     <Typography sx={{ my: 2 }}>
                         {i18next.t(
                             'Instructions: Follow the documentations in'
                         )}
                         :{` `}
                         <Link
-                            underline="hover"
-                            to={`${DEMO.UNI_ASSIST_DOCS_LINK}`}
                             component={LinkDom}
                             target="_blank"
+                            to={`${DEMO.UNI_ASSIST_DOCS_LINK}`}
+                            underline="hover"
                         >
                             Uni-Assist <LaunchIcon fontSize="small" />
                         </Link>
                     </Typography>
                     <UniAssistListCard student={data.data} />
-                </Fragment>
+                </>
             ) : (
                 <Card>
                     <Typography>

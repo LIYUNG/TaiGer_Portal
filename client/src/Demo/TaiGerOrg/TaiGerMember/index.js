@@ -24,7 +24,7 @@ import { appConfig } from '../../../config';
 import { useAuth } from '../../../components/AuthProvider';
 import Loading from '../../../components/Loading/Loading';
 
-function TaiGerMember() {
+const TaiGerMember = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [taiGerMemberState, setTaiGerMember] = useState({
@@ -100,10 +100,10 @@ function TaiGerMember() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -121,23 +121,21 @@ function TaiGerMember() {
                 </Typography>
             </Breadcrumbs>
             <Card>
-                {is_TaiGer_Admin(user) && (
-                    <>
+                {is_TaiGer_Admin(user) ? <>
                         <Typography variant="h5">
                             {t('Admin', { ns: 'common' })}:
                         </Typography>
                         {admins.map((admin, i) => (
                             <Typography fontWeight="bold" key={i}>
                                 <Link
-                                    to={`${DEMO.TEAM_ADMIN_LINK(admin._id.toString())}`}
                                     component={LinkDom}
+                                    to={`${DEMO.TEAM_ADMIN_LINK(admin._id.toString())}`}
                                 >
                                     {admin.firstname} {admin.lastname}
                                 </Link>
                             </Typography>
                         ))}
-                    </>
-                )}
+                    </> : null}
 
                 <Typography variant="h5">
                     {t('Agent', { ns: 'common' })}:
@@ -154,8 +152,8 @@ function TaiGerMember() {
                                 <TableCell>
                                     <b>
                                         <Link
-                                            to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
                                             component={LinkDom}
+                                            to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
                                         >
                                             {agent.firstname} {agent.lastname}{' '}
                                         </Link>
@@ -180,8 +178,8 @@ function TaiGerMember() {
                                 <TableCell>
                                     <b>
                                         <Link
-                                            to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
                                             component={LinkDom}
+                                            to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
                                         >
                                             {editor.firstname} {editor.lastname}{' '}
                                         </Link>

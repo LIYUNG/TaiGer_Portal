@@ -24,7 +24,7 @@ import {
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 
-function EditableFile_Thread(props) {
+const EditableFile_Thread = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const handleAsFinalFileThread = (documenName, isFinal) => {
@@ -65,19 +65,19 @@ function EditableFile_Thread(props) {
             }}
         >
             <Grid container spacing={2}>
-                <Grid item xs={8} md={8}>
-                    <Stack direction="row" alignItems="center" spacing={1}>
+                <Grid item md={8} xs={8}>
+                    <Stack alignItems="center" direction="row" spacing={1}>
                         {!is_TaiGer_role(user)
                             ? props.thread.isFinalVersion && FILE_OK_SYMBOL
                             : props.thread.isFinalVersion
                               ? FILE_OK_SYMBOL
                               : FILE_MISSING_SYMBOL}
                         <Link
+                            component={LinkDom}
+                            target="_blank"
                             to={DEMO.DOCUMENT_MODIFICATION_LINK(
                                 props.thread.doc_thread_id?._id
                             )}
-                            component={LinkDom}
-                            target="_blank"
                         >
                             <Typography
                                 color={
@@ -88,21 +88,20 @@ function EditableFile_Thread(props) {
                             </Typography>
                         </Link>
                     </Stack>
-                    <Typography variant="body2" color="textSecondary">
+                    <Typography color="textSecondary" variant="body2">
                         {convertDate(props.thread.doc_thread_id?.updatedAt)} by{' '}
                         {latestReplyInfo(props.thread.doc_thread_id)}
                     </Typography>
                 </Grid>
-                <Grid item xs={4} sm={4}>
+                <Grid item sm={4} xs={4}>
                     <Stack
+                        alignItems="center"
                         direction="row"
                         justifyContent="flex-end"
-                        alignItems="center"
                         spacing={1}
                     >
                         {is_TaiGer_role(user) &&
-                            !props.thread.isFinalVersion && (
-                                <Tooltip
+                            !props.thread.isFinalVersion ? <Tooltip
                                     title={t('Set as final version', {
                                         ns: 'common'
                                     })}
@@ -115,10 +114,9 @@ function EditableFile_Thread(props) {
                                             )
                                         }
                                     >
-                                        <CheckIcon size={24} color="success" />
+                                        <CheckIcon color="success" size={24} />
                                     </IconButton>
-                                </Tooltip>
-                            )}
+                                </Tooltip> : null}
                         {props.thread.isFinalVersion ? (
                             is_TaiGer_role(user) ? (
                                 <Tooltip title={t('Undo', { ns: 'common' })}>
@@ -141,8 +139,7 @@ function EditableFile_Thread(props) {
                         ) : (
                             <></>
                         )}
-                        {is_TaiGer_role(user) && (
-                            <Tooltip title={t('Delete', { ns: 'common' })}>
+                        {is_TaiGer_role(user) ? <Tooltip title={t('Delete', { ns: 'common' })}>
                                 <IconButton>
                                     <DeleteIcon
                                         onClick={() =>
@@ -150,8 +147,7 @@ function EditableFile_Thread(props) {
                                         }
                                     />
                                 </IconButton>
-                            </Tooltip>
-                        )}
+                            </Tooltip> : null}
                     </Stack>
                 </Grid>
             </Grid>

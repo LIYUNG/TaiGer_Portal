@@ -31,7 +31,7 @@ CustomTabPanel.propTypes = {
     value: PropTypes.number.isRequired
 };
 
-function EssayOverview(props) {
+const EssayOverview = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [cVMLRLOverviewState, setCVMLRLOverviewState] = useState({
@@ -108,11 +108,11 @@ function EssayOverview(props) {
                                 )}
                             </IconButton>
                             <Link
-                                underline="hover"
-                                to={linkUrl}
                                 component={LinkDom}
                                 target="_blank"
                                 title={params.value}
+                                to={linkUrl}
+                                underline="hover"
                             >
                                 {params.value}
                             </Link>
@@ -130,14 +130,14 @@ function EssayOverview(props) {
                     return (
                         params.row.outsourced_user_id?.map((outsourcer) => (
                             <Link
-                                underline="hover"
+                                component={LinkDom}
+                                key={`${outsourcer._id.toString()}`}
+                                target="_blank"
+                                title={outsourcer.firstname}
                                 to={DEMO.TEAM_EDITOR_LINK(
                                     outsourcer._id.toString()
                                 )}
-                                component={LinkDom}
-                                target="_blank"
-                                title={outsourcer.firstname}
-                                key={`${outsourcer._id.toString()}`}
+                                underline="hover"
                             >
                                 {`${outsourcer.firstname} `}
                             </Link>
@@ -154,12 +154,12 @@ function EssayOverview(props) {
                 renderCell: (params) => {
                     return params.row.editors?.map((editor) => (
                         <Link
-                            underline="hover"
-                            to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
                             component={LinkDom}
+                            key={`${editor._id.toString()}`}
                             target="_blank"
                             title={editor.firstname}
-                            key={`${editor._id.toString()}`}
+                            to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
+                            underline="hover"
                         >
                             {`${editor.firstname} `}
                         </Link>
@@ -192,26 +192,26 @@ function EssayOverview(props) {
                                         attribute.value
                                     ) && (
                                         <Tooltip
+                                            key={attribute._id}
                                             title={`${attribute.name}: ${
                                                 ATTRIBUTES[attribute.value - 1]
                                                     .definition
                                             }`}
-                                            key={attribute._id}
                                         >
                                             <Chip
-                                                size="small"
-                                                label={attribute.name[0]}
                                                 color={COLORS[attribute.value]}
+                                                label={attribute.name[0]}
+                                                size="small"
                                             />
                                         </Tooltip>
                                     )
                             )}
                             <Link
-                                underline="hover"
-                                to={linkUrl}
                                 component={LinkDom}
                                 target="_blank"
                                 title={params.value}
+                                to={linkUrl}
+                                underline="hover"
                             >
                                 {params.value}
                             </Link>
@@ -260,20 +260,18 @@ function EssayOverview(props) {
 
     return (
         <>
-            {res_modal_status >= 400 && (
-                <ModalMain
+            {res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
-                />
-            )}
+                    res_modal_status={res_modal_status}
+                /> : null}
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    variant="scrollable"
-                    scrollButtons="auto"
                     aria-label="basic tabs example"
+                    onChange={handleChange}
+                    scrollButtons="auto"
+                    value={value}
+                    variant="scrollable"
                 >
                     <Tab
                         label={`NO ESSAY WRITER (${
@@ -307,128 +305,128 @@ function EssayOverview(props) {
                     />
                 </Tabs>
             </Box>
-            <CustomTabPanel value={value} index={0}>
+            <CustomTabPanel index={0} value={value}>
                 <Banner
                     ReadOnlyMode={true}
-                    bg={'danger'}
-                    title={'warning'}
-                    path={'/'}
-                    text={'Please assign essay writer to the following essays:'}
-                    link_name={''}
-                    removeBanner={<></>}
+                    bg="danger"
+                    link_name=""
                     notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
+                    text="Please assign essay writer to the following essays:"
+                    title="warning"
                 />
                 <MuiDataGrid
+                    columnVisibilityModel={{
+                        number_input_from_editors: false,
+                        number_input_from_student: false
+                    }}
+                    columns={memoizedColumns}
                     rows={props.no_essay_writer_tasks}
-                    columns={memoizedColumns}
+                />
+            </CustomTabPanel>
+            <CustomTabPanel index={1} value={value}>
+                <Banner
+                    ReadOnlyMode={true}
+                    bg="danger"
+                    link_name=""
+                    notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
+                    text="Follow up"
+                    title="warning"
+                />
+                <MuiDataGrid
                     columnVisibilityModel={{
                         number_input_from_editors: false,
                         number_input_from_student: false
                     }}
-                />
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
-                <Banner
-                    ReadOnlyMode={true}
-                    bg={'danger'}
-                    title={'warning'}
-                    path={'/'}
-                    text={'Follow up'}
-                    link_name={''}
-                    removeBanner={<></>}
-                    notification_key={undefined}
-                />
-                <MuiDataGrid
+                    columns={memoizedColumns}
                     rows={props.new_message_tasks}
-                    columns={memoizedColumns}
+                />
+            </CustomTabPanel>
+            <CustomTabPanel index={2} value={value}>
+                <Banner
+                    ReadOnlyMode={true}
+                    bg="primary"
+                    link_name=""
+                    notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
+                    text="My Favorite"
+                    title="info"
+                />
+                <MuiDataGrid
                     columnVisibilityModel={{
                         number_input_from_editors: false,
                         number_input_from_student: false
                     }}
-                />
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
-                <Banner
-                    ReadOnlyMode={true}
-                    bg={'primary'}
-                    title={'info'}
-                    path={'/'}
-                    text={'My Favorite'}
-                    link_name={''}
-                    removeBanner={<></>}
-                    notification_key={undefined}
-                />
-                <MuiDataGrid
+                    columns={memoizedColumns}
                     rows={props.fav_message_tasks}
-                    columns={memoizedColumns}
-                    columnVisibilityModel={{
-                        number_input_from_editors: false,
-                        number_input_from_student: false
-                    }}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={3}>
+            <CustomTabPanel index={3} value={value}>
                 <Banner
                     ReadOnlyMode={true}
-                    bg={'primary'}
-                    title={'info'}
-                    path={'/'}
-                    text={'Follow up'}
-                    link_name={''}
-                    removeBanner={<></>}
+                    bg="primary"
+                    link_name=""
                     notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
+                    text="Follow up"
+                    title="info"
                 />
                 <MuiDataGrid
-                    rows={props.followup_tasks}
-                    columns={memoizedColumns}
                     columnVisibilityModel={{
                         number_input_from_editors: false,
                         number_input_from_student: false
                     }}
+                    columns={memoizedColumns}
+                    rows={props.followup_tasks}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={4}>
+            <CustomTabPanel index={4} value={value}>
                 <Banner
                     ReadOnlyMode={true}
-                    bg={'info'}
-                    title={is_TaiGer_role(user) ? 'info' : 'warning'}
-                    path={'/'}
+                    bg="info"
+                    link_name=""
+                    notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
                     text={
                         is_TaiGer_role(user)
                             ? 'Waiting inputs. No action needed'
                             : 'Please provide input as soon as possible'
                     }
-                    link_name={''}
-                    removeBanner={<></>}
-                    notification_key={undefined}
+                    title={is_TaiGer_role(user) ? 'info' : 'warning'}
                 />
                 <MuiDataGrid
-                    rows={props.pending_progress_tasks}
-                    columns={memoizedColumns}
                     columnVisibilityModel={{
                         number_input_from_editors: false,
                         number_input_from_student: false
                     }}
+                    columns={memoizedColumns}
+                    rows={props.pending_progress_tasks}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={5}>
+            <CustomTabPanel index={5} value={value}>
                 <Banner
                     ReadOnlyMode={true}
-                    bg={'success'}
-                    title={'success'}
-                    path={'/'}
-                    text={'These tasks are closed.'}
-                    link_name={''}
-                    removeBanner={<></>}
+                    bg="success"
+                    link_name=""
                     notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
+                    text="These tasks are closed."
+                    title="success"
                 />
                 <MuiDataGrid
-                    rows={props.closed_tasks}
-                    columns={memoizedColumns}
                     columnVisibilityModel={{
                         number_input_from_editors: false,
                         number_input_from_student: false
                     }}
+                    columns={memoizedColumns}
+                    rows={props.closed_tasks}
                 />
                 <Typography variant="body2">
                     {t(
@@ -437,24 +435,24 @@ function EssayOverview(props) {
                     )}
                 </Typography>
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={6}>
+            <CustomTabPanel index={6} value={value}>
                 <Banner
                     ReadOnlyMode={true}
-                    bg={'info'}
-                    title={'info'}
-                    path={'/'}
-                    text={'All Essays'}
-                    link_name={''}
-                    removeBanner={<></>}
+                    bg="info"
+                    link_name=""
                     notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
+                    text="All Essays"
+                    title="info"
                 />
                 <MuiDataGrid
-                    rows={props.all_active_message_tasks}
-                    columns={memoizedColumns}
                     columnVisibilityModel={{
                         number_input_from_editors: false,
                         number_input_from_student: false
                     }}
+                    columns={memoizedColumns}
+                    rows={props.all_active_message_tasks}
                 />
             </CustomTabPanel>
         </>

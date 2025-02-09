@@ -49,8 +49,7 @@ export const DeleteCourseDialog = ({
     };
 
     return (
-        <>
-            <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+        <Dialog fullWidth maxWidth="sm" onClose={onClose} open={open}>
                 <DialogTitle>
                     {i18next.t('Delete Course', { ns: 'common' })}
                 </DialogTitle>
@@ -74,18 +73,16 @@ export const DeleteCourseDialog = ({
                     ) : (
                         <></>
                     )}
-                    {isMutateError && (
-                        <Typography color="error">
+                    {isMutateError ? <Typography color="error">
                             An error occurred: {mutateError.message}
-                        </Typography>
-                    )}
+                        </Typography> : null}
                 </DialogContent>
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         disabled={isPending}
                         onClick={(e) => handleSubmit(e)}
+                        variant="contained"
                     >
                         {isPending ? (
                             <CircularProgress size={20} />
@@ -93,11 +90,10 @@ export const DeleteCourseDialog = ({
                             i18next.t('Delete', { ns: 'common' })
                         )}
                     </Button>
-                    <Button onClick={onClose} color="primary">
+                    <Button color="primary" onClick={onClose}>
                         {i18next.t('Close')}
                     </Button>
                 </DialogActions>
             </Dialog>
-        </>
     );
 };

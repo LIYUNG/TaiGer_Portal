@@ -8,14 +8,14 @@ import {
 } from '@mui/material';
 import ProgramTaskDelta from './ProgramTaskDelta';
 
-function TabProgramTaskDelta(props) {
-    const { deltas } = props;
+const TabProgramTaskDelta = ({ deltas }) => {
+    
 
     const taskDeltas = deltas.map((delta, i) => (
         <ProgramTaskDelta
             key={i}
-            students={delta.students}
             program={delta.program}
+            students={delta.students}
         />
     ));
     return (

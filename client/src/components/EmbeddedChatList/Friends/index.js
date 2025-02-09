@@ -4,7 +4,7 @@ import i18next from 'i18next';
 
 import Friend from './Friend';
 
-function Friends(props) {
+const Friends = (props) => {
     if (props.students.length === 0) {
         return (
             <Typography
@@ -21,7 +21,7 @@ function Friends(props) {
     }
     const friendList = props.students.map((f) => {
         return (
-            <Friend key={f._id} data={f} activeId={props.user._id.toString()} />
+            <Friend activeId={props.user._id.toString()} data={f} key={f._id} />
         );
     });
 

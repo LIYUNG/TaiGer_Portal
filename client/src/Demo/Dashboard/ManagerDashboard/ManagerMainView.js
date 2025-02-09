@@ -41,7 +41,7 @@ import { useAuth } from '../../../components/AuthProvider';
 import { useTranslation } from 'react-i18next';
 import Banner from '../../../components/Banner/Banner';
 
-function ManagerMainView(props) {
+const ManagerMainView = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [managerMainViewState, setManagerMainViewState] = useState({
@@ -102,14 +102,14 @@ function ManagerMainView(props) {
     };
     const students_agent_editor = props.students.map((student, i) => (
         <StudentsAgentEditor
-            key={i}
-            user={user}
-            student={student}
             documentslist={props.documentslist}
-            updateAgentList={props.updateAgentList}
-            submitUpdateAgentlist={props.submitUpdateAgentlist}
             isDashboard={props.isDashboard}
+            key={i}
+            student={student}
+            submitUpdateAgentlist={props.submitUpdateAgentlist}
+            updateAgentList={props.updateAgentList}
             updateStudentArchivStatus={props.updateStudentArchivStatus}
+            user={user}
         />
     ));
 
@@ -149,19 +149,13 @@ function ManagerMainView(props) {
                     <Box key={i}>
                         <Card>
                             <Banner
-                                bg={'danger'}
-                                title={'warning'}
+                                bg="danger"
+                                link_name={<LaunchIcon fontSize="small" />}
+                                notification_key="isRead_new_base_docs_uploaded"
                                 path={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                     student.student_id,
                                     DEMO.PROFILE_HASH
                                 )}`}
-                                text={`${t(
-                                    'There are new base documents uploaded by',
-                                    {
-                                        ns: 'common'
-                                    }
-                                )} ${student.student_firstname} ${student.student_lastname}`}
-                                link_name={<LaunchIcon fontSize="small" />}
                                 removeBanner={(e) =>
                                     removeAgentBanner(
                                         e,
@@ -170,9 +164,13 @@ function ManagerMainView(props) {
                                     )
                                 }
                                 student_id={student.student_id}
-                                notification_key={
-                                    'isRead_new_base_docs_uploaded'
-                                }
+                                text={`${t(
+                                    'There are new base documents uploaded by',
+                                    {
+                                        ns: 'common'
+                                    }
+                                )} ${student.student_firstname} ${student.student_lastname}`}
+                                title="warning"
                             />
                         </Card>
                     </Box>
@@ -228,20 +226,18 @@ function ManagerMainView(props) {
                                         </TableRow>
                                         {managerMainViewState.collapsedRows[
                                             idx
-                                        ] && (
-                                            <TableRow>
+                                        ] ? <TableRow>
                                                 <td colSpan="12">
                                                     <ApplicationProgressCardBody
-                                                        student={
-                                                            application.student
-                                                        }
                                                         application={
                                                             application.application
                                                         }
+                                                        student={
+                                                            application.student
+                                                        }
                                                     />
                                                 </td>
-                                            </TableRow>
-                                        )}
+                                            </TableRow> : null}
                                     </Fragment>
                                 ))}
                             </TableBody>
@@ -258,42 +254,37 @@ function ManagerMainView(props) {
                             (agent) => agent._id === user._id.toString()
                         )
                     )
-                ) && (
-                    <ReadyToSubmitTasksCard
+                ) ? <ReadyToSubmitTasksCard
                         students={props.students}
                         user={user}
-                    />
-                )}
+                    /> : null}
                 {is_any_vpd_missing(
                     props.students.filter((student) =>
                         student.agents.some(
                             (agent) => agent._id === user._id.toString()
                         )
                     )
-                ) && (
-                    <VPDToSubmitTasksCard
+                ) ? <VPDToSubmitTasksCard
                         students={props.students}
                         user={user}
-                    />
-                )}
+                    /> : null}
                 {is_any_base_documents_uploaded(
                     props.students.filter((student) =>
                         student.agents.some(
                             (agent) => agent._id === user._id.toString()
                         )
                     )
-                ) && (
-                    <Card>
+                ) ? <Card>
                         <ReportProblemIcon size={18} /> Check uploaded base
                         documents:
                         <Box className="py-0 px-0 card-scrollable-body">
                             <Table
                                 bordered
-                                hover
                                 className="my-0 mx-0"
-                                variant="dark"
-                                text="light"
+                                hover
                                 size="sm"
+                                text="light"
+                                variant="dark"
                             >
                                 <TableHead>
                                     <TableRow>
@@ -315,29 +306,25 @@ function ManagerMainView(props) {
                                 </TableBody>
                             </Table>
                         </Box>
-                    </Card>
-                )}
+                    </Card> : null}
                 {isAnyCVNotAssigned(
                     props.students.filter((student) =>
                         student.agents.some(
                             (agent) => agent._id === user._id.toString()
                         )
                     )
-                ) && (
-                    <CVAssignTasksCard students={props.students} user={user} />
-                )}
+                ) ? <CVAssignTasksCard students={props.students} user={user} /> : null}
                 {anyStudentWithoutApplicationSelection(
                     props.students.filter((student) =>
                         student.agents.some(
                             (agent) => agent._id === user._id.toString()
                         )
                     )
-                ) && (
-                    <Grid item xs={6}>
+                ) ? <Grid item xs={6}>
                         <Card
+                            bg="danger"
                             className="my-2 mx-0"
-                            bg={'danger'}
-                            text={'light'}
+                            text="light"
                         >
                             <Typography variant="h6">
                                 <ReportProblemIcon size={18} /> No Program
@@ -355,8 +342,7 @@ function ManagerMainView(props) {
                                 </TableBody>
                             </Table>
                         </Card>
-                    </Grid>
-                )}
+                    </Grid> : null}
                 <NoEnoughDecidedProgramsTasksCard
                     students={props.students}
                     user={user}
@@ -366,7 +352,7 @@ function ManagerMainView(props) {
                 <Table size="small">
                     <TableHead>
                         <TableRow>
-                            <TableCell></TableCell>
+                            <TableCell />
                             {header.map((name, index) => (
                                 <TableCell key={index}>{name}</TableCell>
                             ))}

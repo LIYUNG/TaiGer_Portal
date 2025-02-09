@@ -1,11 +1,9 @@
 import React from 'react';
 import GuestMainView from './GuestMainView';
 
-function GuestDashboard() {
+const GuestDashboard = () => {
     return (
-        <>
-            <GuestMainView />
-        </>
+        <GuestMainView />
     );
 }
 

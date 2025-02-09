@@ -6,25 +6,23 @@ import { is_TaiGer_Admin } from '@taiger-common/core';
 
 import { useAuth } from '../../components/AuthProvider';
 
-function DocumentsListItems(props) {
+const DocumentsListItems = (props) => {
     const { user } = useAuth();
     return (
         <Box sx={{ mx: 2, my: 1 }}>
-            {is_TaiGer_Admin(user) && (
-                <CloseIcon
+            {is_TaiGer_Admin(user) ? <CloseIcon
                     fontSize="small"
-                    title="Delete"
-                    style={{ cursor: 'pointer' }}
                     onClick={() =>
                         props.openDeleteDocModalWindow(props.document)
                     }
-                />
-            )}
+                    style={{ cursor: 'pointer' }}
+                    title="Delete"
+                /> : null}
             {props.idx}
             {'. '}
             <Link
-                to={`${props.path}/${props.document._id}`}
                 component={LinkDom}
+                to={`${props.path}/${props.document._id}`}
             >
                 {props.document.title}
             </Link>

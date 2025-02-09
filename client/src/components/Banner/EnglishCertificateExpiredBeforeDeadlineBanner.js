@@ -11,10 +11,10 @@ import {
 } from '../../Demo/Utils/checking-functions';
 import DEMO from '../../store/constant';
 
-export default function EnglishCertificateExpiredBeforeDeadlineBanner(props) {
+const EnglishCertificateExpiredBeforeDeadlineBanner = ({ student }) => {
     return (
-        isEnglishCertificateExpiredBeforeDeadline(props.student) && (
-            <Grid item xs={12} md={12}>
+        isEnglishCertificateExpiredBeforeDeadline(student) && (
+            <Grid item md={12} xs={12}>
                 <Card sx={{ border: '4px solid red' }}>
                     <Alert severity="warning">
                         {i18next.t(
@@ -26,28 +26,25 @@ export default function EnglishCertificateExpiredBeforeDeadlineBanner(props) {
                         &nbsp;:&nbsp;
                     </Alert>
                     {englishCertificatedExpiredBeforeTheseProgramDeadlines(
-                        props.student
+                        student
                     )?.map((app) => (
                         <ListItem key={app.programId._id.toString()}>
                             <Link
+                                component={LinkDom}
+                                target="_blank"
                                 to={DEMO.SINGLE_PROGRAM_LINK(
                                     app.programId._id.toString()
                                 )}
-                                component={LinkDom}
-                                target="_blank"
                             >
                                 {app.programId.school}{' '}
                                 {app.programId.program_name}{' '}
                                 {app.programId.degree} {app.programId.semester}{' '}
                                 - <strong>{app.programId.lang}</strong>
                                 {' , Deadline: '}
-                                {application_deadline_calculator(
-                                    props.student,
-                                    app
-                                )}
+                                {application_deadline_calculator(student, app)}
                                 {', English Certificate test date: '}
                                 {dayjs(
-                                    props.student.academic_background.language
+                                    student.academic_background.language
                                         .english_test_date
                                 )?.format('YYYY-MM-DD')}
                                 {i18next.t('valid-only-two-years', {
@@ -60,4 +57,6 @@ export default function EnglishCertificateExpiredBeforeDeadlineBanner(props) {
             </Grid>
         )
     );
-}
+};
+
+export default EnglishCertificateExpiredBeforeDeadlineBanner;

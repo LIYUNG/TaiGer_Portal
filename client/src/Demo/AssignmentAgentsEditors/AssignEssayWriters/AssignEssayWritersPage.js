@@ -16,7 +16,7 @@ import ModalMain from '../../Utils/ModalHandler/ModalMain';
 import { updateEssayWriter } from '../../../api';
 import NoWritersEssaysCard from '../../Dashboard/MainViewTab/NoWritersEssaysCard/NoWritersEssaysCard';
 
-function AssignEssayWritersPage(props) {
+const AssignEssayWritersPage = (props) => {
     const { t } = useTranslation();
 
     const [assignEditorsState, setAssignEditorsState] = useState({
@@ -100,9 +100,9 @@ function AssignEssayWritersPage(props) {
         .filter((thread) => !thread.isFinalVersion)
         .map((essayDocumentThread, i) => (
             <NoWritersEssaysCard
+                essayDocumentThread={essayDocumentThread}
                 key={i}
                 submitUpdateEssayWriterlist={submitUpdateEssayWriterlist}
-                essayDocumentThread={essayDocumentThread}
             />
         ));
 
@@ -110,20 +110,18 @@ function AssignEssayWritersPage(props) {
 
     return (
         <Box>
-            {res_modal_status >= 400 && (
-                <ModalMain
+            {res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
-                />
-            )}
+                    res_modal_status={res_modal_status}
+                /> : null}
             <Card sx={{ p: 2 }}>
                 <Typography variant="h6">{t('No Essay Writer')}</Typography>
                 <TableContainer style={{ overflowX: 'auto' }}>
                     <Table size="small">
                         <TableHead>
                             <TableRow>
-                                <TableCell></TableCell>
+                                <TableCell />
                                 <TableCell>
                                     {t('Documents', { ns: 'common' })}
                                 </TableCell>

@@ -15,6 +15,10 @@ const VerticalDistributionBarCharts = ({
     const potential_a = data.map((d) => d[value2]);
     return (
         <BarChart
+            barLabel="value"
+            grid={{ vertical: true }}
+            height={300}
+            layout="horizontal"
             series={[
                 { data: active_a, stack: 'A', label: dataALabel },
                 { data: potential_a, stack: 'A', label: dataBLabel }
@@ -32,10 +36,6 @@ const VerticalDistributionBarCharts = ({
                     interval: 0
                 }
             ]}
-            height={300}
-            layout="horizontal"
-            grid={{ vertical: true }}
-            barLabel="value"
         />
     );
 };

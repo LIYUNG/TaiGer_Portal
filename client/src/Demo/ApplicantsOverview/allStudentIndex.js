@@ -10,7 +10,7 @@ import { appConfig } from '../../config';
 import { useQuery } from '@tanstack/react-query';
 import { getAllActiveStudentsQuery } from '../../api/query';
 
-function AllApplicantsOverview() {
+const AllApplicantsOverview = () => {
     const { data } = useQuery(getAllActiveStudentsQuery());
 
     TabTitle(i18next.t('All Applications Overview'));
@@ -19,10 +19,10 @@ function AllApplicantsOverview() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>

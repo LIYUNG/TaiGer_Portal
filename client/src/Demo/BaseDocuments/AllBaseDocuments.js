@@ -12,7 +12,7 @@ import { BaseDocumentsTable } from './BaseDocumentsTable';
 import { useQuery } from '@tanstack/react-query';
 import { getAllActiveStudentsQuery } from '../../api/query';
 
-function AllBaseDocuments() {
+const AllBaseDocuments = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
 
@@ -28,10 +28,10 @@ function AllBaseDocuments() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -42,9 +42,7 @@ function AllBaseDocuments() {
                     {t('All Documents', { ns: 'common' })}
                 </Typography>
             </Breadcrumbs>
-            {is_TaiGer_role(user) && (
-                <BaseDocumentsTable students={data.data} />
-            )}
+            {is_TaiGer_role(user) ? <BaseDocumentsTable students={data.data} /> : null}
         </Box>
     );
 }

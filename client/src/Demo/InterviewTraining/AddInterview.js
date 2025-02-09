@@ -37,7 +37,7 @@ import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import { showTimezoneOffset } from '../../utils/contants';
 
-function AddInterview() {
+const AddInterview = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -216,27 +216,25 @@ function AddInterview() {
 
     return (
         <Box>
-            {res_modal_status >= 400 && (
-                <ModalMain
+            {res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
-                />
-            )}
+                    res_modal_status={res_modal_status}
+                /> : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.INTERVIEW_LINK}`}
+                    underline="hover"
                 >
                     {is_TaiGer_role(user)
                         ? t('All Interviews', { ns: 'interviews' })
@@ -247,10 +245,10 @@ function AddInterview() {
                 </Typography>
             </Breadcrumbs>
             <Button
-                size="small"
-                variant="contained"
                 color="secondary"
                 onClick={() => navigate(`${DEMO.INTERVIEW_LINK}`)}
+                size="small"
+                variant="contained"
             >
                 {t('Back')}
             </Button>
@@ -275,38 +273,37 @@ function AddInterview() {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
+                            <TableCell />
+                            <TableCell />
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {is_TaiGer_role(user) && (
-                            <TableRow>
+                        {is_TaiGer_role(user) ? <TableRow>
                                 <TableCell>
                                     <Typography>{t('Student')}</Typography>
                                 </TableCell>
                                 <TableCell sx={{ display: 'flex' }}>
                                     <TextField
                                         fullWidth
-                                        size="small"
-                                        name="student"
                                         id="student"
-                                        select
-                                        value={
-                                            interviewTrainingState.student?._id
-                                        }
+                                        name="student"
                                         onChange={(e) =>
                                             handleChange_AddInterview(e)
                                         }
+                                        select
+                                        size="small"
+                                        value={
+                                            interviewTrainingState.student?._id
+                                        }
                                     >
-                                        <MenuItem value={''}>
+                                        <MenuItem value="">
                                             Select Student
                                         </MenuItem>
                                         {interviewTrainingState.students?.map(
                                             (std) => (
                                                 <MenuItem
-                                                    value={std._id}
                                                     key={std._id}
+                                                    value={std._id}
                                                 >
                                                     {std.firstname}{' '}
                                                     {std.lastname}{' '}
@@ -317,8 +314,7 @@ function AddInterview() {
                                         )}
                                     </TextField>
                                 </TableCell>
-                            </TableRow>
-                        )}
+                            </TableRow> : null}
                         <TableRow>
                             <TableCell>
                                 <Typography>
@@ -335,14 +331,8 @@ function AddInterview() {
                                     dateAdapter={AdapterDayjs}
                                 >
                                     <DesktopDateTimePicker
-                                        size="small"
-                                        required
                                         fullWidth
                                         id="interview_date"
-                                        value={
-                                            interviewTrainingState.interviewData
-                                                ?.interview_date
-                                        }
                                         onChange={(newValue) => {
                                             const interviewData_temp = {
                                                 ...interviewTrainingState.interviewData
@@ -357,6 +347,12 @@ function AddInterview() {
                                                 })
                                             );
                                         }}
+                                        required
+                                        size="small"
+                                        value={
+                                            interviewTrainingState.interviewData
+                                                ?.interview_date
+                                        }
                                     />
                                 </LocalizationProvider>
                             </TableCell>
@@ -371,23 +367,23 @@ function AddInterview() {
                             </TableCell>
                             <TableCell>
                                 <TextField
-                                    name="interview_duration"
-                                    size="small"
-                                    type="text"
-                                    required
-                                    fullWidth
-                                    id="interview_duration"
-                                    placeholder="30 minutes"
-                                    label={`${t('Interview duration')}`}
                                     InputLabelProps={{
                                         shrink: true
                                     }}
+                                    fullWidth
+                                    id="interview_duration"
+                                    label={`${t('Interview duration')}`}
+                                    name="interview_duration"
+                                    onChange={(e) =>
+                                        handleChange_AddInterview(e)
+                                    }
+                                    placeholder="30 minutes"
+                                    required
+                                    size="small"
+                                    type="text"
                                     value={
                                         interviewTrainingState.interviewData
                                             ?.interview_duration
-                                    }
-                                    onChange={(e) =>
-                                        handleChange_AddInterview(e)
                                     }
                                 />
                             </TableCell>
@@ -409,24 +405,24 @@ function AddInterview() {
                             <TableCell>
                                 <TextField
                                     fullWidth
-                                    size="small"
-                                    name="program_id"
                                     id="program_id"
+                                    name="program_id"
+                                    onChange={(e) =>
+                                        handleChange_AddInterview(e)
+                                    }
                                     select
+                                    size="small"
                                     value={
                                         interviewTrainingState.interviewData
                                             ?.program_id || ''
                                     }
-                                    onChange={(e) =>
-                                        handleChange_AddInterview(e)
-                                    }
                                 >
-                                    <MenuItem value={''}>
+                                    <MenuItem value="">
                                         Select Program
                                     </MenuItem>
                                     {available_interview_request_programs?.map(
                                         (cat, i) => (
-                                            <MenuItem value={cat.key} key={i}>
+                                            <MenuItem key={i} value={cat.key}>
                                                 {cat.value}
                                             </MenuItem>
                                         )
@@ -442,23 +438,23 @@ function AddInterview() {
                             </TableCell>
                             <TableCell>
                                 <TextField
-                                    name="interviewer"
-                                    size="small"
-                                    type="text"
-                                    required
-                                    fullWidth
-                                    id="interviewer"
-                                    placeholder="Prof. Sebastian"
-                                    label={`${t('Interviewer', { ns: 'interviews' })}`}
                                     InputLabelProps={{
                                         shrink: true
                                     }}
+                                    fullWidth
+                                    id="interviewer"
+                                    label={`${t('Interviewer', { ns: 'interviews' })}`}
+                                    name="interviewer"
+                                    onChange={(e) =>
+                                        handleChange_AddInterview(e)
+                                    }
+                                    placeholder="Prof. Sebastian"
+                                    required
+                                    size="small"
+                                    type="text"
                                     value={
                                         interviewTrainingState.interviewData
                                             ?.interviewer
-                                    }
-                                    onChange={(e) =>
-                                        handleChange_AddInterview(e)
                                     }
                                 />
                             </TableCell>
@@ -473,7 +469,6 @@ function AddInterview() {
                     )}
                 </Typography>
                 <NotesEditor
-                    thread={interviewTrainingState.thread}
                     buttonDisabled={
                         !interviewTrainingState.interviewData.program_id ||
                         interviewTrainingState.interviewData.program_id ===
@@ -483,9 +478,10 @@ function AddInterview() {
                             '' ||
                         interviewTrainingState.isSubmitting
                     }
-                    handleEditorChange={handleEditorChange}
                     editorState={interviewTrainingState.editorState}
                     handleClickSave={handleClickSave}
+                    handleEditorChange={handleEditorChange}
+                    thread={interviewTrainingState.thread}
                 />
             </Card>
         </Box>

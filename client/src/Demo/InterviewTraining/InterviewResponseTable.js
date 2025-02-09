@@ -20,7 +20,7 @@ import Loading from '../../components/Loading/Loading';
 import { MuiDataGrid } from '../../components/MuiDataGrid';
 import { convertDate, showTimezoneOffset } from '../../utils/contants';
 
-function InterviewResponseTable() {
+const InterviewResponseTable = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -159,17 +159,15 @@ function InterviewResponseTable() {
                     DEMO.PROFILE_HASH
                 )}`;
                 return (
-                    <>
-                        <Link
-                            underline="hover"
-                            to={linkUrl}
+                    <Link
                             component={LinkDom}
                             target="_blank"
                             title={params.value}
+                            to={linkUrl}
+                            underline="hover"
                         >
                             {params.value}
                         </Link>
-                    </>
                 );
             }
         },
@@ -224,11 +222,11 @@ function InterviewResponseTable() {
             renderCell: (params) => {
                 return (
                     <Link
-                        underline="hover"
-                        to={DEMO.INTERVIEW_SINGLE_LINK(params.row.id)}
                         component={LinkDom}
                         target="_blank"
                         title={params.row.program_name}
+                        to={DEMO.INTERVIEW_SINGLE_LINK(params.row.id)}
+                        underline="hover"
                     >
                         {params.row.program_name}
                     </Link>
@@ -275,20 +273,18 @@ function InterviewResponseTable() {
 
     return (
         <Box>
-            {res_modal_status >= 400 && (
-                <ModalMain
+            {res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
-                />
-            )}
+                    res_modal_status={res_modal_status}
+                /> : null}
 
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -300,31 +296,27 @@ function InterviewResponseTable() {
             </Breadcrumbs>
             {!is_TaiGer_role(user) &&
                 interviewTrainingState.available_interview_request_programs
-                    ?.length > 0 && (
-                    <Button
-                        fullWidth
-                        size="small"
-                        variant="contained"
+                    ?.length > 0 ? <Button
                         color="primary"
+                        fullWidth
                         onClick={handleClick}
+                        size="small"
                         sx={{ my: 1 }}
+                        variant="contained"
                     >
                         {t('Add', { ns: 'common' })}
-                    </Button>
-                )}
-            {is_TaiGer_role(user) && (
-                <Button
-                    fullWidth
-                    size="small"
-                    variant="contained"
+                    </Button> : null}
+            {is_TaiGer_role(user) ? <Button
                     color="primary"
+                    fullWidth
                     onClick={handleClick}
+                    size="small"
                     sx={{ my: 1 }}
+                    variant="contained"
                 >
                     {t('Add', { ns: 'common' })}
-                </Button>
-            )}
-            <MuiDataGrid rows={rows} columns={memoizedColumns} />
+                </Button> : null}
+            <MuiDataGrid columns={memoizedColumns} rows={rows} />
         </Box>
     );
 }

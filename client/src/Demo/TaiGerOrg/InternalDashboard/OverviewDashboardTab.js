@@ -200,9 +200,9 @@ const OverviewDashboardTab = ({
                 <Grid item xs={12}>
                     <Card sx={{ p: 2 }}>
                         <ButtonGroup
-                            variant="contained"
                             aria-label="outlined primary button group"
                             style={{ marginBottom: '20px' }}
+                            variant="contained"
                         >
                             <Button
                                 onClick={() => setViewMode('month')}
@@ -226,24 +226,24 @@ const OverviewDashboardTab = ({
                             </Button>
                         </ButtonGroup>
                         <LineChart
-                            xAxis={[
-                                { data: chartData.labels, scaleType: 'band' }
-                            ]}
+                            height={300}
                             series={[
                                 {
                                     data: chartData.datasets[0].data
                                 }
+                            ]}
+                            xAxis={[
+                                { data: chartData.labels, scaleType: 'band' }
                             ]}
                             yAxis={[
                                 {
                                     label: 'New Students'
                                 }
                             ]}
-                            height={300}
                         />
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item md={4} xs={12}>
                     <Card>
                         <Typography>{t('Students')}</Typography>
                         <SingleBarChart
@@ -253,7 +253,7 @@ const OverviewDashboardTab = ({
                         />
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item md={4} xs={12}>
                     <Card sx={{ p: 2 }}>
                         <Typography>Tasks: Number of Tasks</Typography>
                         <SingleBarChart
@@ -263,7 +263,7 @@ const OverviewDashboardTab = ({
                         />
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item md={4} xs={12}>
                     <Card sx={{ p: 2 }}>
                         <Typography>
                             {t('Agents', { ns: 'common' })}: Number of active
@@ -271,18 +271,18 @@ const OverviewDashboardTab = ({
                         </Typography>
                         <VerticalDistributionBarCharts
                             data={agentData}
-                            k={'key'}
-                            value1={'student_num_no_offer'}
-                            value2={'student_num_with_offer'}
-                            xLabel="Student"
                             dataALabel="No Offer"
                             dataBLabel="Has Offer"
+                            k="key"
+                            value1="student_num_no_offer"
+                            value2="student_num_with_offer"
+                            xLabel="Student"
                         />
                     </Card>
                 </Grid>
             </Grid>
             <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
+                <Grid item md={4} xs={12}>
                     <Card sx={{ p: 2 }}>
                         <Typography>
                             {t('Editor', { ns: 'common' })}: Number of active
@@ -290,11 +290,11 @@ const OverviewDashboardTab = ({
                         </Typography>
                         <VerticalSingleBarChart
                             data={editorData}
-                            xLabel={'Student'}
+                            xLabel="Student"
                         />
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item md={4} xs={12}>
                     <Card sx={{ p: 2 }}>
                         <Typography>
                             {t('Editor', { ns: 'common' })}:Number of open and
@@ -302,21 +302,21 @@ const OverviewDashboardTab = ({
                         </Typography>
                         <VerticalDistributionBarCharts
                             data={editor_tasks_distribution_data}
-                            k={'name'}
-                            value1={'active'}
-                            value2={'potentials'}
-                            xLabel="Tasks"
                             dataALabel="Active"
                             dataBLabel="Potentials"
+                            k="name"
+                            value1="active"
+                            value2="potentials"
+                            xLabel="Tasks"
                         />
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item md={4} xs={12}>
                     <Card sx={{ p: 2 }}>
                         <Typography>
                             {t('Applications')}: Number of Applications:
                         </Typography>
-                        <ResponsiveContainer width="100%" height={300}>
+                        <ResponsiveContainer height={300} width="100%">
                             <BarChart
                                 data={applications_data}
                                 margin={{
@@ -338,8 +338,8 @@ const OverviewDashboardTab = ({
                                 >
                                     {applications_data.map((entry, index) => (
                                         <Cell
-                                            key={`cell-${index}`}
                                             fill={colors[index % 20]}
+                                            key={`cell-${index}`}
                                         />
                                     ))}
                                 </Bar>
@@ -347,12 +347,12 @@ const OverviewDashboardTab = ({
                         </ResponsiveContainer>
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item md={4} xs={12}>
                     <Card sx={{ p: 2 }}>
                         <Typography>
                             {t('Admissions')}: Number of Admissions
                         </Typography>
-                        <ResponsiveContainer width="100%" height={300}>
+                        <ResponsiveContainer height={300} width="100%">
                             <BarChart
                                 data={admissions_data}
                                 margin={{
@@ -374,8 +374,8 @@ const OverviewDashboardTab = ({
                                 >
                                     {admissions_data.map((entry, index) => (
                                         <Cell
-                                            key={`cell-${index}`}
                                             fill={colors[index % 20]}
+                                            key={`cell-${index}`}
                                         />
                                     ))}
                                 </Bar>

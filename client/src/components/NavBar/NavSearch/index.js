@@ -161,39 +161,36 @@ const NavSearch = () => {
 
     return (
         <Box>
-            {isError && (
-                <ModalMain
+            {isError ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={statedata.res_modal_status}
                     res_modal_message={statedata.res_modal_message}
-                />
-            )}
+                    res_modal_status={statedata.res_modal_status}
+                /> : null}
             <Box className="search-container" ref={searchContainerRef}>
                 <Search>
                     <SearchIconWrapper>
                         <SearchIcon />
                     </SearchIconWrapper>
                     <StyledInputBase
+                        autoComplete="off"
                         autoFocus={false}
                         inputProps={{ 'aria-label': 'search' }}
+                        onChange={handleInputChange}
+                        onMouseDown={handleInputBlur}
                         placeholder={`${t('Search', { ns: 'common' })}...`}
                         value={searchTerm}
-                        onMouseDown={handleInputBlur}
-                        onChange={handleInputChange}
-                        autoComplete="off"
                     />
                 </Search>
                 {/* {loading && <div>Loading...</div>} */}
-                {isResultsVisible &&
-                    (searchResults.length > 0 ? (
+                {isResultsVisible ? searchResults.length > 0 ? (
                         <Box className="search-results result-list">
                             {searchResults.map((result, i) =>
                                 result.role === Role.Student ? (
                                     <li
+                                        key={i}
                                         onClick={() =>
                                             onClickStudentHandler(result)
                                         }
-                                        key={i}
                                     >
                                         {`${result.firstname} ${result.lastname} ${
                                             result.firstname_chinese
@@ -207,48 +204,48 @@ const NavSearch = () => {
                                     </li>
                                 ) : result.role === Role.Agent ? (
                                     <li
+                                        key={i}
                                         onClick={() =>
                                             onClickAgentHandler(result)
                                         }
-                                        key={i}
                                     >
                                         {`${result.firstname} ${result.lastname}`}
                                     </li>
                                 ) : result.role === Role.Editor ? (
                                     <li
+                                        key={i}
                                         onClick={() =>
                                             onClickEditorHandler(result)
                                         }
-                                        key={i}
                                     >
                                         {`${result.firstname} ${result.lastname}`}
                                     </li>
                                 ) : result.school ? (
                                     <li
+                                        key={i}
                                         onClick={() =>
                                             onClickProgramHandler(result)
                                         }
-                                        key={i}
                                     >
                                         {`${result.school} ${result.program_name} ${result.degree} ${result.semester}`}
                                     </li>
                                 ) : result.internal ? (
                                     <li
+                                        key={i}
                                         onClick={() =>
                                             onClickInternalDocumentationHandler(
                                                 result
                                             )
                                         }
-                                        key={i}
                                     >
                                         {`${result.title}`}
                                     </li>
                                 ) : (
                                     <li
+                                        key={i}
                                         onClick={() =>
                                             onClickDocumentationHandler(result)
                                         }
-                                        key={i}
                                     >
                                         {`${result.title}`}
                                     </li>
@@ -259,7 +256,7 @@ const NavSearch = () => {
                         <Box className="search-results result-list">
                             <li>No result</li>
                         </Box>
-                    ))}
+                    ) : null}
             </Box>
         </Box>
     );

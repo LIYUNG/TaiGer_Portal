@@ -44,8 +44,7 @@ export default function EventConfirmationCard(props) {
         <Accordion
             defaultExpanded={
                 (!props.event.isConfirmedReceiver ||
-                    !props.event.isConfirmedRequester) &&
-                isInTheFuture(props.event.end)
+                    !props.event.isConfirmedRequester) ? isInTheFuture(props.event.end) : null
             }
             disableGutters
         >
@@ -62,39 +61,37 @@ export default function EventConfirmationCard(props) {
                     {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
                     {showTimezoneOffset()}){' '}
                     <b>
-                        {is_TaiGer_role(user) && (
-                            <>
+                        {is_TaiGer_role(user) ? <>
                                 {props.event.requester_id
                                     ?.map(
                                         (requester) =>
                                             `${requester.firstname} ${requester.lastname}`
                                     )
                                     .join(',')}
-                            </>
-                        )}
+                            </> : null}
                     </b>
                 </Typography>
             </AccordionSummary>
             <AccordionDetails>
                 <Grid container spacing={2}>
-                    <Grid item xs={6} md={2}>
+                    <Grid item md={2} xs={6}>
                         <EventDateComponent
                             eventDate={new Date(props.event.start)}
                         />
                     </Grid>
-                    <Grid item xs={6} md={4}>
+                    <Grid item md={4} xs={6}>
                         <Typography variant="h6">
                             <EventIcon />: {getDate(props.event.start)}
                         </Typography>
-                        <Typography variant="h6" sx={{ display: 'flex' }}>
+                        <Typography sx={{ display: 'flex' }} variant="h6">
                             <AccessAlarmIcon />: {getTime(props.event.start)}
                         </Typography>
                         {NoonNightLabel(props.event.start)} ({' '}
                         {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
                         {showTimezoneOffset()})
                     </Grid>
-                    <Grid item xs={12} md={6}>
-                        <Typography variant="body1" sx={{ display: 'flex' }}>
+                    <Grid item md={6} xs={12}>
+                        <Typography sx={{ display: 'flex' }} variant="body1">
                             <PersonIcon />
                             {t('Agent', { ns: 'common' })}:{' '}
                             {props.event.receiver_id?.map((receiver, x) => (
@@ -104,19 +101,19 @@ export default function EventConfirmationCard(props) {
                                 </span>
                             ))}
                         </Typography>
-                        <Typography variant="body1" sx={{ display: 'flex' }}>
+                        <Typography sx={{ display: 'flex' }} variant="body1">
                             <PersonIcon />
                             {t('Student', { ns: 'common' })}:{' '}
                             {props.event.requester_id?.map((requester, x) =>
                                 is_TaiGer_role(user) ? (
                                     <Link
-                                        underline="hover"
+                                        component={LinkDom}
+                                        key={x}
                                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                             requester._id.toString(),
                                             DEMO.PROFILE_HASH
                                         )}`}
-                                        component={LinkDom}
-                                        key={x}
+                                        underline="hover"
                                     >
                                         {requester.firstname}{' '}
                                         {requester.lastname} <EmailIcon />{' '}
@@ -134,17 +131,16 @@ export default function EventConfirmationCard(props) {
                         <Typography variant="h6">
                             {t('Meeting Link', { ns: 'common' })} :
                         </Typography>
-                        {is_TaiGer_Student(user) &&
-                            (props.event.isConfirmedRequester ? (
+                        {is_TaiGer_Student(user) ? props.event.isConfirmedRequester ? (
                                 props.event.isConfirmedReceiver ? (
                                     props.disabled ? (
                                         `${t('Meeting Link', { ns: 'common' })} expired'`
                                     ) : (
                                         <Link
-                                            to={`${props.event.meetingLink}`}
                                             component={LinkDom}
-                                            target="_blank"
                                             rel="noopener noreferrer"
+                                            target="_blank"
+                                            to={`${props.event.meetingLink}`}
                                         >
                                             {props.event.meetingLink}
                                         </Link>
@@ -157,32 +153,31 @@ export default function EventConfirmationCard(props) {
                                     Please{' '}
                                     <Button
                                         color="primary"
-                                        variant="contained"
-                                        size="small"
                                         onClick={(e) =>
                                             props.handleConfirmAppointmentModalOpen(
                                                 e,
                                                 props.event
                                             )
                                         }
+                                        size="small"
                                         startIcon={<CheckIcon />}
+                                        variant="contained"
                                     >
                                         {t('Confirm', { ns: 'common' })}
                                     </Button>{' '}
                                     the time and get the meeting link
                                 </span>
-                            ))}
-                        {is_TaiGer_role(user) &&
-                            (props.event.isConfirmedReceiver ? (
+                            ) : null}
+                        {is_TaiGer_role(user) ? props.event.isConfirmedReceiver ? (
                                 props.event.isConfirmedRequester ? (
                                     props.disabled ? (
                                         'Meeting Link expired'
                                     ) : (
                                         <Link
-                                            to={`${props.event.meetingLink}`}
                                             component={LinkDom}
-                                            target="_blank"
                                             rel="noopener noreferrer"
+                                            target="_blank"
+                                            to={`${props.event.meetingLink}`}
                                         >
                                             {props.event.meetingLink}
                                         </Link>
@@ -195,28 +190,28 @@ export default function EventConfirmationCard(props) {
                                     Please{' '}
                                     <Button
                                         color="primary"
-                                        variant="contained"
-                                        size="small"
                                         onClick={(e) =>
                                             props.handleConfirmAppointmentModalOpen(
                                                 e,
                                                 props.event
                                             )
                                         }
+                                        size="small"
                                         startIcon={<CheckIcon />}
+                                        variant="contained"
                                     >
                                         {t('Confirm', { ns: 'common' })}
                                     </Button>{' '}
                                     the time and get the meeting link
                                 </span>
-                            ))}
+                            ) : null}
                         <br />
                     </Grid>
                     <Grid item xs={12}>
                         <Grid
+                            alignItems="center"
                             container
                             justifyContent="space-between"
-                            alignItems="center"
                         >
                             <Grid item>
                                 <Typography variant="body1">
@@ -242,16 +237,14 @@ export default function EventConfirmationCard(props) {
                                 </span>
                             </Grid>
                             <Grid item>
-                                {props.event.event_type !== 'Interview' && (
-                                    <Typography variant="h6">
+                                {props.event.event_type !== 'Interview' ? <Typography variant="h6">
                                         <span
                                             style={{
                                                 float: 'right',
                                                 justifyContent: 'flex-end'
                                             }}
                                         >
-                                            {is_TaiGer_Student(user) &&
-                                                (props.event
+                                            {is_TaiGer_Student(user) ? props.event
                                                     .isConfirmedRequester ? (
                                                     props.event
                                                         .isConfirmedReceiver ? (
@@ -259,15 +252,15 @@ export default function EventConfirmationCard(props) {
                                                     ) : (
                                                         <Button
                                                             color="primary"
-                                                            variant="outlined"
-                                                            size="small"
-                                                            title="Wait for confirmation"
                                                             onClick={(e) =>
                                                                 e.stopPropagation()
                                                             }
+                                                            size="small"
                                                             startIcon={
                                                                 <HourglassBottomIcon />
                                                             }
+                                                            title="Wait for confirmation"
+                                                            variant="outlined"
                                                         >
                                                             {t('Pending', {
                                                                 ns: 'common'
@@ -277,26 +270,25 @@ export default function EventConfirmationCard(props) {
                                                 ) : (
                                                     <Button
                                                         color="primary"
-                                                        variant="contained"
-                                                        size="small"
                                                         onClick={(e) =>
                                                             props.handleConfirmAppointmentModalOpen(
                                                                 e,
                                                                 props.event
                                                             )
                                                         }
-                                                        sx={{ mx: 2 }}
+                                                        size="small"
                                                         startIcon={
                                                             <CheckIcon />
                                                         }
+                                                        sx={{ mx: 2 }}
+                                                        variant="contained"
                                                     >
                                                         {t('Confirm', {
                                                             ns: 'common'
                                                         })}
                                                     </Button>
-                                                ))}
-                                            {is_TaiGer_Agent(user) &&
-                                                (props.event
+                                                ) : null}
+                                            {is_TaiGer_Agent(user) ? props.event
                                                     .isConfirmedReceiver ? (
                                                     props.event
                                                         .isConfirmedRequester ? (
@@ -304,12 +296,12 @@ export default function EventConfirmationCard(props) {
                                                     ) : (
                                                         <Button
                                                             color="primary"
-                                                            variant="outlined"
                                                             size="small"
-                                                            title="Wait for confirmation"
                                                             startIcon={
                                                                 <HourglassBottomIcon />
                                                             }
+                                                            title="Wait for confirmation"
+                                                            variant="outlined"
                                                         >
                                                             {t('Pending', {
                                                                 ns: 'common'
@@ -319,27 +311,25 @@ export default function EventConfirmationCard(props) {
                                                 ) : (
                                                     <Button
                                                         color="primary"
-                                                        size="small"
-                                                        variant="contained"
                                                         onClick={(e) =>
                                                             props.handleConfirmAppointmentModalOpen(
                                                                 e,
                                                                 props.event
                                                             )
                                                         }
+                                                        size="small"
                                                         startIcon={
                                                             <CheckIcon />
                                                         }
+                                                        variant="contained"
                                                     >
                                                         {t('Confirm', {
                                                             ns: 'common'
                                                         })}
                                                     </Button>
-                                                ))}
+                                                ) : null}
                                             <Button
                                                 color="secondary"
-                                                variant="outlined"
-                                                size="small"
                                                 disabled={props.disabled}
                                                 onClick={(e) =>
                                                     props.handleEditAppointmentModalOpen(
@@ -347,15 +337,15 @@ export default function EventConfirmationCard(props) {
                                                         props.event
                                                     )
                                                 }
-                                                sx={{ mx: 2 }}
+                                                size="small"
                                                 startIcon={<EditIcon />}
+                                                sx={{ mx: 2 }}
+                                                variant="outlined"
                                             >
                                                 {t('Update', { ns: 'common' })}
                                             </Button>
                                             <Button
                                                 color="secondary"
-                                                variant="contained"
-                                                size="small"
                                                 disabled={props.disabled}
                                                 onClick={(e) =>
                                                     props.handleDeleteAppointmentModalOpen(
@@ -363,13 +353,14 @@ export default function EventConfirmationCard(props) {
                                                         props.event
                                                     )
                                                 }
+                                                size="small"
                                                 startIcon={<DeleteIcon />}
+                                                variant="contained"
                                             >
                                                 {t('Delete', { ns: 'common' })}
                                             </Button>
                                         </span>
-                                    </Typography>
-                                )}
+                                    </Typography> : null}
                             </Grid>
                         </Grid>
                     </Grid>

@@ -10,16 +10,10 @@ import {
 function useStudents(props) {
     const [studentsState, setStudentsState] = useState({
         error: '',
-        agent_list: [],
-        editor_list: [],
         students: props.students,
         updateAgentList: {},
         updateEditorList: {},
         success: false,
-        isDashboard: true,
-        file: '',
-        notification: props.notification || {},
-        isCoursesFilled: props.isCoursesFilled || false,
         res_modal_message: '',
         res_modal_status: 0
     });

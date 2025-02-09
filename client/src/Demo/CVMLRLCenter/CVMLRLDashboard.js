@@ -21,7 +21,7 @@ CustomTabPanel.propTypes = {
     value: PropTypes.number.isRequired
 };
 
-function CVMLRLDashboard(props) {
+const CVMLRLDashboard = (props) => {
     const { t } = useTranslation();
     const memoizedColumnsMrt = useMemo(() => c1_mrt, []);
     const [cVMLRLDashboardState, setCVMLRLDashboardState] = useState({
@@ -87,21 +87,19 @@ function CVMLRLDashboard(props) {
 
     return (
         <>
-            {res_modal_status >= 400 && (
-                <ModalMain
+            {res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
-                />
-            )}
+                    res_modal_status={res_modal_status}
+                /> : null}
 
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    variant="scrollable"
-                    scrollButtons="auto"
                     aria-label="basic tabs example"
+                    onChange={handleChange}
+                    scrollButtons="auto"
+                    value={value}
+                    variant="scrollable"
                 >
                     <Tab
                         label={`${t('In Progress', { ns: 'common' })} (${
@@ -129,52 +127,48 @@ function CVMLRLDashboard(props) {
                     />
                 </Tabs>
             </Box>
-            <CustomTabPanel value={value} index={0}>
+            <CustomTabPanel index={0} value={value}>
                 <Banner
                     ReadOnlyMode={true}
-                    bg={'primary'}
-                    title={'warning'}
-                    path={'/'}
-                    text={
-                        'Received students inputs and Active Tasks. Be aware of the deadline!'
-                    }
-                    link_name={''}
-                    removeBanner={<></>}
+                    bg="primary"
+                    link_name=""
                     notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
+                    text="Received students inputs and Active Tasks. Be aware of the deadline!"
+                    title="warning"
                 />
                 <ExampleWithLocalizationProvider
+                    col={memoizedColumnsMrt}
                     data={cvmlrl_active_tasks}
-                    col={memoizedColumnsMrt}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
+            <CustomTabPanel index={1} value={value}>
                 <Banner
                     ReadOnlyMode={true}
-                    bg={'info'}
-                    title={'info'}
-                    path={'/'}
-                    text={
-                        'No student inputs tasks. Agents should push students'
-                    }
-                    link_name={''}
-                    removeBanner={<></>}
+                    bg="info"
+                    link_name=""
                     notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
+                    text="No student inputs tasks. Agents should push students"
+                    title="info"
                 />
                 <ExampleWithLocalizationProvider
-                    data={cvmlrl_idle_tasks}
                     col={memoizedColumnsMrt}
+                    data={cvmlrl_idle_tasks}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
+            <CustomTabPanel index={2} value={value}>
                 <Banner
                     ReadOnlyMode={true}
-                    bg={'success'}
-                    title={'success'}
-                    path={'/'}
-                    text={'These tasks are closed'}
-                    link_name={''}
-                    removeBanner={<></>}
+                    bg="success"
+                    link_name=""
                     notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
+                    text="These tasks are closed"
+                    title="success"
                 />
                 <Typography sx={{ p: 2 }}>
                     {t(
@@ -183,24 +177,24 @@ function CVMLRLDashboard(props) {
                     )}
                 </Typography>
                 <ExampleWithLocalizationProvider
-                    data={cvmlrl_closed_v2}
                     col={memoizedColumnsMrt}
+                    data={cvmlrl_closed_v2}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={3}>
+            <CustomTabPanel index={3} value={value}>
                 <Banner
                     ReadOnlyMode={true}
-                    bg={'success'}
-                    title={'info'}
-                    path={'/'}
-                    text={'All tasks'}
-                    link_name={''}
-                    removeBanner={<></>}
+                    bg="success"
+                    link_name=""
                     notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
+                    text="All tasks"
+                    title="info"
                 />
                 <ExampleWithLocalizationProvider
-                    data={cvmlrl_all_v2}
                     col={memoizedColumnsMrt}
+                    data={cvmlrl_all_v2}
                 />
             </CustomTabPanel>
         </>

@@ -12,7 +12,7 @@ import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import { getAllActiveStudentsQuery } from '../../api/query';
 
-function StudentOverviewPage() {
+const StudentOverviewPage = () => {
     const { user } = useAuth();
     const { data } = useQuery(getAllActiveStudentsQuery());
 
@@ -25,10 +25,10 @@ function StudentOverviewPage() {
         <Box data-testid="student_overview">
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -41,8 +41,8 @@ function StudentOverviewPage() {
                 </Typography>
             </Breadcrumbs>
             <StudentOverviewTable
-                title="All"
                 students={data?.data}
+                title="All"
                 user={user}
             />
         </Box>

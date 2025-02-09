@@ -47,7 +47,7 @@ import {
     is_pending_status
 } from '../../../utils/contants';
 
-function AgentMainView(props) {
+const AgentMainView = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const {
@@ -156,24 +156,18 @@ function AgentMainView(props) {
     return (
         <Box sx={{ mb: 2 }}>
             <Grid container spacing={1}>
-                <Grid item xs={12} sm={12}>
+                <Grid item sm={12} xs={12}>
                     {agentMainViewState.notification?.isRead_new_base_docs_uploaded?.map(
                         (student, i) => (
                             <Card key={i} sx={{ mb: 1 }}>
                                 <Banner
-                                    bg={'danger'}
-                                    title={'warning'}
+                                    bg="danger"
+                                    link_name={<LaunchIcon fontSize="small" />}
+                                    notification_key="isRead_new_base_docs_uploaded"
                                     path={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                         student.student_id,
                                         DEMO.PROFILE_HASH
                                     )}`}
-                                    text={`${t(
-                                        'There are new base documents uploaded by',
-                                        {
-                                            ns: 'common'
-                                        }
-                                    )} ${student.student_firstname} ${student.student_lastname}`}
-                                    link_name={<LaunchIcon fontSize="small" />}
                                     removeBanner={(e) =>
                                         removeAgentBanner(
                                             e,
@@ -182,23 +176,27 @@ function AgentMainView(props) {
                                         )
                                     }
                                     student_id={student.student_id}
-                                    notification_key={
-                                        'isRead_new_base_docs_uploaded'
-                                    }
+                                    text={`${t(
+                                        'There are new base documents uploaded by',
+                                        {
+                                            ns: 'common'
+                                        }
+                                    )} ${student.student_firstname} ${student.student_lastname}`}
+                                    title="warning"
                                 />
                             </Card>
                         )
                     )}
                 </Grid>
-                <Grid item xs={6} sm={3}>
+                <Grid item sm={3} xs={6}>
                     <Card sx={{ p: 2 }}>
                         <Typography>
                             {t('Action required', { ns: 'common' })}
                         </Typography>
                         <Typography variant="h6">
                             <Link
-                                to={DEMO.AGENT_SUPPORT_DOCUMENTS('to-do')}
                                 component={LinkDom}
+                                to={DEMO.AGENT_SUPPORT_DOCUMENTS('to-do')}
                                 underline="hover"
                             >
                                 <b>
@@ -211,15 +209,15 @@ function AgentMainView(props) {
                         </Typography>
                     </Card>
                 </Grid>
-                <Grid item xs={6} sm={3}>
+                <Grid item sm={3} xs={6}>
                     <Card sx={{ p: 2 }}>
                         <Typography>
                             {t('Follow up', { ns: 'common' })}
                         </Typography>
                         <Typography variant="h6">
                             <Link
-                                to={DEMO.AGENT_SUPPORT_DOCUMENTS('follow-up')}
                                 component={LinkDom}
+                                to={DEMO.AGENT_SUPPORT_DOCUMENTS('follow-up')}
                                 underline="hover"
                             >
                                 <b>
@@ -232,7 +230,7 @@ function AgentMainView(props) {
                         </Typography>
                     </Card>
                 </Grid>
-                <Grid item xs={6} sm={3}>
+                <Grid item sm={3} xs={6}>
                     <Card sx={{ p: 2 }}>
                         <Typography>
                             {t('student-count', {
@@ -241,8 +239,8 @@ function AgentMainView(props) {
                         </Typography>
                         <Typography variant="h6">
                             <Link
-                                to={DEMO.STUDENT_APPLICATIONS_LINK}
                                 component={LinkDom}
+                                to={DEMO.STUDENT_APPLICATIONS_LINK}
                                 underline="hover"
                             >
                                 <b>{students?.length || 0}</b>
@@ -250,13 +248,13 @@ function AgentMainView(props) {
                         </Typography>
                     </Card>
                 </Grid>
-                <Grid item xs={6} sm={3}>
+                <Grid item sm={3} xs={6}>
                     <Card sx={{ p: 2 }}>
                         <Typography>{t('XXXX', { ns: 'common' })}</Typography>
                         <Typography variant="h6">Comming soon</Typography>
                     </Card>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item sm={6} xs={12}>
                     <Card>
                         <Alert severity="error">
                             <Typography>
@@ -287,12 +285,12 @@ function AgentMainView(props) {
                                                     </TableCell>
                                                     <TableCell>
                                                         <Link
-                                                            underline="hover"
+                                                            component={LinkDom}
                                                             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                                                 application.student_id,
                                                                 DEMO.PROFILE_HASH
                                                             )}`}
-                                                            component={LinkDom}
+                                                            underline="hover"
                                                         >
                                                             <b>
                                                                 {
@@ -316,20 +314,18 @@ function AgentMainView(props) {
                                                     </TableCell>
                                                 </TableRow>
                                                 {agentMainViewState
-                                                    .collapsedRows[idx] && (
-                                                    <TableRow>
+                                                    .collapsedRows[idx] ? <TableRow>
                                                         <TableCell colSpan="12">
                                                             <ApplicationProgressCardBody
-                                                                student={
-                                                                    application.student
-                                                                }
                                                                 application={
                                                                     application.application
                                                                 }
+                                                                student={
+                                                                    application.student
+                                                                }
                                                             />
                                                         </TableCell>
-                                                    </TableRow>
-                                                )}
+                                                    </TableRow> : null}
                                             </Fragment>
                                         )
                                     )}
@@ -338,50 +334,40 @@ function AgentMainView(props) {
                         </div>
                     </Card>
                 </Grid>
-                {is_any_programs_ready_to_submit(myStudents) && (
-                    <Grid item sm={12} md={6}>
+                {is_any_programs_ready_to_submit(myStudents) ? <Grid item md={6} sm={12}>
                         <ReadyToSubmitTasksCard
                             students={students}
                             user={user}
                         />
-                    </Grid>
-                )}
-                {appConfig.vpdEnable && is_any_vpd_missing(myStudents) && (
-                    <Grid item xs={12} md={4}>
+                    </Grid> : null}
+                {appConfig.vpdEnable && is_any_vpd_missing(myStudents) ? <Grid item md={4} xs={12}>
                         <VPDToSubmitTasksCard students={students} user={user} />
-                    </Grid>
-                )}
-                <Grid item xs={12} sm={6} md={4}>
+                    </Grid> : null}
+                <Grid item md={4} sm={6} xs={12}>
                     <ProgramReportCard />
                 </Grid>
-                {is_any_base_documents_uploaded(myStudents) && (
-                    <Grid item xs={12} sm={6} md={4}>
+                {is_any_base_documents_uploaded(myStudents) ? <Grid item md={4} sm={6} xs={12}>
                         <BaseDocumentCheckingTable students={students} />
-                    </Grid>
-                )}
-                {isAnyCVNotAssigned(myStudents) && (
-                    <Grid item xs={12} sm={6} md={4}>
+                    </Grid> : null}
+                {isAnyCVNotAssigned(myStudents) ? <Grid item md={4} sm={6} xs={12}>
                         <CVAssignTasksCard students={students} user={user} />
-                    </Grid>
-                )}
+                    </Grid> : null}
                 <NoProgramStudentTable students={students} />
-                <Grid item xs={12} sm={6} md={4}>
+                <Grid item md={4} sm={6} xs={12}>
                     <ProgramSpecificDocumentCheckCard students={students} />
                 </Grid>
-                <Grid item xs={12} sm={6} md={4}>
+                <Grid item md={4} sm={6} xs={12}>
                     <NoEnoughDecidedProgramsTasksCard
                         students={students}
                         user={user}
                     />
                 </Grid>
             </Grid>
-            {res_modal_status >= 400 && (
-                <ModalMain
+            {res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
-                />
-            )}
+                    res_modal_status={res_modal_status}
+                /> : null}
         </Box>
     );
 }

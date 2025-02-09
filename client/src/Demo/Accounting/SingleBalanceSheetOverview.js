@@ -23,7 +23,7 @@ import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 
-function SingleBalanceSheetOverview() {
+const SingleBalanceSheetOverview = () => {
     const { taiger_user_id } = useParams();
     const { user } = useAuth();
     const [
@@ -120,18 +120,18 @@ function SingleBalanceSheetOverview() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.ACCOUNTING_LINK}`}
+                    underline="hover"
                 >
                     Accounting
                 </Link>

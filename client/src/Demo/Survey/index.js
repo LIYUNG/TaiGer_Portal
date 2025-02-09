@@ -11,7 +11,7 @@ import { SurveyProvider } from '../../components/SurveyProvider';
 import { useTranslation } from 'react-i18next';
 import { appConfig } from '../../config';
 
-function Survey() {
+const Survey = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const {
@@ -26,32 +26,30 @@ function Survey() {
 
     return (
         <Box data-testid="student_survey">
-            {is_TaiGer_Student(user) && (
-                <Breadcrumbs aria-label="breadcrumb">
+            {is_TaiGer_Student(user) ? <Breadcrumbs aria-label="breadcrumb">
                     <Link
-                        underline="hover"
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.DASHBOARD_LINK}`}
+                        underline="hover"
                     >
                         {appConfig.companyName}
                     </Link>
                     <Typography color="text.primary">
                         {t('My Profile', { ns: 'common' })}
                     </Typography>
-                </Breadcrumbs>
-            )}
+                </Breadcrumbs> : null}
             <Box
+                alignItems="center"
                 display="flex"
                 justifyContent="space-between"
-                alignItems="center"
                 sx={{ my: 1 }}
             >
                 <Typography variant="h6">
                     {t('My Profile', { ns: 'common' })}
                 </Typography>
                 {/* Button on the right */}
-                <Box></Box>
+                <Box />
             </Box>
             <SurveyProvider
                 value={{

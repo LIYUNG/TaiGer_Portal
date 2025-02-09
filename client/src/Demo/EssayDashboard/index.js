@@ -23,7 +23,7 @@ import {
     is_pending_status
 } from '../../utils/contants';
 
-function EssayDashboard() {
+const EssayDashboard = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [essayDashboardState, setEssayDashboardState] = useState({
@@ -174,10 +174,10 @@ function EssayDashboard() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -189,17 +189,17 @@ function EssayDashboard() {
                 </Typography>
             </Breadcrumbs>
             <EssayOverview
-                isLoaded={essayDashboardState.isLoaded}
-                success={essayDashboardState.success}
-                students={essayDashboardState.students}
-                no_essay_writer_tasks={no_essay_writer_tasks}
-                new_message_tasks={new_message_tasks}
+                all_active_message_tasks={all_active_message_tasks}
+                closed_tasks={closed_tasks}
                 fav_message_tasks={fav_message_tasks}
                 followup_tasks={followup_tasks}
-                pending_progress_tasks={pending_progress_tasks}
-                closed_tasks={closed_tasks}
-                all_active_message_tasks={all_active_message_tasks}
                 handleFavoriteToggle={handleFavoriteToggle}
+                isLoaded={essayDashboardState.isLoaded}
+                new_message_tasks={new_message_tasks}
+                no_essay_writer_tasks={no_essay_writer_tasks}
+                pending_progress_tasks={pending_progress_tasks}
+                students={essayDashboardState.students}
+                success={essayDashboardState.success}
             />
         </Box>
     );

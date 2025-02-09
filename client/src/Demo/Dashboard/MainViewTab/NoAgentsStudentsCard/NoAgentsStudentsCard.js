@@ -16,7 +16,7 @@ import EditAgentsSubpage from '../StudDocsOverview/EditAgentsSubpage';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 
-function NoAgentsStudentsCard(props) {
+const NoAgentsStudentsCard = (props) => {
     const { user } = useAuth();
     const [noAgentsStudentsCardState, setNoAgentsStudentsCard] = useState({
         showAgentPage: false
@@ -55,41 +55,39 @@ function NoAgentsStudentsCard(props) {
         return (
             <>
                 <TableRow>
-                    {is_TaiGer_Admin(user) && !props.isArchivPage && (
-                        <TableCell>
+                    {is_TaiGer_Admin(user) && !props.isArchivPage ? <TableCell>
                             <Button
-                                size="small"
-                                id="basic-button"
-                                variant="contained"
                                 aria-controls={open ? 'basic-menu' : undefined}
-                                aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
+                                aria-haspopup="true"
+                                id="basic-button"
                                 onClick={handleClick}
+                                size="small"
+                                variant="contained"
                             >
                                 {t('Option', { ns: 'common' })}
                             </Button>
                             <Menu
-                                id="basic-menu"
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
                                 MenuListProps={{
                                     'aria-labelledby': 'basic-button'
                                 }}
+                                anchorEl={anchorEl}
+                                id="basic-menu"
+                                onClose={handleClose}
+                                open={open}
                             >
                                 <MenuItem onClick={() => startEditingAgent()}>
                                     {t('Edit Agent', { ns: 'dashboard' })}
                                 </MenuItem>
                             </Menu>
-                        </TableCell>
-                    )}
+                        </TableCell> : null}
                     <TableCell>
                         <Link
+                            component={LinkDom}
                             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                 props.student._id,
                                 DEMO.PROFILE_HASH
                             )}`}
-                            component={LinkDom}
                         >
                             {props.student.firstname}
                             {', '}
@@ -105,15 +103,13 @@ function NoAgentsStudentsCard(props) {
                     </TableCell>
                 </TableRow>
                 {is_TaiGer_Admin(user) &&
-                    noAgentsStudentsCardState.showAgentPage && (
-                        <EditAgentsSubpage
-                            student={props.student}
-                            show={noAgentsStudentsCardState.showAgentPage}
+                    noAgentsStudentsCardState.showAgentPage ? <EditAgentsSubpage
                             onHide={setAgentModalhide}
                             setmodalhide={setAgentModalhide}
+                            show={noAgentsStudentsCardState.showAgentPage}
+                            student={props.student}
                             submitUpdateAgentlist={submitUpdateAgentlist}
-                        />
-                    )}
+                        /> : null}
             </>
         );
     } else {

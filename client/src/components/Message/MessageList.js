@@ -2,19 +2,19 @@ import React from 'react';
 
 import MessageCard from './MessageCard';
 
-function MessageList(props) {
+const MessageList = (props) => {
     const thread = props.thread?.messages?.map((message, i) => (
         <MessageCard
-            documentsthreadId={props.documentsthreadId}
             accordionKeys={props.accordionKeys}
-            singleExpandtHandler={props.singleExpandtHandler}
+            apiPrefix={props.apiPrefix}
+            documentsthreadId={props.documentsthreadId}
             id={message._id}
             idx={i}
+            isLoaded={props.isLoaded}
             key={i}
             message={message}
-            isLoaded={props.isLoaded}
             onDeleteSingleMessage={props.onDeleteSingleMessage}
-            apiPrefix={props.apiPrefix}
+            singleExpandtHandler={props.singleExpandtHandler}
         />
     ));
     return <>{thread}</>;

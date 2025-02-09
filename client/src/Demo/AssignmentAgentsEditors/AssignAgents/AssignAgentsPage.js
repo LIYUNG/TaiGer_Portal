@@ -19,7 +19,7 @@ import { appConfig } from '../../../config';
 import DEMO from '../../../store/constant';
 import NoAgentsStudentsCard from '../../Dashboard/MainViewTab/NoAgentsStudentsCard/NoAgentsStudentsCard';
 
-function AssignAgentsPage(props) {
+const AssignAgentsPage = (props) => {
     const { t } = useTranslation();
     const no_agent_students = props.students.map((student, i) => (
         <NoAgentsStudentsCard
@@ -33,10 +33,10 @@ function AssignAgentsPage(props) {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -52,7 +52,7 @@ function AssignAgentsPage(props) {
                     <Table size="small">
                         <TableHead>
                             <TableRow>
-                                <TableCell></TableCell>
+                                <TableCell />
                                 <TableCell>
                                     {t('First-, Last Name', { ns: 'common' })}
                                 </TableCell>

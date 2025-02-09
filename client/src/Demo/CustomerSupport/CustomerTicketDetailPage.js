@@ -9,7 +9,7 @@ import Loading from '../../components/Loading/Loading';
 import CustomerTicketDetailPageBody from './CustomerTicketDetailPageBody';
 import DEMO from '../../store/constant';
 
-function NotFound() {
+const NotFound = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const returnBack = () => {
@@ -19,23 +19,23 @@ function NotFound() {
     return (
         <Box>
             <Grid container spacing={2} sx={{ mt: 1 }}>
-                <Grid item xs={12} md={12}>
+                <Grid item md={12} xs={12}>
                     <Paper elevation={3} sx={{ p: 3, overflow: 'auto' }}>
                         <Box
+                            alignItems="center"
                             display="flex"
                             justifyContent="space-between"
-                            alignItems="center"
                         >
                             <Box>
-                                <Typography variant="h5" gutterBottom>
+                                <Typography gutterBottom variant="h5">
                                     {t('Not found', { ns: 'common' })}
                                 </Typography>
-                                <Typography variant="body1" gutterBottom>
+                                <Typography gutterBottom variant="body1">
                                     {t('Error loading the ticket!', {
                                         ns: 'common'
                                     })}
                                 </Typography>
-                                <Button variant="outlined" onClick={returnBack}>
+                                <Button onClick={returnBack} variant="outlined">
                                     {t('Back', { ns: 'common' })}
                                 </Button>{' '}
                             </Box>
@@ -47,7 +47,7 @@ function NotFound() {
     );
 }
 
-function CustomerTicketDetailPage() {
+const CustomerTicketDetailPage = () => {
     const { t } = useTranslation();
     const { complaintTicket } = useLoaderData();
 
@@ -56,7 +56,7 @@ function CustomerTicketDetailPage() {
     return (
         <Box data-testid="customer_support">
             <Suspense fallback={<Loading />}>
-                <Await resolve={complaintTicket} errorElement={<NotFound />}>
+                <Await errorElement={<NotFound />} resolve={complaintTicket}>
                     {(loadedData) => (
                         <CustomerTicketDetailPageBody
                             complaintTicket={loadedData}

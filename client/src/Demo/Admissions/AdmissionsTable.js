@@ -18,7 +18,7 @@ CustomTabPanel.propTypes = {
     value: PropTypes.number.isRequired
 };
 
-function AdmissionsTable(props) {
+const AdmissionsTable = (props) => {
     const admissions = props.admissions;
     const [value, setValue] = useState(0);
     const { t } = useTranslation();
@@ -85,10 +85,10 @@ function AdmissionsTable(props) {
                 )}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>
@@ -108,10 +108,10 @@ function AdmissionsTable(props) {
                 )}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>
@@ -131,10 +131,10 @@ function AdmissionsTable(props) {
                 )}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>
@@ -154,10 +154,10 @@ function AdmissionsTable(props) {
                 )}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>
@@ -182,10 +182,10 @@ function AdmissionsTable(props) {
                 const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.programId)}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>
@@ -200,10 +200,10 @@ function AdmissionsTable(props) {
                 const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.programId)}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>
@@ -236,17 +236,16 @@ function AdmissionsTable(props) {
                 )}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
-                        {params.row.admission_file_path !== '' &&
-                            (params.row.admission === 'O'
+                        {params.row.admission_file_path !== '' ? params.row.admission === 'O'
                                 ? t('Admission Letter', { ns: 'common' })
                                 : params.row.admission === 'X'
                                   ? t('Rejection Letter', { ns: 'common' })
-                                  : '')}
+                                  : '' : null}
                     </Link>
                 );
             }
@@ -266,11 +265,11 @@ function AdmissionsTable(props) {
         <>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    variant="scrollable"
-                    scrollButtons="auto"
                     aria-label="basic tabs example"
+                    onChange={handleChange}
+                    scrollButtons="auto"
+                    value={value}
+                    variant="scrollable"
                 >
                     <Tab
                         label={`${t('Admissions', {
@@ -298,25 +297,25 @@ function AdmissionsTable(props) {
                     />
                 </Tabs>
             </Box>
-            <CustomTabPanel value={value} index={0}>
+            <CustomTabPanel index={0} value={value}>
                 <MuiDataGrid
+                    columns={memoizedColumns}
                     rows={admissions_table}
-                    columns={memoizedColumns}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
+            <CustomTabPanel index={1} value={value}>
                 <MuiDataGrid
+                    columns={memoizedColumns}
                     rows={rejections_table}
-                    columns={memoizedColumns}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
-                <MuiDataGrid rows={pending_table} columns={memoizedColumns} />
+            <CustomTabPanel index={2} value={value}>
+                <MuiDataGrid columns={memoizedColumns} rows={pending_table} />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={3}>
+            <CustomTabPanel index={3} value={value}>
                 <MuiDataGrid
-                    rows={not_yet_closed_table}
                     columns={memoizedColumns}
+                    rows={not_yet_closed_table}
                 />
             </CustomTabPanel>
         </>

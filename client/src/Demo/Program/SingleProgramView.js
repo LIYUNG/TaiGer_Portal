@@ -59,7 +59,7 @@ import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import { a11yProps, CustomTabPanel } from '../../components/Tabs';
 
-function SingleProgramView(props) {
+const SingleProgramView = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [value, setValue] = useState(0);
@@ -85,28 +85,28 @@ function SingleProgramView(props) {
         <>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 {is_TaiGer_role(user) ? (
                     <Link
-                        underline="hover"
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.PROGRAMS}`}
+                        underline="hover"
                     >
                         {t('Program List', { ns: 'common' })}
                     </Link>
                 ) : (
                     <Link
-                        underline="hover"
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(user._id.toString())}`}
+                        underline="hover"
                     >
                         {t('Applications')}
                     </Link>
@@ -118,25 +118,25 @@ function SingleProgramView(props) {
             <Box sx={{ my: 1 }}>
                 <Banner
                     ReadOnlyMode={true}
-                    bg={'primary'}
-                    to={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                    title={'info'}
-                    text={`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}
-                    link_name={''}
-                    removeBanner={() => {}}
+                    bg="primary"
+                    link_name=""
                     notification_key={undefined}
+                    removeBanner={() => {}}
+                    text={`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}
+                    title="info"
+                    to={`${DEMO.BASE_DOCUMENTS_LINK}`}
                 />
             </Box>
 
             <Grid container spacing={2}>
-                <Grid item xs={12} md={8}>
+                <Grid item md={8} xs={12}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <Tabs
-                            value={value}
-                            onChange={handleChange}
-                            variant="scrollable"
-                            scrollButtons="auto"
                             aria-label="basic tabs example"
+                            onChange={handleChange}
+                            scrollButtons="auto"
+                            value={value}
+                            variant="scrollable"
                         >
                             <Tab label={t('Overview')} {...a11yProps(0)} />
                             <Tab
@@ -156,21 +156,19 @@ function SingleProgramView(props) {
                                 {...a11yProps(3)}
                             />
                             <Tab label={t('Others')} {...a11yProps(4)} />
-                            {versions?.changes?.length > 0 && (
-                                <Tab
+                            {versions?.changes?.length > 0 ? <Tab
                                     label={t('Edit History', { ns: 'common' })}
                                     {...a11yProps(5)}
-                                />
-                            )}
+                                /> : null}
                         </Tabs>
                     </Box>
-                    <CustomTabPanel value={value} index={0}>
+                    <CustomTabPanel index={0} value={value}>
                         <Card>
                             <Grid container spacing={2} sx={{ p: 2 }}>
                                 {program_fields_overview.map(
                                     (program_field, i) => (
                                         <Fragment key={i}>
-                                            <Grid item xs={12} md={4}>
+                                            <Grid item md={4} xs={12}>
                                                 <Typography fontWeight="bold">
                                                     {t(
                                                         `${program_field.name}`,
@@ -178,7 +176,7 @@ function SingleProgramView(props) {
                                                     )}
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={12} md={8}>
+                                            <Grid item md={8} xs={12}>
                                                 <LinkableNewlineText
                                                     text={props.program[
                                                         program_field.prop
@@ -191,13 +189,13 @@ function SingleProgramView(props) {
                             </Grid>
                         </Card>
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={1}>
+                    <CustomTabPanel index={1} value={value}>
                         <Card>
                             <Grid container spacing={2} sx={{ p: 2 }}>
                                 {program_fields_application_dates.map(
                                     (program_field, i) => (
                                         <Fragment key={i}>
-                                            <Grid item xs={12} md={4}>
+                                            <Grid item md={4} xs={12}>
                                                 <Typography fontWeight="bold">
                                                     {t(
                                                         `${program_field.name}`,
@@ -205,7 +203,7 @@ function SingleProgramView(props) {
                                                     )}
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={12} md={8}>
+                                            <Grid item md={8} xs={12}>
                                                 <LinkableNewlineText
                                                     text={
                                                         props.program[
@@ -220,13 +218,13 @@ function SingleProgramView(props) {
                             </Grid>
                         </Card>
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={2}>
+                    <CustomTabPanel index={2} value={value}>
                         <Card>
                             <Grid container spacing={2} sx={{ p: 2 }}>
                                 {[...english_test_hand_after].map(
                                     (program_field, i) => (
                                         <Fragment key={i}>
-                                            <Grid item xs={6} md={4}>
+                                            <Grid item md={4} xs={6}>
                                                 <Typography fontWeight="bold">
                                                     {t(
                                                         `${program_field.name}`,
@@ -234,7 +232,7 @@ function SingleProgramView(props) {
                                                     )}
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={6} md={8}>
+                                            <Grid item md={8} xs={6}>
                                                 <LinkableNewlineText
                                                     text={props.program[
                                                         program_field.prop
@@ -247,7 +245,7 @@ function SingleProgramView(props) {
                                 {program_fields_english_languages_test.map(
                                     (program_field, i) => (
                                         <Fragment key={i}>
-                                            <Grid item xs={6} md={2}>
+                                            <Grid item md={2} xs={6}>
                                                 <Typography fontWeight="bold">
                                                     {t(
                                                         `${program_field.name}`,
@@ -255,7 +253,7 @@ function SingleProgramView(props) {
                                                     )}
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={6} md={2}>
+                                            <Grid item md={2} xs={6}>
                                                 <LinkableNewlineText
                                                     text={
                                                         props.program[
@@ -264,11 +262,10 @@ function SingleProgramView(props) {
                                                     }
                                                 />
                                             </Grid>
-                                            <Grid item xs={3} md={2}>
+                                            <Grid item md={2} xs={3}>
                                                 {props.program[
                                                     `${program_field.prop}_reading`
-                                                ] && (
-                                                    <Typography fontWeight="bold">
+                                                ] ? <Typography fontWeight="bold">
                                                         {t('Reading', {
                                                             ns: 'common'
                                                         })}
@@ -278,14 +275,12 @@ function SingleProgramView(props) {
                                                                 `${program_field.prop}_reading`
                                                             ]
                                                         }
-                                                    </Typography>
-                                                )}{' '}
+                                                    </Typography> : null}{' '}
                                             </Grid>
-                                            <Grid item xs={3} md={2}>
+                                            <Grid item md={2} xs={3}>
                                                 {props.program[
                                                     `${program_field.prop}_listening`
-                                                ] && (
-                                                    <Typography fontWeight="bold">
+                                                ] ? <Typography fontWeight="bold">
                                                         {t('Listening', {
                                                             ns: 'common'
                                                         })}
@@ -295,14 +290,12 @@ function SingleProgramView(props) {
                                                                 `${program_field.prop}_listening`
                                                             ]
                                                         }
-                                                    </Typography>
-                                                )}{' '}
+                                                    </Typography> : null}{' '}
                                             </Grid>
-                                            <Grid item xs={3} md={2}>
+                                            <Grid item md={2} xs={3}>
                                                 {props.program[
                                                     `${program_field.prop}_speaking`
-                                                ] && (
-                                                    <Typography fontWeight="bold">
+                                                ] ? <Typography fontWeight="bold">
                                                         {t('Speaking', {
                                                             ns: 'common'
                                                         })}
@@ -312,14 +305,12 @@ function SingleProgramView(props) {
                                                                 `${program_field.prop}_speaking`
                                                             ]
                                                         }
-                                                    </Typography>
-                                                )}{' '}
+                                                    </Typography> : null}{' '}
                                             </Grid>
-                                            <Grid item xs={3} md={2}>
+                                            <Grid item md={2} xs={3}>
                                                 {props.program[
                                                     `${program_field.prop}_writing`
-                                                ] && (
-                                                    <Typography fontWeight="bold">
+                                                ] ? <Typography fontWeight="bold">
                                                         {t('Writing', {
                                                             ns: 'common'
                                                         })}
@@ -329,8 +320,7 @@ function SingleProgramView(props) {
                                                                 `${program_field.prop}_writing`
                                                             ]
                                                         }
-                                                    </Typography>
-                                                )}
+                                                    </Typography> : null}
                                             </Grid>
                                         </Fragment>
                                     )
@@ -341,14 +331,14 @@ function SingleProgramView(props) {
                                     ...program_fields_special_notes
                                 ].map((program_field, i) => (
                                     <Fragment key={i}>
-                                        <Grid item xs={12} md={4}>
+                                        <Grid item md={4} xs={12}>
                                             <Typography fontWeight="bold">
                                                 {t(`${program_field.name}`, {
                                                     ns: 'common'
                                                 })}
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={12} md={8}>
+                                        <Grid item md={8} xs={12}>
                                             <LinkableNewlineText
                                                 text={props.program[
                                                     program_field.prop
@@ -360,13 +350,13 @@ function SingleProgramView(props) {
                             </Grid>
                         </Card>
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={3}>
+                    <CustomTabPanel index={3} value={value}>
                         <Card>
                             <Grid container spacing={2} sx={{ p: 2 }}>
                                 {program_fields_special_documents.map(
                                     (program_field, i) => (
                                         <Fragment key={i}>
-                                            <Grid item xs={12} md={4}>
+                                            <Grid item md={4} xs={12}>
                                                 <Typography fontWeight="bold">
                                                     {t(
                                                         `${program_field.name}`,
@@ -374,7 +364,7 @@ function SingleProgramView(props) {
                                                     )}
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={12} md={8}>
+                                            <Grid item md={8} xs={12}>
                                                 <LinkableNewlineText
                                                     text={convertToText(
                                                         props.program[
@@ -389,13 +379,13 @@ function SingleProgramView(props) {
                             </Grid>
                         </Card>
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={4}>
+                    <CustomTabPanel index={4} value={value}>
                         <Card>
                             <Grid container spacing={2} sx={{ p: 2 }}>
                                 {program_fields_others.map(
                                     (program_field, i) => (
                                         <Fragment key={i}>
-                                            <Grid item xs={12} md={4}>
+                                            <Grid item md={4} xs={12}>
                                                 <Typography fontWeight="bold">
                                                     {t(
                                                         `${program_field.name}`,
@@ -403,7 +393,7 @@ function SingleProgramView(props) {
                                                     )}
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={12} md={8}>
+                                            <Grid item md={8} xs={12}>
                                                 <LinkableNewlineText
                                                     text={
                                                         props.program[
@@ -415,16 +405,16 @@ function SingleProgramView(props) {
                                         </Fragment>
                                     )
                                 )}
-                                <Grid item xs={12} md={4}>
+                                <Grid item md={4} xs={12}>
                                     <Typography fontWeight="bold">
                                         {t(`Country`, { ns: 'common' })}
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={12} md={8}>
+                                <Grid item md={8} xs={12}>
                                     <span>
                                         <img
-                                            src={`/assets/logo/country_logo/svg/${props.program.country}.svg`}
                                             alt="Logo"
+                                            src={`/assets/logo/country_logo/svg/${props.program.country}.svg`}
                                             style={{
                                                 maxWidth: '32px',
                                                 maxHeight: '32px'
@@ -437,14 +427,13 @@ function SingleProgramView(props) {
                                         />
                                     </span>
                                 </Grid>
-                                {props.program.application_portal_a && (
-                                    <>
-                                        <Grid item xs={12} md={4}>
+                                {props.program.application_portal_a ? <>
+                                        <Grid item md={4} xs={12}>
                                             <Typography fontWeight="bold">
                                                 Portal Link 1
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={12} md={8}>
+                                        <Grid item md={8} xs={12}>
                                             <LinkableNewlineText
                                                 text={
                                                     props.program
@@ -453,12 +442,12 @@ function SingleProgramView(props) {
                                             />
                                         </Grid>
 
-                                        <Grid item xs={12} md={4}>
+                                        <Grid item md={4} xs={12}>
                                             <Typography fontWeight="bold">
                                                 Portal Instructions 1
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={12} md={8}>
+                                        <Grid item md={8} xs={12}>
                                             <LinkableNewlineText
                                                 text={
                                                     props.program
@@ -466,16 +455,14 @@ function SingleProgramView(props) {
                                                 }
                                             />
                                         </Grid>
-                                    </>
-                                )}
-                                {props.program.application_portal_b && (
-                                    <>
-                                        <Grid item xs={12} md={4}>
+                                    </> : null}
+                                {props.program.application_portal_b ? <>
+                                        <Grid item md={4} xs={12}>
                                             <Typography fontWeight="bold">
                                                 Portal Link 2
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={12} md={8}>
+                                        <Grid item md={8} xs={12}>
                                             <LinkableNewlineText
                                                 text={
                                                     props.program
@@ -483,12 +470,12 @@ function SingleProgramView(props) {
                                                 }
                                             />
                                         </Grid>
-                                        <Grid item xs={12} md={4}>
+                                        <Grid item md={4} xs={12}>
                                             <Typography fontWeight="bold">
                                                 Portal Instructions 2
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={12} md={8}>
+                                        <Grid item md={8} xs={12}>
                                             <LinkableNewlineText
                                                 text={
                                                     props.program
@@ -496,56 +483,50 @@ function SingleProgramView(props) {
                                                 }
                                             />
                                         </Grid>
-                                    </>
-                                )}
-                                <Grid item xs={12} md={4}>
+                                    </> : null}
+                                <Grid item md={4} xs={12}>
                                     <Typography fontWeight="bold">
                                         {t('Last update', { ns: 'common' })}
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={12} md={8}>
+                                <Grid item md={8} xs={12}>
                                     <Typography fontWeight="bold">
                                         {convertDate(props.program.updatedAt)}
                                     </Typography>
                                 </Grid>
-                                {is_TaiGer_AdminAgent(user) && (
-                                    <>
-                                        <Grid item xs={12} md={4}>
+                                {is_TaiGer_AdminAgent(user) ? <>
+                                        <Grid item md={4} xs={12}>
                                             <Typography>
                                                 {t('Updated by', {
                                                     ns: 'common'
                                                 })}
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={12} md={8}>
+                                        <Grid item md={8} xs={12}>
                                             <Typography>
                                                 {props.program.whoupdated}
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={12} md={4}>
+                                        <Grid item md={4} xs={12}>
                                             <Typography>
                                                 {t('Group', { ns: 'common' })}
                                             </Typography>
                                         </Grid>
-                                    </>
-                                )}
+                                    </> : null}
                             </Grid>
                         </Card>
                     </CustomTabPanel>
-                    {versions?.changes?.length > 0 && (
-                        <CustomTabPanel
-                            value={value}
+                    {versions?.changes?.length > 0 ? <CustomTabPanel
                             index={5}
                             style={{ width: '100%', overflowY: 'auto' }}
+                            value={value}
                         >
-                            {IS_DEV && (
-                                <Button
+                            {IS_DEV ? <Button
                                     onClick={() => props.setDiffModalShow()}
                                 >
                                     <CompareIcon fontSize="small" /> Incoming
                                     changes - Compare
-                                </Button>
-                            )}
+                                </Button> : null}
                             <Table>
                                 <TableHead>
                                     <TableRow>
@@ -589,7 +570,7 @@ function SingleProgramView(props) {
                                             });
                                             return (
                                                 <Fragment key={index}>
-                                                    <TableRow></TableRow>
+                                                    <TableRow />
                                                     <TableRow>
                                                         <TableCell
                                                             rowSpan={
@@ -599,13 +580,11 @@ function SingleProgramView(props) {
                                                         >
                                                             <Typography>
                                                                 {reverseIndex}{' '}
-                                                                {change?.changeRequest && (
-                                                                    <div
+                                                                {change?.changeRequest ? <div
                                                                         title={`from change request ${change?.changeRequest}`}
                                                                     >
                                                                         <InfoIcon fontSize="small" />
-                                                                    </div>
-                                                                )}
+                                                                    </div> : null}
                                                             </Typography>
                                                         </TableCell>
                                                         <TableCell
@@ -661,88 +640,80 @@ function SingleProgramView(props) {
                                         })}
                                 </TableBody>
                             </Table>
-                        </CustomTabPanel>
-                    )}
+                        </CustomTabPanel> : null}
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item md={4} xs={12}>
                     {(is_TaiGer_AdminAgent(user) ||
-                        is_TaiGer_External(user)) && (
-                        <Grid container spacing={1} alignItems="center">
-                            {is_TaiGer_AdminAgent(user) && (
-                                <Grid item>
+                        is_TaiGer_External(user)) ? <Grid alignItems="center" container spacing={1}>
+                            {is_TaiGer_AdminAgent(user) ? <Grid item>
                                     <Button
-                                        fullWidth
-                                        variant="outlined"
                                         color="primary"
+                                        fullWidth
                                         onClick={() =>
                                             props.setModalShowAssignWindow(true)
                                         }
+                                        variant="outlined"
                                     >
                                         {t('Assign', { ns: 'common' })}
                                     </Button>
-                                </Grid>
-                            )}
+                                </Grid> : null}
                             <Grid item>
                                 <Button
                                     color="info"
-                                    variant="contained"
                                     component={LinkDom}
                                     to={DEMO.PROGRAM_EDIT(
                                         props.program._id?.toString()
                                     )}
+                                    variant="contained"
                                 >
                                     {t('Edit', { ns: 'common' })}
                                 </Button>
                             </Grid>
 
-                            {is_TaiGer_Admin(user) && (
-                                <Grid item>
+                            {is_TaiGer_Admin(user) ? <Grid item>
                                     <Button
-                                        variant="outlined"
                                         color="error"
                                         onClick={() =>
                                             props.setDeleteProgramWarningOpen(
                                                 true
                                             )
                                         }
+                                        variant="outlined"
                                     >
                                         {t('Delete', { ns: 'common' })}
                                     </Button>
-                                </Grid>
-                            )}
-                        </Grid>
-                    )}
+                                </Grid> : null}
+                        </Grid> : null}
                     <Box sx={{ my: 2 }}>
                         <Link
                             component={LinkDom}
+                            target="_blank"
                             to={`https://www.google.com/search?q=${props.program.school?.replace(
                                 '&',
                                 'and'
                             )}+${props.program.program_name?.replace('&', 'and')}+${
                                 props.program.degree
                             }`}
-                            target="_blank"
                         >
                             <Button
-                                fullWidth
                                 color="primary"
-                                variant="contained"
                                 endIcon={<OpenInNewIcon />}
+                                fullWidth
+                                variant="contained"
                             >
                                 {t('Find in Google', { ns: 'programList' })}
                             </Button>
                         </Link>
                     </Box>
-                    {is_TaiGer_role(user) && (
-                        <>
+                    {is_TaiGer_role(user) ? <>
                             <Card className="card-with-scroll" sx={{ p: 2 }}>
                                 <div className="card-scrollable-body">
                                     <Tabs
-                                        value={studentsTabValue}
-                                        onChange={handleStudentsTabChange}
-                                        variant="scrollable"
-                                        scrollButtons="auto"
                                         aria-label="basic tabs example"
+                                        onChange={handleStudentsTabChange}
+                                        scrollButtons="auto"
+                                        value={studentsTabValue}
+                                        variant="scrollable"
                                     >
                                         <Tab
                                             label="In Progress"
@@ -751,8 +722,8 @@ function SingleProgramView(props) {
                                         <Tab label="Closed" {...a11yProps(1)} />
                                     </Tabs>
                                     <CustomTabPanel
-                                        value={studentsTabValue}
                                         index={0}
+                                        value={studentsTabValue}
                                     >
                                         <Table size="small">
                                             <TableHead>
@@ -786,13 +757,13 @@ function SingleProgramView(props) {
                                                         <TableRow key={i}>
                                                             <TableCell>
                                                                 <Link
+                                                                    component={
+                                                                        LinkDom
+                                                                    }
                                                                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                                                         student._id?.toString(),
                                                                         DEMO.PROFILE_HASH
                                                                     )}`}
-                                                                    component={
-                                                                        LinkDom
-                                                                    }
                                                                 >
                                                                     {
                                                                         student.firstname
@@ -806,9 +777,6 @@ function SingleProgramView(props) {
                                                                 {student.agents?.map(
                                                                     (agent) => (
                                                                         <Link
-                                                                            to={`${DEMO.TEAM_AGENT_LINK(
-                                                                                agent._id?.toString()
-                                                                            )}`}
                                                                             component={
                                                                                 LinkDom
                                                                             }
@@ -818,6 +786,9 @@ function SingleProgramView(props) {
                                                                             sx={{
                                                                                 mr: 1
                                                                             }}
+                                                                            to={`${DEMO.TEAM_AGENT_LINK(
+                                                                                agent._id?.toString()
+                                                                            )}`}
                                                                         >
                                                                             {
                                                                                 agent.firstname
@@ -832,9 +803,6 @@ function SingleProgramView(props) {
                                                                         editor
                                                                     ) => (
                                                                         <Link
-                                                                            to={`${DEMO.TEAM_EDITOR_LINK(
-                                                                                editor._id?.toString()
-                                                                            )}`}
                                                                             component={
                                                                                 LinkDom
                                                                             }
@@ -844,6 +812,9 @@ function SingleProgramView(props) {
                                                                             sx={{
                                                                                 mr: 1
                                                                             }}
+                                                                            to={`${DEMO.TEAM_EDITOR_LINK(
+                                                                                editor._id?.toString()
+                                                                            )}`}
                                                                         >
                                                                             {
                                                                                 editor.firstname
@@ -858,8 +829,8 @@ function SingleProgramView(props) {
                                         </Table>
                                     </CustomTabPanel>
                                     <CustomTabPanel
-                                        value={studentsTabValue}
                                         index={1}
+                                        value={studentsTabValue}
                                     >
                                         <Table size="small">
                                             <TableHead>
@@ -894,13 +865,13 @@ function SingleProgramView(props) {
                                                         <TableRow key={i}>
                                                             <TableCell>
                                                                 <Link
+                                                                    component={
+                                                                        LinkDom
+                                                                    }
                                                                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                                                         student._id?.toString(),
                                                                         DEMO.PROFILE_HASH
                                                                     )}`}
-                                                                    component={
-                                                                        LinkDom
-                                                                    }
                                                                 >
                                                                     {
                                                                         student.firstname
@@ -931,8 +902,8 @@ function SingleProgramView(props) {
                                             </TableBody>
                                         </Table>
                                         <Typography
-                                            variant="string"
                                             sx={{ mt: 2 }}
+                                            variant="string"
                                         >
                                             O: admitted, X: rejected, -: not
                                             confirmed{' '}
@@ -950,25 +921,24 @@ function SingleProgramView(props) {
                                     </Typography>
                                     <Button
                                         color="primary"
-                                        variant="contained"
-                                        size="small"
                                         onClick={props.programListAssistant}
+                                        size="small"
+                                        variant="contained"
                                     >
                                         {t('Fetch', { ns: 'common' })}
                                     </Button>
                                 </CardContent>
                             </Card>
-                        </>
-                    )}
+                        </> : null}
                     <Card className="card-with-scroll">
                         <CardContent className="card-scrollable-body">
                             <Typography>
                                 {t('Provide Feedback', { ns: 'programList' })}
                             </Typography>
                             <ProgramReport
-                                uni_name={props.program.school}
-                                program_name={props.program.program_name}
                                 program_id={props.program._id?.toString()}
+                                program_name={props.program.program_name}
+                                uni_name={props.program.school}
                             />
                         </CardContent>
                     </Card>

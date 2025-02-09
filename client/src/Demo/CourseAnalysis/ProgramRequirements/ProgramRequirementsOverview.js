@@ -71,9 +71,9 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
     return (
         <>
             <Box
+                alignItems="center"
                 display="flex"
                 justifyContent="space-between"
-                alignItems="center"
                 sx={{ my: 1 }}
             >
                 <Typography variant="h6">
@@ -81,20 +81,20 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                 </Typography>
                 <Box>
                     <Button
-                        variant="outlined"
-                        component={LinkDom}
-                        to={`${DEMO.KEYWORDS_EDIT}`}
                         color="primary"
+                        component={LinkDom}
                         sx={{ mr: 2 }}
+                        to={`${DEMO.KEYWORDS_EDIT}`}
+                        variant="outlined"
                     >
                         {t('Edit Keywords', { ns: 'common' })}
                     </Button>
                     <Button
-                        variant="contained"
-                        component={LinkDom}
-                        to={`${DEMO.CREATE_NEW_PROGRAM_ANALYSIS}`}
-                        target="_blank"
                         color="primary"
+                        component={LinkDom}
+                        target="_blank"
+                        to={`${DEMO.CREATE_NEW_PROGRAM_ANALYSIS}`}
+                        variant="contained"
                     >
                         {t('Create New Analysis', { ns: 'common' })}
                     </Button>
@@ -119,10 +119,10 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                                     <TableCell>
                                         <IconButton
                                             aria-label="expand row"
-                                            size="small"
                                             onClick={() =>
                                                 handleRowClick(index)
                                             }
+                                            size="small"
                                         >
                                             {openRow === index ? (
                                                 <KeyboardArrowUp />
@@ -164,11 +164,11 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                                 {/* Collapsible row for program categories */}
                                 <TableRow>
                                     <TableCell
+                                        colSpan={8}
                                         style={{
                                             paddingBottom: 0,
                                             paddingTop: 0
                                         }}
-                                        colSpan={8}
                                     >
                                         <Collapse
                                             in={openRow === index}
@@ -177,14 +177,14 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                                         >
                                             <Box margin={2}>
                                                 <Typography
-                                                    variant="h6"
                                                     gutterBottom
+                                                    variant="h6"
                                                 >
                                                     Program Categories
                                                 </Typography>
                                                 <Table
-                                                    size="small"
                                                     aria-label="program categories"
+                                                    size="small"
                                                 >
                                                     <TableHead>
                                                         <TableRow>
@@ -304,8 +304,8 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                 </Table>
             </TableContainer>
             <Dialog
-                open={deleteModalOpen}
                 onClose={() => setDeleteModalOpen(false)}
+                open={deleteModalOpen}
                 size="small"
             >
                 <DialogTitle>{t('Attention', { ns: 'common' })}</DialogTitle>
@@ -317,11 +317,11 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                 <DialogActions>
                     <Button
                         color="secondary"
-                        variant="contained"
                         disabled={isDeleting}
-                        title="Undo"
-                        sx={{ mr: 1 }}
                         onClick={() => handleRequirementDelete()}
+                        sx={{ mr: 1 }}
+                        title="Undo"
+                        variant="contained"
                     >
                         {isDeleting ? (
                             <CircularProgress size="small" />
@@ -331,9 +331,9 @@ const ProgramRequirementsOverview = ({ programRequirements }) => {
                     </Button>
                     <Button
                         color="secondary"
-                        variant="outlined"
-                        title="Undo"
                         onClick={() => setDeleteModalOpen(false)}
+                        title="Undo"
+                        variant="outlined"
                     >
                         {t('Cancel', { ns: 'common' })}
                     </Button>

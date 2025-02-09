@@ -19,7 +19,7 @@ import { appConfig } from '../../config';
 import { useTranslation } from 'react-i18next';
 import { Role } from '@taiger-common/core';
 
-function Documentation(props) {
+const Documentation = (props) => {
     const { category } = useParams();
     const { user } = useAuth();
     const { t } = useTranslation();
@@ -171,19 +171,17 @@ function Documentation(props) {
     TabTitle(`Doc: ${category_name}`);
     return (
         <>
-            {res_modal_status >= 400 && (
-                <ModalMain
+            {res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
-                />
-            )}
+                    res_modal_status={res_modal_status}
+                /> : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -194,23 +192,23 @@ function Documentation(props) {
             </Breadcrumbs>
             {documentationState.isEdit ? (
                 <DocPageEdit
-                    category={'category'}
+                    category="category"
                     document={document}
                     document_title={documentationState.document_title}
                     editorState={documentationState.editorState}
-                    isLoaded={isLoaded}
                     handleClickEditToggle={handleClickEditToggle}
                     handleClickSave={handleClickSave}
+                    isLoaded={isLoaded}
                 />
             ) : (
                 <DocPageView
+                    author={documentationState.author}
                     document={document}
                     document_title={documentationState.document_title}
                     editorState={documentationState.editorState}
-                    isLoaded={isLoaded}
-                    author={documentationState.author}
-                    user={user}
                     handleClickEditToggle={handleClickEditToggle}
+                    isLoaded={isLoaded}
+                    user={user}
                 />
             )}
         </>

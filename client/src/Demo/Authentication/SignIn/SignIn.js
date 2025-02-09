@@ -108,46 +108,44 @@ export default function SignIn() {
           System is recently updated, in case any issue, please email
           taiger.leoc@gmail.com
         </Alert> */}
-                <Typography component="h1" variant="h5" sx={{ mt: 1 }}>
+                <Typography component="h1" sx={{ mt: 1 }} variant="h5">
                     {t('Sign in', { ns: 'auth' })}
                 </Typography>
                 <form onSubmit={(e) => onLoginSubmit(e, true)}>
                     <TextField
-                        id="email"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label={t('Email Address')}
-                        type="email"
                         autoComplete="email"
+                        fullWidth
+                        id="email"
+                        label={t('Email Address')}
+                        margin="normal"
                         onChange={(e) => onChangeEmail(e, e.target.value)}
+                        required
+                        type="email"
                     />
                     <TextField
-                        id="standard-password-input"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label={t('Password', { ns: 'common' })}
-                        type="password"
                         autoComplete="password"
-                        onChange={(e) => onChangePassword(e, e.target.value)}
-                    />
-                    {!loginsuccess && (
-                        <Typography>
-                            Email or password is not correct.
-                        </Typography>
-                    )}
-                    <Button
-                        sx={{ mt: 2 }}
                         fullWidth
+                        id="standard-password-input"
+                        label={t('Password', { ns: 'common' })}
+                        margin="normal"
+                        onChange={(e) => onChangePassword(e, e.target.value)}
+                        required
+                        type="password"
+                    />
+                    {!loginsuccess ? <Typography>
+                            Email or password is not correct.
+                        </Typography> : null}
+                    <Button
+                        fullWidth
+                        sx={{ mt: 2 }}
                         type="submit"
                         variant="contained"
                     >
                         {buttondisable ? (
                             <CircularProgress
+                                color="secondary"
                                 size={24}
                                 sx={{ color: 'white' }}
-                                color="secondary"
                             />
                         ) : (
                             <Typography>{`${t('Login', { ns: 'auth' })}`}</Typography>
@@ -155,22 +153,22 @@ export default function SignIn() {
                     </Button>
                 </form>
                 <Grid container spacing={2} sx={{ my: 1 }}>
-                    <Grid item xs={12} sx={{ textAlign: 'center' }}>
+                    <Grid item sx={{ textAlign: 'center' }} xs={12}>
                         <Typography>
                             {t('Forgot Password', { ns: 'common' })}?{' '}
                             <Link
-                                to={DEMO.FORGOT_PASSWORD_LINK}
                                 component={NavLink}
+                                to={DEMO.FORGOT_PASSWORD_LINK}
                             >
                                 {t('Reset Login Password')}
                             </Link>
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} sx={{ textAlign: 'center' }}>
+                    <Grid item sx={{ textAlign: 'center' }} xs={12}>
                         <Typography>
                             <Link
-                                to={DEMO.LANDING_PAGE_LINK}
                                 component={NavLink}
+                                to={DEMO.LANDING_PAGE_LINK}
                             >
                                 {t('Home')}
                             </Link>

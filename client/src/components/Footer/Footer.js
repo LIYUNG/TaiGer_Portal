@@ -37,9 +37,9 @@ export default function Footer() {
         }
     };
 
-    function Copyright() {
+    const Copyright = () => {
         return (
-            <Typography variant="body2" color="text.secondary" align="center">
+            <Typography align="center" color="text.secondary" variant="body2">
                 {`Copyright © ${currentYear} | Designed and developed by `}
                 <Link color="inherit" href="https://taigerconsultancy.com/">
                     TaiGer Consultancy 台德留學顧問
@@ -49,8 +49,7 @@ export default function Footer() {
     }
 
     return (
-        <>
-            <Box
+        <Box
                 sx={{
                     display: 'flex',
                     flexDirection: 'column'
@@ -87,13 +86,13 @@ export default function Footer() {
                                     Language
                                 </InputLabel>
                                 <Select
-                                    value={language}
-                                    onChange={handleLanguageChange}
                                     label="Language"
+                                    onChange={handleLanguageChange}
                                     sx={{
                                         minWidth: 120,
                                         textAlign: 'center'
                                     }}
+                                    value={language}
                                 >
                                     <MenuItem value="en">
                                         <ListItemText>English</ListItemText>
@@ -111,6 +110,5 @@ export default function Footer() {
                     </Container>
                 </Box>
             </Box>
-        </>
     );
 }

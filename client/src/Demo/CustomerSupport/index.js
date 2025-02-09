@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import Loading from '../../components/Loading/Loading';
 import CustomerSupportBody from './CustomerSupportBody';
 
-function CustomerSupport() {
+const CustomerSupport = () => {
     const { t } = useTranslation();
     const { complaintTickets } = useLoaderData();
 

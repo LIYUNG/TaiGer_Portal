@@ -15,7 +15,7 @@ const ProgramDetailsComparisonTable = ({ applications }) => {
     return (
         <TableContainer component={Paper} style={{ overflowX: 'auto' }}>
             <Table aria-label="comparison table" size="small">
-                <TableHead></TableHead>
+                <TableHead />
                 <TableBody>
                     {[
                         ...program_fields,

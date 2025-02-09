@@ -2,19 +2,19 @@ import React from 'react';
 
 import MessageContainer from './MessageContainer';
 
-function MessageList(props) {
+const MessageList = (props) => {
     const thread = props.thread.map((message, i) => (
         <MessageContainer
             accordionKeys={props.accordionKeys}
             idx={props.isUpperMessagList ? props.thread.length - i - 1 : i}
-            key={message._id.toString()}
-            student_id={props.student_id}
-            message={message}
-            onTrashClick={props.onTrashClick}
-            lastupdate={props.lastupdate}
             isDeleting={props.isDeleting}
-            onDeleteSingleMessage={props.onDeleteSingleMessage}
             isTaiGerView={props.isTaiGerView}
+            key={message._id.toString()}
+            lastupdate={props.lastupdate}
+            message={message}
+            onDeleteSingleMessage={props.onDeleteSingleMessage}
+            onTrashClick={props.onTrashClick}
+            student_id={props.student_id}
         />
     ));
     return <>{thread}</>;

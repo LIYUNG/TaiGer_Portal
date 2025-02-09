@@ -99,11 +99,9 @@ const DiffRow = ({
                 </Typography>
             </TableCell>
             <TableCell>
-                {showToggleButton && (
-                    <Button onClick={toggleAccept}>
+                {showToggleButton ? <Button onClick={toggleAccept}>
                         {isAccepted ? <RestoreIcon /> : <ArrowBackIcon />}
-                    </Button>
-                )}
+                    </Button> : null}
             </TableCell>
             <TableCell
                 sx={
@@ -160,21 +158,21 @@ const DiffTableContent = ({
 
                 return (
                     <DiffRow
-                        key={key}
                         fieldName={key}
-                        original={originalProgram?.[key]}
                         incoming={incomingProgram?.[key]}
-                        updateField={updateField}
                         isAccepted={key in delta}
+                        key={key}
+                        original={originalProgram?.[key]}
                         showToggleButton={isModified}
+                        updateField={updateField}
                     />
                 );
             })}
             <TableRow
-                sx={{ cursor: 'pointer' }}
                 onClick={() => {
                     setHideUnaltered(!hideUnaltered);
                 }}
+                sx={{ cursor: 'pointer' }}
             >
                 <TableCell colSpan={4} style={{ textAlign: 'center' }}>
                     {hideUnaltered ? <ExpandMoreIcon /> : <ExpandLessIcon />}
@@ -247,7 +245,7 @@ const ProgramCompare = ({
                             <TableCell style={{ width: '45%' }}>
                                 {t('Original')}
                             </TableCell>
-                            <TableCell></TableCell>
+                            <TableCell />
                             <TableCell style={{ width: '45%' }}>
                                 {t('Changed to')}
                             </TableCell>
@@ -255,19 +253,19 @@ const ProgramCompare = ({
                     </TableHead>
                     <TableBody>
                         <DiffTableContent
-                            originalProgram={originalProgram}
-                            incomingProgram={incomingProgram}
-                            showOnlyModified={true}
                             delta={delta}
+                            incomingProgram={incomingProgram}
+                            originalProgram={originalProgram}
                             setDelta={setDelta}
+                            showOnlyModified={true}
                         />
                     </TableBody>
                 </Table>
             </TableContainer>
             <Button
                 color="primary"
-                onClick={submitChanges}
                 disabled={Object.keys(delta).length === 0}
+                onClick={submitChanges}
             >
                 {t('Submit', { ns: 'common' })}
             </Button>

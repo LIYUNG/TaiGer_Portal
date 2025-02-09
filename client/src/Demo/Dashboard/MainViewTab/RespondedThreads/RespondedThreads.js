@@ -6,7 +6,7 @@ import { isProgramDecided } from '@taiger-common/core';
 import DEMO from '../../../../store/constant';
 import { convertDate } from '../../../../utils/contants';
 
-function RespondedThreads(props) {
+const RespondedThreads = (props) => {
     var unread_general_generaldocs;
     var unread_applications_docthread;
 
@@ -22,16 +22,15 @@ function RespondedThreads(props) {
                 <TableRow key={i}>
                     {!generaldocs_threads.isFinalVersion &&
                         generaldocs_threads.latest_message_left_by_id ===
-                            props.student._id.toString() && (
-                            <>
+                            props.student._id.toString() ? <>
                                 <TableCell>
                                     <Link
-                                        underline="hover"
+                                        component={LinkDom}
                                         to={DEMO.DOCUMENT_MODIFICATION_LINK(
                                             generaldocs_threads.doc_thread_id
                                                 ._id
                                         )}
-                                        component={LinkDom}
+                                        underline="hover"
                                     >
                                         {
                                             generaldocs_threads.doc_thread_id
@@ -43,8 +42,7 @@ function RespondedThreads(props) {
                                     {' '}
                                     {convertDate(generaldocs_threads.updatedAt)}
                                 </TableCell>
-                            </>
-                        )}
+                            </> : null}
                 </TableRow>
             )
         );
@@ -57,16 +55,15 @@ function RespondedThreads(props) {
                             {!application_doc_thread.isFinalVersion &&
                                 application_doc_thread.latest_message_left_by_id ===
                                     props.student._id.toString() &&
-                                isProgramDecided(application) && (
-                                    <>
+                                isProgramDecided(application) ? <>
                                         <TableCell>
                                             <Link
-                                                underline="hover"
+                                                component={LinkDom}
                                                 to={DEMO.DOCUMENT_MODIFICATION_LINK(
                                                     application_doc_thread
                                                         .doc_thread_id._id
                                                 )}
-                                                component={LinkDom}
+                                                underline="hover"
                                             >
                                                 {
                                                     application_doc_thread
@@ -86,8 +83,7 @@ function RespondedThreads(props) {
                                                 application_doc_thread.updatedAt
                                             )}
                                         </TableCell>
-                                    </>
-                                )}
+                                    </> : null}
                         </TableRow>
                     )
                 )

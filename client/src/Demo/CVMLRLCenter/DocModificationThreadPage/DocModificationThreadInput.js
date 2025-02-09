@@ -60,8 +60,7 @@ const ProgressButton = ({
     ...buttonProps
 }) => {
     return (
-        <>
-            <Button {...buttonProps} onClick={onClick}>
+        <Button {...buttonProps} onClick={onClick}>
                 {isProgress ? (
                     <>
                         <CircularProgress
@@ -74,7 +73,6 @@ const ProgressButton = ({
                     label
                 )}
             </Button>
-        </>
     );
 };
 
@@ -93,16 +91,14 @@ const LastModifiedText = ({ updatedAt, isFinalVersion }) => {
                     <Typography variant="body2">
                         Last Modified: <strong>{convertDate(updatedAt)}</strong>
                     </Typography>
-                    {isFinalVersion && (
-                        <Chip color="info" size="medium" label="Final" />
-                    )}
+                    {isFinalVersion ? <Chip color="info" label="Final" size="medium" /> : null}
                 </Box>
             ) : (
                 <Chip
                     color="secondary"
-                    variant="outlined"
-                    size="small"
                     label="New"
+                    size="small"
+                    variant="outlined"
                 />
             )}
         </>
@@ -131,21 +127,20 @@ const SurveyForm = ({
 
     return (
         <Box>
-            {title && (
-                <>
+            {title ? <>
                     <Box
+                        onClick={handleTitleClick}
                         sx={{
                             display: 'flex',
                             alignItems: 'center',
                             cursor: 'pointer'
                         }}
-                        onClick={handleTitleClick}
                     >
                         <Grid
-                            container
-                            sx={{ gap: 1 }}
-                            justifyContent="space-between"
                             alignItems="center"
+                            container
+                            justifyContent="space-between"
+                            sx={{ gap: 1 }}
                         >
                             <Grid item>
                                 <IconButton onClick={handleTitleClick}>
@@ -159,16 +154,15 @@ const SurveyForm = ({
                             <Grid item>
                                 <Typography variant="h5">{title}</Typography>
                             </Grid>
-                            {showEditButton && (
-                                <Grid item>
+                            {showEditButton ? <Grid item>
                                     <Button
-                                        size="small"
                                         onClick={(event) => {
                                             event.stopPropagation();
                                             setEditMode(
                                                 (prevMode) => !prevMode
                                             );
                                         }}
+                                        size="small"
                                     >
                                         <EditIcon
                                             color={
@@ -179,28 +173,24 @@ const SurveyForm = ({
                                             fontSize="small"
                                         />
                                     </Button>
-                                </Grid>
-                            )}
+                                </Grid> : null}
                             <Grid item sx={{ marginLeft: 'auto' }}>
                                 <LastModifiedText
-                                    updatedAt={surveyInput?.updatedAt}
                                     isFinalVersion={surveyInput?.isFinalVersion}
+                                    updatedAt={surveyInput?.updatedAt}
                                 />
                             </Grid>
                         </Grid>
                     </Box>
                     <Divider />
                     <Box marginTop={2} />
-                </>
-            )}
-            {!title && (
-                <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
+                </> : null}
+            {!title ? <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
                     <LastModifiedText
-                        updatedAt={surveyInput?.updatedAt}
                         isFinalVersion={surveyInput?.isFinalVersion}
+                        updatedAt={surveyInput?.updatedAt}
                     />
-                </Box>
-            )}
+                </Box> : null}
             <Collapse in={collapseOpen}>
                 <Grid container sx={{ gap: 1 }}>
                     {surveyInput.surveyContent.map((questionItem, index) => (
@@ -213,21 +203,21 @@ const SurveyForm = ({
                             <FormControl fullWidth>
                                 <FormLabel>{questionItem.question}</FormLabel>
                                 <TextField
-                                    inputProps={{
-                                        id: questionItem.questionId,
-                                        survey: surveyType
-                                    }}
-                                    key={index}
-                                    value={questionItem.answer}
-                                    placeholder={questionItem.placeholder}
-                                    multiline
-                                    rows={type2rows[questionItem.type] || 3}
-                                    onChange={onChange}
                                     disabled={
                                         surveyInput?.isFinalVersion ||
                                         disableEdit ||
                                         !editMode
                                     }
+                                    inputProps={{
+                                        id: questionItem.questionId,
+                                        survey: surveyType
+                                    }}
+                                    key={index}
+                                    multiline
+                                    onChange={onChange}
+                                    placeholder={questionItem.placeholder}
+                                    rows={type2rows[questionItem.type] || 3}
+                                    value={questionItem.answer}
                                 />
                             </FormControl>
                         </Grid>
@@ -247,28 +237,28 @@ const InputGenerator = ({
 }) => {
     return (
         <>
-            <Typography variant="h5" gutterBottom>
+            <Typography gutterBottom variant="h5">
                 GPT Document Generation
             </Typography>
             <Divider />
             <Box marginTop={2} />
             <Grid container spacing={2}>
-                <Grid item xs={12} md={2}>
+                <Grid item md={2} xs={12}>
                     <Grid container spacing={1}>
                         <Grid item xs={12}>
                             <FormControl>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            name="useProgramRequirementData"
-                                            type="checkbox"
                                             checked={isChecked}
+                                            name="useProgramRequirementData"
                                             onChange={onChange}
                                             sx={{
                                                 '& .MuiSvgIcon-root': {
                                                     fontSize: '1.5rem'
                                                 }
                                             }}
+                                            type="checkbox"
                                         />
                                     }
                                     label="Use program's requirement"
@@ -281,13 +271,13 @@ const InputGenerator = ({
                                     Output language
                                 </InputLabel>
                                 <Select
-                                    labelId="output-lang-label"
+                                    defaultValue=""
+                                    id="output-lang-select"
                                     input={
                                         <OutlinedInput label="Output language" />
                                     }
-                                    id="output-lang-select"
+                                    labelId="output-lang-label"
                                     name="outputLanguage"
-                                    defaultValue=""
                                     onChange={onChange}
                                 >
                                     <MenuItem value="English">English</MenuItem>
@@ -302,11 +292,11 @@ const InputGenerator = ({
                                     GPT Model
                                 </InputLabel>
                                 <Select
-                                    labelId="gpt-model-label"
-                                    input={<OutlinedInput label="GPT Model" />}
-                                    id="gpt-model-select"
-                                    name="gptModel"
                                     defaultValue=""
+                                    id="gpt-model-select"
+                                    input={<OutlinedInput label="GPT Model" />}
+                                    labelId="gpt-model-label"
+                                    name="gptModel"
                                     onChange={onChange}
                                 >
                                     <MenuItem value="gpt-3.5-turbo">
@@ -320,15 +310,15 @@ const InputGenerator = ({
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={12} md={5}>
+                <Grid item md={5} xs={12}>
                     <FormControl fullWidth>
                         <FormLabel>Additional requirement</FormLabel>
                         <TextField
                             id="additional-requirement"
+                            multiline
                             name="additionalPrompt"
                             onChange={onChange}
                             placeholder="The length should be within 10000 characters / words, paragraph structure, etc."
-                            multiline
                             rows={5}
                         />
                     </FormControl>
@@ -336,28 +326,26 @@ const InputGenerator = ({
 
                 <Grid item xs={12}>
                     <ProgressButton
-                        size="small"
                         color="primary"
-                        variant="contained"
                         disabled={isGenerating}
-                        onClick={onGenerate}
                         isProgress={isGenerating}
                         label={!data ? 'Generate' : 'Regenerate'}
+                        onClick={onGenerate}
                         progressLabel="Generating"
+                        size="small"
+                        variant="contained"
                     />
                 </Grid>
 
                 <Grid item xs={12}>
-                    {(!isGenerating || data) && (
-                        <LinkableNewlineText text={data} />
-                    )}
+                    {(!isGenerating || data) ? <LinkableNewlineText text={data} /> : null}
                 </Grid>
             </Grid>
         </>
     );
 };
 
-function DocModificationThreadInput() {
+const DocModificationThreadInput = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const { documentsthreadId } = useParams();
@@ -693,29 +681,29 @@ function DocModificationThreadInput() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                         thread?.student_id?._id.toString(),
                         DEMO.CVMLRL_HASH
                     )}`}
+                    underline="hover"
                 >
                     {student_name}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DOCUMENT_MODIFICATION_LINK(thread?._id.toString())}`}
+                    underline="hover"
                 >
                     {docName}
                     {' Discussion thread'}
@@ -724,25 +712,21 @@ function DocModificationThreadInput() {
                 <Typography>{t('Survey')}</Typography>
             </Breadcrumbs>
 
-            {!isLoaded && <Loading />}
-            {docModificationThreadInputState.res_modal_status >= 400 && (
-                <ModalMain
+            {!isLoaded ? <Loading /> : null}
+            {docModificationThreadInputState.res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={
-                        docModificationThreadInputState.res_modal_status
-                    }
                     res_modal_message={
                         docModificationThreadInputState.res_modal_message
                     }
-                />
-            )}
+                    res_modal_status={
+                        docModificationThreadInputState.res_modal_status
+                    }
+                /> : null}
 
             <Card sx={{ p: 2, mb: 2 }}>
                 <Typography fontWeight="bold">Requirements:</Typography>
                 {thread?.program_id ? (
-                    <>
-                        <LinkableNewlineText text={getRequirement(thread)} />
-                    </>
+                    <LinkableNewlineText text={getRequirement(thread)} />
                 ) : (
                     <Typography>{t('No', { ns: 'common' })}</Typography>
                 )}
@@ -761,59 +745,52 @@ function DocModificationThreadInput() {
                         </Typography>
                     </Grid>
 
-                    {showUnchangeAlert && (
-                        <Grid item xs={12}>
+                    {showUnchangeAlert ? <Grid item xs={12}>
                             <Alert
                                 id="alert-message"
                                 severity="error"
                                 sx={{ mt: 2 }}
                             >
-                                <Typography variant="body1" fontWeight="bold">
+                                <Typography fontWeight="bold" variant="body1">
                                     {t(
                                         'No changes made. Please make changes before submitting.'
                                     )}
                                 </Typography>
                             </Alert>
-                        </Grid>
-                    )}
+                        </Grid> : null}
 
-                    {Object.keys(surveyInputs?.general).length > 0 && (
-                        <Grid item xs={12}>
+                    {Object.keys(surveyInputs?.general).length > 0 ? <Grid item xs={12}>
                             <SurveyForm
-                                title={thread?.program_id ? 'General' : null}
-                                surveyInput={surveyInputs.general}
-                                surveyType="general"
                                 disableEdit={isFinalLocked || isFinalVersion}
                                 isCollapse={!surveyInputs?.general?.updatedAt}
                                 onChange={onChange}
-                            ></SurveyForm>
-                        </Grid>
-                    )}
+                                surveyInput={surveyInputs.general}
+                                surveyType="general"
+                                title={thread?.program_id ? 'General' : null}
+                             />
+                        </Grid> : null}
 
                     {thread?.program_id &&
-                        Object.keys(surveyInputs?.specific).length > 0 && (
-                            <Grid item xs={12}>
+                        Object.keys(surveyInputs?.specific).length > 0 ? <Grid item xs={12}>
                                 <SurveyForm
-                                    title="Program"
-                                    surveyInput={surveyInputs.specific}
-                                    surveyType="specific"
                                     disableEdit={isFinalVersion}
                                     onChange={onChange}
-                                ></SurveyForm>
-                            </Grid>
-                        )}
+                                    surveyInput={surveyInputs.specific}
+                                    surveyType="specific"
+                                    title="Program"
+                                 />
+                            </Grid> : null}
 
                     <Grid item xs={12}>
                         <FormControl>
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        name="isFinalVersion"
-                                        type="checkbox"
                                         checked={
                                             isFinalLocked || isFinalVersion
                                         }
                                         disabled={isFinalLocked}
+                                        name="isFinalVersion"
                                         onChange={(e) => {
                                             setIsChanged({
                                                 general: true,
@@ -821,6 +798,7 @@ function DocModificationThreadInput() {
                                             });
                                             setIsFinalVersion(e.target.checked);
                                         }}
+                                        type="checkbox"
                                     />
                                 }
                                 label="Is Final Version?"
@@ -829,24 +807,22 @@ function DocModificationThreadInput() {
                     </Grid>
 
                     <Grid
-                        item
-                        xs={12}
-                        sx={{ gap: 1 }}
                         container
+                        item
                         justifyContent="flex-start"
+                        sx={{ gap: 1 }}
+                        xs={12}
                     >
-                        {!isFinalLocked && (
-                            <ProgressButton
-                                label="Submit"
-                                isProgress={isSubmitting}
-                                size="small"
-                                variant="contained"
+                        {!isFinalLocked ? <ProgressButton
                                 color="primary"
                                 disabled={isSubmitting}
+                                isProgress={isSubmitting}
+                                label="Submit"
                                 onClick={onSubmit}
-                            />
-                        )}
-                        <LinkDom to=".." relative="path">
+                                size="small"
+                                variant="contained"
+                            /> : null}
+                        <LinkDom relative="path" to="..">
                             <Button color="secondary" variant="contained">
                                 Back
                             </Button>
@@ -856,20 +832,18 @@ function DocModificationThreadInput() {
             </Card>
 
             {/* GPT input generation -> only for internal users */}
-            {is_TaiGer_role(user) && (
-                <Card sx={{ p: 2, mb: 2 }}>
+            {is_TaiGer_role(user) ? <Card sx={{ p: 2, mb: 2 }}>
                     <InputGenerator
+                        data={gptData}
                         isChecked={
                             editorRequirements?.useProgramRequirementData ||
                             false
                         }
-                        data={gptData}
                         isGenerating={isGenerating}
                         onChange={onChangeEditorRequirements}
                         onGenerate={onGenerate}
                     />
-                </Card>
-            )}
+                </Card> : null}
         </Box>
     );
 }

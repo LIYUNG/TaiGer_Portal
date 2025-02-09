@@ -23,23 +23,22 @@ import {
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 
-function VPDToSubmitTasks(props) {
+const VPDToSubmitTasks = (props) => {
     const { t } = useTranslation();
     return (
         <>
             {/* check uni-assist */}
-            {!is_all_uni_assist_vpd_uploaded(props.student) &&
-                props.student.applications.map(
+            {!is_all_uni_assist_vpd_uploaded(props.student) ? props.student.applications.map(
                     (application, i) =>
                         isUniAssistVPDNeeded(application) && (
                             <TableRow key={i}>
                                 <TableCell>
                                     <Link
+                                        component={LinkDom}
                                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                             props.student._id.toString(),
                                             DEMO.UNIASSIST_HASH
                                         )}`}
-                                        component={LinkDom}
                                     >
                                         {props.student.firstname}{' '}
                                         {props.student.lastname}
@@ -48,14 +47,12 @@ function VPDToSubmitTasks(props) {
                                 {is_uni_assist_paid_and_docs_uploaded(
                                     application
                                 ) ? (
-                                    <>
-                                        <TableCell className="text-warning">
+                                    <TableCell className="text-warning">
                                             {t('Paid', { ns: 'common' })},{' '}
                                             {t('Waiting VPD result', {
                                                 ns: 'common'
                                             })}
                                         </TableCell>
-                                    </>
                                 ) : (
                                     <TableCell>
                                         <Typography color="text.secondary">
@@ -77,12 +74,12 @@ function VPDToSubmitTasks(props) {
                                 </TableCell>
                             </TableRow>
                         )
-                )}
+                ) : null}
         </>
     );
 }
 
-function VPDToSubmitTasksCard(props) {
+const VPDToSubmitTasksCard = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const vpd_to_submit_tasks = props.students

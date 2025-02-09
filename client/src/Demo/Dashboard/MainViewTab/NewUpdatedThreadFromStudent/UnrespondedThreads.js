@@ -10,7 +10,7 @@ import {
 } from '../../../Utils/checking-functions';
 import { useAuth } from '../../../../App/layout/AuthProvider';
 
-function UnrespondedThreads(props) {
+const UnrespondedThreads = (props) => {
     const { user } = useAuth();
     var unread_general_generaldocs = 0;
     var unread_applications_docthread = 0;
@@ -30,10 +30,11 @@ function UnrespondedThreads(props) {
                         generaldocs_threads.latest_message_left_by_id !==
                             user._id.toString() &&
                         generaldocs_threads.latest_message_left_by_id !==
-                            '' && (
-                            <>
+                            '' ? <>
                                 <td>
                                     <Link
+                                        className="text-info"
+                                        style={{ textDecoration: 'none' }}
                                         to={
                                             is_TaiGer_Student(user) ||
                                             is_TaiGer_Guest(user)
@@ -43,8 +44,6 @@ function UnrespondedThreads(props) {
                                                       DEMO.CVMLRL_HASH
                                                   )}`
                                         }
-                                        className="text-info"
-                                        style={{ textDecoration: 'none' }}
                                     >
                                         {props.student.firstname}
                                         {' - '}
@@ -53,12 +52,12 @@ function UnrespondedThreads(props) {
                                 </td>
                                 <td>
                                     <Link
+                                        className="text-info"
+                                        style={{ textDecoration: 'none' }}
                                         to={DEMO.DOCUMENT_MODIFICATION_LINK(
                                             generaldocs_threads.doc_thread_id
                                                 ._id
                                         )}
-                                        className="text-info"
-                                        style={{ textDecoration: 'none' }}
                                     >
                                         {
                                             generaldocs_threads.doc_thread_id
@@ -71,8 +70,7 @@ function UnrespondedThreads(props) {
                                     {' '}
                                     {convertDate(generaldocs_threads.updatedAt)}
                                 </td>
-                            </>
-                        )}
+                            </> : null}
                 </tr>
             )
         );
@@ -86,10 +84,13 @@ function UnrespondedThreads(props) {
                                 application_doc_thread.latest_message_left_by_id !==
                                     user._id.toString() &&
                                 application_doc_thread.latest_message_left_by_id !==
-                                    '' && (
-                                    <>
+                                    '' ? <>
                                         <td>
                                             <Link
+                                                className="text-info"
+                                                style={{
+                                                    textDecoration: 'none'
+                                                }}
                                                 to={
                                                     is_TaiGer_Student(user) ||
                                                     is_TaiGer_Guest(user)
@@ -99,10 +100,6 @@ function UnrespondedThreads(props) {
                                                               DEMO.CVMLRL_HASH
                                                           )}`
                                                 }
-                                                className="text-info"
-                                                style={{
-                                                    textDecoration: 'none'
-                                                }}
                                             >
                                                 {props.student.firstname}
                                                 {' - '}
@@ -111,14 +108,14 @@ function UnrespondedThreads(props) {
                                         </td>
                                         <td>
                                             <Link
-                                                to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                                                    application_doc_thread
-                                                        .doc_thread_id._id
-                                                )}
                                                 className="text-info"
                                                 style={{
                                                     textDecoration: 'none'
                                                 }}
+                                                to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                                                    application_doc_thread
+                                                        .doc_thread_id._id
+                                                )}
                                             >
                                                 {
                                                     application_doc_thread
@@ -145,8 +142,7 @@ function UnrespondedThreads(props) {
                                                 application_doc_thread.updatedAt
                                             )}
                                         </td>
-                                    </>
-                                )}
+                                    </> : null}
                         </tr>
                     )
                 )

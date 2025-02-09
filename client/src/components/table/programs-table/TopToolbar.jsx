@@ -16,44 +16,44 @@ export const TopToolbar = ({ table, toolbarStyle, onAssignClick }) => {
             <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 <MRT_GlobalFilterTextField table={table} />
                 <MRT_ToggleFiltersButton
-                    table={table}
                     sx={{ height: '40px' }}
+                    table={table}
                 />
             </Box>
-            <Stack direction="row" spacing={1} justifyContent="flex-end">
+            <Stack direction="row" justifyContent="flex-end" spacing={1}>
                 <Button
                     color="success"
-                    variant="contained"
-                    onClick={onAssignClick}
                     disabled={table.getSelectedRowModel().rows?.length === 0}
+                    onClick={onAssignClick}
                     startIcon={<PersonAddIcon />}
                     sx={{ mr: 1 }}
+                    variant="contained"
                 >
                     {t('Assign', { ns: 'common' })}
                 </Button>
                 <Button
-                    variant="outlined"
                     color="primary"
                     component={LinkDom}
-                    to={DEMO.PROGRAM_ANALYSIS}
                     sx={{ mr: 1 }}
+                    to={DEMO.PROGRAM_ANALYSIS}
+                    variant="outlined"
                 >
                     {t('Program Requirements', { ns: 'common' })}
                 </Button>
                 <Button
-                    variant="outlined"
                     color="primary"
                     component={LinkDom}
-                    to={DEMO.SCHOOL_CONFIG}
                     sx={{ mr: 1 }}
+                    to={DEMO.SCHOOL_CONFIG}
+                    variant="outlined"
                 >
                     {t('School Configuration', { ns: 'common' })}
                 </Button>
                 <Button
                     color="primary"
-                    variant="contained"
                     component={LinkDom}
                     to={DEMO.NEW_PROGRAM}
+                    variant="contained"
                 >
                     {t('Add New Program')}
                 </Button>

@@ -44,7 +44,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useSnackBar } from '../../contexts/use-snack-bar';
 import { queryClient } from '../../api/client';
 
-function Message(props) {
+const Message = (props) => {
     // const onlyWidth = useWindowWidth();
     const { user } = useAuth();
     const { t } = useTranslation();
@@ -198,24 +198,23 @@ function Message(props) {
                 }}
             >
                 <AccordionSummary
-                    id={`${props.idx}`}
                     aria-controls={'accordion' + props.idx}
                     expandIcon={<ExpandMoreIcon />}
+                    id={`${props.idx}`}
                 >
                     <Avatar {...stringAvatar(full_name)} />
                     <Box style={{ marginLeft: '10px', flex: 1 }}>
                         <b style={{ cursor: 'pointer' }}>{full_name}</b>
                         <span style={{ display: 'flex', float: 'right' }}>
                             {convertDate(props.message.createdAt)}
-                            {editable && (
-                                <>
+                            {editable ? <>
                                     <IconButton
                                         onClick={() => props.onEditMode()}
                                     >
                                         <EditIcon
-                                            title="Edit this message"
                                             fontSize="small"
                                             style={{ cursor: 'pointer' }}
+                                            title="Edit this message"
                                         />
                                     </IconButton>
                                     <IconButton
@@ -230,12 +229,11 @@ function Message(props) {
                                     >
                                         <CloseIcon
                                             fontSize="small"
-                                            title="Delete this message and file"
                                             style={{ cursor: 'pointer' }}
+                                            title="Delete this message and file"
                                         />
                                     </IconButton>
-                                </>
-                            )}
+                                </> : null}
                         </span>
                     </Box>
                 </AccordionSummary>
@@ -249,12 +247,12 @@ function Message(props) {
                         }}
                     >
                         <EditorSimple
-                            holder={`${props.message._id.toString()}`}
-                            readOnly={true}
-                            imageEnable={false}
-                            handleClickSave={props.handleClickSave}
-                            editorState={messageState.editorState}
                             defaultHeight={0}
+                            editorState={messageState.editorState}
+                            handleClickSave={props.handleClickSave}
+                            holder={`${props.message._id.toString()}`}
+                            imageEnable={false}
+                            readOnly={true}
                         />
                         {props.message?.files.map((file, i) => (
                             <Card key={i} sx={{ p: 1 }}>
@@ -271,12 +269,12 @@ function Message(props) {
                                         underline="hover"
                                     >
                                         <svg
-                                            width="24"
+                                            className="mx-2"
+                                            fill="none"
                                             height="24"
                                             viewBox="0 0 24 24"
-                                            fill="none"
+                                            width="24"
                                             xmlns="http://www.w3.org/2000/svg"
-                                            className="mx-2"
                                         >
                                             <FileIcon
                                                 extension={file.name
@@ -289,18 +287,18 @@ function Message(props) {
                                         </svg>
                                         {file.name}
                                         <svg
-                                            width="24"
+                                            fill="none"
                                             height="24"
                                             viewBox="0 0 24 24"
-                                            fill="none"
+                                            width="24"
                                             xmlns="http://www.w3.org/2000/svg"
                                         >
                                             <path
                                                 d="m7 10 4.86 4.86c.08.08.2.08.28 0L17 10"
                                                 stroke="#000"
-                                                strokeWidth="2"
                                                 strokeLinecap="round"
-                                            ></path>
+                                                strokeWidth="2"
+                                             />
                                         </svg>
                                     </Typography>
                                 </span>
@@ -308,12 +306,11 @@ function Message(props) {
                         ))}
                     </Box>
                     <Box
+                        alignItems="center"
                         display="flex"
                         justifyContent="space-between"
-                        alignItems="center"
                     >
-                        {is_TaiGer_AdminAgent(user) && (
-                            <AvatarGroup>
+                        {is_TaiGer_AdminAgent(user) ? <AvatarGroup>
                                 {props.message?.readBy
                                     ?.filter(
                                         (usr) =>
@@ -328,13 +325,14 @@ function Message(props) {
                                     )
                                     .map((usr) => (
                                         <Tooltip
-                                            title={`Read by ${usr?.firstname} ${usr?.lastname} at ${convertDate(props.message.timeStampReadBy?.[usr._id?.toString()])}`}
                                             key={usr._id?.toString()}
+                                            title={`Read by ${usr?.firstname} ${usr?.lastname} at ${convertDate(props.message.timeStampReadBy?.[usr._id?.toString()])}`}
                                         >
                                             <Avatar
                                                 {...stringAvatar(
                                                     `${usr?.firstname} ${usr?.lastname}`
                                                 )}
+                                                size="small"
                                                 sx={{
                                                     ...stringAvatar(
                                                         `${usr?.firstname} ${usr?.lastname}`
@@ -342,26 +340,23 @@ function Message(props) {
                                                     width: 8,
                                                     height: 8 // Override the size
                                                 }}
-                                                size="small"
                                             />
                                         </Tooltip>
                                     ))}
-                            </AvatarGroup>
-                        )}
+                            </AvatarGroup> : null}
                         <Stack
+                            alignItems="center"
                             direction="row"
                             justifyContent="flex-end"
-                            alignItems="center"
                         >
                             {!is_TaiGer_Student(user) &&
-                                is_TaiGer_Student(props.message.user_id) && (
-                                    <>
-                                        {messageState.ignore_message && (
-                                            <Avatar
+                                is_TaiGer_Student(props.message.user_id) ? <>
+                                        {messageState.ignore_message ? <Avatar
                                                 key={user._id?.toString()}
                                                 {...stringAvatar(
                                                     `${messageState.ignoredMessageBy?.firstname} ${messageState.ignoredMessageBy?.lastname}`
                                                 )}
+                                                size="small"
                                                 sx={{
                                                     ...stringAvatar(
                                                         `${messageState.ignoredMessageBy?.firstname} ${messageState.ignoredMessageBy?.lastname}`
@@ -369,10 +364,8 @@ function Message(props) {
                                                     width: 8,
                                                     height: 8 // Override the size
                                                 }}
-                                                size="small"
                                                 title={`Ignored by ${messageState.ignoredMessageBy?.firstname} ${messageState.ignoredMessageBy?.lastname} at ${convertDate(messageState.ignoredMessageUpdatedAt)}`}
-                                            />
-                                        )}
+                                            /> : null}
                                         <FormGroup>
                                             <FormControlLabel
                                                 control={
@@ -389,17 +382,16 @@ function Message(props) {
                                                 labelPlacement="start"
                                             />
                                         </FormGroup>
-                                    </>
-                                )}
+                                    </> : null}
                         </Stack>
                     </Box>
                 </AccordionDetails>
             </Accordion>
             {/* TODOL consider to move it to the parent! It render many time! as message increase */}
             <Dialog
-                open={messageState.deleteMessageModalShow}
-                onClose={onHidedeleteMessageModalShow}
                 aria-labelledby="contained-modal-title-vcenter"
+                onClose={onHidedeleteMessageModalShow}
+                open={messageState.deleteMessageModalShow}
             >
                 <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                 <DialogContent>
@@ -411,27 +403,27 @@ function Message(props) {
                 <DialogActions>
                     <Button
                         disabled={props.isDeleting}
-                        variant="contained"
                         onClick={onDeleteSingleMessage}
+                        variant="contained"
                     >
                         {props.isDeleting
                             ? t('Pending', { ns: 'common' })
                             : t('Delete', { ns: 'common' })}
                     </Button>
                     <Button
-                        variant="outlined"
                         onClick={onHidedeleteMessageModalShow}
+                        variant="outlined"
                     >
                         {t('Cancel', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>
             <Dialog
-                fullWidth={true}
-                maxWidth={'xl'}
-                open={messageState.previewModalShow}
-                onClose={closePreviewWindow}
                 aria-labelledby="contained-modal-title-vcenter2"
+                fullWidth={true}
+                maxWidth="xl"
+                onClose={closePreviewWindow}
+                open={messageState.previewModalShow}
             >
                 <DialogTitle>{messageState.filePath}</DialogTitle>
                 <FilePreview
@@ -439,30 +431,28 @@ function Message(props) {
                     path={messageState.fileName}
                 />
                 <DialogContent>
-                    {props.path && props.path.split('.')[1] !== 'pdf' && (
-                        <a
-                            href={`${BASE_URL}}${messageState.filePath}`}
+                    {props.path && props.path.split('.')[1] !== 'pdf' ? <a
                             download
-                            target="_blank"
+                            href={`${BASE_URL}}${messageState.filePath}`}
                             rel="noopener noreferrer"
+                            target="_blank"
                         >
                             <Button
                                 color="primary"
-                                variant="contained"
                                 size="small"
-                                title="Download"
                                 startIcon={<FileDownloadIcon />}
+                                title="Download"
+                                variant="contained"
                             >
                                 {t('Download', { ns: 'common' })}
                             </Button>
-                        </a>
-                    )}
+                        </a> : null}
                 </DialogContent>
                 <DialogActions>
                     <Button
+                        onClick={closePreviewWindow}
                         size="small"
                         variant="outlined"
-                        onClick={closePreviewWindow}
                     >
                         {!messageState.isLoaded ? (
                             <CircularProgress size={24} />

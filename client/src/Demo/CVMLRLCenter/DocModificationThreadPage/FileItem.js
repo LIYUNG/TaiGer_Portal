@@ -5,7 +5,7 @@ import { FileIcon, defaultStyles } from 'react-file-icon';
 
 import { BASE_URL } from '../../../api/request';
 
-function FileItem(props) {
+const FileItem = (props) => {
     const [fileItemState, setFileItemState] = useState({
         editorState: null,
         ConvertedContent: '',
@@ -30,21 +30,21 @@ function FileItem(props) {
         <Card key={i} sx={{ p: 1 }}>
             <span>
                 <Link
-                    underline="hover"
+                    component={LinkDom}
+                    target="_blank"
                     to={`${BASE_URL}/api/document-threads/${file.path.replace(
                         /\\/g,
                         '/'
                     )}`}
-                    component={LinkDom}
-                    target="_blank"
+                    underline="hover"
                 >
                     <svg
-                        width="24"
+                        className="mx-2"
+                        fill="none"
                         height="24"
                         viewBox="0 0 24 24"
-                        fill="none"
+                        width="24"
                         xmlns="http://www.w3.org/2000/svg"
-                        className="mx-2"
                     >
                         <FileIcon
                             extension={file.name.split('.').pop()}
@@ -53,18 +53,18 @@ function FileItem(props) {
                     </svg>
                     {file.name}
                     <svg
-                        width="24"
+                        fill="none"
                         height="24"
                         viewBox="0 0 24 24"
-                        fill="none"
+                        width="24"
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <path
                             d="m7 10 4.86 4.86c.08.08.2.08.28 0L17 10"
                             stroke="#000"
-                            strokeWidth="2"
                             strokeLinecap="round"
-                        ></path>
+                            strokeWidth="2"
+                         />
                     </svg>
                 </Link>
                 by {props.message.user_id.firstname}{' '}

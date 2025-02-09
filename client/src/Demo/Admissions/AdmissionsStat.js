@@ -15,7 +15,7 @@ CustomTabPanel.propTypes = {
     value: PropTypes.number.isRequired
 };
 
-function AdmissionsStat(props) {
+const AdmissionsStat = (props) => {
     const result = props.result;
     const { t } = useTranslation();
 
@@ -28,10 +28,10 @@ function AdmissionsStat(props) {
                 const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.id)}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>
@@ -46,10 +46,10 @@ function AdmissionsStat(props) {
                 const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.id)}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>
@@ -89,9 +89,7 @@ function AdmissionsStat(props) {
     );
 
     return (
-        <>
-            <MuiDataGrid rows={result} columns={memoizedColumns} />
-        </>
+        <MuiDataGrid columns={memoizedColumns} rows={result} />
     );
 }
 

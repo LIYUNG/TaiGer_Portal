@@ -74,8 +74,7 @@ export const AssignProgramsToStudentDialog = ({
     }
 
     return (
-        <>
-            <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+        <Dialog fullWidth maxWidth="sm" onClose={onClose} open={open}>
                 <DialogTitle>
                     {t('Selected Programs', { ns: 'programList' })}
                 </DialogTitle>
@@ -91,18 +90,14 @@ export const AssignProgramsToStudentDialog = ({
                         )
                     )}
                     ---
-                    {isLoading && <CircularProgress />}
-                    {isQueryError && (
-                        <Typography color="error">
+                    {isLoading ? <CircularProgress /> : null}
+                    {isQueryError ? <Typography color="error">
                             An error occurred: {error.message}
-                        </Typography>
-                    )}
-                    {!isLoading && !isQueryError && students && (
-                        <List dense>
+                        </Typography> : null}
+                    {!isLoading && !isQueryError && students ? <List dense>
                             {students.map((student, i) => (
-                                <ListItem key={i} divider>
+                                <ListItem divider key={i}>
                                     <FormControlLabel
-                                        label={`${student.firstname}, ${student.lastname}`}
                                         control={
                                             <Checkbox
                                                 checked={
@@ -112,23 +107,21 @@ export const AssignProgramsToStudentDialog = ({
                                                 value={student._id}
                                             />
                                         }
+                                        label={`${student.firstname}, ${student.lastname}`}
                                     />
                                 </ListItem>
                             ))}
-                        </List>
-                    )}
-                    {isMutateError && (
-                        <Typography color="error">
+                        </List> : null}
+                    {isMutateError ? <Typography color="error">
                             An error occurred: {mutateError.message}
-                        </Typography>
-                    )}
+                        </Typography> : null}
                 </DialogContent>
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         disabled={isPending || studentId === ''}
                         onClick={(e) => handleSubmit(e)}
+                        variant="contained"
                     >
                         {isPending ? (
                             <CircularProgress size={20} />
@@ -136,11 +129,10 @@ export const AssignProgramsToStudentDialog = ({
                             t('Assign', { ns: 'common' })
                         )}
                     </Button>
-                    <Button onClick={onClose} color="primary">
+                    <Button color="primary" onClick={onClose}>
                         {t('Close')}
                     </Button>
                 </DialogActions>
             </Dialog>
-        </>
     );
 };

@@ -8,7 +8,7 @@ import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '../../api/client';
 import { useSnackBar } from '../../contexts/use-snack-bar';
 
-function MessageContainer(props) {
+const MessageContainer = (props) => {
     const { user } = useAuth();
     const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
 
@@ -106,34 +106,32 @@ function MessageContainer(props) {
     return (
         <>
             {messageContainerState.isEdit ? (
-                <>
-                    <MessageEdit
-                        idx={props.idx}
-                        editorState={messageContainerState.editorState}
-                        onTrashClick={props.onTrashClick}
-                        lastupdate={props.lastupdate}
-                        isDeleting={props.isDeleting}
-                        full_name={full_name}
-                        message={props.message}
-                        editable={editable}
-                        onDeleteSingleMessage={props.onDeleteSingleMessage}
+                <MessageEdit
                         buttonDisabled={isPending}
-                        handleClickSave={updateMessage}
+                        editable={editable}
+                        editorState={messageContainerState.editorState}
+                        full_name={full_name}
                         handleCancelEdit={handleCancelEdit}
+                        handleClickSave={updateMessage}
+                        idx={props.idx}
+                        isDeleting={props.isDeleting}
                         isTaiGerView={props.isTaiGerView}
+                        lastupdate={props.lastupdate}
+                        message={props.message}
+                        onDeleteSingleMessage={props.onDeleteSingleMessage}
+                        onTrashClick={props.onTrashClick}
                     />
-                </>
             ) : (
                 <Message
                     accordionKeys={props.accordionKeys}
                     idx={props.idx}
-                    message={messageContainerState.message}
-                    onTrashClick={props.onTrashClick}
-                    lastupdate={props.lastupdate}
                     isDeleting={props.isDeleting}
+                    isTaiGerView={props.isTaiGerView}
+                    lastupdate={props.lastupdate}
+                    message={messageContainerState.message}
                     onDeleteSingleMessage={props.onDeleteSingleMessage}
                     onEditMode={onEditMode}
-                    isTaiGerView={props.isTaiGerView}
+                    onTrashClick={props.onTrashClick}
                 />
             )}
         </>

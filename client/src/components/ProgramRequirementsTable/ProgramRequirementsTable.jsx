@@ -12,8 +12,8 @@ import { PROGRAM_SUBJECTS } from '@taiger-common/core';
 import i18next from 'i18next';
 import {
     MaterialReactTable,
-    MRT_GlobalFilterTextField,
-    MRT_ToggleFiltersButton,
+    MRT_GlobalFilterTextField as MRTGlobalFilterTextField,
+    MRT_ToggleFiltersButton as MRTToggleFiltersButton,
     useMaterialReactTable
 } from 'material-react-table';
 import { useMemo, useState } from 'react';
@@ -169,8 +169,8 @@ export const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
                             alignItems: 'center'
                         }}
                     >
-                        <MRT_GlobalFilterTextField table={table} />
-                        <MRT_ToggleFiltersButton table={table} />
+                        <MRTGlobalFilterTextField table={table} />
+                        <MRTToggleFiltersButton table={table} />
                     </Box>
                     <Box
                         sx={{
@@ -181,29 +181,27 @@ export const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
                     >
                         <FormControl component="fieldset">
                             <RadioGroup
-                                row
                                 aria-label="language"
                                 name="language"
-                                value={language}
                                 onChange={handleLanguageChange}
+                                row
+                                value={language}
                             >
                                 <FormControlLabel
-                                    value="en"
                                     control={<Radio />}
                                     label="English"
+                                    value="en"
                                 />
                                 <FormControlLabel
-                                    value="zh"
                                     control={<Radio />}
                                     label="中文"
+                                    value="zh"
                                 />
                             </RadioGroup>
                         </FormControl>
                         <Box sx={{ display: 'flex', gap: '0.5rem' }}>
                             <Button
                                 color="primary"
-                                variant="contained"
-                                onClick={setModalShow2}
                                 disabled={
                                     !Object.keys(rowSelection)?.length > 0
                                 }
@@ -214,6 +212,8 @@ export const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
                                         <></>
                                     )
                                 }
+                                onClick={setModalShow2}
+                                variant="contained"
                             >
                                 {statedata.isAnalysing
                                     ? i18next.t('Analysing', { ns: 'courses' })
@@ -232,13 +232,13 @@ export const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <MaterialReactTable table={table} />
             <CourseAnalysisConfirmDialog
-                show={statedata.modalShowAssignWindow}
-                setModalHide={setModalHide}
                 data={Object.keys(rowSelection)?.map((idx) => data[idx])}
                 isButtonDisable={
                     isAnalysingV2 || !Object.keys(rowSelection)?.length > 0
                 }
                 onAnalyse={onAnalyse}
+                setModalHide={setModalHide}
+                show={statedata.modalShowAssignWindow}
             />
         </LocalizationProvider>
     );

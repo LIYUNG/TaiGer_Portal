@@ -13,7 +13,7 @@ import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 import { useTranslation } from 'react-i18next';
 
-function CVMLRLCenterAll() {
+const CVMLRLCenterAll = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [indexAllState, setIndexAllState] = useState({
@@ -76,10 +76,10 @@ function CVMLRLCenterAll() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -92,8 +92,8 @@ function CVMLRLCenterAll() {
             </Breadcrumbs>
             <CVMLRLDashboard
                 isLoaded={indexAllState.isLoaded}
-                success={indexAllState.success}
                 students={indexAllState.students}
+                success={indexAllState.success}
                 user={user}
             />
         </Box>

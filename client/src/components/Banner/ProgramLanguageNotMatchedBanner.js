@@ -9,38 +9,34 @@ import {
 } from '../../Demo/Utils/checking-functions';
 import DEMO from '../../store/constant';
 
-export default function ProgramLanguageNotMatchedBanner(props) {
-    return (
-        <>
-            {isLanguageNotMatchedInAnyProgram(props.student) && (
-                <Card sx={{ border: '4px solid red' }}>
-                    <Alert severity="warning">
-                        {i18next.t(
-                            'Programs below require the language that does not match to your background if your survey.',
-                            {
-                                ns: 'common'
-                            }
+const ProgramLanguageNotMatchedBanner = ({ student }) => {
+    return isLanguageNotMatchedInAnyProgram(student) ? (
+        <Card sx={{ border: '4px solid red' }}>
+            <Alert severity="warning">
+                {i18next.t(
+                    'Programs below require the language that does not match to your background if your survey.',
+                    {
+                        ns: 'common'
+                    }
+                )}
+                &nbsp;:&nbsp;
+            </Alert>
+            {languageNotMatchedPrograms(student)?.map((app) => (
+                <ListItem key={app.programId._id.toString()}>
+                    <Link
+                        component={LinkDom}
+                        target="_blank"
+                        to={DEMO.SINGLE_PROGRAM_LINK(
+                            app.programId._id.toString()
                         )}
-                        &nbsp;:&nbsp;
-                    </Alert>
-                    {languageNotMatchedPrograms(props.student)?.map((app) => (
-                        <ListItem key={app.programId._id.toString()}>
-                            <Link
-                                to={DEMO.SINGLE_PROGRAM_LINK(
-                                    app.programId._id.toString()
-                                )}
-                                component={LinkDom}
-                                target="_blank"
-                            >
-                                {app.programId.school}{' '}
-                                {app.programId.program_name}{' '}
-                                {app.programId.degree} {app.programId.semester}{' '}
-                                - <strong>{app.programId.lang}</strong>
-                            </Link>
-                        </ListItem>
-                    ))}
-                </Card>
-            )}
-        </>
-    );
-}
+                    >
+                        {app.programId.school} {app.programId.program_name}{' '}
+                        {app.programId.degree} {app.programId.semester} -{' '}
+                        <strong>{app.programId.lang}</strong>
+                    </Link>
+                </ListItem>
+            ))}
+        </Card>
+    ) : null;
+};
+export default ProgramLanguageNotMatchedBanner;

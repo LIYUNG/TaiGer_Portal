@@ -32,7 +32,7 @@ import DEMO from '../../../store/constant';
 import { useAuth } from '../../../components/AuthProvider';
 import { useTranslation } from 'react-i18next';
 
-function EditorMainView(props) {
+const EditorMainView = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const students_agent_editor = (
@@ -47,14 +47,14 @@ function EditorMainView(props) {
                 )
                 .map((student) => (
                     <StudentsAgentEditor
+                        isDashboard={props.isDashboard}
                         key={student._id}
-                        user={user}
                         student={student}
                         submitUpdateEditorlist={props.submitUpdateEditorlist}
-                        isDashboard={props.isDashboard}
                         updateStudentArchivStatus={
                             props.updateStudentArchivStatus
                         }
+                        user={user}
                     />
                 ))}
         </>
@@ -98,17 +98,16 @@ function EditorMainView(props) {
     );
 
     return (
-        <>
-            <Grid container spacing={2}>
-                <Grid item xs={6} md={3}>
+        <Grid container spacing={2}>
+                <Grid item md={3} xs={6}>
                     <Card sx={{ p: 2 }}>
                         <Typography>
                             {t('Action required', { ns: 'common' })}
                         </Typography>
                         <Typography variant="h6">
                             <Link
-                                to={DEMO.CV_ML_RL_CENTER_LINK}
                                 component={LinkDom}
+                                to={DEMO.CV_ML_RL_CENTER_LINK}
                                 underline="hover"
                             >
                                 <b>
@@ -121,15 +120,15 @@ function EditorMainView(props) {
                         </Typography>
                     </Card>
                 </Grid>
-                <Grid item xs={6} md={3}>
+                <Grid item md={3} xs={6}>
                     <Card sx={{ p: 2 }}>
                         <Typography>
                             {t('Follow up', { ns: 'common' })}
                         </Typography>
                         <Typography variant="h6">
                             <Link
-                                to={DEMO.CV_ML_RL_CENTER_LINK}
                                 component={LinkDom}
+                                to={DEMO.CV_ML_RL_CENTER_LINK}
                                 underline="hover"
                             >
                                 <b>
@@ -142,7 +141,7 @@ function EditorMainView(props) {
                         </Typography>
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid item md={3} xs={12}>
                     <Card sx={{ p: 2 }}>
                         <Typography>
                             {t('student-count', {
@@ -151,8 +150,8 @@ function EditorMainView(props) {
                         </Typography>
                         <Typography variant="h6">
                             <Link
-                                to={DEMO.STUDENT_APPLICATIONS_LINK}
                                 component={LinkDom}
+                                to={DEMO.STUDENT_APPLICATIONS_LINK}
                                 underline="hover"
                             >
                                 <b>
@@ -170,7 +169,7 @@ function EditorMainView(props) {
                         </Typography>
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid item md={3} xs={12}>
                     <Card sx={{ p: 2 }}>
                         <Typography>XXXXXX</Typography>
                         <Typography variant="h6">
@@ -179,8 +178,7 @@ function EditorMainView(props) {
                     </Card>
                 </Grid>
                 {(!does_student_have_editors(props.students) ||
-                    !does_essay_have_writers(props.essayDocumentThreads)) && (
-                    <Grid item xs={12} md={12}>
+                    !does_essay_have_writers(props.essayDocumentThreads)) ? <Grid item md={12} xs={12}>
                         <Card sx={{ p: 2 }}>
                             <Typography fontWeight="bold">
                                 {t('To Do Tasks', { ns: 'common' })}{' '}
@@ -200,8 +198,8 @@ function EditorMainView(props) {
                                     <TableRow>
                                         <TableCell>
                                             <Link
-                                                to={`${DEMO.ASSIGN_EDITOR_LINK}`}
                                                 component={LinkDom}
+                                                to={`${DEMO.ASSIGN_EDITOR_LINK}`}
                                             >
                                                 {t('Assign Editors')}
                                             </Link>
@@ -211,18 +209,17 @@ function EditorMainView(props) {
                                                 ns: 'common'
                                             })}
                                         </TableCell>
-                                        <TableCell></TableCell>
+                                        <TableCell />
                                     </TableRow>
                                     {!does_essay_have_writers(
                                         props.essayDocumentThreads?.filter(
                                             (thread) => !thread.isFinalVersion
                                         )
-                                    ) && (
-                                        <TableRow>
+                                    ) ? <TableRow>
                                             <TableCell>
                                                 <Link
-                                                    to={`${DEMO.ASSIGN_ESSAY_WRITER_LINK}`}
                                                     component={LinkDom}
+                                                    to={`${DEMO.ASSIGN_ESSAY_WRITER_LINK}`}
                                                 >
                                                     {t('Assign Essay Writer', {
                                                         ns: 'common'
@@ -235,14 +232,12 @@ function EditorMainView(props) {
                                                     { ns: 'common' }
                                                 )}
                                             </TableCell>
-                                        </TableRow>
-                                    )}
+                                        </TableRow> : null}
                                 </TableBody>
                             </Table>
                         </Card>
-                    </Grid>
-                )}
-                <Grid item xs={12} md={12}>
+                    </Grid> : null}
+                <Grid item md={12} xs={12}>
                     <Card sx={{ p: 2 }}>
                         <Box>
                             <Typography>My workload over time</Typography>
@@ -252,8 +247,8 @@ function EditorMainView(props) {
                                 <b style={{ color: 'red' }}>active:</b> students
                                 decide programs. These will be shown in{' '}
                                 <Link
-                                    to={`${DEMO.CV_ML_RL_DASHBOARD_LINK}`}
                                     component={LinkDom}
+                                    to={`${DEMO.CV_ML_RL_DASHBOARD_LINK}`}
                                     underline="hover"
                                 >
                                     Tasks Dashboard
@@ -267,10 +262,10 @@ function EditorMainView(props) {
                             </Typography>
                             <TasksDistributionBarChart
                                 data={sorted_date_freq_pair}
-                                k={'name'}
-                                value1={'active'}
-                                value2={'potentials'}
-                                yLabel={'Tasks'}
+                                k="name"
+                                value1="active"
+                                value2="potentials"
+                                yLabel="Tasks"
                             />
                         </Box>
                     </Card>
@@ -279,11 +274,11 @@ function EditorMainView(props) {
                 {/* <Grid item xs={12} md={12}>
           <TabProgramConflict students={props.students} />
         </Grid> */}
-                <Grid item xs={12} md={12}>
+                <Grid item md={12} xs={12}>
                     <Table size="small">
                         <TableHead>
                             <TableRow>
-                                <TableCell></TableCell>
+                                <TableCell />
                                 {header.map((name, index) => (
                                     <TableCell key={index}>
                                         {t(name, { ns: 'common' })}
@@ -295,7 +290,6 @@ function EditorMainView(props) {
                     </Table>
                 </Grid>
             </Grid>
-        </>
     );
 }
 

@@ -22,34 +22,34 @@ const LogLineChart = ({ data }) => {
         <>
             <ButtonGroup sx={{ mb: 2 }}>
                 <Button
-                    variant={range === 7 ? 'contained' : 'outlined'}
-                    value={7}
                     onClick={onChangeRange}
                     size="sm"
+                    value={7}
+                    variant={range === 7 ? 'contained' : 'outlined'}
                 >
                     7 days
                 </Button>
                 <Button
-                    variant={range === 30 ? 'contained' : 'outlined'}
-                    value={30}
                     onClick={onChangeRange}
                     size="sm"
+                    value={30}
+                    variant={range === 30 ? 'contained' : 'outlined'}
                 >
                     30 days
                 </Button>
                 <Button
-                    variant={range === 60 ? 'contained' : 'outlined'}
-                    value={60}
                     onClick={onChangeRange}
                     size="sm"
+                    value={60}
+                    variant={range === 60 ? 'contained' : 'outlined'}
                 >
                     60 days
                 </Button>
                 <Button
-                    variant={range === 180 ? 'contained' : 'outlined'}
-                    value={180}
                     onClick={onChangeRange}
                     size="sm"
+                    value={180}
+                    variant={range === 180 ? 'contained' : 'outlined'}
                 >
                     180 days
                 </Button>
@@ -66,9 +66,9 @@ const LogLineChart = ({ data }) => {
                 >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis
+                        angle={-45}
                         dataKey="date"
                         interval={Math.ceil(range / 12)}
-                        angle={-45}
                         textAnchor="end"
                     />
                     <YAxis
@@ -80,39 +80,39 @@ const LogLineChart = ({ data }) => {
                     />
                     <Tooltip labelStyle={{ color: 'black' }} />
                     <Line
-                        type="monotone"
+                        activeDot={{ r: 8 }}
                         dataKey="apiCallCount"
+                        dot={false}
                         stroke="#8884d8"
-                        activeDot={{ r: 8 }}
-                        dot={false}
+                        type="monotone"
                     />
                     <Line
-                        type="monotone"
+                        activeDot={{ r: 8 }}
                         dataKey="get"
+                        dot={false}
                         stroke="#a0a0a0"
-                        activeDot={{ r: 8 }}
-                        dot={false}
+                        type="monotone"
                     />
                     <Line
-                        type="monotone"
+                        activeDot={{ r: 8 }}
                         dataKey="post"
+                        dot={false}
                         stroke="#0a0a0a"
-                        activeDot={{ r: 8 }}
-                        dot={false}
+                        type="monotone"
                     />
                     <Line
-                        type="monotone"
+                        activeDot={{ r: 8 }}
                         dataKey="put"
-                        stroke="#c6c6c6"
-                        activeDot={{ r: 8 }}
                         dot={false}
+                        stroke="#c6c6c6"
+                        type="monotone"
                     />
                     <Line
-                        type="monotone"
-                        dataKey="delete"
-                        stroke="#6b6b6b"
                         activeDot={{ r: 8 }}
+                        dataKey="delete"
                         dot={false}
+                        stroke="#6b6b6b"
+                        type="monotone"
                     />
                 </LineChart>
             </ResponsiveContainer>

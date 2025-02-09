@@ -30,7 +30,7 @@ import {
 import { TaiGerChatAssistant } from '../../api';
 import { appConfig } from '../../config';
 
-function CommunicationThreadEditor(props) {
+const CommunicationThreadEditor = (props) => {
     const { t } = useTranslation();
     const { student_id } = useParams();
 
@@ -89,15 +89,15 @@ function CommunicationThreadEditor(props) {
     const EditorV2 = useCallback(() => {
         return (
             <EditorSimple
-                holder={props.editorState?.toString()}
-                thread={props.thread}
                 defaultHeight={0}
-                readOnly={false}
-                imageEnable={false}
-                handleEditorChange={handleEditorChange}
-                handleClickSave={props.handleClickSave}
                 editorState={props.editorState}
+                handleClickSave={props.handleClickSave}
+                handleEditorChange={handleEditorChange}
+                holder={props.editorState?.toString()}
+                imageEnable={false}
+                readOnly={false}
                 setStatedata={setStatedata}
+                thread={props.thread}
             />
         );
     }, [props.count]);
@@ -129,8 +129,7 @@ function CommunicationThreadEditor(props) {
                 <EditorV2 />
             </Box>
             <Box>
-                {is_TaiGer_role(user) &&
-                    props.files?.map((fl, i) => (
+                {is_TaiGer_role(user) ? props.files?.map((fl, i) => (
                         <Box
                             key={`${fl.name}${i}`}
                             sx={{
@@ -139,8 +138,7 @@ function CommunicationThreadEditor(props) {
                             }}
                         >
                             <Typography variant="body1">{fl.name} :</Typography>
-                            {props.checkResult?.length &&
-                                Object.keys(props.checkResult[i]).map((ky) => (
+                            {props.checkResult?.length ? Object.keys(props.checkResult[i]).map((ky) => (
                                     <Typography
                                         key={props.checkResult[i][ky].text}
                                         sx={{ ml: 2 }}
@@ -152,81 +150,75 @@ function CommunicationThreadEditor(props) {
                                               ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
                                               : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
                                         {props.checkResult[i][ky].text}
-                                        {props.checkResult[i][ky].hasMetadata &&
-                                            props.checkResult[i][ky].metaData}
+                                        {props.checkResult[i][ky].hasMetadata ? props.checkResult[i][ky].metaData : null}
                                     </Typography>
-                                ))}
+                                )) : null}
                         </Box>
-                    ))}
-                {is_TaiGer_Student(user) &&
-                    props.files?.map((fl, i) => (
+                    )) : null}
+                {is_TaiGer_Student(user) ? props.files?.map((fl, i) => (
                         <Box key={`${fl.name}${i}`}>
                             <Typography
-                                variant="body1"
                                 sx={{
                                     overflowWrap: 'break-word' // Add this line
                                 }}
+                                variant="body1"
                             >
                                 {fl.name}
                             </Typography>
                         </Box>
-                    ))}
+                    )) : null}
             </Box>
             <Box sx={{ mb: 2 }}>
                 {!statedata.editorState.blocks ||
                 statedata.editorState.blocks.length === 0 ||
                 props.buttonDisabled ? (
-                    <>
-                        <Tooltip
+                    <Tooltip
+                            placement="top"
                             title={t(
                                 'Please write some text to improve the communication and understanding.'
                             )}
-                            placement="top"
                         >
                             <Button
-                                variant="outlined"
                                 color="primary"
                                 startIcon={<SendIcon />}
+                                variant="outlined"
                             >
                                 {t('Send', { ns: 'common' })}
                             </Button>
                         </Tooltip>
-                    </>
                 ) : (
                     <Button
                         color="primary"
-                        variant="contained"
-                        startIcon={<SendIcon />}
                         onClick={(e) =>
                             props.handleClickSave(e, statedata.editorState)
                         }
+                        startIcon={<SendIcon />}
+                        variant="contained"
                     >
                         {t('Send', { ns: 'common' })}
                     </Button>
                 )}
-                {props.showCancelButton && (
-                    <Button
+                {props.showCancelButton ? <Button
                         color="primary"
-                        variant="outlined"
                         onClick={(e) =>
                             props.handleClickSave(e, statedata.editorState)
                         }
+                        variant="outlined"
                     >
                         {t('Cancel', { ns: 'common' })}
-                    </Button>
-                )}
-                <Tooltip title={t('Attach files')} placement="top">
+                    </Button> : null}
+                <Tooltip placement="top" title={t('Attach files')}>
                     <span>
                         <input
                             id="file-input"
-                            type="file"
                             multiple
-                            style={{ display: 'none' }}
                             onChange={(e) => props.onFileChange(e)}
+                            style={{ display: 'none' }}
+                            type="file"
                         />
                         <IconButton
-                            color="primary"
                             aria-label="attach file"
+                            color="primary"
                             component="span"
                             onClick={handleClick}
                         >
@@ -234,8 +226,7 @@ function CommunicationThreadEditor(props) {
                         </IconButton>
                     </span>
                 </Tooltip>
-                {appConfig.AIEnable && is_TaiGer_role(user) && (
-                    <IconButton
+                {appConfig.AIEnable && is_TaiGer_role(user) ? <IconButton
                         disabled={statedata.isGenerating}
                         onClick={onSubmit}
                     >
@@ -244,15 +235,12 @@ function CommunicationThreadEditor(props) {
                         ) : (
                             <AutoFixHighIcon />
                         )}
-                    </IconButton>
-                )}
-                {is_TaiGer_Agent(user) && (
-                    <Typography variant="body1">
+                    </IconButton> : null}
+                {is_TaiGer_Agent(user) ? <Typography variant="body1">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                             {statedata.data}
                         </ReactMarkdown>
-                    </Typography>
-                )}
+                    </Typography> : null}
             </Box>
         </>
     );

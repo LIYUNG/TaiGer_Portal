@@ -30,7 +30,7 @@ import { useCustomTheme } from '../../components/ThemeProvider';
 import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 
-function Settings() {
+const Settings = () => {
     const { isDarkMode, toggleDarkMode } = useCustomTheme();
     const { t } = useTranslation();
     const { user, logout } = useAuth();
@@ -150,10 +150,10 @@ function Settings() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -162,13 +162,11 @@ function Settings() {
                 </Typography>
             </Breadcrumbs>
 
-            {res_modal_status >= 400 && (
-                <ModalMain
+            {res_modal_status >= 400 ? <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
-                />
-            )}
+                    res_modal_status={res_modal_status}
+                /> : null}
 
             <Box sx={{ mx: 2 }}>
                 <Typography variant="h6">{t('Preference')}</Typography>
@@ -177,22 +175,22 @@ function Settings() {
                         {t('Theme', { ns: 'common' })}
                     </FormLabel>{' '}
                     <RadioGroup
-                        fullWidth
-                        row
                         aria-labelledby="demo-controlled-radio-buttons-group"
+                        fullWidth
                         name="controlled-radio-buttons-group"
-                        value={isDarkMode}
                         onChange={toggleDarkMode}
+                        row
+                        value={isDarkMode}
                     >
                         <FormControlLabel
-                            value={true}
                             control={<Radio />}
                             label="Dark"
+                            value={true}
                         />
                         <FormControlLabel
-                            value={false}
                             control={<Radio />}
                             label="Light"
+                            value={false}
                         />
                     </RadioGroup>
                 </FormControl>
@@ -202,46 +200,45 @@ function Settings() {
                 <Typography variant="h6">{t('Account')}</Typography>
                 <Typography>{t('Reset Login Password')}</Typography>
                 <TextField
+                    autoComplete="off"
                     fullWidth
                     id="current_password"
-                    size="small"
-                    required
                     label={`${t('Current Password')}`}
-                    autoComplete="off"
-                    type="password"
                     onChange={(e) => handleChange_Credentials(e)}
+                    required
+                    size="small"
                     sx={{ my: 1 }}
+                    type="password"
                 />
                 <TextField
+                    autoComplete="off"
                     fullWidth
                     id="new_password"
-                    size="small"
-                    required
                     label={`${t('Enter New Password')}`}
-                    autoComplete="off"
-                    type="password"
                     onChange={(e) => handleChange_Credentials(e)}
+                    required
+                    size="small"
                     sx={{ mb: 1 }}
+                    type="password"
                 />
                 <TextField
+                    autoComplete="off"
                     fullWidth
                     id="new_password_again"
-                    size="small"
-                    required
                     label={`${t('Enter New Password Again')}`}
-                    autoComplete="off"
-                    type="password"
                     onChange={(e) => handleChange_Credentials(e)}
+                    required
+                    size="small"
                     sx={{ mb: 1 }}
+                    type="password"
                 />
                 <Button
+                    color="primary"
                     disabled={
                         settingsState.credentials.current_password === '' ||
                         settingsState.credentials.new_password === '' ||
                         settingsState.credentials.new_password_again === ''
                     }
-                    color="primary"
-                    variant="contained"
                     onClick={(e) =>
                         handleSubmit_Credentials(
                             e,
@@ -249,13 +246,14 @@ function Settings() {
                             user.email
                         )
                     }
+                    variant="contained"
                 >
                     {t('Reset Password')}
                 </Button>
             </Box>
             <Dialog
-                open={settingsState.updatecredentialconfirmed}
                 onClose={setmodalhideUpdateCredentials}
+                open={settingsState.updatecredentialconfirmed}
             >
                 <DialogTitle>
                     {t('Update Credentials Successfully')}
@@ -268,8 +266,8 @@ function Settings() {
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         onClick={(e) => setmodalhideUpdateCredentials(e)}
+                        variant="contained"
                     >
                         {t('Ok')}
                     </Button>

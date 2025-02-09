@@ -31,7 +31,7 @@ CustomTabPanel.propTypes = {
     value: PropTypes.number.isRequired
 };
 
-function InternalDashboard() {
+const InternalDashboard = () => {
     const { user } = useAuth();
     const { hash } = useLocation();
     const { data, isLoading } = useQuery(getStatisticsQuery());
@@ -150,10 +150,10 @@ function InternalDashboard() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -172,12 +172,12 @@ function InternalDashboard() {
             </Breadcrumbs>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    indicatorColor="primary"
                     aria-label="basic tabs example"
+                    indicatorColor="primary"
+                    onChange={handleChange}
+                    scrollButtons="auto"
+                    value={value}
+                    variant="scrollable"
                 >
                     <Tab label="Overview" {...a11yProps(0)} />
                     <Tab label="Agents" {...a11yProps(1)} />
@@ -186,33 +186,32 @@ function InternalDashboard() {
                     <Tab label="Response Time" {...a11yProps(4)} />
                 </Tabs>
             </Box>
-            <CustomTabPanel value={value} index={0}>
+            <CustomTabPanel index={0} value={value}>
                 <OverviewDashboardTab
-                    studentDetails={students_details}
                     agentData={agents_data}
-                    editorData={editors_data}
-                    studentsYearsPair={students_years_pair}
                     documents={documents}
+                    editorData={editors_data}
+                    studentDetails={students_details}
+                    studentsYearsPair={students_years_pair}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
+            <CustomTabPanel index={1} value={value}>
                 <AgentDashboard
                     agentStudentDistribution={agentStudentDistribution}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
+            <CustomTabPanel index={2} value={value}>
                 <KPIDashboardTab
                     CVdataWithDuration={CVdataWithDuration}
                     MLdataWithDuration={MLdataWithDuration}
                     RLdataWithDuration={RLdataWithDuration}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={3}>
+            <CustomTabPanel index={3} value={value}>
                 <ProgramListDashboardTab data={programListStats} />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={4}>
+            <CustomTabPanel index={4} value={value}>
                 <ResponseTimeDashboardTab
-                    studentAvgResponseTime={studentAvgResponseTime}
                     agents={agents_data.reduce((acc, agent) => {
                         acc[agent._id] = {
                             firstname: agent.firstname,
@@ -227,6 +226,7 @@ function InternalDashboard() {
                         };
                         return acc;
                     }, {})}
+                    studentAvgResponseTime={studentAvgResponseTime}
                 />
             </CustomTabPanel>
         </Box>

@@ -3,7 +3,11 @@ import { Card, IconButton, Link, Typography } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HelpIcon from '@mui/icons-material/Help';
-import { DocumentStatusType, ProfileNameType } from '@taiger-common/core';
+import {
+    DocumentStatusType,
+    isProgramDecided,
+    ProfileNameType
+} from '@taiger-common/core';
 
 import { FILE_MISSING_SYMBOL, FILE_OK_SYMBOL } from '../../utils/contants';
 import { MuiDataGrid } from '../MuiDataGrid';
@@ -24,7 +28,6 @@ import {
     isCVFinished,
     isEnglishLanguageInfoComplete,
     isLanguageInfoComplete,
-    isProgramDecided,
     isProgramSubmitted,
     is_all_uni_assist_vpd_uploaded,
     is_cv_assigned,

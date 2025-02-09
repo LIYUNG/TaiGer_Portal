@@ -58,7 +58,6 @@ const {
 } = require('../utils/utils_function');
 const { getS3Object } = require('../aws/s3');
 const { getPermission } = require('../utils/queryFunctions');
-const { get } = require('lodash');
 
 const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   const students = await req.db
@@ -146,7 +145,7 @@ const getSurveyInputs = asyncHandler(async (req, res, next) => {
     threadDocument.file_type
   );
 
-  document = {
+  const document = {
     ...threadDocument,
     surveyInputs: surveyDocument
   };
@@ -2034,7 +2033,9 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
     await req.db.model('Documentthread').findByIdAndUpdate(
       messagesThreadId,
       {
-        outsourced_user_id: updatedEditorIds
+        outsourced_user_id: updatedEditorIds.map(
+          (id) => new mongoose.Types.ObjectId(id)
+        )
       },
       {}
     );
@@ -2169,7 +2170,10 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
       const essayDocumentThreads = await req.db
         .model('Documentthread')
         .find(
-          { student_id: user._id, file_type: 'Essay' },
+          {
+            student_id: new mongoose.Types.ObjectId(user._id),
+            file_type: 'Essay'
+          },
           { messages: { $slice: -1 } }
         )
         .populate('student_id outsourced_user_id')

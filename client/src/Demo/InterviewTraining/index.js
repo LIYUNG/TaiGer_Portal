@@ -2,9 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useNavigate } from 'react-router-dom';
 import { Box, Button, Breadcrumbs, Link, Typography } from '@mui/material';
-import { is_TaiGer_role } from '@taiger-common/core';
+import { is_TaiGer_role, isProgramDecided } from '@taiger-common/core';
 
-import { isProgramDecided } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { getMyInterviews, getAllInterviews } from '../../api';

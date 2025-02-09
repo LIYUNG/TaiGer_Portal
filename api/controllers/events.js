@@ -1,4 +1,6 @@
 const { is_TaiGer_Agent, is_TaiGer_Student } = require('@taiger-common/core');
+const { Types } = require('mongoose');
+
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
 const {
@@ -271,6 +273,7 @@ const postEvent = asyncHandler(async (req, res, next) => {
   const { user } = req;
   const newEvent = req.body;
   let events;
+
   if (is_TaiGer_Student(user)) {
     let write_NewEvent;
     delete newEvent.id;
@@ -278,23 +281,34 @@ const postEvent = asyncHandler(async (req, res, next) => {
     // TODO: verify requester_id and receiver_id?
     // Check if there is already future timeslot, same student?
     const currentDate = new Date();
-    events = await req.db
-      .model('Event')
-      .find({
-        $or: [
-          {
-            start: newEvent.start,
-            receiver_id: newEvent.receiver_id // Same receiver_id
-          }, // Start date is the same as the provided date
-          {
-            start: { $gt: currentDate }, // Start date is in the future
-            requester_id: newEvent.requester_id, // Same requester_id
-            receiver_id: newEvent.receiver_id // Same receiver_id
-          }
-        ]
-      })
-      .populate('requester_id receiver_id', 'firstname lastname email')
-      .lean();
+    try {
+      events = await req.db
+        .model('Event')
+        .find({
+          $or: [
+            {
+              start: newEvent.start,
+              receiver_id: {
+                $in: [new Types.ObjectId(newEvent.receiver_id)]
+              }
+            }, // Start date is the same as the provided date
+            {
+              start: { $gt: currentDate }, // Start date is in the future
+              requester_id: {
+                $in: [new Types.ObjectId(newEvent.requester_id)]
+              },
+              receiver_id: {
+                $in: [new Types.ObjectId(newEvent.receiver_id)]
+              }
+            }
+          ]
+        })
+        .populate('requester_id receiver_id', 'firstname lastname email')
+        .lean();
+    } catch (e) {
+      logger.error(e);
+    }
+
     // Check if there is already booked upcoming events
     if (events.length === 0) {
       // TODO: additional check if the timeslot is in agent office hour?
@@ -310,7 +324,9 @@ const postEvent = asyncHandler(async (req, res, next) => {
     events = await req.db
       .model('Event')
       .find({
-        requester_id: newEvent.requester_id
+        requester_id: {
+          $in: [new Types.ObjectId(newEvent.requester_id)]
+        }
       })
       .populate('requester_id receiver_id', 'firstname lastname email')
       .lean();
@@ -346,8 +362,12 @@ const postEvent = asyncHandler(async (req, res, next) => {
         .find({
           start: newEvent.start,
           $or: [
-            { requester_id: newEvent.requester_id },
-            { receiver_id: newEvent.requester_id }
+            {
+              requester_id: { $in: [new Types.ObjectId(newEvent.requester_id)] }
+            },
+            {
+              receiver_id: { $in: [new Types.ObjectId(newEvent.requester_id)] }
+            }
           ]
         })
         .populate('receiver_id', 'firstname lastname email')

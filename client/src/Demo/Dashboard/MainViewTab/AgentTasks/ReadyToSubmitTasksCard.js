@@ -13,6 +13,7 @@ import {
     Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { isProgramDecided } from '@taiger-common/core';
 
 import {
     isCVFinished,
@@ -21,7 +22,6 @@ import {
     is_program_closed,
     application_deadline_calculator,
     application_date_calculator,
-    isProgramDecided
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';

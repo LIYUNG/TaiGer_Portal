@@ -5,7 +5,6 @@ import {
     isCVFinished,
     calculateDisplayLength,
     truncateText,
-    isProgramDecided,
     isProgramSubmitted,
     isProgramWithdraw,
     getRequirement,
@@ -75,21 +74,6 @@ describe('Role checking', () => {
         };
         expect(isCVFinished(studentIsCVFinished)).toEqual(true);
         expect(isCVFinished(studentIsCVNotFinished)).toEqual(false);
-    });
-
-    test('isProgramDecided', () => {
-        const application_decided = {
-            decided: 'O'
-        };
-        const application_not_decided_yet = {
-            decided: '-'
-        };
-        const application_decided_no = {
-            decided: '-'
-        };
-        expect(isProgramDecided(application_decided)).toEqual(true);
-        expect(isProgramDecided(application_not_decided_yet)).toEqual(false);
-        expect(isProgramDecided(application_decided_no)).toEqual(false);
     });
 
     test('isProgramSubmitted', () => {

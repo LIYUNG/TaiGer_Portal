@@ -14,13 +14,13 @@ import {
     Typography,
     Box
 } from '@mui/material';
+import { isProgramDecided } from '@taiger-common/core';
 
 import { updateAgentBanner } from '../../../api';
 import { appConfig } from '../../../config';
 import {
     AGENT_SUPPORT_DOCUMENTS_A,
     isAnyCVNotAssigned,
-    isProgramDecided,
     is_any_base_documents_uploaded,
     is_any_programs_ready_to_submit,
     is_any_vpd_missing,

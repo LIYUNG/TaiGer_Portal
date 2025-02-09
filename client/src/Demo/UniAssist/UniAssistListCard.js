@@ -1,11 +1,9 @@
 import React from 'react';
 import { Card, Typography, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { isProgramDecided } from '@taiger-common/core';
 
-import {
-    check_student_needs_uni_assist,
-    isProgramDecided
-} from '../Utils/checking-functions';
+import { check_student_needs_uni_assist } from '../Utils/checking-functions';
 import { UniAssistProgramBlock } from './UniAssistProgramBlock';
 
 function UniAssistListCard(props) {

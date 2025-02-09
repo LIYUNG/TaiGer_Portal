@@ -12,6 +12,7 @@ import {
     Typography,
     TextField
 } from '@mui/material';
+import { isProgramDecided } from '@taiger-common/core';
 
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -21,10 +22,7 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
-import {
-    LinkableNewlineText,
-    isProgramDecided
-} from '../Utils/checking-functions';
+import { LinkableNewlineText } from '../Utils/checking-functions';
 import { useSnackBar } from '../../contexts/use-snack-bar';
 
 export default function PortalCredentialsCard(props) {

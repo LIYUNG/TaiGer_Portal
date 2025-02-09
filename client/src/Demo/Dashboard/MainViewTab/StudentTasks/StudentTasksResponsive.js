@@ -3,6 +3,7 @@ import { Link as LinkDom } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Link, TableCell, TableRow, Typography } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
+import { isProgramDecided } from '@taiger-common/core';
 
 import DEMO from '../../../../store/constant';
 import { convertDate } from '../../../../utils/contants';
@@ -15,7 +16,6 @@ import {
     are_base_documents_missing,
     to_register_application_portals,
     is_personal_data_filled,
-    isProgramDecided,
     all_applications_results_updated,
     has_admissions
 } from '../../../Utils/checking-functions';

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, Button, Card, Grid, Link, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom } from 'react-router-dom';
-import { is_TaiGer_role } from '@taiger-common/core';
+import { is_TaiGer_role, isProgramDecided } from '@taiger-common/core';
 
 import ManualFilesList from './ManualFilesList';
 import ToggleableUploadFileForm from './ToggleableUploadFileForm';
@@ -143,7 +143,7 @@ function ManualFiles(props) {
                             </>
                         )}
                         {props.filetype === 'ProgramSpecific' &&
-                            props.application?.decided !== 'O' && (
+                            !isProgramDecided(props.application) && (
                                 <Grid item xs={12}>
                                     <Typography variant="string" sx={{ my: 2 }}>
                                         <b>

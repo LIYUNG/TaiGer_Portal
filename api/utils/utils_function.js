@@ -2,7 +2,7 @@ const path = require('path');
 const async = require('async');
 const mammoth = require('mammoth');
 const PdfParse = require('pdf-parse');
-const { Role } = require('@taiger-common/core');
+const { Role, isProgramDecided } = require('@taiger-common/core');
 
 const {
   sendAssignEditorReminderEmail,
@@ -786,45 +786,42 @@ const numStudentYearDistribution = (students) =>
 const add_portals_registered_status = (student_input) => {
   const student = student_input;
   for (let i = 0; i < student.applications.length; i += 1) {
-    if (student.applications[i].decided === 'O') {
-      if (student.applications[i].programId.application_portal_a) {
+    const application = student.applications[i];
+    if (isProgramDecided(application)) {
+      if (application.programId.application_portal_a) {
         if (
-          student.applications[i].portal_credentials &&
-          student.applications[i].portal_credentials.application_portal_a &&
-          student.applications[i].portal_credentials.application_portal_a
-            .account &&
-          student.applications[i].portal_credentials.application_portal_a
-            .password
+          application.portal_credentials &&
+          application.portal_credentials.application_portal_a &&
+          application.portal_credentials.application_portal_a.account &&
+          application.portal_credentials.application_portal_a.password
         ) {
-          student.applications[i].credential_a_filled = true;
+          application.credential_a_filled = true;
         } else {
-          student.applications[i].credential_a_filled = false;
+          application.credential_a_filled = false;
         }
       } else {
-        student.applications[i].credential_a_filled = true;
+        application.credential_a_filled = true;
       }
-      if (student.applications[i].programId.application_portal_b) {
+      if (application.programId.application_portal_b) {
         if (
-          student.applications[i].portal_credentials &&
-          student.applications[i].portal_credentials.application_portal_b &&
-          student.applications[i].portal_credentials.application_portal_b
-            .account &&
-          student.applications[i].portal_credentials.application_portal_b
-            .password
+          application.portal_credentials &&
+          application.portal_credentials.application_portal_b &&
+          application.portal_credentials.application_portal_b.account &&
+          application.portal_credentials.application_portal_b.password
         ) {
-          student.applications[i].credential_b_filled = true;
+          application.credential_b_filled = true;
         } else {
-          student.applications[i].credential_b_filled = false;
+          application.credential_b_filled = false;
         }
       } else {
-        student.applications[i].credential_b_filled = true;
+        application.credential_b_filled = true;
       }
     } else {
-      student.applications[i].credential_a_filled = true;
-      student.applications[i].credential_b_filled = true;
+      application.credential_a_filled = true;
+      application.credential_b_filled = true;
     }
 
-    delete student.applications[i].portal_credentials;
+    delete application.portal_credentials;
   }
   return student;
 };

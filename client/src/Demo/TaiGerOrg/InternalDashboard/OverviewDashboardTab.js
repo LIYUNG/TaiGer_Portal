@@ -17,7 +17,12 @@ import isoWeek from 'dayjs/plugin/isoWeek';
 dayjs.extend(isoWeek);
 
 import { LineChart } from '@mui/x-charts/LineChart';
-import { isProgramDecided, isProgramSubmitted } from '@taiger-common/core';
+import {
+    isProgramAdmitted,
+    isProgramDecided,
+    isProgramRejected,
+    isProgramSubmitted
+} from '@taiger-common/core';
 
 import SingleBarChart from '../../../components/Charts/SingleBarChart';
 import VerticalDistributionBarCharts from '../../../components/Charts/VerticalDistributionBarChart';
@@ -79,9 +84,9 @@ const OverviewDashboardTab = ({
             ) {
                 if (isProgramSubmitted(application)) {
                     acc.Close += 1;
-                    if (application.admission === 'O') {
+                    if (isProgramAdmitted(application)) {
                         acc.Admission += 1;
-                    } else if (application.admission === 'X') {
+                    } else if (isProgramRejected(application)) {
                         acc.Rejection += 1;
                     } else if (application.admission === '-') {
                         acc.Pending += 1;

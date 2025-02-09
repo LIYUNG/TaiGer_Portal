@@ -2,6 +2,7 @@ import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { IconButton, Link, List, ListItem, Typography } from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
+import { isProgramSubmitted } from '@taiger-common/core';
 
 import DEMO from '../../store/constant';
 import { isEnglishOK } from '../../Demo/Utils/checking-functions';
@@ -357,7 +358,7 @@ export default function ApplicationProgressCardBody(props) {
                                 props.student._id.toString()
                             )}`}
                         >
-                            {props.application?.closed === 'O' ? (
+                            {isProgramSubmitted(props.application) ? (
                                 <IconButton>
                                     <DocumentOkIcon />
                                 </IconButton>

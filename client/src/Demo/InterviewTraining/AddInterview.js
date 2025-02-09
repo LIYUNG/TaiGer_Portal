@@ -21,7 +21,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 import {
     is_TaiGer_role,
+    isProgramAdmitted,
     isProgramDecided,
+    isProgramRejected,
     isProgramSubmitted
 } from '@taiger-common/core';
 
@@ -195,8 +197,8 @@ function AddInterview() {
             (application) =>
                 isProgramDecided(application) &&
                 isProgramSubmitted(application) &&
-                application.admission !== 'O' &&
-                application.admission !== 'X' &&
+                !isProgramAdmitted(application) &&
+                !isProgramRejected(application) &&
                 !interviewslist.find(
                     (interview) =>
                         interview.program_id._id.toString() ===

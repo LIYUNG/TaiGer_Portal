@@ -6,7 +6,8 @@ const {
   is_TaiGer_Editor,
   is_TaiGer_External,
   is_TaiGer_Admin,
-  is_TaiGer_Student
+  is_TaiGer_Student,
+  isProgramDecided
 } = require('@taiger-common/core');
 
 const { ErrorResponse } = require('../common/errors');
@@ -2195,7 +2196,7 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
       for (const doc of essayDocumentThreads) {
         if (doc.student_id && !doc.student_id.archiv) {
           for (const application of doc.student_id?.applications || []) {
-            if (application.decided === 'O') {
+            if (isProgramDecided(application)) {
               for (const thread of application?.doc_modification_thread || []) {
                 if (doc._id.toString() === thread.doc_thread_id.toString()) {
                   matchingDocuments.push(doc);
@@ -2236,7 +2237,7 @@ const getAllActiveEssays = asyncHandler(async (req, res, next) => {
       for (const doc of essayDocumentThreads) {
         if (doc.student_id && !doc.student_id.archiv) {
           for (const application of doc.student_id?.applications || []) {
-            if (application.decided === 'O') {
+            if (isProgramDecided(application)) {
               for (const thread of application?.doc_modification_thread || []) {
                 if (doc._id.toString() === thread.doc_thread_id.toString()) {
                   matchingDocuments.push(doc);

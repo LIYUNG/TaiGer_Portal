@@ -4,6 +4,7 @@ import { Link, TableCell, TableRow, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { differenceInDays } from 'date-fns';
 import {
+    isProgramAdmitted,
     isProgramDecided,
     isProgramSubmitted,
     isProgramWithdraw
@@ -256,7 +257,7 @@ function ApplicationProgress(props) {
                 ) : (
                     <TableCell>{SUBMISSION_STATUS_E.UNKNOWN_SYMBOL}</TableCell>
                 )}
-                {application.admission === 'O' ? (
+                {isProgramAdmitted(application) ? (
                     <TableCell> {ADMISSION_STATUS_E.OK_SYMBOL}</TableCell>
                 ) : application.admission === 'X' ? (
                     <TableCell> {ADMISSION_STATUS_E.NOT_OK_SYMBOL}</TableCell>

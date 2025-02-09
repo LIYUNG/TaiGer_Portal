@@ -2,7 +2,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useNavigate } from 'react-router-dom';
 import { Box, Button, Breadcrumbs, Link, Typography } from '@mui/material';
-import { is_TaiGer_role, isProgramDecided } from '@taiger-common/core';
+import {
+    is_TaiGer_role,
+    isProgramAdmitted,
+    isProgramDecided,
+    isProgramRejected
+} from '@taiger-common/core';
 
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -84,8 +89,8 @@ function InterviewResponseTable() {
                                     ?.filter(
                                         (application) =>
                                             isProgramDecided(application) &&
-                                            application.admission !== 'O' &&
-                                            application.admission !== 'X' &&
+                                            !isProgramAdmitted(application) &&
+                                            !isProgramRejected(application) &&
                                             !interviewslist.find(
                                                 (interview) =>
                                                     interview.program_id._id.toString() ===

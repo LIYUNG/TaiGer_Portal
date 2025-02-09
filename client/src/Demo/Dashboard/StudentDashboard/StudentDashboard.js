@@ -20,6 +20,7 @@ import {
     Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { isProgramDecided } from '@taiger-common/core';
 
 import RespondedThreads from '../MainViewTab/RespondedThreads/RespondedThreads';
 import StudentTasksResponsive from '../MainViewTab/StudentTasks/StudentTasksResponsive';
@@ -33,7 +34,6 @@ import {
     needGraduatedApplicantsPrograms
 } from '../../Utils/checking-functions';
 import ErrorPage from '../../Utils/ErrorPage';
-
 import { updateBanner } from '../../../api';
 import DEMO from '../../../store/constant';
 import ApplicationProgressCard from '../../../components/ApplicationProgressCard/ApplicationProgressCard';
@@ -637,7 +637,7 @@ function StudentDashboard(props) {
             </Grid>
             <Grid container spacing={2} sx={{ mt: 0 }}>
                 {student.applications
-                    ?.filter((app) => app.decided === 'O')
+                    ?.filter((app) => isProgramDecided(app))
                     .map((application, idx) => (
                         <Grid item xs={12} sm={6} md={4} lg={3} key={idx}>
                             <ApplicationProgressCard

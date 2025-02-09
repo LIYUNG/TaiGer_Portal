@@ -559,63 +559,65 @@ export const MissingSurveyFieldsListArray = ({
 
     // Check application preference fields
     if (application_preference) {
-        if (!application_preference.expected_application_date) {
-            missingFields.push('Expected Application Year');
-        }
-        if (!application_preference.expected_application_semester) {
-            missingFields.push('Expected Application Semester');
-        }
-        if (!application_preference.target_program_language) {
-            missingFields.push('Target Program Language');
-        }
-        if (!application_preference.target_degree) {
-            missingFields.push('Target Degree Programs');
-        }
-        if (
-            !application_preference.targetApplicationSubjects ||
-            application_preference.targetApplicationSubjects?.length === 0
-        ) {
-            missingFields.push('Target Application Subjects');
-        }
-        if (application_preference.considered_privat_universities === '-') {
-            missingFields.push(
-                'Considering private universities? (Tuition Fee: ~15000 EURO/year)'
-            );
-        }
-        if (application_preference.application_outside_germany === '-') {
-            missingFields.push('Considering universities outside Germany?');
-        }
+        const fieldMappings = [
+            {
+                key: 'expected_application_date',
+                label: 'Expected Application Year'
+            },
+            {
+                key: 'expected_application_semester',
+                label: 'Expected Application Semester'
+            },
+            {
+                key: 'target_program_language',
+                label: 'Target Program Language'
+            },
+            { key: 'target_degree', label: 'Target Degree Programs' },
+            {
+                key: 'targetApplicationSubjects',
+                label: 'Target Application Subjects',
+                check: (value) => !value || value.length === 0
+            },
+            {
+                key: 'considered_privat_universities',
+                label: 'Considering private universities? (Tuition Fee: ~15000 EURO/year)',
+                check: (value) => value === '-'
+            },
+            {
+                key: 'application_outside_germany',
+                label: 'Considering universities outside Germany?',
+                check: (value) => value === '-'
+            }
+        ];
+
+        fieldMappings.forEach(({ key, label, check }) => {
+            if (
+                check
+                    ? check(application_preference[key])
+                    : !application_preference[key]
+            ) {
+                missingFields.push(label);
+            }
+        });
     }
 
     return missingFields;
 };
 
 export const progressBarCounter = (student, application) => {
+    const programId = application?.programId || {};
+
     const all_points = [
         student?.generaldocs_threads?.length || 0,
-
-        application?.programId?.ielts || application?.programId?.toefl ? 1 : 0,
-        application?.programId?.testdaf
-            ? application?.programId?.testdaf === '-'
-                ? 0
-                : 1
-            : 0,
-        application?.programId?.gre
-            ? application?.programId?.gre === '-'
-                ? 0
-                : 1
-            : 0,
-        application?.programId?.gmat
-            ? application?.programId?.gmat === '-'
-                ? 0
-                : 1
-            : 0,
-        application?.programId?.application_portal_a ||
-        application?.programId?.application_portal_b
+        programId?.ielts || programId?.toefl ? 1 : 0,
+        programId?.testdaf ? (programId?.testdaf === '-' ? 0 : 1) : 0,
+        programId?.gre ? (application?.programId?.gre === '-' ? 0 : 1) : 0,
+        programId?.gmat ? (programId?.gmat === '-' ? 0 : 1) : 0,
+        programId?.application_portal_a || programId?.application_portal_b
             ? 1
             : 0,
         application?.doc_modification_thread?.length || 0,
-        application?.programId?.uni_assist?.includes('VPD') ? 1 : 0,
+        programId?.uni_assist?.includes('VPD') ? 1 : 0,
         1
     ];
     const finished_pointes = [
@@ -623,130 +625,123 @@ export const progressBarCounter = (student, application) => {
             (thread) => thread.isFinalVersion === true
         ).length,
 
-        (application?.programId?.ielts || application?.programId?.toefl) &&
+        (programId?.ielts || programId?.toefl) &&
         student?.academic_background?.language?.english_isPassed === 'O' &&
-        isEnglishOK(application?.programId, student)
+        isEnglishOK(programId, student)
             ? 1
             : 0,
-        application?.programId?.testdaf &&
-        application?.programId?.testdaf !== '-' &&
+        programId?.testdaf &&
+        programId?.testdaf !== '-' &&
         student?.academic_background?.language?.german_isPassed === 'O'
             ? 1
             : 0,
-        application?.programId?.gre &&
-        application?.programId?.gre !== '-' &&
+        programId?.gre &&
+        programId?.gre !== '-' &&
         student?.academic_background?.language?.gre_isPassed === 'O'
             ? 1
             : 0,
-        application?.programId?.gmat &&
-        application?.programId?.gmat !== '-' &&
+        programId?.gmat &&
+        programId?.gmat !== '-' &&
         student?.academic_background?.language?.gmat_isPassed === 'O'
             ? 1
             : 0,
-        (application?.programId?.application_portal_a ||
-            application?.programId?.application_portal_b) &&
-        ((application?.programId?.application_portal_a &&
+        (programId?.application_portal_a || programId?.application_portal_b) &&
+        ((programId?.application_portal_a &&
             !application.credential_a_filled) ||
-            (application?.programId?.application_portal_b &&
+            (programId?.application_portal_b &&
                 !application.credential_b_filled))
             ? 0
             : 1,
         application?.doc_modification_thread?.filter(
             (thread) => thread.isFinalVersion === true
         ).length,
-        application?.programId?.uni_assist?.includes('VPD')
-            ? application?.uni_assist?.status === 'notstarted'
+        programId?.uni_assist?.includes('VPD')
+            ? application?.uni_assist?.status === DocumentStatusType.NotNeeded
                 ? 0
                 : 1
             : 0,
-        application?.closed === 'O' ? 1 : 0
+        isProgramSubmitted(application) ? 1 : 0
     ];
 
-    const percentage =
-        (finished_pointes.reduce(
-            (accumulator, currentValue) => accumulator + currentValue,
-            0
-        ) /
-            all_points.reduce(
-                (accumulator, currentValue) => accumulator + currentValue,
-                0
-            )) *
-        100;
+    const completedPoints = finished_pointes.reduce(
+        (sum, value) => sum + value,
+        0
+    );
+    const totalPoints = all_points.reduce((sum, value) => sum + value, 0);
+
+    const percentage = (completedPoints / totalPoints) * 100;
     return Math.floor(percentage);
 };
 
 export const isEnglishOK = (program, student) => {
+    const lang = student?.academic_background?.language || {};
+    const {
+        english_certificate,
+        english_score,
+        english_score_reading,
+        english_score_listening,
+        english_score_writing,
+        english_score_speaking
+    } = lang;
     // in case not number string
     if (
-        !parseFloat(student.academic_background.language.english_score) ||
-        !parseFloat(
-            student.academic_background.language.english_score_reading
-        ) ||
-        !parseFloat(
-            student.academic_background.language.english_score_listening
-        ) ||
-        !parseFloat(
-            student.academic_background.language.english_score_writing
-        ) ||
-        !parseFloat(student.academic_background.language.english_score_speaking)
+        ![
+            english_score,
+            english_score_reading,
+            english_score_listening,
+            english_score_writing,
+            english_score_speaking
+        ].every((score) => parseFloat(score))
     ) {
         return false;
     }
 
-    if (student.academic_background.language.english_certificate === 'TOEFL') {
+    if (english_certificate === 'TOEFL') {
         if (
-            program.toefl >
-                parseFloat(
-                    student.academic_background.language.english_score
-                ) ||
-            program.toefl_reading >
-                parseFloat(
-                    student.academic_background.language.english_score_reading
-                ) ||
-            program.toefl_listening >
-                parseFloat(
-                    student.academic_background.language.english_score_listening
-                ) ||
-            program.toefl_writing >
-                parseFloat(
-                    student.academic_background.language.english_score_writing
-                ) ||
-            program.toefl_speaking >
-                parseFloat(
-                    student.academic_background.language.english_score_speaking
-                )
+            program.toefl > parseFloat(english_score) ||
+            program.toefl_reading > parseFloat(english_score_reading) ||
+            program.toefl_listening > parseFloat(english_score_listening) ||
+            program.toefl_writing > parseFloat(english_score_writing) ||
+            program.toefl_speaking > parseFloat(english_score_speaking)
         ) {
             return false;
         }
     }
-    if (student.academic_background.language.english_certificate === 'IELTS') {
+    if (english_certificate === 'IELTS') {
         if (
-            program.ielts >
-                parseFloat(
-                    student.academic_background.language.english_score
-                ) ||
-            program.ielts_reading >
-                parseFloat(
-                    student.academic_background.language.english_score_reading
-                ) ||
-            program.ielts_listening >
-                parseFloat(
-                    student.academic_background.language.english_score_listening
-                ) ||
-            program.ielts_writing >
-                parseFloat(
-                    student.academic_background.language.english_score_writing
-                ) ||
-            program.ielts_speaking >
-                parseFloat(
-                    student.academic_background.language.english_score_speaking
-                )
+            program.ielts > parseFloat(english_score) ||
+            program.ielts_reading > parseFloat(english_score_reading) ||
+            program.ielts_listening > parseFloat(english_score_listening) ||
+            program.ielts_writing > parseFloat(english_score_writing) ||
+            program.ielts_speaking > parseFloat(english_score_speaking)
         ) {
             return false;
         }
     }
 
     return true;
+};
+
+export const getApplicationYear = (student) => {
+    return student.application_preference?.expected_application_date
+        ? parseInt(student.application_preference.expected_application_date)
+        : '<TBD>';
+};
+
+export const adjustYearForSemester = (year, month, semester) => {
+    if (!semester) return 'Err';
+    if ((semester === 'WS' && month > 9) || (semester === 'SS' && month > 3)) {
+        return year - 1;
+    }
+    return year;
+};
+
+export const formatApplicationDate = (year, date) => {
+    if (!date) return `${year}-<TBD>`;
+    if (date.toLowerCase().includes('rolling')) return `${year}-Rolling`;
+
+    const [month, day] = date.split('-');
+    return `${year}/${month}/${day}`;
 };
 
 export const application_date_calculator = (student, application) => {
@@ -761,12 +756,7 @@ export const application_date_calculator = (student, application) => {
     if (!application_start) {
         return 'No Data';
     }
-    let application_year = '<TBD>';
-    if (student.application_preference?.expected_application_date !== '') {
-        application_year = parseInt(
-            student.application_preference.expected_application_date
-        );
-    }
+    let application_year = getApplicationYear(student);
     if (!application_start) {
         return `${application_year}-<TBD>`;
     }
@@ -778,23 +768,13 @@ export const application_date_calculator = (student, application) => {
         application.programId.application_start.split('-')[0]
     );
 
-    if (semester === undefined) {
-        return 'Err';
-    }
-    if (semester === 'WS') {
-        if (deadline_month > 9) {
-            application_year = application_year - 1;
-        }
-    }
-    if (semester === 'SS') {
-        if (deadline_month > 3) {
-            application_year = application_year - 1;
-        }
-    }
+    application_year = adjustYearForSemester(
+        application_year,
+        deadline_month,
+        semester
+    );
 
-    return `${application_year}/${
-        application.programId.application_start.split('-')[0]
-    }/${application.programId.application_start.split('-')[1]}`;
+    return formatApplicationDate(application_year, application_start);
 };
 
 export const application_deadline_calculator = (student, application) => {
@@ -806,12 +786,7 @@ export const application_deadline_calculator = (student, application) => {
     if (!application_deadline) {
         return 'No Data';
     }
-    let application_year = '<TBD>';
-    if (student.application_preference?.expected_application_date !== '') {
-        application_year = parseInt(
-            student.application_preference.expected_application_date
-        );
-    }
+    let application_year = getApplicationYear(student);
     if (!application_deadline) {
         return `${application_year}-<TBD>`;
     }
@@ -823,23 +798,13 @@ export const application_deadline_calculator = (student, application) => {
         application.programId.application_deadline.split('-')[0]
     );
 
-    if (semester === undefined) {
-        return 'Err';
-    }
-    if (semester === 'WS') {
-        if (deadline_month > 9) {
-            application_year = application_year - 1;
-        }
-    }
-    if (semester === 'SS') {
-        if (deadline_month > 3) {
-            application_year = application_year - 1;
-        }
-    }
+    application_year = adjustYearForSemester(
+        application_year,
+        deadline_month,
+        semester
+    );
 
-    return `${application_year}/${
-        application.programId.application_deadline.split('-')[0]
-    }/${application.programId.application_deadline.split('-')[1]}`;
+    return formatApplicationDate(application_year, application_deadline);
 };
 
 export const GetCVDeadline = (student) => {

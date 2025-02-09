@@ -138,7 +138,10 @@ const SingleProgramView = (props) => {
                             value={value}
                             variant="scrollable"
                         >
-                            <Tab label={t('Overview')} {...a11yProps(value, 0)} />
+                            <Tab
+                                label={t('Overview')}
+                                {...a11yProps(value, 0)}
+                            />
                             <Tab
                                 label={t('Application Deadline', {
                                     ns: 'common'
@@ -747,7 +750,10 @@ const SingleProgramView = (props) => {
                                             label="In Progress"
                                             {...a11yProps(value, 0)}
                                         />
-                                        <Tab label="Closed" {...a11yProps(value, 1)} />
+                                        <Tab
+                                            label="Closed"
+                                            {...a11yProps(value, 1)}
+                                        />
                                     </Tabs>
                                     <CustomTabPanel
                                         index={0}

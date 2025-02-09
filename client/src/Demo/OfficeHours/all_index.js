@@ -105,7 +105,7 @@ const AllOfficeHours = () => {
         id: event._id.toString(),
         start: new Date(event.start),
         end: new Date(event.end),
-        provider: event.requester_id[0] || { firstname: 'TBD', lastname: 'TBD' }
+        provider: event.requester_id?.[0] || { firstname: 'TBD', lastname: 'TBD' }
     }));
 
     return (
@@ -330,7 +330,10 @@ const AllOfficeHours = () => {
                                 value={value}
                                 variant="scrollable"
                             >
-                                <Tab label={t('Calendar')} {...a11yProps(value, 0)} />
+                                <Tab
+                                    label={t('Calendar')}
+                                    {...a11yProps(value, 0)}
+                                />
                             </Tabs>
                         </Box>
                         <CustomTabPanel index={0} value={value}>

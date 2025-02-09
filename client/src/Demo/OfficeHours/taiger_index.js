@@ -593,7 +593,10 @@ const TaiGerOfficeHours = () => {
                                 value={value}
                                 variant="scrollable"
                             >
-                                <Tab label={t('Calendar')} {...a11yProps(value, 0)} />
+                                <Tab
+                                    label={t('Calendar')}
+                                    {...a11yProps(value, 0)}
+                                />
                                 <Tab
                                     label={t('Available Blocks')}
                                     {...a11yProps(value, 1)}

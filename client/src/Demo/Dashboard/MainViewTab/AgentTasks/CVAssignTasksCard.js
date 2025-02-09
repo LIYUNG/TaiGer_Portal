@@ -20,49 +20,48 @@ import {
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 
+const CVAssignTasks = (props) => {
+    return (
+        <>
+            {/* cv assign tasks */}
+            {!isCVFinished(props.student) && !is_cv_assigned(props.student) ? (
+                <>
+                    <TableCell>
+                        <Link
+                            component={LinkDom}
+                            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                props.student._id.toString(),
+                                DEMO.CVMLRL_HASH
+                            )}`}
+                        >
+                            CV
+                        </Link>
+                    </TableCell>
+                    <TableCell>
+                        <b>
+                            {props.student.firstname} {props.student.lastname}
+                        </b>
+                    </TableCell>
+                    <TableCell>
+                        {props.student.application_preference
+                            ?.expected_application_date || (
+                            <span className="text-danger">TBD</span>
+                        )}
+                        /
+                        {props.student.application_preference
+                            ?.expected_application_semester || (
+                            <span className="text-danger">TBD</span>
+                        )}
+                    </TableCell>
+                </>
+            ) : null}
+        </>
+    );
+};
+
 const CVAssignTasksCard = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
-    const CVAssignTasks = (props) => {
-        return (
-            <>
-                {/* cv assign tasks */}
-                {!isCVFinished(props.student) &&
-                !is_cv_assigned(props.student) ? (
-                    <>
-                        <TableCell>
-                            <Link
-                                component={LinkDom}
-                                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                    props.student._id.toString(),
-                                    DEMO.CVMLRL_HASH
-                                )}`}
-                            >
-                                CV
-                            </Link>
-                        </TableCell>
-                        <TableCell>
-                            <b>
-                                {props.student.firstname}{' '}
-                                {props.student.lastname}
-                            </b>
-                        </TableCell>
-                        <TableCell>
-                            {props.student.application_preference
-                                ?.expected_application_date || (
-                                <span className="text-danger">TBD</span>
-                            )}
-                            /
-                            {props.student.application_preference
-                                ?.expected_application_semester || (
-                                <span className="text-danger">TBD</span>
-                            )}
-                        </TableCell>
-                    </>
-                ) : null}
-            </>
-        );
-    };
 
     const cv_assign_tasks = props.students
         .filter((student) =>

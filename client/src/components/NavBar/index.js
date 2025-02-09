@@ -94,6 +94,67 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     justifyContent: 'flex-end'
 }));
 
+const RenderMenu = ({
+    anchorEl,
+    handleClose,
+    isMenuOpen,
+    handleCloseProfile,
+    handleCloseSettings,
+    handleCloseLogout,
+    user
+}) => (
+    <Menu
+        anchorEl={anchorEl}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        id="account-menu"
+        onClick={handleClose}
+        onClose={handleClose}
+        open={isMenuOpen}
+        sx={{
+            // overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1
+            },
+            '&::before': {
+                content: '""',
+                display: 'block',
+                position: 'absolute',
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: 'background.paper',
+                transform: 'translateY(-50%) rotate(45deg)',
+                zIndex: 0
+            }
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+    >
+        <MenuItem onClick={handleCloseProfile}>
+            <Avatar />
+            {`${user.firstname} ${user.lastname}`}
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={handleCloseSettings}>
+            <ListItemIcon>
+                <Settings fontSize="small" />
+            </ListItemIcon>
+            {i18next.t('Settings', { ns: 'common' })}
+        </MenuItem>
+        <MenuItem onClick={handleCloseLogout}>
+            <ListItemIcon>
+                <Logout fontSize="small" />
+            </ListItemIcon>
+            {i18next.t('Log Out', { ns: 'common' })}
+        </MenuItem>
+    </Menu>
+);
+
 const NavBar = (props) => {
     const { user, isAuthenticated, isLoaded, logout } = useAuth();
     const theme = useTheme();
@@ -257,58 +318,6 @@ const NavBar = (props) => {
         </Menu>
     );
     const menuId = 'primary-search-account-menu';
-    const RenderMenu = () => (
-        <Menu
-            anchorEl={anchorEl}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            id="account-menu"
-            onClick={handleClose}
-            onClose={handleClose}
-            open={isMenuOpen}
-            sx={{
-                // overflow: 'visible',
-                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                mt: 1.5,
-                '& .MuiAvatar-root': {
-                    width: 32,
-                    height: 32,
-                    ml: -0.5,
-                    mr: 1
-                },
-                '&::before': {
-                    content: '""',
-                    display: 'block',
-                    position: 'absolute',
-                    top: 0,
-                    right: 14,
-                    width: 10,
-                    height: 10,
-                    bgcolor: 'background.paper',
-                    transform: 'translateY(-50%) rotate(45deg)',
-                    zIndex: 0
-                }
-            }}
-            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        >
-            <MenuItem onClick={handleCloseProfile}>
-                <Avatar />
-                {`${user.firstname} ${user.lastname}`}
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={handleCloseSettings}>
-                <ListItemIcon>
-                    <Settings fontSize="small" />
-                </ListItemIcon>
-                {i18next.t('Settings', { ns: 'common' })}
-            </MenuItem>
-            <MenuItem onClick={handleCloseLogout}>
-                <ListItemIcon>
-                    <Logout fontSize="small" />
-                </ListItemIcon>
-                {i18next.t('Log Out', { ns: 'common' })}
-            </MenuItem>
-        </Menu>
-    );
 
     const mobileMenuId = 'primary-search-account-menu-mobile';
     const renderMobileMenu = (
@@ -574,7 +583,15 @@ const NavBar = (props) => {
                 {props.children}
                 {renderMobileMenu}
                 {RenderChatList}
-                <RenderMenu />
+                <RenderMenu
+                    anchorEl={anchorEl}
+                    handleClose={handleClose}
+                    handleCloseLogout={handleCloseLogout}
+                    handleCloseProfile={handleCloseProfile}
+                    handleCloseSettings={handleCloseSettings}
+                    isMenuOpen={isMenuOpen}
+                    user={user}
+                />
             </Main>
         </Box>
     );

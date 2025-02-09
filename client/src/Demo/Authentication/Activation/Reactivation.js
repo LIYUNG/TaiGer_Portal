@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Button, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -56,7 +55,3 @@ export default function Reactivation(props) {
         </AuthWrapper>
     );
 }
-
-Reactivation.propTypes = {
-    setToken: PropTypes.func.isRequired
-};

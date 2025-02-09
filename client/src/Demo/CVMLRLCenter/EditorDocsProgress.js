@@ -21,7 +21,6 @@ import {
     DialogActions
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useTranslation } from 'react-i18next';
 import LaunchIcon from '@mui/icons-material/Launch';
 import {
     isProgramDecided,
@@ -47,10 +46,93 @@ import {
 } from '../../api';
 import DEMO from '../../store/constant';
 import Loading from '../../components/Loading/Loading';
-// import DocumentCheckingResultModal from './DocModificationThreadPage/DocumentCheckingResultModal';
+import i18next from 'i18next';
+
+const ApplicationAccordionSummary = ({ application, student }) => {
+    return (
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Grid container spacing={2}>
+                <Grid item md={1} xs={1}>
+                    {application.decided === '-' ? (
+                        <Typography color="grey" sx={{ mr: 2 }} variant="body1">
+                            Undecided
+                        </Typography>
+                    ) : application.decided === 'X' ? (
+                        <Typography color="grey" sx={{ mr: 2 }} variant="body1">
+                            Not wanted
+                        </Typography>
+                    ) : isProgramSubmitted(application) ? (
+                        <IconButton>{FILE_OK_SYMBOL}</IconButton>
+                    ) : isProgramWithdraw(application) ? (
+                        <Typography fontWeight="bold">
+                            {i18next.t('WITHDRAW', { ns: 'common' })}
+                        </Typography>
+                    ) : (
+                        <Typography fontWeight="bold">
+                            {i18next.t('In Progress', { ns: 'common' })}
+                        </Typography>
+                    )}
+                </Grid>
+                <Grid item md={1} xs={1}>
+                    <Typography
+                        color={
+                            isProgramDecided(application)
+                                ? isProgramSubmitted(application)
+                                    ? 'success.light'
+                                    : 'error.main'
+                                : 'grey'
+                        }
+                        sx={{ mr: 2 }}
+                        variant="body1"
+                    >
+                        {
+                            application.doc_modification_thread?.filter(
+                                (doc) => doc.isFinalVersion
+                            ).length
+                        }
+                        /{application.doc_modification_thread?.length || 0}
+                    </Typography>
+                </Grid>
+                <Grid item md={8} xs={8}>
+                    <Box sx={{ display: 'flex' }}>
+                        <Typography
+                            color={
+                                isProgramDecided(application)
+                                    ? isProgramSubmitted(application)
+                                        ? 'success.light'
+                                        : 'error.main'
+                                    : 'grey'
+                            }
+                            sx={{ mr: 2 }}
+                            variant="body1"
+                        >
+                            <b>
+                                {application.programId.school} -{' '}
+                                {application.programId.degree} -{' '}
+                                {application.programId.program_name}
+                            </b>
+                        </Typography>
+                        <Link
+                            component={LinkDom}
+                            target="_blank"
+                            to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
+                        >
+                            <LaunchIcon />
+                        </Link>
+                    </Box>
+                </Grid>
+                <Grid item md={2} xs={2}>
+                    <Typography>
+                        Deadline:{' '}
+                        {application_deadline_calculator(student, application)}
+                    </Typography>
+                </Grid>
+            </Grid>
+        </AccordionSummary>
+    );
+};
 
 const EditorDocsProgress = (props) => {
-    const { t } = useTranslation();
     const [editorDocsProgressState, setEditorDocsProgressState] = useState({
         error: '',
         delete_field: '',
@@ -547,101 +629,6 @@ const EditorDocsProgress = (props) => {
         return <ErrorPage res_status={res_status} />;
     }
 
-    const ApplicationAccordionSummary = ({ application }) => {
-        return (
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Grid container spacing={2}>
-                    <Grid item md={1} xs={1}>
-                        {application.decided === '-' ? (
-                            <Typography
-                                color="grey"
-                                sx={{ mr: 2 }}
-                                variant="body1"
-                            >
-                                Undecided
-                            </Typography>
-                        ) : application.decided === 'X' ? (
-                            <Typography
-                                color="grey"
-                                sx={{ mr: 2 }}
-                                variant="body1"
-                            >
-                                Not wanted
-                            </Typography>
-                        ) : isProgramSubmitted(application) ? (
-                            <IconButton>{FILE_OK_SYMBOL}</IconButton>
-                        ) : isProgramWithdraw(application) ? (
-                            <Typography fontWeight="bold">
-                                {t('WITHDRAW', { ns: 'common' })}
-                            </Typography>
-                        ) : (
-                            <Typography fontWeight="bold">
-                                {t('In Progress', { ns: 'common' })}
-                            </Typography>
-                        )}
-                    </Grid>
-                    <Grid item md={1} xs={1}>
-                        <Typography
-                            color={
-                                isProgramDecided(application)
-                                    ? isProgramSubmitted(application)
-                                        ? 'success.light'
-                                        : 'error.main'
-                                    : 'grey'
-                            }
-                            sx={{ mr: 2 }}
-                            variant="body1"
-                        >
-                            {
-                                application.doc_modification_thread?.filter(
-                                    (doc) => doc.isFinalVersion
-                                ).length
-                            }
-                            /{application.doc_modification_thread?.length || 0}
-                        </Typography>
-                    </Grid>
-                    <Grid item md={8} xs={8}>
-                        <Box sx={{ display: 'flex' }}>
-                            <Typography
-                                color={
-                                    isProgramDecided(application)
-                                        ? isProgramSubmitted(application)
-                                            ? 'success.light'
-                                            : 'error.main'
-                                        : 'grey'
-                                }
-                                sx={{ mr: 2 }}
-                                variant="body1"
-                            >
-                                <b>
-                                    {application.programId.school} -{' '}
-                                    {application.programId.degree} -{' '}
-                                    {application.programId.program_name}
-                                </b>
-                            </Typography>
-                            <Link
-                                component={LinkDom}
-                                target="_blank"
-                                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
-                            >
-                                <LaunchIcon />
-                            </Link>
-                        </Box>
-                    </Grid>
-                    <Grid item md={2} xs={2}>
-                        <Typography>
-                            Deadline:{' '}
-                            {application_deadline_calculator(
-                                editorDocsProgressState.student,
-                                application
-                            )}
-                        </Typography>
-                    </Grid>
-                </Grid>
-            </AccordionSummary>
-        );
-    };
-
     return (
         <Box>
             {res_modal_status >= 400 ? (
@@ -662,7 +649,7 @@ const EditorDocsProgress = (props) => {
             />
             <Divider />
             <Typography sx={{ mt: 2 }}>
-                {t('Applications', { ns: 'common' })}
+                {i18next.t('Applications', { ns: 'common' })}
             </Typography>
             {/* TODO: simplify this! with array + function! */}
             {editorDocsProgressState.student.applications
@@ -672,6 +659,7 @@ const EditorDocsProgress = (props) => {
                         <Accordion defaultExpanded={false} disableGutters>
                             <ApplicationAccordionSummary
                                 application={application}
+                                student={editorDocsProgressState.student}
                             />
                             <AccordionDetails>
                                 <ManualFiles
@@ -703,6 +691,7 @@ const EditorDocsProgress = (props) => {
                         <Accordion defaultExpanded={false} disableGutters>
                             <ApplicationAccordionSummary
                                 application={application}
+                                student={editorDocsProgressState.student}
                             />
                             <AccordionDetails>
                                 <ManualFiles
@@ -732,7 +721,9 @@ const EditorDocsProgress = (props) => {
                 onClose={closeWarningWindow}
                 open={editorDocsProgressState.deleteFileWarningModel}
             >
-                <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+                <DialogTitle>
+                    {i18next.t('Warning', { ns: 'common' })}
+                </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Do you want to delete{' '}
@@ -767,7 +758,7 @@ const EditorDocsProgress = (props) => {
                         variant="contained"
                     >
                         {isLoaded ? (
-                            t('Yes', { ns: 'common' })
+                            i18next.t('Yes', { ns: 'common' })
                         ) : (
                             <div style={spinner_style2}>
                                 <CircularProgress />
@@ -779,7 +770,7 @@ const EditorDocsProgress = (props) => {
                         onClick={closeWarningWindow}
                         variant="outlined"
                     >
-                        {t('No', { ns: 'common' })}
+                        {i18next.t('No', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -799,7 +790,9 @@ const EditorDocsProgress = (props) => {
                 onClose={closeSetAsFinalFileModelWindow}
                 open={editorDocsProgressState.SetAsFinalFileModel}
             >
-                <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
+                <DialogTitle>
+                    {i18next.t('Warning', { ns: 'common' })}
+                </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Do you want to set {editorDocsProgressState.docName} as{' '}
@@ -814,7 +807,7 @@ const EditorDocsProgress = (props) => {
                         variant="contained"
                     >
                         {isLoaded ? (
-                            t('Yes', { ns: 'common' })
+                            i18next.t('Yes', { ns: 'common' })
                         ) : (
                             <div style={spinner_style2}>
                                 <CircularProgress />
@@ -825,7 +818,7 @@ const EditorDocsProgress = (props) => {
                         onClick={closeSetAsFinalFileModelWindow}
                         variant="outlined"
                     >
-                        {t('No', { ns: 'common' })}
+                        {i18next.t('No', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -835,7 +828,7 @@ const EditorDocsProgress = (props) => {
                 open={editorDocsProgressState.Requirements_Modal}
             >
                 <DialogTitle>
-                    {t('Special Requirements', { ns: 'common' })}
+                    {i18next.t('Special Requirements', { ns: 'common' })}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -850,7 +843,7 @@ const EditorDocsProgress = (props) => {
                         onClick={close_Requirements_ModalWindow}
                         variant="outlined"
                     >
-                        {t('Close', { ns: 'common' })}
+                        {i18next.t('Close', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -859,7 +852,7 @@ const EditorDocsProgress = (props) => {
                 onClose={closeSetProgramStatusModel}
                 open={editorDocsProgressState.SetProgramStatusModel}
             >
-                <DialogTitle>{t('Attention')}</DialogTitle>
+                <DialogTitle>{i18next.t('Attention')}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         Do you want to{' '}
@@ -877,14 +870,14 @@ const EditorDocsProgress = (props) => {
                         onClick={SubmitProgramStatusHandler}
                         variant="contained"
                     >
-                        {t('Yes', { ns: 'common' })}
+                        {i18next.t('Yes', { ns: 'common' })}
                     </Button>
                     <Button
                         color="primary"
                         onClick={closeSetProgramStatusModel}
                         variant="outlined"
                     >
-                        {t('No', { ns: 'common' })}
+                        {i18next.t('No', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>

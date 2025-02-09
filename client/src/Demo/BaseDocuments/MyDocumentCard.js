@@ -61,6 +61,168 @@ import {
 } from '../../api';
 import { queryClient } from '../../api/client';
 import { useSnackBar } from '../../contexts/use-snack-bar';
+import i18next from 'i18next';
+
+const StatusIcon = ({ st }) => {
+    if (st === DocumentStatusType.Uploaded) {
+        return FILE_UPLOADED_SYMBOL;
+    } else if (st === DocumentStatusType.Accepted) {
+        return FILE_OK_SYMBOL;
+    } else if (st === DocumentStatusType.Rejected) {
+        return FILE_NOT_OK_SYMBOL;
+    } else if (st === DocumentStatusType.NotNeeded) {
+        return FILE_DONT_CARE_SYMBOL;
+    } else if (st === DocumentStatusType.Missing) {
+        return FILE_MISSING_SYMBOL;
+    }
+};
+
+const SingleDocumentCard = ({
+    st,
+    isUploadingFile,
+    onDeleteFileWarningPopUp,
+    category,
+    user,
+    link,
+    docName,
+    isDeletingFile,
+    comments,
+    setShowPreview,
+    time,
+    MyDocumentCardState,
+    openCommentWindow,
+    handleGeneralDocSubmitV2,
+    onUpdateProfileDocStatus,
+    setBaseDocsflagOffcanvas
+}) => {
+    return (st === DocumentStatusType.NotNeeded &&
+        is_TaiGer_AdminAgent(user)) ||
+        st === DocumentStatusType.Uploaded ||
+        st === DocumentStatusType.Rejected ||
+        st === DocumentStatusType.Missing ||
+        st === DocumentStatusType.Accepted ? (
+        <Box
+            sx={{
+                mb: 1,
+                p: 2,
+                border: '1px solid',
+                borderColor: 'grey.300',
+                borderRadius: 2
+            }}
+        >
+            <Grid alignItems="center" container spacing={2}>
+                <Grid item sm={8} xs={8}>
+                    <Stack alignItems="center" direction="row" spacing={1}>
+                        <StatusIcon st={st} />
+                        <Typography variant="body1">
+                            {i18next.t(docName, { ns: 'common' })}
+                        </Typography>
+                        <Tooltip title={i18next.t('Read More')}>
+                            <IconButton
+                                color="primary"
+                                component={LinkDom}
+                                size="small"
+                                target="_blank"
+                                to={link && link !== '' ? link : '/'}
+                            >
+                                <LaunchIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                        {is_TaiGer_Admin(user) ? (
+                            <Typography
+                                color="primary"
+                                component="a"
+                                onClick={() => setBaseDocsflagOffcanvas(true)}
+                            >
+                                {i18next.t('Edit', { ns: 'common' })}
+                            </Typography>
+                        ) : null}
+                    </Stack>
+                    {st === DocumentStatusType.Rejected ? (
+                        <Typography fontWeight="bold" variant="body2">
+                            {i18next.t('Message', { ns: 'common' })}: {comments}
+                        </Typography>
+                    ) : null}
+                    <Typography color="textSecondary" variant="body2">
+                        {convertDate(time)}
+                    </Typography>
+                </Grid>
+                <Grid item sm={4} xs={4}>
+                    <Stack
+                        alignItems="center"
+                        direction="row"
+                        justifyContent="flex-end"
+                        spacing={1}
+                    >
+                        {(st === DocumentStatusType.Missing ||
+                            st === DocumentStatusType.NotNeeded) &&
+                        (is_TaiGer_Student(user) ||
+                            is_TaiGer_AdminAgent(user)) ? (
+                            <UploadIconButton
+                                buttonState={MyDocumentCardState}
+                                category={category}
+                                handleGeneralDocSubmit={
+                                    handleGeneralDocSubmitV2
+                                }
+                                isLoading={isUploadingFile}
+                                user={user}
+                            />
+                        ) : null}
+                        {st === DocumentStatusType.Rejected ||
+                        st === DocumentStatusType.Uploaded ||
+                        st === DocumentStatusType.Accepted ? (
+                            <DownloadIconButton
+                                showPreview={() => setShowPreview(true)}
+                            />
+                        ) : null}
+                        {st === DocumentStatusType.Rejected &&
+                        !is_TaiGer_Student(user) ? (
+                            <CommentsIconButton
+                                buttonState={MyDocumentCardState}
+                                category={category}
+                                openCommentWindow={openCommentWindow}
+                            />
+                        ) : null}
+                        {st === DocumentStatusType.NotNeeded ? (
+                            <SetNeededIconButton
+                                buttonState={MyDocumentCardState}
+                                category={category}
+                                onUpdateProfileDocStatus={
+                                    onUpdateProfileDocStatus
+                                }
+                            />
+                        ) : null}
+                        {(st === DocumentStatusType.Uploaded ||
+                            st === DocumentStatusType.Rejected ||
+                            (st === DocumentStatusType.Accepted &&
+                                is_TaiGer_AdminAgent(user))) &&
+                        !is_TaiGer_Editor(user) ? (
+                            <DeleteIconButton
+                                category={category}
+                                docName={docName}
+                                isLoading={isDeletingFile}
+                                onDeleteFileWarningPopUp={
+                                    onDeleteFileWarningPopUp
+                                }
+                                student_id={MyDocumentCardState.student_id}
+                            />
+                        ) : null}
+                        {st === DocumentStatusType.Missing &&
+                        is_TaiGer_AdminAgent(user) ? (
+                            <SetNotNeededIconButton
+                                buttonState={MyDocumentCardState}
+                                category={category}
+                                onUpdateProfileDocStatus={
+                                    onUpdateProfileDocStatus
+                                }
+                            />
+                        ) : null}
+                    </Stack>
+                </Grid>
+            </Grid>
+        </Box>
+    ) : null;
+};
 
 const MyDocumentCard = (props) => {
     const { user } = useAuth();
@@ -306,163 +468,26 @@ const MyDocumentCard = (props) => {
         }));
     };
 
-    const StatusIcon = ({ st }) => {
-        if (st === DocumentStatusType.Uploaded) {
-            return FILE_UPLOADED_SYMBOL;
-        } else if (st === DocumentStatusType.Accepted) {
-            return FILE_OK_SYMBOL;
-        } else if (st === DocumentStatusType.Rejected) {
-            return FILE_NOT_OK_SYMBOL;
-        } else if (st === DocumentStatusType.NotNeeded) {
-            return FILE_DONT_CARE_SYMBOL;
-        } else if (st === DocumentStatusType.Missing) {
-            return FILE_MISSING_SYMBOL;
-        }
-    };
-
-    const SingleDocumentCard = ({ st }) => {
-        return (st === DocumentStatusType.NotNeeded &&
-            is_TaiGer_AdminAgent(user)) ||
-            st === DocumentStatusType.Uploaded ||
-            st === DocumentStatusType.Rejected ||
-            st === DocumentStatusType.Missing ||
-            st === DocumentStatusType.Accepted ? (
-            <Box
-                sx={{
-                    mb: 1,
-                    p: 2,
-                    border: '1px solid',
-                    borderColor: 'grey.300',
-                    borderRadius: 2
-                }}
-            >
-                <Grid alignItems="center" container spacing={2}>
-                    <Grid item sm={8} xs={8}>
-                        <Stack alignItems="center" direction="row" spacing={1}>
-                            <StatusIcon st={st} />
-                            <Typography variant="body1">
-                                {t(props.docName, { ns: 'common' })}
-                            </Typography>
-                            <Tooltip title={t('Read More')}>
-                                <IconButton
-                                    color="primary"
-                                    component={LinkDom}
-                                    size="small"
-                                    target="_blank"
-                                    to={
-                                        MyDocumentCardState.link &&
-                                        MyDocumentCardState.link !== ''
-                                            ? MyDocumentCardState.link
-                                            : '/'
-                                    }
-                                >
-                                    <LaunchIcon fontSize="small" />
-                                </IconButton>
-                            </Tooltip>
-                            {is_TaiGer_Admin(user) ? (
-                                <Typography
-                                    color="primary"
-                                    component="a"
-                                    onClick={() =>
-                                        setBaseDocsflagOffcanvas(true)
-                                    }
-                                >
-                                    {t('Edit', { ns: 'common' })}
-                                </Typography>
-                            ) : null}
-                        </Stack>
-                        {st === DocumentStatusType.Rejected ? (
-                            <Typography fontWeight="bold" variant="body2">
-                                {t('Message', { ns: 'common' })}:{' '}
-                                {MyDocumentCardState.comments}
-                            </Typography>
-                        ) : null}
-                        <Typography color="textSecondary" variant="body2">
-                            {convertDate(props.time)}
-                        </Typography>
-                    </Grid>
-                    <Grid item sm={4} xs={4}>
-                        <Stack
-                            alignItems="center"
-                            direction="row"
-                            justifyContent="flex-end"
-                            spacing={1}
-                        >
-                            {(st === DocumentStatusType.Missing ||
-                                st === DocumentStatusType.NotNeeded) &&
-                            (is_TaiGer_Student(user) ||
-                                is_TaiGer_AdminAgent(user)) ? (
-                                <UploadIconButton
-                                    buttonState={MyDocumentCardState}
-                                    category={props.category}
-                                    handleGeneralDocSubmit={
-                                        handleGeneralDocSubmitV2
-                                    }
-                                    isLoading={isUploadingFile}
-                                    user={user}
-                                />
-                            ) : null}
-                            {st === DocumentStatusType.Rejected ||
-                            st === DocumentStatusType.Uploaded ||
-                            st === DocumentStatusType.Accepted ? (
-                                <DownloadIconButton
-                                    showPreview={() => setShowPreview(true)}
-                                />
-                            ) : null}
-                            {st === DocumentStatusType.Rejected &&
-                            !is_TaiGer_Student(user) ? (
-                                <CommentsIconButton
-                                    buttonState={MyDocumentCardState}
-                                    category={props.category}
-                                    openCommentWindow={openCommentWindow}
-                                />
-                            ) : null}
-                            {st === DocumentStatusType.NotNeeded ? (
-                                <SetNeededIconButton
-                                    buttonState={MyDocumentCardState}
-                                    category={props.category}
-                                    onUpdateProfileDocStatus={
-                                        onUpdateProfileDocStatus
-                                    }
-                                />
-                            ) : null}
-                            {(st === DocumentStatusType.Uploaded ||
-                                st === DocumentStatusType.Rejected ||
-                                (st === DocumentStatusType.Accepted &&
-                                    is_TaiGer_AdminAgent(user))) &&
-                            !is_TaiGer_Editor(user) ? (
-                                <DeleteIconButton
-                                    category={props.category}
-                                    docName={props.docName}
-                                    isLoading={isDeletingFile}
-                                    onDeleteFileWarningPopUp={
-                                        onDeleteFileWarningPopUp
-                                    }
-                                    student_id={MyDocumentCardState.student_id}
-                                />
-                            ) : null}
-                            {st === DocumentStatusType.Missing &&
-                            is_TaiGer_AdminAgent(user) ? (
-                                <SetNotNeededIconButton
-                                    buttonState={MyDocumentCardState}
-                                    category={props.category}
-                                    onUpdateProfileDocStatus={
-                                        onUpdateProfileDocStatus
-                                    }
-                                />
-                            ) : null}
-                        </Stack>
-                    </Grid>
-                </Grid>
-            </Box>
-        ) : (
-            <></>
-        );
-    };
-
     return (
         <>
-            <SingleDocumentCard st={status} />
+            <SingleDocumentCard
+                MyDocumentCardState={MyDocumentCardState}
+                category={props.category}
+                comments={MyDocumentCardState.comments}
+                docName={props.docName}
+                handleGeneralDocSubmitV2={handleGeneralDocSubmitV2}
+                isDeletingFile={isDeletingFile}
+                isUploadingFile={isUploadingFile}
+                link={MyDocumentCardState.link}
+                onDeleteFileWarningPopUp={onDeleteFileWarningPopUp}
+                onUpdateProfileDocStatus={onUpdateProfileDocStatus}
+                openCommentWindow={openCommentWindow}
+                setBaseDocsflagOffcanvas={setBaseDocsflagOffcanvas}
+                setShowPreview={setShowPreview}
+                st={status}
+                time={props.time}
+                user={user}
+            />
             <Dialog
                 aria-labelledby="contained-modal-title-vcenter"
                 onClose={closeWarningWindow}

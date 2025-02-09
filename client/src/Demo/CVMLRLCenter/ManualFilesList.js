@@ -1,13 +1,13 @@
 import React from 'react';
 
-import EditableFile_Thread from './EditableFile_Thread';
+import EditableFileThread from './EditableFileThread';
 
 const ManualFilesList = (props) => {
     let message_threads;
     if (props.application === null) {
         message_threads = props.student.generaldocs_threads
             ? props.student.generaldocs_threads.map((thread) => (
-                  <EditableFile_Thread
+                  <EditableFileThread
                       application={props.application}
                       decided="O"
                       handleAsFinalFile={props.handleAsFinalFile}
@@ -27,7 +27,7 @@ const ManualFilesList = (props) => {
         message_threads =
             props.application && props.application.doc_modification_thread
                 ? props.application.doc_modification_thread.map((thread) => (
-                      <EditableFile_Thread
+                      <EditableFileThread
                           application={props.application}
                           decided={props.application.decided}
                           handleAsFinalFile={props.handleAsFinalFile}

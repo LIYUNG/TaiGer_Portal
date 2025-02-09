@@ -16,8 +16,8 @@ import {
     TableRow,
     Typography
 } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import { is_TaiGer_Admin, is_TaiGer_role, Role } from '@taiger-common/core';
+import i18next from 'i18next';
 
 import ErrorPage from '../Utils/ErrorPage';
 import { getTeamMembers, updateUserPermission } from '../../api';
@@ -29,10 +29,226 @@ import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 
+const EditorRow = ({ editor, setModalShow, user }) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    return (
+        <TableRow>
+            <TableCell>
+                <Typography>
+                    <Link
+                        component={LinkDom}
+                        to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+                    >
+                        {editor.firstname} {editor.lastname}{' '}
+                    </Link>
+                </Typography>
+            </TableCell>
+            <TableCell>
+                {editor.permissions.length > 0
+                    ? editor.permissions[0].canAssignAgents
+                        ? 'O'
+                        : 'X'
+                    : 'x'}
+            </TableCell>
+            <TableCell>
+                {editor.permissions.length > 0
+                    ? editor.permissions[0].canAssignEditors
+                        ? 'O'
+                        : 'X'
+                    : 'x'}
+            </TableCell>
+            <TableCell>
+                {editor.permissions.length > 0
+                    ? editor.permissions[0].canModifyDocumentation
+                        ? 'O'
+                        : 'X'
+                    : 'x'}
+            </TableCell>
+            <TableCell>
+                {editor.permissions.length > 0
+                    ? editor.permissions[0].canAccessStudentDatabase
+                        ? 'O'
+                        : 'X'
+                    : 'x'}
+            </TableCell>
+            <TableCell>
+                {editor.permissions.length > 0
+                    ? editor.permissions[0].canUseTaiGerAI
+                        ? 'O'
+                        : 'X'
+                    : 'x'}
+            </TableCell>
+            <TableCell>
+                <span>{editor.permissions[0]?.taigerAiQuota | 0}</span>
+            </TableCell>
+            <TableCell>
+                <Button
+                    aria-controls={open ? `basic-menu` : undefined}
+                    aria-expanded={open ? 'true' : undefined}
+                    aria-haspopup="true"
+                    id="basic-button"
+                    onClick={handleClick}
+                    variant="contained"
+                >
+                    {i18next.t('Edit', { ns: 'common' })}
+                </Button>
+                <Menu
+                    MenuListProps={{
+                        'aria-labelledby': 'basic-button'
+                    }}
+                    anchorEl={anchorEl}
+                    disabled={!is_TaiGer_Admin(user)}
+                    id="basic-menu"
+                    onClose={handleClose}
+                    open={open}
+                >
+                    <MenuItem
+                        onClick={() =>
+                            setModalShow(
+                                editor.firstname,
+                                editor.lastname,
+                                editor._id.toString(),
+                                editor.permissions
+                            )
+                        }
+                    >
+                        Permission
+                    </MenuItem>
+                </Menu>
+            </TableCell>
+        </TableRow>
+    );
+};
+
+const AgentRow = ({ agent, setModalShow, user }) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    return (
+        <TableRow>
+            <TableCell>
+                <Typography>
+                    <Link
+                        component={LinkDom}
+                        to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
+                    >
+                        {agent.firstname} {agent.lastname}{' '}
+                    </Link>
+                </Typography>
+            </TableCell>
+            <TableCell>
+                {agent.permissions?.length > 0
+                    ? agent.permissions[0].canModifyProgramList
+                        ? 'O'
+                        : 'X'
+                    : 'x'}
+            </TableCell>
+            <TableCell>
+                {agent.permissions?.length > 0
+                    ? agent.permissions[0].canModifyAllBaseDocuments
+                        ? 'O'
+                        : 'X'
+                    : 'x'}
+            </TableCell>
+            <TableCell>
+                {agent.permissions?.length > 0
+                    ? agent.permissions[0].canAccessAllChat
+                        ? 'O'
+                        : 'X'
+                    : 'x'}
+            </TableCell>
+            <TableCell>
+                {agent.permissions?.length > 0
+                    ? agent.permissions[0].canAssignAgents
+                        ? 'O'
+                        : 'X'
+                    : 'x'}
+            </TableCell>
+            <TableCell>
+                {agent.permissions?.length > 0
+                    ? agent.permissions[0].canAssignEditors
+                        ? 'O'
+                        : 'X'
+                    : 'x'}
+            </TableCell>
+            <TableCell>
+                {agent.permissions?.length > 0
+                    ? agent.permissions[0].canModifyDocumentation
+                        ? 'O'
+                        : 'X'
+                    : 'x'}
+            </TableCell>
+            <TableCell>
+                {agent.permissions?.length > 0
+                    ? agent.permissions[0].canAccessStudentDatabase
+                        ? 'O'
+                        : 'X'
+                    : 'x'}
+            </TableCell>
+            <TableCell>
+                {agent.permissions.length > 0
+                    ? agent.permissions[0].canUseTaiGerAI
+                        ? 'O'
+                        : 'X'
+                    : 'x'}
+            </TableCell>
+            <TableCell>
+                <span>{agent.permissions[0]?.taigerAiQuota | 0}</span>
+            </TableCell>
+            <TableCell>
+                <Button
+                    aria-controls={open ? `basic-menu` : undefined}
+                    aria-expanded={open ? 'true' : undefined}
+                    aria-haspopup="true"
+                    id="basic-button"
+                    onClick={handleClick}
+                    variant="contained"
+                >
+                    {i18next.t('Edit', { ns: 'common' })}
+                </Button>
+                <Menu
+                    MenuListProps={{
+                        'aria-labelledby': 'basic-button'
+                    }}
+                    anchorEl={anchorEl}
+                    disabled={!is_TaiGer_Admin(user)}
+                    id="basic-menu"
+                    onClose={() => setAnchorEl(null)}
+                    open={open}
+                >
+                    <MenuItem
+                        onClick={() =>
+                            setModalShow(
+                                agent.firstname,
+                                agent.lastname,
+                                agent._id.toString(),
+                                agent.permissions
+                            )
+                        }
+                    >
+                        Permission
+                    </MenuItem>
+                </Menu>
+            </TableCell>
+        </TableRow>
+    );
+};
+
 // TODO TEST_CASE
 const TaiGerOrg = () => {
     const { user } = useAuth();
-    const { t } = useTranslation();
 
     const [taiGerOrgState, setTaiGerOrgState] = useState({
         error: '',
@@ -181,222 +397,6 @@ const TaiGerOrg = () => {
         (member) => member.role === Role.Editor
     );
 
-    const EditorRow = ({ editor }) => {
-        const [anchorEl, setAnchorEl] = useState(null);
-        const open = Boolean(anchorEl);
-        const handleClick = (event) => {
-            setAnchorEl(event.currentTarget);
-        };
-
-        const handleClose = () => {
-            setAnchorEl(null);
-        };
-
-        return (
-            <TableRow>
-                <TableCell>
-                    <Typography>
-                        <Link
-                            component={LinkDom}
-                            to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
-                        >
-                            {editor.firstname} {editor.lastname}{' '}
-                        </Link>
-                    </Typography>
-                </TableCell>
-                <TableCell>
-                    {editor.permissions.length > 0
-                        ? editor.permissions[0].canAssignAgents
-                            ? 'O'
-                            : 'X'
-                        : 'x'}
-                </TableCell>
-                <TableCell>
-                    {editor.permissions.length > 0
-                        ? editor.permissions[0].canAssignEditors
-                            ? 'O'
-                            : 'X'
-                        : 'x'}
-                </TableCell>
-                <TableCell>
-                    {editor.permissions.length > 0
-                        ? editor.permissions[0].canModifyDocumentation
-                            ? 'O'
-                            : 'X'
-                        : 'x'}
-                </TableCell>
-                <TableCell>
-                    {editor.permissions.length > 0
-                        ? editor.permissions[0].canAccessStudentDatabase
-                            ? 'O'
-                            : 'X'
-                        : 'x'}
-                </TableCell>
-                <TableCell>
-                    {editor.permissions.length > 0
-                        ? editor.permissions[0].canUseTaiGerAI
-                            ? 'O'
-                            : 'X'
-                        : 'x'}
-                </TableCell>
-                <TableCell>
-                    <span>{editor.permissions[0]?.taigerAiQuota | 0}</span>
-                </TableCell>
-                <TableCell>
-                    <Button
-                        aria-controls={open ? `basic-menu` : undefined}
-                        aria-expanded={open ? 'true' : undefined}
-                        aria-haspopup="true"
-                        id="basic-button"
-                        onClick={handleClick}
-                        variant="contained"
-                    >
-                        {t('Edit', { ns: 'common' })}
-                    </Button>
-                    <Menu
-                        MenuListProps={{
-                            'aria-labelledby': 'basic-button'
-                        }}
-                        anchorEl={anchorEl}
-                        disabled={!is_TaiGer_Admin(user)}
-                        id="basic-menu"
-                        onClose={handleClose}
-                        open={open}
-                    >
-                        <MenuItem
-                            onClick={() =>
-                                setModalShow(
-                                    editor.firstname,
-                                    editor.lastname,
-                                    editor._id.toString(),
-                                    editor.permissions
-                                )
-                            }
-                        >
-                            Permission
-                        </MenuItem>
-                    </Menu>
-                </TableCell>
-            </TableRow>
-        );
-    };
-
-    const AgentRow = ({ agent }) => {
-        const [anchorEl, setAnchorEl] = useState(null);
-        const open = Boolean(anchorEl);
-        const handleClick = (event) => {
-            setAnchorEl(event.currentTarget);
-        };
-
-        return (
-            <TableRow>
-                <TableCell>
-                    <Typography>
-                        <Link
-                            component={LinkDom}
-                            to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
-                        >
-                            {agent.firstname} {agent.lastname}{' '}
-                        </Link>
-                    </Typography>
-                </TableCell>
-                <TableCell>
-                    {agent.permissions?.length > 0
-                        ? agent.permissions[0].canModifyProgramList
-                            ? 'O'
-                            : 'X'
-                        : 'x'}
-                </TableCell>
-                <TableCell>
-                    {agent.permissions?.length > 0
-                        ? agent.permissions[0].canModifyAllBaseDocuments
-                            ? 'O'
-                            : 'X'
-                        : 'x'}
-                </TableCell>
-                <TableCell>
-                    {agent.permissions?.length > 0
-                        ? agent.permissions[0].canAccessAllChat
-                            ? 'O'
-                            : 'X'
-                        : 'x'}
-                </TableCell>
-                <TableCell>
-                    {agent.permissions?.length > 0
-                        ? agent.permissions[0].canAssignAgents
-                            ? 'O'
-                            : 'X'
-                        : 'x'}
-                </TableCell>
-                <TableCell>
-                    {agent.permissions?.length > 0
-                        ? agent.permissions[0].canAssignEditors
-                            ? 'O'
-                            : 'X'
-                        : 'x'}
-                </TableCell>
-                <TableCell>
-                    {agent.permissions?.length > 0
-                        ? agent.permissions[0].canModifyDocumentation
-                            ? 'O'
-                            : 'X'
-                        : 'x'}
-                </TableCell>
-                <TableCell>
-                    {agent.permissions?.length > 0
-                        ? agent.permissions[0].canAccessStudentDatabase
-                            ? 'O'
-                            : 'X'
-                        : 'x'}
-                </TableCell>
-                <TableCell>
-                    {agent.permissions.length > 0
-                        ? agent.permissions[0].canUseTaiGerAI
-                            ? 'O'
-                            : 'X'
-                        : 'x'}
-                </TableCell>
-                <TableCell>
-                    <span>{agent.permissions[0]?.taigerAiQuota | 0}</span>
-                </TableCell>
-                <TableCell>
-                    <Button
-                        aria-controls={open ? `basic-menu` : undefined}
-                        aria-expanded={open ? 'true' : undefined}
-                        aria-haspopup="true"
-                        id="basic-button"
-                        onClick={handleClick}
-                        variant="contained"
-                    >
-                        {t('Edit', { ns: 'common' })}
-                    </Button>
-                    <Menu
-                        MenuListProps={{
-                            'aria-labelledby': 'basic-button'
-                        }}
-                        anchorEl={anchorEl}
-                        disabled={!is_TaiGer_Admin(user)}
-                        id="basic-menu"
-                        onClose={() => setAnchorEl(null)}
-                        open={open}
-                    >
-                        <MenuItem
-                            onClick={() =>
-                                setModalShow(
-                                    agent.firstname,
-                                    agent.lastname,
-                                    agent._id.toString(),
-                                    agent.permissions
-                                )
-                            }
-                        >
-                            Permission
-                        </MenuItem>
-                    </Menu>
-                </TableCell>
-            </TableRow>
-        );
-    };
     return (
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
@@ -409,13 +409,13 @@ const TaiGerOrg = () => {
                     {appConfig.companyName}
                 </Link>
                 <Typography color="text.primary">
-                    {t('tenant-team', {
+                    {i18next.t('tenant-team', {
                         ns: 'common',
                         tenant: appConfig.companyName
                     })}
                 </Typography>
                 <Typography color="text.primary">
-                    {t('Permissions Management', { ns: 'common' })}
+                    {i18next.t('Permissions Management', { ns: 'common' })}
                 </Typography>
             </Breadcrumbs>
             <Card>
@@ -438,14 +438,14 @@ const TaiGerOrg = () => {
             </Card>
             <Card>
                 <Typography variant="h5">
-                    {t('Agent', { ns: 'common' })}:
+                    {i18next.t('Agent', { ns: 'common' })}:
                 </Typography>
                 <TableContainer style={{ overflowX: 'auto' }}>
                     <Table size="small">
                         <TableHead>
                             <TableRow>
                                 <TableCell>
-                                    {t('Name', { ns: 'common' })}
+                                    {i18next.t('Name', { ns: 'common' })}
                                 </TableCell>
                                 <TableCell>
                                     Can modify
@@ -481,7 +481,12 @@ const TaiGerOrg = () => {
                         </TableHead>
                         <TableBody>
                             {agents.map((agent, i) => (
-                                <AgentRow agent={agent} key={i} />
+                                <AgentRow
+                                    agent={agent}
+                                    key={i}
+                                    setModalShow={setModalShow}
+                                    user={user}
+                                />
                             ))}
                         </TableBody>
                     </Table>
@@ -489,7 +494,7 @@ const TaiGerOrg = () => {
             </Card>
             <Card>
                 <Typography variant="h5">
-                    {t('Editor', { ns: 'common' })}:
+                    {i18next.t('Editor', { ns: 'common' })}:
                 </Typography>
                 <TableContainer style={{ overflowX: 'auto' }}>
                     <Table size="small">
@@ -511,7 +516,12 @@ const TaiGerOrg = () => {
                         </TableHead>
                         <TableBody>
                             {editors.map((editor, i) => (
-                                <EditorRow editor={editor} key={i} />
+                                <EditorRow
+                                    editor={editor}
+                                    key={i}
+                                    setModalShow={setModalShow}
+                                    user={user}
+                                />
                             ))}
                         </TableBody>
                     </Table>

@@ -15,11 +15,20 @@ import {
 import LanguageIcon from '@mui/icons-material/Language';
 import i18next from 'i18next';
 
-export default function Footer() {
+const Copyright = () => {
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
-    // const { i18n } = useTranslation();
+    return (
+        <Typography align="center" color="text.secondary" variant="body2">
+            {`Copyright © ${currentYear} | Designed and developed by `}
+            <Link color="inherit" href="https://taigerconsultancy.com/">
+                TaiGer Consultancy 台德留學顧問
+            </Link>{' '}
+        </Typography>
+    );
+};
 
+export default function Footer() {
     const [language, setLanguage] = useState(
         localStorage.getItem('locale') || 'en'
     );
@@ -35,17 +44,6 @@ export default function Footer() {
             localStorage.setItem('locale', selectedLanguage);
             setLanguage(selectedLanguage);
         }
-    };
-
-    const Copyright = () => {
-        return (
-            <Typography align="center" color="text.secondary" variant="body2">
-                {`Copyright © ${currentYear} | Designed and developed by `}
-                <Link color="inherit" href="https://taigerconsultancy.com/">
-                    TaiGer Consultancy 台德留學顧問
-                </Link>{' '}
-            </Typography>
-        );
     };
 
     return (

@@ -1,8 +1,8 @@
 import { Link as LinkDom } from 'react-router-dom';
 import { Box, Button, Stack } from '@mui/material';
 import {
-    MRT_GlobalFilterTextField,
-    MRT_ToggleFiltersButton
+    MRT_GlobalFilterTextField as MRTGlobalFilterTextField,
+    MRT_ToggleFiltersButton as MRTToggleFiltersButton
 } from 'material-react-table';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
@@ -14,11 +14,8 @@ export const TopToolbar = ({ table, toolbarStyle, onAssignClick }) => {
     return (
         <Box sx={toolbarStyle}>
             <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <MRT_GlobalFilterTextField table={table} />
-                <MRT_ToggleFiltersButton
-                    sx={{ height: '40px' }}
-                    table={table}
-                />
+                <MRTGlobalFilterTextField table={table} />
+                <MRTToggleFiltersButton sx={{ height: '40px' }} table={table} />
             </Box>
             <Stack direction="row" justifyContent="flex-end" spacing={1}>
                 <Button

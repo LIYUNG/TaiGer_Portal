@@ -104,16 +104,17 @@ const AgentsEditorsModal = ({
 
 const MemorizedStudentDetailModal = React.memo(StudentDetailModal);
 
+const LastLoginRelativeTime = ({ date }) => {
+    return <>{convertDateUXFriendly(date)}</>;
+};
+
+const LastLoginAbsoluteTime = ({ date }) => {
+    return <>{convertDate(date)}</>;
+};
+
 const LastLoginTime = ({ date }) => {
     const [view, setView] = useState(false);
     const { t } = useTranslation();
-    const LastLoginRelativeTime = ({ date }) => {
-        return <>{convertDateUXFriendly(date)}</>;
-    };
-
-    const LastLoginAbsoluteTime = ({ date }) => {
-        return <>{convertDate(date)}</>;
-    };
 
     return (
         <Typography
@@ -132,10 +133,136 @@ const LastLoginTime = ({ date }) => {
     );
 };
 
+const TopBar = ({
+    isLoading,
+    isExportingMessageDisabled,
+    ismobile,
+    handleDrawerClose,
+    student,
+    student_name_english,
+    student_id,
+    agentsEditorsDropdownId,
+    handleAgentsEditorsModalOpen,
+    handleExportMessages,
+    dropdownId,
+    handleStudentDetailModalOpen,
+    handleAgentsEditorsModalClose,
+    isAgentsEditorsModalOpen
+}) => {
+    const { t } = useTranslation();
+    return (
+        !isLoading && (
+            <Box
+                className="sticky-top"
+                sx={{
+                    my: 1,
+                    display: 'flex'
+                }}
+            >
+                <Box
+                    sx={{
+                        display: 'flex'
+                    }}
+                >
+                    {ismobile ? (
+                        <IconButton
+                            aria-label="open drawer"
+                            color="inherit"
+                            edge="start"
+                            onClick={(e) => handleDrawerClose(e)}
+                            style={{ marginLeft: '4px' }}
+                        >
+                            <ArrowBackIcon />
+                        </IconButton>
+                    ) : null}
+                    <Avatar {...stringAvatar(student_name_english)} />
+                    <Box>
+                        <Link
+                            component={LinkDom}
+                            to={DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                student_id,
+                                DEMO.PROFILE_HASH
+                            )}
+                        >
+                            <Typography
+                                fontWeight="bold"
+                                sx={{ ml: 1 }}
+                                variant="body1"
+                            >
+                                {truncateText(student_name_english, 24)}
+                            </Typography>
+                        </Link>
+                        <LastLoginTime date={student.lastLoginAt} />
+                    </Box>
+                </Box>
+                <Box sx={{ flexGrow: 1 }} />
+                <Box sx={{ mr: 2, md: 'flex' }}>
+                    <Stack
+                        alignItems="center"
+                        direction="row"
+                        justifyContent="flex-end"
+                        spacing={1}
+                    >
+                        <Tooltip title={t('Agents Editors', { ns: 'common' })}>
+                            <IconButton
+                                aria-controls={agentsEditorsDropdownId}
+                                aria-haspopup="true"
+                                aria-label="open-more-1"
+                                color="inherit"
+                                edge="end"
+                                onClick={handleAgentsEditorsModalOpen}
+                            >
+                                <PeopleAltIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title={t('Export messages', { ns: 'common' })}>
+                            <IconButton
+                                aria-controls={dropdownId}
+                                aria-haspopup="true"
+                                aria-label="open-more"
+                                color="inherit"
+                                disabled={isExportingMessageDisabled}
+                                edge="end"
+                                onClick={handleExportMessages}
+                            >
+                                {isExportingMessageDisabled ? (
+                                    <CircularProgress size={16} />
+                                ) : (
+                                    <FileDownloadIcon />
+                                )}
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title={t('More', { ns: 'common' })}>
+                            <IconButton
+                                aria-controls={dropdownId}
+                                aria-haspopup="true"
+                                aria-label="open-more"
+                                color="inherit"
+                                edge="end"
+                                onClick={handleStudentDetailModalOpen}
+                            >
+                                <MoreVertIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Stack>
+                </Box>
+                <AgentsEditorsModal
+                    agentsEditorsDropdownId={agentsEditorsDropdownId}
+                    anchorAgentsEditorsEl={isAgentsEditorsModalOpen}
+                    handleAgentsEditorsStudentDetailModalClose={
+                        handleAgentsEditorsModalClose
+                    }
+                    open={isAgentsEditorsModalOpen}
+                    student={student}
+                />
+            </Box>
+        )
+    );
+};
+
 const CommunicationExpandPage = () => {
     const { student_id } = useParams();
     const { user } = useAuth();
-    const { t } = useTranslation();
     const theme = useTheme();
     const ismobile = useMediaQuery(theme.breakpoints.down('md'));
     const { data, isLoading } = useQuery(getCommunicationQuery(student_id));
@@ -216,121 +343,6 @@ const CommunicationExpandPage = () => {
 
     const agentsEditorsDropdownId = 'primary-agents-editors-modal';
 
-    const TopBar = () => {
-        return (
-            !isLoading && (
-                <Box
-                    className="sticky-top"
-                    sx={{
-                        my: 1,
-                        display: 'flex'
-                    }}
-                >
-                    <Box
-                        sx={{
-                            display: 'flex'
-                        }}
-                    >
-                        {ismobile ? (
-                            <IconButton
-                                aria-label="open drawer"
-                                color="inherit"
-                                edge="start"
-                                onClick={(e) => handleDrawerClose(e)}
-                                style={{ marginLeft: '4px' }}
-                            >
-                                <ArrowBackIcon />
-                            </IconButton>
-                        ) : null}
-                        <Avatar {...stringAvatar(student_name_english)} />
-                        <Box>
-                            <Link
-                                component={LinkDom}
-                                to={DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                    student_id,
-                                    DEMO.PROFILE_HASH
-                                )}
-                            >
-                                <Typography
-                                    fontWeight="bold"
-                                    sx={{ ml: 1 }}
-                                    variant="body1"
-                                >
-                                    {truncateText(student_name_english, 24)}
-                                </Typography>
-                            </Link>
-                            <LastLoginTime date={student.lastLoginAt} />
-                        </Box>
-                    </Box>
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Box sx={{ mr: 2, md: 'flex' }}>
-                        <Stack
-                            alignItems="center"
-                            direction="row"
-                            justifyContent="flex-end"
-                            spacing={1}
-                        >
-                            <Tooltip
-                                title={t('Agents Editors', { ns: 'common' })}
-                            >
-                                <IconButton
-                                    aria-controls={agentsEditorsDropdownId}
-                                    aria-haspopup="true"
-                                    aria-label="open-more-1"
-                                    color="inherit"
-                                    edge="end"
-                                    onClick={handleAgentsEditorsModalOpen}
-                                >
-                                    <PeopleAltIcon />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip
-                                title={t('Export messages', { ns: 'common' })}
-                            >
-                                <IconButton
-                                    aria-controls={dropdownId}
-                                    aria-haspopup="true"
-                                    aria-label="open-more"
-                                    color="inherit"
-                                    disabled={isExportingMessageDisabled}
-                                    edge="end"
-                                    onClick={handleExportMessages}
-                                >
-                                    {isExportingMessageDisabled ? (
-                                        <CircularProgress size={16} />
-                                    ) : (
-                                        <FileDownloadIcon />
-                                    )}
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title={t('More', { ns: 'common' })}>
-                                <IconButton
-                                    aria-controls={dropdownId}
-                                    aria-haspopup="true"
-                                    aria-label="open-more"
-                                    color="inherit"
-                                    edge="end"
-                                    onClick={handleStudentDetailModalOpen}
-                                >
-                                    <MoreVertIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </Stack>
-                    </Box>
-                    <AgentsEditorsModal
-                        agentsEditorsDropdownId={agentsEditorsDropdownId}
-                        anchorAgentsEditorsEl={isAgentsEditorsModalOpen}
-                        handleAgentsEditorsStudentDetailModalClose={
-                            handleAgentsEditorsModalClose
-                        }
-                        open={isAgentsEditorsModalOpen}
-                        student={student}
-                    />
-                </Box>
-            )
-        );
-    };
-
     const dropdownId = 'primary-student-modal';
 
     scrollToBottom();
@@ -390,7 +402,33 @@ const CommunicationExpandPage = () => {
                             }}
                             variant="temporary"
                         >
-                            <TopBar />
+                            <TopBar
+                                agentsEditorsDropdownId={
+                                    agentsEditorsDropdownId
+                                }
+                                handleAgentsEditorsModalClose={
+                                    handleAgentsEditorsModalClose
+                                }
+                                handleAgentsEditorsModalOpen={
+                                    handleAgentsEditorsModalOpen
+                                }
+                                handleDrawerClose={handleDrawerClose}
+                                handleExportMessages={handleExportMessages}
+                                handleStudentDetailModalOpen={
+                                    handleStudentDetailModalOpen
+                                }
+                                isAgentsEditorsModalOpen={
+                                    isAgentsEditorsModalOpen
+                                }
+                                isExportingMessageDisabled={
+                                    isExportingMessageDisabled
+                                }
+                                isLoading={isLoading}
+                                ismobile={ismobile}
+                                student={student}
+                                student_id={student_id}
+                                student_name_english={student_name_english}
+                            />
                             {student_id ? (
                                 isLoading ? (
                                     <Loading />
@@ -426,7 +464,33 @@ const CommunicationExpandPage = () => {
                             </Box>
                         ) : (
                             <Box>
-                                <TopBar />
+                                <TopBar
+                                    agentsEditorsDropdownId={
+                                        agentsEditorsDropdownId
+                                    }
+                                    handleAgentsEditorsModalClose={
+                                        handleAgentsEditorsModalClose
+                                    }
+                                    handleAgentsEditorsModalOpen={
+                                        handleAgentsEditorsModalOpen
+                                    }
+                                    handleDrawerClose={handleDrawerClose}
+                                    handleExportMessages={handleExportMessages}
+                                    handleStudentDetailModalOpen={
+                                        handleStudentDetailModalOpen
+                                    }
+                                    isAgentsEditorsModalOpen={
+                                        isAgentsEditorsModalOpen
+                                    }
+                                    isExportingMessageDisabled={
+                                        isExportingMessageDisabled
+                                    }
+                                    isLoading={isLoading}
+                                    ismobile={ismobile}
+                                    student={student}
+                                    student_id={student_id}
+                                    student_name_english={student_name_english}
+                                />
                                 <Box
                                     ref={scrollableRef}
                                     style={{

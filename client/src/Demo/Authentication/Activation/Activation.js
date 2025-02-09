@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Button, Typography } from '@mui/material';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 import { activation, resendActivation } from '../../../api/index';
@@ -93,7 +92,3 @@ export default function Activation() {
         </AuthWrapper>
     );
 }
-
-Activation.propTypes = {
-    setToken: PropTypes.func.isRequired
-};

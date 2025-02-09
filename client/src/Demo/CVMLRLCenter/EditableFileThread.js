@@ -24,7 +24,7 @@ import {
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 
-const EditableFile_Thread = (props) => {
+const EditableFileThread = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const handleAsFinalFileThread = (documenName, isFinal) => {
@@ -161,4 +161,4 @@ const EditableFile_Thread = (props) => {
     return <>{fileStatus}</>;
 };
 
-export default EditableFile_Thread;
+export default EditableFileThread;

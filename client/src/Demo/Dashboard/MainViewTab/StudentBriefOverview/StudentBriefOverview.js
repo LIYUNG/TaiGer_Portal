@@ -33,6 +33,54 @@ import { useAuth } from '../../../../components/AuthProvider';
 import EditAttributesSubpage from '../StudDocsOverview/EditAttributesSubpage';
 import { COLORS, stringAvatar } from '../../../../utils/contants';
 
+const StudentsAgentAvartar = ({ student }) => {
+    return (
+        student.agents?.map((agent) => (
+            <Tooltip
+                key={agent._id}
+                placement="bottom-start"
+                title={`${agent.firstname} ${agent.lastname}`}
+            >
+                <Link
+                    component={LinkDom}
+                    to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
+                    underline="none"
+                >
+                    <Avatar
+                        {...stringAvatar(
+                            `${agent.firstname} ${agent.lastname}`
+                        )}
+                    />
+                </Link>
+            </Tooltip>
+        )) || null
+    );
+};
+
+const StudentsEditorAvartar = ({ student }) => {
+    return (
+        student.editors?.map((editor) => (
+            <Tooltip
+                key={editor._id}
+                placement="bottom-start"
+                title={`${editor.firstname} ${editor.lastname}`}
+            >
+                <Link
+                    component={LinkDom}
+                    to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+                    underline="none"
+                >
+                    <Avatar
+                        {...stringAvatar(
+                            `${editor.firstname} ${editor.lastname}`
+                        )}
+                    />
+                </Link>
+            </Tooltip>
+        )) || null
+    );
+};
+
 const StudentBriefOverview = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
@@ -130,54 +178,6 @@ const StudentBriefOverview = (props) => {
     ) => {
         setAttributeModalhide();
         props.submitUpdateAttributeslist(e, updateAttributesList, student_id);
-    };
-
-    const StudentsAgentAvartar = ({ student }) => {
-        return (
-            student.agents?.map((agent) => (
-                <Tooltip
-                    key={agent._id}
-                    placement="bottom-start"
-                    title={`${agent.firstname} ${agent.lastname}`}
-                >
-                    <Link
-                        component={LinkDom}
-                        to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
-                        underline="none"
-                    >
-                        <Avatar
-                            {...stringAvatar(
-                                `${agent.firstname} ${agent.lastname}`
-                            )}
-                        />
-                    </Link>
-                </Tooltip>
-            )) || <></>
-        );
-    };
-
-    const StudentsEditorAvartar = ({ student }) => {
-        return (
-            student.editors?.map((editor) => (
-                <Tooltip
-                    key={editor._id}
-                    placement="bottom-start"
-                    title={`${editor.firstname} ${editor.lastname}`}
-                >
-                    <Link
-                        component={LinkDom}
-                        to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
-                        underline="none"
-                    >
-                        <Avatar
-                            {...stringAvatar(
-                                `${editor.firstname} ${editor.lastname}`
-                            )}
-                        />
-                    </Link>
-                </Tooltip>
-            )) || <></>
-        );
     };
 
     return (

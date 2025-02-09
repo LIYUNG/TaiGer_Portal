@@ -35,7 +35,7 @@ import {
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 
-function NewProgramEdit(props) {
+const NewProgramEdit = (props) => {
     const { t } = useTranslation();
     const { user } = useAuth();
     const [isChanged, setIsChanged] = useState(false);
@@ -100,31 +100,24 @@ function NewProgramEdit(props) {
     return (
         <>
             <Button
-                size="small"
                 color="secondary"
                 onClick={() => props.handleClick()}
+                size="small"
             >
                 <ArrowBackIcon fontSize="small" /> Back
             </Button>
             <Card sx={{ p: 2 }}>
                 <Grid container>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('School', { ns: 'common' })} *
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Autocomplete
                             freeSolo
-                            size="small"
+                            noOptionsText="No results" // Message when no results are found
                             options={schoolName2Set} // Display filtered results
-                            value={program.school}
-                            onChange={(event, value) =>
-                                onClickResultHandler(value)
-                            } // Handle selection
-                            readOnly={
-                                props.type === 'edit' && !is_TaiGer_Admin(user)
-                            } // Conditional readonly
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -147,63 +140,71 @@ function NewProgramEdit(props) {
                                     }}
                                 />
                             )}
-                            noOptionsText="No results" // Message when no results are found
+                            onChange={(event, value) =>
+                                onClickResultHandler(value)
+                            } // Handle selection
+                            readOnly={
+                                props.type === 'edit' && !is_TaiGer_Admin(user)
+                            } // Conditional readonly
+                            size="small"
+                            value={program.school}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Program', { ns: 'common' })} *
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
-                            fullWidth
-                            size="small"
-                            type="text"
-                            id="program_name"
-                            name="program_name"
-                            placeholder="Electrical Engineering"
-                            onChange={(e) => handleChange(e)}
                             InputProps={{
                                 readOnly:
                                     props.type === 'edit' &&
                                     !is_TaiGer_Admin(user),
                                 disableUnderline: true
                             }}
+                            fullWidth
+                            id="program_name"
+                            name="program_name"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="Electrical Engineering"
+                            size="small"
+                            type="text"
                             value={program.program_name || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Program Subject tags', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item sm={6} xs={12}>
                         <SearchableMultiSelect
-                            name="programSubjects"
-                            label={null}
                             data={PROGRAM_SUBJECTS_DETAILED}
-                            value={program?.programSubjects}
+                            label={null}
+                            name="programSubjects"
                             setValue={handleChangeByField('programSubjects')}
+                            value={program?.programSubjects}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Degree', { ns: 'common' })} *
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormControl fullWidth>
                             <Select
-                                size="small"
+                                disabled={
+                                    props.type === 'edit'
+                                        ? !is_TaiGer_Admin(user)
+                                        : null
+                                }
+                                id="degree"
                                 labelId="degree"
                                 name="degree"
-                                id="degree"
                                 onChange={(e) => handleChange(e)}
-                                disabled={
-                                    props.type === 'edit' &&
-                                    !is_TaiGer_Admin(user)
-                                }
+                                size="small"
                                 value={program.degree || '-'}
                             >
                                 {DEGREE_CATOGARY_ARRAY_OPTIONS.map((option) => (
@@ -217,23 +218,24 @@ function NewProgramEdit(props) {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Semester', { ns: 'common' })} *
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormControl fullWidth>
                             <Select
-                                size="small"
+                                disabled={
+                                    props.type === 'edit'
+                                        ? !is_TaiGer_Admin(user)
+                                        : null
+                                }
+                                id="semester"
                                 labelId="semester"
                                 name="semester"
-                                id="semester"
                                 onChange={(e) => handleChange(e)}
-                                disabled={
-                                    props.type === 'edit' &&
-                                    !is_TaiGer_Admin(user)
-                                }
+                                size="small"
                                 value={program.semester || '-'}
                             >
                                 {SEMESTER_ARRAY_OPTIONS.map((option) => (
@@ -247,19 +249,19 @@ function NewProgramEdit(props) {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Teaching Language', { ns: 'common' })}*
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormControl fullWidth>
                             <Select
-                                size="small"
+                                id="lang"
                                 labelId="lang"
                                 name="lang"
-                                id="lang"
                                 onChange={(e) => handleChange(e)}
+                                size="small"
                                 value={program.lang || '-'}
                             >
                                 {LANGUAGES_ARRAY_OPTIONS.map((option) => (
@@ -273,65 +275,65 @@ function NewProgramEdit(props) {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Only for graduated applicant', {
                                 ns: 'common'
                             })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormGroup>
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        name={'allowOnlyGraduatedApplicant'}
                                         checked={
                                             program.allowOnlyGraduatedApplicant
                                         }
+                                        name="allowOnlyGraduatedApplicant"
                                         onChange={(e) => handleChange(e)}
                                     />
                                 }
                             />
                         </FormGroup>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('GPA Requirement (German system)', {
                                 ns: 'common'
                             })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="gpa_requirement"
                             name="gpa_requirement"
-                            placeholder="2,5"
                             onChange={(e) => handleChange(e)}
+                            placeholder="2,5"
+                            size="small"
+                            type="text"
                             value={program.gpa_requirement || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Application Start (MM-DD)', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="application_start"
                             name="application_start"
-                            placeholder="04-01"
                             onChange={(e) => handleChange(e)}
+                            placeholder="04-01"
+                            size="small"
+                            type="text"
                             value={program.application_start || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Application Deadline (MM-DD)', {
                                 ns: 'common'
@@ -339,33 +341,33 @@ function NewProgramEdit(props) {
                             *
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="application_deadline"
                             name="application_deadline"
-                            placeholder="05-31"
                             onChange={(e) => handleChange(e)}
+                            placeholder="05-31"
+                            size="small"
+                            type="text"
                             value={program.application_deadline || ''}
                         />
                     </Grid>
-                    {appConfig.vpdEnable && (
+                    {appConfig.vpdEnable ? (
                         <>
-                            <Grid item xs={12} md={6}>
+                            <Grid item md={6} xs={12}>
                                 <Typography variant="body1">
                                     {t('Need Uni-Assist?', { ns: 'common' })}
                                 </Typography>
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            <Grid item md={6} xs={12}>
                                 <FormControl fullWidth>
                                     <Select
-                                        size="small"
+                                        id="uni_assist"
                                         labelId="uni_assist"
                                         name="uni_assist"
-                                        id="uni_assist"
                                         onChange={(e) => handleChange(e)}
+                                        size="small"
                                         value={program.uni_assist || 'No'}
                                     >
                                         {UNI_ASSIST_ARRAY_OPTIONS.map(
@@ -382,249 +384,249 @@ function NewProgramEdit(props) {
                                 </FormControl>
                             </Grid>
                         </>
-                    )}
-                    <Grid item xs={12} md={6}>
+                    ) : null}
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('English Test Can Submit Later', {
                                 ns: 'common'
                             })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormGroup>
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        name={'englishTestHandLater'}
                                         checked={program.englishTestHandLater}
+                                        name="englishTestHandLater"
                                         onChange={(e) => handleChange(e)}
                                     />
                                 }
                             />
                         </FormGroup>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('TOEFL Requirement', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={4} md={2}>
+                    <Grid item md={2} xs={4}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="toefl"
                             name="toefl"
-                            placeholder="88"
                             onChange={(e) => handleChange(e)}
+                            placeholder="88"
+                            size="small"
+                            type="text"
                             value={program.toefl || ''}
                         />
                     </Grid>
-                    <Grid item xs={2} md={1}>
+                    <Grid item md={1} xs={2}>
                         <TextField
                             fullWidth
+                            id="toefl_reading"
+                            label={t('Reading', { ns: 'common' })}
+                            name="toefl_reading"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="21"
                             size="small"
                             type="number"
-                            id="toefl_reading"
-                            name="toefl_reading"
-                            label={t('Reading', { ns: 'common' })}
-                            placeholder="21"
-                            onChange={(e) => handleChange(e)}
                             value={program.toefl_reading || ''}
                         />
                     </Grid>
-                    <Grid item xs={2} md={1}>
+                    <Grid item md={1} xs={2}>
                         <TextField
                             fullWidth
+                            id="toefl_listening"
+                            label={t('Listening', { ns: 'common' })}
+                            name="toefl_listening"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="21"
                             size="small"
                             type="number"
-                            id="toefl_listening"
-                            name="toefl_listening"
-                            label={t('Listening', { ns: 'common' })}
-                            placeholder="21"
-                            onChange={(e) => handleChange(e)}
                             value={program.toefl_listening || ''}
                         />
                     </Grid>
-                    <Grid item xs={2} md={1}>
+                    <Grid item md={1} xs={2}>
                         <TextField
                             fullWidth
+                            id="toefl_speaking"
+                            label={t('Speaking', { ns: 'common' })}
+                            name="toefl_speaking"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="21"
                             size="small"
                             type="number"
-                            id="toefl_speaking"
-                            name="toefl_speaking"
-                            label={t('Speaking', { ns: 'common' })}
-                            placeholder="21"
-                            onChange={(e) => handleChange(e)}
                             value={program.toefl_speaking || ''}
                         />
                     </Grid>
-                    <Grid item xs={2} md={1}>
+                    <Grid item md={1} xs={2}>
                         <TextField
                             fullWidth
+                            id="toefl_writing"
+                            label={t('Writing', { ns: 'common' })}
+                            name="toefl_writing"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="21"
                             size="small"
                             type="number"
-                            id="toefl_writing"
-                            name="toefl_writing"
-                            label={t('Writing', { ns: 'common' })}
-                            placeholder="21"
-                            onChange={(e) => handleChange(e)}
                             value={program.toefl_writing || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('IELTS Requirement', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={4} md={2}>
+                    <Grid item md={2} xs={4}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="ielts"
                             name="ielts"
-                            placeholder="6.5"
                             onChange={(e) => handleChange(e)}
+                            placeholder="6.5"
+                            size="small"
+                            type="text"
                             value={program.ielts || ''}
                         />
                     </Grid>
-                    <Grid item xs={2} md={1}>
+                    <Grid item md={1} xs={2}>
                         <TextField
                             fullWidth
+                            id="ielts_reading"
+                            label={t('Reading', { ns: 'common' })}
+                            name="ielts_reading"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="6.5"
                             size="small"
                             type="number"
-                            id="ielts_reading"
-                            name="ielts_reading"
-                            label={t('Reading', { ns: 'common' })}
-                            placeholder="6.5"
-                            onChange={(e) => handleChange(e)}
                             value={program.ielts_reading || ''}
                         />
                     </Grid>
-                    <Grid item xs={2} md={1}>
+                    <Grid item md={1} xs={2}>
                         <TextField
                             fullWidth
+                            id="ielts_listening"
+                            label={t('Listening', { ns: 'common' })}
+                            name="ielts_listening"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="6.5"
                             size="small"
                             type="number"
-                            id="ielts_listening"
-                            name="ielts_listening"
-                            label={t('Listening', { ns: 'common' })}
-                            placeholder="6.5"
-                            onChange={(e) => handleChange(e)}
                             value={program.ielts_listening || ''}
                         />
                     </Grid>
-                    <Grid item xs={2} md={1}>
+                    <Grid item md={1} xs={2}>
                         <TextField
                             fullWidth
+                            id="ielts_speaking"
+                            label={t('Speaking', { ns: 'common' })}
+                            name="ielts_speaking"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="6.5"
                             size="small"
                             type="number"
-                            id="ielts_speaking"
-                            name="ielts_speaking"
-                            label={t('Speaking', { ns: 'common' })}
-                            placeholder="6.5"
-                            onChange={(e) => handleChange(e)}
                             value={program.ielts_speaking || ''}
                         />
                     </Grid>
-                    <Grid item xs={2} md={1}>
+                    <Grid item md={1} xs={2}>
                         <TextField
                             fullWidth
+                            id="ielts_writing"
+                            label={t('Writing', { ns: 'common' })}
+                            name="ielts_writing"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="6.5"
                             size="small"
                             type="number"
-                            id="ielts_writing"
-                            name="ielts_writing"
-                            label={t('Writing', { ns: 'common' })}
-                            placeholder="6.5"
-                            onChange={(e) => handleChange(e)}
                             value={program.ielts_writing || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('German Test Can Submit Later', {
                                 ns: 'common'
                             })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormGroup>
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        name={'germanTestHandLater'}
                                         checked={program.germanTestHandLater}
+                                        name="germanTestHandLater"
                                         onChange={(e) => handleChange(e)}
                                     />
                                 }
                             />
                         </FormGroup>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('TestDaF Requirement', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="testdaf"
                             name="testdaf"
-                            placeholder="4"
                             onChange={(e) => handleChange(e)}
+                            placeholder="4"
+                            size="small"
+                            type="text"
                             value={program.testdaf || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('GRE Requirement', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="gre"
                             name="gre"
-                            placeholder="V145Q160"
                             onChange={(e) => handleChange(e)}
+                            placeholder="V145Q160"
+                            size="small"
+                            type="text"
                             value={program.gre || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('GMAT Requirement', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="gmat"
                             name="gmat"
-                            placeholder="640"
                             onChange={(e) => handleChange(e)}
+                            placeholder="640"
+                            size="small"
+                            type="text"
                             value={program.gmat || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('ML Required?', { ns: 'common' })}*
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormControl fullWidth>
                             <Select
-                                size="small"
+                                id="ml_required"
                                 labelId="ml_required"
                                 name="ml_required"
-                                id="ml_required"
                                 onChange={(e) => handleChange(e)}
+                                size="small"
                                 value={program.ml_required || 'no'}
                             >
                                 {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
@@ -638,38 +640,38 @@ function NewProgramEdit(props) {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('ML Requirements', { ns: 'common' })}?
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
+                            id="ml_requirements"
+                            multiline
+                            name="ml_requirements"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="1200-1500words"
+                            rows={4}
                             size="small"
                             type="text"
-                            multiline
-                            rows={4}
-                            id="ml_requirements"
-                            name="ml_requirements"
-                            placeholder="1200-1500words"
-                            onChange={(e) => handleChange(e)}
                             value={program.ml_requirements || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('RL Required?', { ns: 'common' })} *
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormControl fullWidth>
                             <Select
-                                size="small"
+                                id="rl_required"
                                 labelId="rl_required"
                                 name="rl_required"
-                                id="rl_required"
                                 onChange={(e) => handleChange(e)}
+                                size="small"
                                 value={program.rl_required || ''}
                             >
                                 <MenuItem value="0">no</MenuItem>
@@ -679,19 +681,19 @@ function NewProgramEdit(props) {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('RL Program specific?', { ns: 'common' })} *
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormControl fullWidth>
                             <Select
-                                size="small"
+                                id="is_rl_specific"
                                 labelId="is_rl_specific"
                                 name="is_rl_specific"
-                                id="is_rl_specific"
                                 onChange={(e) => handleChange(e)}
+                                size="small"
                                 value={program.is_rl_specific}
                             >
                                 {YES_NO_BOOLEAN_OPTIONS.map((option) => (
@@ -705,38 +707,38 @@ function NewProgramEdit(props) {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('RL Requirements', { ns: 'common' })}?
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
+                            id="rl_requirements"
+                            multiline
+                            name="rl_requirements"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="1 page"
+                            rows={4}
                             size="small"
                             type="text"
-                            multiline
-                            rows={4}
-                            id="rl_requirements"
-                            name="rl_requirements"
-                            placeholder="1 page"
-                            onChange={(e) => handleChange(e)}
                             value={program.rl_requirements || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Essay Required?', { ns: 'common' })} *
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormControl fullWidth>
                             <Select
-                                size="small"
+                                id="essay_required"
                                 labelId="essay_required"
                                 name="essay_required"
-                                id="essay_required"
                                 onChange={(e) => handleChange(e)}
+                                size="small"
                                 value={program.essay_required || ''}
                             >
                                 {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
@@ -750,38 +752,38 @@ function NewProgramEdit(props) {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Essay Requirements', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
+                            id="essay_requirements"
+                            multiline
+                            name="essay_requirements"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="2000 words"
+                            rows={4}
                             size="small"
                             type="text"
-                            multiline
-                            rows={4}
-                            id="essay_requirements"
-                            name="essay_requirements"
-                            placeholder="2000 words"
-                            onChange={(e) => handleChange(e)}
                             value={program.essay_requirements || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Portfolio Required?', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormControl fullWidth>
                             <Select
-                                size="small"
+                                id="portfolio_required"
                                 labelId="portfolio_required"
                                 name="portfolio_required"
-                                id="portfolio_required"
                                 onChange={(e) => handleChange(e)}
+                                size="small"
                                 value={program.portfolio_required || ''}
                             >
                                 {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
@@ -795,40 +797,40 @@ function NewProgramEdit(props) {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Portfolio Requirements', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
+                            id="portfolio_requirements"
+                            multiline
+                            name="portfolio_requirements"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="2000 words"
+                            rows={4}
                             size="small"
                             type="text"
-                            multiline
-                            rows={4}
-                            id="portfolio_requirements"
-                            name="portfolio_requirements"
-                            placeholder="2000 words"
-                            onChange={(e) => handleChange(e)}
                             value={program.portfolio_requirements || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Supplementary Form Required?', {
                                 ns: 'common'
                             })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormControl fullWidth>
                             <Select
-                                size="small"
+                                id="supplementary_form_required"
                                 labelId="supplementary_form_required"
                                 name="supplementary_form_required"
-                                id="supplementary_form_required"
                                 onChange={(e) => handleChange(e)}
+                                size="small"
                                 value={
                                     program.supplementary_form_required || ''
                                 }
@@ -844,44 +846,44 @@ function NewProgramEdit(props) {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Supplementary Form Requirements', {
                                 ns: 'common'
                             })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
+                            id="supplementary_form_requirements"
+                            multiline
+                            name="supplementary_form_requirements"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="fill the form"
+                            rows={4}
                             size="small"
                             type="text"
-                            multiline
-                            rows={4}
-                            id="supplementary_form_requirements"
-                            name="supplementary_form_requirements"
-                            placeholder="fill the form"
-                            onChange={(e) => handleChange(e)}
                             value={
                                 program.supplementary_form_requirements || ''
                             }
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Curriculum Analysis Required?', {
                                 ns: 'common'
                             })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormControl fullWidth>
                             <Select
-                                size="small"
+                                id="curriculum_analysis_required"
                                 labelId="curriculum_analysis_required"
                                 name="curriculum_analysis_required"
-                                id="curriculum_analysis_required"
                                 onChange={(e) => handleChange(e)}
+                                size="small"
                                 value={
                                     program.curriculum_analysis_required || ''
                                 }
@@ -897,44 +899,44 @@ function NewProgramEdit(props) {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Curriculum Analysis Requirements', {
                                 ns: 'common'
                             })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
+                            id="curriculum_analysis_requirements"
+                            multiline
+                            name="curriculum_analysis_requirements"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="fill the form"
+                            rows={4}
                             size="small"
                             type="text"
-                            multiline
-                            rows={4}
-                            id="curriculum_analysis_requirements"
-                            name="curriculum_analysis_requirements"
-                            placeholder="fill the form"
-                            onChange={(e) => handleChange(e)}
                             value={
                                 program.curriculum_analysis_requirements || ''
                             }
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Scholarship Form / ML Required?', {
                                 ns: 'common'
                             })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormControl fullWidth>
                             <Select
-                                size="small"
+                                id="scholarship_form_required"
                                 labelId="scholarship_form_required"
                                 name="scholarship_form_required"
-                                id="scholarship_form_required"
                                 onChange={(e) => handleChange(e)}
+                                size="small"
                                 value={program.scholarship_form_required || ''}
                             >
                                 {BINARY_STATE_ARRAY_OPTIONS.map((option) => (
@@ -948,201 +950,201 @@ function NewProgramEdit(props) {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Scholarship Form / ML Requirements', {
                                 ns: 'common'
                             })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
+                            id="scholarship_form_requirements"
+                            multiline
+                            name="scholarship_form_requirements"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="fill the form"
+                            rows={4}
                             size="small"
                             type="text"
-                            multiline
-                            rows={4}
-                            id="scholarship_form_requirements"
-                            name="scholarship_form_requirements"
-                            placeholder="fill the form"
-                            onChange={(e) => handleChange(e)}
                             value={program.scholarship_form_requirements || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('ECTS Requirements', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
+                            id="ects_requirements"
+                            multiline
+                            name="ects_requirements"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="Mathematics 20 ECTS, Electrical Engineering 15 ECTS, Computer architecture 8 ECTS..."
+                            rows={4}
                             size="small"
                             type="text"
-                            multiline
-                            rows={4}
-                            id="ects_requirements"
-                            name="ects_requirements"
-                            placeholder="Mathematics 20 ECTS, Electrical Engineering 15 ECTS, Computer architecture 8 ECTS..."
-                            onChange={(e) => handleChange(e)}
                             value={program.ects_requirements || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Special Notes', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
+                            id="special_notes"
+                            multiline
+                            name="special_notes"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="Hard copy"
+                            rows={4}
                             size="small"
                             type="text"
-                            multiline
-                            rows={4}
-                            id="special_notes"
-                            name="special_notes"
-                            placeholder="Hard copy"
-                            onChange={(e) => handleChange(e)}
                             value={program.special_notes || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Comments', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
+                            id="comments"
+                            multiline
+                            name="comments"
+                            onChange={(e) => handleChange(e)}
+                            placeholder="Hard copy"
+                            rows={4}
                             size="small"
                             type="text"
-                            multiline
-                            rows={4}
-                            id="comments"
-                            name="comments"
-                            placeholder="Hard copy"
-                            onChange={(e) => handleChange(e)}
                             value={program.comments || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             Portal 1 link url
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="application_portal_a"
                             name="application_portal_a"
-                            placeholder="https://...."
                             onChange={(e) => handleChange(e)}
+                            placeholder="https://...."
+                            size="small"
+                            type="text"
                             value={program.application_portal_a || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             Portal 1 {appConfig.companyName} Instrution link url
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="application_portal_a_instructions"
                             name="application_portal_a_instructions"
-                            placeholder="https://...."
                             onChange={(e) => handleChange(e)}
+                            placeholder="https://...."
+                            size="small"
+                            type="text"
                             value={
                                 program.application_portal_a_instructions || ''
                             }
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             Portal 2 link url
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="application_portal_b"
                             name="application_portal_b"
-                            placeholder="https://...."
                             onChange={(e) => handleChange(e)}
+                            placeholder="https://...."
+                            size="small"
+                            type="text"
                             value={program.application_portal_b || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             Portal 2 {appConfig.companyName} Instrution link url
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="application_portal_b_instructions"
                             name="application_portal_b_instructions"
-                            placeholder="https://...."
                             onChange={(e) => handleChange(e)}
+                            placeholder="https://...."
+                            size="small"
+                            type="text"
                             value={
                                 program.application_portal_b_instructions || ''
                             }
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Website', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="website"
                             name="website"
-                            placeholder="https://...."
                             onChange={(e) => handleChange(e)}
+                            placeholder="https://...."
+                            size="small"
+                            type="text"
                             value={program.website || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Country', { ns: 'common' })} *
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <FormControl fullWidth>
                             <Select
-                                size="small"
+                                id="country"
                                 labelId="country"
                                 name="country"
-                                id="country"
                                 onChange={(e) => handleChange(e)}
+                                size="small"
                                 value={program.country || '-'}
                             >
-                                <MenuItem value={'-'}>-</MenuItem>
+                                <MenuItem value="-">-</MenuItem>
                                 {COUNTRIES_ARRAY_OPTIONS.map((option) => (
                                     <MenuItem
                                         key={option.value}
-                                        value={option.value}
                                         sx={{
                                             display: 'flex',
                                             alignItems: 'center'
                                         }}
+                                        value={option.value}
                                     >
                                         <img
-                                            src={`/assets/logo/country_logo/svg/${option.value}.svg`}
                                             alt="Logo"
+                                            src={`/assets/logo/country_logo/svg/${option.value}.svg`}
                                             style={{
                                                 maxWidth: 24,
                                                 maxHeight: 24
@@ -1155,83 +1157,83 @@ function NewProgramEdit(props) {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('Tuition Fees', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="tuition_fees"
                             name="tuition_fees"
-                            placeholder="https://...."
                             onChange={(e) => handleChange(e)}
+                            placeholder="https://...."
+                            size="small"
+                            type="text"
                             value={program.tuition_fees || ''}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('School tags', { ns: 'common' })}
                         </Typography>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item sm={6} xs={12}>
                         <SearchableMultiSelect
-                            name="tags"
-                            label={null}
                             data={SCHOOL_TAGS_DETAILED}
-                            value={program?.tags}
+                            label={null}
+                            name="tags"
                             setValue={handleChangeByField('tags')}
+                            value={program?.tags}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Typography variant="body1">FPSO</Typography>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
-                            size="small"
-                            type="text"
                             id="fpso"
                             name="fpso"
-                            placeholder="https://...."
                             onChange={(e) => handleChange(e)}
+                            placeholder="https://...."
+                            size="small"
+                            type="text"
                             value={program.fpso || ''}
                         />
                     </Grid>
                 </Grid>
                 <Typography variant="body1">*: Must fill fields</Typography>
                 <Button
-                    fullWidth
-                    size="small"
                     color="primary"
-                    variant="contained"
-                    onClick={(e) => handleSubmit(e, program, programChanges)}
                     disabled={!isChanged || props.isSubmitting}
                     endIcon={
                         props.isSubmitting ? (
                             <CircularProgress size={24} />
                         ) : null
                     }
+                    fullWidth
+                    onClick={(e) => handleSubmit(e, program, programChanges)}
+                    size="small"
                     sx={{ my: 1 }}
+                    variant="contained"
                 >
                     {props.program
                         ? t('Update', { ns: 'common' })
                         : t('Create', { ns: 'common' })}
                 </Button>
                 <Button
-                    fullWidth
-                    size="small"
                     color="secondary"
-                    variant="outlined"
+                    fullWidth
                     onClick={() => props.handleClick()}
+                    size="small"
+                    variant="outlined"
                 >
                     {t('Cancel', { ns: 'common' })}
                 </Button>
             </Card>
         </>
     );
-}
+};
 export default NewProgramEdit;

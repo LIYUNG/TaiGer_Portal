@@ -119,6 +119,9 @@ export const CustomDrawer = (props) => {
 
     return (
         <Drawer
+            anchor="left"
+            data-testid="navbar_drawer_component"
+            open={props.open}
             sx={{
                 width: drawerWidth,
                 flexShrink: 0,
@@ -128,9 +131,6 @@ export const CustomDrawer = (props) => {
                 }
             }}
             variant={props.ismobile ? 'temporary' : 'persistent'}
-            anchor="left"
-            open={props.open}
-            data-testid="navbar_drawer_component"
         >
             <DrawerHeader>
                 <Typography variant="h6">{appConfig.companyName}</Typography>
@@ -189,14 +189,14 @@ export const CustomDrawer = (props) => {
                                         )
                                         .map((subMenuItem) => (
                                             <ListItemButton
-                                                key={subMenuItem.id}
-                                                sx={{ pl: 4 }}
                                                 component={LinkDom}
-                                                to={subMenuItem.url}
+                                                key={subMenuItem.id}
                                                 selected={
                                                     subMenuItem.url ===
                                                     location.pathname
                                                 }
+                                                sx={{ pl: 4 }}
+                                                to={subMenuItem.url}
                                             >
                                                 <ListItemIcon>
                                                     {subMenuItem.icon}
@@ -216,11 +216,11 @@ export const CustomDrawer = (props) => {
                             </Collapse>
                         </Box>
                     ) : (
-                        <ListItem key={menuItem.id} disablePadding>
+                        <ListItem disablePadding key={menuItem.id}>
                             <ListItemButton
                                 component={LinkDom}
-                                to={menuItem.url}
                                 selected={menuItem.url === location.pathname}
+                                to={menuItem.url}
                             >
                                 <ListItemIcon>{menuItem.icon}</ListItemIcon>
                                 <ListItemText

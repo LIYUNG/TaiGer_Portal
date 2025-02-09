@@ -3,12 +3,12 @@ import { Box } from '@mui/material';
 
 import SurveyEditableComponent from './SurveyEditableComponent';
 
-function SurveyComponent() {
+const SurveyComponent = () => {
     return (
         <Box>
             <SurveyEditableComponent />
         </Box>
     );
-}
+};
 
 export default SurveyComponent;

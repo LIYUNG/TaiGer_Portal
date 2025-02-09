@@ -12,9 +12,9 @@ import {
 } from 'recharts';
 import { appConfig } from '../../../config';
 
-function ProgramDistributionChart({ data, x_key }) {
+const ProgramDistributionChart = ({ data, x_key }) => {
     return (
-        <ResponsiveContainer width="100%" height={200}>
+        <ResponsiveContainer height={200} width="100%">
             <BarChart
                 data={data}
                 margin={{
@@ -37,46 +37,41 @@ function ProgramDistributionChart({ data, x_key }) {
             </BarChart>
         </ResponsiveContainer>
     );
-}
+};
 
 const ProgramListDashboardTab = ({ data }) => {
     return (
-        <>
-            <Card sx={{ p: 2 }}>
-                <Box>
-                    {appConfig.companyName} ProgramList Distribution By Country:
-                    <ProgramDistributionChart
-                        data={data?.countryCount}
-                        x_key="country"
-                    />
-                    By School:
-                    <ProgramDistributionChart
-                        data={data?.schoolCount}
-                        x_key="school"
-                    />
-                    By Language:
-                    <ProgramDistributionChart
-                        data={data?.langCount}
-                        x_key="lang"
-                    />
-                    By Degree:
-                    <ProgramDistributionChart
-                        data={data?.degreeCount}
-                        x_key="degree"
-                    />
-                    By Last Update:
-                    <ProgramDistributionChart
-                        data={data?.updatedAtCount}
-                        x_key="updatedAt"
-                    />
-                    By Who Updates
-                    <ProgramDistributionChart
-                        data={data?.whoupdatedCount}
-                        x_key="whoupdated"
-                    />
-                </Box>
-            </Card>
-        </>
+        <Card sx={{ p: 2 }}>
+            <Box>
+                {appConfig.companyName} ProgramList Distribution By Country:
+                <ProgramDistributionChart
+                    data={data?.countryCount}
+                    x_key="country"
+                />
+                By School:
+                <ProgramDistributionChart
+                    data={data?.schoolCount}
+                    x_key="school"
+                />
+                By Language:
+                <ProgramDistributionChart data={data?.langCount} x_key="lang" />
+                By Degree:
+                <ProgramDistributionChart
+                    data={data?.degreeCount}
+                    x_key="degree"
+                />
+                By Last Update:
+                <ProgramDistributionChart
+                    data={data?.updatedAtCount}
+                    x_key="updatedAt"
+                />
+                By Who Updates
+                <ProgramDistributionChart
+                    data={data?.whoupdatedCount}
+                    x_key="whoupdated"
+                />
+            </Box>
+        </Card>
     );
 };
 

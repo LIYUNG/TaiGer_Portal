@@ -11,12 +11,14 @@ import {
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { Link as LinkDom } from 'react-router-dom';
-import { is_TaiGer_role } from '@taiger-common/core';
+import {
+    is_TaiGer_role,
+    isProgramDecided,
+    isProgramSubmitted
+} from '@taiger-common/core';
 
 import {
     frequencyDistribution,
-    isProgramDecided,
-    isProgramSubmitted,
     programs_refactor
 } from '../Utils/checking-functions';
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
@@ -38,7 +40,7 @@ CustomTabPanel.propTypes = {
     value: PropTypes.number.isRequired
 };
 
-function ApplicationOverviewTabs(props) {
+const ApplicationOverviewTabs = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [value, setValue] = useState(0);
@@ -130,10 +132,10 @@ function ApplicationOverviewTabs(props) {
                 )}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>
@@ -158,10 +160,10 @@ function ApplicationOverviewTabs(props) {
                 const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.program_id)}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>
@@ -235,19 +237,19 @@ function ApplicationOverviewTabs(props) {
                     </Typography>
                     <TasksDistributionBarChart
                         data={sorted_date_freq_pair}
-                        k={'name'}
-                        value1={'active'}
-                        value2={'potentials'}
-                        yLabel={'Applications'}
+                        k="name"
+                        value1="active"
+                        value2="potentials"
+                        yLabel="Applications"
                     />
                 </Card>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs
-                        value={value}
-                        onChange={handleChange}
-                        variant="scrollable"
-                        scrollButtons="auto"
                         aria-label="basic tabs example"
+                        onChange={handleChange}
+                        scrollButtons="auto"
+                        value={value}
+                        variant="scrollable"
                     >
                         <Tab
                             data-testid="application_overview_component_active_student_list_tab"
@@ -271,32 +273,27 @@ function ApplicationOverviewTabs(props) {
                         />
                     </Tabs>
                 </Box>
-                <CustomTabPanel value={value} index={0}>
-                    {is_TaiGer_role(user) && (
+                <CustomTabPanel index={0} value={value}>
+                    {is_TaiGer_role(user) ? (
                         <TabStudBackgroundDashboard
                             students={students?.filter(
                                 (student) => !student.archiv
                             )}
                             submitUpdateAgentlist={submitUpdateAgentlist}
-                            submitUpdateEditorlist={submitUpdateEditorlist}
                             submitUpdateAttributeslist={
                                 submitUpdateAttributeslist
                             }
+                            submitUpdateEditorlist={submitUpdateEditorlist}
                             updateStudentArchivStatus={
                                 updateStudentArchivStatus
                             }
                         />
-                    )}
+                    ) : null}
                 </CustomTabPanel>
-                <CustomTabPanel value={value} index={1}>
+                <CustomTabPanel index={1} value={value}>
                     <div style={{ height: '50%', width: '100%' }}>
                         <DataGrid
                             columnHeaderHeight={130}
-                            density="compact"
-                            rows={filteredRows}
-                            disableColumnFilter
-                            disableColumnMenu
-                            disableDensitySelector
                             columns={applicationFileOverviewMuiHeader.map(
                                 (column) => ({
                                     ...column,
@@ -306,48 +303,53 @@ function ApplicationOverviewTabs(props) {
                                                 sx={{ my: 1 }}
                                             >{`${column.headerName}`}</Typography>
                                             <TextField
-                                                size="small"
-                                                type="text"
-                                                placeholder={`${column.headerName}`}
-                                                onClick={stopPropagation}
-                                                value={
-                                                    filters[column.field] || ''
-                                                }
                                                 onChange={(event) =>
                                                     handleFilterChange(
                                                         event,
                                                         column
                                                     )
                                                 }
+                                                onClick={stopPropagation}
+                                                placeholder={`${column.headerName}`}
+                                                size="small"
                                                 sx={{ mb: 1 }}
+                                                type="text"
+                                                value={
+                                                    filters[column.field] || ''
+                                                }
                                             />
                                         </Box>
                                     )
                                 })
                             )}
-                            onRowClick={handleRowClick}
+                            density="compact"
+                            disableColumnFilter
+                            disableColumnMenu
+                            disableDensitySelector
                             getRowId={(row) => row.id}
                             initialState={{
                                 pagination: {
                                     paginationModel: { page: 0, pageSize: 20 }
                                 }
                             }}
+                            onRowClick={handleRowClick}
                             pageSizeOptions={[10, 20, 50, 100]}
-                            slots={{ toolbar: GridToolbar }}
+                            rows={filteredRows}
                             slotProps={{
                                 toolbar: {
                                     showQuickFilter: true
                                 }
                             }}
+                            slots={{ toolbar: GridToolbar }}
                         />
                         <Popover
-                            open={open}
                             anchorEl={anchorEl}
-                            onClose={handleClose}
                             anchorOrigin={{
                                 vertical: 'center',
                                 horizontal: 'right'
                             }}
+                            onClose={handleClose}
+                            open={open}
                             transformOrigin={{
                                 vertical: 'top',
                                 horizontal: 'left'
@@ -358,16 +360,16 @@ function ApplicationOverviewTabs(props) {
                             </Typography>
                             <Typography>{hoveredRowData?.program}</Typography>
                             <ApplicationProgressCardBody
-                                student={hoveredRowData?.student}
                                 application={hoveredRowData?.application}
+                                student={hoveredRowData?.student}
                             />
                         </Popover>
                     </div>
                 </CustomTabPanel>
-                <CustomTabPanel value={value} index={2}>
+                <CustomTabPanel index={2} value={value}>
                     <ProgramUpdateStatusTable data={open_applications_arr} />
                 </CustomTabPanel>
-                <CustomTabPanel value={value} index={3}>
+                <CustomTabPanel index={3} value={value}>
                     <ProgramUpdateStatusTable
                         data={open_applications_arr.filter((application) =>
                             isProgramDecided(application)
@@ -375,15 +377,15 @@ function ApplicationOverviewTabs(props) {
                     />
                 </CustomTabPanel>
             </Box>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
         </>
     );
-}
+};
 
 export default ApplicationOverviewTabs;

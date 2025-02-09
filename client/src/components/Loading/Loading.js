@@ -32,14 +32,14 @@ export default function Loading() {
             }}
         >
             <CircularProgress />
-            <Typography variant="h6" color="white" mt={2}>
+            <Typography color="white" mt={2} variant="h6">
                 {i18next.t('loading', { ns: 'common' })}
             </Typography>
-            {showExtraMessage && (
-                <Typography variant="body2" color="white">
+            {showExtraMessage ? (
+                <Typography color="white" variant="body2">
                     {i18next.t('almost-done', { ns: 'common' })}
                 </Typography>
-            )}
+            ) : null}
         </Box>
     );
 }

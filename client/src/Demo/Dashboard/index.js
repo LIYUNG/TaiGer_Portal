@@ -6,7 +6,7 @@ import DashboardBody from './DashboardBody';
 import { Box } from '@mui/material';
 import Loading from '../../components/Loading/Loading';
 
-function Dashboard() {
+const Dashboard = () => {
     const { studentAndEssays } = useLoaderData();
 
     TabTitle('Home Page');
@@ -22,6 +22,6 @@ function Dashboard() {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default Dashboard;

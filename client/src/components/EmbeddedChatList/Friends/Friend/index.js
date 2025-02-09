@@ -51,6 +51,7 @@ const Friend = (props) => {
             : theme.palette.action.disabled; // Set your desired background color
     return (
         <ListItem
+            disablePadding
             key={props.data?._id?.toString()}
             sx={{
                 backgroundColor: backgroundColor,
@@ -67,13 +68,9 @@ const Friend = (props) => {
                         ? theme.palette.text.primary // Regular text for read messages
                         : theme.palette.text.secondary // Secondary text color for unread messages
             }}
-            disablePadding
         >
             <ListItemButton
                 component={LinkDom}
-                to={`${DEMO.COMMUNICATIONS_TAIGER_MODE_LINK(
-                    props.data?._id?.toString()
-                )}`}
                 selected={props.data?._id?.toString() === student_id}
                 title={`${
                     props.data.lastname_chinese
@@ -82,6 +79,9 @@ const Friend = (props) => {
                 }${props.data.firstname_chinese ? props.data.firstname_chinese : ''}${
                     props.data.firstname
                 } ${props.data.lastname}`}
+                to={`${DEMO.COMMUNICATIONS_TAIGER_MODE_LINK(
+                    props.data?._id?.toString()
+                )}`}
             >
                 <ListItemIcon>
                     <IconButton edge="start">
@@ -126,14 +126,14 @@ const Friend = (props) => {
                         <IconButton edge="end">
                             {props.data?.latestCommunication?.user_id ===
                                 props.data?.latestCommunication?.student_id &&
-                                props.data?.latestCommunication
-                                    ?.ignore_message !== true && (
-                                    <FiberManualRecordIcon
-                                        fontSize="small"
-                                        title="Not Reply Yet"
-                                        style={{ marginLeft: '4px' }}
-                                    />
-                                )}
+                            props.data?.latestCommunication?.ignore_message !==
+                                true ? (
+                                <FiberManualRecordIcon
+                                    fontSize="small"
+                                    style={{ marginLeft: '4px' }}
+                                    title="Not Reply Yet"
+                                />
+                            ) : null}
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListItemIcon>

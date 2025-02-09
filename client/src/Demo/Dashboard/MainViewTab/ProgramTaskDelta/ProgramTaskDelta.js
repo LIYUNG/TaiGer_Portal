@@ -4,9 +4,7 @@ import { Link, TableBody, TableCell, TableRow } from '@mui/material';
 
 import DEMO from '../../../../store/constant';
 
-function ProgramTaskDelta(props) {
-    const { program, students } = props;
-
+const ProgramTaskDelta = ({ program, students }) => {
     return (
         students?.length !== 0 && (
             <TableBody>
@@ -14,16 +12,16 @@ function ProgramTaskDelta(props) {
                     <TableCell rowSpan={(students?.length || 0) + 1}>
                         <div>
                             <Link
-                                to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
                                 component={LinkDom}
+                                to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
                             >
                                 <b>{program.school}</b>
                             </Link>
                         </div>
                         <div>
                             <Link
-                                to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
                                 component={LinkDom}
+                                to={`${DEMO.SINGLE_PROGRAM_LINK(program._id)}`}
                             >
                                 {program.program_name}
                             </Link>
@@ -34,11 +32,11 @@ function ProgramTaskDelta(props) {
                     <TableRow className="text-info" key={i}>
                         <TableCell>
                             <Link
+                                component={LinkDom}
                                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                     student._id,
                                     DEMO.CVMLRL_HASH
                                 )}`}
-                                component={LinkDom}
                             >
                                 {student.firstname + ', ' + student.lastname}
                             </Link>
@@ -60,6 +58,6 @@ function ProgramTaskDelta(props) {
             </TableBody>
         )
     );
-}
+};
 
 export default ProgramTaskDelta;

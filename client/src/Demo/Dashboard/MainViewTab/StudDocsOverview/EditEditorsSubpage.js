@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 
 import { getEditors } from '../../../../api';
 
-function EditEditorsSubpage(props) {
+const EditEditorsSubpage = (props) => {
     const [checkboxState, setCheckboxState] = useState({});
     const [isLoaded, setIsLoaded] = useState(false);
     const { t } = useTranslation();
@@ -68,10 +68,10 @@ function EditEditorsSubpage(props) {
 
     return (
         <Dialog
-            open={props.show}
-            onClose={props.onHide}
-            size="large"
             aria-labelledby="contained-modal-title-vcenter"
+            onClose={props.onHide}
+            open={props.show}
+            size="large"
         >
             <DialogTitle>
                 Editor for {props.student.firstname} - {props.student.lastname}
@@ -89,7 +89,6 @@ function EditEditorsSubpage(props) {
                                         <TableRow key={i + 1}>
                                             <TableCell>
                                                 <FormControlLabel
-                                                    label={`${editor.lastname} ${editor.firstname}`}
                                                     control={
                                                         <Checkbox
                                                             checked={
@@ -106,9 +105,10 @@ function EditEditorsSubpage(props) {
                                                             value={editor._id}
                                                         />
                                                     }
+                                                    label={`${editor.lastname} ${editor.firstname}`}
                                                 />
                                             </TableCell>
-                                            <TableCell></TableCell>
+                                            <TableCell />
                                         </TableRow>
                                     ))
                                 ) : (
@@ -124,7 +124,6 @@ function EditEditorsSubpage(props) {
                         </Table>
                         <Button
                             color="primary"
-                            variant="contained"
                             onClick={(e) =>
                                 props.submitUpdateEditorlist(
                                     e,
@@ -132,10 +131,11 @@ function EditEditorsSubpage(props) {
                                     props.student._id
                                 )
                             }
+                            variant="contained"
                         >
                             {t('Update', { ns: 'common' })}
                         </Button>
-                        <Button variant="outlined" onClick={props.onHide}>
+                        <Button onClick={props.onHide} variant="outlined">
                             {t('Cancel', { ns: 'common' })}
                         </Button>
                     </>
@@ -145,5 +145,5 @@ function EditEditorsSubpage(props) {
             </DialogContent>
         </Dialog>
     );
-}
+};
 export default EditEditorsSubpage;

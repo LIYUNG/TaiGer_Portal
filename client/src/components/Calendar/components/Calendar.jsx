@@ -13,7 +13,19 @@ import { useAuth } from '../../AuthProvider';
 
 const localizer = momentLocalizer(moment);
 
-const MyCalendar = (props) => {
+const MyCalendar = ({
+    BookButtonDisable,
+    events,
+    selectedEvent,
+    handleModalClose,
+    handleModalBook,
+    handleChange,
+    handleSelectEvent,
+    handleSelectSlot,
+    handleChangeReceiver,
+    newDescription,
+    newReceiver
+}) => {
     const { user } = useAuth();
     const theme = useTheme();
 
@@ -237,16 +249,6 @@ const MyCalendar = (props) => {
         }}
       /> */}
             <Calendar
-                localizer={localizer}
-                events={props.events}
-                style={{ height: 600 }}
-                startAccessor="start"
-                endAccessor="end"
-                views={['month', 'week', 'day']}
-                defaultView="month" // Set the default view to "month"
-                // Using the popup to show event details
-                popup
-                // Rendering additional event information in the popup
                 components={{
                     event: ({ event }) =>
                         is_TaiGer_Student(user) ? (
@@ -262,29 +264,41 @@ const MyCalendar = (props) => {
                             </span>
                         )
                 }}
+                defaultView="month" // Set the default view to "month"
+                endAccessor="end"
+                eventPropGetter={eventPropGetter} // Apply custom styles to events based on the logic
+                events={events}
+                localizer={localizer}
+                onSelectEvent={handleSelectEvent}
+                onSelectSlot={
+                    is_TaiGer_Agent(user) ? handleSelectSlot : () => {}
+                }
+                popup
+                selectable={true}
+                startAccessor="start"
+                style={{ height: 600 }}
+                // Using the popup to show event details
+                // Rendering additional event information in the popup
+
                 // Set the timeslots and step using the custom function
                 timeslots={2}
-                selectable={true}
+                views={['month', 'week', 'day']}
                 // Handle event click to show the modal
-                onSelectEvent={props.handleSelectEvent}
-                onSelectSlot={
-                    is_TaiGer_Agent(user) ? props.handleSelectSlot : () => {}
-                }
+
                 // Using the eventPropGetter to customize event rendering
-                eventPropGetter={eventPropGetter} // Apply custom styles to events based on the logic
                 // onSelectSlot={() => console.log('Triggered!')}
             />
 
             <Popping
-                open={props.selectedEvent}
-                handleClose={props.handleModalClose}
-                handleBook={props.handleModalBook}
-                handleChange={props.handleChange}
-                handleChangeReceiver={props.handleChangeReceiver}
-                newReceiver={props.newReceiver}
-                BookButtonDisable={props.BookButtonDisable}
-                newDescription={props.newDescription}
-                event={props.selectedEvent}
+                BookButtonDisable={BookButtonDisable}
+                event={selectedEvent}
+                handleBook={handleModalBook}
+                handleChange={handleChange}
+                handleChangeReceiver={handleChangeReceiver}
+                handleClose={handleModalClose}
+                newDescription={newDescription}
+                newReceiver={newReceiver}
+                open={selectedEvent}
                 user={user}
             />
         </>

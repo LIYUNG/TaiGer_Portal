@@ -192,7 +192,7 @@ const SchoolConfigContent = ({ data }) => {
                     <Typography variant="h6">
                         {t('School', { ns: 'common' })}: {attributes.school}
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ mb: 2 }}>
+                    <Typography sx={{ mb: 2 }} variant="subtitle1">
                         {t('Programs Count', { ns: 'common' })}:{' '}
                         {attributes.count}
                     </Typography>
@@ -201,11 +201,11 @@ const SchoolConfigContent = ({ data }) => {
                             {t('Is Private School', { ns: 'common' })}
                         </InputLabel>
                         <Select
-                            labelId="isPrivateSchool"
-                            label={t('Is Private School', { ns: 'common' })}
-                            name="isPrivateSchool"
-                            id="isPrivateSchool"
                             defaultValue={attributes.isPrivateSchool ?? false}
+                            id="isPrivateSchool"
+                            label={t('Is Private School', { ns: 'common' })}
+                            labelId="isPrivateSchool"
+                            name="isPrivateSchool"
                             onChange={(e) => handleChange(e, props.data.school)}
                         >
                             <MenuItem value={true}>
@@ -221,11 +221,11 @@ const SchoolConfigContent = ({ data }) => {
                             {t('Is Partner School', { ns: 'common' })}
                         </InputLabel>
                         <Select
-                            labelId="isPartnerSchool"
-                            label={t('Is Partner School', { ns: 'common' })}
-                            name="isPartnerSchool"
-                            id="isPartnerSchool"
                             defaultValue={attributes.isPartnerSchool ?? false}
+                            id="isPartnerSchool"
+                            label={t('Is Partner School', { ns: 'common' })}
+                            labelId="isPartnerSchool"
+                            name="isPartnerSchool"
                             onChange={(e) => handleChange(e, props.data.school)}
                         >
                             <MenuItem value={true}>
@@ -241,11 +241,11 @@ const SchoolConfigContent = ({ data }) => {
                             {t('Country', { ns: 'common' })}
                         </InputLabel>
                         <Select
-                            labelId="country"
-                            label={t('Country', { ns: 'common' })}
-                            name="country"
-                            id="country"
                             defaultValue={attributes.country ?? '-'}
+                            id="country"
+                            label={t('Country', { ns: 'common' })}
+                            labelId="country"
+                            name="country"
                             onChange={(e) => handleChange(e, props.data.school)}
                         >
                             {COUNTRIES_ARRAY_OPTIONS.map((option) => (
@@ -263,20 +263,20 @@ const SchoolConfigContent = ({ data }) => {
                             {t('School Type', { ns: 'common' })}
                         </InputLabel>
                         <Select
-                            labelId="schoolType"
-                            label={t('School Type', { ns: 'common' })}
-                            name="schoolType"
-                            id="schoolType"
                             defaultValue={attributes.schoolType ?? '-'}
+                            id="schoolType"
+                            label={t('School Type', { ns: 'common' })}
+                            labelId="schoolType"
+                            name="schoolType"
                             onChange={(e) => handleChange(e, props.data.school)}
                         >
-                            <MenuItem value={'-'}>
+                            <MenuItem value="-">
                                 {t('Please Select', { ns: 'common' })}
                             </MenuItem>
-                            <MenuItem value={'University'}>
+                            <MenuItem value="University">
                                 {t('University', { ns: 'common' })}
                             </MenuItem>
-                            <MenuItem value={'University_of_Applied_Sciences'}>
+                            <MenuItem value="University_of_Applied_Sciences">
                                 {t('University of Applied Sciences', {
                                     ns: 'common'
                                 })}
@@ -284,17 +284,17 @@ const SchoolConfigContent = ({ data }) => {
                         </Select>
                     </FormControl>
                     <SearchableMultiSelect
-                        name="tags"
-                        label={null}
                         data={SCHOOL_TAGS_DETAILED}
-                        value={attributes.tags ?? []}
+                        label={null}
+                        name="tags"
                         setValue={handleChangeByField(
                             'tags',
                             props.data.school
                         )}
+                        value={attributes.tags ?? []}
                     />
                     {/* Additional configuration details go here */}
-                    <Button variant="contained" color="primary" type="submit">
+                    <Button color="primary" type="submit" variant="contained">
                         {t('Update', { ns: 'common' })}
                     </Button>
                 </form>
@@ -308,20 +308,20 @@ const SchoolConfigContent = ({ data }) => {
                 {/* Left side: School list */}
                 <Grid
                     item
-                    xs={12}
                     md={
                         Object.keys(rowSelection) &&
                         Object.keys(rowSelection)[0]
                             ? 7
                             : 12
                     }
+                    xs={12}
                 >
                     <Paper style={{ padding: 16 }}>
                         <ExampleWithLocalizationProvider
-                            data={distinctSchoolsState}
                             col={memoizedColumnsMrt}
-                            enableRowSelection={true}
+                            data={distinctSchoolsState}
                             enableMultiRowSelection={false}
+                            enableRowSelection={true}
                             muiTableBodyRowProps={({ row }) => ({
                                 //add onClick to row to select upon clicking anywhere in the row
                                 onClick: row.getToggleSelectedHandler(),
@@ -334,8 +334,8 @@ const SchoolConfigContent = ({ data }) => {
                 </Grid>
 
                 {/* Right side: Configuration panel */}
-                {!isSmallScreen && (
-                    <Grid item xs={12} md={5}>
+                {!isSmallScreen ? (
+                    <Grid item md={5} xs={12}>
                         <Paper style={{ padding: 16 }}>
                             {Object.keys(rowSelection) &&
                             Object.keys(rowSelection)[0] ? (
@@ -358,14 +358,14 @@ const SchoolConfigContent = ({ data }) => {
                             )}
                         </Paper>
                     </Grid>
-                )}
+                ) : null}
             </Grid>
 
             {/* Drawer for small screens */}
             <Drawer
                 anchor="right"
-                open={drawerOpen}
                 onClose={handleDrawerClose}
+                open={drawerOpen}
             >
                 <div style={{ width: 300, padding: 16 }}>
                     {Object.keys(rowSelection) &&
@@ -384,9 +384,9 @@ const SchoolConfigContent = ({ data }) => {
                         </Typography>
                     )}
                     <Button
+                        fullWidth
                         onClick={handleDrawerClose}
                         variant="contained"
-                        fullWidth
                     >
                         Close
                     </Button>

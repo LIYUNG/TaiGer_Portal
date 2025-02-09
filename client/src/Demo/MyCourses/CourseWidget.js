@@ -34,10 +34,10 @@ export default function CourseWidget() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>

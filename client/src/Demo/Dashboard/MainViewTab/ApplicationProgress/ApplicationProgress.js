@@ -3,18 +3,19 @@ import { Link as LinkDom } from 'react-router-dom';
 import { Link, TableCell, TableRow, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { differenceInDays } from 'date-fns';
+import {
+    isProgramAdmitted,
+    isProgramDecided,
+    isProgramSubmitted,
+    isProgramWithdraw
+} from '@taiger-common/core';
 
 import {
     ADMISSION_STATUS_E,
     DECISION_STATUS_E,
     SUBMISSION_STATUS_E
 } from '../../../../utils/contants';
-import {
-    application_deadline_calculator,
-    isProgramDecided,
-    isProgramSubmitted,
-    isProgramWithdraw
-} from '../../../Utils/checking-functions';
+import { application_deadline_calculator } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 
 function ApplicationProgress(props) {
@@ -54,12 +55,12 @@ function ApplicationProgress(props) {
             <TableRow key={i}>
                 <TableCell>
                     <Link
+                        component={LinkDom}
+                        target="_blank"
                         to={DEMO.SINGLE_PROGRAM_LINK(
                             application.programId._id.toString()
                         )}
-                        component={LinkDom}
                         underline="hover"
-                        target="_blank"
                     >
                         <Typography
                             color={
@@ -77,12 +78,12 @@ function ApplicationProgress(props) {
                 </TableCell>
                 <TableCell>
                     <Link
+                        component={LinkDom}
+                        target="_blank"
                         to={DEMO.SINGLE_PROGRAM_LINK(
                             application.programId._id.toString()
                         )}
-                        component={LinkDom}
                         underline="hover"
-                        target="_blank"
                     >
                         <Typography
                             color={
@@ -100,12 +101,12 @@ function ApplicationProgress(props) {
                 </TableCell>
                 <TableCell>
                     <Link
+                        component={LinkDom}
+                        target="_blank"
                         to={DEMO.SINGLE_PROGRAM_LINK(
                             application.programId._id.toString()
                         )}
-                        component={LinkDom}
                         underline="hover"
-                        target="_blank"
                     >
                         <Typography
                             color={
@@ -256,7 +257,7 @@ function ApplicationProgress(props) {
                 ) : (
                     <TableCell>{SUBMISSION_STATUS_E.UNKNOWN_SYMBOL}</TableCell>
                 )}
-                {application.admission === 'O' ? (
+                {isProgramAdmitted(application) ? (
                     <TableCell> {ADMISSION_STATUS_E.OK_SYMBOL}</TableCell>
                 ) : application.admission === 'X' ? (
                     <TableCell> {ADMISSION_STATUS_E.NOT_OK_SYMBOL}</TableCell>

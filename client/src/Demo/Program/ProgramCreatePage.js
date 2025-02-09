@@ -10,7 +10,7 @@ import { useMutation } from '@tanstack/react-query';
 import { queryClient } from '../../api/client';
 import { useSnackBar } from '../../contexts/use-snack-bar';
 
-function ProgramCreatePage() {
+const ProgramCreatePage = () => {
     const { distinctSchools } = useLoaderData();
     const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
     const navigate = useNavigate();
@@ -44,19 +44,17 @@ function ProgramCreatePage() {
             <Suspense fallback={<Loading />}>
                 <Await resolve={distinctSchools}>
                     {(loadedData) => (
-                        <>
-                            <NewProgramEdit
-                                handleClick={onClickIsCreateApplicationMode}
-                                handleSubmit_Program={handleSubmitProgram}
-                                programs={loadedData}
-                                isSubmitting={isPending}
-                                type={'create'}
-                            />
-                        </>
+                        <NewProgramEdit
+                            handleClick={onClickIsCreateApplicationMode}
+                            handleSubmit_Program={handleSubmitProgram}
+                            isSubmitting={isPending}
+                            programs={loadedData}
+                            type="create"
+                        />
                     )}
                 </Await>
             </Suspense>
         </Box>
     );
-}
+};
 export default ProgramCreatePage;

@@ -11,7 +11,7 @@ import {
 import DEMO from '../../../../store/constant';
 import { useTranslation } from 'react-i18next';
 
-function AdminTasks(props) {
+const AdminTasks = (props) => {
     const { t } = useTranslation();
     const missing_number_of_applications_students = props.students.map(
         (student, i) =>
@@ -19,10 +19,10 @@ function AdminTasks(props) {
                 <TableRow key={i}>
                     <TableCell>
                         <Link
+                            component={LinkDom}
                             to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
                                 student._id.toString()
                             )}`}
-                            component={LinkDom}
                         >
                             Number of Applications{' '}
                             <b>
@@ -42,12 +42,12 @@ function AdminTasks(props) {
 
     return (
         <>
-            {!does_student_have_agents(props.students) && (
+            {!does_student_have_agents(props.students) ? (
                 <TableRow>
                     <TableCell>
                         <Link
-                            to={`${DEMO.ASSIGN_AGENT_LINK}`}
                             component={LinkDom}
+                            to={`${DEMO.ASSIGN_AGENT_LINK}`}
                         >
                             {t('Assign Agents')}
                         </Link>
@@ -56,13 +56,13 @@ function AdminTasks(props) {
                         {t('Please assign agents', { ns: 'common' })}
                     </TableCell>
                 </TableRow>
-            )}
-            {!does_student_have_editors(props.students) && (
+            ) : null}
+            {!does_student_have_editors(props.students) ? (
                 <TableRow>
                     <TableCell>
                         <Link
-                            to={`${DEMO.ASSIGN_EDITOR_LINK}`}
                             component={LinkDom}
+                            to={`${DEMO.ASSIGN_EDITOR_LINK}`}
                         >
                             {t('Assign Editors')}
                         </Link>
@@ -71,17 +71,17 @@ function AdminTasks(props) {
                         {t('Please assign editors', { ns: 'common' })}
                     </TableCell>
                 </TableRow>
-            )}
+            ) : null}
             {!does_essay_have_writers(
                 props.essayDocumentThreads.filter(
                     (thread) => !thread.isFinalVersion
                 )
-            ) && (
+            ) ? (
                 <TableRow>
                     <TableCell>
                         <Link
-                            to={`${DEMO.ASSIGN_ESSAY_WRITER_LINK}`}
                             component={LinkDom}
+                            to={`${DEMO.ASSIGN_ESSAY_WRITER_LINK}`}
                         >
                             {t('Assign Essay Writer', { ns: 'common' })}
                         </Link>
@@ -90,11 +90,11 @@ function AdminTasks(props) {
                         {t('Please assign essay writers', { ns: 'common' })}
                     </TableCell>
                 </TableRow>
-            )}
+            ) : null}
             {/* assign number of application according to contract */}
             {missing_number_of_applications_students}
         </>
     );
-}
+};
 
 export default AdminTasks;

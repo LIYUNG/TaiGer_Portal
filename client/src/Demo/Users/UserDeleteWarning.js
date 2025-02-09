@@ -11,12 +11,12 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-function UserDeleteWarning(props) {
+const UserDeleteWarning = (props) => {
     const { t } = useTranslation();
     return (
         <Dialog
-            open={props.deleteUserWarning}
             onClose={props.setModalHideDDelete}
+            open={props.deleteUserWarning}
         >
             <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
             <DialogContent>
@@ -28,8 +28,6 @@ function UserDeleteWarning(props) {
                     ?
                 </DialogContentText>
                 <TextField
-                    size="small"
-                    type="text"
                     label={
                         <>
                             Please enter{' '}
@@ -38,20 +36,22 @@ function UserDeleteWarning(props) {
                             </i>
                         </>
                     }
-                    placeholder="delete"
                     onChange={(e) => props.onChangeDeleteField(e)}
+                    placeholder="delete"
+                    size="small"
+                    type="text"
                 />
             </DialogContent>
             <DialogActions>
                 <Button
                     color="primary"
-                    variant="contained"
                     disabled={
                         !props.isLoaded || !(props.delete_field === 'delete')
                     }
                     onClick={() =>
                         props.handleDeleteUser(props.selected_user_id)
                     }
+                    variant="contained"
                 >
                     {props.isLoaded ? (
                         t('Yes', { ns: 'common' })
@@ -61,13 +61,13 @@ function UserDeleteWarning(props) {
                 </Button>
                 <Button
                     color="secondary"
-                    variant="outlined"
                     onClick={props.setModalHideDDelete}
+                    variant="outlined"
                 >
                     {t('No', { ns: 'common' })}
                 </Button>
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default UserDeleteWarning;

@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { convertDate, convertDateUXFriendly } from '../../utils/contants';
 import DEMO from '../../store/constant';
 
-function MiniAudit({ audit }) {
+const MiniAudit = ({ audit }) => {
     const { t } = useTranslation();
 
     return (
@@ -104,14 +104,14 @@ function MiniAudit({ audit }) {
                                                 : ''}
                                         </TableCell>
                                         <TableCell>
-                                            {record?.targetDocumentThreadId && (
+                                            {record?.targetDocumentThreadId ? (
                                                 <Link
+                                                    component={LinkDom}
+                                                    target="_blank"
+                                                    title={program_name}
                                                     to={DEMO.DOCUMENT_MODIFICATION_LINK(
                                                         record?.targetDocumentThreadId._id?.toString()
                                                     )}
-                                                    title={program_name}
-                                                    component={LinkDom}
-                                                    target="_blank"
                                                 >
                                                     {fileName}{' '}
                                                     {
@@ -123,15 +123,15 @@ function MiniAudit({ audit }) {
                                                             ?.lastname
                                                     }
                                                 </Link>
-                                            )}
-                                            {record?.interviewThreadId && (
+                                            ) : null}
+                                            {record?.interviewThreadId ? (
                                                 <Link
+                                                    component={LinkDom}
+                                                    target="_blank"
+                                                    title={program_name}
                                                     to={DEMO.INTERVIEW_SINGLE_LINK(
                                                         record?.interviewThreadId._id?.toString()
                                                     )}
-                                                    title={program_name}
-                                                    component={LinkDom}
-                                                    target="_blank"
                                                 >
                                                     {interview_name}{' '}
                                                     {
@@ -143,7 +143,7 @@ function MiniAudit({ audit }) {
                                                             ?.lastname
                                                     }
                                                 </Link>
-                                            )}
+                                            ) : null}
                                             {isNewUser || isAssign
                                                 ? `${record?.targetUserId?.firstname} ${record?.targetUserId?.lastname}`
                                                 : ''}
@@ -166,6 +166,6 @@ function MiniAudit({ audit }) {
             </Box>
         </Box>
     );
-}
+};
 
 export default MiniAudit;

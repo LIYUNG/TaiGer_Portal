@@ -16,7 +16,7 @@ import {
 
 import { useTranslation } from 'react-i18next';
 
-function ProgramListSingleStudentAssignSubpage(props) {
+const ProgramListSingleStudentAssignSubpage = (props) => {
     const { t } = useTranslation();
     const [
         ProgramListSingleStudentAssignSubpageState,
@@ -54,10 +54,10 @@ function ProgramListSingleStudentAssignSubpage(props) {
     }
     return (
         <Dialog
-            open={props.show}
-            onClose={props.setModalHide}
-            size="small"
             aria-labelledby="contained-modal-title-vcenter"
+            onClose={props.setModalHide}
+            open={props.show}
+            size="small"
         >
             <DialogTitle>
                 Assign{' '}
@@ -82,9 +82,9 @@ function ProgramListSingleStudentAssignSubpage(props) {
             <DialogActions>
                 <Button
                     color="primary"
-                    variant="contained"
                     disabled={props.isButtonDisable}
                     onClick={(e) => props.onSubmitAddToStudentProgramList(e)}
+                    variant="contained"
                 >
                     {props.isButtonDisable ? (
                         <CircularProgress />
@@ -94,14 +94,14 @@ function ProgramListSingleStudentAssignSubpage(props) {
                 </Button>
                 <Button
                     color="secondary"
-                    variant="outlined"
                     onClick={props.setModalHide}
+                    variant="outlined"
                 >
                     {t('Cancel', { ns: 'common' })}
                 </Button>
             </DialogActions>
         </Dialog>
     );
-}
+};
 
 export default ProgramListSingleStudentAssignSubpage;

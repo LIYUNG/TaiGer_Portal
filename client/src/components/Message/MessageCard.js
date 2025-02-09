@@ -32,7 +32,7 @@ import { useAuth } from '../AuthProvider';
 import Loading from '../Loading/Loading';
 import { IgnoreMessageThread } from '../../../src/api/index';
 
-function MessageCard(props) {
+const MessageCard = (props) => {
     const { user } = useAuth();
     const [messageState, setMessageState] = useState({
         editorState: null,
@@ -139,19 +139,19 @@ function MessageCard(props) {
             <span>
                 {/* /api/document-threads/${studentId}/${documentsthreadId}/${file_key} */}
                 <Link
-                    underline="hover"
+                    component={LinkDom}
+                    target="_blank"
                     to={apiFilePath(
                         props.apiPrefix,
                         file.path.replace(/\\/g, '/')
                     )}
-                    component={LinkDom}
-                    target="_blank"
+                    underline="hover"
                 >
                     <svg
-                        width="16"
+                        fill="none"
                         height="16"
                         viewBox="0 0 16 16"
-                        fill="none"
+                        width="16"
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <FileIcon
@@ -161,18 +161,18 @@ function MessageCard(props) {
                     </svg>
                     {file.name}
                     <svg
-                        width="24"
+                        fill="none"
                         height="24"
                         viewBox="0 0 24 24"
-                        fill="none"
+                        width="24"
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <path
                             d="m7 10 4.86 4.86c.08.08.2.08.28 0L17 10"
                             stroke="#000"
-                            strokeWidth="2"
                             strokeLinecap="round"
-                        ></path>
+                            strokeWidth="2"
+                        />
                     </svg>
                 </Link>
             </span>
@@ -197,9 +197,9 @@ function MessageCard(props) {
                 }}
             >
                 <AccordionSummary
-                    id={`${props.idx}`}
                     aria-controls={'accordion' + props.idx}
                     expandIcon={<ExpandMoreIcon />}
+                    id={`${props.idx}`}
                     onClick={() => props.singleExpandtHandler(props.idx)}
                 >
                     <Avatar {...stringAvatar(full_name)} />
@@ -208,7 +208,7 @@ function MessageCard(props) {
                     </Typography>
                     <Typography style={{ display: 'flex', float: 'right' }}>
                         {convertDate(props.message.createdAt)}
-                        {editable && (
+                        {editable ? (
                             <IconButton
                                 onClick={(e) =>
                                     onOpendeleteMessageModalShow(
@@ -220,48 +220,46 @@ function MessageCard(props) {
                             >
                                 <CloseIcon
                                     fontSize="small"
-                                    title="Delete this message and file"
                                     style={{ cursor: 'pointer' }}
+                                    title="Delete this message and file"
                                 />
                             </IconButton>
-                        )}
+                        ) : null}
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails
                     in={props.accordionKeys[props.idx] === props.idx}
                 >
                     <EditorSimple
-                        holder={`${props.message._id.toString()}`}
-                        readOnly={true}
-                        imageEnable={true}
-                        handleClickSave={props.handleClickSave}
-                        editorState={messageState.editorState}
                         defaultHeight={0}
+                        editorState={messageState.editorState}
+                        handleClickSave={props.handleClickSave}
+                        holder={`${props.message._id.toString()}`}
+                        imageEnable={true}
+                        readOnly={true}
                     />
                     {files_info}
                     {!is_TaiGer_Student(user) &&
-                        is_TaiGer_Student(props.message.user_id) && (
-                            <FormGroup>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={
-                                                messageState.ignore_message
-                                            }
-                                            onChange={handleCheckboxChange}
-                                        />
-                                    }
-                                    label="no need to reply"
-                                    labelPlacement="start"
-                                />
-                            </FormGroup>
-                        )}
+                    is_TaiGer_Student(props.message.user_id) ? (
+                        <FormGroup>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={messageState.ignore_message}
+                                        onChange={handleCheckboxChange}
+                                    />
+                                }
+                                label="no need to reply"
+                                labelPlacement="start"
+                            />
+                        </FormGroup>
+                    ) : null}
                 </AccordionDetails>
             </Accordion>
             <Dialog
-                open={messageState.deleteMessageModalShow}
-                onClose={onHidedeleteMessageModalShow}
                 aria-labelledby="contained-modal-title-vcenter"
+                onClose={onHidedeleteMessageModalShow}
+                open={messageState.deleteMessageModalShow}
             >
                 <DialogTitle>
                     {i18next.t('Warning', { ns: 'common' })}
@@ -274,10 +272,10 @@ function MessageCard(props) {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        disabled={!props.isLoaded}
-                        variant="contained"
                         color="primary"
+                        disabled={!props.isLoaded}
                         onClick={onDeleteSingleMessage}
+                        variant="contained"
                     >
                         {props.isLoaded
                             ? i18next.t('Delete', { ns: 'common' })
@@ -293,6 +291,6 @@ function MessageCard(props) {
             </Dialog>
         </>
     );
-}
+};
 
 export default MessageCard;

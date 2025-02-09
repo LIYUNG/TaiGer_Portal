@@ -23,7 +23,7 @@ import EditorSimple from '../../components/EditorJs/EditorSimple';
 import { stringAvatar, convertDate } from '../../utils/contants';
 import Loading from '../../components/Loading/Loading';
 
-function MessageEdit(props) {
+const MessageEdit = (props) => {
     const { t } = useTranslation();
     const [messageEditState, setMessageEditState] = useState({
         editorState: null,
@@ -72,8 +72,8 @@ function MessageEdit(props) {
     return (
         <>
             <Accordion
-                expanded={true}
                 disableGutters
+                expanded={true}
                 sx={{
                     p: 2,
                     overflowWrap: 'break-word', // Add this line
@@ -90,48 +90,46 @@ function MessageEdit(props) {
                 }}
             >
                 <AccordionSummary
-                    id={`${props.idx}`}
                     aria-controls={'accordion' + props.idx}
                     expandIcon={<ExpandMoreIcon />}
+                    id={`${props.idx}`}
                 >
                     <Avatar {...stringAvatar(props.full_name)} />
                     <Typography style={{ marginLeft: '10px', flex: 1 }}>
-                        <b style={{ cursor: 'pointer' }} className="ps-0 my-1">
+                        <b className="ps-0 my-1" style={{ cursor: 'pointer' }}>
                             {props.full_name}
                         </b>
                         <span style={{ float: 'right' }}>
                             {convertDate(props.message.createdAt)}
-                            {props.editable && (
-                                <>
-                                    <IconButton
-                                        aria-label="delete"
-                                        onClick={(e) =>
-                                            onOpendeleteMessageModalShow(
-                                                e,
-                                                props.message._id.toString(),
-                                                props.message.createdAt
-                                            )
-                                        }
-                                    >
-                                        <CloseIcon
-                                            fontSize="small"
-                                            title="Delete this message and file"
-                                            style={{ cursor: 'pointer' }}
-                                        />
-                                    </IconButton>
-                                </>
-                            )}
+                            {props.editable ? (
+                                <IconButton
+                                    aria-label="delete"
+                                    onClick={(e) =>
+                                        onOpendeleteMessageModalShow(
+                                            e,
+                                            props.message._id.toString(),
+                                            props.message.createdAt
+                                        )
+                                    }
+                                >
+                                    <CloseIcon
+                                        fontSize="small"
+                                        style={{ cursor: 'pointer' }}
+                                        title="Delete this message and file"
+                                    />
+                                </IconButton>
+                            ) : null}
                         </span>
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <EditorSimple
-                        holder={`${props.message._id.toString()}`}
-                        readOnly={false}
-                        imageEnable={false}
+                        defaultHeight={0}
                         editorState={props.editorState}
                         handleEditorChange={handleEditorChange}
-                        defaultHeight={0}
+                        holder={`${props.message._id.toString()}`}
+                        imageEnable={false}
+                        readOnly={false}
                     />
                 </AccordionDetails>
 
@@ -139,15 +137,15 @@ function MessageEdit(props) {
                 messageEditState.editorState?.blocks.length === 0 ||
                 props.buttonDisabled ? (
                     <Tooltip
+                        placement="top"
                         title={t(
                             'Please write some text to improve the communication and understanding.'
                         )}
-                        placement="top"
                     >
                         <Button
-                            variant="outlined"
                             color="secondary"
                             startIcon={<SendIcon />}
+                            variant="outlined"
                         >
                             {t('Save')}
                         </Button>
@@ -155,7 +153,6 @@ function MessageEdit(props) {
                 ) : (
                     <Button
                         color="primary"
-                        variant="contained"
                         onClick={(e) =>
                             props.handleClickSave(
                                 e,
@@ -164,24 +161,25 @@ function MessageEdit(props) {
                             )
                         }
                         startIcon={<SendIcon />}
+                        variant="contained"
                     >
                         {t('Save', { ns: 'common' })}
                     </Button>
                 )}
                 <Button
                     color="secondary"
-                    variant="outlined"
                     onClick={(e) => props.handleCancelEdit(e)}
+                    variant="outlined"
                 >
                     {t('Cancel', { ns: 'common' })}
                 </Button>
             </Accordion>
             {/* TODOL consider to move it to the parent! It render many time! as message increase */}
             <Dialog
-                open={messageEditState.deleteMessageModalShow}
-                onClose={onHidedeleteMessageModalShow}
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
+                onClose={onHidedeleteMessageModalShow}
+                open={messageEditState.deleteMessageModalShow}
             >
                 <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                 <DialogContent>
@@ -193,8 +191,8 @@ function MessageEdit(props) {
                 <DialogActions>
                     <Button
                         disabled={props.isDeleting}
-                        variant="contained"
                         onClick={onDeleteSingleMessage}
+                        variant="contained"
                     >
                         {props.isDeleting
                             ? t('Pending', { ns: 'common' })
@@ -210,6 +208,6 @@ function MessageEdit(props) {
             </Dialog>
         </>
     );
-}
+};
 
 export default MessageEdit;

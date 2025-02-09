@@ -10,7 +10,7 @@ import DEMO from '../../../store/constant';
 import { useAuth } from '../../../components/AuthProvider';
 import { appConfig } from '../../../config';
 
-function AssignEssayWriters() {
+const AssignEssayWriters = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const {
@@ -25,10 +25,10 @@ function AssignEssayWriters() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -41,6 +41,6 @@ function AssignEssayWriters() {
             />
         </Box>
     );
-}
+};
 
 export default AssignEssayWriters;

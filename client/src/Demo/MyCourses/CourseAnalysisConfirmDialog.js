@@ -16,20 +16,20 @@ import {
 
 import { useTranslation } from 'react-i18next';
 
-function CourseAnalysisConfirmDialog({
+const CourseAnalysisConfirmDialog = ({
     show,
     data,
     isButtonDisable,
     setModalHide,
     onAnalyse
-}) {
+}) => {
     const { t } = useTranslation();
 
     return (
         <Dialog
-            open={show}
-            onClose={setModalHide}
             aria-labelledby="contained-modal-title-vcenter"
+            onClose={setModalHide}
+            open={show}
         >
             <DialogTitle>
                 Analyse{' '}
@@ -51,9 +51,9 @@ function CourseAnalysisConfirmDialog({
             <DialogActions>
                 <Button
                     color="primary"
-                    variant="contained"
                     disabled={isButtonDisable}
                     onClick={(e) => onAnalyse(e)}
+                    variant="contained"
                 >
                     {isButtonDisable ? (
                         <CircularProgress size={24} />
@@ -63,14 +63,14 @@ function CourseAnalysisConfirmDialog({
                 </Button>
                 <Button
                     color="secondary"
-                    variant="outlined"
                     onClick={setModalHide}
+                    variant="outlined"
                 >
                     {t('Cancel', { ns: 'common' })}
                 </Button>
             </DialogActions>
         </Dialog>
     );
-}
+};
 
 export default CourseAnalysisConfirmDialog;

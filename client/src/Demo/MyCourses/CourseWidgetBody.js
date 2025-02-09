@@ -320,18 +320,18 @@ export default function CourseWidgetBody({ programRequirements }) {
 
     return (
         <Box>
-            {statedata.res_modal_status >= 400 && (
+            {statedata.res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={statedata.res_modal_status}
                     res_modal_message={statedata.res_modal_message}
+                    res_modal_status={statedata.res_modal_status}
                 />
-            )}
+            ) : null}
 
             <Box
+                alignItems="center"
                 display="flex"
                 justifyContent="space-between"
-                alignItems="center"
                 sx={{ my: 1 }}
             >
                 <Typography variant="h6">
@@ -339,39 +339,39 @@ export default function CourseWidgetBody({ programRequirements }) {
                 </Typography>
                 <Box>
                     <Button
-                        variant="outlined"
-                        component={LinkDom}
-                        to={`${DEMO.KEYWORDS_EDIT}`}
                         color="primary"
-                        target="_blank"
+                        component={LinkDom}
                         sx={{ mr: 2 }}
+                        target="_blank"
+                        to={`${DEMO.KEYWORDS_EDIT}`}
+                        variant="outlined"
                     >
                         {i18next.t('Edit Keywords', { ns: 'common' })}
                     </Button>
                     <Button
-                        variant="contained"
-                        component={LinkDom}
-                        to={`${DEMO.COURSE_DATABASE}`}
                         color="success"
+                        component={LinkDom}
                         sx={{ mr: 2 }}
+                        to={`${DEMO.COURSE_DATABASE}`}
+                        variant="contained"
                     >
                         {i18next.t('Courses DB', { ns: 'common' })}
                     </Button>
                     <Button
-                        variant="contained"
                         color="secondary"
                         component={LinkDom}
-                        to={DEMO.PROGRAM_ANALYSIS}
                         sx={{ mr: 1 }}
+                        to={DEMO.PROGRAM_ANALYSIS}
+                        variant="contained"
                     >
                         {i18next.t('Program Requirements', { ns: 'common' })}
                     </Button>
                     <Button
-                        variant="contained"
-                        component={LinkDom}
-                        to={`${DEMO.CREATE_NEW_PROGRAM_ANALYSIS}`}
-                        target="_blank"
                         color="primary"
+                        component={LinkDom}
+                        target="_blank"
+                        to={`${DEMO.CREATE_NEW_PROGRAM_ANALYSIS}`}
+                        variant="contained"
                     >
                         {i18next.t('Create New Analysis', { ns: 'common' })}
                     </Button>
@@ -387,7 +387,14 @@ export default function CourseWidgetBody({ programRequirements }) {
                         3. Select language. <b>Chinese</b> is more accurate.
                     </Typography>
                     <DataSheetGrid
+                        autoAddRow={true}
+                        columns={columns}
+                        disableContextMenu={true}
+                        disableExpandSelection={false}
+                        headerRowHeight={30}
                         height={1000}
+                        onChange={onChange}
+                        rowHeight={25}
                         style={{
                             minWidth: '450px',
                             '--dsg-selection-border-color':
@@ -400,28 +407,21 @@ export default function CourseWidgetBody({ programRequirements }) {
                             '--dsg-header-active-text-color':
                                 theme.palette.text.primary
                         }}
-                        disableContextMenu={true}
-                        disableExpandSelection={false}
-                        headerRowHeight={30}
-                        rowHeight={25}
                         value={statedata.coursesdata}
-                        autoAddRow={true}
-                        onChange={onChange}
-                        columns={columns}
                     />
                     <br />
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <Tabs
-                            value={value}
-                            onChange={handleChangeValue}
-                            variant="scrollable"
-                            scrollButtons="auto"
                             aria-label="basic tabs example"
+                            onChange={handleChangeValue}
+                            scrollButtons="auto"
+                            value={value}
+                            variant="scrollable"
                         >
                             <Tab label="Default" {...a11yProps(0)} />
                             <Tab
                                 label={
-                                    <Badge badgeContent={'V2'} color="error">
+                                    <Badge badgeContent="V2" color="error">
                                         New Analyzer
                                     </Badge>
                                 }
@@ -429,7 +429,7 @@ export default function CourseWidgetBody({ programRequirements }) {
                             />
                         </Tabs>
                     </Box>
-                    <CustomTabPanel value={value} index={0}>
+                    <CustomTabPanel index={0} value={value}>
                         <FormControl fullWidth>
                             <InputLabel id="select-target-group">
                                 {i18next.t('Select Target Group', {
@@ -437,17 +437,15 @@ export default function CourseWidgetBody({ programRequirements }) {
                                 })}
                             </InputLabel>
                             <Select
-                                labelId="study_group"
-                                label="Select target group"
-                                name="study_group"
                                 id="study_group"
+                                label="Select target group"
+                                labelId="study_group"
+                                name="study_group"
                                 onChange={(e) => handleChange_study_group(e)}
                             >
-                                <MenuItem value={''}>
-                                    Select Study Group
-                                </MenuItem>
+                                <MenuItem value="">Select Study Group</MenuItem>
                                 {study_group.map((cat, i) => (
-                                    <MenuItem value={cat.key} key={i}>
+                                    <MenuItem key={i} value={cat.key}>
                                         {cat.value}
                                     </MenuItem>
                                 ))}
@@ -462,21 +460,21 @@ export default function CourseWidgetBody({ programRequirements }) {
                                 })}
                             </InputLabel>
                             <Select
-                                labelId="analysis_language"
+                                id="analysis_language"
                                 label={i18next.t('Select language', {
                                     ns: 'courses'
                                 })}
+                                labelId="analysis_language"
                                 name="analysis_language"
-                                id="analysis_language"
                                 onChange={(e) =>
                                     handleChange_analysis_language(e)
                                 }
                             >
-                                <MenuItem value={''}>
+                                <MenuItem value="">
                                     {i18next.t('Select language')}
                                 </MenuItem>
-                                <MenuItem value={'zh'}>中文</MenuItem>
-                                <MenuItem value={'en'}>
+                                <MenuItem value="zh">中文</MenuItem>
+                                <MenuItem value="en">
                                     English (Beta Version)
                                 </MenuItem>
                             </Select>
@@ -485,8 +483,6 @@ export default function CourseWidgetBody({ programRequirements }) {
                         <br />
                         <Button
                             color="primary"
-                            variant="contained"
-                            onClick={onAnalyse}
                             disabled={
                                 statedata.isAnalysing ||
                                 statedata.study_group === '' ||
@@ -499,6 +495,8 @@ export default function CourseWidgetBody({ programRequirements }) {
                                     <></>
                                 )
                             }
+                            onClick={onAnalyse}
+                            variant="contained"
                         >
                             {statedata.isAnalysing
                                 ? i18next.t('Analysing', { ns: 'courses' })
@@ -509,17 +507,17 @@ export default function CourseWidgetBody({ programRequirements }) {
                             statedata.analysis.isAnalysed ? (
                                 <>
                                     <Button
-                                        onClick={onDownload}
                                         disabled={statedata.isDownloading}
+                                        onClick={onDownload}
                                     >
                                         {i18next.t('Download', {
                                             ns: 'common'
                                         })}
                                     </Button>
                                     <Link
-                                        to={`${DEMO.INTERNAL_WIDGET_LINK(user._id.toString())}`}
-                                        target="_blank"
                                         component={LinkDom}
+                                        target="_blank"
+                                        to={`${DEMO.INTERNAL_WIDGET_LINK(user._id.toString())}`}
                                     >
                                         {i18next.t('View Online', {
                                             ns: 'courses'
@@ -531,15 +529,15 @@ export default function CourseWidgetBody({ programRequirements }) {
                             )}
                         </Typography>
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={1}>
+                    <CustomTabPanel index={1} value={value}>
                         <Box
+                            alignItems="center"
                             display="flex"
                             justifyContent="space-between"
-                            alignItems="center"
                             sx={{ my: 1 }}
                         >
-                            <Typography variant="h6"></Typography>
-                            <Box></Box>
+                            <Typography variant="h6" />
+                            <Box />
                         </Box>
                         <ProgramRequirementsTable
                             data={transformedData}
@@ -550,17 +548,17 @@ export default function CourseWidgetBody({ programRequirements }) {
                             statedata.analysis.isAnalysedV2 ? (
                                 <>
                                     <Button
-                                        onClick={onDownload}
                                         disabled={statedata.isDownloading}
+                                        onClick={onDownload}
                                     >
                                         {i18next.t('Download', {
                                             ns: 'common'
                                         })}
                                     </Button>
                                     <Link
-                                        to={`${DEMO.INTERNAL_WIDGET_V2_LINK(user._id.toString())}`}
-                                        target="_blank"
                                         component={LinkDom}
+                                        target="_blank"
+                                        to={`${DEMO.INTERNAL_WIDGET_V2_LINK(user._id.toString())}`}
                                     >
                                         {i18next.t('View Online', {
                                             ns: 'courses'

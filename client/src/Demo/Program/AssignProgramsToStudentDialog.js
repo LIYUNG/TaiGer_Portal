@@ -74,73 +74,69 @@ export const AssignProgramsToStudentDialog = ({
     }
 
     return (
-        <>
-            <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-                <DialogTitle>
-                    {t('Selected Programs', { ns: 'programList' })}
-                </DialogTitle>
-                <DialogContent>
-                    {programs?.map(
-                        ({ school, program_name, degree, semester }, index) => (
-                            <Box key={index}>
-                                {school}
-                                {program_name}
-                                {degree}
-                                {semester}
-                            </Box>
-                        )
+        <Dialog fullWidth maxWidth="sm" onClose={onClose} open={open}>
+            <DialogTitle>
+                {t('Selected Programs', { ns: 'programList' })}
+            </DialogTitle>
+            <DialogContent>
+                {programs?.map(
+                    ({ school, program_name, degree, semester }, index) => (
+                        <Box key={index}>
+                            {school}
+                            {program_name}
+                            {degree}
+                            {semester}
+                        </Box>
+                    )
+                )}
+                ---
+                {isLoading ? <CircularProgress /> : null}
+                {isQueryError ? (
+                    <Typography color="error">
+                        An error occurred: {error.message}
+                    </Typography>
+                ) : null}
+                {!isLoading && !isQueryError && students ? (
+                    <List dense>
+                        {students.map((student, i) => (
+                            <ListItem divider key={i}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={studentId === student._id}
+                                            onChange={handleSetStudentId}
+                                            value={student._id}
+                                        />
+                                    }
+                                    label={`${student.firstname}, ${student.lastname}`}
+                                />
+                            </ListItem>
+                        ))}
+                    </List>
+                ) : null}
+                {isMutateError ? (
+                    <Typography color="error">
+                        An error occurred: {mutateError.message}
+                    </Typography>
+                ) : null}
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    color="primary"
+                    disabled={isPending || studentId === ''}
+                    onClick={(e) => handleSubmit(e)}
+                    variant="contained"
+                >
+                    {isPending ? (
+                        <CircularProgress size={20} />
+                    ) : (
+                        t('Assign', { ns: 'common' })
                     )}
-                    ---
-                    {isLoading && <CircularProgress />}
-                    {isQueryError && (
-                        <Typography color="error">
-                            An error occurred: {error.message}
-                        </Typography>
-                    )}
-                    {!isLoading && !isQueryError && students && (
-                        <List dense>
-                            {students.map((student, i) => (
-                                <ListItem key={i} divider>
-                                    <FormControlLabel
-                                        label={`${student.firstname}, ${student.lastname}`}
-                                        control={
-                                            <Checkbox
-                                                checked={
-                                                    studentId === student._id
-                                                }
-                                                onChange={handleSetStudentId}
-                                                value={student._id}
-                                            />
-                                        }
-                                    />
-                                </ListItem>
-                            ))}
-                        </List>
-                    )}
-                    {isMutateError && (
-                        <Typography color="error">
-                            An error occurred: {mutateError.message}
-                        </Typography>
-                    )}
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        color="primary"
-                        variant="contained"
-                        disabled={isPending || studentId === ''}
-                        onClick={(e) => handleSubmit(e)}
-                    >
-                        {isPending ? (
-                            <CircularProgress size={20} />
-                        ) : (
-                            t('Assign', { ns: 'common' })
-                        )}
-                    </Button>
-                    <Button onClick={onClose} color="primary">
-                        {t('Close')}
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </>
+                </Button>
+                <Button color="primary" onClick={onClose}>
+                    {t('Close')}
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 };

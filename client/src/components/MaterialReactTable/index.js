@@ -78,8 +78,8 @@ const ExampleWithLocalizationProvider = ({
             <MRTable
                 columns={col}
                 data={data}
-                enableRowSelection={enableRowSelection}
                 enableMultiRowSelection={enableMultiRowSelection}
+                enableRowSelection={enableRowSelection}
                 muiTableBodyRowProps={muiTableBodyRowProps}
                 onRowSelectionChange={onRowSelectionChange}
                 rowSelection={rowSelection}

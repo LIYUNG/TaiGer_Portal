@@ -10,16 +10,13 @@ import {
     Box
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useTranslation } from 'react-i18next';
 import { DocumentStatusType, is_TaiGer_Admin } from '@taiger-common/core';
+import i18next from 'i18next';
 
 import { BASE_URL } from '../../api/request';
 import { templatelist } from '../../utils/contants';
-import { useAuth } from '../../components/AuthProvider';
 
 const EditDownloadFiles = (props) => {
-    const { user } = useAuth();
-    const { t } = useTranslation();
     const submitFile = (e, prop) => {
         e.preventDefault();
         props.submitFile(e, prop);
@@ -38,15 +35,11 @@ const EditDownloadFiles = (props) => {
             <TableRow key={i + 1}>
                 <TableCell>{template.name}</TableCell>
                 <TableCell>
-                    {is_TaiGer_Admin(user) && (
+                    {is_TaiGer_Admin(props.user) ? (
                         <Box>
                             {object_init[template.prop] === 'uploaded' ? (
                                 <Button
-                                    variant="contained"
                                     color="error"
-                                    size="small"
-                                    type="submit"
-                                    title="Delete"
                                     disabled={!props.areLoaded[template.prop]}
                                     onClick={(e) =>
                                         props.onDeleteTemplateFile(
@@ -54,48 +47,52 @@ const EditDownloadFiles = (props) => {
                                             template.prop
                                         )
                                     }
+                                    size="small"
                                     startIcon={<DeleteIcon />}
+                                    title="Delete"
+                                    type="submit"
+                                    variant="contained"
                                 >
-                                    {t('Delete', { ns: 'common' })}
+                                    {i18next.t('Delete', { ns: 'common' })}
                                 </Button>
                             ) : (
                                 <TextField
                                     fullWidth
-                                    size="small"
-                                    type="file"
                                     inputProps={{
                                         multiple: false
                                     }}
                                     onChange={(e) => props.onFileChange(e)}
+                                    size="small"
+                                    type="file"
                                 />
                             )}
                         </Box>
-                    )}
+                    ) : null}
                 </TableCell>
                 <TableCell>
                     {object_init[template.prop] === 'uploaded' ? (
                         <Box>
                             <a
-                                href={`${BASE_URL}/api/account/files/template/${template.prop}`}
-                                target="_blank"
                                 className="text-info"
+                                href={`${BASE_URL}/api/account/files/template/${template.prop}`}
                                 rel="noopener noreferrer"
+                                target="_blank"
                             >
                                 <Button
                                     color="primary"
-                                    variant="contained"
                                     size="small"
+                                    variant="contained"
                                 >
-                                    {t('Download', { ns: 'common' })}
+                                    {i18next.t('Download', { ns: 'common' })}
                                 </Button>
                             </a>
                         </Box>
-                    ) : is_TaiGer_Admin(user) ? (
+                    ) : is_TaiGer_Admin(props.user) ? (
                         <Button
-                            size="small"
                             disabled={!props.areLoaded[template.prop]}
-                            type="submit"
                             onClick={(e) => submitFile(e, template.prop)}
+                            size="small"
+                            type="submit"
                         >
                             {!props.areLoaded[template.prop] ? (
                                 <CircularProgress size={16} />
@@ -104,7 +101,7 @@ const EditDownloadFiles = (props) => {
                             )}
                         </Button>
                     ) : (
-                        t('Unavailable')
+                        i18next.t('Unavailable')
                     )}
                 </TableCell>
             </TableRow>

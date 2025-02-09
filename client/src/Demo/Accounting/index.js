@@ -12,7 +12,7 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { useTranslation } from 'react-i18next';
 
-function Accounting() {
+const Accounting = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [accountingState, setAccountingState] = useState({
@@ -82,10 +82,10 @@ function Accounting() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -136,6 +136,6 @@ function Accounting() {
             </Card>
         </Box>
     );
-}
+};
 
 export default Accounting;

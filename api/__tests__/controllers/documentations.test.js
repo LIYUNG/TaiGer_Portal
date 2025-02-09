@@ -1,8 +1,7 @@
-const fs = require('fs');
 const request = require('supertest');
 const { Role } = require('@taiger-common/core');
 
-const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
+const { connect, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { User, UserSchema } = require('../../models/User');
 const { programSchema } = require('../../models/Program');
@@ -11,9 +10,6 @@ const { generateProgram } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
-const {
-  decryptCookieMiddleware
-} = require('../../middlewares/decryptCookieMiddleware');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {

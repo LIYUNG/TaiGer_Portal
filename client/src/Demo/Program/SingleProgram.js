@@ -14,7 +14,7 @@ import { queryClient } from '../../api/client';
 import DEMO from '../../store/constant';
 import { useSnackBar } from '../../contexts/use-snack-bar';
 
-function SingleProgram() {
+const SingleProgram = () => {
     const { data } = useLoaderData();
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -80,51 +80,51 @@ function SingleProgram() {
                         <>
                             <SingleProgramView
                                 program={loadedData.data}
-                                user={user}
-                                students={loadedData.students}
-                                versions={loadedData.vc}
                                 programListAssistant={programListAssistant}
-                                setModalShowAssignWindow={
-                                    setModalShowAssignWindow
-                                }
                                 setDeleteProgramWarningOpen={
                                     setDeleteProgramWarningOpen
                                 }
                                 setDiffModalShow={setDiffModal(true)}
+                                setModalShowAssignWindow={
+                                    setModalShowAssignWindow
+                                }
+                                students={loadedData.students}
+                                user={user}
+                                versions={loadedData.vc}
                             />
                             <ProgramDeleteWarning
+                                RemoveProgramHandler={RemoveProgramHandlerV2}
                                 deleteProgramWarning={deleteProgramWarningOpen}
+                                isPending={isPending}
+                                program_id={loadedData.data._id?.toString()}
+                                program_name={loadedData.data.program_name}
                                 setDeleteProgramWarningOpen={
                                     setDeleteProgramWarningOpen
                                 }
                                 uni_name={loadedData.data.school}
-                                program_name={loadedData.data.program_name}
-                                RemoveProgramHandler={RemoveProgramHandlerV2}
-                                isPending={isPending}
-                                program_id={loadedData.data._id?.toString()}
                             />
                             <AssignProgramsToStudentDialog
-                                open={modalShowAssignWindowOpen}
-                                onClose={() => setModalShowAssignWindow(false)}
-                                programs={[loadedData.data]}
                                 handleOnSuccess={() =>
                                     setModalShowAssignWindow(false)
                                 }
+                                onClose={() => setModalShowAssignWindow(false)}
+                                open={modalShowAssignWindowOpen}
+                                programs={[loadedData.data]}
                             />
-                            {singleProgramState.modalShowDiffWindow && (
+                            {singleProgramState.modalShowDiffWindow ? (
                                 <ProgramDiffModal
                                     open={
                                         singleProgramState.modalShowDiffWindow
                                     }
-                                    setModalHide={setDiffModal(false)}
                                     originalProgram={loadedData.data}
+                                    setModalHide={setDiffModal(false)}
                                 />
-                            )}
+                            ) : null}
                         </>
                     )}
                 </Await>
             </Suspense>
         </Box>
     );
-}
+};
 export default SingleProgram;

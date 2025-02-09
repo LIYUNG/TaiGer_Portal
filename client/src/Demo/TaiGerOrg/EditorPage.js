@@ -33,7 +33,7 @@ import {
 } from '../../utils/contants';
 
 // TODO TEST_CASE
-function EditorPage() {
+const EditorPage = () => {
     const { user_id } = useParams();
     const { user } = useAuth();
     const [editorPageState, setEditorPageState] = useState({
@@ -202,18 +202,18 @@ function EditorPage() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.TEAM_MEMBERS_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName} Team
                 </Link>
@@ -248,23 +248,23 @@ function EditorPage() {
                     </Typography>
                     <TasksDistributionBarChart
                         data={sorted_date_freq_pair}
-                        k={'name'}
-                        value1={'active'}
-                        value2={'potentials'}
-                        yLabel={'Tasks'}
+                        k="name"
+                        value1="active"
+                        value2="potentials"
+                        yLabel="Tasks"
                     />
                 </Card>
             </Box>
             <CVMLRLOverview
-                isLoaded={editorPageState.isLoaded}
-                user={editorPageState.editor}
-                success={editorPageState.success}
-                students={editorPageState.students}
-                new_message_tasks={new_message_tasks}
-                followup_tasks={followup_tasks}
-                fav_message_tasks={fav_message_tasks}
-                pending_progress_tasks={pending_progress_tasks}
                 closed_tasks={closed_tasks}
+                fav_message_tasks={fav_message_tasks}
+                followup_tasks={followup_tasks}
+                isLoaded={editorPageState.isLoaded}
+                new_message_tasks={new_message_tasks}
+                pending_progress_tasks={pending_progress_tasks}
+                students={editorPageState.students}
+                success={editorPageState.success}
+                user={editorPageState.editor}
             />
             <Box>
                 <Link
@@ -280,6 +280,6 @@ function EditorPage() {
             </Box>
         </Box>
     );
-}
+};
 
 export default EditorPage;

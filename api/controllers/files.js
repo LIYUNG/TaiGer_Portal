@@ -2,7 +2,9 @@ const path = require('path');
 const {
   Role,
   DocumentStatusType,
-  is_TaiGer_Student
+  is_TaiGer_Student,
+  isProgramSubmitted,
+  isProgramDecided
 } = require('@taiger-common/core');
 
 const { asyncHandler } = require('../middlewares/error-handler');
@@ -698,7 +700,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
       );
     }
     if (
-      applications[i].decided === 'O' &&
+      isProgramDecided(applications[i]) &&
       application.decided !== applications[i].decided
     ) {
       // if applications[i].decided === 'yes', send ML/RL/Essay Tasks link in Email for eidtor, student
@@ -717,7 +719,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     application.decided = applications[i].decided;
     application.closed = applications[i].closed;
     // TODO: any faster way to query one time and write back once?!
-    if (application.closed === 'O') {
+    if (isProgramSubmitted(application)) {
       for (let k = 0; k < application.doc_modification_thread.length; k += 1) {
         application.doc_modification_thread[k].updatedAt = new Date();
         const document_thread = await req.db

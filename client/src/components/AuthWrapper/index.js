@@ -22,7 +22,7 @@ export default function AuthWrapper({ children }) {
                     alignItems: 'center'
                 }}
             >
-                <img src={logoLink} alt="Logo" style={{ maxWidth: '100%' }} />
+                <img alt="Logo" src={logoLink} style={{ maxWidth: '100%' }} />
                 {children}
             </Box>
             <Footer />

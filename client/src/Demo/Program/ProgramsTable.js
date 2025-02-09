@@ -30,10 +30,10 @@ export const ProgramsTable = ({ isLoading, data }) => {
                 const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.original._id)}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.row.original.school}
                     </Link>
@@ -48,10 +48,10 @@ export const ProgramsTable = ({ isLoading, data }) => {
                 const linkUrl = `${DEMO.SINGLE_PROGRAM_LINK(params.row.original._id)}`;
                 return (
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.row.original.program_name}
                     </Link>
@@ -127,9 +127,9 @@ export const ProgramsTable = ({ isLoading, data }) => {
 
     table.options.renderTopToolbar = (
         <TopToolbar
+            onAssignClick={handleAssignClick}
             table={table}
             toolbarStyle={customTableStyles.toolbarStyle}
-            onAssignClick={handleAssignClick}
         />
     );
 
@@ -137,8 +137,9 @@ export const ProgramsTable = ({ isLoading, data }) => {
         <>
             <MaterialReactTable table={table} />
             <AssignProgramsToStudentDialog
-                open={openAssignDialog}
+                handleOnSuccess={handleOnSuccess}
                 onClose={handleDialogClose}
+                open={openAssignDialog}
                 programs={table
                     .getSelectedRowModel()
                     .rows?.map(
@@ -158,7 +159,6 @@ export const ProgramsTable = ({ isLoading, data }) => {
                             semester
                         })
                     )}
-                handleOnSuccess={handleOnSuccess}
             />
         </>
     );

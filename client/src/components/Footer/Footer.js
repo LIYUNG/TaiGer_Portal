@@ -37,80 +37,78 @@ export default function Footer() {
         }
     };
 
-    function Copyright() {
+    const Copyright = () => {
         return (
-            <Typography variant="body2" color="text.secondary" align="center">
+            <Typography align="center" color="text.secondary" variant="body2">
                 {`Copyright © ${currentYear} | Designed and developed by `}
                 <Link color="inherit" href="https://taigerconsultancy.com/">
                     TaiGer Consultancy 台德留學顧問
                 </Link>{' '}
             </Typography>
         );
-    }
+    };
 
     return (
-        <>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column'
+            }}
+        >
+            <CssBaseline />
             <Box
+                component="footer"
                 sx={{
-                    display: 'flex',
-                    flexDirection: 'column'
+                    py: 2,
+                    px: 2,
+                    mt: 'auto',
+                    backgroundColor: (theme) =>
+                        theme.palette.mode === 'light'
+                            ? theme.palette.grey[200]
+                            : theme.palette.grey[800]
                 }}
             >
-                <CssBaseline />
-                <Box
-                    component="footer"
-                    sx={{
-                        py: 2,
-                        px: 2,
-                        mt: 'auto',
-                        backgroundColor: (theme) =>
-                            theme.palette.mode === 'light'
-                                ? theme.palette.grey[200]
-                                : theme.palette.grey[800]
-                    }}
-                >
-                    <Container maxWidth="sm">
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: 2,
-                                mb: 1
-                            }}
-                        >
-                            <FormControl size="small" variant="outlined">
-                                <InputLabel>
-                                    <LanguageIcon
-                                        sx={{ mr: 1, verticalAlign: 'middle' }}
-                                    />
-                                    Language
-                                </InputLabel>
-                                <Select
-                                    value={language}
-                                    onChange={handleLanguageChange}
-                                    label="Language"
-                                    sx={{
-                                        minWidth: 120,
-                                        textAlign: 'center'
-                                    }}
-                                >
-                                    <MenuItem value="en">
-                                        <ListItemText>English</ListItemText>
-                                    </MenuItem>
-                                    <MenuItem value="zh-TW">
-                                        <ListItemText>繁體中文</ListItemText>
-                                    </MenuItem>
-                                    <MenuItem value="zh-CN">
-                                        <ListItemText>简体中文</ListItemText>
-                                    </MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Box>
-                        <Copyright />
-                    </Container>
-                </Box>
+                <Container maxWidth="sm">
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 2,
+                            mb: 1
+                        }}
+                    >
+                        <FormControl size="small" variant="outlined">
+                            <InputLabel>
+                                <LanguageIcon
+                                    sx={{ mr: 1, verticalAlign: 'middle' }}
+                                />
+                                Language
+                            </InputLabel>
+                            <Select
+                                label="Language"
+                                onChange={handleLanguageChange}
+                                sx={{
+                                    minWidth: 120,
+                                    textAlign: 'center'
+                                }}
+                                value={language}
+                            >
+                                <MenuItem value="en">
+                                    <ListItemText>English</ListItemText>
+                                </MenuItem>
+                                <MenuItem value="zh-TW">
+                                    <ListItemText>繁體中文</ListItemText>
+                                </MenuItem>
+                                <MenuItem value="zh-CN">
+                                    <ListItemText>简体中文</ListItemText>
+                                </MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+                    <Copyright />
+                </Container>
             </Box>
-        </>
+        </Box>
     );
 }

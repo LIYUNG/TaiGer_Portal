@@ -39,9 +39,9 @@ export const FetchStudentLayer = ({ studentId }) => {
     return (
         <Box sx={{ width: window.innerWidth - 60 }}>
             <SingleStudentPageMainContent
-                survey_link={studentData.survey_link}
                 base_docs_link={studentData.base_docs_link}
                 data={studentData.data}
+                survey_link={studentData.survey_link}
             />
         </Box>
     );

@@ -9,7 +9,7 @@ import DEMO from '../../../store/constant';
 import { useAuth } from '../../../components/AuthProvider';
 import useStudents from '../../../hooks/useStudents';
 
-function AssignAgents() {
+const AssignAgents = () => {
     const { user } = useAuth();
     const {
         data: { data: fetchedStudents }
@@ -31,19 +31,19 @@ function AssignAgents() {
 
     return (
         <Box data-testid="assignment_agents">
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
             <AssignAgentsPage
                 students={students}
                 submitUpdateAgentlist={submitUpdateAgentlist}
             />
         </Box>
     );
-}
+};
 
 export default AssignAgents;

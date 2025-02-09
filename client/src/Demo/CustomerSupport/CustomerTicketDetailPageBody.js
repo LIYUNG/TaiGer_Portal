@@ -40,7 +40,7 @@ import DocThreadEditor from '../../components/Message/DocThreadEditor';
 import { readDOCX, readPDF, readXLSX } from '../Utils/checking-functions';
 import { TopBar } from '../../components/TopBar/TopBar';
 
-function CustomerTicketDetailPageBody({ complaintTicket }) {
+const CustomerTicketDetailPageBody = ({ complaintTicket }) => {
     const { t } = useTranslation();
     const { user } = useAuth();
     const [checkResult, setCheckResult] = useState([]);
@@ -348,48 +348,48 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.CUSTOMER_CENTER_LINK}`}
+                    underline="hover"
                 >
                     {t('Customer Center', { ns: 'common' })}
                 </Link>
                 <Typography color="text.primary">{`${complaintTicket.title} (Ticket Nr. ${complaintTicket._id})`}</Typography>
             </Breadcrumbs>
-            {customerTicketDetailPageBodyState.thread.status === 'resolved' && (
+            {customerTicketDetailPageBodyState.thread.status === 'resolved' ? (
                 <TopBar />
-            )}
+            ) : null}
             {isDeleted ? (
                 <Box>
                     <Grid container spacing={2} sx={{ mt: 1 }}>
-                        <Grid item xs={12} md={12}>
+                        <Grid item md={12} xs={12}>
                             <Paper
                                 elevation={3}
                                 sx={{ p: 3, overflow: 'auto' }}
                             >
                                 <Box
+                                    alignItems="center"
                                     display="flex"
                                     justifyContent="space-between"
-                                    alignItems="center"
                                 >
                                     <Box>
-                                        <Typography variant="h5" gutterBottom>
+                                        <Typography gutterBottom variant="h5">
                                             {t('Ticket Deleted', {
                                                 ns: 'common'
                                             })}
                                         </Typography>
                                         <Button
-                                            variant="outlined"
                                             onClick={returnBack}
+                                            variant="outlined"
                                         >
                                             {t('Back', { ns: 'common' })}
                                         </Button>
@@ -402,21 +402,21 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
             ) : (
                 <Box>
                     <Box
+                        alignItems="center"
                         display="flex"
                         justifyContent="space-between"
-                        alignItems="center"
                         my={2}
                     >
-                        <Box></Box>
-                        <Box display="flex" alignItems="center">
+                        <Box />
+                        <Box alignItems="center" display="flex">
                             <Button
-                                variant="contained"
-                                startIcon={<DeleteIcon />}
                                 disabled={
                                     customerTicketDetailPageBodyState.thread
                                         .status === 'resolved'
                                 }
                                 onClick={() => setOpen(true)}
+                                startIcon={<DeleteIcon />}
+                                variant="contained"
                             >
                                 {t('Delete Ticket', { ns: 'common' })}
                             </Button>
@@ -424,44 +424,44 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                     </Box>
                     <Box>
                         <Grid container spacing={2} sx={{ mt: 1 }}>
-                            <Grid item xs={12} md={8}>
+                            <Grid item md={8} xs={12}>
                                 <Paper
                                     elevation={3}
                                     sx={{ p: 3, overflow: 'auto' }}
                                 >
                                     <Box
+                                        alignItems="center"
                                         display="flex"
                                         justifyContent="space-between"
-                                        alignItems="center"
                                     >
                                         <Box>
                                             <Typography
-                                                variant="h6"
                                                 gutterBottom
+                                                variant="h6"
                                             >
                                                 {t('Description', {
                                                     ns: 'tickets'
                                                 })}
                                             </Typography>
                                             <Typography
-                                                variant="subtitle1"
                                                 gutterBottom
+                                                variant="subtitle1"
                                             >
                                                 {complaintTicket.description}
                                             </Typography>
                                         </Box>
                                         <Box>
                                             <Typography
-                                                variant="h6"
                                                 gutterBottom
+                                                variant="h6"
                                             >
                                                 {t('Requester', {
                                                     ns: 'tickets'
                                                 })}
                                             </Typography>
                                             <Typography
-                                                variant="body1"
                                                 gutterBottom
+                                                variant="body1"
                                             >
                                                 {`${complaintTicket.requester_id?.firstname} ${complaintTicket.requester_id?.lastname}`}
                                             </Typography>
@@ -469,9 +469,9 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                                     </Box>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={12} md={4}>
+                            <Grid item md={4} xs={12}>
                                 <Paper elevation={3} sx={{ p: 3 }}>
-                                    <Typography variant="h6" gutterBottom>
+                                    <Typography gutterBottom variant="h6">
                                         {t('Frequently Asked Questions', {
                                             ns: 'common'
                                         })}
@@ -494,17 +494,17 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                             </Grid>
                         </Grid>
                         <MessageList
-                            documentsthreadId={complaintTicket._id}
                             accordionKeys={
                                 customerTicketDetailPageBodyState.accordionKeys
                             }
-                            singleExpandtHandler={singleExpandtHandler}
-                            thread={customerTicketDetailPageBodyState.thread}
+                            apiPrefix="/api/complaints"
+                            documentsthreadId={complaintTicket._id}
                             isLoaded={
                                 customerTicketDetailPageBodyState.isLoaded
                             }
                             onDeleteSingleMessage={onDeleteSingleMessage}
-                            apiPrefix={'/api/complaints'}
+                            singleExpandtHandler={singleExpandtHandler}
+                            thread={customerTicketDetailPageBodyState.thread}
                         />
                         {user.archiv !== true ? (
                             <Card
@@ -527,9 +527,9 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                                     )}
                                 />
                                 <Typography
-                                    variant="body1"
-                                    sx={{ mt: 1 }}
                                     style={{ marginLeft: '10px', flex: 1 }}
+                                    sx={{ mt: 1 }}
+                                    variant="body1"
                                 >
                                     <b>
                                         {user.firstname} {user.lastname}
@@ -542,24 +542,22 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                                     </Typography>
                                 ) : (
                                     <DocThreadEditor
-                                        thread={
-                                            customerTicketDetailPageBodyState.thread
-                                        }
                                         buttonDisabled={
                                             customerTicketDetailPageBodyState.buttonDisabled
                                         }
-                                        doc_title={
-                                            'customerTicketDetailPageBodyState.doc_title'
-                                        }
+                                        checkResult={checkResult}
+                                        doc_title="customerTicketDetailPageBodyState.doc_title"
                                         editorState={
                                             customerTicketDetailPageBodyState.editorState
                                         }
-                                        handleClickSave={handleClickSave}
                                         file={
                                             customerTicketDetailPageBodyState.file
                                         }
+                                        handleClickSave={handleClickSave}
                                         onFileChange={onFileChange}
-                                        checkResult={checkResult}
+                                        thread={
+                                            customerTicketDetailPageBodyState.thread
+                                        }
                                     />
                                 )}
                             </Card>
@@ -571,13 +569,12 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                                 </Typography>
                             </Card>
                         )}
-                        {is_TaiGer_role(user) &&
-                            (customerTicketDetailPageBodyState.thread.status ===
+                        {is_TaiGer_role(user) ? (
+                            customerTicketDetailPageBodyState.thread.status ===
                             'open' ? (
                                 <Button
-                                    fullWidth
-                                    variant="contained"
                                     color="success"
+                                    fullWidth
                                     onClick={() =>
                                         handleAsFinalFile(
                                             customerTicketDetailPageBodyState
@@ -586,6 +583,7 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                                         )
                                     }
                                     sx={{ mt: 2 }}
+                                    variant="contained"
                                 >
                                     {isSubmissionLoaded ? (
                                         t('Mark as finished')
@@ -595,9 +593,8 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                                 </Button>
                             ) : (
                                 <Button
-                                    fullWidth
-                                    variant="outlined"
                                     color="secondary"
+                                    fullWidth
                                     onClick={() =>
                                         handleAsFinalFile(
                                             customerTicketDetailPageBodyState
@@ -606,6 +603,7 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                                         )
                                     }
                                     sx={{ mt: 2 }}
+                                    variant="outlined"
                                 >
                                     {isSubmissionLoaded ? (
                                         t('Mark as open')
@@ -613,13 +611,14 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                                         <CircularProgress />
                                     )}
                                 </Button>
-                            ))}
+                            )
+                        ) : null}
                     </Box>
                 </Box>
             )}
             <Dialog
-                open={customerTicketDetailPageBodyState.SetAsFinalFileModel}
                 onClose={closeSetAsFinalFileModelWindow}
+                open={customerTicketDetailPageBodyState.SetAsFinalFileModel}
             >
                 <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                 <DialogContent>
@@ -637,9 +636,9 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         disabled={!isLoaded || !isSubmissionLoaded}
                         onClick={(e) => ConfirmSetAsFinalFileHandler(e)}
+                        variant="contained"
                     >
                         {isSubmissionLoaded ? (
                             t('Yes', { ns: 'common' })
@@ -649,14 +648,14 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                     </Button>
                     <Button
                         color="secondary"
-                        variant="outlined"
                         onClick={closeSetAsFinalFileModelWindow}
+                        variant="outlined"
                     >
                         {t('No', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>
-            <Dialog open={open} onClose={() => setOpen(false)}>
+            <Dialog onClose={() => setOpen(false)} open={open}>
                 <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -667,19 +666,19 @@ function CustomerTicketDetailPageBody({ complaintTicket }) {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        variant="contained"
                         color="error"
                         onClick={handleDeleteTicketClick}
+                        variant="contained"
                     >
                         {t('Yes', { ns: 'common' })}
                     </Button>
-                    <Button variant="outlined" onClick={() => setOpen(false)}>
+                    <Button onClick={() => setOpen(false)} variant="outlined">
                         {t('No', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>
         </Box>
     );
-}
+};
 
 export default CustomerTicketDetailPageBody;

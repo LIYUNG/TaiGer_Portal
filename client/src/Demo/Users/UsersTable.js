@@ -38,7 +38,7 @@ CustomTabPanel.propTypes = {
     value: PropTypes.number.isRequired
 };
 
-function UsersTable() {
+const UsersTable = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [userTableState, setUserTableState] = useState({
@@ -169,19 +169,19 @@ function UsersTable() {
 
     return (
         <Box data-testid="users_table_page">
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -190,22 +190,22 @@ function UsersTable() {
                 </Typography>
             </Breadcrumbs>
             <Button
-                fullWidth
-                size="small"
                 color="primary"
-                variant="contained"
+                fullWidth
                 onClick={openAddUserModal}
+                size="small"
                 startIcon={<AddIcon />}
+                variant="contained"
             >
                 {t('Add New User')}
             </Button>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
-                    value={value}
-                    onChange={handleChange}
-                    variant="scrollable"
-                    scrollButtons="auto"
                     aria-label="basic tabs example"
+                    onChange={handleChange}
+                    scrollButtons="auto"
+                    value={value}
+                    variant="scrollable"
                 >
                     <Tab
                         data-testid="users_table_page_student_tab"
@@ -238,62 +238,62 @@ function UsersTable() {
                     />
                 </Tabs>
             </Box>
-            <CustomTabPanel value={value} index={0}>
+            <CustomTabPanel index={0} value={value}>
                 <UsersList
-                    success={userTableState.success}
                     isLoaded={userTableState.isLoaded}
+                    success={userTableState.success}
                     users={student_list}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
+            <CustomTabPanel index={1} value={value}>
                 <UsersList
-                    success={userTableState.success}
                     isLoaded={userTableState.isLoaded}
+                    success={userTableState.success}
                     users={agent_list}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
+            <CustomTabPanel index={2} value={value}>
                 <UsersList
-                    success={userTableState.success}
                     isLoaded={userTableState.isLoaded}
+                    success={userTableState.success}
                     users={editor_list}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={3}>
+            <CustomTabPanel index={3} value={value}>
                 <UsersList
-                    success={userTableState.success}
                     isLoaded={userTableState.isLoaded}
+                    success={userTableState.success}
                     users={external_list}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={4}>
+            <CustomTabPanel index={4} value={value}>
                 <UsersList
-                    success={userTableState.success}
                     isLoaded={userTableState.isLoaded}
+                    success={userTableState.success}
                     users={admin_list}
                 />
             </CustomTabPanel>
             <Button
-                fullWidth
-                size="small"
                 color="primary"
-                variant="contained"
+                fullWidth
                 onClick={openAddUserModal}
+                size="small"
                 startIcon={<AddIcon />}
+                variant="contained"
             >
                 {t('Add New User')}
             </Button>
             <AddUserModal
-                isLoaded={userTableState.isLoaded}
+                AddUserSubmit={AddUserSubmit}
                 addUserModalState={userTableState.addUserModalState}
                 cloaseAddUserModal={cloaseAddUserModal}
                 firstname={userTableState.firstname}
+                isLoaded={userTableState.isLoaded}
                 lastname={userTableState.lastname}
                 selected_user_id={userTableState.selected_user_id}
-                AddUserSubmit={AddUserSubmit}
             />
         </Box>
     );
-}
+};
 
 export default UsersTable;

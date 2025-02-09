@@ -28,7 +28,7 @@ import ModalMain from '../Utils/ModalHandler/ModalMain';
 import ProgramReportDeleteModal from './ProgramReportDeleteModal';
 import { useAuth } from '../../components/AuthProvider';
 
-function ProgramReport(props) {
+const ProgramReport = (props) => {
     const { t } = useTranslation();
     const { user } = useAuth();
     const [programReportState, setProgramReportState] = useState({
@@ -276,14 +276,14 @@ function ProgramReport(props) {
                         <LinkableNewlineText text={ticket.feedback} />
                     </Typography>
                 </Grid>
-                {(is_TaiGer_AdminAgent(user) || is_TaiGer_Editor(user)) && (
+                {is_TaiGer_AdminAgent(user) || is_TaiGer_Editor(user) ? (
                     <Grid item xs={12}>
                         <Typography>
                             {t('Reqested by')}:{' '}
                             {`${ticket.requester_id?.firstname} ${ticket.requester_id?.lastname}`}
                         </Typography>
                     </Grid>
-                )}
+                ) : null}
                 <Grid item xs={12}>
                     <Typography>
                         {t('updated at')}: {convertDate(ticket.updatedAt)}
@@ -296,17 +296,15 @@ function ProgramReport(props) {
                 </Grid>
                 <Grid item xs={12}>
                     <Button
-                        size="small"
                         color="primary"
-                        variant="contained"
                         onClick={() => handleReportUpdateClick(ticket)}
+                        size="small"
+                        variant="contained"
                     >
                         {t('Update', { ns: 'common' })}
                     </Button>
                     <Button
-                        size="small"
                         color="secondary"
-                        variant="contained"
                         disabled={
                             ticket.status === 'resolved' ||
                             (!is_TaiGer_role(user) &&
@@ -314,6 +312,8 @@ function ProgramReport(props) {
                                     user._id?.toString())
                         }
                         onClick={() => handleReportDeleteClick(ticket)}
+                        size="small"
+                        variant="contained"
                     >
                         {t('Delete', { ns: 'common' })}
                     </Button>
@@ -324,48 +324,48 @@ function ProgramReport(props) {
     return (
         <>
             <Button
-                size="small"
                 color="primary"
-                variant="contained"
                 onClick={() => handleReportClick()}
+                size="small"
+                variant="contained"
             >
                 {t('Report', { ns: 'programList' })}
             </Button>
             {tickets}
-            {programReportState.res_modal_status >= 400 && (
+            {programReportState.res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={programReportState.res_modal_status}
                     res_modal_message={programReportState.res_modal_message}
+                    res_modal_status={programReportState.res_modal_status}
                 />
-            )}
+            ) : null}
             <ProgramReportModal
                 isReport={programReportState.isReport}
-                setReportModalHideDelete={setReportModalHideDelete}
-                uni_name={props.uni_name}
-                program_name={props.program_name}
-                submitProgramReport={submitProgramReport}
                 program_id={props.program_id.toString()}
+                program_name={props.program_name}
+                setReportModalHideDelete={setReportModalHideDelete}
+                submitProgramReport={submitProgramReport}
+                uni_name={props.uni_name}
             />
             <ProgramReportDeleteModal
                 isReportDelete={programReportState.isReportDelete}
+                program_id={props.program_id.toString()}
+                program_name={props.program_name}
                 setReportDeleteModalHide={setReportDeleteModalHide}
+                submitProgramDeleteReport={submitProgramDeleteReport}
                 ticket={programReportState.ticket}
                 uni_name={props.uni_name}
-                program_name={props.program_name}
-                submitProgramDeleteReport={submitProgramDeleteReport}
-                program_id={props.program_id.toString()}
             />
             <ProgramReportUpdateModal
                 isUpdateReport={programReportState.isUpdateReport}
+                program_id={props.program_id.toString()}
+                program_name={props.program_name}
                 setReportUpdateModalHide={setReportUpdateModalHide}
+                submitProgramUpdateReport={submitProgramUpdateReport}
                 ticket={programReportState.ticket}
                 uni_name={props.uni_name}
-                program_name={props.program_name}
-                submitProgramUpdateReport={submitProgramUpdateReport}
-                program_id={props.program_id.toString()}
             />
         </>
     );
-}
+};
 export default ProgramReport;

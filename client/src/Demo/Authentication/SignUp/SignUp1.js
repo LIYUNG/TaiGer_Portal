@@ -94,34 +94,34 @@ export default function SignUp1() {
             <AuthWrapper>
                 <Typography variant="h5">{t('Sign up')}</Typography>
                 <input
-                    type="text"
                     className="form-control"
-                    placeholder="First name"
                     onChange={(e) => setFirstame(e.target.value)}
-                />
-                <input
+                    placeholder="First name"
                     type="text"
+                />
+                <input
                     className="form-control"
-                    placeholder="Last name"
                     onChange={(e) => setLastname(e.target.value)}
+                    placeholder="Last name"
+                    type="text"
                 />
                 <input
-                    type="email"
                     className="form-control"
-                    placeholder="Email"
                     onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email"
+                    type="email"
                 />
                 <input
-                    type="password"
                     className="form-control"
-                    placeholder="Password"
                     onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                    type="password"
                 />
                 <input
-                    type="password"
                     className="form-control"
-                    placeholder="Password confirmation"
                     onChange={(e) => setPasswordConfirm(e.target.value)}
+                    placeholder="Password confirmation"
+                    type="password"
                 />
                 <Button
                     color="success"

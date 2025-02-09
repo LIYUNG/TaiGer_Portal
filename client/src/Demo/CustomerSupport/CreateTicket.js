@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { createComplaintTicket } from '../../api';
 import { useAuth } from '../../components/AuthProvider';
 
-function CreateComplaintTicket() {
+const CreateComplaintTicket = () => {
     const { t } = useTranslation();
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -50,21 +50,21 @@ function CreateComplaintTicket() {
     };
 
     return (
-        <Box component="form" noValidate autoComplete="off">
+        <Box autoComplete="off" component="form" noValidate>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.CUSTOMER_CENTER_LINK}`}
+                    underline="hover"
                 >
                     {t('Customer Center', { ns: 'common' })}
                 </Link>
@@ -73,65 +73,65 @@ function CreateComplaintTicket() {
                 </Typography>
             </Breadcrumbs>
             <TextField
-                label="Describe your title"
-                variant="outlined"
                 fullWidth
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                label="Describe your title"
                 margin="normal"
+                onChange={(e) => setTitle(e.target.value)}
+                value={title}
+                variant="outlined"
             />
             <FormControl fullWidth sx={{ mt: 1 }}>
                 <InputLabel id="select_category">
                     {t('Select Category', { ns: 'courses' })}
                 </InputLabel>
                 <Select
-                    labelId="select_category"
-                    label={t('Select Category', { ns: 'courses' })}
-                    name="select_category"
                     id="select_category"
-                    value={category}
+                    label={t('Select Category', { ns: 'courses' })}
+                    labelId="select_category"
+                    name="select_category"
                     onChange={(e) => handleChange(e)}
+                    value={category}
                 >
-                    <MenuItem value={''}>{t('Select Category')}</MenuItem>
-                    <MenuItem value={'agent'}>
+                    <MenuItem value="">{t('Select Category')}</MenuItem>
+                    <MenuItem value="agent">
                         {t('Report My Agent', { ns: 'common' })}
                     </MenuItem>
-                    <MenuItem value={'editor'}>
+                    <MenuItem value="editor">
                         {t('Report My Editor', { ns: 'common' })}
                     </MenuItem>
-                    <MenuItem value={'essay_writer'}>
+                    <MenuItem value="essay_writer">
                         {t('Report My Essay Writer', { ns: 'common' })}
                     </MenuItem>
-                    <MenuItem value={'account'}>
+                    <MenuItem value="account">
                         Problem with My {appConfig.companyName} Account
                     </MenuItem>
-                    <MenuItem value={'others'}>
+                    <MenuItem value="others">
                         {t('Others', { ns: 'common' })}
                     </MenuItem>
                 </Select>
             </FormControl>
-            {category === 'account' && <>Common Q&A</>}
+            {category === 'account' ? <>Common Q&A</> : null}
             <TextField
-                label="Describe your situation"
-                multiline
-                rows={4}
-                variant="outlined"
                 fullWidth
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                label="Describe your situation"
                 margin="normal"
+                multiline
+                onChange={(e) => setDescription(e.target.value)}
+                rows={4}
+                value={description}
+                variant="outlined"
             />
             <Button
-                variant="contained"
                 color="primary"
-                onClick={handleSubmit}
                 fullWidth
+                onClick={handleSubmit}
                 sx={{ mt: 2 }}
+                variant="contained"
             >
                 Submit
             </Button>
         </Box>
     );
-}
+};
 
 export default CreateComplaintTicket;

@@ -4,7 +4,7 @@ import { Box, Card } from '@mui/material';
 import { appConfig } from '../../config';
 
 // Status 403: Forbidden requests
-function UnauthorizedError() {
+const UnauthorizedError = () => {
     return (
         <Box>
             <Card>
@@ -12,6 +12,6 @@ function UnauthorizedError() {
             </Card>
         </Box>
     );
-}
+};
 
 export default UnauthorizedError;

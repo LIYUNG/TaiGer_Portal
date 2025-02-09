@@ -13,7 +13,7 @@ import { is_TaiGer_role } from '@taiger-common/core';
 
 import { useAuth } from '../../components/AuthProvider';
 
-function ProgramReportUpdateModal(props) {
+const ProgramReportUpdateModal = (props) => {
     const { t } = useTranslation();
     const { user } = useAuth();
     const [programReportUpdateModalState, ProgramReportUpdateModalState] =
@@ -38,8 +38,8 @@ function ProgramReportUpdateModal(props) {
 
     return (
         <Dialog
-            open={props.isUpdateReport}
             onClose={props.setReportUpdateModalHide}
+            open={props.isUpdateReport}
         >
             <DialogTitle>Report</DialogTitle>
             <DialogContent>
@@ -47,30 +47,30 @@ function ProgramReportUpdateModal(props) {
                 {props.program_name}?{' '}
                 <TextField
                     fullWidth
-                    name="description"
-                    type="textarea"
-                    multiline
                     minRows={10}
-                    placeholder="Deadline is wrong."
-                    value={programReportUpdateModalState.ticket.description}
+                    multiline
+                    name="description"
                     onChange={(e) => handleChange(e)}
+                    placeholder="Deadline is wrong."
+                    type="textarea"
+                    value={programReportUpdateModalState.ticket.description}
                 />
                 <Typography variant="body1">Feedback</Typography>
                 <TextField
-                    fullWidth
-                    name="feedback"
-                    type="textarea"
-                    multiline
-                    minRows={10}
-                    placeholder="Deadline is for Non-EU (05-15)"
                     defaultValue={programReportUpdateModalState.ticket.feedback}
+                    fullWidth
+                    minRows={10}
+                    multiline
+                    name="feedback"
                     onChange={(e) => handleChange(e)}
+                    placeholder="Deadline is for Non-EU (05-15)"
+                    type="textarea"
                 />
             </DialogContent>
             <DialogActions>
                 <Button
                     color="primary"
-                    variant="contained"
+                    disabled={!is_TaiGer_role(user)}
                     onClick={() =>
                         props.submitProgramUpdateReport(
                             props.ticket._id.toString(),
@@ -80,20 +80,20 @@ function ProgramReportUpdateModal(props) {
                             }
                         )
                     }
-                    disabled={!is_TaiGer_role(user)}
                     sx={{ mr: 1 }}
+                    variant="contained"
                 >
                     {t('Resolve ticket', { ns: 'programList' })}
                 </Button>
                 <Button
                     color="secondary"
-                    variant="outlined"
                     onClick={props.setReportUpdateModalHide}
+                    variant="outlined"
                 >
                     {t('Close', { ns: 'common' })}
                 </Button>
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default ProgramReportUpdateModal;

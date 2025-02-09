@@ -11,7 +11,7 @@ import { queryClient } from '../../api/client';
 import { getProgramQuery } from '../../api/query';
 import { useSnackBar } from '../../contexts/use-snack-bar';
 
-function ProgramEditPage() {
+const ProgramEditPage = () => {
     const { distinctSchools } = useLoaderData();
     const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
 
@@ -53,23 +53,23 @@ function ProgramEditPage() {
                 <Await resolve={distinctSchools}>
                     {(loadedData) => (
                         <>
-                            {isLoading && <Loading />}
-                            {!isLoading && (
+                            {isLoading ? <Loading /> : null}
+                            {!isLoading ? (
                                 <NewProgramEdit
                                     handleClick={onClickIToSingleProgramPage}
                                     handleSubmit_Program={handleSubmitProgram}
-                                    programs={loadedData}
-                                    program={data?.data}
                                     isLoading={isLoading}
                                     isSubmitting={isPending}
-                                    type={'edit'}
+                                    program={data?.data}
+                                    programs={loadedData}
+                                    type="edit"
                                 />
-                            )}
+                            ) : null}
                         </>
                     )}
                 </Await>
             </Suspense>
         </Box>
     );
-}
+};
 export default ProgramEditPage;

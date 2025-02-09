@@ -107,6 +107,8 @@ const StudentItem = ({ student, selectedStudentId, onClick }) => {
     const highlightItem = !isStudentComplete && student.needToReply;
     return (
         <ListItem
+            disablePadding
+            divider
             sx={{
                 backgroundColor: !highlightItem
                     ? theme.palette.background.default
@@ -120,13 +122,11 @@ const StudentItem = ({ student, selectedStudentId, onClick }) => {
                     : theme.palette.text.secondary,
                 width: '100%'
             }}
-            disablePadding
-            divider
         >
-            <ListItemButton sx={{ paddingY: 0 }} onClick={onClick}>
+            <ListItemButton onClick={onClick} sx={{ paddingY: 0 }}>
                 <Stack
-                    direction="row"
                     alignItems="center"
+                    direction="row"
                     spacing={1}
                     sx={{ width: '100%' }}
                 >
@@ -134,7 +134,6 @@ const StudentItem = ({ student, selectedStudentId, onClick }) => {
                     <ListItemText
                         primary={
                             <Typography
-                                variant="body1"
                                 style={{
                                     fontWeight:
                                         student?._id?.toString() ===
@@ -142,6 +141,7 @@ const StudentItem = ({ student, selectedStudentId, onClick }) => {
                                             ? 900
                                             : 'normal'
                                 }}
+                                variant="body1"
                             >
                                 {`${student.firstname} ${student.lastname}`}
                             </Typography>
@@ -152,12 +152,12 @@ const StudentItem = ({ student, selectedStudentId, onClick }) => {
                             </Typography>
                         }
                     />
-                    {highlightItem && (
+                    {highlightItem ? (
                         <FiberManualRecordIcon
                             fontSize="tiny"
                             title="Not Reply Yet"
                         />
-                    )}
+                    ) : null}
                 </Stack>
             </ListItemButton>
         </ListItem>
@@ -175,6 +175,7 @@ const ThreadItem = ({ thread, onClick }) => {
     const highlightItem = !isFinal && notRepliedByUser;
     return (
         <ListItem
+            disablePadding
             sx={{
                 backgroundColor: !highlightItem
                     ? theme.palette.background.default
@@ -188,16 +189,15 @@ const ThreadItem = ({ thread, onClick }) => {
                     : theme.palette.text.secondary,
                 width: '100%'
             }}
-            disablePadding
         >
             <ListItemButton
-                sx={{ paddingY: 0 }}
                 onClick={onClick}
+                sx={{ paddingY: 0 }}
                 title={programName}
             >
                 <Stack
-                    direction="row"
                     alignItems="center"
+                    direction="row"
                     spacing={1}
                     sx={{ width: '100%' }}
                 >
@@ -216,34 +216,34 @@ const ThreadItem = ({ thread, onClick }) => {
                             </Typography>
                         }
                         secondary={
-                            thread?.program_id && (
+                            thread?.program_id ? (
                                 <Typography
-                                    variant="body2"
                                     sx={{
                                         whiteSpace: 'nowrap',
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis'
                                     }}
+                                    variant="body2"
                                 >
                                     {programName}
                                 </Typography>
-                            )
+                            ) : null
                         }
                     />
 
-                    {highlightItem && (
+                    {highlightItem ? (
                         <FiberManualRecordIcon
                             fontSize="tiny"
                             title="Not Reply Yet"
                         />
-                    )}
+                    ) : null}
                 </Stack>
             </ListItemButton>
         </ListItem>
     );
 };
 
-function DocumentCommunicationExpandPage() {
+const DocumentCommunicationExpandPage = () => {
     const { threadId: paramThreadId } = useParams();
     const navigate = useNavigate();
 
@@ -339,16 +339,16 @@ function DocumentCommunicationExpandPage() {
                     ) : (
                         <>
                             <Stack
-                                direction="row"
                                 alignItems="center"
+                                direction="row"
                                 spacing={1}
                             >
                                 <SearchIcon />
                                 <InputBase
-                                    value={studentSearchTerm}
                                     onChange={(e) =>
                                         setStudentSearchTerm(e.target.value)
                                     }
+                                    value={studentSearchTerm}
                                 />
                             </Stack>
                             <List>
@@ -380,8 +380,6 @@ function DocumentCommunicationExpandPage() {
                                     ?.map((student) => (
                                         <StudentItem
                                             key={student._id}
-                                            student={student}
-                                            selectedStudentId={studentId}
                                             onClick={() => {
                                                 handleOnClickStudent(
                                                     student._id
@@ -391,6 +389,8 @@ function DocumentCommunicationExpandPage() {
                                                     behavior: 'smooth'
                                                 });
                                             }}
+                                            selectedStudentId={studentId}
+                                            student={student}
                                         />
                                     ))}
                             </List>
@@ -398,13 +398,13 @@ function DocumentCommunicationExpandPage() {
                     )}
                 </Grid>
                 <Grid item xs={2.5}>
-                    {studentThreadIsLoading && <Loading />}
+                    {studentThreadIsLoading ? <Loading /> : null}
                     <Checkbox
                         checked={showAllThreads}
-                        onChange={() => setShowAllThreads(!showAllThreads)}
                         disabled={sortedThreads.every(
                             (thread) => thread?.isFinalVersion
                         )}
+                        onChange={() => setShowAllThreads(!showAllThreads)}
                     />{' '}
                     Show completed threads
                     <List>
@@ -421,22 +421,22 @@ function DocumentCommunicationExpandPage() {
 
                                 return (
                                     <React.Fragment key={thread._id}>
-                                        {showCategoryLabel && (
+                                        {showCategoryLabel ? (
                                             <Divider
-                                                textAlign="center"
                                                 sx={{
                                                     paddingX: 3,
                                                     paddingY: 1
                                                 }}
+                                                textAlign="center"
                                             >
                                                 {category}
                                             </Divider>
-                                        )}
+                                        ) : null}
                                         <ThreadItem
-                                            thread={thread}
                                             onClick={() => {
                                                 handleOnClickThread(thread._id);
                                             }}
+                                            thread={thread}
                                         />
                                     </React.Fragment>
                                 );
@@ -444,16 +444,16 @@ function DocumentCommunicationExpandPage() {
                     </List>
                 </Grid>
                 <Grid item xs={8}>
-                    {threadId && (
+                    {threadId ? (
                         <DocModificationThreadPage
-                            threadId={threadId}
                             isEmbedded
+                            threadId={threadId}
                         />
-                    )}
+                    ) : null}
                 </Grid>
             </Grid>
         </Box>
     );
-}
+};
 
 export default DocumentCommunicationExpandPage;

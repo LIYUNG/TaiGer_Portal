@@ -46,7 +46,7 @@ import DocThreadEditor from '../../components/Message/DocThreadEditor';
 import { a11yProps, CustomTabPanel } from '../../components/Tabs';
 import Audit from '../Audit';
 
-function SingleInterview() {
+const SingleInterview = () => {
     const { interview_id } = useParams();
     const { user } = useAuth();
     const { t } = useTranslation();
@@ -438,27 +438,27 @@ function SingleInterview() {
     TabTitle(`Interview: ${interview_name}`);
     return (
         <>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.INTERVIEW_LINK}`}
+                    underline="hover"
                 >
                     {is_TaiGer_role(user)
                         ? t('All Interviews', { ns: 'interviews' })
@@ -468,14 +468,14 @@ function SingleInterview() {
             </Breadcrumbs>
             {interview ? (
                 <>
-                    {interview.isClosed && <TopBar />}
+                    {interview.isClosed ? <TopBar /> : null}
                     <Tabs
-                        value={value}
-                        onChange={handleChange}
-                        variant="scrollable"
-                        scrollButtons="auto"
-                        indicatorColor="primary"
                         aria-label="basic tabs example"
+                        indicatorColor="primary"
+                        onChange={handleChange}
+                        scrollButtons="auto"
+                        value={value}
+                        variant="scrollable"
                     >
                         <Tab
                             label={t('discussion-thread', { ns: 'common' })}
@@ -486,23 +486,23 @@ function SingleInterview() {
                             {...a11yProps(1)}
                         />
                     </Tabs>
-                    <CustomTabPanel value={value} index={0}>
+                    <CustomTabPanel index={0} value={value}>
                         <InterviewItems
                             expanded={true}
                             interview={interview}
-                            questionsNum={questionsNum}
                             interviewAuditLog={interviewAuditLog}
                             openDeleteDocModalWindow={openDeleteDocModalWindow}
+                            questionsNum={questionsNum}
                         />
                         <MessageList
-                            documentsthreadId={interview.thread_id?._id?.toString()}
                             accordionKeys={accordionKeys}
+                            apiPrefix="/api/document-threads"
+                            documentsthreadId={interview.thread_id?._id?.toString()}
+                            isLoaded={true}
+                            onDeleteSingleMessage={onDeleteSingleMessage}
                             singleExpandtHandler={singleExpandtHandler}
                             thread={interview.thread_id}
-                            isLoaded={true}
                             user={user}
-                            onDeleteSingleMessage={onDeleteSingleMessage}
-                            apiPrefix={'/api/document-threads'}
                         />
                         {user.archiv !== true ? (
                             <Card
@@ -525,9 +525,9 @@ function SingleInterview() {
                                     )}
                                 />
                                 <Typography
-                                    variant="body1"
-                                    sx={{ mt: 1 }}
                                     style={{ marginLeft: '10px', flex: 1 }}
+                                    sx={{ mt: 1 }}
+                                    variant="body1"
                                 >
                                     <b>
                                         {user.firstname} {user.lastname}
@@ -539,7 +539,7 @@ function SingleInterview() {
                                     </Typography>
                                 ) : (
                                     <DocThreadEditor
-                                        thread={interview.thread_id}
+                                        checkResult={[]}
                                         buttonDisabled={
                                             singleInterviewState.buttonDisabled
                                         }
@@ -547,25 +547,24 @@ function SingleInterview() {
                                         editorState={
                                             singleInterviewState.editorInputState
                                         }
-                                        handleClickSave={handleClickSave}
                                         file={singleInterviewState.file}
+                                        handleClickSave={handleClickSave}
                                         onFileChange={onFileChange}
-                                        checkResult={[]}
+                                        thread={interview.thread_id}
                                     />
                                 )}
-                                {is_TaiGer_role(user) &&
-                                    (!singleInterviewState.interview
-                                        .isClosed ? (
+                                {is_TaiGer_role(user) ? (
+                                    !singleInterviewState.interview.isClosed ? (
                                         <Button
-                                            fullWidth
-                                            variant="contained"
                                             color="success"
+                                            fullWidth
                                             onClick={() =>
                                                 handleAsFinalFile(
                                                     interview?._id?.toString()
                                                 )
                                             }
                                             sx={{ mt: 2 }}
+                                            variant="contained"
                                         >
                                             {isSubmissionLoaded ? (
                                                 t('Mark as finished')
@@ -575,15 +574,15 @@ function SingleInterview() {
                                         </Button>
                                     ) : (
                                         <Button
-                                            fullWidth
-                                            variant="outlined"
                                             color="secondary"
+                                            fullWidth
                                             onClick={() =>
                                                 handleAsFinalFile(
                                                     interview?._id?.toString()
                                                 )
                                             }
                                             sx={{ mt: 2 }}
+                                            variant="outlined"
                                         >
                                             {isSubmissionLoaded ? (
                                                 t('Mark as open')
@@ -591,7 +590,8 @@ function SingleInterview() {
                                                 <CircularProgress size={24} />
                                             )}
                                         </Button>
-                                    ))}
+                                    )
+                                ) : null}
                             </Card>
                         ) : (
                             <Card>
@@ -602,7 +602,7 @@ function SingleInterview() {
                             </Card>
                         )}
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={1}>
+                    <CustomTabPanel index={1} value={value}>
                         <Audit audit={interviewAuditLog} />
                     </CustomTabPanel>
                 </>
@@ -621,8 +621,8 @@ function SingleInterview() {
                 </Card>
             )}
             <Dialog
-                open={singleInterviewState.SetAsFinalFileModel}
                 onClose={closeSetAsFinalFileModelWindow}
+                open={singleInterviewState.SetAsFinalFileModel}
             >
                 <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                 <DialogContent>
@@ -642,9 +642,9 @@ function SingleInterview() {
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         disabled={!isLoaded || !isSubmissionLoaded}
                         onClick={(e) => ConfirmSetAsFinalFileHandler(e)}
+                        variant="contained"
                     >
                         {isSubmissionLoaded ? (
                             t('Yes', { ns: 'common' })
@@ -654,16 +654,16 @@ function SingleInterview() {
                     </Button>
                     <Button
                         color="secondary"
-                        variant="outlined"
                         onClick={closeSetAsFinalFileModelWindow}
+                        variant="outlined"
                     >
                         {t('No', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>
             <Dialog
-                open={singleInterviewState.SetDeleteDocModel}
                 onClose={closeDeleteDocModalWindow}
+                open={singleInterviewState.SetDeleteDocModel}
             >
                 <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                 <DialogContent>
@@ -674,30 +674,30 @@ function SingleInterview() {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        disabled={!isLoaded || singleInterviewState.isDeleting}
-                        variant="contained"
                         color="primary"
+                        disabled={!isLoaded || singleInterviewState.isDeleting}
                         onClick={handleDeleteInterview}
+                        variant="contained"
                     >
                         {t('Yes', { ns: 'common' })}
                     </Button>
                     <Button
-                        variant="outlined"
                         color="secondary"
                         onClick={closeDeleteDocModalWindow}
+                        variant="outlined"
                     >
                         {t('No', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
         </>
     );
-}
+};
 export default SingleInterview;

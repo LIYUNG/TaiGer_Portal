@@ -229,33 +229,33 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                     <div style={{ marginBottom: '16px' }}>
                         <Typography variant="h6">Category Name:</Typography>
                         <TextField
-                            value={selectedCategory.categoryName}
+                            fullWidth
+                            id="categoryName"
                             onChange={(e) =>
                                 handleCategoryNameAndDescription(e)
                             }
-                            variant="outlined"
-                            fullWidth
-                            id="categoryName"
                             size="small"
+                            value={selectedCategory.categoryName}
+                            variant="outlined"
                         />
                     </div>
 
                     {/* Editable description */}
                     <div style={{ marginBottom: '16px' }}>
-                        <Typography variant="body2" color="textSecondary">
+                        <Typography color="textSecondary" variant="body2">
                             Description:
                         </Typography>
                         <TextField
-                            value={selectedCategory.description}
-                            onChange={(e) =>
-                                handleCategoryNameAndDescription(e)
-                            }
-                            variant="outlined"
                             fullWidth
                             id="description"
                             multiline
+                            onChange={(e) =>
+                                handleCategoryNameAndDescription(e)
+                            }
                             rows={3}
                             size="small"
+                            value={selectedCategory.description}
+                            variant="outlined"
                         />
                     </div>
                     <Box sx={{ width: '100%' }}>
@@ -271,24 +271,24 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                             }}
                         >
                             <TextField
+                                fullWidth
                                 label="Add course keyword here..."
-                                variant="outlined"
-                                value={keywordsZH}
                                 onChange={(e) => {
                                     e.preventDefault();
                                     setKeywordsZH(e.target.value);
                                 }}
-                                fullWidth
                                 size="small"
+                                value={keywordsZH}
+                                variant="outlined"
                             />
                             <Button
-                                variant="contained"
                                 color="primary"
                                 onClick={() =>
                                     handleAddCourseKeyword('zh', keywordsZH)
                                 }
-                                sx={{ ml: 2 }}
                                 size="small"
+                                sx={{ ml: 2 }}
+                                variant="contained"
                             >
                                 + Add (ZH)
                             </Button>
@@ -297,6 +297,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                             {selectedCategory?.keywords?.zh?.map(
                                 (keyword, index) => (
                                     <Chip
+                                        color="primary"
                                         key={index}
                                         label={keyword}
                                         onDelete={() =>
@@ -306,7 +307,6 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                                                 keyword
                                             )
                                         }
-                                        color="primary"
                                     />
                                 )
                             )}
@@ -324,17 +324,16 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                             }}
                         >
                             <TextField
+                                fullWidth
                                 label="Add course anti-keyword here..."
-                                variant="outlined"
-                                value={antiKeywordsZH}
                                 onChange={(e) =>
                                     setAntiKeywordsZH(e.target.value)
                                 }
-                                fullWidth
                                 size="small"
+                                value={antiKeywordsZH}
+                                variant="outlined"
                             />
                             <Button
-                                variant="contained"
                                 color="primary"
                                 onClick={() =>
                                     handleAddCourseAntiKeyword(
@@ -342,8 +341,9 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                                         antiKeywordsZH
                                     )
                                 }
-                                sx={{ ml: 2 }}
                                 size="small"
+                                sx={{ ml: 2 }}
+                                variant="contained"
                             >
                                 + Add (ZH)
                             </Button>
@@ -352,6 +352,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                             {selectedCategory?.antiKeywords?.zh?.map(
                                 (keyword, index) => (
                                     <Chip
+                                        color="secondary"
                                         key={index}
                                         label={keyword}
                                         onDelete={() =>
@@ -361,7 +362,6 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                                                 keyword
                                             )
                                         }
-                                        color="secondary"
                                     />
                                 )
                             )}
@@ -378,21 +378,21 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                             }}
                         >
                             <TextField
-                                label="Add course keyword here..."
-                                variant="outlined"
-                                value={keywordsEN}
-                                onChange={(e) => setKeywordsEN(e.target.value)}
                                 fullWidth
+                                label="Add course keyword here..."
+                                onChange={(e) => setKeywordsEN(e.target.value)}
                                 size="small"
+                                value={keywordsEN}
+                                variant="outlined"
                             />
                             <Button
-                                variant="contained"
                                 color="primary"
                                 onClick={() =>
                                     handleAddCourseKeyword('en', keywordsEN)
                                 }
-                                sx={{ ml: 2 }}
                                 size="small"
+                                sx={{ ml: 2 }}
+                                variant="contained"
                             >
                                 + Add (EN)
                             </Button>
@@ -401,6 +401,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                             {selectedCategory?.keywords?.en?.map(
                                 (keyword, index) => (
                                     <Chip
+                                        color="primary"
                                         key={index}
                                         label={keyword}
                                         onDelete={() =>
@@ -410,7 +411,6 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                                                 keyword
                                             )
                                         }
-                                        color="primary"
                                     />
                                 )
                             )}
@@ -428,17 +428,16 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                             }}
                         >
                             <TextField
+                                fullWidth
                                 label="Add course anti-keyword here..."
-                                variant="outlined"
-                                value={antiKeywordsEN}
                                 onChange={(e) =>
                                     setAntiKeywordsEN(e.target.value)
                                 }
-                                fullWidth
                                 size="small"
+                                value={antiKeywordsEN}
+                                variant="outlined"
                             />
                             <Button
-                                variant="contained"
                                 color="primary"
                                 onClick={() =>
                                     handleAddCourseAntiKeyword(
@@ -446,8 +445,9 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                                         antiKeywordsEN
                                     )
                                 }
-                                sx={{ ml: 2 }}
                                 size="small"
+                                sx={{ ml: 2 }}
+                                variant="contained"
                             >
                                 + Add (EN)
                             </Button>
@@ -463,6 +463,7 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                             {selectedCategory?.antiKeywords?.en?.map(
                                 (keyword, index) => (
                                     <Chip
+                                        color="secondary"
                                         key={index}
                                         label={keyword}
                                         onDelete={() =>
@@ -472,23 +473,22 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                                                 keyword
                                             )
                                         }
-                                        color="secondary"
                                     />
                                 )
                             )}
                         </Box>
-                        <Box display="flex" justifyContent="flex-end" gap={2}>
+                        <Box display="flex" gap={2} justifyContent="flex-end">
                             <Button
-                                variant="outlined"
                                 color="secondary"
                                 onClick={handleCancel}
+                                variant="outlined"
                             >
                                 {t('Cancel', { ns: 'common' })}
                             </Button>
                             <Button
-                                variant="contained"
                                 color="primary"
                                 type="submit"
+                                variant="contained"
                             >
                                 {t('Update', { ns: 'common' })}
                             </Button>
@@ -496,10 +496,10 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                     </Box>
                 </form>
                 <Dialog
-                    open={isErrorDialogOpen}
-                    onClose={() => setIsErrorDialogOpen(false)}
-                    aria-labelledby="error-dialog-title"
                     aria-describedby="error-dialog-description"
+                    aria-labelledby="error-dialog-title"
+                    onClose={() => setIsErrorDialogOpen(false)}
+                    open={isErrorDialogOpen}
                 >
                     <DialogTitle id="error-dialog-title">
                         Duplicate Keyword
@@ -511,8 +511,8 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                     </DialogContent>
                     <DialogActions>
                         <Button
-                            onClick={() => setIsErrorDialogOpen(false)}
                             color="primary"
+                            onClick={() => setIsErrorDialogOpen(false)}
                         >
                             {t('OK', { ns: 'common' })}
                         </Button>
@@ -523,9 +523,9 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
             <Box>
                 <div style={{ marginBottom: '16px' }}>
                     <Box
+                        alignItems="center"
                         display="flex"
                         justifyContent="space-between"
-                        alignItems="center"
                         mb={2}
                     >
                         <Typography variant="h6">
@@ -536,34 +536,34 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                         </IconButton>
                     </Box>
                     <TextField
-                        value={selectedCategory.categoryName}
-                        onChange={(e) => handleCategoryNameAndDescription(e)}
-                        variant="outlined"
-                        fullWidth
-                        id="categoryName"
-                        size="small"
                         InputProps={{
                             readOnly: true
                         }}
+                        fullWidth
+                        id="categoryName"
+                        onChange={(e) => handleCategoryNameAndDescription(e)}
+                        size="small"
+                        value={selectedCategory.categoryName}
+                        variant="outlined"
                     />
                 </div>
                 {/* Editable description */}
                 <div style={{ marginBottom: '16px' }}>
-                    <Typography variant="body2" color="textSecondary">
+                    <Typography color="textSecondary" variant="body2">
                         {t('Description', { ns: 'common' })}:
                     </Typography>
                     <TextField
-                        value={selectedCategory.description}
-                        onChange={(e) => handleCategoryNameAndDescription(e)}
-                        variant="outlined"
-                        fullWidth
-                        id="description"
-                        multiline
-                        rows={3}
-                        size="small"
                         InputProps={{
                             readOnly: true
                         }}
+                        fullWidth
+                        id="description"
+                        multiline
+                        onChange={(e) => handleCategoryNameAndDescription(e)}
+                        rows={3}
+                        size="small"
+                        value={selectedCategory.description}
+                        variant="outlined"
                     />
                 </div>
                 <Box sx={{ width: '100%' }}>
@@ -575,9 +575,9 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                         {selectedCategory?.keywords?.zh?.map(
                             (keyword, index) => (
                                 <Chip
+                                    color="primary"
                                     key={index}
                                     label={keyword}
-                                    color="primary"
                                 />
                             )
                         )}
@@ -590,9 +590,9 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                         {selectedCategory?.antiKeywords?.zh?.map(
                             (keyword, index) => (
                                 <Chip
+                                    color="secondary"
                                     key={index}
                                     label={keyword}
-                                    color="secondary"
                                 />
                             )
                         )}
@@ -605,9 +605,9 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                         {selectedCategory?.keywords?.en?.map(
                             (keyword, index) => (
                                 <Chip
+                                    color="primary"
                                     key={index}
                                     label={keyword}
-                                    color="primary"
                                 />
                             )
                         )}
@@ -620,9 +620,9 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                         {selectedCategory?.antiKeywords?.en?.map(
                             (keyword, index) => (
                                 <Chip
+                                    color="secondary"
                                     key={index}
                                     label={keyword}
-                                    color="secondary"
                                 />
                             )
                         )}
@@ -637,14 +637,13 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
     return (
         <Box>
             <Box
+                alignItems="center"
                 display="flex"
                 justifyContent="space-between"
-                alignItems="center"
             >
                 <Typography variant="h6">Categories</Typography>
                 <Box>
                     <Button
-                        variant="outlined"
                         color="primary"
                         disabled={!selectedARow}
                         onClick={() =>
@@ -655,14 +654,15 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                             )
                         }
                         sx={{ mr: 1 }}
+                        variant="outlined"
                     >
                         {t('Delete', { ns: 'common' })}
                     </Button>
                     <Button
-                        variant="contained"
                         color="primary"
                         component={LinkDom}
                         to={DEMO.KEYWORDS_NEW}
+                        variant="contained"
                     >
                         {t('Create', { ns: 'common' })}
                     </Button>
@@ -673,15 +673,15 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
             <Grid container spacing={2} sx={{ mt: 1 }}>
                 <Grid
                     item
-                    xs={12}
-                    sx={{ overflowY: 'auto' }} // Left side scroll
                     md={selectedARow ? 7 : 12}
+                    sx={{ overflowY: 'auto' }} // Left side scroll
+                    xs={12}
                 >
                     <ExampleWithLocalizationProvider
-                        data={courseKeywordSetsState}
                         col={col}
-                        enableRowSelection={true}
+                        data={courseKeywordSetsState}
                         enableMultiRowSelection={false}
+                        enableRowSelection={true}
                         muiTableBodyRowProps={({ row }) => ({
                             //add onClick to row to select upon clicking anywhere in the row
                             onClick: row.getToggleSelectedHandler(),
@@ -693,10 +693,10 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                 </Grid>
                 {/* Right content */}
                 {/* Right side: Configuration panel */}
-                {!isSmallScreen && (
-                    <Grid item xs={12} md={5} sx={{ overflowY: 'auto' }}>
+                {!isSmallScreen ? (
+                    <Grid item md={5} sx={{ overflowY: 'auto' }} xs={12}>
                         <Paper style={{ padding: 16 }}>
-                            {selectedARow && (
+                            {selectedARow ? (
                                 <EditCard
                                     data={
                                         courseKeywordSetsState[
@@ -709,17 +709,17 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                                         setCourseKeywordSetsState
                                     }
                                 />
-                            )}
+                            ) : null}
                         </Paper>
                     </Grid>
-                )}
+                ) : null}
             </Grid>
             {/* Drawer for small screens */}
-            {isSmallScreen && (
+            {isSmallScreen ? (
                 <Drawer
                     anchor="right"
-                    open={drawerOpen}
                     onClose={handleDrawerClose}
+                    open={drawerOpen}
                 >
                     <div style={{ width: 300, padding: 16 }}>
                         {Object.keys(rowSelection) &&
@@ -740,20 +740,20 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                             </Typography>
                         )}
                         <Button
+                            fullWidth
                             onClick={handleDrawerClose}
                             variant="contained"
-                            fullWidth
                         >
                             {t('Close')}
                         </Button>
                     </div>
                 </Drawer>
-            )}
+            ) : null}
             <Dialog
-                open={isDeleteDialogOpen}
-                onClose={() => setIsDeleteDialogOpen(false)}
-                aria-labelledby="error-dialog-title"
                 aria-describedby="error-dialog-description"
+                aria-labelledby="error-dialog-title"
+                onClose={() => setIsDeleteDialogOpen(false)}
+                open={isDeleteDialogOpen}
             >
                 <DialogTitle id="error-dialog-title">
                     {t('Warning', { ns: 'common' })}
@@ -766,15 +766,15 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        onClick={() => handleDeleteConfirm(false)}
                         color="primary"
+                        onClick={() => handleDeleteConfirm(false)}
                         variant="contained"
                     >
                         {t('Yes', { ns: 'common' })}
                     </Button>
                     <Button
-                        onClick={() => setIsDeleteDialogOpen(false)}
                         color="primary"
+                        onClick={() => setIsDeleteDialogOpen(false)}
                         variant="outlined"
                     >
                         {t('Cancel', { ns: 'common' })}

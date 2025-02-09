@@ -24,7 +24,52 @@ export const MuiDataGrid = (props) => {
     return (
         <div style={{ height: '50%', width: '100%' }}>
             <DataGrid
+                autosizeOnMount={true}
+                autosizeOptions={autosizeOptions}
+                columnHeaderHeight={130}
+                columns={props.columns.map((column) => ({
+                    ...column,
+                    renderHeader: () => (
+                        <Box>
+                            <Tooltip
+                                key={column.headerName}
+                                title={column.headerName}
+                            >
+                                <Typography sx={{ my: 1 }}>
+                                    {column.headerName}
+                                </Typography>
+                            </Tooltip>
+                            <TextField
+                                fullWidth
+                                onChange={(event) =>
+                                    handleFilterChange(event, column)
+                                }
+                                onClick={stopPropagation}
+                                placeholder={column.headerName}
+                                size="small"
+                                sx={{ mb: 1 }}
+                                type="text"
+                                value={filters[column.field] || ''}
+                            />
+                        </Box>
+                    )
+                }))}
                 density="compact"
+                disableColumnFilter
+                disableColumnMenu
+                disableColumnResize={false}
+                disableDensitySelector
+                initialState={{
+                    columns: {
+                        columnVisibilityModel: {
+                            ...props.columnVisibilityModel
+                        }
+                    },
+                    pagination: {
+                        paginationModel: { page: 0, pageSize: 20 }
+                    }
+                }}
+                pageSizeOptions={[10, 20, 50, 100]}
                 rows={props.rows.filter((row) => {
                     return Object.keys(filters).every((field) => {
                         const filterValue = filters[field];
@@ -46,58 +91,13 @@ export const MuiDataGrid = (props) => {
                         }
                     });
                 })}
-                columnHeaderHeight={130}
-                autosizeOnMount={true}
-                disableColumnResize={false}
-                disableColumnFilter
-                disableColumnMenu
-                disableDensitySelector
-                columns={props.columns.map((column) => ({
-                    ...column,
-                    renderHeader: () => (
-                        <Box>
-                            <Tooltip
-                                title={column.headerName}
-                                key={column.headerName}
-                            >
-                                <Typography sx={{ my: 1 }}>
-                                    {column.headerName}
-                                </Typography>
-                            </Tooltip>
-                            <TextField
-                                fullWidth
-                                size="small"
-                                type="text"
-                                placeholder={column.headerName}
-                                onClick={stopPropagation}
-                                value={filters[column.field] || ''}
-                                onChange={(event) =>
-                                    handleFilterChange(event, column)
-                                }
-                                sx={{ mb: 1 }}
-                            />
-                        </Box>
-                    )
-                }))}
-                initialState={{
-                    columns: {
-                        columnVisibilityModel: {
-                            ...props.columnVisibilityModel
-                        }
-                    },
-                    pagination: {
-                        paginationModel: { page: 0, pageSize: 20 }
-                    }
-                }}
-                pageSizeOptions={[10, 20, 50, 100]}
-                slots={{ toolbar: GridToolbar }}
                 slotProps={{
                     toolbar: {
                         showQuickFilter: true
                     }
                 }}
-                autosizeOptions={autosizeOptions}
-            ></DataGrid>
+                slots={{ toolbar: GridToolbar }}
+            />
         </div>
     );
 };

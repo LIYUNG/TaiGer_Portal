@@ -14,7 +14,7 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import DocPageView from './DocPageView';
 
-function SingleDoc(props) {
+const SingleDoc = (props) => {
     const { documentation_id } = useParams();
     const { user } = useAuth();
     const [singleInternalDocState, setSingleInternalDocState] = useState({
@@ -145,29 +145,29 @@ function SingleDoc(props) {
     if (singleInternalDocState.isEdit) {
         return (
             <SingleDocEdit
+                author={singleInternalDocState.author}
                 category={singleInternalDocState.category}
-                internal={singleInternalDocState.internal}
                 document={document}
                 document_title={singleInternalDocState.document_title}
                 editorState={singleInternalDocState.editorState}
-                author={singleInternalDocState.author}
-                isLoaded={isLoaded}
                 handleClickEditToggle={handleClickEditToggle}
                 handleClickSave={handleClickSave}
+                internal={singleInternalDocState.internal}
+                isLoaded={isLoaded}
             />
         );
     } else {
         return (
             <DocPageView
+                author={singleInternalDocState.author}
                 category={singleInternalDocState.category}
-                internal={singleInternalDocState.internal}
                 document={document}
                 document_title={singleInternalDocState.document_title}
                 editorState={singleInternalDocState.editorState}
-                author={singleInternalDocState.author}
                 handleClickEditToggle={handleClickEditToggle}
+                internal={singleInternalDocState.internal}
             />
         );
     }
-}
+};
 export default SingleDoc;

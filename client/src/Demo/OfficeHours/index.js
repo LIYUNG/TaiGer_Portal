@@ -60,7 +60,7 @@ CustomTabPanel.propTypes = {
     value: PropTypes.number.isRequired
 };
 
-function OfficeHours() {
+const OfficeHours = () => {
     const { user } = useAuth();
     const { user_id } = useParams();
     const { t } = useTranslation();
@@ -223,19 +223,19 @@ function OfficeHours() {
     const has_officehours = available_termins?.length !== 0 ? true : false;
     return (
         <Box>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -247,8 +247,8 @@ function OfficeHours() {
                 <>
                     <Button
                         color="primary"
-                        variant="contained"
                         onClick={switchCalendarAndMyBookedEvents}
+                        variant="contained"
                     >
                         {t('Book an Office Hour', { ns: 'interviews' })}
                     </Button>
@@ -257,32 +257,33 @@ function OfficeHours() {
                             isInTheFuture(event.end) &&
                             (!event.isConfirmedReceiver ||
                                 !event.isConfirmedRequester)
-                    ).length !== 0 &&
-                        _.reverse(
-                            _.sortBy(
-                                events?.filter(
-                                    (event) =>
-                                        isInTheFuture(event.end) &&
-                                        (!event.isConfirmedReceiver ||
-                                            !event.isConfirmedRequester)
-                                ),
-                                ['start']
-                            )
-                        ).map((event, i) => (
-                            <EventConfirmationCard
-                                key={i}
-                                event={event}
-                                handleConfirmAppointmentModalOpen={
-                                    handleConfirmAppointmentModalOpen
-                                }
-                                handleEditAppointmentModalOpen={
-                                    handleEditAppointmentModalOpen
-                                }
-                                handleDeleteAppointmentModalOpen={
-                                    handleDeleteAppointmentModalOpen
-                                }
-                            />
-                        ))}
+                    ).length !== 0
+                        ? _.reverse(
+                              _.sortBy(
+                                  events?.filter(
+                                      (event) =>
+                                          isInTheFuture(event.end) &&
+                                          (!event.isConfirmedReceiver ||
+                                              !event.isConfirmedRequester)
+                                  ),
+                                  ['start']
+                              )
+                          ).map((event, i) => (
+                              <EventConfirmationCard
+                                  event={event}
+                                  handleConfirmAppointmentModalOpen={
+                                      handleConfirmAppointmentModalOpen
+                                  }
+                                  handleDeleteAppointmentModalOpen={
+                                      handleDeleteAppointmentModalOpen
+                                  }
+                                  handleEditAppointmentModalOpen={
+                                      handleEditAppointmentModalOpen
+                                  }
+                                  key={i}
+                              />
+                          ))
+                        : null}
                     <Card sx={{ p: 2 }}>
                         <Box>
                             <Typography variant="h6">
@@ -309,17 +310,17 @@ function OfficeHours() {
                                           )
                                       ).map((event, i) => (
                                           <EventConfirmationCard
-                                              key={i}
                                               event={event}
                                               handleConfirmAppointmentModalOpen={
                                                   handleConfirmAppointmentModalOpen
                                               }
-                                              handleEditAppointmentModalOpen={
-                                                  handleEditAppointmentModalOpen
-                                              }
                                               handleDeleteAppointmentModalOpen={
                                                   handleDeleteAppointmentModalOpen
                                               }
+                                              handleEditAppointmentModalOpen={
+                                                  handleEditAppointmentModalOpen
+                                              }
+                                              key={i}
                                           />
                                       ))
                                     : t('No upcoming event', { ns: 'common' })}
@@ -327,7 +328,7 @@ function OfficeHours() {
                         </Box>
                     </Card>
                     <Card>
-                        <Typography variant="h6" sx={{ p: 2 }}>
+                        <Typography sx={{ p: 2 }} variant="h6">
                             {t('Past', { ns: 'common' })}
                         </Typography>
                         <Typography>
@@ -340,25 +341,25 @@ function OfficeHours() {
                                 )
                             ).map((event, i) => (
                                 <EventConfirmationCard
-                                    key={i}
+                                    disabled={true}
                                     event={event}
                                     handleConfirmAppointmentModalOpen={
                                         handleConfirmAppointmentModalOpen
                                     }
-                                    handleEditAppointmentModalOpen={
-                                        handleEditAppointmentModalOpen
-                                    }
                                     handleDeleteAppointmentModalOpen={
                                         handleDeleteAppointmentModalOpen
                                     }
-                                    disabled={true}
+                                    handleEditAppointmentModalOpen={
+                                        handleEditAppointmentModalOpen
+                                    }
+                                    key={i}
                                 />
                             ))}
                         </Typography>
                     </Card>
                     <Dialog
-                        open={isConfirmModalOpen}
                         onClose={handleConfirmAppointmentModalClose}
+                        open={isConfirmModalOpen}
                     >
                         <DialogTitle>
                             {t('Warning', { ns: 'common' })}
@@ -371,7 +372,6 @@ function OfficeHours() {
                         <DialogActions>
                             <Button
                                 color="primary"
-                                variant="contained"
                                 disabled={
                                     event_id === '' ||
                                     event_temp?.description?.length === 0 ||
@@ -391,36 +391,37 @@ function OfficeHours() {
                                         <CheckIcon />
                                     )
                                 }
+                                variant="contained"
                             >
                                 {t('Yes', { ns: 'common' })}
                             </Button>
                             <Button
                                 color="primary"
-                                variant="contained"
                                 onClick={handleConfirmAppointmentModalClose}
+                                variant="contained"
                             >
                                 {t('Close', { ns: 'common' })}
                             </Button>
                         </DialogActions>
                     </Dialog>
                     <Dialog
-                        open={isEditModalOpen}
                         onClose={handleEditAppointmentModalClose}
+                        open={isEditModalOpen}
                     >
                         <DialogTitle>請寫下想討論的主題</DialogTitle>
                         <DialogContent>
                             <TextField
                                 fullWidth
-                                type="textarea"
                                 inputProps={{ maxLength: 2000 }}
-                                multiline
-                                minRows={5}
-                                placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
-                                value={event_temp.description || ''}
                                 isInvalid={
                                     event_temp.description?.length > 2000
                                 }
+                                minRows={5}
+                                multiline
                                 onChange={(e) => handleUpdateDescription(e)}
+                                placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
+                                type="textarea"
+                                value={event_temp.description || ''}
                             />
                             <Badge
                                 bg={`${
@@ -447,9 +448,9 @@ function OfficeHours() {
                                     {t('Time Slot', { ns: 'common' })}
                                 </InputLabel>
                                 <Select
-                                    size="small"
                                     id="time_slot"
                                     onChange={(e) => handleUpdateTimeSlot(e)}
+                                    size="small"
                                     value={new Date(event_temp.start)}
                                 >
                                     {available_termins
@@ -465,8 +466,8 @@ function OfficeHours() {
                                         )
                                         .map((time_slot) => (
                                             <MenuItem
-                                                value={`${time_slot.start}`}
                                                 key={`${time_slot.start}`}
+                                                value={`${time_slot.start}`}
                                             >
                                                 {time_slot.start.toLocaleString()}{' '}
                                                 to{' '}
@@ -479,7 +480,6 @@ function OfficeHours() {
                         <DialogActions>
                             <Button
                                 color="primary"
-                                variant="contained"
                                 disabled={
                                     event_id === '' ||
                                     event_temp?.description?.length === 0 ||
@@ -492,6 +492,7 @@ function OfficeHours() {
                                         event_temp
                                     )
                                 }
+                                variant="contained"
                             >
                                 {BookButtonDisable ? (
                                     <CircularProgress size={16} />
@@ -502,8 +503,8 @@ function OfficeHours() {
                         </DialogActions>
                     </Dialog>
                     <Dialog
-                        open={isDeleteModalOpen}
                         onClose={handleDeleteAppointmentModalClose}
+                        open={isDeleteModalOpen}
                     >
                         <DialogTitle>
                             {t('Warning', { ns: 'common' })}
@@ -514,11 +515,11 @@ function OfficeHours() {
                         <DialogActions>
                             <Button
                                 color="primary"
-                                variant="contained"
                                 disabled={event_id === '' || BookButtonDisable}
                                 onClick={(e) =>
                                     handleDeleteAppointmentModal(e, event_id)
                                 }
+                                variant="contained"
                             >
                                 {BookButtonDisable ? (
                                     <CircularProgress size={16} />
@@ -533,8 +534,8 @@ function OfficeHours() {
                 <>
                     <Button
                         color="primary"
-                        variant="contained"
                         onClick={switchCalendarAndMyBookedEvents}
+                        variant="contained"
                     >
                         {t('My Appointments')}
                     </Button>
@@ -552,73 +553,73 @@ function OfficeHours() {
                     </Box>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <Tabs
-                            value={value}
-                            onChange={handleChangeValue}
-                            variant="scrollable"
-                            scrollButtons="auto"
                             aria-label="basic tabs example"
+                            onChange={handleChangeValue}
+                            scrollButtons="auto"
+                            value={value}
+                            variant="scrollable"
                         >
                             <Tab label="Calender" {...a11yProps(0)} />
                             <Tab label="My Events" {...a11yProps(1)} />
                         </Tabs>
                     </Box>
-                    <CustomTabPanel value={value} index={0}>
+                    <CustomTabPanel index={0} value={value}>
                         {/* {'Only boo'} */}
                         {events?.filter(
                             (event) =>
                                 differenceInDays(event.start, new Date()) >= -1
-                        ).length !== 0 && (
+                        ).length !== 0 ? (
                             <Banner
                                 ReadOnlyMode={true}
-                                bg={'primary'}
-                                title={'info'}
-                                path={'/'}
+                                bg="primary"
+                                link_name=""
+                                notification_key={undefined}
+                                path="/"
+                                removeBanner={<></>}
                                 text={
                                     <>
                                         在您目前預訂的時段過後，您將可以再次預約時段。
                                     </>
                                 }
-                                link_name={''}
-                                removeBanner={<></>}
-                                notification_key={undefined}
+                                title="info"
                             />
-                        )}
-                        {!has_officehours && (
+                        ) : null}
+                        {!has_officehours ? (
                             <Banner
                                 ReadOnlyMode={true}
-                                bg={'primary'}
-                                title={'info'}
-                                path={'/'}
+                                bg="primary"
+                                link_name=""
+                                notification_key={undefined}
+                                path="/"
+                                removeBanner={<></>}
                                 text={
                                     <>
                                         目前 Agent 無空出 Office hours
                                         時段，請聯繫您的 Agent。
                                     </>
                                 }
-                                link_name={''}
-                                removeBanner={<></>}
-                                notification_key={undefined}
+                                title="info"
                             />
-                        )}
+                        ) : null}
                         <MyCalendar
-                            events={[...available_termins]}
-                            handleSelectEvent={handleSelectEvent}
-                            handleUpdateTimeSlot={handleUpdateTimeSlot}
-                            handleChange={handleChange}
-                            handleModalClose={handleModalClose}
-                            handleChangeReceiver={handleChangeReceiver}
-                            handleSelectSlot={handleSelectSlot}
-                            handleNewEventModalClose={handleNewEventModalClose}
-                            handleModalBook={handleModalBook}
                             BookButtonDisable={BookButtonDisable}
-                            newReceiver={newReceiver}
-                            newDescription={newDescription}
-                            selectedEvent={selectedEvent}
-                            newEventEnd={newEventEnd}
+                            events={[...available_termins]}
+                            handleChange={handleChange}
+                            handleChangeReceiver={handleChangeReceiver}
+                            handleModalBook={handleModalBook}
+                            handleModalClose={handleModalClose}
+                            handleNewEventModalClose={handleNewEventModalClose}
+                            handleSelectEvent={handleSelectEvent}
+                            handleSelectSlot={handleSelectSlot}
+                            handleUpdateTimeSlot={handleUpdateTimeSlot}
                             isNewEventModalOpen={isNewEventModalOpen}
+                            newDescription={newDescription}
+                            newEventEnd={newEventEnd}
+                            newReceiver={newReceiver}
+                            selectedEvent={selectedEvent}
                         />
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={1}>
+                    <CustomTabPanel index={1} value={value}>
                         {available_termins
                             .sort((a, b) => (a.start < b.start ? -1 : 1))
                             .map((time_slot, j) => (
@@ -634,6 +635,6 @@ function OfficeHours() {
             )}
         </Box>
     );
-}
+};
 
 export default OfficeHours;

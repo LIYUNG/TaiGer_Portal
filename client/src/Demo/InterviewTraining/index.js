@@ -2,9 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useNavigate } from 'react-router-dom';
 import { Box, Button, Breadcrumbs, Link, Typography } from '@mui/material';
-import { is_TaiGer_role } from '@taiger-common/core';
+import {
+    is_TaiGer_role,
+    isProgramAdmitted,
+    isProgramDecided,
+    isProgramRejected
+} from '@taiger-common/core';
 
-import { isProgramDecided } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { getMyInterviews, getAllInterviews } from '../../api';
@@ -16,7 +20,7 @@ import Loading from '../../components/Loading/Loading';
 import { MuiDataGrid } from '../../components/MuiDataGrid';
 import { convertDate, showTimezoneOffset } from '../../utils/contants';
 
-function InterviewTraining() {
+const InterviewTraining = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -82,8 +86,8 @@ function InterviewTraining() {
                                     ?.filter(
                                         (application) =>
                                             isProgramDecided(application) &&
-                                            application.admission !== 'O' &&
-                                            application.admission !== 'X' &&
+                                            !isProgramAdmitted(application) &&
+                                            !isProgramRejected(application) &&
                                             !interviewslist.find(
                                                 (interview) =>
                                                     interview.program_id._id.toString() ===
@@ -152,17 +156,15 @@ function InterviewTraining() {
                     DEMO.PROFILE_HASH
                 )}`;
                 return (
-                    <>
-                        <Link
-                            underline="hover"
-                            to={linkUrl}
-                            component={LinkDom}
-                            target="_blank"
-                            title={params.value}
-                        >
-                            {params.value}
-                        </Link>
-                    </>
+                    <Link
+                        component={LinkDom}
+                        target="_blank"
+                        title={params.value}
+                        to={linkUrl}
+                        underline="hover"
+                    >
+                        {params.value}
+                    </Link>
                 );
             }
         },
@@ -217,11 +219,11 @@ function InterviewTraining() {
             renderCell: (params) => {
                 return (
                     <Link
-                        underline="hover"
-                        to={DEMO.INTERVIEW_SINGLE_LINK(params.row.id)}
                         component={LinkDom}
                         target="_blank"
                         title={params.row.program_name}
+                        to={DEMO.INTERVIEW_SINGLE_LINK(params.row.id)}
+                        underline="hover"
                     >
                         {params.row.program_name}
                     </Link>
@@ -268,20 +270,20 @@ function InterviewTraining() {
 
     return (
         <Box>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
 
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -293,9 +295,9 @@ function InterviewTraining() {
                 </Typography>
             </Breadcrumbs>
             <Box
+                alignItems="center"
                 display="flex"
                 justifyContent="space-between"
-                alignItems="center"
                 sx={{ my: 1 }}
             >
                 <Typography variant="h6">
@@ -306,34 +308,33 @@ function InterviewTraining() {
                 {/* Button on the right */}
                 <Box>
                     {!is_TaiGer_role(user) &&
-                        interviewTrainingState
-                            .available_interview_request_programs?.length >
-                            0 && (
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleClick}
-                                sx={{ my: 1 }}
-                            >
-                                {t('Add', { ns: 'common' })}
-                            </Button>
-                        )}
-                    {is_TaiGer_role(user) && (
+                    interviewTrainingState.available_interview_request_programs
+                        ?.length > 0 ? (
                         <Button
-                            variant="contained"
                             color="primary"
                             onClick={handleClick}
                             sx={{ my: 1 }}
+                            variant="contained"
                         >
                             {t('Add', { ns: 'common' })}
                         </Button>
-                    )}
+                    ) : null}
+                    {is_TaiGer_role(user) ? (
+                        <Button
+                            color="primary"
+                            onClick={handleClick}
+                            sx={{ my: 1 }}
+                            variant="contained"
+                        >
+                            {t('Add', { ns: 'common' })}
+                        </Button>
+                    ) : null}
                 </Box>
             </Box>
 
-            <MuiDataGrid rows={rows} columns={memoizedColumns} />
+            <MuiDataGrid columns={memoizedColumns} rows={rows} />
         </Box>
     );
-}
+};
 
 export default InterviewTraining;

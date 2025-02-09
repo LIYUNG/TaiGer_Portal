@@ -3,8 +3,8 @@ import {
     Box,
     Breadcrumbs,
     Link,
-    SpeedDial,
-    SpeedDialAction,
+    // SpeedDial,
+    // SpeedDialAction,
     Typography
 } from '@mui/material';
 import { Link as LinkDom } from 'react-router-dom';
@@ -31,21 +31,21 @@ import { useAuth } from '../../components/AuthProvider';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import useStudents from '../../hooks/useStudents';
-import SpeedDialIcon from '@mui/material/SpeedDialIcon';
-import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
-import SaveIcon from '@mui/icons-material/Save';
-import PrintIcon from '@mui/icons-material/Print';
-import ShareIcon from '@mui/icons-material/Share';
+// import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+// import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
+// import SaveIcon from '@mui/icons-material/Save';
+// import PrintIcon from '@mui/icons-material/Print';
+// import ShareIcon from '@mui/icons-material/Share';
 import ExternalMainView from './ExternalDashboard/ExternalMainView';
 
-const actions = [
-    { icon: <FileCopyIcon />, name: 'Copy' },
-    { icon: <SaveIcon />, name: 'Save' },
-    { icon: <PrintIcon />, name: 'Print' },
-    { icon: <ShareIcon />, name: 'Share' }
-];
+// const actions = [
+//     { icon: <FileCopyIcon />, name: 'Copy' },
+//     { icon: <SaveIcon />, name: 'Save' },
+//     { icon: <PrintIcon />, name: 'Print' },
+//     { icon: <ShareIcon />, name: 'Share' }
+// ];
 
-function DashboardBody({ studentAndEssays }) {
+const DashboardBody = ({ studentAndEssays }) => {
     const { user } = useAuth();
     const {
         data: {
@@ -78,19 +78,19 @@ function DashboardBody({ studentAndEssays }) {
 
     return (
         <Box>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -98,62 +98,64 @@ function DashboardBody({ studentAndEssays }) {
                     {t('Dashboard', { ns: 'common' })}
                 </Typography>
             </Breadcrumbs>
-            {is_TaiGer_Admin(user) && (
+            {is_TaiGer_Admin(user) ? (
                 <AdminMainView
-                    students={students}
-                    submitUpdateAgentlist={submitUpdateAgentlist}
-                    submitUpdateEditorlist={submitUpdateEditorlist}
-                    submitUpdateAttributeslist={submitUpdateAttributeslist}
-                    essayDocumentThreads={essayDocumentThreads}
                     auditLog={auditLog}
-                />
-            )}
-            {is_TaiGer_Manager(user) && (
-                <ManagerMainView
+                    essayDocumentThreads={essayDocumentThreads}
                     students={students}
-                    notification={notification}
-                    submitUpdateAgentlist={submitUpdateAgentlist}
-                    updateStudentArchivStatus={updateStudentArchivStatus}
-                    onUpdateProfileFilefromstudent={
-                        onUpdateProfileFilefromstudent
-                    }
-                />
-            )}
-            {is_TaiGer_Agent(user) && (
-                <AgentMainView
-                    students={students}
-                    notification={notification}
                     submitUpdateAgentlist={submitUpdateAgentlist}
                     submitUpdateAttributeslist={submitUpdateAttributeslist}
+                    submitUpdateEditorlist={submitUpdateEditorlist}
+                />
+            ) : null}
+            {is_TaiGer_Manager(user) ? (
+                <ManagerMainView
+                    notification={notification}
                     onUpdateProfileFilefromstudent={
                         onUpdateProfileFilefromstudent
                     }
+                    students={students}
+                    submitUpdateAgentlist={submitUpdateAgentlist}
+                    updateStudentArchivStatus={updateStudentArchivStatus}
                 />
-            )}
-            {is_TaiGer_Editor(user) && (
+            ) : null}
+            {is_TaiGer_Agent(user) ? (
+                <AgentMainView
+                    notification={notification}
+                    onUpdateProfileFilefromstudent={
+                        onUpdateProfileFilefromstudent
+                    }
+                    students={students}
+                    submitUpdateAgentlist={submitUpdateAgentlist}
+                    submitUpdateAttributeslist={submitUpdateAttributeslist}
+                />
+            ) : null}
+            {is_TaiGer_Editor(user) ? (
                 <EditorMainView
-                    students={students}
-                    updateStudentArchivStatus={updateStudentArchivStatus}
-                    submitUpdateEditorlist={submitUpdateEditorlist}
                     essayDocumentThreads={essayDocumentThreads}
+                    students={students}
+                    submitUpdateEditorlist={submitUpdateEditorlist}
+                    updateStudentArchivStatus={updateStudentArchivStatus}
                 />
-            )}
-            {is_TaiGer_External(user) && (
+            ) : null}
+            {is_TaiGer_External(user) ? (
                 <ExternalMainView
-                    students={students}
-                    updateStudentArchivStatus={updateStudentArchivStatus}
-                    submitUpdateEditorlist={submitUpdateEditorlist}
                     essayDocumentThreads={essayDocumentThreads}
+                    students={students}
+                    submitUpdateEditorlist={submitUpdateEditorlist}
+                    updateStudentArchivStatus={updateStudentArchivStatus}
                 />
-            )}
-            {is_TaiGer_Student(user) && (
+            ) : null}
+            {is_TaiGer_Student(user) ? (
                 <StudentDashboard
                     isCoursesFilled={isCoursesFilled}
                     student={students[0]}
                 />
-            )}
-            {is_TaiGer_Guest(user) && <GuestDashboard students={students} />}
-            {false && (
+            ) : null}
+            {is_TaiGer_Guest(user) ? (
+                <GuestDashboard students={students} />
+            ) : null}
+            {/* {false ? (
                 <Box sx={{ position: 'fixed', bottom: 16, right: 16 }}>
                     <SpeedDial
                         ariaLabel="SpeedDial basic example"
@@ -161,16 +163,16 @@ function DashboardBody({ studentAndEssays }) {
                     >
                         {actions.map((action) => (
                             <SpeedDialAction
-                                key={action.name}
                                 icon={action.icon}
+                                key={action.name}
                                 tooltipTitle={action.name}
                             />
                         ))}
                     </SpeedDial>
                 </Box>
-            )}
+            ) : null} */}
         </Box>
     );
-}
+};
 
 export default DashboardBody;

@@ -9,7 +9,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import ProgramReportCard from '../../Program/ProgramReportCard';
 
-function ExternalMainView(props) {
+const ExternalMainView = (props) => {
     const { t } = useTranslation();
 
     const open_tasks_arr = open_tasks_with_editors(props.students);
@@ -32,22 +32,20 @@ function ExternalMainView(props) {
     });
 
     return (
-        <>
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={3}>
-                    <Card sx={{ p: 2 }}>
-                        <Typography>External Dashboard</Typography>
-                        <Typography variant="h6">
-                            {t('Coming soon', { ns: 'common' })}
-                        </Typography>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={3}>
-                    <ProgramReportCard />
-                </Grid>
+        <Grid container spacing={2}>
+            <Grid item md={3} xs={12}>
+                <Card sx={{ p: 2 }}>
+                    <Typography>External Dashboard</Typography>
+                    <Typography variant="h6">
+                        {t('Coming soon', { ns: 'common' })}
+                    </Typography>
+                </Card>
             </Grid>
-        </>
+            <Grid item sm={3} xs={12}>
+                <ProgramReportCard />
+            </Grid>
+        </Grid>
     );
-}
+};
 
 export default ExternalMainView;

@@ -9,7 +9,7 @@ import { appConfig } from '../../../config';
 import DEMO from '../../../store/constant';
 import { useTranslation } from 'react-i18next';
 
-function CourseKeywords() {
+const CourseKeywords = () => {
     const { courseKeywordSets } = useLoaderData();
     const { t } = useTranslation();
 
@@ -19,26 +19,26 @@ function CourseKeywords() {
         <Box data-testid="course-keywords-component">
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.PROGRAMS}`}
+                    underline="hover"
                 >
                     {t('Program List', { ns: 'common' })}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.PROGRAM_ANALYSIS}`}
+                    underline="hover"
                 >
                     {t('Program Requirements', { ns: 'common' })}
                 </Link>
@@ -57,6 +57,6 @@ function CourseKeywords() {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default CourseKeywords;

@@ -16,7 +16,7 @@ import { anyStudentWithoutApplicationSelection } from '../../../Utils/checking-f
 import NoProgramStudentTask from '../../MainViewTab/AgentTasks/NoProgramStudentTask';
 import { useAuth } from '../../../../components/AuthProvider';
 
-function NoProgramStudentTable(props) {
+const NoProgramStudentTable = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
 
@@ -36,7 +36,7 @@ function NoProgramStudentTable(props) {
                 )
             )
         ) && (
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item md={4} sm={6} xs={12}>
                 <Card sx={{ mb: 2 }}>
                     <Alert severity="error">
                         <Typography>
@@ -61,6 +61,6 @@ function NoProgramStudentTable(props) {
             </Grid>
         )
     );
-}
+};
 
 export default NoProgramStudentTable;

@@ -50,21 +50,21 @@ const StudentDetailModal = ({
 }) => (
     <Menu
         anchorEl={anchorStudentDetailEl}
-        id={dropdownId}
-        open={open}
-        onClose={handleStudentDetailModalClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+        id={dropdownId}
+        onClose={handleStudentDetailModalClose}
+        open={open}
         sx={{
             filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
             height: window.innerHeight
         }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
     >
         <ListItem sx={{ py: 1 }}>
             <Box
+                alignItems="center"
                 display="flex"
                 justifyContent="space-between"
-                alignItems="center"
             >
                 <Box>
                     <FetchStudentLayer studentId={student_id} />
@@ -83,11 +83,11 @@ const AgentsEditorsModal = ({
 }) => (
     <Menu
         anchorEl={anchorAgentsEditorsEl}
-        id={agentsEditorsDropdownId}
-        open={open}
-        onClose={handleAgentsEditorsStudentDetailModalClose}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 60 }}
+        id={agentsEditorsDropdownId}
+        onClose={handleAgentsEditorsStudentDetailModalClose}
+        open={open}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
     >
         {student?.agents?.map((agent) => (
             <MenuItem key={agent._id}>
@@ -117,11 +117,11 @@ const LastLoginTime = ({ date }) => {
 
     return (
         <Typography
-            variant="body2"
             color="text.secondary"
             onClick={() => setView(!view)}
-            title={t('Last Login', { ns: 'auth' })}
             sx={{ ml: 1 }}
+            title={t('Last Login', { ns: 'auth' })}
+            variant="body2"
         >
             {view ? (
                 <LastLoginAbsoluteTime date={date} />
@@ -132,7 +132,7 @@ const LastLoginTime = ({ date }) => {
     );
 };
 
-function CommunicationExpandPage() {
+const CommunicationExpandPage = () => {
     const { student_id } = useParams();
     const { user } = useAuth();
     const { t } = useTranslation();
@@ -231,32 +231,30 @@ function CommunicationExpandPage() {
                             display: 'flex'
                         }}
                     >
-                        {ismobile && (
+                        {ismobile ? (
                             <IconButton
-                                color="inherit"
                                 aria-label="open drawer"
-                                style={{ marginLeft: '4px' }}
-                                onClick={(e) => handleDrawerClose(e)}
+                                color="inherit"
                                 edge="start"
+                                onClick={(e) => handleDrawerClose(e)}
+                                style={{ marginLeft: '4px' }}
                             >
                                 <ArrowBackIcon />
                             </IconButton>
-                        )}
-                        <Avatar
-                            {...stringAvatar(student_name_english)}
-                        ></Avatar>
+                        ) : null}
+                        <Avatar {...stringAvatar(student_name_english)} />
                         <Box>
                             <Link
+                                component={LinkDom}
                                 to={DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                     student_id,
                                     DEMO.PROFILE_HASH
                                 )}
-                                component={LinkDom}
                             >
                                 <Typography
-                                    variant="body1"
                                     fontWeight="bold"
                                     sx={{ ml: 1 }}
+                                    variant="body1"
                                 >
                                     {truncateText(student_name_english, 24)}
                                 </Typography>
@@ -267,19 +265,19 @@ function CommunicationExpandPage() {
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ mr: 2, md: 'flex' }}>
                         <Stack
+                            alignItems="center"
                             direction="row"
                             justifyContent="flex-end"
-                            alignItems="center"
                             spacing={1}
                         >
                             <Tooltip
                                 title={t('Agents Editors', { ns: 'common' })}
                             >
                                 <IconButton
-                                    color="inherit"
-                                    aria-label="open-more-1"
                                     aria-controls={agentsEditorsDropdownId}
                                     aria-haspopup="true"
+                                    aria-label="open-more-1"
+                                    color="inherit"
                                     edge="end"
                                     onClick={handleAgentsEditorsModalOpen}
                                 >
@@ -290,13 +288,13 @@ function CommunicationExpandPage() {
                                 title={t('Export messages', { ns: 'common' })}
                             >
                                 <IconButton
-                                    color="inherit"
-                                    aria-label="open-more"
                                     aria-controls={dropdownId}
                                     aria-haspopup="true"
-                                    onClick={handleExportMessages}
-                                    edge="end"
+                                    aria-label="open-more"
+                                    color="inherit"
                                     disabled={isExportingMessageDisabled}
+                                    edge="end"
+                                    onClick={handleExportMessages}
                                 >
                                     {isExportingMessageDisabled ? (
                                         <CircularProgress size={16} />
@@ -307,12 +305,12 @@ function CommunicationExpandPage() {
                             </Tooltip>
                             <Tooltip title={t('More', { ns: 'common' })}>
                                 <IconButton
-                                    color="inherit"
-                                    aria-label="open-more"
                                     aria-controls={dropdownId}
                                     aria-haspopup="true"
-                                    onClick={handleStudentDetailModalOpen}
+                                    aria-label="open-more"
+                                    color="inherit"
                                     edge="end"
+                                    onClick={handleStudentDetailModalOpen}
                                 >
                                     <MoreVertIcon />
                                 </IconButton>
@@ -320,13 +318,13 @@ function CommunicationExpandPage() {
                         </Stack>
                     </Box>
                     <AgentsEditorsModal
-                        open={isAgentsEditorsModalOpen}
-                        student={student}
                         agentsEditorsDropdownId={agentsEditorsDropdownId}
                         anchorAgentsEditorsEl={isAgentsEditorsModalOpen}
                         handleAgentsEditorsStudentDetailModalClose={
                             handleAgentsEditorsModalClose
                         }
+                        open={isAgentsEditorsModalOpen}
+                        student={student}
                     />
                 </Box>
             )
@@ -362,13 +360,13 @@ function CommunicationExpandPage() {
             <Grid container spacing={0}>
                 <Grid
                     item
-                    xs={12} // Full width on extra small screens
                     md="auto" // Let it auto-size on medium screens and up
                     sx={{
                         maxHeight: `calc(100vh - ${APP_BAR_HEIGHT}px)`,
                         overflowY: 'auto',
                         display: { xs: 'none', md: 'flex' }
                     }}
+                    xs={12} // Full width on extra small screens
                 >
                     <Box
                         sx={{
@@ -378,9 +376,11 @@ function CommunicationExpandPage() {
                         <EmbeddedChatList student_id={student_id} />
                     </Box>
                 </Grid>
-                <Grid item xs={12} md>
-                    {ismobile && (
+                <Grid item md xs={12}>
+                    {ismobile ? (
                         <Drawer
+                            anchor="right"
+                            open={open}
                             sx={{
                                 flexShrink: 0,
                                 '& .MuiDrawer-paper': {
@@ -388,34 +388,32 @@ function CommunicationExpandPage() {
                                     maxWidth: '100vw'
                                 }
                             }}
-                            open={open}
                             variant="temporary"
-                            anchor="right"
                         >
                             <TopBar />
-                            {student_id &&
-                                (isLoading ? (
+                            {student_id ? (
+                                isLoading ? (
                                     <Loading />
                                 ) : (
                                     <Box
+                                        ref={scrollableRef}
                                         sx={{
                                             height: `calc(100vh - ${APP_BAR_HEIGHT - 8}px)`, // Subtract header
                                             overflowY: 'auto'
                                         }}
-                                        ref={scrollableRef}
                                     >
                                         <CommunicationExpandPageMessagesComponent
-                                            student={student}
                                             data={thread}
+                                            student={student}
                                             student_id={student_id}
                                         />
                                     </Box>
-                                ))}
+                                )
+                            ) : null}
                         </Drawer>
-                    )}
-                    {!ismobile &&
-                        student_id &&
-                        (isLoading ? (
+                    ) : null}
+                    {!ismobile && student_id ? (
+                        isLoading ? (
                             <Box
                                 sx={{
                                     display: 'flex',
@@ -430,49 +428,50 @@ function CommunicationExpandPage() {
                             <Box>
                                 <TopBar />
                                 <Box
+                                    ref={scrollableRef}
                                     style={{
                                         height: `calc(100vh - ${APP_BAR_HEIGHT + 60}px)`, // Subtract header
                                         overflowY:
                                             'auto' /* Enable vertical scrolling */
                                     }}
-                                    ref={scrollableRef}
                                 >
                                     <CommunicationExpandPageMessagesComponent
-                                        student={student}
                                         data={thread}
+                                        student={student}
                                         student_id={student_id}
                                     />
                                 </Box>
                             </Box>
-                        ))}
-                    {!student_id && <Typography>Empty</Typography>}
-                    {ismobile && (
+                        )
+                    ) : null}
+                    {!student_id ? <Typography>Empty</Typography> : null}
+                    {ismobile ? (
                         <Box
+                            onClick={(e) => handleDrawerOpen(e)}
                             sx={{
                                 display: { md: 'flex' },
                                 maxHeight: `calc(100vh - ${APP_BAR_HEIGHT}px)`,
                                 overflow: 'auto' // Prevent parent scroll
                             }}
-                            onClick={(e) => handleDrawerOpen(e)}
                         >
                             <EmbeddedChatList student_id={student_id} />
                         </Box>
-                    )}
+                    ) : null}
                 </Grid>
                 <Box sx={{ marginLeft: 0 }}>
                     <MemorizedStudentDetailModal
-                        open={isStudentDetailModalOpen}
                         anchorStudentDetailEl={anchorStudentDetailEl}
                         dropdownId={dropdownId}
                         handleStudentDetailModalClose={
                             handleStudentDetailModalClose
                         }
+                        open={isStudentDetailModalOpen}
                         student_id={student_id}
                     />
                 </Box>
             </Grid>
         </Box>
     );
-}
+};
 
 export default CommunicationExpandPage;

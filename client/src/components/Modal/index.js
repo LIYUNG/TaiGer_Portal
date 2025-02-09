@@ -4,10 +4,10 @@ import { Box, Modal } from '@mui/material';
 export default function ModalNew(props) {
     return (
         <Modal
-            open={props.open}
-            onClose={props.onClose}
-            size={props.size}
             aria-labelledby="contained-modal-title-vcenter"
+            onClose={props.onClose}
+            open={props.open}
+            size={props.size}
             style={{
                 display: 'flex',
                 alignItems: 'center',

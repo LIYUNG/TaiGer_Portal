@@ -58,14 +58,14 @@ const PDFViewer = (apiFilePath, path) => {
             ) : (
                 <>
                     <Box
+                        onScroll={handleScroll}
                         ref={containerRef}
                         style={{ height: '60vh', overflow: 'auto' }}
-                        onScroll={handleScroll}
                     >
                         <Document
                             file={pdfData}
-                            onLoadSuccess={onDocumentLoadSuccess}
                             onLoadError={console.error}
+                            onLoadSuccess={onDocumentLoadSuccess}
                         >
                             {Array.from(new Array(numPages), (el, index) => (
                                 <Page
@@ -84,23 +84,23 @@ const PDFViewer = (apiFilePath, path) => {
                         </Typography>
                         <Box>
                             <Button
-                                size="small"
-                                variant="outlined"
                                 onClick={handleZoomIn}
+                                size="small"
                                 startIcon={<ZoomInIcon />}
-                            ></Button>
-                            <Button
-                                size="small"
                                 variant="outlined"
+                            />
+                            <Button
                                 onClick={handleZoomOut}
-                                startIcon={<ZoomOutIcon />}
-                            ></Button>
-                            <Button
                                 size="small"
+                                startIcon={<ZoomOutIcon />}
                                 variant="outlined"
+                            />
+                            <Button
                                 onClick={handleDownload}
+                                size="small"
                                 startIcon={<DownloadIcon />}
-                            ></Button>
+                                variant="outlined"
+                            />
                         </Box>
                     </Box>
                 </>

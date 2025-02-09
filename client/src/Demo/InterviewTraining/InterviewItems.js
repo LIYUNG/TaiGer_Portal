@@ -47,7 +47,7 @@ import {
 } from '../../utils/contants';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 
-function InterviewItems(props) {
+const InterviewItems = (props) => {
     const { t } = useTranslation();
     const [isCollapse, setIsCollapse] = useState(props.expanded);
     const [showModal, setShowModal] = useState(false);
@@ -260,14 +260,14 @@ function InterviewItems(props) {
 
     return (
         <>
-            <Accordion expanded={isCollapse} disableGutters>
+            <Accordion disableGutters expanded={isCollapse}>
                 <AccordionSummary onClick={handleToggle}>
                     <Typography variant="body1">
                         {interviewStatus(interview)}
                         &nbsp;
                         {interview.status}
                         &nbsp;
-                        {props.interview.event_id?.start && (
+                        {props.interview.event_id?.start ? (
                             <>
                                 {`${convertDate(utcTime)} ${NoonNightLabel(utcTime)} ${
                                     Intl.DateTimeFormat().resolvedOptions()
@@ -276,46 +276,46 @@ function InterviewItems(props) {
                                 {showTimezoneOffset()}
                                 &nbsp;
                             </>
-                        )}
+                        ) : null}
                         <b>{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</b>
                     </Typography>
                     <span style={{ float: 'right', cursor: 'pointer' }}>
-                        {is_TaiGer_role(user) && (
+                        {is_TaiGer_role(user) ? (
                             <Button
                                 color="error"
-                                variant="contained"
-                                size="small"
-                                title="Delete"
                                 onClick={(e) =>
                                     props.openDeleteDocModalWindow(e, interview)
                                 }
+                                size="small"
                                 startIcon={<DeleteIcon />}
+                                title="Delete"
+                                variant="contained"
                             >
                                 {t('Delete', { ns: 'common' })}
                             </Button>
-                        )}
+                        ) : null}
                     </span>
                 </AccordionSummary>
                 <AccordionDetails>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={4}>
-                            <Typography variant="body1" fontWeight="bold">
+                        <Grid item md={4} xs={12}>
+                            <Typography fontWeight="bold" variant="body1">
                                 {t('Student', { ns: 'common' })}:{' '}
                             </Typography>
                             <Link
-                                underline="hover"
+                                component={LinkDom}
                                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                     interview.student_id._id.toString(),
                                     DEMO.PROFILE_HASH
                                 )}`}
-                                component={LinkDom}
+                                underline="hover"
                             >
                                 <Typography fontWeight="bold">{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</Typography>
                             </Link>
                             <Typography
-                                variant="body1"
                                 fontWeight="bold"
                                 sx={{ mt: 2 }}
+                                variant="body1"
                             >
                                 {t('Trainer')}
                             </Typography>{' '}
@@ -337,83 +337,81 @@ function InterviewItems(props) {
                                             />
                                         </Box>
                                     ))}
-                                    {is_TaiGer_role(user) &&
-                                        !props.readOnly && (
-                                            <Button
-                                                color="secondary"
-                                                variant="contained"
-                                                size="small"
-                                                onClick={openModal}
-                                            >
-                                                {t('Change Trainer')}
-                                            </Button>
-                                        )}
+                                    {is_TaiGer_role(user) && !props.readOnly ? (
+                                        <Button
+                                            color="secondary"
+                                            onClick={openModal}
+                                            size="small"
+                                            variant="contained"
+                                        >
+                                            {t('Change Trainer')}
+                                        </Button>
+                                    ) : null}
                                 </>
                             ) : (
                                 <>
                                     <Typography>
                                         {t('No Trainer Assigned')}
                                     </Typography>
-                                    {is_TaiGer_role(user) &&
-                                        !props.readOnly && (
-                                            <Button
-                                                color="primary"
-                                                variant="contained"
-                                                size="small"
-                                                onClick={openModal}
-                                            >
-                                                {t('Assign Trainer')}
-                                            </Button>
-                                        )}
+                                    {is_TaiGer_role(user) && !props.readOnly ? (
+                                        <Button
+                                            color="primary"
+                                            onClick={openModal}
+                                            size="small"
+                                            variant="contained"
+                                        >
+                                            {t('Assign Trainer')}
+                                        </Button>
+                                    ) : null}
                                 </>
                             )}
                             <Typography
-                                variant="body1"
                                 fontWeight="bold"
                                 sx={{ mt: 2 }}
+                                variant="body1"
                             >
                                 {t('Interview Training Time', {
                                     ns: 'interviews'
                                 })}
                                 :&nbsp;
                             </Typography>
-                            {is_TaiGer_role(user) && (
+                            {is_TaiGer_role(user) ? (
                                 <>
                                     {interview.trainer_id?.length !== 0 ? (
                                         <>
                                             <TimezoneSelect
-                                                value={timezone}
                                                 displayValue="UTC"
+                                                isDisabled={true}
                                                 onChange={(e) =>
                                                     setTimezone(e.value)
                                                 }
-                                                isDisabled={true}
+                                                value={timezone}
                                             />
                                             <LocalizationProvider
                                                 dateAdapter={AdapterDayjs}
                                             >
                                                 <DesktopDateTimePicker
-                                                    value={utcTime}
                                                     onChange={(newValue) =>
                                                         handleChangeInterviewTrainingTime(
                                                             newValue
                                                         )
                                                     }
+                                                    value={utcTime}
                                                 />
                                             </LocalizationProvider>
                                             <Button
-                                                fullWidth
-                                                variant="contained"
                                                 color="primary"
                                                 disabled={
                                                     !interviewTrainingTimeChange
                                                 }
-                                                sx={{ mt: 1 }}
+                                                fullWidth
                                                 onClick={(e) =>
                                                     handleSendInterviewInvitation(
                                                         e
                                                     )
                                                 }
+                                                sx={{ mt: 1 }}
+                                                variant="contained"
                                             >
                                                 {t('Send Invitation')}
                                             </Button>
@@ -426,9 +424,9 @@ function InterviewItems(props) {
                                         </>
                                     )}
                                 </>
-                            )}
-                            {!is_TaiGer_role(user) &&
-                                (props.interview.event_id?.start ? (
+                            ) : null}
+                            {!is_TaiGer_role(user) ? (
+                                props.interview.event_id?.start ? (
                                     <Typography>
                                         {`${convertDate(utcTime)} ${NoonNightLabel(utcTime)} ${
                                             Intl.DateTimeFormat().resolvedOptions()
@@ -440,11 +438,12 @@ function InterviewItems(props) {
                                     <Typography variant="body1">
                                         To be announced
                                     </Typography>
-                                ))}
+                                )
+                            ) : null}
                             <Typography
-                                variant="body1"
                                 fontWeight="bold"
                                 sx={{ mt: 2 }}
+                                variant="body1"
                             >
                                 {t('Interview Training Meeting Link', {
                                     ns: 'interviews'
@@ -453,10 +452,10 @@ function InterviewItems(props) {
                             </Typography>
                             {props.interview.event_id ? (
                                 <Link
-                                    underline="hover"
-                                    to={props.interview.event_id.meetingLink}
                                     component={LinkDom}
                                     target="_blank"
+                                    to={props.interview.event_id.meetingLink}
+                                    underline="hover"
                                 >
                                     {props.interview.event_id.meetingLink}
                                 </Link>
@@ -466,9 +465,9 @@ function InterviewItems(props) {
                                 </Typography>
                             )}
                             <Typography
-                                variant="body1"
                                 fontWeight="bold"
                                 sx={{ mt: 2 }}
+                                variant="body1"
                             >
                                 {t('Interview Training Survey', {
                                     ns: 'interviews'
@@ -476,70 +475,70 @@ function InterviewItems(props) {
                                 :&nbsp;
                             </Typography>
                             <Button
-                                fullWidth
                                 color="primary"
-                                variant="contained"
-                                size="small"
                                 disabled={isInTheFuture(
                                     props.interview.interview_date
                                 )}
+                                fullWidth
                                 onClick={onClickToInterviewSurveyHandler}
+                                size="small"
+                                variant="contained"
                             >
                                 {t('Survey', { ns: 'common' })}
                             </Button>
                         </Grid>
-                        <Grid item xs={12} md={8}>
-                            <Typography variant="body1" fontWeight="bold">
+                        <Grid item md={8} xs={12}>
+                            <Typography fontWeight="bold" variant="body1">
                                 {t('Interview Program')}:&nbsp;
                             </Typography>
                             <Link
-                                underline="hover"
+                                component={LinkDom}
+                                target="_blank"
                                 to={`${DEMO.SINGLE_PROGRAM_LINK(
                                     interview.program_id._id.toString()
                                 )}`}
-                                component={LinkDom}
-                                target="_blank"
+                                underline="hover"
                             >
                                 {`${interview.program_id.school} - ${interview.program_id.program_name} ${interview.program_id.degree}`}
                             </Link>
-                            {is_TaiGer_role(user) && (
+                            {is_TaiGer_role(user) ? (
                                 <Typography variant="body1">
                                     {t('Previous questions records:')}&nbsp;
                                     <Button size="small" variant="outlined">
                                         {props.questionsNum}
                                     </Button>
                                 </Typography>
-                            )}
+                            ) : null}
                             <Typography
-                                variant="body1"
                                 fontWeight="bold"
                                 sx={{ mt: 2 }}
+                                variant="body1"
                             >
                                 {t('Interviewer', { ns: 'interviews' })}:&nbsp;
                             </Typography>
                             <Typography variant="body1">
                                 <TextField
-                                    name="interviewer"
-                                    size="small"
-                                    type="text"
-                                    required
                                     fullWidth
                                     id="interviewer"
+                                    name="interviewer"
+                                    onChange={(e) =>
+                                        handleChange_UpdateInterview(e)
+                                    }
+                                    required
+                                    size="small"
+                                    type="text"
+                                    value={interview.interviewer}
                                     placeholder="Prof. Sebastian"
                                     // label={`${t('Interviewer', { ns: 'interviews' })}`}
                                     InputLabelProps={{
                                         shrink: true
                                     }}
-                                    value={interview.interviewer}
-                                    onChange={(e) =>
-                                        handleChange_UpdateInterview(e)
-                                    }
                                 />
                             </Typography>
                             <Typography
-                                variant="body1"
                                 fontWeight="bold"
                                 sx={{ mt: 2 }}
+                                variant="body1"
                             >
                                 {t('Interview Time')} (
                                 {t('Your timezone local time')}{' '}
@@ -551,13 +550,8 @@ function InterviewItems(props) {
                             </Typography>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DesktopDateTimePicker
-                                    size="small"
-                                    required
                                     fullWidth
                                     id="interview_date"
-                                    value={dayjs(
-                                        interview.interview_date || ''
-                                    )}
                                     onChange={(newValue) => {
                                         const interviewData_temp = {
                                             ...interview
@@ -567,58 +561,63 @@ function InterviewItems(props) {
                                         setButtonDisabled(false);
                                         setiInterview(interviewData_temp);
                                     }}
+                                    required
+                                    size="small"
+                                    value={dayjs(
+                                        interview.interview_date || ''
+                                    )}
                                 />
                             </LocalizationProvider>
                             <Typography
-                                variant="body1"
                                 fontWeight="bold"
                                 sx={{ mt: 2 }}
+                                variant="body1"
                             >
                                 {t('Description', { ns: 'common' })}
                             </Typography>{' '}
                             <NotesEditor
-                                thread={null}
-                                notes_id={`${props.interview._id.toString()}-description`}
                                 buttonDisabled={buttonDisabled}
                                 editorState={interview.interview_description}
-                                unique_id={`${props.interview._id.toString()}-description`}
                                 handleClickSave={handleClickSave}
                                 handleEditorChange={handleEditorChange}
+                                notes_id={`${props.interview._id.toString()}-description`}
                                 readOnly={props.readOnly}
+                                thread={null}
+                                unique_id={`${props.interview._id.toString()}-description`}
                             />
                         </Grid>
                     </Grid>
                 </AccordionDetails>
             </Accordion>
             <Dialog
-                open={showModal}
-                size="small"
                 centered
                 onClose={toggleModal}
+                open={showModal}
+                size="small"
             >
                 <DialogTitle>{t('Assign Trainer')}</DialogTitle>
                 <DialogContent>
                     <List>
                         {editors?.map((editor, i) => (
                             <ListItemButton
+                                dense
                                 key={i}
-                                role={undefined}
                                 onClick={() =>
                                     modifyTrainer(
                                         editor._id.toString(),
                                         trainerId.has(editor._id.toString())
                                     )
                                 }
-                                dense
+                                role={undefined}
                             >
                                 <ListItemIcon>
                                     <Checkbox
-                                        edge="start"
                                         checked={trainerId.has(
                                             editor._id.toString()
                                         )}
-                                        tabIndex={-1}
                                         disableRipple
+                                        edge="start"
+                                        tabIndex={-1}
                                     />
                                 </ListItemIcon>
                                 <ListItemText
@@ -631,29 +630,29 @@ function InterviewItems(props) {
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         onClick={updateTrainer}
+                        variant="contained"
                     >
                         {t('Assign', { ns: 'common' })}
                     </Button>
                     <Button
                         color="secondary"
-                        variant="contained"
                         onClick={toggleModal}
+                        variant="contained"
                     >
                         {t('Close', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>
-            {interviewItemsState.res_modal_status >= 400 && (
+            {interviewItemsState.res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={interviewItemsState.res_modal_status}
                     res_modal_message={interviewItemsState.res_modal_message}
+                    res_modal_status={interviewItemsState.res_modal_status}
                 />
-            )}
+            ) : null}
         </>
     );
-}
+};
 
 export default InterviewItems;

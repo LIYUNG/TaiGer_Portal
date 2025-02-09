@@ -64,9 +64,9 @@ export const AllCoursesTable = ({ isLoading, data }) => {
 
     table.options.renderTopToolbar = (
         <TopToolbar
+            onDeleteClick={onDeleteClick}
             table={table}
             toolbarStyle={customTableStyles.toolbarStyle}
-            onDeleteClick={onDeleteClick}
         />
     );
 
@@ -74,8 +74,6 @@ export const AllCoursesTable = ({ isLoading, data }) => {
         <>
             <MaterialReactTable table={table} />
             <DeleteCourseDialog
-                open={openDeleteDialog}
-                onClose={handleDialogClose}
                 courses={table
                     .getSelectedRowModel()
                     .rows?.map(
@@ -92,6 +90,8 @@ export const AllCoursesTable = ({ isLoading, data }) => {
                         })
                     )}
                 handleOnSuccess={handleOnSuccess}
+                onClose={handleDialogClose}
+                open={openDeleteDialog}
             />
         </>
     );

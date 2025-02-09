@@ -186,427 +186,400 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
         JSON.stringify(program) === '{}';
 
     return (
-        <>
-            <form onSubmit={onSubmitHandler}>
-                <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{ my: 1 }}
-                >
-                    <Typography variant="h6">
-                        {requirementId
-                            ? t('Update program analysis', { ns: 'common' })
-                            : t('Create new program analysis', {
-                                  ns: 'common'
-                              })}
-                    </Typography>
-                    <Box>
-                        <Button
-                            variant="outlined"
-                            component={LinkDom}
-                            to={`${DEMO.KEYWORDS_EDIT}`}
-                            color="primary"
-                            target="_blank"
-                            sx={{ mr: 2 }}
-                        >
-                            {t('Edit Keywords', { ns: 'common' })}
-                        </Button>
-                    </Box>
-                </Box>
-                <Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                        <Autocomplete
-                            label={t('Add Keyword Set', { ns: 'common' })}
-                            value={program}
-                            disabled={requirementId ? true : false}
-                            variant="outlined"
-                            options={distinctPrograms || []}
-                            getOptionLabel={(option) =>
-                                `${option.school} ${option.program_name} ${option.degree}`
-                            }
-                            onChange={(e, newValue) =>
-                                handleAddProgram(newValue)
-                            } // `newValue` will be the selected object
-                            filterOptions={filterOptions}
-                            fullWidth
-                            renderInput={(params) => (
-                                <TextField {...params} label="Program" />
-                            )}
-                            size="small"
-                        />
-                    </Box>
-                    <Box>
-                        <SearchableMultiSelect
-                            name="updateAttributesList"
-                            label={'Category'}
-                            data={PROGRAM_SUBJECTS_DETAILED}
-                            value={checkboxState?.updateAttributesList}
-                            setValue={handleChangeByField(
-                                'updateAttributesList'
-                            )}
-                            sx={{ mb: 2 }}
-                            size="small"
-                        />
-                    </Box>
-                    <Box>
-                        <SearchableMultiSelect
-                            name="firstRoundConsidered"
-                            label={'First Round Considered'}
-                            data={CONSIDRED_SCORES_DETAILED}
-                            value={checkboxState?.firstRoundConsidered}
-                            setValue={handleChangeByField(
-                                'firstRoundConsidered'
-                            )}
-                            sx={{ mb: 2 }}
-                            size="small"
-                        />
-                    </Box>
-                    <Box>
-                        <SearchableMultiSelect
-                            name="secondRoundConsidered"
-                            label={'Second Round Considered'}
-                            data={CONSIDRED_SCORES_DETAILED}
-                            value={checkboxState?.secondRoundConsidered}
-                            setValue={handleChangeByField(
-                                'secondRoundConsidered'
-                            )}
-                            sx={{ mb: 2 }}
-                            size="small"
-                        />
-                    </Box>
-                    <Box>
-                        <Grid container spacing={2}>
-                            {SCORES_TYPE.map((score) => (
-                                <Grid item xs={6} md={4} key={score.name}>
-                                    <TextField
-                                        label={score.label}
-                                        name={score.name}
-                                        type="number"
-                                        value={scores[score.name]}
-                                        onChange={(e) => handleScores(e)}
-                                        helperText={score.description}
-                                        variant="outlined"
-                                        fullWidth
-                                        id="categoryName"
-                                        size="small"
-                                    />
-                                </Grid>
-                            ))}
-                            <Grid item xs={12} md={12}>
-                                <TextField
-                                    label={FPSO.label}
-                                    name={FPSO.name}
-                                    value={fpso}
-                                    onChange={(e) => setFpso(e.target.value)}
-                                    helperText={FPSO.description}
-                                    variant="outlined"
-                                    fullWidth
-                                    size="small"
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={12}>
-                                <TextField
-                                    label={ADMISSION_DESCRIPTION.label}
-                                    name={ADMISSION_DESCRIPTION.name}
-                                    value={admissionDescription}
-                                    onChange={(e) =>
-                                        setAdmissionDescription(e.target.value)
-                                    }
-                                    helperText={
-                                        ADMISSION_DESCRIPTION.description
-                                    }
-                                    variant="outlined"
-                                    fullWidth
-                                    size="small"
-                                    multiline
-                                    minRows={3}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Box>
-                    <Box>
-                        {programCategories?.map((programCategory, index) => (
-                            <Card key={index} sx={{ p: 1, mb: 1 }}>
-                                <CardHeader
-                                    action={
-                                        <IconButton
-                                            aria-label="settings"
-                                            onClick={() =>
-                                                handleDeleteCategory(index)
-                                            }
-                                        >
-                                            <CloseIcon />
-                                        </IconButton>
-                                    }
-                                />
-                                <CardContent>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={12} md={4}>
-                                            <TextField
-                                                label="Category Name"
-                                                value={
-                                                    programCategory.program_category
-                                                }
-                                                onChange={(e) =>
-                                                    setProgramCategories(
-                                                        (prev) =>
-                                                            prev.map((pc, i) =>
-                                                                i === index
-                                                                    ? {
-                                                                          ...pc,
-                                                                          program_category:
-                                                                              e
-                                                                                  .target
-                                                                                  .value
-                                                                      }
-                                                                    : pc
-                                                            )
-                                                    )
-                                                }
-                                                error={
-                                                    programCategory.program_category ===
-                                                    ''
-                                                }
-                                                helperText={
-                                                    programCategory.program_category ===
-                                                        '' &&
-                                                    'Please name the course category specified by the program'
-                                                }
-                                                variant="outlined"
-                                                fullWidth
-                                                id="categoryName"
-                                                size="small"
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} md={4}>
-                                            <TextField
-                                                label="Required ECTS"
-                                                type="number"
-                                                value={
-                                                    programCategory.requiredECTS
-                                                }
-                                                onChange={(e) =>
-                                                    setProgramCategories(
-                                                        (prev) =>
-                                                            prev.map((pc, i) =>
-                                                                i === index
-                                                                    ? {
-                                                                          ...pc,
-                                                                          requiredECTS:
-                                                                              e
-                                                                                  .target
-                                                                                  .value
-                                                                      }
-                                                                    : pc
-                                                            )
-                                                    )
-                                                }
-                                                error={
-                                                    programCategory.requiredECTS <=
-                                                    0
-                                                }
-                                                helperText={
-                                                    programCategory.requiredECTS <=
-                                                        0 &&
-                                                    'ECTS should more than 0'
-                                                }
-                                                variant="outlined"
-                                                fullWidth
-                                                id="requiredECTS"
-                                                size="small"
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} md={4}>
-                                            <TextField
-                                                label="Points (if applicable)"
-                                                value={programCategory.maxScore}
-                                                onChange={(e) =>
-                                                    setProgramCategories(
-                                                        (prev) =>
-                                                            prev.map((pc, i) =>
-                                                                i === index
-                                                                    ? {
-                                                                          ...pc,
-                                                                          maxScore:
-                                                                              e
-                                                                                  .target
-                                                                                  .value
-                                                                      }
-                                                                    : pc
-                                                            )
-                                                    )
-                                                }
-                                                type="number"
-                                                // error={programCategory.maxScore === 0}
-                                                helperText={
-                                                    'Max. score for this category. (if programs publish entry requirement score like TUM)'
-                                                }
-                                                variant="outlined"
-                                                fullWidth
-                                                id="categoryName"
-                                                size="small"
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} md={12}>
-                                            <TextField
-                                                label="Category Description"
-                                                value={
-                                                    programCategory.category_description
-                                                }
-                                                onChange={(e) =>
-                                                    setProgramCategories(
-                                                        (prev) =>
-                                                            prev.map((pc, i) =>
-                                                                i === index
-                                                                    ? {
-                                                                          ...pc,
-                                                                          category_description:
-                                                                              e
-                                                                                  .target
-                                                                                  .value
-                                                                      }
-                                                                    : pc
-                                                            )
-                                                    )
-                                                }
-                                                variant="outlined"
-                                                fullWidth
-                                                id="category_description"
-                                                size="small"
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} md={12}>
-                                            <Box
-                                                sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    mb: 2
-                                                }}
-                                            >
-                                                <Autocomplete
-                                                    multiple
-                                                    variant="outlined"
-                                                    value={
-                                                        programCategory.keywordSets
-                                                    }
-                                                    getOptionLabel={(option) =>
-                                                        `${option.categoryName} ${option.keywords?.zh?.join(
-                                                            ', '
-                                                        )} ${option.keywords?.en?.join(', ')} `
-                                                    }
-                                                    options={keywordsets || []}
-                                                    disableCloseOnSelect
-                                                    isOptionEqualToValue={(
-                                                        option,
-                                                        value
-                                                    ) =>
-                                                        option._id === value._id
-                                                    }
-                                                    onChange={(e, newValue) =>
-                                                        handleAddKeywordSet(
-                                                            newValue,
-                                                            index
-                                                        )
-                                                    }
-                                                    filterOptions={
-                                                        filterKeywordOptions
-                                                    }
-                                                    fullWidth
-                                                    renderInput={(params) => (
-                                                        <TextField
-                                                            {...params}
-                                                            error={
-                                                                programCategories[
-                                                                    index
-                                                                ]?.keywordSets
-                                                                    ?.length <=
-                                                                0
-                                                            }
-                                                            helperText={
-                                                                programCategories[
-                                                                    index
-                                                                ]?.keywordSets
-                                                                    ?.length <=
-                                                                    0 &&
-                                                                'Please provide at least 1 keyword set'
-                                                            }
-                                                            label="With categories"
-                                                        />
-                                                    )}
-                                                    renderTags={(
-                                                        value,
-                                                        getTagProps
-                                                    ) =>
-                                                        value.map(
-                                                            (
-                                                                option,
-                                                                optionIndex
-                                                            ) => {
-                                                                const {
-                                                                    _id,
-                                                                    ...tagProps
-                                                                } = getTagProps(
-                                                                    {
-                                                                        index: optionIndex
-                                                                    }
-                                                                );
-                                                                return (
-                                                                    <Chip
-                                                                        key={
-                                                                            _id
-                                                                        }
-                                                                        variant="outlined"
-                                                                        label={
-                                                                            option.categoryName
-                                                                        }
-                                                                        {...tagProps}
-                                                                    />
-                                                                );
-                                                            }
-                                                        )
-                                                    }
-                                                    size="small"
-                                                />
-                                            </Box>
-                                        </Grid>
-                                    </Grid>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </Box>
-                </Box>
+        <form onSubmit={onSubmitHandler}>
+            <Box
+                alignItems="center"
+                display="flex"
+                justifyContent="space-between"
+                sx={{ my: 1 }}
+            >
+                <Typography variant="h6">
+                    {requirementId
+                        ? t('Update program analysis', { ns: 'common' })
+                        : t('Create new program analysis', {
+                              ns: 'common'
+                          })}
+                </Typography>
                 <Box>
                     <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={handleAddCategory}
-                    >
-                        {t('Add Category', { ns: 'common' })}
-                    </Button>
-                </Box>
-                <Box display="flex" justifyContent="flex-end" gap={2}>
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        as={LinkDom}
-                        to={DEMO.PROGRAM_ANALYSIS}
-                    >
-                        {t('Cancel', { ns: 'common' })}
-                    </Button>
-                    <Button
-                        variant="contained"
                         color="primary"
-                        type="submit"
-                        disabled={isSubmitDisabled}
+                        component={LinkDom}
+                        sx={{ mr: 2 }}
+                        target="_blank"
+                        to={`${DEMO.KEYWORDS_EDIT}`}
+                        variant="outlined"
                     >
-                        {requirementId
-                            ? t('Update', { ns: 'common' })
-                            : t('Create', { ns: 'common' })}
+                        {t('Edit Keywords', { ns: 'common' })}
                     </Button>
                 </Box>
-            </form>
-        </>
+            </Box>
+            <Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Autocomplete
+                        disabled={requirementId ? true : false}
+                        filterOptions={filterOptions}
+                        fullWidth
+                        getOptionLabel={(option) =>
+                            `${option.school} ${option.program_name} ${option.degree}`
+                        }
+                        label={t('Add Keyword Set', { ns: 'common' })}
+                        options={distinctPrograms || []}
+                        onChange={(e, newValue) => handleAddProgram(newValue)} // `newValue` will be the selected object
+                        renderInput={(params) => (
+                            <TextField {...params} label="Program" />
+                        )}
+                        size="small"
+                        value={program}
+                        variant="outlined"
+                    />
+                </Box>
+                <Box>
+                    <SearchableMultiSelect
+                        data={PROGRAM_SUBJECTS_DETAILED}
+                        label="Category"
+                        name="updateAttributesList"
+                        setValue={handleChangeByField('updateAttributesList')}
+                        size="small"
+                        sx={{ mb: 2 }}
+                        value={checkboxState?.updateAttributesList}
+                    />
+                </Box>
+                <Box>
+                    <SearchableMultiSelect
+                        data={CONSIDRED_SCORES_DETAILED}
+                        label="First Round Considered"
+                        name="firstRoundConsidered"
+                        setValue={handleChangeByField('firstRoundConsidered')}
+                        size="small"
+                        sx={{ mb: 2 }}
+                        value={checkboxState?.firstRoundConsidered}
+                    />
+                </Box>
+                <Box>
+                    <SearchableMultiSelect
+                        data={CONSIDRED_SCORES_DETAILED}
+                        label="Second Round Considered"
+                        name="secondRoundConsidered"
+                        setValue={handleChangeByField('secondRoundConsidered')}
+                        size="small"
+                        sx={{ mb: 2 }}
+                        value={checkboxState?.secondRoundConsidered}
+                    />
+                </Box>
+                <Box>
+                    <Grid container spacing={2}>
+                        {SCORES_TYPE.map((score) => (
+                            <Grid item key={score.name} md={4} xs={6}>
+                                <TextField
+                                    fullWidth
+                                    helperText={score.description}
+                                    id="categoryName"
+                                    label={score.label}
+                                    name={score.name}
+                                    onChange={(e) => handleScores(e)}
+                                    size="small"
+                                    type="number"
+                                    value={scores[score.name]}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                        ))}
+                        <Grid item md={12} xs={12}>
+                            <TextField
+                                fullWidth
+                                helperText={FPSO.description}
+                                label={FPSO.label}
+                                name={FPSO.name}
+                                onChange={(e) => setFpso(e.target.value)}
+                                size="small"
+                                value={fpso}
+                                variant="outlined"
+                            />
+                        </Grid>
+                        <Grid item md={12} xs={12}>
+                            <TextField
+                                fullWidth
+                                helperText={ADMISSION_DESCRIPTION.description}
+                                label={ADMISSION_DESCRIPTION.label}
+                                minRows={3}
+                                multiline
+                                name={ADMISSION_DESCRIPTION.name}
+                                onChange={(e) =>
+                                    setAdmissionDescription(e.target.value)
+                                }
+                                size="small"
+                                value={admissionDescription}
+                                variant="outlined"
+                            />
+                        </Grid>
+                    </Grid>
+                </Box>
+                <Box>
+                    {programCategories?.map((programCategory, index) => (
+                        <Card key={index} sx={{ p: 1, mb: 1 }}>
+                            <CardHeader
+                                action={
+                                    <IconButton
+                                        aria-label="settings"
+                                        onClick={() =>
+                                            handleDeleteCategory(index)
+                                        }
+                                    >
+                                        <CloseIcon />
+                                    </IconButton>
+                                }
+                            />
+                            <CardContent>
+                                <Grid container spacing={2}>
+                                    <Grid item md={4} xs={12}>
+                                        <TextField
+                                            error={
+                                                programCategory.program_category ===
+                                                ''
+                                            }
+                                            fullWidth
+                                            helperText={
+                                                programCategory.program_category ===
+                                                ''
+                                                    ? 'Please name the course category specified by the program'
+                                                    : null
+                                            }
+                                            id="categoryName"
+                                            label="Category Name"
+                                            onChange={(e) =>
+                                                setProgramCategories((prev) =>
+                                                    prev.map((pc, i) =>
+                                                        i === index
+                                                            ? {
+                                                                  ...pc,
+                                                                  program_category:
+                                                                      e.target
+                                                                          .value
+                                                              }
+                                                            : pc
+                                                    )
+                                                )
+                                            }
+                                            size="small"
+                                            value={
+                                                programCategory.program_category
+                                            }
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item md={4} xs={12}>
+                                        <TextField
+                                            error={
+                                                programCategory.requiredECTS <=
+                                                0
+                                            }
+                                            fullWidth
+                                            helperText={
+                                                programCategory.requiredECTS <=
+                                                0
+                                                    ? 'ECTS should more than 0'
+                                                    : null
+                                            }
+                                            id="requiredECTS"
+                                            label="Required ECTS"
+                                            onChange={(e) =>
+                                                setProgramCategories((prev) =>
+                                                    prev.map((pc, i) =>
+                                                        i === index
+                                                            ? {
+                                                                  ...pc,
+                                                                  requiredECTS:
+                                                                      e.target
+                                                                          .value
+                                                              }
+                                                            : pc
+                                                    )
+                                                )
+                                            }
+                                            size="small"
+                                            type="number"
+                                            value={programCategory.requiredECTS}
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item md={4} xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            id="categoryName"
+                                            label="Points (if applicable)"
+                                            onChange={(e) =>
+                                                setProgramCategories((prev) =>
+                                                    prev.map((pc, i) =>
+                                                        i === index
+                                                            ? {
+                                                                  ...pc,
+                                                                  maxScore:
+                                                                      e.target
+                                                                          .value
+                                                              }
+                                                            : pc
+                                                    )
+                                                )
+                                            }
+                                            size="small"
+                                            value={programCategory.maxScore}
+                                            variant="outlined"
+                                            type="number"
+                                            // error={programCategory.maxScore === 0}
+                                            helperText={
+                                                'Max. score for this category. (if programs publish entry requirement score like TUM)'
+                                            }
+                                        />
+                                    </Grid>
+                                    <Grid item md={12} xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            id="category_description"
+                                            label="Category Description"
+                                            onChange={(e) =>
+                                                setProgramCategories((prev) =>
+                                                    prev.map((pc, i) =>
+                                                        i === index
+                                                            ? {
+                                                                  ...pc,
+                                                                  category_description:
+                                                                      e.target
+                                                                          .value
+                                                              }
+                                                            : pc
+                                                    )
+                                                )
+                                            }
+                                            size="small"
+                                            value={
+                                                programCategory.category_description
+                                            }
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                    <Grid item md={12} xs={12}>
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                mb: 2
+                                            }}
+                                        >
+                                            <Autocomplete
+                                                disableCloseOnSelect
+                                                filterOptions={
+                                                    filterKeywordOptions
+                                                }
+                                                fullWidth
+                                                getOptionLabel={(option) =>
+                                                    `${option.categoryName} ${option.keywords?.zh?.join(
+                                                        ', '
+                                                    )} ${option.keywords?.en?.join(', ')} `
+                                                }
+                                                isOptionEqualToValue={(
+                                                    option,
+                                                    value
+                                                ) => option._id === value._id}
+                                                multiple
+                                                onChange={(e, newValue) =>
+                                                    handleAddKeywordSet(
+                                                        newValue,
+                                                        index
+                                                    )
+                                                }
+                                                options={keywordsets || []}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        error={
+                                                            programCategories[
+                                                                index
+                                                            ]?.keywordSets
+                                                                ?.length <= 0
+                                                        }
+                                                        helperText={
+                                                            programCategories[
+                                                                index
+                                                            ]?.keywordSets
+                                                                ?.length <= 0
+                                                                ? 'Please provide at least 1 keyword set'
+                                                                : null
+                                                        }
+                                                        label="With categories"
+                                                    />
+                                                )}
+                                                renderTags={(
+                                                    value,
+                                                    getTagProps
+                                                ) =>
+                                                    value.map(
+                                                        (
+                                                            option,
+                                                            optionIndex
+                                                        ) => {
+                                                            const {
+                                                                _id,
+                                                                ...tagProps
+                                                            } = getTagProps({
+                                                                index: optionIndex
+                                                            });
+                                                            return (
+                                                                <Chip
+                                                                    key={_id}
+                                                                    label={
+                                                                        option.categoryName
+                                                                    }
+                                                                    variant="outlined"
+                                                                    {...tagProps}
+                                                                />
+                                                            );
+                                                        }
+                                                    )
+                                                }
+                                                size="small"
+                                                value={
+                                                    programCategory.keywordSets
+                                                }
+                                                variant="outlined"
+                                            />
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </Box>
+            </Box>
+            <Box>
+                <Button
+                    color="secondary"
+                    onClick={handleAddCategory}
+                    variant="contained"
+                >
+                    {t('Add Category', { ns: 'common' })}
+                </Button>
+            </Box>
+            <Box display="flex" gap={2} justifyContent="flex-end">
+                <Button
+                    as={LinkDom}
+                    color="secondary"
+                    to={DEMO.PROGRAM_ANALYSIS}
+                    variant="outlined"
+                >
+                    {t('Cancel', { ns: 'common' })}
+                </Button>
+                <Button
+                    color="primary"
+                    disabled={isSubmitDisabled}
+                    type="submit"
+                    variant="contained"
+                >
+                    {requirementId
+                        ? t('Update', { ns: 'common' })
+                        : t('Create', { ns: 'common' })}
+                </Button>
+            </Box>
+        </form>
     );
 };
 

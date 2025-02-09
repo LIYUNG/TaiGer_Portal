@@ -43,11 +43,11 @@ export const DeleteIconButton = ({
         <span>
             <IconButton
                 color="error"
-                type="submit"
                 disabled={isLoading}
                 onClick={(e) =>
                     onDeleteFileWarningPopUp(e, category, student_id, docName)
                 }
+                type="submit"
             >
                 <DeleteIcon />
             </IconButton>
@@ -70,7 +70,6 @@ export const UploadIconButton = ({
                     <CloudUploadIcon />
                 </IconButton>
                 <input
-                    type="file"
                     hidden
                     onChange={(e) =>
                         handleGeneralDocSubmit(
@@ -79,6 +78,7 @@ export const UploadIconButton = ({
                             buttonState.student_id
                         )
                     }
+                    type="file"
                 />
             </label>
         </Tooltip>

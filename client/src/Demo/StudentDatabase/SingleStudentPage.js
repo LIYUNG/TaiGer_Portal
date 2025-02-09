@@ -30,7 +30,11 @@ import {
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import { is_TaiGer_Editor, is_TaiGer_role } from '@taiger-common/core';
+import {
+    is_TaiGer_Editor,
+    is_TaiGer_role,
+    isProgramDecided
+} from '@taiger-common/core';
 
 import { TopBar } from '../../components/TopBar/TopBar';
 import BaseDocument_StudentView from '../BaseDocuments/BaseDocument_StudentView';
@@ -48,7 +52,6 @@ import {
     TENFOLD_AI_DOMAIN
 } from '../../utils/contants';
 import {
-    isProgramDecided,
     needGraduatedApplicantsButStudentNotGraduated,
     needGraduatedApplicantsPrograms
 } from '../Utils/checking-functions';
@@ -312,33 +315,33 @@ export const SingleStudentPageMainContent = ({
     );
     return (
         <>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
             <Box
+                alignItems="center"
                 display="flex"
                 justifyContent="space-between"
-                alignItems="center"
             >
                 <Box>
                     <Breadcrumbs aria-label="breadcrumb">
                         <Link
-                            underline="hover"
                             color="inherit"
                             component={LinkDom}
                             to={`${DEMO.DASHBOARD_LINK}`}
+                            underline="hover"
                         >
                             {appConfig.companyName}
                         </Link>
                         <Link
-                            underline="hover"
                             color="inherit"
                             component={LinkDom}
                             to={`${DEMO.STUDENT_DATABASE_LINK}`}
+                            underline="hover"
                         >
                             {t('Students Database', { ns: 'common' })}
                         </Link>
@@ -352,10 +355,10 @@ export const SingleStudentPageMainContent = ({
                             {singleStudentPage.student.firstname_chinese}
                         </Typography>
                         <Link
-                            underline="hover"
                             color="inherit"
                             component={LinkDom}
                             to={`${DEMO.PROFILE_STUDENT_LINK(singleStudentPage.student._id)}`}
+                            underline="hover"
                         >
                             <IconButton>
                                 <EditIcon fontSize="small" />
@@ -367,19 +370,19 @@ export const SingleStudentPageMainContent = ({
                     <Box style={{ textAlign: 'left' }}>
                         <Typography style={{ float: 'right' }}>
                             <Link
-                                underline="hover"
                                 color="inherit"
                                 component={LinkDom}
+                                sx={{ mr: 1 }}
                                 to={`${DEMO.COMMUNICATIONS_TAIGER_MODE_LINK(
                                     singleStudentPage.student._id
                                 )}`}
-                                sx={{ mr: 1 }}
+                                underline="hover"
                             >
                                 <Button
                                     color="primary"
-                                    variant="contained"
                                     size="small"
                                     startIcon={<ChatBubbleOutlineIcon />}
+                                    variant="contained"
                                 >
                                     <b>{t('Message', { ns: 'common' })}</b>
                                 </Button>
@@ -389,10 +392,10 @@ export const SingleStudentPageMainContent = ({
                                 singleStudentPage.student.lastLoginAt
                             )}{' '}
                             <Button
-                                size="small"
-                                variant="contained"
                                 color="secondary"
                                 onClick={onChangeView}
+                                size="small"
+                                variant="contained"
                             >
                                 {t('Switch View', { ns: 'common' })}
                             </Button>
@@ -400,12 +403,12 @@ export const SingleStudentPageMainContent = ({
                     </Box>
                 </Box>
             </Box>
-            {singleStudentPage.student.archiv && <TopBar />}
+            {singleStudentPage.student.archiv ? <TopBar /> : null}
             {singleStudentPage.taiger_view ? (
                 <>
                     {needGraduatedApplicantsButStudentNotGraduated(
                         singleStudentPage.student
-                    ) && (
+                    ) ? (
                         <Card sx={{ border: '4px solid red', borderRadius: 2 }}>
                             <Alert severity="warning">
                                 {t(
@@ -421,11 +424,11 @@ export const SingleStudentPageMainContent = ({
                             )?.map((app) => (
                                 <ListItem key={app.programId._id.toString()}>
                                     <Link
+                                        component={LinkDom}
+                                        target="_blank"
                                         to={DEMO.SINGLE_PROGRAM_LINK(
                                             app.programId._id.toString()
                                         )}
-                                        component={LinkDom}
-                                        target="_blank"
                                     >
                                         {app.programId.school}{' '}
                                         {app.programId.program_name}{' '}
@@ -435,9 +438,9 @@ export const SingleStudentPageMainContent = ({
                                 </ListItem>
                             ))}
                         </Card>
-                    )}
+                    ) : null}
                     <Grid container spacing={0} sx={{ mt: 0 }}>
-                        <Grid item xs={12} md={12}>
+                        <Grid item md={12} xs={12}>
                             <ProgramLanguageNotMatchedBanner
                                 student={singleStudentPage.student}
                             />
@@ -457,24 +460,24 @@ export const SingleStudentPageMainContent = ({
                     >
                         <StudentBriefOverview
                             student={singleStudentPage.student}
-                            updateStudentArchivStatus={
-                                updateStudentArchivStatus
-                            }
                             submitUpdateAgentlist={submitUpdateAgentlist}
-                            submitUpdateEditorlist={submitUpdateEditorlist}
                             submitUpdateAttributeslist={
                                 submitUpdateAttributeslist
+                            }
+                            submitUpdateEditorlist={submitUpdateEditorlist}
+                            updateStudentArchivStatus={
+                                updateStudentArchivStatus
                             }
                         />
                     </Box>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <Tabs
-                            value={value}
-                            onChange={handleChange}
-                            variant="scrollable"
-                            scrollButtons="auto"
-                            indicatorColor="primary"
                             aria-label="basic tabs example"
+                            indicatorColor="primary"
+                            onChange={handleChange}
+                            scrollButtons="auto"
+                            value={value}
+                            variant="scrollable"
                         >
                             <Tab
                                 label={t('Applications Overview', {
@@ -516,12 +519,12 @@ export const SingleStudentPageMainContent = ({
                             />
                         </Tabs>
                     </Box>
-                    <CustomTabPanel value={value} index={0}>
+                    <CustomTabPanel index={0} value={value}>
                         <Box>
                             <Button
                                 color="secondary"
-                                variant="contained"
                                 onClick={onChangeProgramsDetailView}
+                                variant="contained"
                             >
                                 {singleStudentPage.detailedView
                                     ? t('Simple View', { ns: 'common' })
@@ -529,35 +532,35 @@ export const SingleStudentPageMainContent = ({
                             </Button>
                             <Badge badgeContent="new" color="error">
                                 <Button
-                                    component={LinkDom}
-                                    to={`${TENFOLD_AI_DOMAIN}/${singleStudentPage.student._id}`}
                                     color="primary"
-                                    target="_blank"
-                                    variant="contained"
+                                    component={LinkDom}
                                     sx={{ mx: 1 }}
+                                    target="_blank"
+                                    to={`${TENFOLD_AI_DOMAIN}/${singleStudentPage.student._id}`}
+                                    variant="contained"
                                 >
                                     {t('Program Recommender', { ns: 'common' })}
                                 </Button>
                             </Badge>
-                            {!is_TaiGer_Editor(user) && (
+                            {!is_TaiGer_Editor(user) ? (
                                 <Link
+                                    component={LinkDom}
+                                    sx={{ mr: 1 }}
+                                    target="_blank"
                                     to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
                                         singleStudentPage.student._id
                                     )}`}
-                                    component={LinkDom}
                                     underline="hover"
-                                    target="_blank"
-                                    sx={{ mr: 1 }}
                                 >
                                     <Button
                                         color="secondary"
-                                        variant="contained"
                                         startIcon={<EditIcon />}
+                                        variant="contained"
                                     >
                                         {t('Edit', { ns: 'common' })}
                                     </Button>
                                 </Link>
-                            )}
+                            ) : null}
                             <Typography variant="body1">
                                 Applications (Selected / Decided / Contract):{' '}
                                 {singleStudentPage.student
@@ -613,34 +616,34 @@ export const SingleStudentPageMainContent = ({
                             </TableContainer>
                         )}
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={1}>
+                    <CustomTabPanel index={1} value={value}>
                         <BaseDocument_StudentView
                             base_docs_link={base_docs_link}
                             student={singleStudentPage.student}
                         />
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={2}>
+                    <CustomTabPanel index={2} value={value}>
                         <Card sx={{ p: 2 }}>
                             <EditorDocsProgress
-                                student={singleStudentPage.student}
                                 idx={0}
+                                student={singleStudentPage.student}
                             />
                         </Card>
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={3}>
+                    <CustomTabPanel index={3} value={value}>
                         <Card>
                             <PortalCredentialPage
-                                student_id={singleStudentPage.student._id.toString()}
                                 showTitle={true}
+                                student_id={singleStudentPage.student._id.toString()}
                             />
                         </Card>
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={4}>
+                    <CustomTabPanel index={4} value={value}>
                         <UniAssistListCard
                             student={singleStudentPage.student}
                         />
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={5}>
+                    <CustomTabPanel index={5} value={value}>
                         <SurveyProvider
                             value={{
                                 academic_background:
@@ -661,22 +664,22 @@ export const SingleStudentPageMainContent = ({
                             />
                         </SurveyProvider>
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={6}>
+                    <CustomTabPanel index={6} value={value}>
                         <Link
+                            component={LinkDom}
+                            rel="noopener noreferrer"
+                            target="_blank"
                             to={`${DEMO.COURSES_INPUT_LINK(
                                 singleStudentPage.student._id.toString()
                             )}`}
-                            component={LinkDom}
                             underline="hover"
-                            rel="noopener noreferrer"
-                            target="_blank"
                         >
                             <Button color="primary" variant="contained">
                                 Go to My Courses{' '}
                             </Button>
                         </Link>
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={7}>
+                    <CustomTabPanel index={7} value={value}>
                         <Typography fontWeight="bold">
                             This is internal notes. Student won&apos;t see this
                             note.
@@ -686,20 +689,20 @@ export const SingleStudentPageMainContent = ({
                             student_id={singleStudentPage.student._id.toString()}
                         />
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={8}>
+                    <CustomTabPanel index={8} value={value}>
                         <Audit audit={audit} />
                     </CustomTabPanel>
                 </>
             ) : (
                 <>
                     <Alert severity="error" sx={{ mt: 2 }}>
-                        <Typography variant="body1" fontWeight="bold">
+                        <Typography fontWeight="bold" variant="body1">
                             {t('Student View', { ns: 'common' })}
                         </Typography>
                     </Alert>
                     <StudentDashboard
-                        student={singleStudentPage.student}
                         ReadOnlyMode={true}
+                        student={singleStudentPage.student}
                     />
                 </>
             )}
@@ -707,17 +710,17 @@ export const SingleStudentPageMainContent = ({
     );
 };
 
-function SingleStudentPage() {
+const SingleStudentPage = () => {
     const {
         data: { survey_link, base_docs_link, data, audit }
     } = useLoaderData();
     return (
         <SingleStudentPageMainContent
-            survey_link={survey_link}
+            audit={audit}
             base_docs_link={base_docs_link}
             data={data}
-            audit={audit}
+            survey_link={survey_link}
         />
     );
-}
+};
 export default SingleStudentPage;

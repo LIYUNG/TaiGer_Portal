@@ -16,7 +16,7 @@ import EditEssayWritersSubpage from '../StudDocsOverview/EditEssayWritersSubpage
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 
-function NoWritersEssaysCard(props) {
+const NoWritersEssaysCard = (props) => {
     const { user } = useAuth();
     const [noEditorsStudentsCardState, setNoEditorsStudentsCardState] =
         useState({
@@ -69,34 +69,34 @@ function NoWritersEssaysCard(props) {
         return (
             <>
                 <TableRow>
-                    {is_TaiGer_role(user) && !props.isArchivPage && (
+                    {is_TaiGer_role(user) && !props.isArchivPage ? (
                         <TableCell>
                             <Button
-                                size="small"
-                                id="basic-button"
-                                variant="contained"
                                 aria-controls={open ? 'basic-menu' : undefined}
-                                aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
+                                aria-haspopup="true"
+                                id="basic-button"
                                 onClick={handleClick}
+                                size="small"
+                                variant="contained"
                             >
                                 {t('Option')}
                             </Button>
                             <Menu
-                                id="basic-menu"
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
                                 MenuListProps={{
                                     'aria-labelledby': 'basic-button'
                                 }}
+                                anchorEl={anchorEl}
+                                id="basic-menu"
+                                onClose={handleClose}
+                                open={open}
                             >
                                 <MenuItem onClick={() => startEditingEditor()}>
                                     Edit Essay Writer
                                 </MenuItem>
                             </Menu>
                         </TableCell>
-                    )}
+                    ) : null}
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -181,23 +181,23 @@ function NoWritersEssaysCard(props) {
                     </TableCell>
                 </TableRow>
                 {is_TaiGer_role(user) &&
-                    noEditorsStudentsCardState.showEditorPage && (
-                        <EditEssayWritersSubpage
-                            show={noEditorsStudentsCardState.showEditorPage}
-                            onHide={setEditorModalhide}
-                            actor={'Essay Writer'}
-                            setmodalhide={setEditorModalhide}
-                            submitUpdateEssayWriterlist={
-                                submitUpdateEssayWriterlist
-                            }
-                            essayDocumentThread={props.essayDocumentThread}
-                        />
-                    )}
+                noEditorsStudentsCardState.showEditorPage ? (
+                    <EditEssayWritersSubpage
+                        actor="Essay Writer"
+                        essayDocumentThread={props.essayDocumentThread}
+                        onHide={setEditorModalhide}
+                        setmodalhide={setEditorModalhide}
+                        show={noEditorsStudentsCardState.showEditorPage}
+                        submitUpdateEssayWriterlist={
+                            submitUpdateEssayWriterlist
+                        }
+                    />
+                ) : null}
             </>
         );
     } else {
         return <></>;
     }
-}
+};
 
 export default NoWritersEssaysCard;

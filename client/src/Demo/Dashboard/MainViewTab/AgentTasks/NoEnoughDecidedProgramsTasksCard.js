@@ -29,10 +29,10 @@ const NoEnoughDecidedProgramsTasks = (props) => {
                 <TableRow>
                     <TableCell>
                         <Link
+                            component={LinkDom}
                             to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
                                 props.student._id.toString()
                             )}`}
-                            component={LinkDom}
                         >
                             <Typography fontWeight="bold">
                                 {props.student.firstname}{' '}
@@ -47,19 +47,19 @@ const NoEnoughDecidedProgramsTasks = (props) => {
                             {props.student.firstname} {props.student.lastname}
                         </Typography>
                     </TableCell>
-                    <TableCell></TableCell>
+                    <TableCell />
                 </TableRow>
             ) : (
                 <>
                     {/* select enough program task */}
-                    {!areProgramsDecidedMoreThanContract(props.student) && (
+                    {!areProgramsDecidedMoreThanContract(props.student) ? (
                         <TableRow>
                             <TableCell>
                                 <Link
+                                    component={LinkDom}
                                     to={`${DEMO.STUDENT_APPLICATIONS_ID_LINK(
                                         props.student._id.toString()
                                     )}`}
-                                    component={LinkDom}
                                 >
                                     <Typography fontWeight="bold">
                                         {' '}
@@ -83,7 +83,7 @@ const NoEnoughDecidedProgramsTasks = (props) => {
                                 }
                             </TableCell>
                         </TableRow>
-                    )}
+                    ) : null}
                 </>
             )}
             {/* TODO: add Portal register tasks */}
@@ -91,7 +91,7 @@ const NoEnoughDecidedProgramsTasks = (props) => {
     );
 };
 
-function NoEnoughDecidedProgramsTasksCard(props) {
+const NoEnoughDecidedProgramsTasksCard = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const no_enough_programs_decided_tasks = props.students
@@ -126,6 +126,6 @@ function NoEnoughDecidedProgramsTasksCard(props) {
             </TableContainer>
         </Card>
     );
-}
+};
 
 export default NoEnoughDecidedProgramsTasksCard;

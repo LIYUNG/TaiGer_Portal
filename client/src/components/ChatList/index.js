@@ -136,9 +136,9 @@ const ChatList = (props) => {
         <>
             <ListItem onClick={(e) => e.stopPropagation()}>
                 <Box
+                    alignItems="center"
                     display="flex"
                     justifyContent="space-between"
-                    alignItems="center"
                 >
                     <Box>
                         <Typography variant="h6">
@@ -153,34 +153,35 @@ const ChatList = (props) => {
                 </SearchIconWrapper>
                 <StyledInputBase
                     id="search-friends"
-                    placeholder="Search…"
                     inputProps={{ 'aria-label': 'search' }}
-                    value={searchTerm}
-                    onClick={(e) => e.stopPropagation()}
                     onChange={handleInputChange}
+                    onClick={(e) => e.stopPropagation()}
+                    placeholder="Search…"
+                    value={searchTerm}
                 />
             </Search>
-            {!chatListState.isLoaded &&
-                [0, 1, 2, 3].map((x, i) => (
-                    <MenuItem key={i}>
-                        <Skeleton
-                            variant="rectangular"
-                            width={menuWidth}
-                            height={40}
-                        />
-                    </MenuItem>
-                ))}
-            {chatListState.isLoaded && (
+            {!chatListState.isLoaded
+                ? [0, 1, 2, 3].map((x, i) => (
+                      <MenuItem key={i}>
+                          <Skeleton
+                              height={40}
+                              variant="rectangular"
+                              width={menuWidth}
+                          />
+                      </MenuItem>
+                  ))
+                : null}
+            {chatListState.isLoaded ? (
                 <Friends
                     handleCloseChat={props.handleCloseChat}
-                    user={user}
                     students={
                         chatListState.searchMode
                             ? searchResults
                             : chatListState.students
                     }
+                    user={user}
                 />
-            )}
+            ) : null}
         </>
     );
 };

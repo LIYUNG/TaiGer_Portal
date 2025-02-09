@@ -5,11 +5,12 @@ import { List, ListItem, TextField, Typography } from '@mui/material';
 export const StudentPreferenceCard = (props) => {
     const { t } = useTranslation();
     return (
-        <Fragment>
+        <>
             <Typography variant="h6">
                 {t('Application Preference From Survey')}
             </Typography>
             <List
+                subheader={<li />}
                 sx={{
                     width: '100%',
                     bgcolor: 'background.paper',
@@ -17,7 +18,6 @@ export const StudentPreferenceCard = (props) => {
                     overflow: 'auto',
                     '& ul': { padding: 0 }
                 }}
-                subheader={<li />}
             >
                 <ListItem>
                     {t('Target Application Fields')}:{' '}
@@ -73,11 +73,11 @@ export const StudentPreferenceCard = (props) => {
                 <ListItem>
                     {t('Other wish', { ns: 'survey' })}:
                     <TextField
+                        fullWidth
                         id="special_wished"
                         multiline
-                        fullWidth
-                        rows={4}
                         readOnly
+                        rows={4}
                         value={
                             props.student.application_preference
                                 ?.special_wished || ''
@@ -86,6 +86,6 @@ export const StudentPreferenceCard = (props) => {
                     />
                 </ListItem>
             </List>
-        </Fragment>
+        </>
     );
 };

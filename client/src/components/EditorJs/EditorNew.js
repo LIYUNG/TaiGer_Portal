@@ -253,14 +253,15 @@ const EditorNew = (props) => {
     };
 
     return (
-        <React.Fragment>
-            <Box id={'editorjs'}></Box>
+        <>
+            <Box id="editorjs" />
             {/* <div>{JSON.stringify(props.editorState)}</div> */}
             {props.readOnly ? (
                 <></>
             ) : (
                 <>
                     <Button
+                        color="primary"
                         disabled={
                             !contentReady ||
                             props.doc_title.replace(/ /g, '').length === 0 ||
@@ -268,11 +269,10 @@ const EditorNew = (props) => {
                             !editorState.blocks ||
                             editorState.blocks.length === 0
                         }
-                        color="primary"
-                        variant="contained"
-                        size="small"
                         onClick={(e) => props.handleClickSave(e, editorState)}
+                        size="small"
                         sx={{ marginRight: 1 }}
+                        variant="contained"
                     >
                         {t('Save', { ns: 'common' })}
                     </Button>
@@ -285,7 +285,7 @@ const EditorNew = (props) => {
                     </Button>
                 </>
             )}
-        </React.Fragment>
+        </>
     );
 };
 

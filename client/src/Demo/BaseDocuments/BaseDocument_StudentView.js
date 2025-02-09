@@ -9,7 +9,7 @@ import { updateDocumentationHelperLink } from '../../api';
 import Loading from '../../components/Loading/Loading';
 import MyDocumentCard from './MyDocumentCard';
 
-function BaseDocument_StudentView({ student, base_docs_link }) {
+const BaseDocument_StudentView = ({ student, base_docs_link }) => {
     const { t } = useTranslation();
 
     const [baseDocumentStudentViewState, setBaseDocumentStudentViewState] =
@@ -131,16 +131,16 @@ function BaseDocument_StudentView({ student, base_docs_link }) {
         (category, i) => (
             <MyDocumentCard
                 category={category}
-                key={i + 1}
-                updateDocLink={updateDocLink}
-                link={object_init[category].link}
-                document_name={object_init[category].document_name}
-                status={object_init[category].status}
-                isLoaded={baseDocumentStudentViewState.isLoaded[category]}
                 docName={PROFILE_NAME[category]}
+                document_name={object_init[category].document_name}
+                isLoaded={baseDocumentStudentViewState.isLoaded[category]}
+                key={i + 1}
+                link={object_init[category].link}
                 message={object_message[category]}
-                time={object_time_init[category]}
+                status={object_init[category].status}
                 student={baseDocumentStudentViewState.student}
+                time={object_time_init[category]}
+                updateDocLink={updateDocLink}
             />
         )
     );
@@ -155,15 +155,15 @@ function BaseDocument_StudentView({ student, base_docs_link }) {
             </Alert>
             {myDocumentsCard}
             {SYMBOL_EXPLANATION}
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
         </Box>
     );
-}
+};
 
 export default BaseDocument_StudentView;

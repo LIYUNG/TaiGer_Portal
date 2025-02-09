@@ -13,7 +13,7 @@ import { appConfig } from '../../config';
 import useStudents from '../../hooks/useStudents';
 import { useTranslation } from 'react-i18next';
 
-function AllArchivStudents() {
+const AllArchivStudents = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const {
@@ -42,10 +42,10 @@ function AllArchivStudents() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -61,20 +61,20 @@ function AllArchivStudents() {
                 <TabStudBackgroundDashboard
                     students={students?.filter((student) => student.archiv)}
                     submitUpdateAgentlist={submitUpdateAgentlist}
-                    submitUpdateEditorlist={submitUpdateEditorlist}
                     submitUpdateAttributeslist={submitUpdateAttributeslist}
+                    submitUpdateEditorlist={submitUpdateEditorlist}
                     updateStudentArchivStatus={updateStudentArchivStatus}
                 />
             </Box>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
         </Box>
     );
-}
+};
 
 export default AllArchivStudents;

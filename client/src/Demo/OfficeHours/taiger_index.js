@@ -121,20 +121,20 @@ const DateRangePickerBasic = () => {
                 }}
             >
                 <Button
-                    variant="outlined"
                     onClick={() => handleShortcut('week')}
+                    variant="outlined"
                 >
                     Last 1 Week
                 </Button>
                 <Button
-                    variant="outlined"
                     onClick={() => handleShortcut('month')}
+                    variant="outlined"
                 >
                     Last 1 Month
                 </Button>{' '}
                 <Button
-                    variant="outlined"
                     onClick={() => handleShortcut('year')}
+                    variant="outlined"
                 >
                     Last 1 Year
                 </Button>
@@ -150,22 +150,22 @@ const DateRangePickerBasic = () => {
             >
                 <DateTimePicker
                     label="Start Date-Time"
-                    value={startTime}
                     onChange={(newValue) => setStartTime(newValue)}
                     renderInput={(params) => <TextField {...params} />}
+                    value={startTime}
                 />
                 <DateTimePicker
                     label="End Date-Time"
-                    value={endTime}
                     minDateTime={startTime} // Ensure end date-time is after start date-time
                     onChange={(newValue) => setEndTime(newValue)}
                     renderInput={(params) => <TextField {...params} />}
+                    value={endTime}
                 />
 
                 <Button
-                    variant="contained"
-                    onClick={handleSubmit}
                     disabled={!startTime || !endTime}
+                    onClick={handleSubmit}
+                    variant="contained"
                 >
                     {t('Submit', { ns: 'common' })}
                 </Button>
@@ -174,7 +174,7 @@ const DateRangePickerBasic = () => {
     );
 };
 
-function TaiGerOfficeHours() {
+const TaiGerOfficeHours = () => {
     const { user } = useAuth();
     const { user_id } = useParams();
     const { t } = useTranslation();
@@ -307,19 +307,19 @@ function TaiGerOfficeHours() {
 
     return (
         <Box>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -333,15 +333,15 @@ function TaiGerOfficeHours() {
                 <>
                     <Button
                         color="secondary"
-                        variant="contained"
                         onClick={() => setShowCalendar(!showCalendar)}
+                        variant="contained"
                     >
                         {t('To Calendar', { ns: 'common' })}
                     </Button>
                     <ButtonGroup
-                        variant="contained"
                         aria-label="outlined primary button group"
                         style={{ marginBottom: '20px' }}
+                        variant="contained"
                     >
                         <Button
                             onClick={() => {
@@ -374,39 +374,40 @@ function TaiGerOfficeHours() {
                         </Button>
                     </ButtonGroup>
 
-                    {viewMode === 'future' && (
+                    {viewMode === 'future' ? (
                         <>
                             {events?.filter(
                                 (event) =>
                                     isInTheFuture(event.end) &&
                                     (!event.isConfirmedReceiver ||
                                         !event.isConfirmedRequester)
-                            ).length !== 0 &&
-                                _.reverse(
-                                    _.sortBy(
-                                        events?.filter(
-                                            (event) =>
-                                                isInTheFuture(event.end) &&
-                                                (!event.isConfirmedReceiver ||
-                                                    !event.isConfirmedRequester)
-                                        ),
-                                        ['start']
-                                    )
-                                )?.map((event, i) => (
-                                    <EventConfirmationCard
-                                        key={i}
-                                        event={event}
-                                        handleConfirmAppointmentModalOpen={
-                                            handleConfirmAppointmentModalOpen
-                                        }
-                                        handleEditAppointmentModalOpen={
-                                            handleEditAppointmentModalOpen
-                                        }
-                                        handleDeleteAppointmentModalOpen={
-                                            handleDeleteAppointmentModalOpen
-                                        }
-                                    />
-                                ))}
+                            ).length !== 0
+                                ? _.reverse(
+                                      _.sortBy(
+                                          events?.filter(
+                                              (event) =>
+                                                  isInTheFuture(event.end) &&
+                                                  (!event.isConfirmedReceiver ||
+                                                      !event.isConfirmedRequester)
+                                          ),
+                                          ['start']
+                                      )
+                                  )?.map((event, i) => (
+                                      <EventConfirmationCard
+                                          event={event}
+                                          handleConfirmAppointmentModalOpen={
+                                              handleConfirmAppointmentModalOpen
+                                          }
+                                          handleDeleteAppointmentModalOpen={
+                                              handleDeleteAppointmentModalOpen
+                                          }
+                                          handleEditAppointmentModalOpen={
+                                              handleEditAppointmentModalOpen
+                                          }
+                                          key={i}
+                                      />
+                                  ))
+                                : null}
                             <Card sx={{ p: 2 }}>
                                 <Typography variant="h6">
                                     {t('Upcoming', { ns: 'common' })}
@@ -432,17 +433,17 @@ function TaiGerOfficeHours() {
                                               )
                                           ).map((event, i) => (
                                               <EventConfirmationCard
-                                                  key={i}
                                                   event={event}
                                                   handleConfirmAppointmentModalOpen={
                                                       handleConfirmAppointmentModalOpen
                                                   }
-                                                  handleEditAppointmentModalOpen={
-                                                      handleEditAppointmentModalOpen
-                                                  }
                                                   handleDeleteAppointmentModalOpen={
                                                       handleDeleteAppointmentModalOpen
                                                   }
+                                                  handleEditAppointmentModalOpen={
+                                                      handleEditAppointmentModalOpen
+                                                  }
+                                                  key={i}
                                               />
                                           ))
                                         : t('No upcoming event', {
@@ -451,31 +452,31 @@ function TaiGerOfficeHours() {
                                 </Box>
                             </Card>
                         </>
-                    )}
+                    ) : null}
 
-                    {viewMode === 'past' &&
-                        (isLoaded ? (
+                    {viewMode === 'past' ? (
+                        isLoaded ? (
                             <Card sx={{ p: 2 }}>
                                 <DateRangePickerBasic />
-                                <Typography variant="h6" sx={{ p: 2 }}>
+                                <Typography sx={{ p: 2 }} variant="h6">
                                     {t('Past', { ns: 'common' })}
                                 </Typography>
                                 <Box>
                                     {_.reverse(_.sortBy(events, ['start'])).map(
                                         (event, i) => (
                                             <EventConfirmationCard
-                                                key={i}
+                                                disabled={true}
                                                 event={event}
                                                 handleConfirmAppointmentModalOpen={
                                                     handleConfirmAppointmentModalOpen
                                                 }
-                                                handleEditAppointmentModalOpen={
-                                                    handleEditAppointmentModalOpen
-                                                }
                                                 handleDeleteAppointmentModalOpen={
                                                     handleDeleteAppointmentModalOpen
                                                 }
-                                                disabled={true}
+                                                handleEditAppointmentModalOpen={
+                                                    handleEditAppointmentModalOpen
+                                                }
+                                                key={i}
                                             />
                                         )
                                     )}
@@ -483,12 +484,13 @@ function TaiGerOfficeHours() {
                             </Card>
                         ) : (
                             <CircularProgress />
-                        ))}
+                        )
+                    ) : null}
 
                     <Dialog
-                        open={isConfirmModalOpen}
-                        onClose={handleConfirmAppointmentModalClose}
                         centered
+                        onClose={handleConfirmAppointmentModalClose}
+                        open={isConfirmModalOpen}
                     >
                         <DialogTitle>
                             {t('Confirm Meeting', { ns: 'common' })}
@@ -501,14 +503,12 @@ function TaiGerOfficeHours() {
                         <DialogActions>
                             <Button
                                 color="primary"
-                                fullWidth
-                                variant="contained"
-                                size="small"
                                 disabled={
                                     event_id === '' ||
                                     event_temp?.description?.length === 0 ||
                                     BookButtonDisable
                                 }
+                                fullWidth
                                 onClick={(e) =>
                                     handleConfirmAppointmentModal(
                                         e,
@@ -516,6 +516,7 @@ function TaiGerOfficeHours() {
                                         event_temp
                                     )
                                 }
+                                size="small"
                                 startIcon={
                                     BookButtonDisable ? (
                                         <CircularProgress size={24} />
@@ -523,23 +524,24 @@ function TaiGerOfficeHours() {
                                         <CheckIcon />
                                     )
                                 }
+                                variant="contained"
                             >
                                 {t('Yes', { ns: 'common' })}
                             </Button>
                             <Button
                                 color="secondary"
                                 fullWidth
-                                variant="outlined"
-                                size="small"
                                 onClick={handleConfirmAppointmentModalClose}
+                                size="small"
+                                variant="outlined"
                             >
                                 {t('Close', { ns: 'common' })}
                             </Button>
                         </DialogActions>
                     </Dialog>
                     <Dialog
-                        open={isDeleteModalOpen}
                         onClose={handleDeleteAppointmentModalClose}
+                        open={isDeleteModalOpen}
                     >
                         <DialogTitle>
                             {t('Warning', { ns: 'common' })}
@@ -552,12 +554,11 @@ function TaiGerOfficeHours() {
                         <DialogActions>
                             <Button
                                 color="secondary"
-                                variant="contained"
-                                size="small"
                                 disabled={event_id === '' || BookButtonDisable}
                                 onClick={(e) =>
                                     handleDeleteAppointmentModal(e, event_id)
                                 }
+                                size="small"
                                 startIcon={
                                     BookButtonDisable ? (
                                         <CircularProgress size={16} />
@@ -565,6 +566,7 @@ function TaiGerOfficeHours() {
                                         <DeleteIcon />
                                     )
                                 }
+                                variant="contained"
                             >
                                 {t('Delete', { ns: 'common' })}
                             </Button>
@@ -575,8 +577,8 @@ function TaiGerOfficeHours() {
                 <>
                     <Button
                         color="secondary"
-                        variant="contained"
                         onClick={() => setShowCalendar(!showCalendar)}
+                        variant="contained"
                     >
                         {t('My Appointments')}
                     </Button>
@@ -584,12 +586,12 @@ function TaiGerOfficeHours() {
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             {/* TODO: subpath tab for URL */}
                             <Tabs
-                                value={value}
-                                onChange={handleChangeTab}
-                                variant="scrollable"
-                                scrollButtons="auto"
-                                indicatorColor="primary"
                                 aria-label="basic tabs example"
+                                indicatorColor="primary"
+                                onChange={handleChangeTab}
+                                scrollButtons="auto"
+                                value={value}
+                                variant="scrollable"
                             >
                                 <Tab label={t('Calendar')} {...a11yProps(0)} />
                                 <Tab
@@ -598,29 +600,29 @@ function TaiGerOfficeHours() {
                                 />
                             </Tabs>
                         </Box>
-                        <CustomTabPanel value={value} index={0}>
+                        <CustomTabPanel index={0} value={value}>
                             <MyCalendar
                                 events={[...booked_events]}
-                                handleSelectEvent={handleSelectEvent}
-                                handleUpdateTimeSlot={handleUpdateTimeSlot}
                                 handleChange={handleChange}
-                                handleModalClose={handleModalClose}
                                 handleChangeReceiver={handleChangeReceiver}
-                                handleSelectSlot={handleSelectSlotAgent}
-                                handleSelectStudent={handleSelectStudent}
+                                handleModalBook={handleModalBook}
+                                handleModalClose={handleModalClose}
+                                handleModalCreateEvent={handleModalCreateEvent}
                                 handleNewEventModalClose={
                                     handleNewEventModalClose
                                 }
-                                handleModalBook={handleModalBook}
-                                handleModalCreateEvent={handleModalCreateEvent}
-                                newReceiver={newReceiver}
-                                newDescription={newDescription}
-                                selectedEvent={selectedEvent}
-                                newEventEnd={newEventEnd}
+                                handleSelectEvent={handleSelectEvent}
+                                handleSelectSlot={handleSelectSlotAgent}
+                                handleSelectStudent={handleSelectStudent}
+                                handleUpdateTimeSlot={handleUpdateTimeSlot}
                                 isNewEventModalOpen={isNewEventModalOpen}
+                                newDescription={newDescription}
+                                newEventEnd={newEventEnd}
+                                newReceiver={newReceiver}
+                                selectedEvent={selectedEvent}
                             />
                         </CustomTabPanel>
-                        <CustomTabPanel value={value} index={1}>
+                        <CustomTabPanel index={1} value={value}>
                             {booked_events
                                 .sort((a, b) => (a.start < b.start ? -1 : 1))
                                 .map((time_slot, j) => (
@@ -636,22 +638,22 @@ function TaiGerOfficeHours() {
                 </>
             )}
             <Dialog
-                open={isEditModalOpen}
                 onClose={handleEditAppointmentModalClose}
+                open={isEditModalOpen}
             >
                 <DialogTitle>{t('Edit', { ns: 'common' })}</DialogTitle>
                 <DialogContent>
                     <TextField
                         fullWidth
-                        type="textarea"
-                        maxLength={2000}
-                        label="請寫下想討論的主題"
-                        multiline
-                        rows="10"
-                        placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
-                        value={event_temp.description || ''}
                         isInvalid={event_temp.description?.length > 2000}
+                        label="請寫下想討論的主題"
+                        maxLength={2000}
+                        multiline
                         onChange={(e) => handleUpdateDescription(e)}
+                        placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
+                        rows="10"
+                        type="textarea"
+                        value={event_temp.description || ''}
                     />
                     <Badge
                         bg={`${
@@ -681,10 +683,10 @@ function TaiGerOfficeHours() {
                             {t('Time Slot', { ns: 'common' })}
                         </InputLabel>
                         <Select
-                            labelId="study_group"
-                            label="Select target group"
-                            name="study_group"
                             id="study_group"
+                            label="Select target group"
+                            labelId="study_group"
+                            name="study_group"
                             onChange={(e) => handleUpdateTimeSlot(e)}
                             value={new Date(event_temp.start).toString()}
                         >
@@ -692,8 +694,8 @@ function TaiGerOfficeHours() {
                                 .sort((a, b) => (a.start < b.start ? -1 : 1))
                                 .map((time_slot) => (
                                     <MenuItem
-                                        value={`${time_slot.start}`}
                                         key={`${time_slot.start}`}
+                                        value={`${time_slot.start}`}
                                     >
                                         {time_slot.start.toLocaleString()} to{' '}
                                         {time_slot.end.toLocaleString()}
@@ -706,8 +708,6 @@ function TaiGerOfficeHours() {
                 <DialogActions>
                     <Button
                         color="secondary"
-                        variant="outlined"
-                        size="small"
                         disabled={
                             event_id === '' ||
                             event_temp?.description?.length === 0 ||
@@ -716,6 +716,8 @@ function TaiGerOfficeHours() {
                         onClick={(e) =>
                             handleEditAppointmentModal(e, event_id, event_temp)
                         }
+                        size="small"
+                        variant="outlined"
                     >
                         {BookButtonDisable ? (
                             <CircularProgress size={16} />
@@ -725,24 +727,24 @@ function TaiGerOfficeHours() {
                     </Button>
                 </DialogActions>
             </Dialog>
-            {is_TaiGer_Agent(user) && (
+            {is_TaiGer_Agent(user) ? (
                 <CreateNewEventModal
                     // {...props}
-                    events={events}
-                    newEventStart={newEventStart}
-                    handleModalCreateEvent={handleModalCreateEvent}
-                    isNewEventModalOpen={isNewEventModalOpen}
-                    handleNewEventModalClose={handleNewEventModalClose}
-                    handleUpdateTimeSlot={handleUpdateTimeSlotAgent}
-                    student_id={student_id}
                     BookButtonDisable={BookButtonDisable}
-                    handleSelectStudent={handleSelectStudent}
-                    students={students}
                     available_termins={available_termins_full}
+                    events={events}
+                    handleModalCreateEvent={handleModalCreateEvent}
+                    handleNewEventModalClose={handleNewEventModalClose}
+                    handleSelectStudent={handleSelectStudent}
+                    handleUpdateTimeSlot={handleUpdateTimeSlotAgent}
+                    isNewEventModalOpen={isNewEventModalOpen}
+                    newEventStart={newEventStart}
+                    student_id={student_id}
+                    students={students}
                 />
-            )}
+            ) : null}
         </Box>
     );
-}
+};
 
 export default TaiGerOfficeHours;

@@ -5,7 +5,7 @@ import Friend from './Friend';
 import { useTranslation } from 'react-i18next';
 import { menuWidth } from '../../../utils/contants';
 
-function Friends(props) {
+const Friends = (props) => {
     const { t } = useTranslation();
 
     if (props.students.length === 0) {
@@ -26,15 +26,15 @@ function Friends(props) {
     const friendList = props.students.map((f) => {
         return (
             <Friend
-                key={f._id}
-                data={f}
                 activeId={props.user._id.toString()}
+                data={f}
                 handleCloseChat={props.handleCloseChat}
+                key={f._id}
             />
         );
     });
 
     return <Box>{friendList}</Box>;
-}
+};
 
 export default Friends;

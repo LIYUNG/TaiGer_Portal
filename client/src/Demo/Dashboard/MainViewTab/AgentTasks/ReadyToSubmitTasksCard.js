@@ -13,6 +13,7 @@ import {
     Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { isProgramDecided } from '@taiger-common/core';
 
 import {
     isCVFinished,
@@ -20,8 +21,7 @@ import {
     is_the_uni_assist_vpd_uploaded,
     is_program_closed,
     application_deadline_calculator,
-    application_date_calculator,
-    isProgramDecided
+    application_date_calculator
 } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
@@ -41,11 +41,11 @@ const ReadyToSubmitTasks = (props) => {
                         <TableRow key={i}>
                             <TableCell>
                                 <Link
+                                    component={LinkDom}
                                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                         props.student._id.toString(),
                                         DEMO.CVMLRL_HASH
                                     )}`}
-                                    component={LinkDom}
                                 >
                                     <b>
                                         {props.student.firstname}{' '}
@@ -56,7 +56,6 @@ const ReadyToSubmitTasks = (props) => {
                             <TableCell>
                                 {/* isInTheFuture */}
                                 <Typography
-                                    variant="body2"
                                     fontWeight={
                                         isInTheFuture(
                                             application_date_calculator(
@@ -67,6 +66,7 @@ const ReadyToSubmitTasks = (props) => {
                                             ? ''
                                             : 'bold'
                                     }
+                                    variant="body2"
                                 >
                                     {application_date_calculator(
                                         props.student,
@@ -76,7 +76,6 @@ const ReadyToSubmitTasks = (props) => {
                             </TableCell>
                             <TableCell>
                                 <Typography
-                                    variant="body2"
                                     fontWeight={
                                         isInTheFuture(
                                             application_deadline_calculator(
@@ -87,6 +86,7 @@ const ReadyToSubmitTasks = (props) => {
                                             ? 'bold'
                                             : ''
                                     }
+                                    variant="body2"
                                 >
                                     {application_deadline_calculator(
                                         props.student,
@@ -115,7 +115,7 @@ const ReadyToSubmitTasks = (props) => {
     );
 };
 
-function ReadyToSubmitTasksCard(props) {
+const ReadyToSubmitTasksCard = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
 
@@ -158,6 +158,6 @@ function ReadyToSubmitTasksCard(props) {
             </TableContainer>
         </Card>
     );
-}
+};
 
 export default ReadyToSubmitTasksCard;

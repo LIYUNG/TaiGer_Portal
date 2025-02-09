@@ -14,7 +14,7 @@ import { BaseDocumentsTable } from './BaseDocumentsTable';
 import { useQuery } from '@tanstack/react-query';
 import { getStudentsAndDocLinks2Query } from '../../api/query';
 
-function BaseDocuments() {
+const BaseDocuments = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const { data, isLoading, isError, error } = useQuery(
@@ -30,8 +30,8 @@ function BaseDocuments() {
         students?.map((student, i) => (
             <Card key={i}>
                 <BaseDocument_StudentView
-                    student={student}
                     base_docs_link={base_docs_link}
+                    student={student}
                 />
             </Card>
         ));
@@ -40,18 +40,18 @@ function BaseDocuments() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
-                {is_TaiGer_role(user) && (
+                {is_TaiGer_role(user) ? (
                     <Typography color="text.primary">
                         {t('My Students', { ns: 'common' })}
                     </Typography>
-                )}
+                ) : null}
                 {is_TaiGer_role(user) ? (
                     <Typography color="text.primary">
                         {t('Base Documents', { ns: 'common' })}
@@ -62,17 +62,17 @@ function BaseDocuments() {
                     </Typography>
                 )}
             </Breadcrumbs>
-            {isLoading && <Loading />}
-            {isError && <>{error}</>}
-            {!isLoading &&
-                !isError &&
-                (is_TaiGer_role(user) ? (
+            {isLoading ? <Loading /> : null}
+            {isError ? <>{error}</> : null}
+            {!isLoading && !isError ? (
+                is_TaiGer_role(user) ? (
                     <BaseDocumentsTable students={students} />
                 ) : (
                     <StudentDocoumentsView />
-                ))}
+                )
+            ) : null}
         </Box>
     );
-}
+};
 
 export default BaseDocuments;

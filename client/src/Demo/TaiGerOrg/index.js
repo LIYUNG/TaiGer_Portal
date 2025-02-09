@@ -30,7 +30,7 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 
 // TODO TEST_CASE
-function TaiGerOrg() {
+const TaiGerOrg = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
 
@@ -244,24 +244,24 @@ function TaiGerOrg() {
                 </TableCell>
                 <TableCell>
                     <Button
-                        id="basic-button"
-                        variant="contained"
                         aria-controls={open ? `basic-menu` : undefined}
-                        aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
+                        aria-haspopup="true"
+                        id="basic-button"
                         onClick={handleClick}
+                        variant="contained"
                     >
                         {t('Edit', { ns: 'common' })}
                     </Button>
                     <Menu
-                        id={`basic-menu`}
-                        anchorEl={anchorEl}
-                        disabled={!is_TaiGer_Admin(user)}
-                        open={open}
-                        onClose={handleClose}
                         MenuListProps={{
                             'aria-labelledby': 'basic-button'
                         }}
+                        anchorEl={anchorEl}
+                        disabled={!is_TaiGer_Admin(user)}
+                        id="basic-menu"
+                        onClose={handleClose}
+                        open={open}
                     >
                         <MenuItem
                             onClick={() =>
@@ -361,24 +361,24 @@ function TaiGerOrg() {
                 </TableCell>
                 <TableCell>
                     <Button
-                        id="basic-button"
-                        variant="contained"
                         aria-controls={open ? `basic-menu` : undefined}
-                        aria-haspopup="true"
                         aria-expanded={open ? 'true' : undefined}
+                        aria-haspopup="true"
+                        id="basic-button"
                         onClick={handleClick}
+                        variant="contained"
                     >
                         {t('Edit', { ns: 'common' })}
                     </Button>
                     <Menu
-                        id={`basic-menu`}
-                        anchorEl={anchorEl}
-                        disabled={!is_TaiGer_Admin(user)}
-                        open={open}
-                        onClose={() => setAnchorEl(null)}
                         MenuListProps={{
                             'aria-labelledby': 'basic-button'
                         }}
+                        anchorEl={anchorEl}
+                        disabled={!is_TaiGer_Admin(user)}
+                        id="basic-menu"
+                        onClose={() => setAnchorEl(null)}
+                        open={open}
                     >
                         <MenuItem
                             onClick={() =>
@@ -401,10 +401,10 @@ function TaiGerOrg() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -419,7 +419,7 @@ function TaiGerOrg() {
                 </Typography>
             </Breadcrumbs>
             <Card>
-                {is_TaiGer_Admin(user) && (
+                {is_TaiGer_Admin(user) ? (
                     <>
                         <Typography variant="h5">Admin:</Typography>
                         {admins.map((admin, i) => (
@@ -434,7 +434,7 @@ function TaiGerOrg() {
                             </Typography>
                         ))}
                     </>
-                )}
+                ) : null}
             </Card>
             <Card>
                 <Typography variant="h5">
@@ -517,28 +517,28 @@ function TaiGerOrg() {
                     </Table>
                 </TableContainer>
             </Card>
-            {taiGerOrgState.modalShow && (
+            {taiGerOrgState.modalShow ? (
                 <GrantPermissionModal
+                    firstname={taiGerOrgState.firstname}
+                    lastname={taiGerOrgState.lastname}
                     modalShow={taiGerOrgState.modalShow}
-                    firstname={taiGerOrgState.firstname}
-                    lastname={taiGerOrgState.lastname}
-                    user_permissions={taiGerOrgState.user_permissions}
+                    onUpdatePermissions={onUpdatePermissions}
                     setModalHide={setModalHide}
-                    onUpdatePermissions={onUpdatePermissions}
+                    user_permissions={taiGerOrgState.user_permissions}
                 />
-            )}
-            {taiGerOrgState.managerModalShow && (
+            ) : null}
+            {taiGerOrgState.managerModalShow ? (
                 <GrantManagerModal
-                    managerModalShow={taiGerOrgState.managerModalShow}
                     firstname={taiGerOrgState.firstname}
                     lastname={taiGerOrgState.lastname}
-                    user_permissions={taiGerOrgState.user_permissions}
-                    setManagerModalHide={setManagerModalHide}
+                    managerModalShow={taiGerOrgState.managerModalShow}
                     onUpdatePermissions={onUpdatePermissions}
+                    setManagerModalHide={setManagerModalHide}
+                    user_permissions={taiGerOrgState.user_permissions}
                 />
-            )}
+            ) : null}
         </Box>
     );
-}
+};
 
 export default TaiGerOrg;

@@ -9,12 +9,12 @@ import {
 } from '@mui/material';
 import i18next from 'i18next';
 
-function UserArchivWarning(props) {
+const UserArchivWarning = (props) => {
     return (
         <Dialog
-            open={props.archivUserWarning}
-            onClose={props.setModalArchivHide}
             aria-labelledby="contained-modal-title-vcenter"
+            onClose={props.setModalArchivHide}
+            open={props.archivUserWarning}
         >
             <DialogTitle>{i18next.t('Warning', { ns: 'common' })}</DialogTitle>
             <DialogContent>
@@ -30,13 +30,13 @@ function UserArchivWarning(props) {
             <DialogActions>
                 <Button
                     color="primary"
-                    variant="contained"
                     onClick={() =>
                         props.updateUserArchivStatus(
                             props.selected_user_id,
                             props.archiv === true ? false : true
                         )
                     }
+                    variant="contained"
                 >
                     {props.isLoaded
                         ? i18next.t('Yes', { ns: 'common' })
@@ -44,13 +44,13 @@ function UserArchivWarning(props) {
                 </Button>
                 <Button
                     color="primary"
-                    variant="outlined"
                     onClick={props.setModalArchivHide}
+                    variant="outlined"
                 >
                     {i18next.t('No', { ns: 'common' })}
                 </Button>
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default UserArchivWarning;

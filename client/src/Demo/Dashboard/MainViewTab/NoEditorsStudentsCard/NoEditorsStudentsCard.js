@@ -16,7 +16,7 @@ import EditEditorsSubpage from '../StudDocsOverview/EditEditorsSubpage';
 import DEMO from '../../../../store/constant';
 import { useAuth } from '../../../../components/AuthProvider';
 
-function NoEditorsStudentsCard(props) {
+const NoEditorsStudentsCard = (props) => {
     const { user } = useAuth();
     const [noEditorsStudentsCardState, setNoEditorsStudentsCardState] =
         useState({
@@ -61,34 +61,34 @@ function NoEditorsStudentsCard(props) {
         return (
             <>
                 <TableRow>
-                    {is_TaiGer_role(user) && !props.isArchivPage && (
+                    {is_TaiGer_role(user) && !props.isArchivPage ? (
                         <TableCell>
                             <Button
-                                size="small"
-                                id="basic-button"
-                                variant="contained"
                                 aria-controls={open ? 'basic-menu' : undefined}
-                                aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
+                                aria-haspopup="true"
+                                id="basic-button"
                                 onClick={handleClick}
+                                size="small"
+                                variant="contained"
                             >
                                 {t('Option', { ns: 'common' })}
                             </Button>
                             <Menu
-                                id="basic-menu"
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
                                 MenuListProps={{
                                     'aria-labelledby': 'basic-button'
                                 }}
+                                anchorEl={anchorEl}
+                                id="basic-menu"
+                                onClose={handleClose}
+                                open={open}
                             >
                                 <MenuItem onClick={() => startEditingEditor()}>
                                     Edit Editor
                                 </MenuItem>
                             </Menu>
                         </TableCell>
-                    )}
+                    ) : null}
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -132,20 +132,20 @@ function NoEditorsStudentsCard(props) {
                     </TableCell>
                 </TableRow>
                 {is_TaiGer_role(user) &&
-                    noEditorsStudentsCardState.showEditorPage && (
-                        <EditEditorsSubpage
-                            student={props.student}
-                            show={noEditorsStudentsCardState.showEditorPage}
-                            onHide={setEditorModalhide}
-                            setmodalhide={setEditorModalhide}
-                            submitUpdateEditorlist={submitUpdateEditorlist}
-                        />
-                    )}
+                noEditorsStudentsCardState.showEditorPage ? (
+                    <EditEditorsSubpage
+                        onHide={setEditorModalhide}
+                        setmodalhide={setEditorModalhide}
+                        show={noEditorsStudentsCardState.showEditorPage}
+                        student={props.student}
+                        submitUpdateEditorlist={submitUpdateEditorlist}
+                    />
+                ) : null}
             </>
         );
     } else {
         return <></>;
     }
-}
+};
 
 export default NoEditorsStudentsCard;

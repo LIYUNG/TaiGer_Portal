@@ -16,7 +16,7 @@ import {
 import BaseDocumentCheckingTasks from '../../MainViewTab/AgentTasks/BaseDocumentCheckingTasks';
 import { useAuth } from '../../../../components/AuthProvider';
 
-function BaseDocumentCheckingTable(props) {
+const BaseDocumentCheckingTable = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
 
@@ -57,6 +57,6 @@ function BaseDocumentCheckingTable(props) {
             </Card>
         </Box>
     );
-}
+};
 
 export default BaseDocumentCheckingTable;

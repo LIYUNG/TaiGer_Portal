@@ -19,10 +19,10 @@ const KPIDashboardTab = ({
 }) => {
     return (
         <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
+            <Grid item md={4} xs={12}>
                 <Card sx={{ p: 2 }}>
                     <Typography>Closed CV KPI</Typography>
-                    <ResponsiveContainer width="100%" height={300}>
+                    <ResponsiveContainer height={300} width="100%">
                         <BarChart
                             data={CVdataWithDuration}
                             margin={{
@@ -34,18 +34,18 @@ const KPIDashboardTab = ({
                         >
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis
-                                dataKey="name"
                                 angle={270}
+                                axisLine={false}
+                                dataKey="name"
                                 dx={0}
                                 dy={25}
                                 minTickGap={-200}
-                                axisLine={false}
                             />
                             <YAxis>
                                 <Label
-                                    value="Duration (days)"
                                     angle={-90}
                                     position="insideLeft"
+                                    value="Duration (days)"
                                 />
                             </YAxis>
                             <Tooltip labelStyle={{ color: 'black' }} />
@@ -55,10 +55,10 @@ const KPIDashboardTab = ({
                     </ResponsiveContainer>
                 </Card>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item md={4} xs={12}>
                 <Card sx={{ p: 2 }}>
                     <Typography>Closed ML KPI</Typography>
-                    <ResponsiveContainer width="100%" height={300}>
+                    <ResponsiveContainer height={300} width="100%">
                         <BarChart
                             data={MLdataWithDuration}
                             margin={{
@@ -70,18 +70,18 @@ const KPIDashboardTab = ({
                         >
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis
-                                dataKey="name"
                                 angle={270}
+                                axisLine={false}
+                                dataKey="name"
                                 dx={0}
                                 dy={25}
                                 minTickGap={-200}
-                                axisLine={false}
                             />
                             <YAxis>
                                 <Label
-                                    value="Duration (days)"
                                     angle={-90}
                                     position="insideLeft"
+                                    value="Duration (days)"
                                 />
                             </YAxis>
                             <Tooltip labelStyle={{ color: 'black' }} />
@@ -91,10 +91,10 @@ const KPIDashboardTab = ({
                     </ResponsiveContainer>
                 </Card>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item md={4} xs={12}>
                 <Card sx={{ p: 2 }}>
                     <Typography>Closed RL KPI</Typography>
-                    <ResponsiveContainer width="100%" height={300}>
+                    <ResponsiveContainer height={300} width="100%">
                         <BarChart
                             data={RLdataWithDuration}
                             margin={{
@@ -106,18 +106,18 @@ const KPIDashboardTab = ({
                         >
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis
-                                dataKey="name"
                                 angle={270}
+                                axisLine={false}
+                                dataKey="name"
                                 dx={0}
                                 dy={25}
                                 minTickGap={-200}
-                                axisLine={false}
                             />
                             <YAxis>
                                 <Label
-                                    value="Duration (days)"
                                     angle={-90}
                                     position="insideLeft"
+                                    value="Duration (days)"
                                 />
                             </YAxis>
                             <Tooltip labelStyle={{ color: 'black' }} />

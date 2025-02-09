@@ -33,7 +33,7 @@ import { useAuth } from '../../../../components/AuthProvider';
 import EditAttributesSubpage from '../StudDocsOverview/EditAttributesSubpage';
 import { COLORS, stringAvatar } from '../../../../utils/contants';
 
-function StudentBriefOverview(props) {
+const StudentBriefOverview = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [studentBriefOverviewState, setStudentBriefOverviewState] = useState({
@@ -136,20 +136,20 @@ function StudentBriefOverview(props) {
         return (
             student.agents?.map((agent) => (
                 <Tooltip
-                    title={`${agent.firstname} ${agent.lastname}`}
-                    placement="bottom-start"
                     key={agent._id}
+                    placement="bottom-start"
+                    title={`${agent.firstname} ${agent.lastname}`}
                 >
                     <Link
-                        to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
                         component={LinkDom}
+                        to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
                         underline="none"
                     >
                         <Avatar
                             {...stringAvatar(
                                 `${agent.firstname} ${agent.lastname}`
                             )}
-                        ></Avatar>
+                        />
                     </Link>
                 </Tooltip>
             )) || <></>
@@ -160,20 +160,20 @@ function StudentBriefOverview(props) {
         return (
             student.editors?.map((editor) => (
                 <Tooltip
-                    title={`${editor.firstname} ${editor.lastname}`}
-                    placement="bottom-start"
                     key={editor._id}
+                    placement="bottom-start"
+                    title={`${editor.firstname} ${editor.lastname}`}
                 >
                     <Link
-                        to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
                         component={LinkDom}
+                        to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
                         underline="none"
                     >
                         <Avatar
                             {...stringAvatar(
                                 `${editor.firstname} ${editor.lastname}`
                             )}
-                        ></Avatar>
+                        />
                     </Link>
                 </Tooltip>
             )) || <></>
@@ -184,11 +184,12 @@ function StudentBriefOverview(props) {
         <>
             <Box>
                 <Grid container spacing={2}>
-                    <Grid item xs={12} md={6}>
-                        <Stack direction="row" alignItems="center" spacing={1}>
-                            {!is_TaiGer_Editor(user) && (
+                    <Grid item md={6} xs={12}>
+                        <Stack alignItems="center" direction="row" spacing={1}>
+                            {!is_TaiGer_Editor(user) ? (
                                 <Box sx={{ display: 'flex' }}>
                                     <Tooltip
+                                        placement="bottom-start"
                                         title={
                                             is_User_Archived(props.student)
                                                 ? t('Activate', {
@@ -196,7 +197,6 @@ function StudentBriefOverview(props) {
                                                   })
                                                 : t('Archive', { ns: 'common' })
                                         }
-                                        placement="bottom-start"
                                     >
                                         <IconButton
                                             onClick={setArchivModalOpen}
@@ -209,11 +209,11 @@ function StudentBriefOverview(props) {
                                         </IconButton>
                                     </Tooltip>
                                 </Box>
-                            )}
+                            ) : null}
                             <Box>
                                 <Typography
-                                    variant="body2"
                                     color="textSecondary"
+                                    variant="body2"
                                 >
                                     {props.student.application_preference
                                         .expected_application_date ||
@@ -225,7 +225,7 @@ function StudentBriefOverview(props) {
                                         .target_degree || 'TBD'}{' '}
                                     ({props.student.applying_program_count})
                                 </Typography>
-                                <Typography variant="body1" fontWeight="bold">
+                                <Typography fontWeight="bold" variant="body1">
                                     {props.student.firstname},{' '}
                                     {props.student.lastname} {' | '}
                                     {props.student.lastname_chinese}
@@ -234,17 +234,20 @@ function StudentBriefOverview(props) {
                                 <Typography variant="body2">
                                     {props.student.email}
                                 </Typography>
-                                {is_TaiGer_role(user) &&
-                                    props.student.attributes?.map(
-                                        (attribute) => (
-                                            <Chip
-                                                size="small"
-                                                label={attribute.name}
-                                                key={attribute._id}
-                                                color={COLORS[attribute.value]}
-                                            />
-                                        )
-                                    )}
+                                {is_TaiGer_role(user)
+                                    ? props.student.attributes?.map(
+                                          (attribute) => (
+                                              <Chip
+                                                  color={
+                                                      COLORS[attribute.value]
+                                                  }
+                                                  key={attribute._id}
+                                                  label={attribute.name}
+                                                  size="small"
+                                              />
+                                          )
+                                      )
+                                    : null}
                                 <ButtonBase
                                     onClick={() => startEditingAttributes()}
                                     sx={{
@@ -265,21 +268,21 @@ function StudentBriefOverview(props) {
                             </Box>
                         </Stack>
                     </Grid>
-                    <Grid item xs={12} md={6}>
+                    <Grid item md={6} xs={12}>
                         <Stack
+                            alignItems="center"
                             direction="row"
                             justifyContent="flex-end"
-                            alignItems="center"
                             spacing={1}
                         >
                             <Box>
                                 <Typography
-                                    variant="body2"
                                     color="textSecondary"
+                                    variant="body2"
                                 >
                                     Agents
                                 </Typography>
-                                <Box display="flex" alignItems="center" mt={1}>
+                                <Box alignItems="center" display="flex" mt={1}>
                                     <StudentsAgentAvartar
                                         student={props.student}
                                     />
@@ -298,12 +301,12 @@ function StudentBriefOverview(props) {
                             </Box>
                             <Box>
                                 <Typography
-                                    variant="body2"
                                     color="textSecondary"
+                                    variant="body2"
                                 >
                                     Editors
                                 </Typography>
-                                <Box display="flex" alignItems="center" mt={1}>
+                                <Box alignItems="center" display="flex" mt={1}>
                                     <StudentsEditorAvartar
                                         student={props.student}
                                     />
@@ -324,38 +327,38 @@ function StudentBriefOverview(props) {
                     </Grid>
                 </Grid>
             </Box>
-            {is_TaiGer_role(user) && (
+            {is_TaiGer_role(user) ? (
                 <>
-                    {studentBriefOverviewState.showAgentPage && (
+                    {studentBriefOverviewState.showAgentPage ? (
                         <EditAgentsSubpage
-                            student={props.student}
-                            show={studentBriefOverviewState.showAgentPage}
                             onHide={setAgentModalhide}
+                            show={studentBriefOverviewState.showAgentPage}
+                            student={props.student}
                             submitUpdateAgentlist={submitUpdateAgentlist}
                         />
-                    )}
-                    {studentBriefOverviewState.showEditorPage && (
+                    ) : null}
+                    {studentBriefOverviewState.showEditorPage ? (
                         <EditEditorsSubpage
-                            student={props.student}
-                            show={studentBriefOverviewState.showEditorPage}
                             onHide={setEditorModalhide}
+                            show={studentBriefOverviewState.showEditorPage}
+                            student={props.student}
                             submitUpdateEditorlist={submitUpdateEditorlist}
                         />
-                    )}
-                    {studentBriefOverviewState.showAttributesPage && (
+                    ) : null}
+                    {studentBriefOverviewState.showAttributesPage ? (
                         <EditAttributesSubpage
-                            student={props.student}
-                            show={studentBriefOverviewState.showAttributesPage}
                             onHide={setAttributeModalhide}
+                            show={studentBriefOverviewState.showAttributesPage}
+                            student={props.student}
                             submitUpdateAttributeslist={
                                 submitUpdateAttributeslist
                             }
                         />
-                    )}
-                    {studentBriefOverviewState.showArchivModalPage && (
+                    ) : null}
+                    {studentBriefOverviewState.showArchivModalPage ? (
                         <Dialog
-                            open={studentBriefOverviewState.showArchivModalPage}
                             onClose={setArchivModalhide}
+                            open={studentBriefOverviewState.showArchivModalPage}
                         >
                             <DialogTitle>
                                 {t('Move to archive statement', {
@@ -370,24 +373,23 @@ function StudentBriefOverview(props) {
                             </DialogTitle>
                             <DialogContent>
                                 <FormControlLabel
-                                    label={t('Inform student for archive', {
-                                        ns: 'common'
-                                    })}
                                     control={
                                         <Checkbox
-                                            id={`Inform student`}
                                             checked={shouldInform}
+                                            id="Inform student"
                                             onChange={() =>
                                                 setShouldInform(!shouldInform)
                                             }
                                         />
                                     }
+                                    label={t('Inform student for archive', {
+                                        ns: 'common'
+                                    })}
                                 />
                             </DialogContent>
                             <DialogActions>
                                 <Button
                                     color="primary"
-                                    variant="contained"
                                     disabled={isLoading}
                                     onClick={() =>
                                         updateStudentArchivStatus(
@@ -396,6 +398,7 @@ function StudentBriefOverview(props) {
                                             shouldInform
                                         )
                                     }
+                                    variant="contained"
                                 >
                                     {isLoading ? (
                                         <CircularProgress size={24} />
@@ -408,11 +411,11 @@ function StudentBriefOverview(props) {
                                 </Button>
                             </DialogActions>
                         </Dialog>
-                    )}
+                    ) : null}
                 </>
-            )}
+            ) : null}
         </>
     );
-}
+};
 
 export default StudentBriefOverview;

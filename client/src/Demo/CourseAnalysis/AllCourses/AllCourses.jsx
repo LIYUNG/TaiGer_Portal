@@ -16,18 +16,18 @@ const AllCourses = () => {
         <>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.INTERNAL_WIDGET_COURSE_ANALYSER_LINK}`}
+                    underline="hover"
                 >
                     {i18next.t('Course Analyser', { ns: 'common' })}
                 </Link>
@@ -35,10 +35,10 @@ const AllCourses = () => {
                     {i18next.t('All Courses DB', { ns: 'common' })}
                 </Typography>
             </Breadcrumbs>
-            {isLoading && <Loading />}
-            {!isLoading && (
+            {isLoading ? <Loading /> : null}
+            {!isLoading ? (
                 <AllCoursesTable data={courses} isLoading={isLoading} />
-            )}
+            ) : null}
         </>
     );
 };

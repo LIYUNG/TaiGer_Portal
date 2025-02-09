@@ -111,37 +111,38 @@ const EmbeddedChatList = ({ student_id }) => {
                 </SearchIconWrapper>
                 <StyledInputBase
                     id="search-friends"
-                    placeholder="Search…"
                     inputProps={{ 'aria-label': 'search' }}
-                    value={searchTerm}
-                    onClick={(e) => e.stopPropagation()}
                     onChange={handleInputChange}
+                    onClick={(e) => e.stopPropagation()}
+                    placeholder="Search…"
+                    value={searchTerm}
                 />
             </Search>
-            {isLoading &&
-                [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-                    <MenuItem key={i}>
-                        <Skeleton variant="circular" width={40} height={40} />
-                        <Skeleton
-                            variant="rectangular"
-                            width={EmbeddedChatListWidth - 50}
-                            height={54}
-                            style={{
-                                marginLeft: '10px'
-                            }}
-                        />
-                    </MenuItem>
-                ))}
-            {!isLoading && (
+            {isLoading
+                ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+                      <MenuItem key={i}>
+                          <Skeleton height={40} variant="circular" width={40} />
+                          <Skeleton
+                              height={54}
+                              style={{
+                                  marginLeft: '10px'
+                              }}
+                              variant="rectangular"
+                              width={EmbeddedChatListWidth - 50}
+                          />
+                      </MenuItem>
+                  ))
+                : null}
+            {!isLoading ? (
                 <Friends
-                    user={user}
                     students={
                         chatListState.searchMode
                             ? searchResults
                             : data?.data?.students || []
                     }
+                    user={user}
                 />
-            )}
+            ) : null}
         </Box>
     );
 };

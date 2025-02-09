@@ -9,7 +9,7 @@ import DEMO from '../../../store/constant';
 import { appConfig } from '../../../config';
 import ProgramRequirementsNew from './ProgramRequirementsNew';
 
-function ProgramRequirementsEditIndex() {
+const ProgramRequirementsEditIndex = () => {
     const { programRequirement } = useLoaderData();
     TabTitle(i18next.t('Program Requirement Edit'));
 
@@ -17,26 +17,26 @@ function ProgramRequirementsEditIndex() {
         <Box data-testid="dashoboard_component">
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.PROGRAMS}`}
+                    underline="hover"
                 >
                     {i18next.t('Program List', { ns: 'common' })}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.PROGRAM_ANALYSIS}`}
+                    underline="hover"
                 >
                     {i18next.t('Program Requirements', { ns: 'common' })}
                 </Link>
@@ -55,6 +55,6 @@ function ProgramRequirementsEditIndex() {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default ProgramRequirementsEditIndex;

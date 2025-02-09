@@ -52,19 +52,17 @@ export default function ResetPasswordRequest() {
     };
     return (
         <AuthWrapper>
-            <Typography component="h1" variant="h5" sx={{ my: 2 }}>
+            <Typography component="h1" sx={{ my: 2 }} variant="h5">
                 {t('Reset Login Password')}
             </Typography>
             {emailSent ? (
-                <>
-                    <Typography>
-                        {t(
-                            'Password reset email is already sent to your give email address'
-                        )}
-                        <br />
-                        {t('Please have a check')}
-                    </Typography>
-                </>
+                <Typography>
+                    {t(
+                        'Password reset email is already sent to your give email address'
+                    )}
+                    <br />
+                    {t('Please have a check')}
+                </Typography>
             ) : (
                 <>
                     <Typography component="h1" variant="h6">
@@ -73,21 +71,21 @@ export default function ResetPasswordRequest() {
                         )}
                     </Typography>
                     <TextField
-                        id="email"
-                        margin="normal"
-                        required
-                        fullWidth
-                        label={t('Email Address')}
-                        type="email"
                         autoComplete="email"
+                        fullWidth
+                        id="email"
+                        label={t('Email Address')}
+                        margin="normal"
                         onChange={(e) => setEmailaddress(e.target.value)}
+                        required
+                        type="email"
                     />
                     <Button
                         color="primary"
-                        variant="contained"
-                        onClick={handleSubmit}
                         disabled={buttonDisable}
+                        onClick={handleSubmit}
                         sx={{ mt: 2 }}
+                        variant="contained"
                     >
                         {buttonDisable ? (
                             <CircularProgress />
@@ -98,11 +96,11 @@ export default function ResetPasswordRequest() {
                 </>
             )}
             <Grid container spacing={2} sx={{ my: 2 }}>
-                <Grid item xs={6} sx={{ textAlign: 'right' }}>
+                <Grid item sx={{ textAlign: 'right' }} xs={6}>
                     <Typography>{t('Already have an account')}?</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Link to={DEMO.LOGIN_LINK} component={NavLink}>
+                    <Link component={NavLink} to={DEMO.LOGIN_LINK}>
                         <Typography>{t('Login', { ns: 'auth' })}</Typography>
                     </Link>
                 </Grid>

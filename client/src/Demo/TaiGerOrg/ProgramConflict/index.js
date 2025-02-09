@@ -14,7 +14,7 @@ import { appConfig } from '../../../config';
 import Loading from '../../../components/Loading/Loading';
 import { useTranslation } from 'react-i18next';
 
-function ProgramConflictDashboard() {
+const ProgramConflictDashboard = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [ProgramConflictDashboardState, setProgramConflictDashboardState] =
@@ -81,19 +81,19 @@ function ProgramConflictDashboard() {
 
     return (
         <Box>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={this.ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -109,6 +109,6 @@ function ProgramConflictDashboard() {
             />
         </Box>
     );
-}
+};
 
 export default ProgramConflictDashboard;

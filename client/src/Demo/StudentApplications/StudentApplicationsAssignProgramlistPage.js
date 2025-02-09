@@ -27,7 +27,7 @@ import Loading from '../../components/Loading/Loading';
 import { ImportStudentProgramsCard } from './ImportStudentProgramsCard';
 import { StudentPreferenceCard } from './StudentPreferenceCard';
 
-function StudentApplicationsAssignProgramlistPage(props) {
+const StudentApplicationsAssignProgramlistPage = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -89,20 +89,20 @@ function StudentApplicationsAssignProgramlistPage(props) {
 
     return (
         <Box>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
-            {is_TaiGer_Student(user) && (
+            ) : null}
+            {is_TaiGer_Student(user) ? (
                 <Dialog open={showProgramCorrectnessReminderModal}>
                     <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                     <DialogContent>
                         <Typography
-                            variant="body1"
                             sx={{ mt: 2 }}
+                            variant="body1"
                         >{`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}</Typography>
                         <Typography
                             sx={{ mt: 2 }}
@@ -110,69 +110,69 @@ function StudentApplicationsAssignProgramlistPage(props) {
                     </DialogContent>
                     <DialogActions>
                         <Button
-                            fullWidth
-                            variant="contained"
                             color="primary"
+                            fullWidth
                             onClick={closeProgramCorrectnessModal}
                             sx={{ mt: 2 }}
+                            variant="contained"
                         >
                             {t('Accept', { ns: 'common' })}
                         </Button>
                     </DialogActions>
                 </Dialog>
-            )}
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
-                {is_TaiGer_role(user) && (
+                {is_TaiGer_role(user) ? (
                     <Link
-                        underline="hover"
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                             props.student._id.toString(),
                             DEMO.PROFILE_HASH
                         )}`}
+                        underline="hover"
                     >
                         {props.student.firstname} {props.student.lastname}
                     </Link>
-                )}
+                ) : null}
                 <Typography color="text.primary">
                     {t('Applications')}
                 </Typography>
             </Breadcrumbs>
             <Grid container spacing={2}>
-                <Grid item xs={12} md={is_TaiGer_role(user) ? 6 : 12}>
+                <Grid item md={is_TaiGer_role(user) ? 6 : 12} xs={12}>
                     <StudentPreferenceCard student={props.student} />
                 </Grid>
-                {is_TaiGer_role(user) && (
-                    <Grid item xs={12} md={6}>
+                {is_TaiGer_role(user) ? (
+                    <Grid item md={6} xs={12}>
                         <ImportStudentProgramsCard student={props.student} />
                     </Grid>
-                )}
+                ) : null}
             </Grid>
             <>
                 <ProgramList
-                    student={props.student}
                     isStudentApplicationPage={true}
+                    student={props.student}
                 />
                 <Button
                     color="secondary"
-                    variant="contained"
-                    size="small"
                     onClick={onClickBackToApplicationOverviewnHandler}
+                    size="small"
+                    variant="contained"
                 >
                     {t('Back')}
                 </Button>
             </>
         </Box>
     );
-}
+};
 
 export default StudentApplicationsAssignProgramlistPage;

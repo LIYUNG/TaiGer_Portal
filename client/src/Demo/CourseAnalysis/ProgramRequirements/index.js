@@ -9,7 +9,7 @@ import DEMO from '../../../store/constant';
 import { appConfig } from '../../../config';
 import { useTranslation } from 'react-i18next';
 
-function ProgramRequirements() {
+const ProgramRequirements = () => {
     const { t } = useTranslation();
     const { programRequirements } = useLoaderData();
 
@@ -19,18 +19,18 @@ function ProgramRequirements() {
         <Box data-testid="dashoboard_component">
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.PROGRAMS}`}
+                    underline="hover"
                 >
                     {t('Program List', { ns: 'common' })}
                 </Link>
@@ -49,6 +49,6 @@ function ProgramRequirements() {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default ProgramRequirements;

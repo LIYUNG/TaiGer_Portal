@@ -28,7 +28,7 @@ CustomTabPanel.propTypes = {
     value: PropTypes.number.isRequired
 };
 
-function CVMLRLOverview(props) {
+const CVMLRLOverview = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const { hash } = useLocation();
@@ -139,11 +139,11 @@ function CVMLRLOverview(props) {
                             )}
                         </IconButton>
                         <Link
-                            underline="hover"
-                            to={linkUrl}
                             component={LinkDom}
                             target="_blank"
                             title={params.value}
+                            to={linkUrl}
+                            underline="hover"
                         >
                             {params.value}
                         </Link>
@@ -180,27 +180,27 @@ function CVMLRLOverview(props) {
                             (attribute) =>
                                 [1, 3, 9, 10, 11].includes(attribute.value) && (
                                     <Tooltip
+                                        key={attribute._id}
                                         title={`${attribute.name}: ${
                                             ATTRIBUTES[attribute.value - 1]
                                                 .definition
                                         }`}
-                                        key={attribute._id}
                                     >
                                         <Chip
-                                            size="small"
+                                            color={COLORS[attribute.value]}
                                             data-testid={`chip-${attribute.name}`}
                                             label={attribute.name[0]}
-                                            color={COLORS[attribute.value]}
+                                            size="small"
                                         />
                                     </Tooltip>
                                 )
                         )}
                         <Link
-                            underline="hover"
-                            to={linkUrl}
                             component={LinkDom}
                             target="_blank"
                             title={params.value}
+                            to={linkUrl}
+                            underline="hover"
                         >
                             {params.value}
                         </Link>
@@ -262,17 +262,15 @@ function CVMLRLOverview(props) {
                     params.row.thread_id
                 )}`;
                 return (
-                    <>
-                        <Link
-                            underline="hover"
-                            to={linkUrl}
-                            component={LinkDom}
-                            target="_blank"
-                            title={params.value}
-                        >
-                            {params.value}
-                        </Link>
-                    </>
+                    <Link
+                        component={LinkDom}
+                        target="_blank"
+                        title={params.value}
+                        to={linkUrl}
+                        underline="hover"
+                    >
+                        {params.value}
+                    </Link>
                 );
             }
         },
@@ -283,21 +281,21 @@ function CVMLRLOverview(props) {
 
     return (
         <>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
 
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
-                    value={tabTag}
-                    onChange={handleTabChange}
-                    variant="scrollable"
-                    scrollButtons="auto"
                     aria-label="basic tabs example"
+                    onChange={handleTabChange}
+                    scrollButtons="auto"
+                    value={tabTag}
+                    variant="scrollable"
                 >
                     <Tab
                         label={`${t('TODO', { ns: 'common' })} (${
@@ -331,108 +329,108 @@ function CVMLRLOverview(props) {
                     />
                 </Tabs>
             </Box>
-            <CustomTabPanel value={tabTag} index={0}>
+            <CustomTabPanel index={0} value={tabTag}>
                 <Banner
                     ReadOnlyMode={true}
-                    bg={'danger'}
-                    title={'warning'}
-                    path={'/'}
-                    text={'Please reply:'}
-                    link_name={''}
-                    removeBanner={<></>}
+                    bg="danger"
+                    link_name=""
                     notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
+                    text="Please reply:"
+                    title="warning"
                 />
                 <MuiDataGrid
+                    columnVisibilityModel={{
+                        number_input_from_editors: false,
+                        number_input_from_student: false
+                    }}
+                    columns={memoizedColumns}
                     rows={props.new_message_tasks}
-                    columns={memoizedColumns}
+                />
+            </CustomTabPanel>
+            <CustomTabPanel index={1} value={tabTag}>
+                <Banner
+                    ReadOnlyMode={true}
+                    bg="primary"
+                    link_name=""
+                    notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
+                    text="Follow up"
+                    title="info"
+                />
+                <MuiDataGrid
                     columnVisibilityModel={{
                         number_input_from_editors: false,
                         number_input_from_student: false
                     }}
-                />
-            </CustomTabPanel>
-            <CustomTabPanel value={tabTag} index={1}>
-                <Banner
-                    ReadOnlyMode={true}
-                    bg={'primary'}
-                    title={'info'}
-                    path={'/'}
-                    text={'Follow up'}
-                    link_name={''}
-                    removeBanner={<></>}
-                    notification_key={undefined}
-                />
-                <MuiDataGrid
+                    columns={memoizedColumns}
                     rows={props.fav_message_tasks}
-                    columns={memoizedColumns}
-                    columnVisibilityModel={{
-                        number_input_from_editors: false,
-                        number_input_from_student: false
-                    }}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={tabTag} index={2}>
+            <CustomTabPanel index={2} value={tabTag}>
                 <Banner
                     ReadOnlyMode={true}
-                    bg={'primary'}
-                    title={'info'}
-                    path={'/'}
-                    text={'Follow up'}
-                    link_name={''}
-                    removeBanner={<></>}
+                    bg="primary"
+                    link_name=""
                     notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
+                    text="Follow up"
+                    title="info"
                 />
                 <MuiDataGrid
-                    rows={props.followup_tasks}
-                    columns={memoizedColumns}
                     columnVisibilityModel={{
                         number_input_from_editors: false,
                         number_input_from_student: false
                     }}
+                    columns={memoizedColumns}
+                    rows={props.followup_tasks}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={tabTag} index={3}>
+            <CustomTabPanel index={3} value={tabTag}>
                 <Banner
                     ReadOnlyMode={true}
-                    bg={'info'}
-                    title={is_TaiGer_role(user) ? 'info' : 'warning'}
-                    path={'/'}
+                    bg="info"
+                    link_name=""
+                    notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
                     text={
                         is_TaiGer_role(user)
                             ? 'Waiting inputs. No action needed'
                             : 'Please provide input as soon as possible'
                     }
-                    link_name={''}
-                    removeBanner={<></>}
-                    notification_key={undefined}
+                    title={is_TaiGer_role(user) ? 'info' : 'warning'}
                 />
                 <MuiDataGrid
-                    rows={props.pending_progress_tasks}
-                    columns={memoizedColumns}
                     columnVisibilityModel={{
                         number_input_from_editors: false,
                         number_input_from_student: false
                     }}
+                    columns={memoizedColumns}
+                    rows={props.pending_progress_tasks}
                 />
             </CustomTabPanel>
-            <CustomTabPanel value={tabTag} index={4}>
+            <CustomTabPanel index={4} value={tabTag}>
                 <Banner
                     ReadOnlyMode={true}
-                    bg={'success'}
-                    title={'success'}
-                    path={'/'}
-                    text={'These tasks are closed.'}
-                    link_name={''}
-                    removeBanner={<></>}
+                    bg="success"
+                    link_name=""
                     notification_key={undefined}
+                    path="/"
+                    removeBanner={<></>}
+                    text="These tasks are closed."
+                    title="success"
                 />
                 <MuiDataGrid
-                    rows={props.closed_tasks}
-                    columns={memoizedColumns}
                     columnVisibilityModel={{
                         number_input_from_editors: false,
                         number_input_from_student: false
                     }}
+                    columns={memoizedColumns}
+                    rows={props.closed_tasks}
                 />
                 <Typography variant="body2">
                     {t(
@@ -443,6 +441,6 @@ function CVMLRLOverview(props) {
             </CustomTabPanel>
         </>
     );
-}
+};
 
 export default CVMLRLOverview;

@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-function ProgramReportDeleteModal(props) {
+const ProgramReportDeleteModal = (props) => {
     const [programReportDeleteModal, setProgramReportDeleteModalState] =
         useState({
             ticket: {},
@@ -36,9 +36,9 @@ function ProgramReportDeleteModal(props) {
 
     return (
         <Dialog
-            open={props.isReportDelete}
-            onClose={props.setReportDeleteModalHide}
             centered
+            onClose={props.setReportDeleteModalHide}
+            open={props.isReportDelete}
         >
             <DialogTitle>
                 {t('Delete ticket', { ns: 'programList' })}
@@ -50,15 +50,15 @@ function ProgramReportDeleteModal(props) {
                 </DialogContentText>
                 {t('Description', { ns: 'common' })}
                 <TextField
-                    fullWidth
-                    type="textarea"
-                    inputProps={{ maxLength: 2000 }}
-                    multiline
-                    minRows={4}
-                    placeholder="Deadline is wrong."
                     defaultValue={props.ticket.description}
+                    fullWidth
+                    inputProps={{ maxLength: 2000 }}
                     isInvalid={props.ticket.description?.length > 2000}
+                    minRows={4}
+                    multiline
                     onChange={(e) => handleChange(e)}
+                    placeholder="Deadline is wrong."
+                    type="textarea"
                 />
                 <Badge>
                     {props.ticket.description?.length || 0}/{2000}
@@ -67,15 +67,15 @@ function ProgramReportDeleteModal(props) {
                     {t('Feedback', { ns: 'common' })}
                 </DialogContentText>
                 <TextField
-                    fullWidth
-                    type="textarea"
-                    inputProps={{ maxLength: 2000 }}
-                    multiline
-                    minRows={4}
-                    placeholder="Deadline is wrong."
                     defaultValue={props.ticket.feedback}
+                    fullWidth
+                    inputProps={{ maxLength: 2000 }}
                     isInvalid={props.ticket.feedback?.length > 2000}
+                    minRows={4}
+                    multiline
                     onChange={(e) => handleChange(e)}
+                    placeholder="Deadline is wrong."
+                    type="textarea"
                 />
                 <Badge>
                     {props.ticket.feedback?.length || 0}/{2000}
@@ -86,34 +86,34 @@ function ProgramReportDeleteModal(props) {
                 <TextField
                     fullWidth
                     id="delete"
+                    onChange={(e) => handleDeleteChange(e)}
+                    placeholder="delete"
                     size="small"
                     type="text"
-                    placeholder="delete"
-                    onChange={(e) => handleDeleteChange(e)}
                 />
             </DialogContent>
             <DialogActions>
                 <Button
                     color="primary"
-                    variant="contained"
                     disabled={programReportDeleteModal.delete !== 'delete'}
                     onClick={() =>
                         props.submitProgramDeleteReport(
                             props.ticket._id.toString()
                         )
                     }
+                    variant="contained"
                 >
                     {t('Delete ticket', { ns: 'programList' })}
                 </Button>
                 <Button
                     color="secondary"
-                    variant="outlined"
                     onClick={props.setReportDeleteModalHide}
+                    variant="outlined"
                 >
                     {t('Close', { ns: 'common' })}
                 </Button>
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default ProgramReportDeleteModal;

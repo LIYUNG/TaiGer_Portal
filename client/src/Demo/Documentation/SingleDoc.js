@@ -13,7 +13,7 @@ import DEMO from '../../store/constant';
 import { documentation_categories } from '../../utils/contants';
 import DocPageView from './DocPageView';
 
-function SingleDoc(props) {
+const SingleDoc = (props) => {
     const { documentation_id } = useParams();
     const [singleDocState, setSingleDocState] = useState({
         error: '',
@@ -154,27 +154,27 @@ function SingleDoc(props) {
     if (singleDocState.isEdit) {
         return (
             <>
-                {res_modal_status >= 400 && (
+                {res_modal_status >= 400 ? (
                     <ModalMain
                         ConfirmError={ConfirmError}
-                        res_modal_status={res_modal_status}
                         res_modal_message={res_modal_message}
+                        res_modal_status={res_modal_status}
                     />
-                )}
+                ) : null}
                 <Breadcrumbs aria-label="breadcrumb">
                     <Link
-                        underline="hover"
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.DASHBOARD_LINK}`}
+                        underline="hover"
                     >
                         {appConfig.companyName}
                     </Link>
                     <Link
-                        underline="hover"
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.DOCS_ROOT_LINK(singleDocState.category)}`}
+                        underline="hover"
                     >
                         {documentation_categories[singleDocState.category]}
                     </Link>
@@ -183,41 +183,41 @@ function SingleDoc(props) {
                     </Typography>
                 </Breadcrumbs>
                 <SingleDocEdit
+                    author={singleDocState.author}
                     category={singleDocState.category}
                     document={document}
                     document_title={singleDocState.document_title}
                     editorState={singleDocState.editorState}
-                    author={singleDocState.author}
-                    isLoaded={isLoaded}
                     handleClickEditToggle={handleClickEditToggle}
                     handleClickSave={handleClickSave}
+                    isLoaded={isLoaded}
                 />
             </>
         );
     } else {
         return (
             <>
-                {res_modal_status >= 400 && (
+                {res_modal_status >= 400 ? (
                     <ModalMain
                         ConfirmError={ConfirmError}
-                        res_modal_status={res_modal_status}
                         res_modal_message={res_modal_message}
+                        res_modal_status={res_modal_status}
                     />
-                )}
+                ) : null}
                 <Breadcrumbs aria-label="breadcrumb">
                     <Link
-                        underline="hover"
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.DASHBOARD_LINK}`}
+                        underline="hover"
                     >
                         {appConfig.companyName}
                     </Link>
                     <Link
-                        underline="hover"
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.DOCS_ROOT_LINK(singleDocState.category)}`}
+                        underline="hover"
                     >
                         {documentation_categories[singleDocState.category]}
                     </Link>
@@ -226,15 +226,15 @@ function SingleDoc(props) {
                     </Typography>
                 </Breadcrumbs>
                 <DocPageView
+                    author={singleDocState.author}
                     category={singleDocState.category}
                     document={document}
                     document_title={singleDocState.document_title}
                     editorState={singleDocState.editorState}
-                    author={singleDocState.author}
                     handleClickEditToggle={handleClickEditToggle}
                 />
             </>
         );
     }
-}
+};
 export default SingleDoc;

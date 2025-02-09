@@ -5,7 +5,7 @@ import { Link, TableCell, TableRow } from '@mui/material';
 import { convertDate } from '../../../../utils/contants';
 import DEMO from '../../../../store/constant';
 
-function BaseDocumentCheckingTasks(props) {
+const BaseDocumentCheckingTasks = (props) => {
     return (
         <>
             {/* check program reday to be submitted */}
@@ -15,11 +15,11 @@ function BaseDocumentCheckingTasks(props) {
                         <TableRow key={i}>
                             <TableCell>
                                 <Link
+                                    component={LinkDom}
                                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                         props.student._id.toString(),
                                         DEMO.PROFILE_HASH
                                     )}`}
-                                    component={LinkDom}
                                 >
                                     <b>
                                         {props.student.firstname}{' '}
@@ -34,6 +34,6 @@ function BaseDocumentCheckingTasks(props) {
             )}
         </>
     );
-}
+};
 
 export default BaseDocumentCheckingTasks;

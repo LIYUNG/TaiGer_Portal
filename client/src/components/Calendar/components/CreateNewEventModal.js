@@ -22,7 +22,7 @@ import DEMO from '../../../store/constant';
 import { useAuth } from '../../AuthProvider';
 import { getLocalTime, getUTCTimezoneOffset } from '../../../utils/contants';
 
-export function CreateNewEventModal(props) {
+export const CreateNewEventModal = (props) => {
     const [newEventDescription, setNewEventDescription] = useState('');
     const { user } = useAuth();
     const { available_termins } = props;
@@ -60,65 +60,67 @@ export function CreateNewEventModal(props) {
 
     return (
         <Dialog
-            open={props.isNewEventModalOpen}
             onClose={props.handleNewEventModalClose}
+            open={props.isNewEventModalOpen}
         >
             <DialogTitle>Create New Event</DialogTitle>
             <DialogContent>
                 <TextField
                     fullWidth
-                    multiline
                     minRows={6}
+                    multiline
                     onChange={(e) => setNewEventDescription(e.target.value)}
-                    value={newEventDescription}
                     placeholder="Description"
+                    value={newEventDescription}
                 />
 
                 <span>
                     If the time zone not matches, please go to{' '}
-                    <Link to={`${DEMO.PROFILE}`} component={LinkDom}>
+                    <Link component={LinkDom} to={`${DEMO.PROFILE}`}>
                         Profile <LaunchIcon fontSize="small" />
                     </Link>{' '}
                     to update your time zone
                 </span>
-                <Typography variant="body1" sx={{ mt: 2 }}>
+                <Typography sx={{ mt: 2 }} variant="body1">
                     Time zone: {user.timezone}
-                    {available_termins[0] &&
-                        ` ( UTC +${
-                            getUTCTimezoneOffset(
-                                available_termins[0].start,
-                                user.timezone
-                            ) / 60
-                        } ) `}
+                    {available_termins[0]
+                        ? ` ( UTC +${
+                              getUTCTimezoneOffset(
+                                  available_termins[0].start,
+                                  user.timezone
+                              ) / 60
+                          } ) `
+                        : null}
                 </Typography>
                 <Typography variant="body1">
                     Date:{' '}
-                    {available_termins[0] &&
-                        getDate(
-                            getLocalTime(
-                                available_termins[0]?.start,
-                                user.timezone
-                            )
-                        )}
+                    {available_termins[0]
+                        ? getDate(
+                              getLocalTime(
+                                  available_termins[0]?.start,
+                                  user.timezone
+                              )
+                          )
+                        : null}
                 </Typography>
                 <FormControl fullWidth sx={{ my: 2 }}>
                     <InputLabel id="time_slot">
                         {i18next.t('Time Slot', { ns: 'common' })}
                     </InputLabel>
                     <Select
+                        id="Time_Slot"
+                        label={i18next.t('Time Slot', { ns: 'common' })}
                         labelId="Time_Slot"
                         name="Time_Slot"
-                        id="Time_Slot"
-                        value={props.newEventStart}
-                        label={i18next.t('Time Slot', { ns: 'common' })}
                         onChange={props.handleUpdateTimeSlot}
+                        value={props.newEventStart}
                     >
                         {available_termins
                             ?.sort((a, b) => (a.start < b.start ? -1 : 1))
                             .map((time_slot) => (
                                 <MenuItem
-                                    value={`${time_slot.start}`}
                                     key={`${time_slot.start}`}
+                                    value={`${time_slot.start}`}
                                 >
                                     {`${getHour(
                                         getLocalTime(
@@ -144,20 +146,20 @@ export function CreateNewEventModal(props) {
                         {i18next.t('Choose Student')}
                     </InputLabel>
                     <Select
+                        id="Choose_Student"
+                        label="Choose Student"
                         labelId="Choose_Student"
                         name="Choose_Student"
-                        id="Choose_Student"
-                        value={props.student_id}
-                        label={'Choose Student'}
                         onChange={props.handleSelectStudent}
+                        value={props.student_id}
                     >
-                        <MenuItem value="" key="x">
+                        <MenuItem key="x" value="">
                             Please Select
                         </MenuItem>
                         {props.students.map((student) => (
                             <MenuItem
-                                value={`${student._id.toString()}`}
                                 key={`${student._id.toString()}`}
+                                value={`${student._id.toString()}`}
                             >
                                 {student.firstname} {student.lastname}/{' '}
                                 {student.firstname_chinese}{' '}
@@ -170,13 +172,13 @@ export function CreateNewEventModal(props) {
             <DialogActions>
                 <Button
                     color="primary"
-                    variant="contained"
                     disabled={
                         props.BookButtonDisable ||
                         newEventDescription?.length === 0 ||
                         props.student_id === ''
                     }
                     onClick={handleCreateEvent}
+                    variant="contained"
                 >
                     {props.BookButtonDisable ? (
                         <CircularProgress />
@@ -185,12 +187,12 @@ export function CreateNewEventModal(props) {
                     )}
                 </Button>
                 <Button
-                    variant="outlined"
                     onClick={props.handleNewEventModalClose}
+                    variant="outlined"
                 >
                     {i18next.t('Cancel', { ns: 'common' })}
                 </Button>
             </DialogActions>
         </Dialog>
     );
-}
+};

@@ -34,7 +34,7 @@ import { useAuth } from '../../../../components/AuthProvider';
 import EditAttributesSubpage from '../StudDocsOverview/EditAttributesSubpage';
 import { COLORS } from '../../../../utils/contants';
 
-function StudentsAgentEditor(props) {
+const StudentsAgentEditor = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const theme = useTheme();
@@ -158,7 +158,6 @@ function StudentsAgentEditor(props) {
         studentsAgent = props.student.agents.map((agent) => (
             <Fragment key={agent._id}>
                 <Link
-                    to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
                     component={LinkDom}
                     style={{
                         color:
@@ -166,6 +165,7 @@ function StudentsAgentEditor(props) {
                                 ? theme.palette.primary.contrastText
                                 : ''
                     }}
+                    to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
                 >
                     {agent.firstname}
                 </Link>
@@ -182,7 +182,6 @@ function StudentsAgentEditor(props) {
         studentsEditor = props.student.editors.map((editor) => (
             <Fragment key={editor._id}>
                 <Link
-                    to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
                     component={LinkDom}
                     style={{
                         color:
@@ -190,6 +189,7 @@ function StudentsAgentEditor(props) {
                                 ? theme.palette.primary.contrastText
                                 : ''
                     }}
+                    to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
                 >
                     {`${editor.firstname}`}
                 </Link>
@@ -210,27 +210,27 @@ function StudentsAgentEditor(props) {
                 title={props.student.archiv === true ? 'Closed' : 'Open'}
             >
                 <TableCell>
-                    {is_TaiGer_role(user) && !props.isArchivPage && (
+                    {is_TaiGer_role(user) && !props.isArchivPage ? (
                         <>
                             <Button
-                                id="basic-button"
-                                variant="contained"
-                                size="small"
                                 aria-controls={open ? 'basic-menu' : undefined}
-                                aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
+                                aria-haspopup="true"
+                                id="basic-button"
                                 onClick={handleClick}
+                                size="small"
+                                variant="contained"
                             >
                                 {t('Option', { ns: 'common' })}
                             </Button>
                             <Menu
-                                id="basic-menu"
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
                                 MenuListProps={{
                                     'aria-labelledby': 'basic-button'
                                 }}
+                                anchorEl={anchorEl}
+                                id="basic-menu"
+                                onClose={handleClose}
+                                open={open}
                             >
                                 <MenuItem onClick={() => startEditingAgent()}>
                                     {t('Edit Agent', { ns: 'dashboard' })}
@@ -238,7 +238,7 @@ function StudentsAgentEditor(props) {
                                 <MenuItem onClick={() => startEditingEditor()}>
                                     {t('Edit Editor', { ns: 'dashboard' })}
                                 </MenuItem>
-                                {!is_TaiGer_Editor(user) && (
+                                {!is_TaiGer_Editor(user) ? (
                                     <MenuItem
                                         onClick={() => startEditingAttributes()}
                                     >
@@ -246,8 +246,8 @@ function StudentsAgentEditor(props) {
                                             ns: 'dashboard'
                                         })}
                                     </MenuItem>
-                                )}
-                                {!is_TaiGer_Editor(user) && (
+                                ) : null}
+                                {!is_TaiGer_Editor(user) ? (
                                     <MenuItem
                                         onClick={() => setArchivModalOpen()}
                                     >
@@ -259,19 +259,15 @@ function StudentsAgentEditor(props) {
                                                   ns: 'common'
                                               })}
                                     </MenuItem>
-                                )}
+                                ) : null}
                             </Menu>
                         </>
-                    )}
+                    ) : null}
                 </TableCell>
                 {!is_TaiGer_Student(user) ? (
                     <TableCell>
-                        <Typography variant="body2" fontWeight="bold">
+                        <Typography fontWeight="bold" variant="body2">
                             <Link
-                                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                    props.student._id,
-                                    DEMO.PROFILE_HASH
-                                )}`}
                                 component={LinkDom}
                                 style={{
                                     color:
@@ -279,6 +275,10 @@ function StudentsAgentEditor(props) {
                                             ? theme.palette.primary.contrastText
                                             : ''
                                 }}
+                                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                    props.student._id,
+                                    DEMO.PROFILE_HASH
+                                )}`}
                             >
                                 {props.student.firstname},{' '}
                                 {props.student.lastname} {' | '}
@@ -289,15 +289,16 @@ function StudentsAgentEditor(props) {
                         <Typography variant="body2">
                             {props.student.email}
                         </Typography>
-                        {is_TaiGer_role(user) &&
-                            props.student.attributes?.map((attribute) => (
-                                <Chip
-                                    size="small"
-                                    label={attribute.name}
-                                    key={attribute._id}
-                                    color={COLORS[attribute.value]}
-                                />
-                            ))}
+                        {is_TaiGer_role(user)
+                            ? props.student.attributes?.map((attribute) => (
+                                  <Chip
+                                      color={COLORS[attribute.value]}
+                                      key={attribute._id}
+                                      label={attribute.name}
+                                      size="small"
+                                  />
+                              ))
+                            : null}
                     </TableCell>
                 ) : (
                     <></>
@@ -379,39 +380,39 @@ function StudentsAgentEditor(props) {
                     </Typography>
                 </TableCell>
             </TableRow>
-            {is_TaiGer_role(user) && (
+            {is_TaiGer_role(user) ? (
                 <>
-                    {studentsAgentEditor.showAgentPage && (
+                    {studentsAgentEditor.showAgentPage ? (
                         <EditAgentsSubpage
-                            student={props.student}
-                            show={studentsAgentEditor.showAgentPage}
                             onHide={setAgentModalhide}
+                            show={studentsAgentEditor.showAgentPage}
+                            student={props.student}
                             submitUpdateAgentlist={submitUpdateAgentlist}
                         />
-                    )}
-                    {studentsAgentEditor.showEditorPage && (
+                    ) : null}
+                    {studentsAgentEditor.showEditorPage ? (
                         <EditEditorsSubpage
-                            student={props.student}
-                            show={studentsAgentEditor.showEditorPage}
                             onHide={setEditorModalhide}
+                            show={studentsAgentEditor.showEditorPage}
+                            student={props.student}
                             submitUpdateEditorlist={submitUpdateEditorlist}
                         />
-                    )}
-                    {studentsAgentEditor.showAttributesPage && (
+                    ) : null}
+                    {studentsAgentEditor.showAttributesPage ? (
                         <EditAttributesSubpage
-                            student={props.student}
-                            show={studentsAgentEditor.showAttributesPage}
                             onHide={setAttributeModalhide}
+                            show={studentsAgentEditor.showAttributesPage}
+                            student={props.student}
                             submitUpdateAttributeslist={
                                 submitUpdateAttributeslist
                             }
                         />
-                    )}
-                    {studentsAgentEditor.showArchivModalPage && (
+                    ) : null}
+                    {studentsAgentEditor.showArchivModalPage ? (
                         <Dialog
-                            open={studentsAgentEditor.showArchivModalPage}
-                            onClose={setArchivModalhide}
                             aria-labelledby="contained-modal-title-vcenter"
+                            onClose={setArchivModalhide}
+                            open={studentsAgentEditor.showArchivModalPage}
                         >
                             <DialogTitle sx={{ mb: 2 }}>
                                 {t('Move to archive statement', {
@@ -426,24 +427,23 @@ function StudentsAgentEditor(props) {
                             </DialogTitle>
                             <DialogContent>
                                 <FormControlLabel
-                                    label={t('Inform student for archive', {
-                                        ns: 'common'
-                                    })}
                                     control={
                                         <Checkbox
-                                            id={`Inform student`}
                                             checked={shouldInform}
+                                            id="Inform student"
                                             onChange={() =>
                                                 setShouldInform(!shouldInform)
                                             }
                                         />
                                     }
+                                    label={t('Inform student for archive', {
+                                        ns: 'common'
+                                    })}
                                 />
                             </DialogContent>
                             <DialogActions>
                                 <Button
                                     color="primary"
-                                    variant="contained"
                                     onClick={() =>
                                         updateStudentArchivStatus(
                                             props.student._id,
@@ -451,6 +451,7 @@ function StudentsAgentEditor(props) {
                                             shouldInform
                                         )
                                     }
+                                    variant="contained"
                                 >
                                     {isLoading ? (
                                         <CircularProgress size={24} />
@@ -463,11 +464,11 @@ function StudentsAgentEditor(props) {
                                 </Button>
                             </DialogActions>
                         </Dialog>
-                    )}
+                    ) : null}
                 </>
-            )}
+            ) : null}
         </>
     );
-}
+};
 
 export default StudentsAgentEditor;

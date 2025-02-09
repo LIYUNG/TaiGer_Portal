@@ -71,16 +71,16 @@ const DocumentCheckingResultModal = ({
 
     return (
         <Dialog
-            open={open}
-            onClose={onClose}
-            aria-labelledby="proceed-dialog-title"
             aria-describedby="proceed-dialog-description"
+            aria-labelledby="proceed-dialog-title"
+            onClose={onClose}
+            open={open}
         >
             <DialogTitle>
                 <Stack
+                    alignItems="center"
                     direction="row"
                     justifyContent="flex-start"
-                    alignItems="center"
                     spacing={2}
                 >
                     <ErrorOutlineIcon
@@ -97,9 +97,9 @@ const DocumentCheckingResultModal = ({
                         ) : error ? (
                             <Typography color="error">{error}</Typography>
                         ) : (
-                            <Fragment>
+                            <>
                                 {canProceed ? (
-                                    <Fragment>
+                                    <>
                                         <Typography id="proceed-dialog-description">
                                             The latest{' '}
                                             {`${student_name} ${docName} `}
@@ -108,15 +108,15 @@ const DocumentCheckingResultModal = ({
                                         <Typography id="proceed-dialog-description">
                                             {t('proceed-close')}
                                         </Typography>
-                                    </Fragment>
+                                    </>
                                 ) : (
-                                    <Fragment>
+                                    <>
                                         <Typography variant="h6">
                                             {t('gap-detected')}
                                         </Typography>
                                         <Typography
-                                            variant="body1"
                                             sx={{ my: 2 }}
+                                            variant="body1"
                                         >
                                             The latest{' '}
                                             {`${student_name} ${docName} `}
@@ -126,7 +126,6 @@ const DocumentCheckingResultModal = ({
                                             {reason} in the document.
                                         </Typography>
                                         <FormControlLabel
-                                            label={`I checked ${docName} again and I am sure it contains the patterns above and does not have gap.`}
                                             control={
                                                 <Checkbox
                                                     checked={acknowledge}
@@ -137,10 +136,11 @@ const DocumentCheckingResultModal = ({
                                                     }
                                                 />
                                             }
+                                            label={`I checked ${docName} again and I am sure it contains the patterns above and does not have gap.`}
                                         />
-                                    </Fragment>
+                                    </>
                                 )}
-                            </Fragment>
+                            </>
                         )
                     ) : isFinalVersion ? (
                         <>
@@ -163,13 +163,13 @@ const DocumentCheckingResultModal = ({
             </DialogContent>
             <DialogActions>
                 <Button
-                    variant="contained"
-                    onClick={onConfirm}
                     disabled={
                         file_type === 'CV' && !isFinalVersion
                             ? loading || !acknowledge
                             : false
                     }
+                    onClick={onConfirm}
+                    variant="contained"
                 >
                     Yes
                 </Button>

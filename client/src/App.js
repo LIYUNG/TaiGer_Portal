@@ -18,7 +18,7 @@ import DEMO from './store/constant';
 import { useAuth } from './components/AuthProvider';
 import Loading from './components/Loading/Loading';
 
-function Layout() {
+const Layout = () => {
     const navigation = useNavigation();
     return (
         <>
@@ -36,9 +36,9 @@ function Layout() {
             </NavBar>
         </>
     );
-}
+};
 
-function WrapperPublic() {
+const WrapperPublic = () => {
     const { isAuthenticated } = useAuth();
     const query = new URLSearchParams(window.location.search);
 
@@ -53,7 +53,7 @@ function WrapperPublic() {
             <Outlet />
         </Suspense>
     );
-}
+};
 
 const router = createBrowserRouter([
     {
@@ -68,12 +68,12 @@ const router = createBrowserRouter([
     },
     {
         path: '*',
-        element: <Navigate to={DEMO.LOGIN_LINK} replace />
+        element: <Navigate replace to={DEMO.LOGIN_LINK} />
     }
 ]);
 
-function App() {
+const App = () => {
     return <RouterProvider router={router} />;
-}
+};
 
 export default App;

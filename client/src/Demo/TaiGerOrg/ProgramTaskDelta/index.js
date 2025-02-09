@@ -14,7 +14,7 @@ import { useAuth } from '../../../components/AuthProvider';
 import { appConfig } from '../../../config';
 import Loading from '../../../components/Loading/Loading';
 
-function ProgramTaskDeltaDashboard() {
+const ProgramTaskDeltaDashboard = () => {
     const { user } = useAuth();
     const [ProgramTaskDeltaDashboardState, setProgramTaskDeltaDashboardState] =
         useState({
@@ -80,19 +80,19 @@ function ProgramTaskDeltaDashboard() {
 
     return (
         <Box>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={this.ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -106,6 +106,6 @@ function ProgramTaskDeltaDashboard() {
             <TabProgramTaskDelta deltas={ProgramTaskDeltaDashboardState.data} />
         </Box>
     );
-}
+};
 
 export default ProgramTaskDeltaDashboard;

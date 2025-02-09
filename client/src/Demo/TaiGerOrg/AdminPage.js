@@ -11,7 +11,7 @@ import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 
-function AdminPage() {
+const AdminPage = () => {
     const { user } = useAuth();
     const [adminPageState, setAdminPageState] = useState({
         error: '',
@@ -78,10 +78,10 @@ function AdminPage() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -98,6 +98,6 @@ function AdminPage() {
             </Card>
         </Box>
     );
-}
+};
 
 export default AdminPage;

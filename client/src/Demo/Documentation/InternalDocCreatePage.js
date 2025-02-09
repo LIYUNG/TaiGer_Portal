@@ -41,7 +41,7 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
 
-function InternalDocCreatePage(props) {
+const InternalDocCreatePage = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [internalDocCreatePageState, setInternalDocCreatePageState] =
@@ -271,12 +271,12 @@ function InternalDocCreatePage(props) {
         );
         return sections[`${cat}`].map((document, i) => (
             <DocumentsListItems
+                document={document}
                 idx={i}
                 key={i}
-                path={'/docs/internal/search'}
-                document={document}
-                user={user}
                 openDeleteDocModalWindow={openDeleteDocModalWindow}
+                path="/docs/internal/search"
+                user={user}
             />
         ));
     };
@@ -285,10 +285,10 @@ function InternalDocCreatePage(props) {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -306,22 +306,22 @@ function InternalDocCreatePage(props) {
                             <Box sx={{ p: 1 }}>
                                 <FormControl fullWidth>
                                     <Select
-                                        size="small"
+                                        id="category"
                                         labelId="category"
                                         name="category"
-                                        id="category"
                                         onChange={(e) =>
                                             handleChange_category(e)
                                         }
+                                        size="small"
                                     >
-                                        <MenuItem value={''}>
+                                        <MenuItem value="">
                                             Select Document Category
                                         </MenuItem>
                                         {valid_internal_categories.map(
                                             (cat, i) => (
                                                 <MenuItem
-                                                    value={cat.key}
                                                     key={i}
+                                                    value={cat.key}
                                                 >
                                                     {cat.value}
                                                 </MenuItem>
@@ -330,12 +330,12 @@ function InternalDocCreatePage(props) {
                                     </Select>
                                 </FormControl>
                                 <TextField
+                                    defaultValue=""
                                     fullWidth
+                                    onChange={(e) => handleChange_doc_title(e)}
+                                    placeholder="Title"
                                     size="small"
                                     type="text"
-                                    placeholder="Title"
-                                    defaultValue={''}
-                                    onChange={(e) => handleChange_doc_title(e)}
                                 />
                                 <DocumentsListItemsEditor
                                     category={
@@ -357,19 +357,19 @@ function InternalDocCreatePage(props) {
                             </Box>
                         ) : (
                             <>
-                                {is_TaiGer_AdminAgent(user) && (
+                                {is_TaiGer_AdminAgent(user) ? (
                                     <Button
-                                        fullWidth
-                                        size="small"
                                         color="primary"
-                                        variant="contained"
+                                        fullWidth
                                         onClick={handleClickEditToggle}
+                                        size="small"
                                         startIcon={<AddIcon />}
                                         sx={{ m: 1 }}
+                                        variant="contained"
                                     >
                                         {t('Add', { ns: 'common' })}
                                     </Button>
-                                )}
+                                ) : null}
                                 {documentlist_key.map((catego, i) => (
                                     <Box key={i} sx={{ p: 1 }}>
                                         <Typography variant="h6">
@@ -388,16 +388,16 @@ function InternalDocCreatePage(props) {
                     </Card>
                 </Grid>
             </Grid>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
             <Dialog
-                open={internalDocCreatePageState.SetDeleteDocModel}
                 onClose={closeDeleteDocModalWindow}
+                open={internalDocCreatePageState.SetDeleteDocModel}
             >
                 <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                 <DialogContent>
@@ -417,6 +417,6 @@ function InternalDocCreatePage(props) {
             </Dialog>
         </Box>
     );
-}
+};
 
 export default InternalDocCreatePage;

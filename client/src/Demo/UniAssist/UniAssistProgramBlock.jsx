@@ -60,11 +60,11 @@ const VisuallyHiddenInput = styled('input')({
 
 const ProgramName = ({ application }) => {
     return (
-        <Typography variant="body1" sx={{ mr: 2 }}>
+        <Typography sx={{ mr: 2 }} variant="body1">
             <Link
-                underline="hover"
-                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id.toString())}`}
                 component={LinkDom}
+                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id.toString())}`}
+                underline="hover"
             >
                 {`${application.programId.school} ${application.programId.program_name} - ${application.programId.semester} - ${application.programId.degree} - ${application.programId.uni_assist}`}
             </Link>
@@ -83,32 +83,30 @@ const SetNeedButtons = ({ application, setAsNotNeededModelOpen }) => {
     return (
         <span>
             {is_TaiGer_AdminAgent(user) &&
-                application.uni_assist?.vpd_paid_confirmation_file_path ===
-                    '' &&
-                application.uni_assist?.vpd_file_path === '' &&
-                !application.uni_assist?.isPaid &&
-                application.uni_assist?.status !==
-                    DocumentStatusType.NotNeeded && (
-                    <Button
-                        size="small"
-                        variant="contained"
-                        color="success"
-                        onClick={(e) => opensetAsNotNeededWindow(e)}
-                    >
-                        {i18next.t('Set Not Needed', { ns: 'common' })}
-                    </Button>
-                )}
+            application.uni_assist?.vpd_paid_confirmation_file_path === '' &&
+            application.uni_assist?.vpd_file_path === '' &&
+            !application.uni_assist?.isPaid &&
+            application.uni_assist?.status !== DocumentStatusType.NotNeeded ? (
+                <Button
+                    color="success"
+                    onClick={(e) => opensetAsNotNeededWindow(e)}
+                    size="small"
+                    variant="contained"
+                >
+                    {i18next.t('Set Not Needed', { ns: 'common' })}
+                </Button>
+            ) : null}
             {application.uni_assist?.status === DocumentStatusType.NotNeeded &&
-                is_TaiGer_AdminAgent(user) && (
-                    <Button
-                        size="small"
-                        color="success"
-                        variant="outlined"
-                        onClick={(e) => opensetAsNotNeededWindow(e)}
-                    >
-                        {i18next.t('Set needed')}
-                    </Button>
-                )}
+            is_TaiGer_AdminAgent(user) ? (
+                <Button
+                    color="success"
+                    onClick={(e) => opensetAsNotNeededWindow(e)}
+                    size="small"
+                    variant="outlined"
+                >
+                    {i18next.t('Set needed')}
+                </Button>
+            ) : null}
         </span>
     );
 };
@@ -236,43 +234,29 @@ export const UniAssistProgramBlock = ({ application, student }) => {
 
     return (
         <Box>
-            {applicationState.programId.uni_assist?.includes('Yes-VPD') && (
+            {applicationState.programId.uni_assist?.includes('Yes-VPD') ? (
                 <>
                     <Box sx={{ display: 'flex' }}>
                         <ProgramName application={applicationState} />
                         <SetNeedButtons
                             application={applicationState}
-                            student={student}
                             setAsNotNeededModelOpen={setAsNotNeededModelOpen}
+                            student={student}
                         />
                     </Box>
                     {applicationState.uni_assist?.status ===
-                        DocumentStatusType.NotNeeded && (
+                    DocumentStatusType.NotNeeded ? (
                         <Typography variant="string">
                             {i18next.t('uni-assist-not-necessary', {
                                 ns: 'uniassist'
                             })}
                         </Typography>
-                    )}
+                    ) : null}
                     {applicationState.uni_assist?.status !==
-                        DocumentStatusType.NotNeeded && (
+                    DocumentStatusType.NotNeeded ? (
                         <Box>
-                            {is_TaiGer_AdminAgent(user) && (
+                            {is_TaiGer_AdminAgent(user) ? (
                                 <FormControlLabel
-                                    label={i18next.t(
-                                        `All document uploaded to Uni-Assist and paid, waiting for VPD`,
-                                        { ns: 'uniassist' }
-                                    )}
-                                    disabled={
-                                        !(
-                                            !applicationState.uni_assist ||
-                                            applicationState.uni_assist
-                                                .status ===
-                                                DocumentStatusType.Missing ||
-                                            applicationState.uni_assist
-                                                .status === 'notstarted'
-                                        )
-                                    }
                                     control={
                                         <Checkbox
                                             checked={
@@ -291,11 +275,25 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                             }
                                         />
                                     }
+                                    disabled={
+                                        !(
+                                            !applicationState.uni_assist ||
+                                            applicationState.uni_assist
+                                                .status ===
+                                                DocumentStatusType.Missing ||
+                                            applicationState.uni_assist
+                                                .status === 'notstarted'
+                                        )
+                                    }
+                                    label={i18next.t(
+                                        `All document uploaded to Uni-Assist and paid, waiting for VPD`,
+                                        { ns: 'uniassist' }
+                                    )}
                                 />
-                            )}
+                            ) : null}
                             <Stack
-                                direction="row"
                                 alignItems="center"
+                                direction="row"
                                 spacing={1}
                             >
                                 <IconStatus
@@ -319,9 +317,8 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                         'notstarted' ? (
                                         <Button
                                             component="label"
-                                            size="small"
-                                            variant="outlined"
                                             disabled={isUploading}
+                                            size="small"
                                             startIcon={
                                                 isUploading ? (
                                                     <CircularProgress
@@ -331,13 +328,13 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                                     <CloudUploadIcon />
                                                 )
                                             }
+                                            variant="outlined"
                                         >
                                             {i18next.t('Upload', {
                                                 ns: 'common'
                                             })}{' '}
                                             VPD
                                             <VisuallyHiddenInput
-                                                type="file"
                                                 onChange={(e) =>
                                                     handleUniAssistDocSubmit(
                                                         e,
@@ -345,6 +342,7 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                                         applicationState.programId._id.toString()
                                                     )
                                                 }
+                                                type="file"
                                             />
                                         </Button>
                                     ) : (
@@ -352,14 +350,14 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                             <Button
                                                 component={Link}
                                                 href={`${BASE_URL}/api/students/${student._id.toString()}/vpd/${applicationState.programId._id.toString()}/VPD`}
-                                                target="_blank"
                                                 rel="noopener noreferrer"
-                                                variant="contained"
                                                 size="small"
                                                 startIcon={<DownloadIcon />}
+                                                target="_blank"
                                                 title={i18next.t('Download', {
                                                     ns: 'common'
                                                 })}
+                                                variant="contained"
                                             >
                                                 {i18next.t('Download', {
                                                     ns: 'common'
@@ -367,17 +365,17 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                                 VPD
                                             </Button>
                                             <Button
+                                                color="error"
+                                                disabled={isDeleting}
                                                 onClick={(e) =>
                                                     onDeleteVPDFileWarningPopUp(
                                                         e,
                                                         'VPD'
                                                     )
                                                 }
-                                                disabled={isDeleting}
-                                                variant="contained"
-                                                color="error"
                                                 size="small"
                                                 startIcon={<DeleteIcon />}
+                                                variant="contained"
                                             >
                                                 {i18next.t('Delete', {
                                                     ns: 'common'
@@ -389,8 +387,8 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                 </Typography>
                             </Stack>
                             <Stack
-                                direction="row"
                                 alignItems="center"
+                                direction="row"
                                 spacing={1}
                             >
                                 <IconStatus
@@ -417,9 +415,8 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                                 <CircularProgress size={20} />
                                             ) : (
                                                 <Button
-                                                    component="label"
-                                                    size="small"
                                                     color="secondary"
+                                                    component="label"
                                                     disabled={
                                                         !(
                                                             !applicationState.uni_assist ||
@@ -433,16 +430,16 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                                                 'notstarted'
                                                         )
                                                     }
-                                                    variant="outlined"
+                                                    size="small"
                                                     startIcon={
                                                         <CloudUploadIcon />
                                                     }
+                                                    variant="outlined"
                                                 >
                                                     {i18next.t('Upload file', {
                                                         ns: 'common'
                                                     })}
                                                     <VisuallyHiddenInput
-                                                        type="file"
                                                         onChange={(e) =>
                                                             handleUniAssistVPDPaidConfirmationDocSubmit(
                                                                 e,
@@ -450,6 +447,7 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                                                 applicationState.programId._id.toString()
                                                             )
                                                         }
+                                                        type="file"
                                                     />
                                                 </Button>
                                             )}
@@ -457,17 +455,17 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                     ) : (
                                         <>
                                             <Button
+                                                color="primary"
                                                 component={Link}
                                                 href={`${BASE_URL}/api/students/${student._id.toString()}/vpd/${applicationState.programId._id.toString()}/VPDConfirmation`}
-                                                target="_blank"
                                                 rel="noopener noreferrer"
-                                                variant="contained"
-                                                color="primary"
                                                 size="small"
                                                 startIcon={<DownloadIcon />}
+                                                target="_blank"
                                                 title={i18next.t('Download', {
                                                     ns: 'common'
                                                 })}
+                                                variant="contained"
                                             >
                                                 {i18next.t('Download', {
                                                     ns: 'common'
@@ -475,16 +473,16 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                             </Button>
                                             <Button
                                                 color="error"
+                                                disabled={isDeleting}
                                                 onClick={(e) =>
                                                     onDeleteVPDFileWarningPopUp(
                                                         e,
                                                         'VPDConfirmation'
                                                     )
                                                 }
-                                                disabled={isDeleting}
-                                                variant="contained"
                                                 size="small"
                                                 startIcon={<DeleteIcon />}
+                                                variant="contained"
                                             >
                                                 {i18next.t('Delete', {
                                                     ns: 'common'
@@ -495,12 +493,12 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                 </Typography>
                             </Stack>
                         </Box>
-                    )}
+                    ) : null}
                 </>
-            )}
-            {applicationState.programId.uni_assist?.includes('Yes-FULL') && (
+            ) : null}
+            {applicationState.programId.uni_assist?.includes('Yes-FULL') ? (
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sx={{ display: 'flex' }}>
+                    <Grid item sx={{ display: 'flex' }} xs={12}>
                         <ProgramName application={applicationState} />
                     </Grid>
                     <Grid item xs={12}>
@@ -509,11 +507,11 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                         </Typography>
                     </Grid>
                 </Grid>
-            )}
+            ) : null}
             <Dialog
-                open={deleteVPDFileWarningModelOpen}
-                onClose={() => setDeleteVPDFileWarningModelOpen(false)}
                 aria-labelledby="contained-modal-title-vcenter"
+                onClose={() => setDeleteVPDFileWarningModelOpen(false)}
+                open={deleteVPDFileWarningModelOpen}
             >
                 <DialogTitle>
                     {i18next.t('Warning', { ns: 'common' })}
@@ -525,11 +523,13 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                 </DialogContent>
                 <DialogActions>
                     <Button
-                        variant="contained"
                         color="secondary"
                         disabled={isDeleting}
                         onClick={() => handleUniAssistDocDeleteV2()}
-                        startIcon={isDeleting && <CircularProgress size={20} />}
+                        startIcon={
+                            isDeleting ? <CircularProgress size={20} /> : null
+                        }
+                        variant="contained"
                     >
                         {isDeleting
                             ? i18next.t('Deleting', { ns: 'common' })
@@ -544,9 +544,9 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                 </DialogActions>
             </Dialog>
             <Dialog
-                open={notNeededModelOpen}
-                onClose={() => setAsNotNeededModelOpen(false)}
                 aria-labelledby="contained-modal-title-vcenter"
+                onClose={() => setAsNotNeededModelOpen(false)}
+                open={notNeededModelOpen}
             >
                 <DialogTitle>
                     {i18next.t('Warning', { ns: 'common' })}
@@ -561,10 +561,12 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         disabled={isUpdating}
                         onClick={handleSetAsNotNeededV2}
-                        startIcon={isUpdating && <CircularProgress size={20} />}
+                        startIcon={
+                            isUpdating ? <CircularProgress size={20} /> : null
+                        }
+                        variant="contained"
                     >
                         {isUpdating
                             ? i18next.t('Updating', { ns: 'common' })
@@ -572,8 +574,8 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                     </Button>
                     <Button
                         color="secondary"
-                        variant="outlined"
                         onClick={() => setAsNotNeededModelOpen(false)}
+                        variant="outlined"
                     >
                         {i18next.t('No', { ns: 'common' })}
                     </Button>

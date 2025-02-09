@@ -12,6 +12,7 @@ import {
     Typography,
     TextField
 } from '@mui/material';
+import { isProgramDecided } from '@taiger-common/core';
 
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -21,10 +22,7 @@ import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
-import {
-    LinkableNewlineText,
-    isProgramDecided
-} from '../Utils/checking-functions';
+import { LinkableNewlineText } from '../Utils/checking-functions';
 import { useSnackBar } from '../../contexts/use-snack-bar';
 
 export default function PortalCredentialsCard(props) {
@@ -255,20 +253,20 @@ export default function PortalCredentialsCard(props) {
 
     return (
         <Box>
-            {statedata.res_modal_status >= 400 && (
+            {statedata.res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={statedata.res_modal_status}
                     res_modal_message={statedata.res_modal_message}
+                    res_modal_status={statedata.res_modal_status}
                 />
-            )}
-            {!props.showTitle && (
+            ) : null}
+            {!props.showTitle ? (
                 <Breadcrumbs aria-label="breadcrumb">
                     <Link
-                        underline="hover"
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.DASHBOARD_LINK}`}
+                        underline="hover"
                     >
                         {appConfig.companyName}
                     </Link>
@@ -276,7 +274,7 @@ export default function PortalCredentialsCard(props) {
                         Portal Credentials
                     </Typography>
                 </Breadcrumbs>
-            )}
+            ) : null}
 
             <Card sx={{ padding: 2 }}>
                 <Typography>
@@ -284,7 +282,7 @@ export default function PortalCredentialsCard(props) {
                     申請該校的申請平台帳號密碼，並在此頁面提供帳號密碼，方便日後Agent為您登入檢查上傳文件正確性。若有
                     [<b>{t('Instructions')}</b>]{' '}
                     連結，請點入連結，依照裡面教學完成。填完帳號密碼，請務必點擊{' '}
-                    <Button color="primary" variant="contained" size="small">
+                    <Button color="primary" size="small" variant="contained">
                         {t('Update', { ns: 'common' })}
                     </Button>
                     儲存。
@@ -298,31 +296,38 @@ export default function PortalCredentialsCard(props) {
 
                 {statedata.applications.map((application, i) => (
                     <Fragment key={i}>
-                        {isProgramDecided(application) && (
+                        {isProgramDecided(application) ? (
                             <>
-                                <Divider></Divider>
+                                <Divider />
                                 <Grid container spacing={2}>
                                     <Grid item xs={12}>
                                         <Typography
                                             sx={{ marginLeft: 2, marginTop: 1 }}
                                         >
                                             <Link
-                                                underline="hover"
                                                 href={`/programs/${application.programId._id.toString()}`}
                                                 target="_blank"
+                                                underline="hover"
                                             >
                                                 <b>
                                                     {`${application.programId.school} - ${application.programId.program_name} - ${application.programId.semester} - ${application.programId.degree}`}
                                                 </b>
                                             </Link>{' '}
-                                            {(application.programId
+                                            {application.programId
                                                 .application_portal_a ||
-                                                application.programId
-                                                    .application_portal_b) && (
+                                            application.programId
+                                                .application_portal_b ? (
                                                 <Button
                                                     color="primary"
-                                                    variant="contained"
-                                                    size="small"
+                                                    disabled={
+                                                        !statedata
+                                                            .isUpdateLoaded[
+                                                            application.programId._id.toString()
+                                                        ] ||
+                                                        !statedata.isChanged[
+                                                            application.programId._id.toString()
+                                                        ]
+                                                    }
                                                     onClick={() =>
                                                         onSubmit(
                                                             statedata.student._id.toString(),
@@ -333,15 +338,8 @@ export default function PortalCredentialsCard(props) {
                                                             ]
                                                         )
                                                     }
-                                                    disabled={
-                                                        !statedata
-                                                            .isUpdateLoaded[
-                                                            application.programId._id.toString()
-                                                        ] ||
-                                                        !statedata.isChanged[
-                                                            application.programId._id.toString()
-                                                        ]
-                                                    }
+                                                    size="small"
+                                                    variant="contained"
                                                 >
                                                     {!statedata.isUpdateLoaded[
                                                         application.programId._id.toString()
@@ -351,15 +349,14 @@ export default function PortalCredentialsCard(props) {
                                                               ns: 'common'
                                                           })}
                                                 </Button>
-                                            )}
+                                            ) : null}
                                         </Typography>
                                     </Grid>
                                 </Grid>
-                                {(application.programId.application_portal_a ||
-                                    application.programId
-                                        .application_portal_b) && (
+                                {application.programId.application_portal_a ||
+                                application.programId.application_portal_b ? (
                                     <>
-                                        {((application.programId
+                                        {(application.programId
                                             .application_portal_a &&
                                             (!statedata.credentials[
                                                 application.programId._id.toString()
@@ -367,29 +364,29 @@ export default function PortalCredentialsCard(props) {
                                                 !statedata.credentials[
                                                     application.programId._id.toString()
                                                 ].password_portal_a)) ||
-                                            (application.programId
-                                                .application_portal_b &&
-                                                (!statedata.credentials[
+                                        (application.programId
+                                            .application_portal_b &&
+                                            (!statedata.credentials[
+                                                application.programId._id.toString()
+                                            ].account_portal_b ||
+                                                !statedata.credentials[
                                                     application.programId._id.toString()
-                                                ].account_portal_b ||
-                                                    !statedata.credentials[
-                                                        application.programId._id.toString()
-                                                    ].password_portal_b))) && (
+                                                ].password_portal_b)) ? (
                                             <div>
                                                 <Banner
                                                     ReadOnlyMode={true}
                                                     bg={'danger'}
-                                                    title={'warning'}
                                                     path={'/'}
                                                     text={t(
                                                         'Please register and provide credentials'
                                                     )}
+                                                    title={'warning'}
                                                     link_name={''}
                                                     // removeBanner={this.removeBanner}
                                                     notification_key={undefined}
-                                                ></Banner>
+                                                />
                                             </div>
-                                        )}
+                                        ) : null}
                                         <Grid
                                             container
                                             spacing={2}
@@ -421,7 +418,7 @@ export default function PortalCredentialsCard(props) {
                                             </Grid>
                                         </Grid>
                                         {application.programId
-                                            .application_portal_a && (
+                                            .application_portal_a ? (
                                             <Grid
                                                 container
                                                 spacing={2}
@@ -429,13 +426,13 @@ export default function PortalCredentialsCard(props) {
                                             >
                                                 <Grid item xs={3}>
                                                     <TextField
-                                                        type="text"
-                                                        size="small"
                                                         id={`${application.programId._id.toString()}_application_portal_a_account`}
-                                                        placeholder="account"
                                                         onChange={(e) =>
                                                             onChange(e)
                                                         }
+                                                        placeholder="account"
+                                                        size="small"
+                                                        type="text"
                                                         value={
                                                             statedata
                                                                 .credentials[
@@ -446,13 +443,13 @@ export default function PortalCredentialsCard(props) {
                                                 </Grid>
                                                 <Grid item xs={3}>
                                                     <TextField
-                                                        type="text"
-                                                        size="small"
                                                         id={`${application.programId._id.toString()}_application_portal_a_password`}
-                                                        placeholder="password"
                                                         onChange={(e) =>
                                                             onChange(e)
                                                         }
+                                                        placeholder="password"
+                                                        size="small"
+                                                        type="text"
                                                         value={
                                                             statedata
                                                                 .credentials[
@@ -480,9 +477,9 @@ export default function PortalCredentialsCard(props) {
                                                     />
                                                 </Grid>
                                             </Grid>
-                                        )}
+                                        ) : null}
                                         {application.programId
-                                            .application_portal_b && (
+                                            .application_portal_b ? (
                                             <Grid
                                                 container
                                                 spacing={2}
@@ -490,36 +487,36 @@ export default function PortalCredentialsCard(props) {
                                             >
                                                 <Grid item xs={3}>
                                                     <TextField
-                                                        type="text"
-                                                        size="small"
-                                                        id={`${application.programId._id.toString()}_application_portal_b_account`}
-                                                        placeholder="account"
-                                                        onChange={(e) =>
-                                                            onChange(e)
-                                                        }
                                                         defaultValue={
                                                             statedata
                                                                 .credentials[
                                                                 application.programId._id.toString()
                                                             ].account_portal_b
                                                         }
+                                                        id={`${application.programId._id.toString()}_application_portal_b_account`}
+                                                        onChange={(e) =>
+                                                            onChange(e)
+                                                        }
+                                                        placeholder="account"
+                                                        size="small"
+                                                        type="text"
                                                     />
                                                 </Grid>
                                                 <Grid item xs={3}>
                                                     <TextField
-                                                        type="text"
-                                                        size="small"
-                                                        id={`${application.programId._id.toString()}_application_portal_b_password`}
-                                                        placeholder="password"
-                                                        onChange={(e) =>
-                                                            onChange(e)
-                                                        }
                                                         defaultValue={
                                                             statedata
                                                                 .credentials[
                                                                 application.programId._id.toString()
                                                             ].password_portal_b
                                                         }
+                                                        id={`${application.programId._id.toString()}_application_portal_b_password`}
+                                                        onChange={(e) =>
+                                                            onChange(e)
+                                                        }
+                                                        placeholder="password"
+                                                        size="small"
+                                                        type="text"
                                                     />
                                                 </Grid>
                                                 <Grid item xs={3}>
@@ -541,11 +538,11 @@ export default function PortalCredentialsCard(props) {
                                                     />
                                                 </Grid>
                                             </Grid>
-                                        )}
+                                        ) : null}
                                     </>
-                                )}
+                                ) : null}
                             </>
-                        )}
+                        ) : null}
                     </Fragment>
                 ))}
             </Card>

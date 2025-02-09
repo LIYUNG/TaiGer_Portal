@@ -22,16 +22,16 @@ import FilePreview from '../../components/FilePreview/FilePreview';
 
 import { useAuth } from '../../components/AuthProvider';
 
-function AcceptProfileFileModel(props) {
+const AcceptProfileFileModel = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
 
     return (
         <Dialog
             fullWidth={true}
-            maxWidth={'xl'}
-            open={props.showPreview}
+            maxWidth="xl"
             onClose={props.closePreviewWindow}
+            open={props.showPreview}
         >
             <DialogTitle>{props.path}</DialogTitle>
             <DialogContent>
@@ -41,33 +41,31 @@ function AcceptProfileFileModel(props) {
                     }`}
                     path={props.preview_path}
                 />
-                {props.path?.split('.')[1] !== 'pdf' && (
+                {props.path?.split('.')[1] !== 'pdf' ? (
                     <a
+                        download
                         href={`${BASE_URL}/api/students/${props.student_id?.toString()}/files/${
                             props.path
                         }`}
-                        download
-                        target="_blank"
                         rel="noopener noreferrer"
+                        target="_blank"
                     >
                         <Button
-                            size="small"
                             color="primary"
-                            variant="contained"
-                            title="Download"
+                            size="small"
                             startIcon={<FileDownloadIcon />}
+                            title="Download"
+                            variant="contained"
                         >
                             {t('Download', { ns: 'common' })}
                         </Button>
                     </a>
-                )}
+                ) : null}
             </DialogContent>
             <DialogActions>
-                {!(is_TaiGer_Editor(user) || is_TaiGer_Student(user)) && (
+                {!(is_TaiGer_Editor(user) || is_TaiGer_Student(user)) ? (
                     <Button
-                        variant="contained"
                         color="secondary"
-                        size="small"
                         disabled={!props.isLoaded}
                         onClick={(e) =>
                             props.onUpdateProfileDocStatus(
@@ -77,19 +75,21 @@ function AcceptProfileFileModel(props) {
                                 DocumentStatusType.Rejected
                             )
                         }
+                        size="small"
                         startIcon={<CloseIcon />}
                         sx={{ mr: 2 }}
+                        variant="contained"
                     >
                         {t('Reject', { ns: 'documents' })}
                     </Button>
-                )}
+                ) : null}
                 <Button
-                    size="small"
                     color="primary"
-                    variant="contained"
-                    title="Download"
-                    startIcon={<FileDownloadIcon />}
                     onClick={props.closePreviewWindow}
+                    size="small"
+                    startIcon={<FileDownloadIcon />}
+                    title="Download"
+                    variant="contained"
                 >
                     {t('Download', { ns: 'common' })}
                 </Button>
@@ -103,6 +103,6 @@ function AcceptProfileFileModel(props) {
             </DialogActions>
         </Dialog>
     );
-}
+};
 
 export default AcceptProfileFileModel;

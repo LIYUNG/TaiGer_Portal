@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Card, Typography } from '@mui/material';
 
-function PageNotFoundError() {
+const PageNotFoundError = () => {
     return (
         <Box>
             <Card sx={{ p: 1 }}>
@@ -9,6 +9,6 @@ function PageNotFoundError() {
             </Card>
         </Box>
     );
-}
+};
 
 export default PageNotFoundError;

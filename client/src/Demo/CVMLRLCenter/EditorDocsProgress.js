@@ -23,14 +23,16 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
 import LaunchIcon from '@mui/icons-material/Launch';
+import {
+    isProgramDecided,
+    isProgramSubmitted,
+    isProgramWithdraw
+} from '@taiger-common/core';
 
 import ManualFiles from './ManualFiles';
 import {
     LinkableNewlineText,
-    application_deadline_calculator,
-    isProgramDecided,
-    isProgramSubmitted,
-    isProgramWithdraw
+    application_deadline_calculator
 } from '../Utils/checking-functions';
 import { FILE_OK_SYMBOL, spinner_style2 } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
@@ -47,7 +49,7 @@ import DEMO from '../../store/constant';
 import Loading from '../../components/Loading/Loading';
 // import DocumentCheckingResultModal from './DocModificationThreadPage/DocumentCheckingResultModal';
 
-function EditorDocsProgress(props) {
+const EditorDocsProgress = (props) => {
     const { t } = useTranslation();
     const [editorDocsProgressState, setEditorDocsProgressState] = useState({
         error: '',
@@ -545,31 +547,29 @@ function EditorDocsProgress(props) {
         return <ErrorPage res_status={res_status} />;
     }
 
-    function ApplicationAccordionSummary({ application }) {
+    const ApplicationAccordionSummary = ({ application }) => {
         return (
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Grid container spacing={2}>
-                    <Grid item xs={1} md={1}>
+                    <Grid item md={1} xs={1}>
                         {application.decided === '-' ? (
                             <Typography
-                                variant="body1"
                                 color="grey"
                                 sx={{ mr: 2 }}
+                                variant="body1"
                             >
                                 Undecided
                             </Typography>
                         ) : application.decided === 'X' ? (
                             <Typography
-                                variant="body1"
                                 color="grey"
                                 sx={{ mr: 2 }}
+                                variant="body1"
                             >
                                 Not wanted
                             </Typography>
                         ) : isProgramSubmitted(application) ? (
-                            <>
-                                <IconButton>{FILE_OK_SYMBOL}</IconButton>
-                            </>
+                            <IconButton>{FILE_OK_SYMBOL}</IconButton>
                         ) : isProgramWithdraw(application) ? (
                             <Typography fontWeight="bold">
                                 {t('WITHDRAW', { ns: 'common' })}
@@ -580,9 +580,8 @@ function EditorDocsProgress(props) {
                             </Typography>
                         )}
                     </Grid>
-                    <Grid item xs={1} md={1}>
+                    <Grid item md={1} xs={1}>
                         <Typography
-                            variant="body1"
                             color={
                                 isProgramDecided(application)
                                     ? isProgramSubmitted(application)
@@ -591,6 +590,7 @@ function EditorDocsProgress(props) {
                                     : 'grey'
                             }
                             sx={{ mr: 2 }}
+                            variant="body1"
                         >
                             {
                                 application.doc_modification_thread?.filter(
@@ -600,10 +600,9 @@ function EditorDocsProgress(props) {
                             /{application.doc_modification_thread?.length || 0}
                         </Typography>
                     </Grid>
-                    <Grid item xs={8} md={8}>
+                    <Grid item md={8} xs={8}>
                         <Box sx={{ display: 'flex' }}>
                             <Typography
-                                variant="body1"
                                 color={
                                     isProgramDecided(application)
                                         ? isProgramSubmitted(application)
@@ -612,6 +611,7 @@ function EditorDocsProgress(props) {
                                         : 'grey'
                                 }
                                 sx={{ mr: 2 }}
+                                variant="body1"
                             >
                                 <b>
                                     {application.programId.school} -{' '}
@@ -620,15 +620,15 @@ function EditorDocsProgress(props) {
                                 </b>
                             </Typography>
                             <Link
-                                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                                 component={LinkDom}
                                 target="_blank"
+                                to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                             >
                                 <LaunchIcon />
                             </Link>
                         </Box>
                     </Grid>
-                    <Grid item xs={2} md={2}>
+                    <Grid item md={2} xs={2}>
                         <Typography>
                             Deadline:{' '}
                             {application_deadline_calculator(
@@ -640,25 +640,25 @@ function EditorDocsProgress(props) {
                 </Grid>
             </AccordionSummary>
         );
-    }
+    };
 
     return (
         <Box>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
             <ManualFiles
-                onDeleteFileThread={onDeleteFileThread}
+                application={null}
+                filetype="General"
                 handleAsFinalFile={handleAsFinalFile}
-                student={editorDocsProgressState.student}
-                filetype={'General'}
                 initGeneralFileThread={initGeneralFileThread}
                 initProgramSpecificFileThread={initProgramSpecificFileThread}
-                application={null}
+                onDeleteFileThread={onDeleteFileThread}
+                student={editorDocsProgressState.student}
             />
             <Divider />
             <Typography sx={{ mt: 2 }}>
@@ -675,14 +675,9 @@ function EditorDocsProgress(props) {
                             />
                             <AccordionDetails>
                                 <ManualFiles
-                                    onDeleteFileThread={onDeleteFileThread}
-                                    handleAsFinalFile={handleAsFinalFile}
-                                    student={editorDocsProgressState.student}
                                     application={application}
-                                    openRequirements_ModalWindow={
-                                        openRequirements_ModalWindow
-                                    }
-                                    filetype={'ProgramSpecific'}
+                                    filetype="ProgramSpecific"
+                                    handleAsFinalFile={handleAsFinalFile}
                                     handleProgramStatus={handleProgramStatus}
                                     initGeneralFileThread={
                                         initGeneralFileThread
@@ -690,6 +685,11 @@ function EditorDocsProgress(props) {
                                     initProgramSpecificFileThread={
                                         initProgramSpecificFileThread
                                     }
+                                    onDeleteFileThread={onDeleteFileThread}
+                                    openRequirements_ModalWindow={
+                                        openRequirements_ModalWindow
+                                    }
+                                    student={editorDocsProgressState.student}
                                 />
                             </AccordionDetails>
                         </Accordion>
@@ -706,14 +706,9 @@ function EditorDocsProgress(props) {
                             />
                             <AccordionDetails>
                                 <ManualFiles
-                                    onDeleteFileThread={onDeleteFileThread}
-                                    handleAsFinalFile={handleAsFinalFile}
-                                    student={editorDocsProgressState.student}
                                     application={application}
-                                    openRequirements_ModalWindow={
-                                        openRequirements_ModalWindow
-                                    }
-                                    filetype={'ProgramSpecific'}
+                                    filetype="ProgramSpecific"
+                                    handleAsFinalFile={handleAsFinalFile}
                                     handleProgramStatus={handleProgramStatus}
                                     initGeneralFileThread={
                                         initGeneralFileThread
@@ -721,6 +716,11 @@ function EditorDocsProgress(props) {
                                     initProgramSpecificFileThread={
                                         initProgramSpecificFileThread
                                     }
+                                    onDeleteFileThread={onDeleteFileThread}
+                                    openRequirements_ModalWindow={
+                                        openRequirements_ModalWindow
+                                    }
+                                    student={editorDocsProgressState.student}
                                 />
                             </AccordionDetails>
                         </Accordion>
@@ -728,9 +728,9 @@ function EditorDocsProgress(props) {
                     </div>
                 ))}
             <Dialog
-                open={editorDocsProgressState.deleteFileWarningModel}
-                onClose={closeWarningWindow}
                 aria-labelledby="contained-modal-title-vcenter"
+                onClose={closeWarningWindow}
+                open={editorDocsProgressState.deleteFileWarningModel}
             >
                 <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                 <DialogContent>
@@ -749,22 +749,22 @@ function EditorDocsProgress(props) {
                     </InputLabel>
                     <TextField
                         fullWidth
+                        onChange={(e) => onChangeDeleteField(e)}
+                        placeholder="delete"
                         size="small"
                         type="text"
-                        placeholder="delete"
                         value={`${editorDocsProgressState.delete_field}`}
-                        onChange={(e) => onChangeDeleteField(e)}
                     />
                 </DialogContent>
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         disabled={
                             !isLoaded ||
                             editorDocsProgressState.delete_field !== 'delete'
                         }
                         onClick={ConfirmDeleteDiscussionThreadHandler}
+                        variant="contained"
                     >
                         {isLoaded ? (
                             t('Yes', { ns: 'common' })
@@ -776,8 +776,8 @@ function EditorDocsProgress(props) {
                     </Button>
                     <Button
                         color="primary"
-                        variant="outlined"
                         onClick={closeWarningWindow}
+                        variant="outlined"
                     >
                         {t('No', { ns: 'common' })}
                     </Button>
@@ -795,9 +795,9 @@ function EditorDocsProgress(props) {
         docName={editorDocsProgressState.docName}
       /> */}
             <Dialog
-                open={editorDocsProgressState.SetAsFinalFileModel}
-                onClose={closeSetAsFinalFileModelWindow}
                 aria-labelledby="contained-modal-title-vcenter"
+                onClose={closeSetAsFinalFileModelWindow}
+                open={editorDocsProgressState.SetAsFinalFileModel}
             >
                 <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                 <DialogContent>
@@ -809,9 +809,9 @@ function EditorDocsProgress(props) {
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         disabled={!isLoaded}
                         onClick={ConfirmSetAsFinalFileHandler}
+                        variant="contained"
                     >
                         {isLoaded ? (
                             t('Yes', { ns: 'common' })
@@ -822,17 +822,17 @@ function EditorDocsProgress(props) {
                         )}
                     </Button>
                     <Button
-                        variant="outlined"
                         onClick={closeSetAsFinalFileModelWindow}
+                        variant="outlined"
                     >
                         {t('No', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>
             <Dialog
-                open={editorDocsProgressState.Requirements_Modal}
-                onClose={close_Requirements_ModalWindow}
                 aria-labelledby="contained-modal-title-vcenter"
+                onClose={close_Requirements_ModalWindow}
+                open={editorDocsProgressState.Requirements_Modal}
             >
                 <DialogTitle>
                     {t('Special Requirements', { ns: 'common' })}
@@ -847,17 +847,17 @@ function EditorDocsProgress(props) {
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="outlined"
                         onClick={close_Requirements_ModalWindow}
+                        variant="outlined"
                     >
                         {t('Close', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>
             <Dialog
-                open={editorDocsProgressState.SetProgramStatusModel}
-                onClose={closeSetProgramStatusModel}
                 aria-labelledby="contained-modal-title-vcenter"
+                onClose={closeSetProgramStatusModel}
+                open={editorDocsProgressState.SetProgramStatusModel}
             >
                 <DialogTitle>{t('Attention')}</DialogTitle>
                 <DialogContent>
@@ -873,16 +873,16 @@ function EditorDocsProgress(props) {
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         disabled={!isLoaded}
                         onClick={SubmitProgramStatusHandler}
+                        variant="contained"
                     >
                         {t('Yes', { ns: 'common' })}
                     </Button>
                     <Button
                         color="primary"
-                        variant="outlined"
                         onClick={closeSetProgramStatusModel}
+                        variant="outlined"
                     >
                         {t('No', { ns: 'common' })}
                     </Button>
@@ -890,6 +890,6 @@ function EditorDocsProgress(props) {
             </Dialog>
         </Box>
     );
-}
+};
 
 export default EditorDocsProgress;

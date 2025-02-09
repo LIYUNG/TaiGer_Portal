@@ -91,6 +91,15 @@ const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
     return (
         <BarChart
             dataset={chartData}
+            height={400}
+            margin={{ top: 20, right: 30, left: 50, bottom: 110 }}
+            onClick={onBarClick}
+            onItemClick={(event, barItemIdentifier) => {
+                onBarClick({
+                    userId: chartData[barItemIdentifier.dataIndex]?.userId,
+                    name: chartData[barItemIdentifier.dataIndex]?.name
+                });
+            }}
             series={[{ dataKey: 'interval' }]}
             xAxis={[
                 {
@@ -103,16 +112,7 @@ const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
                 }
             ]}
             yAxis={[{ label: 'Average duration (days)' }]}
-            height={400}
-            margin={{ top: 20, right: 30, left: 50, bottom: 110 }}
-            onClick={onBarClick}
-            onItemClick={(event, barItemIdentifier) => {
-                onBarClick({
-                    userId: chartData[barItemIdentifier.dataIndex]?.userId,
-                    name: chartData[barItemIdentifier.dataIndex]?.name
-                });
-            }}
-        ></BarChart>
+        />
     );
 };
 
@@ -129,10 +129,10 @@ const ChartOverview = ({ data, teamType, onBarClick }) => {
                 return (
                     <Card key={fileType} sx={{ mb: 2 }}>
                         <CardHeader
-                            title={`${fileType} Response Times`}
                             subheader={`Average response time: ${averageInterval.toFixed(
                                 2
                             )} days`}
+                            title={`${fileType} Response Times`}
                         />
                         <CardContent>
                             <ResponseTimeBarChart
@@ -164,8 +164,8 @@ const TeamOverview = ({
     return (
         <ChartOverview
             data={teamData}
-            teamType={teamType}
             onBarClick={onBarClick}
+            teamType={teamType}
         />
     );
 };
@@ -182,8 +182,8 @@ const MemberOverview = ({
     return (
         <ChartOverview
             data={memberStats}
-            teamType={teamType}
             onBarClick={onBarClick}
+            teamType={teamType}
         />
     );
 };
@@ -204,6 +204,10 @@ const StudentProgramOverview = ({
     return (
         <Card sx={{ mb: 2 }} {...props}>
             <CardHeader
+                onClick={handleClick}
+                subheader={`Average response time: ${getIntervalAvg(
+                    threadIntervals?.flatMap((thread) => thread.intervals)
+                ).toFixed(2)} days`}
                 title={
                     <>
                         {isCollapsed ? (
@@ -214,58 +218,58 @@ const StudentProgramOverview = ({
                         {title}
                     </>
                 }
-                subheader={`Average response time: ${getIntervalAvg(
-                    threadIntervals?.flatMap((thread) => thread.intervals)
-                ).toFixed(2)} days`}
-                onClick={handleClick}
             />
             <CardContent>
                 <Collapse in={isCollapsed}>
-                    {threadIntervals.length !== 0 &&
-                        threadIntervals.map((thread) => (
-                            <React.Fragment key={thread.threadId}>
-                                {thread.intervalType && (
-                                    <Divider
-                                        textAlign="left"
-                                        sx={{ mb: 10, px: 6 }}
-                                    >
-                                        <Typography variant="h6" sx={{ px: 1 }}>
-                                            {thread.intervalType}
-                                        </Typography>
-                                    </Divider>
-                                )}
-                                <LineChart
-                                    dataset={thread.intervals
-                                        .map((item) => ({
-                                            ...item,
-                                            intervalStartAt: new Date(
-                                                item.intervalStartAt
-                                            )
-                                        }))
-                                        .sort(
-                                            (a, b) =>
-                                                a.intervalStartAt -
-                                                b.intervalStartAt
-                                        )}
-                                    series={[{ dataKey: 'interval' }]}
-                                    xAxis={[
-                                        {
-                                            // label: thread.intervalType,
-                                            dataKey: 'intervalStartAt',
-                                            scaleType: 'time'
-                                        }
-                                    ]}
-                                    yAxis={[{ label: 'Duration (days)' }]}
-                                    margin={{
-                                        top: 20,
-                                        right: 30,
-                                        left: 50,
-                                        bottom: 110
-                                    }}
-                                    height={400}
-                                />
-                            </React.Fragment>
-                        ))}
+                    {threadIntervals.length !== 0
+                        ? threadIntervals.map((thread) => (
+                              <React.Fragment key={thread.threadId}>
+                                  {thread.intervalType ? (
+                                      <Divider
+                                          sx={{ mb: 10, px: 6 }}
+                                          textAlign="left"
+                                      >
+                                          <Typography
+                                              sx={{ px: 1 }}
+                                              variant="h6"
+                                          >
+                                              {thread.intervalType}
+                                          </Typography>
+                                      </Divider>
+                                  ) : null}
+                                  <LineChart
+                                      dataset={thread.intervals
+                                          .map((item) => ({
+                                              ...item,
+                                              intervalStartAt: new Date(
+                                                  item.intervalStartAt
+                                              )
+                                          }))
+                                          .sort(
+                                              (a, b) =>
+                                                  a.intervalStartAt -
+                                                  b.intervalStartAt
+                                          )}
+                                      height={400}
+                                      margin={{
+                                          top: 20,
+                                          right: 30,
+                                          left: 50,
+                                          bottom: 110
+                                      }}
+                                      series={[{ dataKey: 'interval' }]}
+                                      xAxis={[
+                                          {
+                                              // label: thread.intervalType,
+                                              dataKey: 'intervalStartAt',
+                                              scaleType: 'time'
+                                          }
+                                      ]}
+                                      yAxis={[{ label: 'Duration (days)' }]}
+                                  />
+                              </React.Fragment>
+                          ))
+                        : null}
                 </Collapse>
             </CardContent>
         </Card>
@@ -289,35 +293,36 @@ const StudentOverview = ({ studentId }) => {
     return (
         <>
             {studentIntervals !== 'error' &&
-                !studentIntervals?.communicationThreadIntervals &&
-                studentIntervals?.applications?.length == 0 && (
-                    <Typography variant="h5" sx={{ p: 2 }}>
-                        No data available.
-                    </Typography>
-                )}
+            !studentIntervals?.communicationThreadIntervals &&
+            studentIntervals?.applications?.length == 0 ? (
+                <Typography sx={{ p: 2 }} variant="h5">
+                    No data available.
+                </Typography>
+            ) : null}
             {studentIntervals !== 'error' &&
-                studentIntervals?.communicationThreadIntervals?.length > 0 && (
-                    <StudentProgramOverview
-                        title={'Communication Thread'}
-                        threadIntervals={[
-                            {
-                                intervals:
-                                    studentIntervals?.communicationThreadIntervals
-                            }
-                        ]}
-                        collapse={true}
-                        key={'communication'}
-                    />
-                )}
+            studentIntervals?.communicationThreadIntervals?.length > 0 ? (
+                <StudentProgramOverview
+                    collapse={true}
+                    key="communication"
+                    threadIntervals={[
+                        {
+                            intervals:
+                                studentIntervals?.communicationThreadIntervals
+                        }
+                    ]}
+                    title="Communication Thread"
+                />
+            ) : null}
             {studentIntervals !== 'error' &&
-                studentIntervals?.applications?.length > 0 &&
-                studentIntervals.applications.map((application) => (
-                    <StudentProgramOverview
-                        key={application._id}
-                        title={`${application.school} - ${application.program_name} (${application.threadIntervals.length})`}
-                        threadIntervals={application?.threadIntervals}
-                    />
-                ))}
+            studentIntervals?.applications?.length > 0
+                ? studentIntervals.applications.map((application) => (
+                      <StudentProgramOverview
+                          key={application._id}
+                          threadIntervals={application?.threadIntervals}
+                          title={`${application.school} - ${application.program_name} (${application.threadIntervals.length})`}
+                      />
+                  ))
+                : null}
         </>
     );
 };
@@ -409,13 +414,13 @@ const ResponseTimeDashboardTab = ({
 
     return (
         <Grid container spacing={2}>
-            {!member && !student && (
+            {!member && !student ? (
                 <>
                     <Grid item xs={12}>
                         <Box sx={{ p: 2 }}>
                             <ButtonGroup
-                                variant="contained"
                                 aria-label="outlined primary button group"
+                                variant="contained"
                             >
                                 <Button
                                     onClick={() => setViewMode('agents')}
@@ -442,22 +447,22 @@ const ResponseTimeDashboardTab = ({
                     </Grid>
                     <Grid item xs={12}>
                         <TeamOverview
+                            onBarClick={onBarClickLayer1}
                             studentAvgResponseTime={studentAvgResponseTime}
                             teamMembers={teams?.[viewMode]}
                             teamType={viewMode}
-                            onBarClick={onBarClickLayer1}
                         />
                     </Grid>
                 </>
-            )}
-            {member && !student && (
+            ) : null}
+            {member && !student ? (
                 <>
                     <Grid item xs={12}>
                         <Box sx={{ p: 2 }}>
                             <Button
-                                sx={{ mr: 1 }}
-                                onClick={() => setMember(null)}
                                 color="primary"
+                                onClick={() => setMember(null)}
+                                sx={{ mr: 1 }}
                             >
                                 <KeyboardReturn sx={{ mr: 1 }} /> Return
                             </Button>
@@ -469,30 +474,30 @@ const ResponseTimeDashboardTab = ({
                     </Grid>
                     <Grid item xs={12}>
                         <MemberOverview
-                            studentAvgResponseTime={studentAvgResponseTime}
                             memberId={member?.userId}
-                            teamType={viewMode}
                             onBarClick={onBarClickLayer2}
+                            studentAvgResponseTime={studentAvgResponseTime}
+                            teamType={viewMode}
                         />
                     </Grid>
                 </>
-            )}
-            {student && (
+            ) : null}
+            {student ? (
                 <Grid item xs={12}>
                     <Box sx={{ p: 2 }}>
                         <Button
-                            sx={{ mr: 1 }}
-                            onClick={() => setStudent(null)}
                             color="primary"
+                            onClick={() => setStudent(null)}
+                            sx={{ mr: 1 }}
                         >
                             <KeyboardReturn sx={{ mr: 1 }} /> Return
                         </Button>
                         <Typography component="span" variant="h5">
                             {`Student Overview - `}
                             <Link
-                                underline="hover"
                                 href={`/communications/t/${student?.userId?.toString()}`}
                                 target="_blank"
+                                underline="hover"
                             >
                                 {student?.name}
                             </Link>
@@ -502,7 +507,7 @@ const ResponseTimeDashboardTab = ({
                         <StudentOverview studentId={student?.userId} />
                     </Grid>
                 </Grid>
-            )}
+            ) : null}
         </Grid>
     );
 };

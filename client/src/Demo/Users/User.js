@@ -19,7 +19,7 @@ import {
 import { UserlistHeader, convertDate, getDate } from '../../utils/contants';
 import DEMO from '../../store/constant';
 
-function User(props) {
+const User = (props) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -32,27 +32,27 @@ function User(props) {
         return (
             <TableRow key={props.user._id}>
                 <TableCell>
-                    {!is_TaiGer_Admin(props.user) && (
+                    {!is_TaiGer_Admin(props.user) ? (
                         <>
                             <Button
-                                id="basic-button"
-                                variant="contained"
-                                size="small"
                                 aria-controls={open ? 'basic-menu' : undefined}
-                                aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
+                                aria-haspopup="true"
+                                id="basic-button"
                                 onClick={handleClick}
+                                size="small"
+                                variant="contained"
                             >
                                 {i18next.t('Option', { ns: 'common' })}
                             </Button>
                             <Menu
-                                id="basic-menu"
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
                                 MenuListProps={{
                                     'aria-labelledby': 'basic-button'
                                 }}
+                                anchorEl={anchorEl}
+                                id="basic-menu"
+                                onClose={handleClose}
+                                open={open}
                             >
                                 <MenuItem
                                     onClick={() =>
@@ -97,7 +97,7 @@ function User(props) {
                                 </MenuItem>
                             </Menu>
                         </>
-                    )}
+                    ) : null}
                 </TableCell>
                 {UserlistHeader.map((y, k) => (
                     <TableCell key={k}>
@@ -109,28 +109,28 @@ function User(props) {
                             )
                         ) : is_TaiGer_Student(props.user) ? (
                             <Link
-                                underline="hover"
+                                component={LinkDom}
                                 to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                     props.user._id.toString(),
                                     DEMO.PROFILE_HASH
                                 )}`}
-                                component={LinkDom}
+                                underline="hover"
                             >
                                 {props.user[y.prop]}
                             </Link>
                         ) : is_TaiGer_Agent(props.user) ? (
                             <Link
-                                underline="hover"
-                                to={`${DEMO.TEAM_AGENT_LINK(props.user._id.toString())}`}
                                 component={LinkDom}
+                                to={`${DEMO.TEAM_AGENT_LINK(props.user._id.toString())}`}
+                                underline="hover"
                             >
                                 {props.user[y.prop]}
                             </Link>
                         ) : is_TaiGer_Editor(props.user) ? (
                             <Link
-                                underline="hover"
-                                to={`${DEMO.TEAM_EDITOR_LINK(props.user._id.toString())}`}
                                 component={LinkDom}
+                                to={`${DEMO.TEAM_EDITOR_LINK(props.user._id.toString())}`}
+                                underline="hover"
                             >
                                 {props.user[y.prop]}
                             </Link>
@@ -146,6 +146,6 @@ function User(props) {
     } else {
         return <></>;
     }
-}
+};
 
 export default User;

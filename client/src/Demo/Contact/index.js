@@ -20,7 +20,7 @@ import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import { Role } from '@taiger-common/core';
 
-function Contact() {
+const Contact = () => {
     const { user } = useAuth();
     const {
         data: { data: students }
@@ -60,8 +60,8 @@ function Contact() {
                 <TableCell>{t('Agent', { ns: 'common' })}</TableCell>
                 <TableCell>
                     <Link
-                        to={`${DEMO.TEAM_AGENT_PROFILE_LINK(agent._id.toString())}`}
                         component={LinkDom}
+                        to={`${DEMO.TEAM_AGENT_PROFILE_LINK(agent._id.toString())}`}
                     >
                         {agent.firstname} - {agent.lastname}
                     </Link>
@@ -77,10 +77,10 @@ function Contact() {
         <Box>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -110,6 +110,6 @@ function Contact() {
             </Card>
         </Box>
     );
-}
+};
 
 export default Contact;

@@ -15,7 +15,7 @@ import { a11yProps, CustomTabPanel } from '../../components/Tabs';
 import AdmissionsStat from './AdmissionsStat';
 import { getAdmissionsQuery } from '../../api/query';
 
-function Admissions() {
+const Admissions = () => {
     const { user } = useAuth();
     const [value, setValue] = useState(0);
     const { t } = useTranslation();
@@ -36,10 +36,10 @@ function Admissions() {
         <Box data-testid="admissinos_page">
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -53,17 +53,17 @@ function Admissions() {
                     })}
                 </Typography>
             </Breadcrumbs>
-            {isLoading && <Loading />}
-            {isError && <>{error}</>}
-            {!isLoading && !isError && (
+            {isLoading ? <Loading /> : null}
+            {isError ? <>{error}</> : null}
+            {!isLoading && !isError ? (
                 <>
                     <Box>
                         <Tabs
-                            value={value}
-                            onChange={handleChange}
-                            variant="scrollable"
-                            scrollButtons="auto"
                             aria-label="basic tabs example"
+                            onChange={handleChange}
+                            scrollButtons="auto"
+                            value={value}
+                            variant="scrollable"
                         >
                             <Tab
                                 label={`${t('Admissions', {
@@ -77,16 +77,16 @@ function Admissions() {
                             />
                         </Tabs>
                     </Box>
-                    <CustomTabPanel value={value} index={0}>
+                    <CustomTabPanel index={0} value={value}>
                         <AdmissionsTable admissions={admissions} />
                     </CustomTabPanel>
-                    <CustomTabPanel value={value} index={1}>
+                    <CustomTabPanel index={1} value={value}>
                         <AdmissionsStat result={result} />
                     </CustomTabPanel>
                 </>
-            )}
+            ) : null}
         </Box>
     );
-}
+};
 
 export default Admissions;

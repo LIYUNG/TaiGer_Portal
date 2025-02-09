@@ -16,7 +16,7 @@ import ProgramCompare from './ProgramCompare';
 
 import { getProgramChangeRequests } from '../../api/index';
 
-function ProgramDiffModal(props) {
+const ProgramDiffModal = (props) => {
     const { t } = useTranslation();
     const { originalProgram } = props;
     const programId = originalProgram._id;
@@ -33,10 +33,10 @@ function ProgramDiffModal(props) {
 
     return (
         <ModalNew
-            open={props.open}
-            size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered
+            open={props.open}
+            size="lg"
         >
             <Button color="secondary" onClick={props.setModalHide}>
                 <CloseIcon />
@@ -45,38 +45,39 @@ function ProgramDiffModal(props) {
             <FormControl fullWidth>
                 <InputLabel id="request-select-label">Requests</InputLabel>
                 <Select
-                    labelId="request-select-label"
                     id="request-select"
-                    value={changeIndex}
                     label="Requests"
+                    labelId="request-select-label"
                     onChange={(e) => setChangeIndex(e.target.value)}
+                    value={changeIndex}
                 >
-                    {incomingChanges.length > 0 &&
-                        incomingChanges.map((change, index) => {
-                            return (
-                                <MenuItem key={index} value={index}>
-                                    {convertDate(change?.updatedAt)} -{' '}
-                                    {change.requestedBy
-                                        ? `${change.requestedBy.firstname} ${change.requestedBy.lastname} `
-                                        : 'External Source'}
-                                </MenuItem>
-                            );
-                        })}
+                    {incomingChanges.length > 0
+                        ? incomingChanges.map((change, index) => {
+                              return (
+                                  <MenuItem key={index} value={index}>
+                                      {convertDate(change?.updatedAt)} -{' '}
+                                      {change.requestedBy
+                                          ? `${change.requestedBy.firstname} ${change.requestedBy.lastname} `
+                                          : 'External Source'}
+                                  </MenuItem>
+                              );
+                          })
+                        : null}
                 </Select>
             </FormControl>
             <ProgramCompare
-                originalProgram={originalProgram}
                 incomingChanges={incomingChanges[changeIndex] || {}}
+                originalProgram={originalProgram}
                 submitCallBack={props.setModalHide}
             />
             <Button
                 color="secondary"
-                variant="outlined"
                 onClick={props.setModalHide}
+                variant="outlined"
             >
                 {t('Close', { ns: 'common' })}
             </Button>
         </ModalNew>
     );
-}
+};
 export default ProgramDiffModal;

@@ -17,7 +17,7 @@ import { ATTRIBUTES } from '../../../../utils/contants';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-function EditAttributesSubpage(props) {
+const EditAttributesSubpage = (props) => {
     const { t } = useTranslation();
     const [checkboxState, setCheckboxState] = useState({
         updateAttributesList: props.student.attributes
@@ -33,46 +33,46 @@ function EditAttributesSubpage(props) {
     const AttributeInputSelection = () => {
         return (
             <Autocomplete
-                multiple
-                options={ATTRIBUTES}
                 disableCloseOnSelect
                 getOptionLabel={(option) => option.name}
-                value={checkboxState.updateAttributesList || []}
-                onChange={(e, newValue) => onAttributesChange(e, newValue)}
                 isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                 }
+                multiple
+                onChange={(e, newValue) => onAttributesChange(e, newValue)}
+                options={ATTRIBUTES}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label="Attribute"
+                        placeholder="Demanding"
+                        variant="standard"
+                    />
+                )}
                 renderOption={(props, option, { selected }) => (
                     <li {...props}>
                         <Checkbox
-                            icon={icon}
-                            checkedIcon={checkedIcon}
-                            style={{ marginRight: 8 }}
                             checked={selected}
+                            checkedIcon={checkedIcon}
+                            icon={icon}
+                            style={{ marginRight: 8 }}
                         />
                         {option.name}
                     </li>
                 )}
                 style={{ width: 500 }}
-                renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        variant="standard"
-                        label="Attribute"
-                        placeholder="Demanding"
-                    />
-                )}
+                value={checkboxState.updateAttributesList || []}
             />
         );
     };
 
     return (
         <Dialog
-            open={props.show}
-            onClose={props.onHide}
-            size="large"
             aria-labelledby="contained-modal-title-vcenter"
             centered
+            onClose={props.onHide}
+            open={props.show}
+            size="large"
         >
             <DialogTitle>
                 Attributes for {props.student.firstname} -{' '}
@@ -84,7 +84,6 @@ function EditAttributesSubpage(props) {
             <DialogActions>
                 <Button
                     color="primary"
-                    variant="contained"
                     onClick={(e) =>
                         props.submitUpdateAttributeslist(
                             e,
@@ -92,19 +91,20 @@ function EditAttributesSubpage(props) {
                             props.student._id
                         )
                     }
+                    variant="contained"
                 >
                     {t('Update', { ns: 'common' })}
                 </Button>
                 <Button
                     color="secondary"
-                    variant="outlined"
                     onClick={props.onHide}
+                    variant="outlined"
                 >
                     {t('Cancel', { ns: 'common' })}
                 </Button>
             </DialogActions>
         </Dialog>
     );
-}
+};
 
 export default EditAttributesSubpage;

@@ -9,12 +9,12 @@ import {
 
 import ProgramConflict from './ProgramConflict';
 
-function TabProgramConflict(props) {
+const TabProgramConflict = (props) => {
     const programConflicts = props.students.map((conflict, i) => (
         <ProgramConflict
             key={i}
-            students={conflict.students}
             program={conflict.program}
+            students={conflict.students}
         />
     ));
     return (
@@ -37,6 +37,6 @@ function TabProgramConflict(props) {
             )}
         </>
     );
-}
+};
 
 export default TabProgramConflict;

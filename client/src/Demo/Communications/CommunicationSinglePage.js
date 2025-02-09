@@ -7,7 +7,7 @@ import CommunicationSinglePageBody from './CommunicationSinglePageBody';
 import { getCommunicationQuery } from '../../api/query';
 import { useQuery } from '@tanstack/react-query';
 
-function CommunicationSinglePage() {
+const CommunicationSinglePage = () => {
     const { student_id } = useParams();
     const { data } = useQuery(getCommunicationQuery(student_id));
 
@@ -22,6 +22,6 @@ function CommunicationSinglePage() {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default CommunicationSinglePage;

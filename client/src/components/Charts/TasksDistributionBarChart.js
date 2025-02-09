@@ -8,10 +8,19 @@ const TasksDistributionBarChart = ({ data, k, value1, value2, yLabel }) => {
     const potential_a = data.map((d) => d[value2]);
     return (
         <BarChart
+            barLabel="value"
+            height={300}
             series={[
                 { data: active_a, stack: 'A', label: 'Active' },
                 { data: potential_a, stack: 'A', label: 'Potentials' }
             ]}
+            sx={{
+                [`.${axisClasses.bottom} .${axisClasses.tickLabel}`]: {
+                    transform: 'rotateZ(-45deg)',
+                    textAnchor: 'end',
+                    dy: '10px'
+                }
+            }}
             xAxis={[
                 {
                     data: labels,
@@ -25,15 +34,6 @@ const TasksDistributionBarChart = ({ data, k, value1, value2, yLabel }) => {
                     label: yLabel
                 }
             ]}
-            height={300}
-            barLabel="value"
-            sx={{
-                [`.${axisClasses.bottom} .${axisClasses.tickLabel}`]: {
-                    transform: 'rotateZ(-45deg)',
-                    textAnchor: 'end',
-                    dy: '10px'
-                }
-            }}
         />
     );
 };

@@ -9,7 +9,7 @@ import { appConfig } from '../../../config';
 import { useTranslation } from 'react-i18next';
 import ProgramRequirementsNew from './ProgramRequirementsNew';
 
-function ProgramRequirementsNewIndex() {
+const ProgramRequirementsNewIndex = () => {
     const { t } = useTranslation();
     const { programsAndCourseKeywordSets } = useLoaderData();
     TabTitle('Program Requirement Creation');
@@ -18,26 +18,26 @@ function ProgramRequirementsNewIndex() {
         <Box data-testid="dashoboard_component">
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.PROGRAMS}`}
+                    underline="hover"
                 >
                     {t('Program List', { ns: 'common' })}
                 </Link>
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.PROGRAM_ANALYSIS}`}
+                    underline="hover"
                 >
                     {t('Program Requirements', { ns: 'common' })}
                 </Link>
@@ -56,6 +56,6 @@ function ProgramRequirementsNewIndex() {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default ProgramRequirementsNewIndex;

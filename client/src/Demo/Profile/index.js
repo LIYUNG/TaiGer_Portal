@@ -46,7 +46,7 @@ import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import Loading from '../../components/Loading/Loading';
 
-function Profile() {
+const Profile = () => {
     const { t } = useTranslation();
     const { user } = useAuth();
     const { user_id } = useParams();
@@ -353,31 +353,31 @@ function Profile() {
     ];
     return (
         <Box>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
-                {user_id && (
+                {user_id ? (
                     <Link
-                        underline="hover"
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                             user_id,
                             DEMO.PROFILE_HASH
                         )}`}
+                        underline="hover"
                     >
                         {`${profileState.personaldata.firstname} ${
                             profileState.personaldata.lastname
@@ -391,7 +391,7 @@ function Profile() {
                                 : ' '
                         }`}
                     </Link>
-                )}
+                ) : null}
 
                 <Typography color="text.primary">
                     {t('Personal Data', { ns: 'common' })}
@@ -400,22 +400,20 @@ function Profile() {
             <Box component="form" noValidate sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        {!is_personal_data_filled(
-                            profileState.personaldata
-                        ) && (
+                        {!is_personal_data_filled(profileState.personaldata) ? (
                             <Accordion
-                                disableGutters
                                 defaultExpanded
+                                disableGutters
                                 sx={{ backgroundColor: '#FF0000' }}
                             >
                                 <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
                                     aria-controls="panel1-content"
+                                    expandIcon={<ExpandMoreIcon />}
                                     id="panel1-header"
                                 >
                                     <Stack
-                                        direction="row"
                                         alignItems="center"
+                                        direction="row"
                                         spacing={1}
                                     >
                                         <ReportProblemIcon size={18} />
@@ -441,7 +439,7 @@ function Profile() {
                                     </List>
                                 </AccordionDetails>
                             </Accordion>
-                        )}
+                        ) : null}
                     </Grid>
                     {personalDataFields.map(
                         ({
@@ -452,21 +450,21 @@ function Profile() {
                             disabled = false,
                             inputLabelProps
                         }) => (
-                            <Grid item xs={12} sm={sm} key={name}>
+                            <Grid item key={name} sm={sm} xs={12}>
                                 <TextField
+                                    InputLabelProps={inputLabelProps}
                                     autoComplete={name}
-                                    name={name}
+                                    disabled={disabled}
                                     fullWidth
-                                    required={!disabled}
                                     id={name}
                                     label={label}
-                                    type={type}
-                                    InputLabelProps={inputLabelProps}
-                                    value={profileState.personaldata[name]}
+                                    name={name}
                                     onChange={(e) =>
                                         handleChange_PersonalData(e)
                                     }
-                                    disabled={disabled}
+                                    required={!disabled}
+                                    type={type}
+                                    value={profileState.personaldata[name]}
                                 />
                             </Grid>
                         )
@@ -474,8 +472,6 @@ function Profile() {
                 </Grid>
                 <Button
                     color="primary"
-                    fullWidth
-                    variant="contained"
                     disabled={
                         profileState.personaldata.firstname === '' ||
                         profileState.personaldata.firstname_chinese === '' ||
@@ -483,15 +479,17 @@ function Profile() {
                         profileState.personaldata.lastname_chinese === '' ||
                         !profileState.changed_personaldata
                     }
+                    fullWidth
                     onClick={(e) =>
                         handleSubmit_PersonalData(e, profileState.personaldata)
                     }
                     sx={{ mt: 3, mb: 2 }}
+                    variant="contained"
                 >
                     {t('Update', { ns: 'common' })}
                 </Button>
             </Box>
-            {!user_id && is_TaiGer_Agent(user) && (
+            {!user_id && is_TaiGer_Agent(user) ? (
                 <>
                     <Card sx={{ padding: 2, mb: 2 }}>
                         <Typography>
@@ -502,7 +500,7 @@ function Profile() {
                         </Typography>
                         <Typography>{user.selfIntroduction}</Typography>
                     </Card>
-                    {is_TaiGer_Agent(profileState.personaldata) && (
+                    {is_TaiGer_Agent(profileState.personaldata) ? (
                         <Card sx={{ padding: 2, mb: 2 }}>
                             <Typography variant="h6">
                                 {t('Office Hours', { ns: 'common' })}
@@ -511,10 +509,10 @@ function Profile() {
                                 {t('Time zone', { ns: 'common' })}
                             </Typography>
                             <TimezoneSelect
-                                value={profileState.selectedTimezone}
-                                onChange={setSelectedTimezone}
                                 displayValue="UTC"
                                 isDisabled={false}
+                                onChange={setSelectedTimezone}
+                                value={profileState.selectedTimezone}
                             />
                             <br />
                             {[
@@ -531,7 +529,6 @@ function Profile() {
                                     sx={{ display: 'flex', textAlign: 'right' }}
                                 >
                                     <FormControlLabel
-                                        label={`${day}`}
                                         control={
                                             <Checkbox
                                                 checked={
@@ -544,24 +541,25 @@ function Profile() {
                                                 }
                                             />
                                         }
+                                        label={`${day}`}
                                     />
                                     {profileState.officehours &&
                                     profileState.officehours[day]?.active ? (
                                         <>
                                             {/* <span>Timeslots</span> */}
                                             <Autocomplete
-                                                multiple
-                                                id={`${day}`}
-                                                options={time_slots}
                                                 disableCloseOnSelect
                                                 getOptionLabel={(option) =>
                                                     option.label
                                                 }
-                                                value={
-                                                    profileState.officehours[
-                                                        day
-                                                    ].time_slots
+                                                id={`${day}`}
+                                                isOptionEqualToValue={(
+                                                    option,
+                                                    value
+                                                ) =>
+                                                    option.value === value.value
                                                 }
+                                                multiple
                                                 onChange={(e, newValue) =>
                                                     onTimeStartChange2(
                                                         e,
@@ -569,12 +567,15 @@ function Profile() {
                                                         day
                                                     )
                                                 }
-                                                isOptionEqualToValue={(
-                                                    option,
-                                                    value
-                                                ) =>
-                                                    option.value === value.value
-                                                }
+                                                options={time_slots}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Timeslots"
+                                                        placeholder="Timeslots"
+                                                        variant="standard"
+                                                    />
+                                                )}
                                                 renderOption={(
                                                     props,
                                                     option,
@@ -582,27 +583,24 @@ function Profile() {
                                                 ) => (
                                                     <li {...props}>
                                                         <Checkbox
-                                                            icon={icon}
+                                                            checked={selected}
                                                             checkedIcon={
                                                                 checkedIcon
                                                             }
+                                                            icon={icon}
                                                             style={{
                                                                 marginRight: 8
                                                             }}
-                                                            checked={selected}
                                                         />
                                                         {option.label}
                                                     </li>
                                                 )}
                                                 style={{ width: 500 }}
-                                                renderInput={(params) => (
-                                                    <TextField
-                                                        {...params}
-                                                        variant="standard"
-                                                        label="Timeslots"
-                                                        placeholder="Timeslots"
-                                                    />
-                                                )}
+                                                value={
+                                                    profileState.officehours[
+                                                        day
+                                                    ].time_slots
+                                                }
                                             />
                                         </>
                                     ) : (
@@ -613,21 +611,21 @@ function Profile() {
                                 </Box>
                             ))}
                             <Button
-                                variant="contained"
                                 color="primary"
                                 disabled={!profileState.officehoursModifed}
                                 onClick={handleSubmit_Officehours}
+                                variant="contained"
                             >
                                 {t('Update', { ns: 'common' })}
                             </Button>
                         </Card>
-                    )}
+                    ) : null}
                 </>
-            )}
+            ) : null}
             <Dialog
-                open={profileState.updateconfirmed}
-                onClose={setmodalhide}
                 aria-labelledby="contained-modal-title-vcenter"
+                onClose={setmodalhide}
+                open={profileState.updateconfirmed}
             >
                 <DialogTitle>
                     {t('Update Successfully', { ns: 'common' })}
@@ -640,16 +638,16 @@ function Profile() {
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         onClick={setmodalhide}
+                        variant="contained"
                     >
                         {t('Close', { ns: 'common' })}
                     </Button>
                 </DialogActions>
             </Dialog>
             <Dialog
-                open={profileState.updateOfficeHoursConfirmed}
                 onClose={onHideOfficeHoursConfirmed}
+                open={profileState.updateOfficeHoursConfirmed}
             >
                 <DialogTitle>
                     {t('Update Successfully', { ns: 'common' })}
@@ -661,8 +659,8 @@ function Profile() {
                 <DialogActions>
                     <Button
                         color="primary"
-                        variant="contained"
                         onClick={() => onHideOfficeHoursConfirmed()}
+                        variant="contained"
                     >
                         {t('Close', { ns: 'common' })}
                     </Button>
@@ -670,6 +668,6 @@ function Profile() {
             </Dialog>
         </Box>
     );
-}
+};
 
 export default Profile;

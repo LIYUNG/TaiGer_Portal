@@ -14,7 +14,7 @@ import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
 import { useTranslation } from 'react-i18next';
 
-function ArchivStudents() {
+const ArchivStudents = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const { user_id } = useParams();
@@ -124,10 +124,10 @@ function ArchivStudents() {
             <Box data-testid="archiv_student_component">
                 <Breadcrumbs aria-label="breadcrumb">
                     <Link
-                        underline="hover"
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.DASHBOARD_LINK}`}
+                        underline="hover"
                     >
                         {appConfig.companyName}
                     </Link>
@@ -136,13 +136,13 @@ function ArchivStudents() {
                         {` (${archivStudentsState.students.length})`}
                     </Typography>
                 </Breadcrumbs>
-                {res_modal_status >= 400 && (
+                {res_modal_status >= 400 ? (
                     <ModalMain
                         ConfirmError={ConfirmError}
-                        res_modal_status={res_modal_status}
                         res_modal_message={res_modal_message}
+                        res_modal_status={res_modal_status}
                     />
-                )}
+                ) : null}
                 <Box sx={{ mt: 2 }}>
                     <TabStudBackgroundDashboard
                         students={archivStudentsState.students}
@@ -152,6 +152,6 @@ function ArchivStudents() {
             </Box>
         );
     }
-}
+};
 
 export default ArchivStudents;

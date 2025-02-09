@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-function ProgramReportModal(props) {
+const ProgramReportModal = (props) => {
     const { t } = useTranslation();
     const [programReportModalState, setProgramReportModalState] = useState({
         description: ''
@@ -23,23 +23,23 @@ function ProgramReportModal(props) {
     };
 
     return (
-        <Dialog open={props.isReport} onClose={props.setReportModalHideDelete}>
+        <Dialog onClose={props.setReportModalHideDelete} open={props.isReport}>
             <DialogTitle>Report</DialogTitle>
             <DialogContent>
                 What information is inaccurate for {props.uni_name} -{' '}
                 {props.program_name}?
                 <TextField
                     fullWidth
-                    type="textarea"
                     inputProps={{ maxLength: 2000 }}
-                    multiline
-                    minRows={10}
-                    placeholder="Deadline is wrong."
-                    value={programReportModalState.description || ''}
                     isInvalid={
                         programReportModalState.description?.length > 2000
                     }
+                    minRows={10}
+                    multiline
                     onChange={(e) => handleChange(e)}
+                    placeholder="Deadline is wrong."
+                    type="textarea"
+                    value={programReportModalState.description || ''}
                 />
                 <Badge>
                     {programReportModalState.description?.length || 0}/{2000}
@@ -48,7 +48,6 @@ function ProgramReportModal(props) {
             <DialogActions>
                 <Button
                     color="primary"
-                    variant="contained"
                     disabled={programReportModalState.description?.length === 0}
                     onClick={() =>
                         props.submitProgramReport(
@@ -56,18 +55,19 @@ function ProgramReportModal(props) {
                             programReportModalState.description
                         )
                     }
+                    variant="contained"
                 >
                     {t('Create ticket', { ns: 'programList' })}
                 </Button>
                 <Button
                     color="secondary"
-                    variant="outlined"
                     onClick={props.setReportModalHideDelete}
+                    variant="outlined"
                 >
                     {t('Close', { ns: 'common' })}
                 </Button>
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default ProgramReportModal;

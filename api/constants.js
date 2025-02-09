@@ -8,7 +8,10 @@ const {
   is_TaiGer_Editor,
   is_TaiGer_Student,
   is_TaiGer_Agent,
-  is_TaiGer_AdminAgent
+  is_TaiGer_AdminAgent,
+  isProgramDecided,
+  isProgramSubmitted,
+  isProgramWithdraw
 } = require('@taiger-common/core');
 const { differenceInDays } = require('date-fns');
 
@@ -122,10 +125,10 @@ const isNotArchiv = (user) => {
 const isArchiv = (user) => !!user.archiv;
 
 const application_deadline_calculator = (student, application) => {
-  if (application.closed === 'O') {
+  if (isProgramSubmitted(application)) {
     return 'CLOSE';
   }
-  if (application.closed === 'X') {
+  if (isProgramWithdraw(application)) {
     return 'WITHDRAW';
   }
   const { application_deadline, semester } = application.programId;
@@ -249,9 +252,9 @@ const is_deadline_within30days_needed = (student) => {
     // TODO: should pack all thread due soon in a student email,
     // not multiple email for 1 student  for daily reminder.
     if (
-      student.applications[k].decided === 'O' &&
-      student.applications[k].closed !== 'O' &&
-      student.applications[k].closed !== 'X' &&
+      isProgramDecided(student.applications[k]) &&
+      !isProgramSubmitted(student.applications[k]) &&
+      !isProgramWithdraw(student.applications[k]) &&
       day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER, 10) &&
       day_diff > -30
     ) {
@@ -308,7 +311,7 @@ const does_editor_have_pending_tasks = (students, editor) => {
       }
     }
     for (let k = 0; k < students[i].applications.length; k += 1) {
-      if (students[i].applications[k].decided === 'O') {
+      if (isProgramDecided(students[i].applications[k])) {
         for (
           let j = 0;
           j < students[i].applications[k].doc_modification_thread.length;
@@ -357,7 +360,7 @@ const is_cv_ml_rl_task_response_needed = (student, user) => {
     }
   }
   for (let i = 0; i < student.applications.length; i += 1) {
-    if (student.applications[i].decided === 'O') {
+    if (isProgramDecided(student.applications[i])) {
       for (
         let j = 0;
         j < student.applications[i].doc_modification_thread.length;
@@ -432,7 +435,7 @@ const is_cv_ml_rl_reminder_needed = (student, user, trigger_days) => {
     }
   }
   for (let i = 0; i < student.applications.length; i += 1) {
-    if (student.applications[i].decided === 'O') {
+    if (isProgramDecided(student.applications[i])) {
       for (
         let j = 0;
         j < student.applications[i].doc_modification_thread.length;
@@ -485,9 +488,9 @@ const unsubmitted_applications_summary = (student) => {
   let x = 0;
   for (let i = 0; i < student.applications.length; i += 1) {
     if (
-      student.applications[i].decided === 'O' &&
-      student.applications[i].closed !== 'O' &&
-      student.applications[i].closed !== 'X'
+      isProgramDecided(student.applications[i]) &&
+      !isProgramSubmitted(student.applications[i]) &&
+      !isProgramWithdraw(student.applications[i])
     ) {
       if (x === 0) {
         unsubmitted_applications = `
@@ -590,7 +593,7 @@ const ml_essay_escalation_editor_single_program_list = (
   let missing_doc_list = '';
   const today = new Date();
 
-  if (application.decided === 'O') {
+  if (isProgramDecided(application)) {
     for (let j = 0; j < application.doc_modification_thread.length; j += 1) {
       const day_diff_2 = differenceInDays(
         today,
@@ -637,7 +640,7 @@ const ml_essay_escalation_student_list = (student, user, trigger_days) => {
   const today = new Date();
 
   for (let i = 0; i < student.applications.length; i += 1) {
-    if (student.applications[i].decided === 'O') {
+    if (isProgramDecided(student.applications[i])) {
       for (
         let j = 0;
         j < student.applications[i].doc_modification_thread.length;
@@ -669,16 +672,11 @@ const ml_essay_escalation_student_list = (student, user, trigger_days) => {
   return missing_doc_list;
 };
 
-const ml_essay_escalation_agent_single_program_list = (
-  student,
-  user,
-  trigger_days,
-  application
-) => {
+const ml_essay_escalation_agent_single_program_list = (application) => {
   let missing_doc_list = '';
   const today = new Date();
 
-  if (application.decided === 'O') {
+  if (isProgramDecided(application)) {
     for (let j = 0; j < application.doc_modification_thread.length; j += 1) {
       const day_diff_2 = differenceInDays(
         today,
@@ -703,9 +701,6 @@ const ml_essay_escalation_agent_list = (student, user, trigger_days) => {
 
   for (let i = 0; i < student.applications.length; i += 1) {
     missing_doc_list += ml_essay_escalation_agent_single_program_list(
-      student,
-      user,
-      trigger_days,
       student.applications[i]
     );
   }
@@ -741,9 +736,9 @@ const unsubmitted_applications_list = (student, user, trigger_days) => {
       today
     );
     if (
-      student.applications[i].decided === 'O' &&
-      student.applications[i].closed !== 'O' &&
-      student.applications[i].closed !== 'X' &&
+      isProgramDecided(student.applications[i]) &&
+      !isProgramSubmitted(student.applications[i]) &&
+      !isProgramWithdraw(student.applications[i]) &&
       day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER, 10) &&
       day_diff > -30
     ) {
@@ -756,12 +751,7 @@ const unsubmitted_applications_list = (student, user, trigger_days) => {
         student.applications[i]
       )} </b>
       <ul>
-      ${ml_essay_escalation_agent_single_program_list(
-        student,
-        user,
-        trigger_days,
-        student.applications[i]
-      )}
+      ${ml_essay_escalation_agent_single_program_list(student.applications[i])}
       </ul>
       </li>
       `;
@@ -909,7 +899,7 @@ const cv_ml_rl_unfinished_summary = (student, user) => {
   }
 
   for (let i = 0; i < student.applications.length; i += 1) {
-    if (student.applications[i].decided === 'O') {
+    if (isProgramDecided(student.applications[i])) {
       for (
         let j = 0;
         j < student.applications[i].doc_modification_thread.length;
@@ -1338,7 +1328,7 @@ const CVDeadline_Calculator = (student) => {
   let hasRolling = false;
   const today = new Date();
   for (let i = 0; i < student.applications.length; i += 1) {
-    if (student.applications[i].decided === 'O') {
+    if (isProgramDecided(student.applications[i])) {
       const application_deadline_temp = application_deadline_calculator(
         student,
         student.applications[i]
@@ -1410,8 +1400,8 @@ const cvmlrl_deadline_within30days_escalation_summary = (student) => {
       today
     );
     if (
-      student.applications[i].decided === 'O' &&
-      student.applications[i].closed !== 'O' &&
+      isProgramDecided(student.applications[i]) &&
+      !isProgramSubmitted(student.applications[i]) &&
       day_diff < parseInt(ESCALATION_DEADLINE_DAYS_TRIGGER, 10) &&
       day_diff > -30
     ) {

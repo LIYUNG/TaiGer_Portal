@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-function GrantManagerModal(props) {
+const GrantManagerModal = (props) => {
     const { t } = useTranslation();
     const [grantManagerModalState, setGrantManagerModalState] = useState({
         payload: {},
@@ -36,8 +36,8 @@ function GrantManagerModal(props) {
 
     return (
         <Dialog
-            open={props.managerModalShow}
             onClose={props.setManagerModalHide}
+            open={props.managerModalShow}
         >
             <DialogTitle>
                 Set {props.firstname} - {props.lastname} as Manager:
@@ -48,10 +48,10 @@ function GrantManagerModal(props) {
                         {t('Configure Manager Type')}
                     </InputLabel>
                     <Select
-                        labelId="manager_type"
-                        label="Select target group"
-                        name="manager_type"
                         id="manager_type"
+                        label="Select target group"
+                        labelId="manager_type"
+                        name="manager_type"
                         onChange={onChange}
                     >
                         <MenuItem value="">Please Select</MenuItem>
@@ -70,21 +70,21 @@ function GrantManagerModal(props) {
             <DialogActions>
                 <Button
                     color="primary"
-                    variant="contained"
                     disabled={!grantManagerModalState.changed}
                     onClick={(e) => onSubmitHandler(e)}
+                    variant="contained"
                 >
                     {t('Confirm', { ns: 'common' })}
                 </Button>
                 <Button
                     color="primary"
-                    variant="outlined"
                     onClick={props.setManagerModalHide}
+                    variant="outlined"
                 >
                     {t('Cancel', { ns: 'common' })}
                 </Button>
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default GrantManagerModal;

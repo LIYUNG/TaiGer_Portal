@@ -11,7 +11,7 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 
-function ApplicantsOverview() {
+const ApplicantsOverview = () => {
     const { user } = useAuth();
     const {
         data: { data: fetchedStudents }
@@ -43,10 +43,10 @@ function ApplicantsOverview() {
         <Box data-testid="application_overview_component">
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -59,6 +59,6 @@ function ApplicantsOverview() {
             <ApplicationOverviewTabs students={myStudents} />
         </Box>
     );
-}
+};
 
 export default ApplicantsOverview;

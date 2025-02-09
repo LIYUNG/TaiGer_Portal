@@ -23,7 +23,7 @@ import {
 } from '../../utils/contants';
 import { useTranslation } from 'react-i18next';
 
-function AgentSupportDocuments() {
+const AgentSupportDocuments = () => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [indexState, setIndexState] = useState({
@@ -166,10 +166,10 @@ function AgentSupportDocuments() {
         <Box data-testid="cvmlrlcenter_component">
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
@@ -180,7 +180,7 @@ function AgentSupportDocuments() {
                     {t('Agent Support Documents', { ns: 'common' })}
                 </Typography>
             </Breadcrumbs>
-            {!is_TaiGer_role(user) && (
+            {!is_TaiGer_role(user) ? (
                 <Card sx={{ p: 2 }}>
                     <Typography variant="body1">Instructions</Typography>
                     若您為初次使用，可能無任何
@@ -189,26 +189,26 @@ function AgentSupportDocuments() {
                     在此之前可以詳閱，了解之後與Editor之間的互動模式：
                     <Link
                         component={LinkDom}
-                        to={`${DEMO.CV_ML_RL_DOCS_LINK}`}
                         target="_blank"
+                        to={`${DEMO.CV_ML_RL_DOCS_LINK}`}
                     >
                         <b>Click me</b>
                     </Link>
                 </Card>
-            )}
+            ) : null}
             <CVMLRLOverview
-                isLoaded={indexState.isLoaded}
-                success={indexState.success}
-                students={indexState.students}
-                new_message_tasks={new_message_tasks}
-                followup_tasks={followup_tasks}
-                pending_progress_tasks={pending_progress_tasks}
                 closed_tasks={closed_tasks}
                 fav_message_tasks={fav_message_tasks}
+                followup_tasks={followup_tasks}
                 handleFavoriteToggle={handleFavoriteToggle}
+                isLoaded={indexState.isLoaded}
+                new_message_tasks={new_message_tasks}
+                pending_progress_tasks={pending_progress_tasks}
+                students={indexState.students}
+                success={indexState.success}
             />
         </Box>
     );
-}
+};
 
 export default AgentSupportDocuments;

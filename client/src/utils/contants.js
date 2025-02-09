@@ -1559,6 +1559,7 @@ export const col_keywords = [
         accessorKey: 'keywords_zh',
         header: 'Keyword-ZH',
         Cell: (params) => {
+            const { row } = params;
             return (
                 <Box
                     sx={{
@@ -1566,7 +1567,7 @@ export const col_keywords = [
                         overflow: 'hidden'
                     }}
                 >
-                    {params.row.original?.keywords_zh}
+                    {row.original?.keywords_zh}
                 </Box>
             );
         }
@@ -1575,6 +1576,7 @@ export const col_keywords = [
         accessorKey: 'antiKeywords_zh',
         header: 'Anti Keywords-ZH',
         Cell: (params) => {
+            const { row } = params;
             return (
                 <Box
                     sx={{
@@ -1582,7 +1584,7 @@ export const col_keywords = [
                         overflow: 'hidden'
                     }}
                 >
-                    {params.row.original?.antiKeywords_zh}
+                    {row.original?.antiKeywords_zh}
                 </Box>
             );
         }
@@ -1591,6 +1593,7 @@ export const col_keywords = [
         accessorKey: 'keywords_en',
         header: 'Keyword-EN',
         Cell: (params) => {
+            const { row } = params;
             return (
                 <Box
                     sx={{
@@ -1598,7 +1601,7 @@ export const col_keywords = [
                         overflow: 'hidden'
                     }}
                 >
-                    {params.row.original?.keywords_en}
+                    {row.original?.keywords_en}
                 </Box>
             );
         }
@@ -1607,6 +1610,7 @@ export const col_keywords = [
         accessorKey: 'antiKeywords_en',
         header: 'Anti Keywords-EN',
         Cell: (params) => {
+            const { row } = params;
             return (
                 <Box
                     sx={{
@@ -1614,7 +1618,7 @@ export const col_keywords = [
                         overflow: 'hidden'
                     }}
                 >
-                    {params.row.original?.antiKeywords_en}
+                    {row.original?.antiKeywords_en}
                 </Box>
             );
         }
@@ -1633,8 +1637,9 @@ export const c1_mrt = [
         header: 'First-, Last Name',
         size: 150,
         Cell: (params) => {
+            const { row } = params;
             const linkUrl = `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                params.row.original.student_id,
+                row.original.student_id,
                 DEMO.PROFILE_HASH
             )}`;
             return (
@@ -1646,13 +1651,13 @@ export const c1_mrt = [
                     }}
                 >
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
-                        title={params.row.original.firstname_lastname}
+                        title={row.original.firstname_lastname}
+                        to={linkUrl}
+                        underline="hover"
                     >
-                        {params.row.original.firstname_lastname}
+                        {row.original.firstname_lastname}
                     </Link>
                 </Box>
             );
@@ -1674,13 +1679,13 @@ export const c1_mrt = [
                           }}
                       >
                           <Link
-                              underline="hover"
-                              to={DEMO.TEAM_EDITOR_LINK(
-                                  outsourcer._id.toString()
-                              )}
                               component={LinkDom}
                               target="_blank"
                               title={outsourcer.firstname}
+                              to={DEMO.TEAM_EDITOR_LINK(
+                                  outsourcer._id.toString()
+                              )}
+                              underline="hover"
                           >
                               {`${outsourcer.firstname} `}
                           </Link>
@@ -1688,12 +1693,12 @@ export const c1_mrt = [
                   )) || []
                 : params.row.original.editors?.map((editor) => (
                       <Link
-                          underline="hover"
-                          to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
                           component={LinkDom}
+                          key={`${editor._id.toString()}`}
                           target="_blank"
                           title={editor.firstname}
-                          key={`${editor._id.toString()}`}
+                          to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
+                          underline="hover"
                       >
                           {`${editor.firstname} `}
                       </Link>
@@ -1705,6 +1710,7 @@ export const c1_mrt = [
         header: 'Deadline',
         size: 120,
         Cell: (params) => {
+            const { row } = params;
             return (
                 <Box
                     sx={{
@@ -1712,7 +1718,7 @@ export const c1_mrt = [
                         overflow: 'hidden'
                     }}
                 >
-                    {params.row.original?.deadline}
+                    {row.original?.deadline}
                 </Box>
             );
         }
@@ -1722,6 +1728,7 @@ export const c1_mrt = [
         header: 'Days left',
         size: 80,
         Cell: (params) => {
+            const { row } = params;
             return (
                 <Box
                     sx={{
@@ -1729,7 +1736,7 @@ export const c1_mrt = [
                         overflow: 'hidden'
                     }}
                 >
-                    {params.row.original?.days_left}
+                    {row.original?.days_left}
                 </Box>
             );
         }
@@ -1739,6 +1746,7 @@ export const c1_mrt = [
         header: 'Program Language',
         size: 80,
         Cell: (params) => {
+            const { row } = params;
             return (
                 <Box
                     sx={{
@@ -1746,7 +1754,7 @@ export const c1_mrt = [
                         overflow: 'hidden'
                     }}
                 >
-                    {params.row.original?.lang}
+                    {row.original?.lang}
                 </Box>
             );
         }
@@ -1757,8 +1765,9 @@ export const c1_mrt = [
         filterFn: 'contains',
         size: 450,
         Cell: (params) => {
+            const { row } = params;
             const linkUrl = `${DEMO.DOCUMENT_MODIFICATION_LINK(
-                params.row.original.thread_id
+                row.original.thread_id
             )}`;
             return (
                 <Box
@@ -1768,33 +1777,33 @@ export const c1_mrt = [
                         // textOverflow: 'ellipsis'
                     }}
                 >
-                    {params.row.original?.attributes?.map(
+                    {row.original?.attributes?.map(
                         (attribute) =>
                             [1, 3, 9, 10, 11].includes(attribute.value) && (
                                 <Tooltip
+                                    key={attribute._id}
                                     title={`${attribute.name}: ${
                                         ATTRIBUTES[attribute.value - 1]
                                             .definition
                                     }`}
-                                    key={attribute._id}
                                 >
                                     <Chip
-                                        size="small"
+                                        color={COLORS[attribute.value]}
                                         data-testid={`chip-${attribute.name}`}
                                         label={attribute.name[0]}
-                                        color={COLORS[attribute.value]}
+                                        size="small"
                                     />
                                 </Tooltip>
                             )
                     )}
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
-                        title={params.row.original.document_name}
+                        title={row.original.document_name}
+                        to={linkUrl}
+                        underline="hover"
                     >
-                        {params.row.original.document_name}
+                        {row.original.document_name}
                     </Link>
                 </Box>
             );
@@ -1840,6 +1849,7 @@ export const c1_mrt = [
         header: 'Latest Reply',
         size: 150,
         Cell: (params) => {
+            const { row } = params;
             return (
                 <Box
                     sx={{
@@ -1847,7 +1857,7 @@ export const c1_mrt = [
                         overflow: 'hidden'
                     }}
                 >
-                    {params.row.original?.latest_reply}
+                    {row.original?.latest_reply}
                 </Box>
             );
         }
@@ -1873,11 +1883,11 @@ export const c1 = [
             )}`;
             return (
                 <Link
-                    underline="hover"
-                    to={linkUrl}
                     component={LinkDom}
                     target="_blank"
                     title={params.value}
+                    to={linkUrl}
+                    underline="hover"
                 >
                     {params.value}
                 </Link>
@@ -1894,24 +1904,24 @@ export const c1 = [
             return params.row.file_type === 'Essay'
                 ? params.row.outsourced_user_id?.map((outsourcer) => (
                       <Link
-                          underline="hover"
-                          to={DEMO.TEAM_EDITOR_LINK(outsourcer._id.toString())}
                           component={LinkDom}
+                          key={`${outsourcer._id.toString()}`}
                           target="_blank"
                           title={outsourcer.firstname}
-                          key={`${outsourcer._id.toString()}`}
+                          to={DEMO.TEAM_EDITOR_LINK(outsourcer._id.toString())}
+                          underline="hover"
                       >
                           {`${outsourcer.firstname} `}
                       </Link>
                   )) || []
                 : params.value?.map((editor) => (
                       <Link
-                          underline="hover"
-                          to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
                           component={LinkDom}
+                          key={`${editor._id.toString()}`}
                           target="_blank"
                           title={editor.firstname}
-                          key={`${editor._id.toString()}`}
+                          to={DEMO.TEAM_EDITOR_LINK(editor._id.toString())}
+                          underline="hover"
                       >
                           {`${editor.firstname} `}
                       </Link>
@@ -1942,26 +1952,26 @@ export const c1 = [
                         (attribute) =>
                             [1, 3, 9, 10, 11].includes(attribute.value) && (
                                 <Tooltip
+                                    key={attribute._id}
                                     title={`${attribute.name}: ${
                                         ATTRIBUTES[attribute.value - 1]
                                             .definition
                                     }`}
-                                    key={attribute._id}
                                 >
                                     <Chip
-                                        size="small"
-                                        label={attribute.name[0]}
                                         color={COLORS[attribute.value]}
+                                        label={attribute.name[0]}
+                                        size="small"
                                     />
                                 </Tooltip>
                             )
                     )}
                     <Link
-                        underline="hover"
-                        to={linkUrl}
                         component={LinkDom}
                         target="_blank"
                         title={params.value}
+                        to={linkUrl}
+                        underline="hover"
                     >
                         {params.value}
                     </Link>

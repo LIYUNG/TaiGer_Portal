@@ -9,7 +9,7 @@ import { useAuth } from '../../../components/AuthProvider';
 import useStudents from '../../../hooks/useStudents';
 import DEMO from '../../../store/constant';
 
-function AssignEditors() {
+const AssignEditors = () => {
     const { user } = useAuth();
     const {
         data: { data: fetchedStudents }
@@ -30,19 +30,19 @@ function AssignEditors() {
 
     return (
         <Box data-testid="assignment_editors">
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
             <AssignEditorsPage
                 students={students}
                 submitUpdateEditorlist={submitUpdateEditorlist}
             />
         </Box>
     );
-}
+};
 
 export default AssignEditors;

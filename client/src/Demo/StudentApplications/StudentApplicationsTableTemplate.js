@@ -30,7 +30,10 @@ import { useTranslation } from 'react-i18next';
 import {
     is_TaiGer_role,
     is_TaiGer_Student,
-    is_TaiGer_Admin
+    is_TaiGer_Admin,
+    isProgramDecided,
+    isProgramSubmitted,
+    isProgramAdmitted
 } from '@taiger-common/core';
 import { differenceInDays } from 'date-fns';
 
@@ -40,10 +43,7 @@ import {
     is_program_ml_rl_essay_ready,
     is_the_uni_assist_vpd_uploaded,
     isCVFinished,
-    application_deadline_calculator,
-    isProgramSubmitted,
-    isProgramDecided,
-    isProgramAdmitted
+    application_deadline_calculator
 } from '../Utils/checking-functions';
 import OverlayButton from '../../components/Overlay/OverlayButton';
 import Banner from '../../components/Banner/Banner';
@@ -64,7 +64,7 @@ import { useNavigate } from 'react-router-dom';
 import { ImportStudentProgramsCard } from './ImportStudentProgramsCard';
 import { StudentPreferenceCard } from './StudentPreferenceCard';
 
-function StudentApplicationsTableTemplate(props) {
+const StudentApplicationsTableTemplate = (props) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -280,7 +280,7 @@ function StudentApplicationsTableTemplate(props) {
     ) {
         applying_university_info = (
             <TableRow>
-                {!is_TaiGer_Student(user) && <TableCell></TableCell>}
+                {!is_TaiGer_Student(user) ? <TableCell /> : null}
                 <TableCell>
                     <Typography>No University</Typography>
                 </TableCell>
@@ -324,12 +324,10 @@ function StudentApplicationsTableTemplate(props) {
             studentApplicationsTableTemplateState.student.applications.map(
                 (application, application_idx) => (
                     <TableRow key={application_idx}>
-                        {!is_TaiGer_Student(user) && (
+                        {!is_TaiGer_Student(user) ? (
                             <TableCell>
                                 <Button
                                     color="primary"
-                                    variant="contained"
-                                    size="small"
                                     onClick={(e) =>
                                         handleDelete(
                                             e,
@@ -338,17 +336,19 @@ function StudentApplicationsTableTemplate(props) {
                                                 .student._id
                                         )
                                     }
+                                    size="small"
+                                    variant="contained"
                                 >
                                     <DeleteIcon fontSize="small" />
                                 </Button>
                             </TableCell>
-                        )}
+                        ) : null}
                         <TableCell>
                             <Typography>
                                 <Link
-                                    to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                                     component={LinkDom}
                                     style={{ textDecoration: 'none' }}
+                                    to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                                 >
                                     {application.programId.school}
                                 </Link>
@@ -357,9 +357,9 @@ function StudentApplicationsTableTemplate(props) {
                         <TableCell>
                             <Typography>
                                 <Link
-                                    to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                                     component={LinkDom}
                                     style={{ textDecoration: 'none' }}
+                                    to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                                 >
                                     {application.programId.degree}
                                 </Link>
@@ -368,9 +368,9 @@ function StudentApplicationsTableTemplate(props) {
                         <TableCell>
                             <Typography>
                                 <Link
-                                    to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                                     component={LinkDom}
                                     style={{ textDecoration: 'none' }}
+                                    to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                                 >
                                     {application.programId.program_name}
                                 </Link>
@@ -379,9 +379,9 @@ function StudentApplicationsTableTemplate(props) {
                         <TableCell>
                             <Typography>
                                 <Link
-                                    to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                                     component={LinkDom}
                                     style={{ textDecoration: 'none' }}
+                                    to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                                 >
                                     {application.programId.semester}
                                 </Link>
@@ -390,9 +390,9 @@ function StudentApplicationsTableTemplate(props) {
                         <TableCell>
                             <Typography>
                                 <Link
-                                    to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                                     component={LinkDom}
                                     style={{ textDecoration: 'none' }}
+                                    to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                                 >
                                     {application.programId.toefl
                                         ? application.programId.toefl
@@ -403,9 +403,9 @@ function StudentApplicationsTableTemplate(props) {
                         <TableCell>
                             <Typography>
                                 <Link
-                                    to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                                     component={LinkDom}
                                     style={{ textDecoration: 'none' }}
+                                    to={`${DEMO.SINGLE_PROGRAM_LINK(application.programId._id)}`}
                                 >
                                     {application.programId.ielts
                                         ? application.programId.ielts
@@ -430,21 +430,21 @@ function StudentApplicationsTableTemplate(props) {
                         <TableCell>
                             <FormControl fullWidth>
                                 <Select
-                                    size="small"
+                                    disabled={application.closed !== '-'}
+                                    id="decided"
                                     labelId="decided"
                                     name="decided"
-                                    id="decided"
                                     onChange={(e) =>
                                         handleChange(e, application_idx)
                                     }
-                                    disabled={application.closed !== '-'}
+                                    size="small"
                                     value={application.decided}
                                 >
-                                    <MenuItem value={'-'}>-</MenuItem>
-                                    <MenuItem value={'X'}>
+                                    <MenuItem value="-">-</MenuItem>
+                                    <MenuItem value="X">
                                         {t('No', { ns: 'common' })}
                                     </MenuItem>
-                                    <MenuItem value={'O'}>
+                                    <MenuItem value="O">
                                         {t('Yes', { ns: 'common' })}
                                     </MenuItem>
                                 </Select>
@@ -464,17 +464,17 @@ function StudentApplicationsTableTemplate(props) {
                                         ))) ? (
                                     <FormControl fullWidth>
                                         <Select
-                                            size="small"
-                                            labelId="closed"
-                                            name="closed"
-                                            id="closed"
-                                            value={application.closed}
-                                            onChange={(e) =>
-                                                handleChange(e, application_idx)
-                                            }
                                             disabled={
                                                 application.admission !== '-'
                                             }
+                                            id="closed"
+                                            labelId="closed"
+                                            name="closed"
+                                            onChange={(e) =>
+                                                handleChange(e, application_idx)
+                                            }
+                                            size="small"
+                                            value={application.closed}
                                         >
                                             <MenuItem value="-">
                                                 {t('Not Yet', { ns: 'common' })}
@@ -523,10 +523,9 @@ function StudentApplicationsTableTemplate(props) {
                             <TableCell>
                                 <FormControl fullWidth>
                                     <Select
-                                        size="small"
-                                        labelId="admission"
-                                        name="admission"
-                                        id="admission"
+                                        defaultValue={
+                                            application.admission ?? '-'
+                                        }
                                         disabled={
                                             !(
                                                 application.closed !== '-' &&
@@ -535,12 +534,13 @@ function StudentApplicationsTableTemplate(props) {
                                             (application.finalEnrolment ??
                                                 false)
                                         }
-                                        defaultValue={
-                                            application.admission ?? '-'
-                                        }
+                                        id="admission"
+                                        labelId="admission"
+                                        name="admission"
                                         onChange={(e) =>
                                             handleChange(e, application_idx)
                                         }
+                                        size="small"
                                     >
                                         {IS_SUBMITTED_STATE_OPTIONS.map(
                                             (option) => (
@@ -566,16 +566,16 @@ function StudentApplicationsTableTemplate(props) {
                             <TableCell>
                                 <FormControl fullWidth>
                                     <Select
-                                        size="small"
-                                        labelId="finalEnrolment"
-                                        name="finalEnrolment"
-                                        id="finalEnrolment"
                                         defaultValue={
                                             application.finalEnrolment ?? false
                                         }
+                                        id="finalEnrolment"
+                                        labelId="finalEnrolment"
+                                        name="finalEnrolment"
                                         onChange={(e) =>
                                             handleChange(e, application_idx)
                                         }
+                                        size="small"
                                     >
                                         <MenuItem value={false}>
                                             {t('No', { ns: 'common' })}
@@ -610,14 +610,14 @@ function StudentApplicationsTableTemplate(props) {
     }
     return (
         <Box>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
-            {is_TaiGer_Student(user) && (
+            ) : null}
+            {is_TaiGer_Student(user) ? (
                 <Dialog open={showProgramCorrectnessReminderModal}>
                     <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                     <DialogContent>
@@ -628,86 +628,86 @@ function StudentApplicationsTableTemplate(props) {
                     </DialogContent>
                     <DialogActions>
                         <Button
-                            fullWidth
-                            variant="contained"
                             color="primary"
+                            fullWidth
                             onClick={closeProgramCorrectnessModal}
+                            variant="contained"
                         >
                             {t('Accept', { ns: 'common' })}
                         </Button>
                     </DialogActions>
                 </Dialog>
-            )}
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
-                    underline="hover"
                     color="inherit"
                     component={LinkDom}
                     to={`${DEMO.DASHBOARD_LINK}`}
+                    underline="hover"
                 >
                     {appConfig.companyName}
                 </Link>
-                {is_TaiGer_role(user) && (
+                {is_TaiGer_role(user) ? (
                     <Link
-                        underline="hover"
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.STUDENT_DATABASE_LINK}`}
+                        underline="hover"
                     >
                         {t('Students Database', { ns: 'common' })}
                     </Link>
-                )}
-                {is_TaiGer_role(user) && (
+                ) : null}
+                {is_TaiGer_role(user) ? (
                     <Link
-                        underline="hover"
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                             props.student._id.toString(),
                             DEMO.PROFILE_HASH
                         )}`}
+                        underline="hover"
                     >
                         {t('Student', { ns: 'common' })}{' '}
                         {props.student.firstname} {props.student.lastname}
                     </Link>
-                )}
+                ) : null}
                 <Typography color="text.primary">
                     {t('Applications', { ns: 'common' })}
                 </Typography>
             </Breadcrumbs>
             <Box>
                 <Grid container spacing={2} sx={{ mt: 0 }}>
-                    <Grid item xs={12} md={is_TaiGer_role(user) ? 6 : 12}>
+                    <Grid item md={is_TaiGer_role(user) ? 6 : 12} xs={12}>
                         <StudentPreferenceCard student={props.student} />
                     </Grid>
-                    {is_TaiGer_role(user) && (
-                        <Grid item xs={12} md={6}>
+                    {is_TaiGer_role(user) ? (
+                        <Grid item md={6} xs={12}>
                             <ImportStudentProgramsCard
                                 student={props.student}
                             />
                         </Grid>
-                    )}
+                    ) : null}
                 </Grid>
             </Box>
             <>
                 {isProgramNotSelectedEnough([
                     studentApplicationsTableTemplateState.student
-                ]) && (
+                ]) ? (
                     <Card>
                         {props.student.firstname} {props.student.lastname} did
                         not choose enough programs.
                     </Card>
-                )}
+                ) : null}
                 {is_TaiGer_Admin(user) &&
-                    is_num_Program_Not_specified(
-                        studentApplicationsTableTemplateState.student
-                    ) && (
-                        <Card>
-                            The number of student&apos;s applications is not
-                            specified! Please determine the number of the
-                            programs according to the contract
-                        </Card>
-                    )}
+                is_num_Program_Not_specified(
+                    studentApplicationsTableTemplateState.student
+                ) ? (
+                    <Card>
+                        The number of student&apos;s applications is not
+                        specified! Please determine the number of the programs
+                        according to the contract
+                    </Card>
+                ) : null}
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
                         <Typography variant="h6">
@@ -718,14 +718,14 @@ function StudentApplicationsTableTemplate(props) {
                         <Grid item xs={2}>
                             <FormControl fullWidth>
                                 <Select
-                                    size="small"
                                     id="applying_program_count"
                                     name="applying_program_count"
-                                    value={
-                                        studentApplicationsTableTemplateState.applying_program_count
-                                    }
                                     onChange={(e) =>
                                         handleChangeProgramCount(e)
+                                    }
+                                    size="small"
+                                    value={
+                                        studentApplicationsTableTemplateState.applying_program_count
                                     }
                                 >
                                     <MenuItem value="0">Please Select</MenuItem>
@@ -743,16 +743,14 @@ function StudentApplicationsTableTemplate(props) {
                             </FormControl>
                         </Grid>
                     ) : (
-                        <>
-                            <Grid item xs={2}>
-                                <Typography variant="h6">
-                                    {
-                                        studentApplicationsTableTemplateState
-                                            .student.applying_program_count
-                                    }
-                                </Typography>
-                            </Grid>
-                        </>
+                        <Grid item xs={2}>
+                            <Typography variant="h6">
+                                {
+                                    studentApplicationsTableTemplateState
+                                        .student.applying_program_count
+                                }
+                            </Typography>
+                        </Grid>
                     )}
                 </Grid>
                 <Box>
@@ -760,45 +758,41 @@ function StudentApplicationsTableTemplate(props) {
                         <Box>
                             <Banner
                                 ReadOnlyMode={true}
-                                bg={'primary'}
-                                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                                title={'info'}
+                                bg="primary"
+                                link_name=""
+                                notification_key={undefined}
+                                removeBanner={<></>}
                                 text={`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}
-                                link_name={''}
-                                removeBanner={<></>}
-                                notification_key={undefined}
+                                title="info"
+                                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
                             />
                             <Banner
                                 ReadOnlyMode={true}
-                                bg={'secondary'}
-                                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                                title={'warning'}
-                                text={
-                                    '請選擇要申請的學程打在 Decided: Yes，不要申請打的 No。'
-                                }
-                                link_name={''}
-                                removeBanner={<></>}
+                                bg="secondary"
+                                link_name=""
                                 notification_key={undefined}
+                                removeBanner={<></>}
+                                text="請選擇要申請的學程打在 Decided: Yes，不要申請打的 No。"
+                                title="warning"
+                                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
                             />
                             <Banner
                                 ReadOnlyMode={true}
-                                bg={'danger'}
-                                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
-                                title={'warning'}
-                                text={
-                                    '請選擇要申請的學程打在 Submitted: Submitted，若想中斷申請請告知顧問，或是 選擇 Withdraw (如果東西都已準備好且解鎖)'
-                                }
-                                link_name={''}
-                                removeBanner={<></>}
+                                bg="danger"
+                                link_name=""
                                 notification_key={undefined}
+                                removeBanner={<></>}
+                                text="請選擇要申請的學程打在 Submitted: Submitted，若想中斷申請請告知顧問，或是 選擇 Withdraw (如果東西都已準備好且解鎖)"
+                                title="warning"
+                                to={`${DEMO.BASE_DOCUMENTS_LINK}`}
                             />
                             <TableContainer style={{ overflowX: 'auto' }}>
                                 <Table size="small">
                                     <TableHead>
                                         <TableRow>
-                                            {!is_TaiGer_Student(user) && (
+                                            {!is_TaiGer_Student(user) ? (
                                                 <TableCell>-</TableCell>
-                                            )}
+                                            ) : null}
                                             {programstatuslist.map(
                                                 (doc, index) => (
                                                     <TableCell key={index}>
@@ -821,13 +815,12 @@ function StudentApplicationsTableTemplate(props) {
                     </Card>
                     <Box>
                         <Button
-                            fullWidth
                             color="primary"
-                            variant="contained"
                             disabled={
                                 !studentApplicationsTableTemplateState.application_status_changed ||
                                 !studentApplicationsTableTemplateState.isLoaded
                             }
+                            fullWidth
                             onClick={(e) =>
                                 handleSubmit(
                                     e,
@@ -836,6 +829,7 @@ function StudentApplicationsTableTemplate(props) {
                                 )
                             }
                             sx={{ mt: 2 }}
+                            variant="contained"
                         >
                             {studentApplicationsTableTemplateState.isLoaded ? (
                                 t('Update', { ns: 'common' })
@@ -844,7 +838,7 @@ function StudentApplicationsTableTemplate(props) {
                             )}
                         </Button>
                     </Box>
-                    {is_TaiGer_role(user) && (
+                    {is_TaiGer_role(user) ? (
                         <>
                             <Box>
                                 <Typography>
@@ -869,12 +863,12 @@ function StudentApplicationsTableTemplate(props) {
                                         }}
                                     >
                                         <Button
-                                            size="small"
                                             color="primary"
-                                            variant="contained"
                                             onClick={
                                                 onClickProgramAssignHandler
                                             }
+                                            size="small"
+                                            variant="contained"
                                         >
                                             {t('Add New Program')}
                                         </Button>{' '}
@@ -882,14 +876,14 @@ function StudentApplicationsTableTemplate(props) {
                                 </Typography>
                             </Box>
                         </>
-                    )}
+                    ) : null}
                     <Dialog
+                        aria-labelledby="contained-modal-title-vcenter"
+                        onClose={onHideModalDeleteApplication}
                         open={
                             studentApplicationsTableTemplateState.modalDeleteApplication
                         }
-                        onClose={onHideModalDeleteApplication}
                         size="small"
-                        aria-labelledby="contained-modal-title-vcenter"
                     >
                         <DialogTitle>
                             {t('Warning', { ns: 'common' })}:{' '}
@@ -904,11 +898,11 @@ function StudentApplicationsTableTemplate(props) {
                         <DialogActions>
                             <Button
                                 color="error"
-                                variant="contained"
                                 disabled={
                                     !studentApplicationsTableTemplateState.isLoaded
                                 }
                                 onClick={handleDeleteConfirm}
+                                variant="contained"
                             >
                                 {t('Yes', { ns: 'common' })}
                             </Button>
@@ -921,12 +915,12 @@ function StudentApplicationsTableTemplate(props) {
                         </DialogActions>
                     </Dialog>
                     <Dialog
+                        aria-labelledby="contained-modal-title-vcenter"
+                        centered
+                        onClose={onHideUpdatedApplicationWindow}
                         open={
                             studentApplicationsTableTemplateState.modalUpdatedApplication
                         }
-                        onClose={onHideUpdatedApplicationWindow}
-                        aria-labelledby="contained-modal-title-vcenter"
-                        centered
                     >
                         <DialogTitle>Info:</DialogTitle>
                         <DialogContent>
@@ -942,8 +936,8 @@ function StudentApplicationsTableTemplate(props) {
                         <DialogActions>
                             <Button
                                 color="primary"
-                                variant="outlined"
                                 onClick={onHideUpdatedApplicationWindow}
+                                variant="outlined"
                             >
                                 {t('Close', { ns: 'common' })}
                             </Button>
@@ -953,6 +947,6 @@ function StudentApplicationsTableTemplate(props) {
             </>
         </Box>
     );
-}
+};
 
 export default StudentApplicationsTableTemplate;

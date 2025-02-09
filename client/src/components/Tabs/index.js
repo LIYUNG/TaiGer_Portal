@@ -1,23 +1,21 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 
-export const CustomTabPanel = (props) => {
-    const { children, value, index, ...other } = props;
-
+export const CustomTabPanel = ({ children, value, index, ...other }) => {
     return (
         <div
+            aria-labelledby={`simple-tab-${index}`}
             data-testid={`custom_tab_panel-${index}`}
-            role="tabpanel"
             hidden={value !== index}
             id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
+            role="tabpanel"
             {...other}
         >
-            {value === index && (
+            {value === index ? (
                 <Box>
-                    <Typography component={'span'}>{children}</Typography>
+                    <Typography component="span">{children}</Typography>
                 </Box>
-            )}
+            ) : null}
         </div>
     );
 };

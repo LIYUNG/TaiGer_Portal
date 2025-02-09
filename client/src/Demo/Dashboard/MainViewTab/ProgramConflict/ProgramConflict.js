@@ -4,25 +4,23 @@ import { Link, TableBody, TableCell, TableRow } from '@mui/material';
 
 import DEMO from '../../../../store/constant';
 
-function ProgramConflict(props) {
-    const { students, program } = props;
-
+const ProgramConflict = ({ students, program }) => {
     return (
         <TableBody>
             <TableRow>
                 <TableCell rowSpan={(students?.length || 0) + 1}>
                     <div>
                         <Link
-                            to={`${DEMO.SINGLE_PROGRAM_LINK(program?._id)}`}
                             component={LinkDom}
+                            to={`${DEMO.SINGLE_PROGRAM_LINK(program?._id)}`}
                         >
                             <b>{program?.school}</b>
                         </Link>
                     </div>
                     <div>
                         <Link
-                            to={`${DEMO.SINGLE_PROGRAM_LINK(program?._id)}`}
                             component={LinkDom}
+                            to={`${DEMO.SINGLE_PROGRAM_LINK(program?._id)}`}
                         >
                             {program?.program_name}
                         </Link>
@@ -33,11 +31,11 @@ function ProgramConflict(props) {
                 <TableRow key={i}>
                     <TableCell>
                         <Link
+                            component={LinkDom}
                             to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
                                 student.studentId,
                                 DEMO.PROFILE_HASH
                             )}`}
-                            component={LinkDom}
                         >
                             {student.firstname}, {student.lastname}
                         </Link>
@@ -54,6 +52,6 @@ function ProgramConflict(props) {
             ))}
         </TableBody>
     );
-}
+};
 
 export default ProgramConflict;

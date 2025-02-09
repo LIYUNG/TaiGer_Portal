@@ -25,7 +25,7 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 
-function AgentProfile() {
+const AgentProfile = () => {
     const { user } = useAuth();
     const { user_id } = useParams();
     const [agentProfileState, setAgentProfileState] = useState({
@@ -97,13 +97,13 @@ function AgentProfile() {
 
     return (
         <Box>
-            {res_modal_status >= 400 && (
+            {res_modal_status >= 400 ? (
                 <ModalMain
                     ConfirmError={ConfirmError}
-                    res_modal_status={res_modal_status}
                     res_modal_message={res_modal_message}
+                    res_modal_status={res_modal_status}
                 />
-            )}
+            ) : null}
 
             <Card sx={{ p: 2 }}>
                 <Grid container spacing={2}>
@@ -132,9 +132,9 @@ function AgentProfile() {
                             {i18next.t('Time zone')}
                         </Typography>
                         <TimezoneSelect
-                            value={agentProfileState.selectedTimezone}
                             displayValue="UTC"
                             isDisabled={true}
+                            value={agentProfileState.selectedTimezone}
                         />
                         <br />
                         <Grid container spacing={2}>
@@ -147,23 +147,23 @@ function AgentProfile() {
                                 'Saturday',
                                 'Sunday'
                             ].map((day, i) => (
-                                <Grid item xs={12} key={i}>
+                                <Grid item key={i} xs={12}>
                                     <FormControl>
                                         <FormControlLabel
                                             control={
                                                 <Checkbox
-                                                    name="useProgramRequirementData"
-                                                    type="checkbox"
                                                     checked={
                                                         agentProfileState.agent
                                                             .officehours[day]
                                                             ?.active
                                                     }
+                                                    name="useProgramRequirementData"
                                                     sx={{
                                                         '& .MuiSvgIcon-root': {
                                                             fontSize: '1.5rem'
                                                         }
                                                     }}
+                                                    type="checkbox"
                                                 />
                                             }
                                             label={`${day}`}
@@ -172,20 +172,17 @@ function AgentProfile() {
                                     {agentProfileState.agent.officehours &&
                                     agentProfileState.agent.officehours[day]
                                         ?.active ? (
-                                        <>
-                                            <Select
-                                                id={`${day}`}
-                                                label={i18next.t('Timeslots')}
-                                                options={time_slots}
-                                                isMulti
-                                                isDisabled={true}
-                                                value={
-                                                    agentProfileState.agent
-                                                        .officehours[day]
-                                                        .time_slots
-                                                }
-                                            />
-                                        </>
+                                        <Select
+                                            id={`${day}`}
+                                            isDisabled={true}
+                                            isMulti
+                                            label={i18next.t('Timeslots')}
+                                            options={time_slots}
+                                            value={
+                                                agentProfileState.agent
+                                                    .officehours[day].time_slots
+                                            }
+                                        />
                                     ) : (
                                         <Typography>
                                             {i18next.t('Close', {
@@ -196,28 +193,28 @@ function AgentProfile() {
                                 </Grid>
                             ))}
                         </Grid>
-                        {is_TaiGer_Student(user) && (
+                        {is_TaiGer_Student(user) ? (
                             <>
-                                <Typography variant="body1" sx={{ my: 2 }}>
+                                <Typography sx={{ my: 2 }} variant="body1">
                                     想要與顧問討論？
                                 </Typography>
                                 <Link
+                                    component={LinkDom}
                                     to={`${DEMO.EVENT_STUDENT_STUDENTID_LINK(
                                         user._id.toString()
                                     )}`}
-                                    component={LinkDom}
                                 >
                                     <Button color="primary" variant="contained">
                                         {i18next.t('Book')}
                                     </Button>
                                 </Link>
                             </>
-                        )}
+                        ) : null}
                     </Box>
                 </Grid>
             </Card>
         </Box>
     );
-}
+};
 
 export default AgentProfile;

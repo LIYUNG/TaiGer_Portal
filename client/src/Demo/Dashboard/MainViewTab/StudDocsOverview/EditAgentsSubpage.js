@@ -17,7 +17,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { getAgents } from '../../../../api';
 
-function EditAgentsSubpage(props) {
+const EditAgentsSubpage = (props) => {
     const { t } = useTranslation();
     const [checkboxState, setCheckboxState] = useState({});
     const [isLoaded, setIsLoaded] = useState(false);
@@ -73,7 +73,6 @@ function EditAgentsSubpage(props) {
             <TableRow key={i + 1}>
                 <TableCell>
                     <FormControlLabel
-                        label={`${agent.lastname} ${agent.firstname}`}
                         control={
                             <Checkbox
                                 checked={
@@ -84,6 +83,7 @@ function EditAgentsSubpage(props) {
                                 value={agent._id}
                             />
                         }
+                        label={`${agent.lastname} ${agent.firstname}`}
                     />
                 </TableCell>
             </TableRow>
@@ -98,11 +98,11 @@ function EditAgentsSubpage(props) {
 
     return (
         <Dialog
-            open={props.show}
-            onClose={props.onHide}
-            size="large"
             aria-labelledby="contained-modal-title-vcenter"
             centered
+            onClose={props.onHide}
+            open={props.show}
+            size="large"
         >
             <DialogTitle>
                 Agent for {props.student.firstname} - {props.student.lastname}{' '}
@@ -120,7 +120,6 @@ function EditAgentsSubpage(props) {
                         <Box sx={{ mt: 2 }}>
                             <Button
                                 color="primary"
-                                variant="contained"
                                 onClick={(e) =>
                                     props.submitUpdateAgentlist(
                                         e,
@@ -129,13 +128,14 @@ function EditAgentsSubpage(props) {
                                     )
                                 }
                                 sx={{ mr: 2 }}
+                                variant="contained"
                             >
                                 {t('Update', { ns: 'common' })}
                             </Button>
                             <Button
                                 color="secondary"
-                                variant="outlined"
                                 onClick={props.onHide}
+                                variant="outlined"
                             >
                                 {t('Cancel', { ns: 'common' })}
                             </Button>
@@ -147,6 +147,6 @@ function EditAgentsSubpage(props) {
             </DialogContent>
         </Dialog>
     );
-}
+};
 
 export default EditAgentsSubpage;

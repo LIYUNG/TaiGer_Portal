@@ -29,15 +29,17 @@ import {
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import LaunchIcon from '@mui/icons-material/Launch';
 import i18next from 'i18next';
+import {
+    isProgramAdmitted,
+    isProgramRejected,
+    isProgramSubmitted
+} from '@taiger-common/core';
 
 import ApplicationProgressCardBody from './ApplicationProgressCardBody';
 import { updateStudentApplicationResult } from '../../api';
 import DEMO from '../../store/constant';
 import {
     application_deadline_calculator,
-    isProgramAdmitted,
-    isProgramRejected,
-    isProgramSubmitted,
     progressBarCounter
 } from '../../Demo/Utils/checking-functions';
 import { BASE_URL } from '../../api/request';
@@ -64,18 +66,18 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 const ProgramLink = ({ program }) => (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <img
-            src={`/assets/logo/country_logo/svg/${program.country}.svg`}
             alt="Logo"
+            src={`/assets/logo/country_logo/svg/${program.country}.svg`}
             style={{ maxWidth: 24, maxHeight: 24 }}
         />
         &nbsp;
         <Link
-            underline="hover"
             component={LinkDom}
-            to={DEMO.SINGLE_PROGRAM_LINK(program._id?.toString())}
-            target="_blank"
             onClick={(e) => e.stopPropagation()}
             sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}
+            target="_blank"
+            to={DEMO.SINGLE_PROGRAM_LINK(program._id?.toString())}
+            underline="hover"
         >
             {program.school}
             <IconButton>
@@ -90,13 +92,13 @@ const AdmissionLetterLink = ({ application }) => {
         (isProgramAdmitted(application) || isProgramRejected(application)) &&
         application.admission_letter?.status === 'uploaded' && (
             <a
+                className="text-info"
                 href={`${BASE_URL}/api/admissions/${application.admission_letter.admission_file_path.replace(
                     /\\/g,
                     '/'
                 )}`}
-                target="_blank"
                 rel="noopener noreferrer"
-                className="text-info"
+                target="_blank"
             >
                 {isProgramAdmitted(application)
                     ? i18next.t('Admission Letter', { ns: 'admissions' })
@@ -201,7 +203,7 @@ export default function ApplicationProgressCard(props) {
                     <Typography color="text.secondary" gutterBottom>
                         {isProgramSubmitted(application) ? (
                             <>
-                                {application.admission === '-' && (
+                                {application.admission === '-' ? (
                                     <>
                                         <IconButton>
                                             {FILE_OK_SYMBOL}
@@ -211,8 +213,8 @@ export default function ApplicationProgressCard(props) {
                                             ns: 'common'
                                         })}
                                     </>
-                                )}
-                                {isProgramAdmitted(application) && (
+                                ) : null}
+                                {isProgramAdmitted(application) ? (
                                     <>
                                         <IconButton>
                                             {FILE_OK_SYMBOL}
@@ -222,8 +224,8 @@ export default function ApplicationProgressCard(props) {
                                             ns: 'common'
                                         })}
                                     </>
-                                )}
-                                {isProgramRejected(application) && (
+                                ) : null}
+                                {isProgramRejected(application) ? (
                                     <>
                                         <IconButton>
                                             {FILE_NOT_OK_SYMBOL}
@@ -233,7 +235,7 @@ export default function ApplicationProgressCard(props) {
                                             ns: 'common'
                                         })}
                                     </>
-                                )}
+                                ) : null}
                             </>
                         ) : application_deadline_calculator(
                               props.student,
@@ -261,7 +263,7 @@ export default function ApplicationProgressCard(props) {
                         )}
                     </Typography>
                     <ProgramLink program={application.programId} />
-                    <Typography variant="body2" fontWeight="bold">
+                    <Typography fontWeight="bold" variant="body2">
                         {application?.programId?.degree}{' '}
                         {application?.programId?.program_name}{' '}
                         {application?.programId?.semester}{' '}
@@ -269,224 +271,210 @@ export default function ApplicationProgressCard(props) {
                     <Typography variant="body2">
                         <AdmissionLetterLink application={application} />
                         {isProgramSubmitted(application) &&
-                            application.admission !== '-' &&
-                            (!application.admission_letter?.status ||
-                                application.admission_letter?.status !==
-                                    'uploaded') && (
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    size="small"
-                                    title="Undo"
-                                    onClick={(e) =>
-                                        openSetResultModal(
-                                            e,
-                                            application.admission
-                                        )
-                                    }
-                                    startIcon={<AddIcon />}
-                                    sx={{ my: 1 }}
-                                >
-                                    {isProgramAdmitted(application)
-                                        ? i18next.t('upload-admission-letter', {
-                                              ns: 'admissions'
-                                          })
-                                        : i18next.t('upload-rejection-letter', {
-                                              ns: 'admissions'
-                                          })}
-                                </Button>
-                            )}
-                    </Typography>
-                    {/* TODO: refactor update api, so that useMutate can be integrated here. */}
-                    {false &&
-                        isProgramSubmitted(application) &&
-                        isProgramAdmitted(application) && (
+                        application.admission !== '-' &&
+                        (!application.admission_letter?.status ||
+                            application.admission_letter?.status !==
+                                'uploaded') ? (
                             <Button
-                                variant="contained"
                                 color="primary"
-                                size="small"
-                                title="Undo"
                                 onClick={(e) =>
                                     openSetResultModal(e, application.admission)
                                 }
+                                size="small"
                                 startIcon={<AddIcon />}
                                 sx={{ my: 1 }}
+                                title="Undo"
+                                variant="contained"
                             >
-                                {i18next.t('decided-to-study', {
-                                    ns: 'admissions'
-                                })}
+                                {isProgramAdmitted(application)
+                                    ? i18next.t('upload-admission-letter', {
+                                          ns: 'admissions'
+                                      })
+                                    : i18next.t('upload-rejection-letter', {
+                                          ns: 'admissions'
+                                      })}
                             </Button>
-                        )}
+                        ) : null}
+                    </Typography>
+                    {/* TODO: refactor update api, so that useMutate can be integrated here. */}
+                    {/* {false &&
+                    isProgramSubmitted(application) &&
+                    isProgramAdmitted(application) ? (
+                        <Button
+                            color="primary"
+                            onClick={(e) =>
+                                openSetResultModal(e, application.admission)
+                            }
+                            size="small"
+                            startIcon={<AddIcon />}
+                            sx={{ my: 1 }}
+                            title="Undo"
+                            variant="contained"
+                        >
+                            {i18next.t('decided-to-study', {
+                                ns: 'admissions'
+                            })}
+                        </Button>
+                    ) : null} */}
                     {appConfig.interviewEnable &&
-                        isProgramSubmitted(application) &&
-                        application.admission === '-' && (
-                            <>
-                                {!application.interview_status && (
-                                    <>
-                                        <Typography
-                                            variant="body2"
-                                            sx={{ my: 1 }}
+                    isProgramSubmitted(application) &&
+                    application.admission === '-' ? (
+                        <>
+                            {!application.interview_status ? (
+                                <>
+                                    <Typography sx={{ my: 1 }} variant="body2">
+                                        {i18next.t(
+                                            'Have you received the interview invitation from this program?'
+                                        )}
+                                    </Typography>
+                                    <Typography sx={{ my: 1 }} variant="body2">
+                                        <Button
+                                            color="primary"
+                                            onClick={() =>
+                                                navigate(
+                                                    `${DEMO.INTERVIEW_ADD_LINK}`
+                                                )
+                                            }
+                                            size="small"
+                                            variant="contained"
                                         >
-                                            {i18next.t(
-                                                'Have you received the interview invitation from this program?'
-                                            )}
-                                        </Typography>
+                                            {i18next.t('Training Request', {
+                                                ns: 'interviews'
+                                            })}
+                                        </Button>
+                                    </Typography>
+                                </>
+                            ) : null}
+                            {application.interview_status === 'Unscheduled' ? (
+                                <>
+                                    <Typography
+                                        component="div"
+                                        sx={{ my: 1 }}
+                                        variant="p"
+                                    >
+                                        {i18next.t('Please arrange a meeting', {
+                                            ns: 'interviews'
+                                        })}
+                                    </Typography>
+                                    <Typography
+                                        component="div"
+                                        sx={{ my: 1 }}
+                                        variant="p"
+                                    >
                                         <Typography
-                                            variant="body2"
-                                            sx={{ my: 1 }}
-                                        >
-                                            <Button
-                                                color="primary"
-                                                variant="contained"
-                                                size="small"
-                                                onClick={() =>
-                                                    navigate(
-                                                        `${DEMO.INTERVIEW_ADD_LINK}`
-                                                    )
-                                                }
-                                            >
-                                                {i18next.t('Training Request', {
-                                                    ns: 'interviews'
-                                                })}
-                                            </Button>
-                                        </Typography>
-                                    </>
-                                )}
-                                {application.interview_status ===
-                                    'Unscheduled' && (
-                                    <>
-                                        <Typography
-                                            variant="p"
                                             component="div"
                                             sx={{ my: 1 }}
-                                        >
-                                            {i18next.t(
-                                                'Please arrange a meeting',
-                                                {
-                                                    ns: 'interviews'
-                                                }
-                                            )}
-                                        </Typography>
-                                        <Typography
                                             variant="p"
-                                            component="div"
-                                            sx={{ my: 1 }}
-                                        >
-                                            <Typography
-                                                variant="p"
-                                                component="div"
-                                                sx={{ my: 1 }}
-                                            >
-                                                <Link
-                                                    underline="hover"
-                                                    to={`${DEMO.INTERVIEW_SINGLE_LINK(
-                                                        application?.interview_id
-                                                    )}`}
-                                                    component={LinkDom}
-                                                    target="_blank"
-                                                    onClick={(e) =>
-                                                        e.stopPropagation()
-                                                    }
-                                                >
-                                                    {i18next.t(
-                                                        'arrange-a-training',
-                                                        {
-                                                            ns: 'interviews'
-                                                        }
-                                                    )}
-                                                </Link>
-                                            </Typography>
-                                        </Typography>
-                                    </>
-                                )}
-                                {application.interview_status ===
-                                    'Scheduled' && (
-                                    <>
-                                        <Typography
-                                            variant="p"
-                                            component="div"
-                                            sx={{ my: 1 }}
-                                        >
-                                            {i18next.t(
-                                                'Do not forget to attend the interview training'
-                                            )}
-                                        </Typography>
-                                        <Typography
-                                            variant="p"
-                                            component="div"
-                                            sx={{ my: 1 }}
                                         >
                                             <Link
-                                                underline="hover"
-                                                to={`${DEMO.INTERVIEW_SINGLE_LINK(
-                                                    application?.interview_id
-                                                )}`}
                                                 component={LinkDom}
-                                                target="_blank"
                                                 onClick={(e) =>
                                                     e.stopPropagation()
                                                 }
+                                                target="_blank"
+                                                to={`${DEMO.INTERVIEW_SINGLE_LINK(
+                                                    application?.interview_id
+                                                )}`}
+                                                underline="hover"
                                             >
-                                                {convertDate(
-                                                    application
-                                                        .interview_training_event
-                                                        ?.start
+                                                {i18next.t(
+                                                    'arrange-a-training',
+                                                    {
+                                                        ns: 'interviews'
+                                                    }
                                                 )}
                                             </Link>
                                         </Typography>
-                                    </>
-                                )}
-                            </>
-                        )}
-                    {isProgramSubmitted(application) &&
-                        (application.admission === '-' ? (
+                                    </Typography>
+                                </>
+                            ) : null}
+                            {application.interview_status === 'Scheduled' ? (
+                                <>
+                                    <Typography
+                                        component="div"
+                                        sx={{ my: 1 }}
+                                        variant="p"
+                                    >
+                                        {i18next.t(
+                                            'Do not forget to attend the interview training'
+                                        )}
+                                    </Typography>
+                                    <Typography
+                                        component="div"
+                                        sx={{ my: 1 }}
+                                        variant="p"
+                                    >
+                                        <Link
+                                            component={LinkDom}
+                                            onClick={(e) => e.stopPropagation()}
+                                            target="_blank"
+                                            to={`${DEMO.INTERVIEW_SINGLE_LINK(
+                                                application?.interview_id
+                                            )}`}
+                                            underline="hover"
+                                        >
+                                            {convertDate(
+                                                application
+                                                    .interview_training_event
+                                                    ?.start
+                                            )}
+                                        </Link>
+                                    </Typography>
+                                </>
+                            ) : null}
+                        </>
+                    ) : null}
+                    {isProgramSubmitted(application) ? (
+                        application.admission === '-' ? (
                             <Typography>
                                 {i18next.t('Tell me about your result')} :{' '}
                             </Typography>
                         ) : (
                             <Button
-                                variant="outlined"
                                 color="secondary"
-                                size="small"
-                                title="Undo"
                                 onClick={(e) => openUndoModal(e)}
+                                size="small"
                                 startIcon={<UndoIcon />}
                                 sx={{ my: 1 }}
+                                title="Undo"
+                                variant="outlined"
                             >
                                 {i18next.t('Change your result')}
                             </Button>
-                        ))}
+                        )
+                    ) : null}
                     {isProgramSubmitted(application) &&
-                        application.admission === '-' && (
-                            <Box sx={{ my: 1 }}>
-                                <Button
-                                    sx={{ mr: 1 }}
-                                    variant="contained"
-                                    color="primary"
-                                    size="small"
-                                    onClick={(e) => openSetResultModal(e, 'O')}
-                                    startIcon={<CheckIcon />}
-                                >
-                                    {i18next.t('Admitted', { ns: 'common' })}
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    color="secondary"
-                                    size="small"
-                                    onClick={(e) => openSetResultModal(e, 'X')}
-                                    startIcon={<CloseIcon />}
-                                >
-                                    {i18next.t('Rejected', { ns: 'common' })}
-                                </Button>
-                            </Box>
-                        )}
+                    application.admission === '-' ? (
+                        <Box sx={{ my: 1 }}>
+                            <Button
+                                color="primary"
+                                onClick={(e) => openSetResultModal(e, 'O')}
+                                size="small"
+                                startIcon={<CheckIcon />}
+                                sx={{ mr: 1 }}
+                                variant="contained"
+                            >
+                                {i18next.t('Admitted', { ns: 'common' })}
+                            </Button>
+                            <Button
+                                color="secondary"
+                                onClick={(e) => openSetResultModal(e, 'X')}
+                                size="small"
+                                startIcon={<CloseIcon />}
+                                variant="outlined"
+                            >
+                                {i18next.t('Rejected', { ns: 'common' })}
+                            </Button>
+                        </Box>
+                    ) : null}
                     <Typography
-                        variant="body1"
                         component="div"
                         style={{ display: 'flex', alignItems: 'center' }}
+                        variant="body1"
                     >
                         <BorderLinearProgress
-                            variant="determinate"
+                            className="custom-progress-bar-container" // Apply your specific classhere
+                            style={{ flex: 1, marginRight: '10px' }}
                             value={
                                 isProgramSubmitted(application)
                                     ? 100
@@ -495,8 +483,7 @@ export default function ApplicationProgressCard(props) {
                                           application
                                       )
                             }
-                            style={{ flex: 1, marginRight: '10px' }}
-                            className="custom-progress-bar-container" // Apply your specific classhere
+                            variant="determinate"
                         />
                         <span>
                             {`${
@@ -512,12 +499,12 @@ export default function ApplicationProgressCard(props) {
                 </CardContent>
                 <Collapse in={isCollapse}>
                     <ApplicationProgressCardBody
-                        student={props.student}
                         application={application}
+                        student={props.student}
                     />
                 </Collapse>
             </Card>
-            <Dialog open={showUndoModal} onClose={closeUndoModal} size="small">
+            <Dialog onClose={closeUndoModal} open={showUndoModal} size="small">
                 <DialogTitle>{i18next.t('Attention')}</DialogTitle>
                 <DialogContent>
                     <Typography id="modal-modal-description" sx={{ my: 2 }}>
@@ -531,11 +518,11 @@ export default function ApplicationProgressCard(props) {
                 <DialogActions>
                     <Button
                         color="secondary"
-                        variant="contained"
                         disabled={isLoading}
-                        title="Undo"
-                        sx={{ mr: 1 }}
                         onClick={(e) => handleUpdateResult(e, '-')}
+                        sx={{ mr: 1 }}
+                        title="Undo"
+                        variant="contained"
                     >
                         {isLoading ? (
                             <CircularProgress size="small" />
@@ -545,9 +532,9 @@ export default function ApplicationProgressCard(props) {
                     </Button>
                     <Button
                         color="secondary"
-                        variant="outlined"
-                        title="Undo"
                         onClick={closeUndoModal}
+                        title="Undo"
+                        variant="outlined"
                     >
                         {i18next.t('Cancel', { ns: 'common' })}
                     </Button>
@@ -555,13 +542,13 @@ export default function ApplicationProgressCard(props) {
             </Dialog>
             <Dialog
                 fullWidth={true}
-                maxWidth={'md'}
-                open={showSetResultModal}
+                maxWidth="md"
                 onClose={closeSetResultModal}
+                open={showSetResultModal}
             >
                 <DialogTitle>{i18next.t('Attention')}</DialogTitle>
                 <DialogContent>
-                    {application.admission === '-' && (
+                    {application.admission === '-' ? (
                         <Typography id="modal-modal-description" sx={{ my: 2 }}>
                             {i18next.t('Do you want to set the application of')}{' '}
                             <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>{' '}
@@ -572,7 +559,7 @@ export default function ApplicationProgressCard(props) {
                             </b>
                             ?
                         </Typography>
-                    )}
+                    ) : null}
                     <Typography sx={{ my: 2 }}>
                         {resultState === 'O'
                             ? i18next.t(
@@ -586,27 +573,26 @@ export default function ApplicationProgressCard(props) {
                     </Typography>
                     <TextField
                         fullWidth
-                        size="small"
-                        type="file"
                         onChange={(e) => onFileChange(e)}
+                        size="small"
                         sx={{ mb: 2 }}
+                        type="file"
                     />
-                    <Typography variant="body2" sx={{ mb: 2 }}>
+                    <Typography sx={{ mb: 2 }} variant="body2">
                         {i18next.t(
                             'Your agents and editors will receive your application result notification.',
                             { ns: 'admissions' }
                         )}
                     </Typography>
-                    {returnedMessage !== '' && (
+                    {returnedMessage !== '' ? (
                         <Typography style={{ color: 'red' }} sx={{ mb: 2 }}>
                             {returnedMessage}
                         </Typography>
-                    )}
+                    ) : null}
                 </DialogContent>
                 <DialogActions>
                     <Button
                         color={resultState === 'O' ? 'primary' : 'secondary'}
-                        variant="contained"
                         disabled={
                             isLoading
                             // || !hasFile
@@ -615,6 +601,7 @@ export default function ApplicationProgressCard(props) {
                         startIcon={
                             isLoading ? <CircularProgress size={24} /> : null
                         }
+                        variant="contained"
                     >
                         {resultState === 'O'
                             ? i18next.t('Admitted', { ns: 'common' })
@@ -622,10 +609,10 @@ export default function ApplicationProgressCard(props) {
                     </Button>
                     <Button
                         color="secondary"
-                        variant="outlined"
-                        title="Undo"
-                        sx={{ ml: 1 }}
                         onClick={closeSetResultModal}
+                        sx={{ ml: 1 }}
+                        title="Undo"
+                        variant="outlined"
                     >
                         {i18next.t('Cancel', { ns: 'common' })}
                     </Button>

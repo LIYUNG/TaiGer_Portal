@@ -4,10 +4,10 @@ import { Link as LinkDom } from 'react-router-dom';
 import { Link } from '@mui/material';
 import { Tabs, Tab, Box } from '@mui/material';
 import PropTypes from 'prop-types';
+import { isProgramSubmitted } from '@taiger-common/core';
 
 import DEMO from '../../store/constant';
 import { CustomTabPanel, a11yProps } from '../../components/Tabs';
-import { isProgramSubmitted } from '../Utils/checking-functions';
 import { useTranslation } from 'react-i18next';
 import { MuiDataGrid } from '../../components/MuiDataGrid';
 import { BASE_URL } from '../../api/request';

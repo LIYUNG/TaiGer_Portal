@@ -23,14 +23,12 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { isProgramDecided } from '@taiger-common/core';
+import { isProgramDecided, isProgramSubmitted, isProgramWithdraw } from '@taiger-common/core';
 
 import ManualFiles from './ManualFiles';
 import {
     LinkableNewlineText,
-    application_deadline_calculator,
-    isProgramSubmitted,
-    isProgramWithdraw
+    application_deadline_calculator
 } from '../Utils/checking-functions';
 import { FILE_OK_SYMBOL, spinner_style2 } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';

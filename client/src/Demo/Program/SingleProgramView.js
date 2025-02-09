@@ -27,12 +27,12 @@ import {
 import {
     is_TaiGer_Admin,
     is_TaiGer_AdminAgent,
-    is_TaiGer_role
+    is_TaiGer_role,
+    isProgramWithdraw
 } from '@taiger-common/core';
 import { is_TaiGer_External } from '@taiger-common/core';
 
 import {
-    isProgramWithdraw,
     isApplicationOpen,
     LinkableNewlineText
 } from '../Utils/checking-functions';

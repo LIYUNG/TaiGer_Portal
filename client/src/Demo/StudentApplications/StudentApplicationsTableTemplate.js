@@ -31,7 +31,9 @@ import {
     is_TaiGer_role,
     is_TaiGer_Student,
     is_TaiGer_Admin,
-    isProgramDecided
+    isProgramDecided,
+    isProgramSubmitted,
+    isProgramAdmitted
 } from '@taiger-common/core';
 import { differenceInDays } from 'date-fns';
 
@@ -41,9 +43,7 @@ import {
     is_program_ml_rl_essay_ready,
     is_the_uni_assist_vpd_uploaded,
     isCVFinished,
-    application_deadline_calculator,
-    isProgramSubmitted,
-    isProgramAdmitted
+    application_deadline_calculator
 } from '../Utils/checking-functions';
 import OverlayButton from '../../components/Overlay/OverlayButton';
 import Banner from '../../components/Banner/Banner';

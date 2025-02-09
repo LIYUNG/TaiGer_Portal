@@ -19,9 +19,8 @@ import {
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
-import { is_TaiGer_role, isProgramDecided } from '@taiger-common/core';
+import { is_TaiGer_role, isProgramDecided, isProgramSubmitted } from '@taiger-common/core';
 
-import { isProgramSubmitted } from '../Utils/checking-functions';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { getMyInterviews, createInterview } from '../../api';

@@ -17,15 +17,12 @@ import isoWeek from 'dayjs/plugin/isoWeek';
 dayjs.extend(isoWeek);
 
 import { LineChart } from '@mui/x-charts/LineChart';
-import { isProgramDecided } from '@taiger-common/core';
+import { isProgramDecided, isProgramSubmitted } from '@taiger-common/core';
 
 import SingleBarChart from '../../../components/Charts/SingleBarChart';
 import VerticalDistributionBarCharts from '../../../components/Charts/VerticalDistributionBarChart';
 import VerticalSingleBarChart from '../../../components/Charts/VerticalSingleChart';
-import {
-    open_tasks_with_editors,
-    isProgramSubmitted
-} from '../../Utils/checking-functions';
+import { open_tasks_with_editors } from '../../Utils/checking-functions';
 
 const application_status = ['Open', 'Close'];
 const admission_status = ['Admission', 'Rejection', 'Pending'];

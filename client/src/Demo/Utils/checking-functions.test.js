@@ -5,8 +5,6 @@ import {
     isCVFinished,
     calculateDisplayLength,
     truncateText,
-    isProgramSubmitted,
-    isProgramWithdraw,
     getRequirement,
     isLanguageInfoComplete,
     isEnglishLanguageInfoComplete,
@@ -19,7 +17,6 @@ import {
     is_any_base_documents_uploaded,
     check_languages_filled,
     check_academic_background_filled,
-    isProgramAdmitted,
     getMissingDocs,
     does_essay_have_writers,
     is_program_ml_rl_essay_finished,
@@ -74,43 +71,6 @@ describe('Role checking', () => {
         };
         expect(isCVFinished(studentIsCVFinished)).toEqual(true);
         expect(isCVFinished(studentIsCVNotFinished)).toEqual(false);
-    });
-
-    test('isProgramSubmitted', () => {
-        const application_closed = {
-            closed: 'O'
-        };
-        const application_open = {
-            closed: '-'
-        };
-        expect(isProgramSubmitted(application_open)).toEqual(false);
-        expect(isProgramSubmitted(application_closed)).toEqual(true);
-    });
-
-    test('isProgramAdmitted', () => {
-        const application_admitted = {
-            admission: 'O'
-        };
-        const application_open = {
-            admission: '-'
-        };
-        const application_rejected = {
-            admission: 'X'
-        };
-        expect(isProgramAdmitted(application_open)).toEqual(false);
-        expect(isProgramAdmitted(application_rejected)).toEqual(false);
-        expect(isProgramAdmitted(application_admitted)).toEqual(true);
-    });
-
-    test('isProgramWithdraw', () => {
-        const application_withdraw = {
-            closed: 'X'
-        };
-        const application_open = {
-            closed: '-'
-        };
-        expect(isProgramWithdraw(application_withdraw)).toEqual(true);
-        expect(isProgramWithdraw(application_open)).toEqual(false);
     });
 });
 

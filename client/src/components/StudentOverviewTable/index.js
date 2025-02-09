@@ -6,6 +6,7 @@ import HelpIcon from '@mui/icons-material/Help';
 import {
     DocumentStatusType,
     isProgramDecided,
+    isProgramSubmitted,
     ProfileNameType
 } from '@taiger-common/core';
 
@@ -28,7 +29,6 @@ import {
     isCVFinished,
     isEnglishLanguageInfoComplete,
     isLanguageInfoComplete,
-    isProgramSubmitted,
     is_all_uni_assist_vpd_uploaded,
     is_cv_assigned,
     needUpdateCourseSelection,

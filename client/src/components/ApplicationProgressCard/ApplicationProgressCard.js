@@ -29,15 +29,17 @@ import {
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import LaunchIcon from '@mui/icons-material/Launch';
 import i18next from 'i18next';
+import {
+    isProgramAdmitted,
+    isProgramRejected,
+    isProgramSubmitted
+} from '@taiger-common/core';
 
 import ApplicationProgressCardBody from './ApplicationProgressCardBody';
 import { updateStudentApplicationResult } from '../../api';
 import DEMO from '../../store/constant';
 import {
     application_deadline_calculator,
-    isProgramAdmitted,
-    isProgramRejected,
-    isProgramSubmitted,
     progressBarCounter
 } from '../../Demo/Utils/checking-functions';
 import { BASE_URL } from '../../api/request';

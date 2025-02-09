@@ -3,18 +3,14 @@ import { Link as LinkDom } from 'react-router-dom';
 import { Link, TableCell, TableRow, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { differenceInDays } from 'date-fns';
-import { isProgramDecided } from '@taiger-common/core';
+import { isProgramDecided, isProgramSubmitted, isProgramWithdraw } from '@taiger-common/core';
 
 import {
     ADMISSION_STATUS_E,
     DECISION_STATUS_E,
     SUBMISSION_STATUS_E
 } from '../../../../utils/contants';
-import {
-    application_deadline_calculator,
-    isProgramSubmitted,
-    isProgramWithdraw
-} from '../../../Utils/checking-functions';
+import { application_deadline_calculator } from '../../../Utils/checking-functions';
 import DEMO from '../../../../store/constant';
 
 function ApplicationProgress(props) {

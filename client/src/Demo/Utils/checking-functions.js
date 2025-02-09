@@ -12,7 +12,10 @@ import {
     DocumentStatusType,
     is_TaiGer_Agent,
     is_TaiGer_Editor,
+    isProgramAdmitted,
     isProgramDecided,
+    isProgramSubmitted,
+    isProgramWithdraw,
     ProfileNameType
 } from '@taiger-common/core';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
@@ -744,25 +747,6 @@ export const isEnglishOK = (program, student) => {
     }
 
     return true;
-};
-
-// Tested
-export const isProgramSubmitted = (application) => {
-    return application.closed === 'O';
-};
-
-// Tested
-export const isProgramAdmitted = (application) => {
-    return application.admission === 'O';
-};
-
-export const isProgramRejected = (application) => {
-    return application.admission === 'X';
-};
-
-// Tested
-export const isProgramWithdraw = (application) => {
-    return application.closed === 'X';
 };
 
 export const application_date_calculator = (student, application) => {

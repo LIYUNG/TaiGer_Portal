@@ -76,6 +76,64 @@ const ProgressButton = ({
     );
 };
 
+const CheckboxSection = ({ isChecked, onChange }) => (
+    <Grid item xs={12}>
+        <FormControl>
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={isChecked}
+                        name="useProgramRequirementData"
+                        onChange={onChange}
+                        sx={{ '& .MuiSvgIcon-root': { fontSize: '1.5rem' } }}
+                    />
+                }
+                label="Use program's requirement"
+            />
+        </FormControl>
+    </Grid>
+);
+
+const LanguageSelect = ({ onChange }) => (
+    <Grid item xs={12}>
+        <FormControl fullWidth>
+            <InputLabel id="output-lang-label">Output language</InputLabel>
+            <Select
+                defaultValue=""
+                id="output-lang-select"
+                input={<OutlinedInput label="Output language" />}
+                labelId="output-lang-label"
+                name="outputLanguage"
+                onChange={onChange}
+            >
+                <MenuItem value="English">English</MenuItem>
+                <MenuItem value="German">German</MenuItem>
+            </Select>
+        </FormControl>
+    </Grid>
+);
+
+const GPTModelSelect = ({ onChange }) => (
+    <Grid item xs={12}>
+        <FormControl fullWidth>
+            <InputLabel id="gpt-model-label">GPT Model</InputLabel>
+            <Select
+                defaultValue=""
+                id="gpt-model-select"
+                input={<OutlinedInput label="GPT Model" />}
+                labelId="gpt-model-label"
+                name="gptModel"
+                onChange={onChange}
+            >
+                <MenuItem value="gpt-3.5-turbo">gpt-3.5-turbo</MenuItem>
+                <MenuItem value="gpt-4-1106-preview">
+                    gpt-4-1106-preview
+                </MenuItem>
+            </Select>
+        </FormControl>
+    </Grid>
+);
+
 const LastModifiedText = ({ updatedAt, isFinalVersion }) => {
     return updatedAt ? (
         <Box
@@ -244,69 +302,12 @@ const InputGenerator = ({
             <Grid container spacing={2}>
                 <Grid item md={2} xs={12}>
                     <Grid container spacing={1}>
-                        <Grid item xs={12}>
-                            <FormControl>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={isChecked}
-                                            name="useProgramRequirementData"
-                                            onChange={onChange}
-                                            sx={{
-                                                '& .MuiSvgIcon-root': {
-                                                    fontSize: '1.5rem'
-                                                }
-                                            }}
-                                            type="checkbox"
-                                        />
-                                    }
-                                    label="Use program's requirement"
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControl fullWidth>
-                                <InputLabel id="output-lang-label">
-                                    Output language
-                                </InputLabel>
-                                <Select
-                                    defaultValue=""
-                                    id="output-lang-select"
-                                    input={
-                                        <OutlinedInput label="Output language" />
-                                    }
-                                    labelId="output-lang-label"
-                                    name="outputLanguage"
-                                    onChange={onChange}
-                                >
-                                    <MenuItem value="English">English</MenuItem>
-                                    <MenuItem value="German">German</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <FormControl fullWidth>
-                                <InputLabel id="gpt-model-label">
-                                    GPT Model
-                                </InputLabel>
-                                <Select
-                                    defaultValue=""
-                                    id="gpt-model-select"
-                                    input={<OutlinedInput label="GPT Model" />}
-                                    labelId="gpt-model-label"
-                                    name="gptModel"
-                                    onChange={onChange}
-                                >
-                                    <MenuItem value="gpt-3.5-turbo">
-                                        gpt-3.5-turbo
-                                    </MenuItem>
-                                    <MenuItem value="gpt-4-1106-preview">
-                                        gpt-4-1106-preview
-                                    </MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
+                        <CheckboxSection
+                            isChecked={isChecked}
+                            onChange={onChange}
+                        />
+                        <LanguageSelect onChange={onChange} />
+                        <GPTModelSelect onChange={onChange} />
                     </Grid>
                 </Grid>
                 <Grid item md={5} xs={12}>

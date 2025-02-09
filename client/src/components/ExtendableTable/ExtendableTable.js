@@ -209,19 +209,21 @@ export const ExtendableTable = ({ data }) => {
                                             <TableHead>
                                                 <TableRow>
                                                     <TableCell>
-                                                        Amount
+                                                        {t('Amount')}
                                                     </TableCell>
                                                     <TableCell>
-                                                        Currency
+                                                        {t('Currency')}
                                                     </TableCell>
                                                     <TableCell>
-                                                        Status
+                                                        {t('Status')}
                                                     </TableCell>
                                                     <TableCell>
-                                                        Description
+                                                        {t('Description', {
+                                                            ns: 'common'
+                                                        })}
                                                     </TableCell>
                                                     <TableCell>
-                                                        UpdateAt
+                                                        {t('UpdateAt')}
                                                     </TableCell>
                                                 </TableRow>
                                             </TableHead>

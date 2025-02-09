@@ -1,8 +1,9 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { Link as LinkDom, useLoaderData } from 'react-router-dom';
-import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { useLoaderData } from 'react-router-dom';
+import { Box } from '@mui/material';
 import { is_TaiGer_role } from '@taiger-common/core';
+import { useTranslation } from 'react-i18next';
 
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
@@ -11,7 +12,7 @@ import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
 import useStudents from '../../hooks/useStudents';
-import { useTranslation } from 'react-i18next';
+import { BreadcrumbsNavigation } from '../../components/BreadcrumbsNavigation/BreadcrumbsNavigation';
 
 const AllArchivStudents = () => {
     const { user } = useAuth();
@@ -40,23 +41,18 @@ const AllArchivStudents = () => {
 
     return (
         <Box>
-            <Breadcrumbs aria-label="breadcrumb">
-                <Link
-                    color="inherit"
-                    component={LinkDom}
-                    to={`${DEMO.DASHBOARD_LINK}`}
-                    underline="hover"
-                >
-                    {appConfig.companyName}
-                </Link>
-                <Typography color="text.primary">
-                    {t('All Students', { ns: 'common' })}
-                </Typography>
-                <Typography color="text.primary">
-                    {t('All Archived Students', { ns: 'common' })}
-                    {` (${students.length})`}
-                </Typography>
-            </Breadcrumbs>
+            <BreadcrumbsNavigation
+                items={[
+                    { label: appConfig.companyName, link: DEMO.DASHBOARD_LINK },
+                    {
+                        label: t('All Students', { ns: 'common' }),
+                        link: DEMO.DASHBOARD_LINK
+                    },
+                    {
+                        label: `${t('All Archived Students', { ns: 'common' })} (${students.length})`
+                    }
+                ]}
+            />
             <Box sx={{ mt: 2 }}>
                 <TabStudBackgroundDashboard
                     students={students?.filter((student) => student.archiv)}

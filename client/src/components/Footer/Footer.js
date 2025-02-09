@@ -28,6 +28,31 @@ const Copyright = () => {
     );
 };
 
+const LanguageSelector = ({ language, handleLanguageChange }) => (
+    <FormControl size="small" variant="outlined">
+        <InputLabel>
+            <LanguageIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+            Language
+        </InputLabel>
+        <Select
+            label="Language"
+            onChange={handleLanguageChange}
+            sx={{ minWidth: 120, textAlign: 'center' }}
+            value={language}
+        >
+            {[
+                { value: 'en', label: 'English' },
+                { value: 'zh-TW', label: '繁體中文' },
+                { value: 'zh-CN', label: '简体中文' }
+            ].map(({ value, label }) => (
+                <MenuItem key={value} value={value}>
+                    <ListItemText>{label}</ListItemText>
+                </MenuItem>
+            ))}
+        </Select>
+    </FormControl>
+);
+
 export default function Footer() {
     const [language, setLanguage] = useState(
         localStorage.getItem('locale') || 'en'
@@ -76,33 +101,10 @@ export default function Footer() {
                             mb: 1
                         }}
                     >
-                        <FormControl size="small" variant="outlined">
-                            <InputLabel>
-                                <LanguageIcon
-                                    sx={{ mr: 1, verticalAlign: 'middle' }}
-                                />
-                                Language
-                            </InputLabel>
-                            <Select
-                                label="Language"
-                                onChange={handleLanguageChange}
-                                sx={{
-                                    minWidth: 120,
-                                    textAlign: 'center'
-                                }}
-                                value={language}
-                            >
-                                <MenuItem value="en">
-                                    <ListItemText>English</ListItemText>
-                                </MenuItem>
-                                <MenuItem value="zh-TW">
-                                    <ListItemText>繁體中文</ListItemText>
-                                </MenuItem>
-                                <MenuItem value="zh-CN">
-                                    <ListItemText>简体中文</ListItemText>
-                                </MenuItem>
-                            </Select>
-                        </FormControl>
+                        <LanguageSelector
+                            handleLanguageChange={handleLanguageChange}
+                            language={language}
+                        />
                     </Box>
                     <Copyright />
                 </Container>

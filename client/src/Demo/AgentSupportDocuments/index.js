@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link as LinkDom, Navigate } from 'react-router-dom';
-import { Box, Card, Breadcrumbs, Link, Typography } from '@mui/material';
+import { Box, Card, Link, Typography } from '@mui/material';
 import { is_TaiGer_role } from '@taiger-common/core';
+import { useTranslation } from 'react-i18next';
 
 import CVMLRLOverview from '../CVMLRLCenter/CVMLRLOverview';
 import ErrorPage from '../Utils/ErrorPage';
@@ -21,7 +22,7 @@ import {
     is_new_message_status,
     is_pending_status
 } from '../../utils/contants';
-import { useTranslation } from 'react-i18next';
+import { BreadcrumbsNavigation } from '../../components/BreadcrumbsNavigation/BreadcrumbsNavigation';
 
 const AgentSupportDocuments = () => {
     const { user } = useAuth();
@@ -164,22 +165,18 @@ const AgentSupportDocuments = () => {
 
     return (
         <Box data-testid="cvmlrlcenter_component">
-            <Breadcrumbs aria-label="breadcrumb">
-                <Link
-                    color="inherit"
-                    component={LinkDom}
-                    to={`${DEMO.DASHBOARD_LINK}`}
-                    underline="hover"
-                >
-                    {appConfig.companyName}
-                </Link>
-                <Typography color="text.primary">
-                    {t('My Students', { ns: 'common' })}
-                </Typography>
-                <Typography color="text.primary">
-                    {t('Agent Support Documents', { ns: 'common' })}
-                </Typography>
-            </Breadcrumbs>
+            <BreadcrumbsNavigation
+                items={[
+                    { label: appConfig.companyName, link: DEMO.DASHBOARD_LINK },
+                    {
+                        label: t('My Students', { ns: 'common' }),
+                        link: DEMO.DASHBOARD_LINK
+                    },
+                    {
+                        label: t('Agent Support Documents', { ns: 'common' })
+                    }
+                ]}
+            />
             {!is_TaiGer_role(user) ? (
                 <Card sx={{ p: 2 }}>
                     <Typography variant="body1">Instructions</Typography>

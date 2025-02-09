@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, useParams, Link as LinkDom } from 'react-router-dom';
-import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { Navigate, useParams } from 'react-router-dom';
+import { Box } from '@mui/material';
 import { is_TaiGer_role } from '@taiger-common/core';
 
 import TabStudBackgroundDashboard from '../Dashboard/MainViewTab/StudDocsOverview/TabStudBackgroundDashboard';
@@ -13,6 +13,7 @@ import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
 import { appConfig } from '../../config';
 import { useTranslation } from 'react-i18next';
+import { BreadcrumbsNavigation } from '../../components/BreadcrumbsNavigation/BreadcrumbsNavigation';
 
 const ArchivStudents = () => {
     const { user } = useAuth();
@@ -122,20 +123,17 @@ const ArchivStudents = () => {
     if (archivStudentsState.success) {
         return (
             <Box data-testid="archiv_student_component">
-                <Breadcrumbs aria-label="breadcrumb">
-                    <Link
-                        color="inherit"
-                        component={LinkDom}
-                        to={`${DEMO.DASHBOARD_LINK}`}
-                        underline="hover"
-                    >
-                        {appConfig.companyName}
-                    </Link>
-                    <Typography color="text.primary">
-                        {t('My Archived Students', { ns: 'common' })}{' '}
-                        {` (${archivStudentsState.students.length})`}
-                    </Typography>
-                </Breadcrumbs>
+                <BreadcrumbsNavigation
+                    items={[
+                        {
+                            label: appConfig.companyName,
+                            link: DEMO.DASHBOARD_LINK
+                        },
+                        {
+                            label: `${t('My Archived Students', { ns: 'common' })} (${archivStudentsState.students.length})`
+                        }
+                    ]}
+                />
                 {res_modal_status >= 400 ? (
                     <ModalMain
                         ConfirmError={ConfirmError}

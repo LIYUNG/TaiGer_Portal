@@ -1,16 +1,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as LinkDom, Navigate } from 'react-router-dom';
-import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { Navigate } from 'react-router-dom';
+import { Box } from '@mui/material';
 import { is_TaiGer_role } from '@taiger-common/core';
+import { useQuery } from '@tanstack/react-query';
 
 import { TabTitle } from '../Utils/TabTitle';
 import { useAuth } from '../../components/AuthProvider';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import { BaseDocumentsTable } from './BaseDocumentsTable';
-import { useQuery } from '@tanstack/react-query';
 import { getAllActiveStudentsQuery } from '../../api/query';
+import { BreadcrumbsNavigation } from '../../components/BreadcrumbsNavigation/BreadcrumbsNavigation';
 
 const AllBaseDocuments = () => {
     const { user } = useAuth();
@@ -26,22 +27,18 @@ const AllBaseDocuments = () => {
 
     return (
         <Box>
-            <Breadcrumbs aria-label="breadcrumb">
-                <Link
-                    color="inherit"
-                    component={LinkDom}
-                    to={`${DEMO.DASHBOARD_LINK}`}
-                    underline="hover"
-                >
-                    {appConfig.companyName}
-                </Link>
-                <Typography color="text.primary">
-                    {t('All Students', { ns: 'common' })}
-                </Typography>
-                <Typography color="text.primary">
-                    {t('All Documents', { ns: 'common' })}
-                </Typography>
-            </Breadcrumbs>
+            <BreadcrumbsNavigation
+                items={[
+                    { label: appConfig.companyName, link: DEMO.DASHBOARD_LINK },
+                    {
+                        label: t('All Students', { ns: 'common' }),
+                        link: DEMO.DASHBOARD_LINK
+                    },
+                    {
+                        label: t('All Documents', { ns: 'common' })
+                    }
+                ]}
+            />
             {is_TaiGer_role(user) ? (
                 <BaseDocumentsTable students={data.data} />
             ) : null}

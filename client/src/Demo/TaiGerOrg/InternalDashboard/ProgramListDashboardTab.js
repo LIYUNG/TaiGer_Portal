@@ -1,41 +1,18 @@
 import React from 'react';
 import { Box, Card } from '@mui/material';
-import {
-    BarChart,
-    CartesianGrid,
-    Tooltip,
-    XAxis,
-    YAxis,
-    Legend,
-    Bar,
-    ResponsiveContainer
-} from 'recharts';
-import { appConfig } from '../../../config';
 
-const ProgramDistributionChart = ({ data, x_key }) => {
+import { appConfig } from '../../../config';
+import SingleBarChart from '../../../components/Charts/SingleBarChart';
+
+const ProgramDistributionChart = ({ data, x_key, y_key }) => {
     return (
-        <ResponsiveContainer height={200} width="100%">
-            <BarChart
-                data={data}
-                margin={{
-                    top: 20,
-                    right: 0,
-                    left: 0,
-                    bottom: 5
-                }}
-            >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey={`${x_key}`} />
-                <YAxis allowDecimals={false} />
-                <Bar
-                    dataKey="count"
-                    fill="#8884d8"
-                    label={{ position: 'top' }}
-                />
-                <Tooltip labelStyle={{ color: 'black' }} />
-                <Legend />
-            </BarChart>
-        </ResponsiveContainer>
+        <SingleBarChart
+            data={data}
+            dataKey={x_key}
+            dataYKey={y_key}
+            label={x_key}
+            yLabel="Duration (days)"
+        />
     );
 };
 
@@ -47,28 +24,37 @@ const ProgramListDashboardTab = ({ data }) => {
                 <ProgramDistributionChart
                     data={data?.countryCount}
                     x_key="country"
+                    y_key="count"
                 />
                 By School:
                 <ProgramDistributionChart
                     data={data?.schoolCount}
                     x_key="school"
+                    y_key="count"
                 />
                 By Language:
-                <ProgramDistributionChart data={data?.langCount} x_key="lang" />
+                <ProgramDistributionChart
+                    data={data?.langCount}
+                    x_key="lang"
+                    y_key="count"
+                />
                 By Degree:
                 <ProgramDistributionChart
                     data={data?.degreeCount}
                     x_key="degree"
+                    y_key="count"
                 />
                 By Last Update:
                 <ProgramDistributionChart
                     data={data?.updatedAtCount}
                     x_key="updatedAt"
+                    y_key="count"
                 />
                 By Who Updates
                 <ProgramDistributionChart
                     data={data?.whoupdatedCount}
                     x_key="whoupdated"
+                    y_key="count"
                 />
             </Box>
         </Card>

@@ -216,6 +216,7 @@ const DescriptionBlock = ({ thread, template_obj, documentsthreadId }) => {
         </Box>
     );
 };
+
 const RequirementsBlock = ({ thread, template_obj }) => {
     const { user } = useAuth();
     return (
@@ -290,6 +291,247 @@ const RequirementsBlock = ({ thread, template_obj }) => {
                 )}
             </Box>
         </Box>
+    );
+};
+
+const InformationBlock = ({
+    agents,
+    deadline,
+    editors,
+    conflict_list,
+    documentsthreadId,
+    isFavorite,
+    template_obj,
+    widths,
+    startEditingEditor,
+    handleFavoriteToggle,
+    thread,
+    user
+}) => {
+    return (
+        <Card sx={{ p: 2 }}>
+            <Grid container spacing={2}>
+                <Grid item md={widths[0]}>
+                    <Stack alignItems="center" direction="row">
+                        <Typography fontWeight="bold" variant="h6">
+                            {i18next.t('Instructions')}
+                        </Typography>
+                        <IconButton
+                            onClick={() => handleFavoriteToggle(thread._id)}
+                        >
+                            {isFavorite ? (
+                                <StarRoundedIcon />
+                            ) : (
+                                <StarBorderRoundedIcon />
+                            )}
+                        </IconButton>
+                    </Stack>
+                    <DescriptionBlock
+                        documentsthreadId={documentsthreadId}
+                        template_obj={template_obj}
+                        thread={thread}
+                    />
+                    <RequirementsBlock
+                        template_obj={template_obj}
+                        thread={thread}
+                    />
+                </Grid>
+                <Grid item md={widths[1]}>
+                    <Typography fontWeight="bold" variant="body1">
+                        {i18next.t('Agent', { ns: 'common' })}:
+                    </Typography>
+                    {agents.map((agent, i) => (
+                        <Typography key={i}>
+                            {is_TaiGer_role(user) ? (
+                                <Link
+                                    component={LinkDom}
+                                    target="_blank"
+                                    to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
+                                    underline="hover"
+                                >
+                                    {agent.firstname} {agent.lastname}
+                                </Link>
+                            ) : (
+                                <>
+                                    {agent.firstname} {agent.lastname}
+                                </>
+                            )}
+                        </Typography>
+                    ))}
+                    <Typography fontWeight="bold" variant="body1">
+                        {thread.file_type === 'Essay'
+                            ? i18next.t('Essay Writer', {
+                                  ns: 'common'
+                              })
+                            : i18next.t('Editor', { ns: 'common' })}
+                        :
+                    </Typography>
+                    {[
+                        ...AGENT_SUPPORT_DOCUMENTS_A,
+                        FILE_TYPE_E.essay_required
+                    ].includes(thread.file_type) ? (
+                        thread?.outsourced_user_id?.length > 0 ? (
+                            thread?.outsourced_user_id?.map((outsourcer) => (
+                                <Typography key={outsourcer._id}>
+                                    {is_TaiGer_role(user) ? (
+                                        <Link
+                                            component={LinkDom}
+                                            target="_blank"
+                                            to={`${DEMO.TEAM_EDITOR_LINK(
+                                                outsourcer._id.toString()
+                                            )}`}
+                                            underline="hover"
+                                        >
+                                            {outsourcer.firstname}{' '}
+                                            {outsourcer.lastname}
+                                        </Link>
+                                    ) : (
+                                        <>
+                                            {outsourcer.firstname}{' '}
+                                            {outsourcer.lastname}
+                                        </>
+                                    )}
+                                </Typography>
+                            ))
+                        ) : (
+                            <Typography>
+                                {[...AGENT_SUPPORT_DOCUMENTS_A].includes(
+                                    thread.file_type
+                                )
+                                    ? 'If needed, editor can be added'
+                                    : 'To Be Assigned'}
+                            </Typography>
+                        )
+                    ) : null}
+                    {![
+                        ...AGENT_SUPPORT_DOCUMENTS_A,
+                        FILE_TYPE_E.essay_required
+                    ].includes(thread.file_type)
+                        ? editors.map((editor, i) => (
+                              <Typography key={i}>
+                                  {is_TaiGer_role(user) ? (
+                                      <Link
+                                          component={LinkDom}
+                                          target="_blank"
+                                          to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
+                                          underline="hover"
+                                      >
+                                          {editor.firstname} {editor.lastname}
+                                      </Link>
+                                  ) : (
+                                      <>
+                                          {editor.firstname} {editor.lastname}
+                                      </>
+                                  )}
+                              </Typography>
+                          ))
+                        : null}
+                    {is_TaiGer_role(user) &&
+                    [
+                        ...AGENT_SUPPORT_DOCUMENTS_A,
+                        FILE_TYPE_E.essay_required
+                    ].includes(thread.file_type) ? (
+                        <Button
+                            color="primary"
+                            onClick={startEditingEditor}
+                            size="small"
+                            variant="contained"
+                        >
+                            {thread.file_type === 'Essay'
+                                ? i18next.t('Add Essay Writer')
+                                : i18next.t('Add Editor')}
+                        </Button>
+                    ) : null}
+                    {thread.program_id ? (
+                        <>
+                            <Typography fontWeight="bold" variant="body1">
+                                {i18next.t('Semester', {
+                                    ns: 'common'
+                                })}
+                                :
+                            </Typography>
+                            <Typography>
+                                {thread.program_id.semester}
+                            </Typography>
+                            <Typography fontWeight="bold" variant="body1">
+                                {i18next.t('Program Language', {
+                                    ns: 'common'
+                                })}
+                                :
+                            </Typography>
+                            <Typography>{thread.program_id.lang}</Typography>
+                        </>
+                    ) : null}
+
+                    <Typography variant="body1">
+                        <b>{i18next.t('Deadline', { ns: 'common' })}:</b>
+                        {is_TaiGer_AdminAgent(user) && thread.program_id ? (
+                            <Link
+                                component={LinkDom}
+                                target="_blank"
+                                to={`${DEMO.SINGLE_PROGRAM_LINK(
+                                    thread.program_id._id.toString()
+                                )}`}
+                                underline="hover"
+                            >
+                                {' '}
+                                [Update]
+                            </Link>
+                        ) : null}
+                    </Typography>
+                    <Typography variant="string">{deadline}</Typography>
+                </Grid>
+                {thread.file_type === 'CV' ? (
+                    <Grid item md={widths[2]}>
+                        <Typography variant="h6">
+                            <b>Profile photo:</b>
+                            <img
+                                height="100%"
+                                src={`${BASE_URL}/api/students/${thread.student_id._id}/files/Passport_Photo`}
+                                width="100%"
+                            />
+                        </Typography>
+                        <Typography>
+                            If image not shown, please go to{' '}
+                            <Link
+                                component={LinkDom}
+                                to="/base-documents"
+                                underline="hover"
+                            >
+                                <b>My Documents</b>
+                                <LaunchIcon fontSize="small" />
+                            </Link>
+                            and upload the Passport Photo.
+                        </Typography>
+                    </Grid>
+                ) : (
+                    !is_TaiGer_Student(user) && (
+                        <Grid item md={widths[2]}>
+                            <Typography variant="body1">
+                                {i18next.t('Conflict')}:
+                            </Typography>
+                            {conflict_list.length === 0
+                                ? 'None'
+                                : conflict_list.map((conflict_student, j) => (
+                                      <Typography key={j}>
+                                          <LinkDom
+                                              to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                                  conflict_student._id.toString(),
+                                                  DEMO.CVMLRL_HASH
+                                              )}`}
+                                          >
+                                              <b>
+                                                  {conflict_student.firstname}{' '}
+                                                  {conflict_student.lastname}
+                                              </b>
+                                          </LinkDom>
+                                      </Typography>
+                                  ))}
+                        </Grid>
+                    )
+                )}
+            </Grid>
+        </Card>
     );
 };
 
@@ -1062,269 +1304,20 @@ const DocModificationThreadPage = ({ threadId, isEmbedded = false }) => {
                 />
             </Tabs>
             <CustomTabPanel index={0} value={value}>
-                <Card sx={{ p: 2 }}>
-                    <Grid container spacing={2}>
-                        <Grid item md={widths[0]}>
-                            <Stack alignItems="center" direction="row">
-                                <Typography fontWeight="bold" variant="h6">
-                                    {i18next.t('Instructions')}
-                                </Typography>
-                                <IconButton
-                                    onClick={() =>
-                                        handleFavoriteToggle(
-                                            docModificationThreadPageState
-                                                .thread._id
-                                        )
-                                    }
-                                >
-                                    {isFavorite ? (
-                                        <StarRoundedIcon />
-                                    ) : (
-                                        <StarBorderRoundedIcon />
-                                    )}
-                                </IconButton>
-                            </Stack>
-                            <DescriptionBlock
-                                documentsthreadId={documentsthreadId}
-                                template_obj={template_obj}
-                                thread={thread}
-                            />
-                            <RequirementsBlock
-                                template_obj={template_obj}
-                                thread={thread}
-                            />
-                        </Grid>
-                        <Grid item md={widths[1]}>
-                            <Typography fontWeight="bold" variant="body1">
-                                {i18next.t('Agent', { ns: 'common' })}:
-                            </Typography>
-                            {docModificationThreadPageState.agents.map(
-                                (agent, i) => (
-                                    <Typography key={i}>
-                                        {is_TaiGer_role(user) ? (
-                                            <Link
-                                                component={LinkDom}
-                                                target="_blank"
-                                                to={`${DEMO.TEAM_AGENT_LINK(agent._id.toString())}`}
-                                                underline="hover"
-                                            >
-                                                {agent.firstname}{' '}
-                                                {agent.lastname}
-                                            </Link>
-                                        ) : (
-                                            <>
-                                                {agent.firstname}{' '}
-                                                {agent.lastname}
-                                            </>
-                                        )}
-                                    </Typography>
-                                )
-                            )}
-                            <Typography fontWeight="bold" variant="body1">
-                                {thread.file_type === 'Essay'
-                                    ? i18next.t('Essay Writer', {
-                                          ns: 'common'
-                                      })
-                                    : i18next.t('Editor', { ns: 'common' })}
-                                :
-                            </Typography>
-                            {[
-                                ...AGENT_SUPPORT_DOCUMENTS_A,
-                                FILE_TYPE_E.essay_required
-                            ].includes(thread.file_type) ? (
-                                thread?.outsourced_user_id?.length > 0 ? (
-                                    thread?.outsourced_user_id?.map(
-                                        (outsourcer) => (
-                                            <Typography key={outsourcer._id}>
-                                                {is_TaiGer_role(user) ? (
-                                                    <Link
-                                                        component={LinkDom}
-                                                        target="_blank"
-                                                        to={`${DEMO.TEAM_EDITOR_LINK(
-                                                            outsourcer._id.toString()
-                                                        )}`}
-                                                        underline="hover"
-                                                    >
-                                                        {outsourcer.firstname}{' '}
-                                                        {outsourcer.lastname}
-                                                    </Link>
-                                                ) : (
-                                                    <>
-                                                        {outsourcer.firstname}{' '}
-                                                        {outsourcer.lastname}
-                                                    </>
-                                                )}
-                                            </Typography>
-                                        )
-                                    )
-                                ) : (
-                                    <Typography>
-                                        {[
-                                            ...AGENT_SUPPORT_DOCUMENTS_A
-                                        ].includes(thread.file_type)
-                                            ? 'If needed, editor can be added'
-                                            : 'To Be Assigned'}
-                                    </Typography>
-                                )
-                            ) : null}
-                            {![
-                                ...AGENT_SUPPORT_DOCUMENTS_A,
-                                FILE_TYPE_E.essay_required
-                            ].includes(thread.file_type)
-                                ? docModificationThreadPageState.editors.map(
-                                      (editor, i) => (
-                                          <Typography key={i}>
-                                              {is_TaiGer_role(user) ? (
-                                                  <Link
-                                                      component={LinkDom}
-                                                      target="_blank"
-                                                      to={`${DEMO.TEAM_EDITOR_LINK(editor._id.toString())}`}
-                                                      underline="hover"
-                                                  >
-                                                      {editor.firstname}{' '}
-                                                      {editor.lastname}
-                                                  </Link>
-                                              ) : (
-                                                  <>
-                                                      {editor.firstname}{' '}
-                                                      {editor.lastname}
-                                                  </>
-                                              )}
-                                          </Typography>
-                                      )
-                                  )
-                                : null}
-                            {is_TaiGer_role(user) &&
-                            [
-                                ...AGENT_SUPPORT_DOCUMENTS_A,
-                                FILE_TYPE_E.essay_required
-                            ].includes(thread.file_type) ? (
-                                <Button
-                                    color="primary"
-                                    onClick={startEditingEditor}
-                                    size="small"
-                                    variant="contained"
-                                >
-                                    {thread.file_type === 'Essay'
-                                        ? i18next.t('Add Essay Writer')
-                                        : i18next.t('Add Editor')}
-                                </Button>
-                            ) : null}
-                            {thread.program_id ? (
-                                <>
-                                    <Typography
-                                        fontWeight="bold"
-                                        variant="body1"
-                                    >
-                                        {i18next.t('Semester', {
-                                            ns: 'common'
-                                        })}
-                                        :
-                                    </Typography>
-                                    <Typography>
-                                        {
-                                            docModificationThreadPageState
-                                                .thread.program_id.semester
-                                        }
-                                    </Typography>
-                                    <Typography
-                                        fontWeight="bold"
-                                        variant="body1"
-                                    >
-                                        {i18next.t('Program Language', {
-                                            ns: 'common'
-                                        })}
-                                        :
-                                    </Typography>
-                                    <Typography>
-                                        {
-                                            docModificationThreadPageState
-                                                .thread.program_id.lang
-                                        }
-                                    </Typography>
-                                </>
-                            ) : null}
-
-                            <Typography variant="body1">
-                                <b>
-                                    {i18next.t('Deadline', { ns: 'common' })}:
-                                </b>
-                                {is_TaiGer_AdminAgent(user) &&
-                                thread.program_id ? (
-                                    <Link
-                                        component={LinkDom}
-                                        target="_blank"
-                                        to={`${DEMO.SINGLE_PROGRAM_LINK(
-                                            thread.program_id._id.toString()
-                                        )}`}
-                                        underline="hover"
-                                    >
-                                        {' '}
-                                        [Update]
-                                    </Link>
-                                ) : null}
-                            </Typography>
-                            <Typography variant="string">
-                                {docModificationThreadPageState.deadline}
-                            </Typography>
-                        </Grid>
-                        {thread.file_type === 'CV' ? (
-                            <Grid item md={widths[2]}>
-                                <Typography variant="h6">
-                                    <b>Profile photo:</b>
-                                    <img
-                                        height="100%"
-                                        src={`${BASE_URL}/api/students/${thread.student_id._id}/files/Passport_Photo`}
-                                        width="100%"
-                                    />
-                                </Typography>
-                                <Typography>
-                                    If image not shown, please go to{' '}
-                                    <Link
-                                        component={LinkDom}
-                                        to="/base-documents"
-                                        underline="hover"
-                                    >
-                                        <b>Base Documents</b>
-                                        <LaunchIcon fontSize="small" />
-                                    </Link>
-                                    and upload the Passport Photo.
-                                </Typography>
-                            </Grid>
-                        ) : (
-                            !is_TaiGer_Student(user) && (
-                                <Grid item md={widths[2]}>
-                                    <Typography variant="body1">
-                                        {i18next.t('Conflict')}:
-                                    </Typography>
-                                    {conflict_list.length === 0
-                                        ? 'None'
-                                        : conflict_list.map(
-                                              (conflict_student, j) => (
-                                                  <Typography key={j}>
-                                                      <LinkDom
-                                                          to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                                              conflict_student._id.toString(),
-                                                              DEMO.CVMLRL_HASH
-                                                          )}`}
-                                                      >
-                                                          <b>
-                                                              {
-                                                                  conflict_student.firstname
-                                                              }{' '}
-                                                              {
-                                                                  conflict_student.lastname
-                                                              }
-                                                          </b>
-                                                      </LinkDom>
-                                                  </Typography>
-                                              )
-                                          )}
-                                </Grid>
-                            )
-                        )}
-                    </Grid>
-                </Card>
+                <InformationBlock
+                    agents={docModificationThreadPageState.agents}
+                    conflict_list={conflict_list}
+                    deadline={docModificationThreadPageState.deadline}
+                    documentsthreadId={documentsthreadId}
+                    editors={docModificationThreadPageState.editors}
+                    handleFavoriteToggle={handleFavoriteToggle}
+                    isFavorite={isFavorite}
+                    startEditingEditor={startEditingEditor}
+                    template_obj={template_obj}
+                    thread={docModificationThreadPageState.thread}
+                    user={user}
+                    widths={widths}
+                />
                 <MessageList
                     accordionKeys={docModificationThreadPageState.accordionKeys}
                     apiPrefix="/api/document-threads"

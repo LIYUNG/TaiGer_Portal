@@ -1,23 +1,21 @@
 import React from 'react';
-import { Breadcrumbs, Link, Typography, Box } from '@mui/material';
-import { Navigate, Link as LinkDom, useLoaderData } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { Box } from '@mui/material';
+import { Navigate, useLoaderData } from 'react-router-dom';
 import { is_TaiGer_Student, is_TaiGer_role } from '@taiger-common/core';
+import i18next from 'i18next';
 
 import ApplicationOverviewTabs from './ApplicationOverviewTabs';
-
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { appConfig } from '../../config';
+import { BreadcrumbsNavigation } from '../../components/BreadcrumbsNavigation/BreadcrumbsNavigation';
 
 const ApplicantsOverview = () => {
     const { user } = useAuth();
     const {
         data: { data: fetchedStudents }
     } = useLoaderData();
-
-    const { t } = useTranslation();
 
     if (is_TaiGer_Student(user)) {
         return (
@@ -37,25 +35,24 @@ const ApplicantsOverview = () => {
             ) ||
             student.agents.some((agent) => agent._id === user._id.toString())
     );
-    TabTitle('Applications Overview');
+    TabTitle(
+        i18next.t('Applications Overview', {
+            ns: 'common'
+        })
+    );
 
     return (
         <Box data-testid="application_overview_component">
-            <Breadcrumbs aria-label="breadcrumb">
-                <Link
-                    color="inherit"
-                    component={LinkDom}
-                    to={`${DEMO.DASHBOARD_LINK}`}
-                    underline="hover"
-                >
-                    {appConfig.companyName}
-                </Link>
-                <Typography color="text.primary">
-                    {is_TaiGer_role(user)
-                        ? `${t('My Students Application Overview')}`
-                        : `${user.firstname} ${user.lastname} Applications Overview`}
-                </Typography>
-            </Breadcrumbs>
+            <BreadcrumbsNavigation
+                items={[
+                    { label: appConfig.companyName, link: DEMO.DASHBOARD_LINK },
+                    {
+                        label: is_TaiGer_role(user)
+                            ? `${i18next.t('My Students Application Overview')}`
+                            : `${user.firstname} ${user.lastname} Applications Overview`
+                    }
+                ]}
+            />
             <ApplicationOverviewTabs students={myStudents} />
         </Box>
     );

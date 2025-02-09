@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, Link as LinkDom, useParams } from 'react-router-dom';
-import {
-    Box,
-    Breadcrumbs,
-    Card,
-    Button,
-    Link,
-    Typography
-} from '@mui/material';
+import { Navigate, useParams } from 'react-router-dom';
+import { Box, Card, Button, Link, Typography } from '@mui/material';
 import { is_TaiGer_role } from '@taiger-common/core';
+import i18next from 'i18next';
 
 import ErrorPage from '../Utils/ErrorPage';
 import { getExpense } from '../../api';
@@ -22,6 +16,7 @@ import { ExtendableTable } from '../../components/ExtendableTable/ExtendableTabl
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
+import { BreadcrumbsNavigation } from '../../components/BreadcrumbsNavigation/BreadcrumbsNavigation';
 
 const SingleBalanceSheetOverview = () => {
     const { taiger_user_id } = useParams();
@@ -118,28 +113,21 @@ const SingleBalanceSheetOverview = () => {
 
     return (
         <Box>
-            <Breadcrumbs aria-label="breadcrumb">
-                <Link
-                    color="inherit"
-                    component={LinkDom}
-                    to={`${DEMO.DASHBOARD_LINK}`}
-                    underline="hover"
-                >
-                    {appConfig.companyName}
-                </Link>
-                <Link
-                    color="inherit"
-                    component={LinkDom}
-                    to={`${DEMO.ACCOUNTING_LINK}`}
-                    underline="hover"
-                >
-                    Accounting
-                </Link>
-                <Typography color="text.primary">
-                    {singleBalanceSheetOverviewState.the_user.firstname}{' '}
-                    {singleBalanceSheetOverviewState.the_user.lastname}
-                </Typography>
-            </Breadcrumbs>
+            <BreadcrumbsNavigation
+                items={[
+                    { label: appConfig.companyName, link: DEMO.DASHBOARD_LINK },
+                    {
+                        label: i18next.t('tenant-team', {
+                            ns: 'common',
+                            tenant: appConfig.companyName
+                        }),
+                        link: DEMO.ACCOUNTING_LINK
+                    },
+                    {
+                        label: `${singleBalanceSheetOverviewState.the_user.firstname} ${singleBalanceSheetOverviewState.the_user.lastname}`
+                    }
+                ]}
+            />
             <Card>
                 <Typography variant="h6">
                     {singleBalanceSheetOverviewState.the_user.firstname}{' '}

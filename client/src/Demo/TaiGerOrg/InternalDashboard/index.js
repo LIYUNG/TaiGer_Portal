@@ -90,7 +90,7 @@ const InternalDashboard = () => {
     const CVdataWithDuration = refactor_finished_cv_docs.map((item) => ({
         ...item,
         name: `${item.name}`, // Create a name for the item, e.g., Item 0, Item 1, etc.
-        duration: calculateDuration(item.start, item.end)
+        uv: calculateDuration(item.start, item.end)
     }));
 
     const refactor_finished_ml_docs = finished_docs
@@ -114,7 +114,7 @@ const InternalDashboard = () => {
     const MLdataWithDuration = refactor_finished_ml_docs.map((item) => ({
         ...item,
         name: `${item.name}`, // Create a name for the item, e.g., Item 0, Item 1, etc.
-        duration: calculateDuration(item.start, item.end)
+        uv: calculateDuration(item.start, item.end)
     }));
 
     const refactor_finished_rl_docs = finished_docs
@@ -143,7 +143,7 @@ const InternalDashboard = () => {
     const RLdataWithDuration = refactor_finished_rl_docs.map((item) => ({
         ...item,
         name: `${item.name}`, // Create a name for the item, e.g., Item 0, Item 1, etc.
-        duration: calculateDuration(item.start, item.end)
+        uv: calculateDuration(item.start, item.end)
     }));
 
     return (

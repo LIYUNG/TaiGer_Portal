@@ -23,7 +23,86 @@ import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import { TopBar } from '../../components/TopBar/TopBar';
 import useCommunications from '../../hooks/useCommunications';
+import i18next from 'i18next';
 
+const InformationBlockChat = ({ user, student }) => {
+    return (
+        <Box variant="body1">
+            {appConfig.companyName}
+            顧問皆位於中歐時區，無法及時回復，為確保有
+            <b>效率溝通</b>，留言時請注意以下幾點：
+            <List>
+                <ListItem>
+                    <Typography sx={{ display: 'flex' }}>
+                        1. 請把
+                        <Link
+                            component={LinkDom}
+                            fontWeight="bold"
+                            sx={{ display: 'flex' }}
+                            target="_blank"
+                            to={
+                                is_TaiGer_Student(user)
+                                    ? `${DEMO.SURVEY_LINK}`
+                                    : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                          student._id?.toString(),
+                                          DEMO.SURVEY_HASH
+                                      )}`
+                            }
+                        >
+                            {i18next.t('Profile', { ns: 'common' })}{' '}
+                            <LaunchIcon fontSize="small" />
+                        </Link>
+                        填好，
+                        <Link
+                            component={LinkDom}
+                            fontWeight="bold"
+                            sx={{ display: 'flex' }}
+                            target="_blank"
+                            to={
+                                is_TaiGer_Student(user)
+                                    ? `${DEMO.BASE_DOCUMENTS_LINK}`
+                                    : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                          student._id?.toString(),
+                                          DEMO.PROFILE_HASH
+                                      )}`
+                            }
+                        >
+                            {i18next.t('My Documents', {
+                                ns: 'common'
+                            })}{' '}
+                            <LaunchIcon fontSize="small" />
+                        </Link>
+                        ，文件有的都盡量先掃描上傳，
+                        <Link
+                            component={LinkDom}
+                            fontWeight="bold"
+                            sx={{ display: 'flex' }}
+                            target="_blank"
+                            to={`${DEMO.COURSES_LINK}/${student._id?.toString()}`}
+                        >
+                            {i18next.t('My Courses', { ns: 'common' })}{' '}
+                            <LaunchIcon fontSize="small" />
+                        </Link>
+                        課程填好，之後 Agent 在回答問題時比較能掌握狀況。
+                    </Typography>
+                </ListItem>
+                <ListItem>
+                    2. 描述你的問題，請盡量一次列出所有問題，顧問可以一次回答。
+                </ListItem>
+                <ListItem>3. 你想要完成事項。</ListItem>
+                <ListItem>
+                    註：或想一次處理，請準備好所有問題，並和顧問約時間通話。
+                </ListItem>
+                <ListItem>
+                    {appConfig.companyName}{' '}
+                    顧問平時的工作時段位於美國或歐洲時區，因此可能無法立即回覆您的訊息，敬請諒解。依據您的問題複雜度，顧問將會在一至五個工作日內回覆您。因此，請在訊息來往時保持有效率的溝通，以確保迅速解決問題。
+                    顧問隨時需要了解您的進展情況，為了避免不必要的來回詢問學生資料進度，為此，請務必將您在TaiGer
+                    Portal平台上的個人資訊保持最新，以確保訊息的準確性。
+                </ListItem>
+            </List>
+        </Box>
+    );
+};
 const CommunicationSinglePageBody = ({ loadedData }) => {
     const { data, student } = loadedData;
     const { user } = useAuth();
@@ -99,82 +178,7 @@ const CommunicationSinglePageBody = ({ loadedData }) => {
                 </Grid>
                 <Grid item sm={9} xs={12}>
                     <Typography variant="h6">{t('Instructions')}:</Typography>
-                    <Box variant="body1">
-                        {appConfig.companyName}
-                        顧問皆位於中歐時區，無法及時回復，為確保有
-                        <b>效率溝通</b>，留言時請注意以下幾點：
-                        <List>
-                            <ListItem>
-                                <Typography sx={{ display: 'flex' }}>
-                                    1. 請把
-                                    <Link
-                                        component={LinkDom}
-                                        fontWeight="bold"
-                                        sx={{ display: 'flex' }}
-                                        target="_blank"
-                                        to={
-                                            is_TaiGer_Student(user)
-                                                ? `${DEMO.SURVEY_LINK}`
-                                                : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                                      student._id?.toString(),
-                                                      DEMO.SURVEY_HASH
-                                                  )}`
-                                        }
-                                    >
-                                        {t('Profile', { ns: 'common' })}{' '}
-                                        <LaunchIcon fontSize="small" />
-                                    </Link>
-                                    填好，
-                                    <Link
-                                        component={LinkDom}
-                                        fontWeight="bold"
-                                        sx={{ display: 'flex' }}
-                                        target="_blank"
-                                        to={
-                                            is_TaiGer_Student(user)
-                                                ? `${DEMO.BASE_DOCUMENTS_LINK}`
-                                                : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                                      student._id?.toString(),
-                                                      DEMO.PROFILE_HASH
-                                                  )}`
-                                        }
-                                    >
-                                        {t('My Documents', {
-                                            ns: 'common'
-                                        })}{' '}
-                                        <LaunchIcon fontSize="small" />
-                                    </Link>
-                                    ，文件有的都盡量先掃描上傳，
-                                    <Link
-                                        component={LinkDom}
-                                        fontWeight="bold"
-                                        sx={{ display: 'flex' }}
-                                        target="_blank"
-                                        to={`${DEMO.COURSES_LINK}/${student._id?.toString()}`}
-                                    >
-                                        {t('My Courses', { ns: 'common' })}{' '}
-                                        <LaunchIcon fontSize="small" />
-                                    </Link>
-                                    課程填好，之後 Agent
-                                    在回答問題時比較能掌握狀況。
-                                </Typography>
-                            </ListItem>
-                            <ListItem>
-                                2.
-                                描述你的問題，請盡量一次列出所有問題，顧問可以一次回答。
-                            </ListItem>
-                            <ListItem>3. 你想要完成事項。</ListItem>
-                            <ListItem>
-                                註：或想一次處理，請準備好所有問題，並和顧問約時間通話。
-                            </ListItem>
-                            <ListItem>
-                                {appConfig.companyName}{' '}
-                                顧問平時的工作時段位於美國或歐洲時區，因此可能無法立即回覆您的訊息，敬請諒解。依據您的問題複雜度，顧問將會在一至五個工作日內回覆您。因此，請在訊息來往時保持有效率的溝通，以確保迅速解決問題。
-                                顧問隨時需要了解您的進展情況，為了避免不必要的來回詢問學生資料進度，為此，請務必將您在TaiGer
-                                Portal平台上的個人資訊保持最新，以確保訊息的準確性。
-                            </ListItem>
-                        </List>
-                    </Box>
+                    <InformationBlockChat student={student} user={user} />
                 </Grid>
                 <Grid item sm={3} xs={12}>
                     <Typography fontWeight="bold">

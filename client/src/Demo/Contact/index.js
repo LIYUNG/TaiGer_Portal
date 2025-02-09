@@ -3,7 +3,6 @@ import { Link as LinkDom, Navigate, useLoaderData } from 'react-router-dom';
 import {
     Box,
     Card,
-    Breadcrumbs,
     Table,
     Link,
     Typography,
@@ -13,12 +12,13 @@ import {
     TableCell
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { Role } from '@taiger-common/core';
 
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
-import { Role } from '@taiger-common/core';
+import { BreadcrumbsNavigation } from '../../components/BreadcrumbsNavigation/BreadcrumbsNavigation';
 
 const Contact = () => {
     const { user } = useAuth();
@@ -71,19 +71,14 @@ const Contact = () => {
 
     return (
         <Box>
-            <Breadcrumbs aria-label="breadcrumb">
-                <Link
-                    color="inherit"
-                    component={LinkDom}
-                    to={`${DEMO.DASHBOARD_LINK}`}
-                    underline="hover"
-                >
-                    {appConfig.companyName}
-                </Link>
-                <Typography color="text.primary">
-                    {t('Contact Us', { ns: 'common' })}
-                </Typography>
-            </Breadcrumbs>
+            <BreadcrumbsNavigation
+                items={[
+                    { label: appConfig.companyName, link: DEMO.DASHBOARD_LINK },
+                    {
+                        label: t('Contact Us', { ns: 'common' })
+                    }
+                ]}
+            />
             <Typography sx={{ my: 2 }}>
                 Your {appConfig.companyName} Team
             </Typography>

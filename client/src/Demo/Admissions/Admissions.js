@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Link as LinkDom, Navigate } from 'react-router-dom';
-import { Box, Breadcrumbs, Link, Tab, Tabs, Typography } from '@mui/material';
+import { Navigate } from 'react-router-dom';
+import { Box, Tab, Tabs } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { is_TaiGer_role } from '@taiger-common/core';
 
@@ -14,6 +14,7 @@ import Loading from '../../components/Loading/Loading';
 import { a11yProps, CustomTabPanel } from '../../components/Tabs';
 import AdmissionsStat from './AdmissionsStat';
 import { getAdmissionsQuery } from '../../api/query';
+import { BreadcrumbsNavigation } from '../../components/BreadcrumbsNavigation/BreadcrumbsNavigation';
 
 const Admissions = () => {
     const { user } = useAuth();
@@ -34,25 +35,21 @@ const Admissions = () => {
 
     return (
         <Box data-testid="admissinos_page">
-            <Breadcrumbs aria-label="breadcrumb">
-                <Link
-                    color="inherit"
-                    component={LinkDom}
-                    to={`${DEMO.DASHBOARD_LINK}`}
-                    underline="hover"
-                >
-                    {appConfig.companyName}
-                </Link>
-                <Typography color="text.primary">
-                    {t('All Students', { ns: 'common' })}
-                </Typography>
-                <Typography color="text.primary">
-                    {t('tenant-admissions', {
-                        ns: 'common',
-                        tenant: appConfig.companyName
-                    })}
-                </Typography>
-            </Breadcrumbs>
+            <BreadcrumbsNavigation
+                items={[
+                    { label: appConfig.companyName, link: DEMO.DASHBOARD_LINK },
+                    {
+                        label: t('All Students', { ns: 'common' }),
+                        link: DEMO.DASHBOARD_LINK
+                    },
+                    {
+                        label: t('tenant-admissions', {
+                            ns: 'common',
+                            tenant: appConfig.companyName
+                        })
+                    }
+                ]}
+            />
             {isLoading ? <Loading /> : null}
             {isError ? error : null}
             {!isLoading && !isError ? (

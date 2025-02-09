@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navigate, useLoaderData } from 'react-router-dom';
-import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
-import { Link as LinkDom } from 'react-router-dom';
+import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import AssignEssayWritersPage from './AssignEssayWritersPage';
 import { is_TaiGer_role } from '@taiger-common/core';
@@ -9,6 +8,7 @@ import { is_TaiGer_role } from '@taiger-common/core';
 import DEMO from '../../../store/constant';
 import { useAuth } from '../../../components/AuthProvider';
 import { appConfig } from '../../../config';
+import { BreadcrumbsNavigation } from '../../../components/BreadcrumbsNavigation/BreadcrumbsNavigation';
 
 const AssignEssayWriters = () => {
     const { user } = useAuth();
@@ -23,19 +23,14 @@ const AssignEssayWriters = () => {
 
     return (
         <Box>
-            <Breadcrumbs aria-label="breadcrumb">
-                <Link
-                    color="inherit"
-                    component={LinkDom}
-                    to={`${DEMO.DASHBOARD_LINK}`}
-                    underline="hover"
-                >
-                    {appConfig.companyName}
-                </Link>
-                <Typography color="text.primary">
-                    {t('Assign Essay Writer', { ns: 'common' })}
-                </Typography>
-            </Breadcrumbs>
+            <BreadcrumbsNavigation
+                items={[
+                    { label: appConfig.companyName, link: DEMO.DASHBOARD_LINK },
+                    {
+                        label: t('Assign Essay Writer', { ns: 'common' })
+                    }
+                ]}
+            />
             <AssignEssayWritersPage
                 essayDocumentThreads={essayDocumentThreads}
             />

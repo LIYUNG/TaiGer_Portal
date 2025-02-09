@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, Link as LinkDom } from 'react-router-dom';
-import { Box, Breadcrumbs, Card, Link, Typography } from '@mui/material';
+import { Box, Card, Link, Typography } from '@mui/material';
 import { is_TaiGer_role } from '@taiger-common/core';
+import { useTranslation } from 'react-i18next';
 
 import ErrorPage from '../Utils/ErrorPage';
 import { getTeamMembers } from '../../api';
@@ -10,7 +11,7 @@ import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
 import { useAuth } from '../../components/AuthProvider';
 import Loading from '../../components/Loading/Loading';
-import { useTranslation } from 'react-i18next';
+import { BreadcrumbsNavigation } from '../../components/BreadcrumbsNavigation/BreadcrumbsNavigation';
 
 const Accounting = () => {
     const { user } = useAuth();
@@ -80,28 +81,24 @@ const Accounting = () => {
 
     return (
         <Box>
-            <Breadcrumbs aria-label="breadcrumb">
-                <Link
-                    color="inherit"
-                    component={LinkDom}
-                    to={`${DEMO.DASHBOARD_LINK}`}
-                    underline="hover"
-                >
-                    {appConfig.companyName}
-                </Link>
-                <Typography color="text.primary">
-                    {t('tenant-team', {
-                        ns: 'common',
-                        tenant: appConfig.companyName
-                    })}
-                </Typography>
-                <Typography color="text.primary">
-                    {t('tenant-accounting', {
-                        ns: 'common',
-                        tenant: appConfig.companyName
-                    })}
-                </Typography>
-            </Breadcrumbs>
+            <BreadcrumbsNavigation
+                items={[
+                    { label: appConfig.companyName, link: DEMO.DASHBOARD_LINK },
+                    {
+                        label: t('tenant-team', {
+                            ns: 'common',
+                            tenant: appConfig.companyName
+                        }),
+                        link: DEMO.DASHBOARD_LINK
+                    },
+                    {
+                        label: t('tenant-accounting', {
+                            ns: 'common',
+                            tenant: appConfig.companyName
+                        })
+                    }
+                ]}
+            />
             <Card>
                 <Typography variant="h5">
                     {t('Agents', {

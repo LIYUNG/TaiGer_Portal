@@ -1,21 +1,9 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Typography, Grid, Card, Button, ButtonGroup } from '@mui/material';
-import {
-    BarChart,
-    Cell,
-    CartesianGrid,
-    Tooltip,
-    XAxis,
-    YAxis,
-    Bar,
-    ResponsiveContainer
-} from 'recharts';
-
 import dayjs from 'dayjs';
 import isoWeek from 'dayjs/plugin/isoWeek';
 dayjs.extend(isoWeek);
-
 import { LineChart } from '@mui/x-charts/LineChart';
 import {
     isProgramAdmitted,
@@ -39,17 +27,6 @@ const initialData = {
     Rejection: 0,
     Pending: 0
 };
-
-const colors = [
-    '#ff8a65',
-    '#f4c22b',
-    '#04a9f5',
-    '#3ebfea',
-    '#4F5467',
-    '#1de9b6',
-    '#a389d4',
-    '#FE8A7D'
-];
 
 const cat = [
     'CURRICULUM_ANALYSIS',
@@ -316,35 +293,11 @@ const OverviewDashboardTab = ({
                         <Typography>
                             {t('Applications')}: Number of Applications:
                         </Typography>
-                        <ResponsiveContainer height={300} width="100%">
-                            <BarChart
-                                data={applications_data}
-                                margin={{
-                                    top: 20,
-                                    right: 0,
-                                    left: 0,
-                                    bottom: 5
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis allowDecimals={false} />
-                                <Tooltip labelStyle={{ color: 'black' }} />
-                                {/* <Legend /> */}
-                                <Bar
-                                    dataKey="uv"
-                                    fill="#8884d8"
-                                    label={{ position: 'top' }}
-                                >
-                                    {applications_data.map((entry, index) => (
-                                        <Cell
-                                            fill={colors[index % 20]}
-                                            key={`cell-${index}`}
-                                        />
-                                    ))}
-                                </Bar>
-                            </BarChart>
-                        </ResponsiveContainer>
+                        <SingleBarChart
+                            data={applications_data}
+                            label="Tasks"
+                            yLabel="Tasks"
+                        />
                     </Card>
                 </Grid>
                 <Grid item md={4} xs={12}>
@@ -352,35 +305,11 @@ const OverviewDashboardTab = ({
                         <Typography>
                             {t('Admissions')}: Number of Admissions
                         </Typography>
-                        <ResponsiveContainer height={300} width="100%">
-                            <BarChart
-                                data={admissions_data}
-                                margin={{
-                                    top: 20,
-                                    right: 0,
-                                    left: 0,
-                                    bottom: 5
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis allowDecimals={false} />
-                                <Tooltip labelStyle={{ color: 'black' }} />
-                                {/* <Legend /> */}
-                                <Bar
-                                    dataKey="uv"
-                                    fill="#8884d8"
-                                    label={{ position: 'top' }}
-                                >
-                                    {admissions_data.map((entry, index) => (
-                                        <Cell
-                                            fill={colors[index % 20]}
-                                            key={`cell-${index}`}
-                                        />
-                                    ))}
-                                </Bar>
-                            </BarChart>
-                        </ResponsiveContainer>
+                        <SingleBarChart
+                            data={admissions_data}
+                            label="Tasks"
+                            yLabel="Tasks"
+                        />
                     </Card>
                 </Grid>
             </Grid>

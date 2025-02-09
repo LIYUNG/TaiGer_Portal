@@ -1,14 +1,14 @@
 import React from 'react';
-import { Link as LinkDom } from 'react-router-dom';
-import { Box, Breadcrumbs, Link, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import i18next from 'i18next';
+import { useQuery } from '@tanstack/react-query';
 
 import ApplicationOverviewTabs from './ApplicationOverviewTabs';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
 import { appConfig } from '../../config';
-import { useQuery } from '@tanstack/react-query';
 import { getAllActiveStudentsQuery } from '../../api/query';
+import { BreadcrumbsNavigation } from '../../components/BreadcrumbsNavigation/BreadcrumbsNavigation';
 
 const AllApplicantsOverview = () => {
     const { data } = useQuery(getAllActiveStudentsQuery());
@@ -17,24 +17,20 @@ const AllApplicantsOverview = () => {
 
     return (
         <Box>
-            <Breadcrumbs aria-label="breadcrumb">
-                <Link
-                    color="inherit"
-                    component={LinkDom}
-                    to={`${DEMO.DASHBOARD_LINK}`}
-                    underline="hover"
-                >
-                    {appConfig.companyName}
-                </Link>
-                <Typography color="text.primary">
-                    {i18next.t('All Students', { ns: 'common' })}
-                </Typography>
-                <Typography color="text.primary">
-                    {i18next.t('All Students Applications Overview', {
-                        ns: 'common'
-                    })}
-                </Typography>
-            </Breadcrumbs>
+            <BreadcrumbsNavigation
+                items={[
+                    { label: appConfig.companyName, link: DEMO.DASHBOARD_LINK },
+                    {
+                        label: i18next.t('All Students', { ns: 'common' }),
+                        link: DEMO.DASHBOARD_LINK
+                    },
+                    {
+                        label: i18next.t('All Students Applications Overview', {
+                            ns: 'common'
+                        })
+                    }
+                ]}
+            />
             <ApplicationOverviewTabs students={data.data} />
         </Box>
     );

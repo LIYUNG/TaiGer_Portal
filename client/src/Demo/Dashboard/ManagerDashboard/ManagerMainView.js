@@ -14,6 +14,7 @@ import {
 import { Link } from 'react-router-dom';
 import LaunchIcon from '@mui/icons-material/Launch';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
+import { isProgramDecided } from '@taiger-common/core';
 
 import BaseDocumentCheckingTasks from '../MainViewTab/AgentTasks/BaseDocumentCheckingTasks';
 import StudentsAgentEditor from '../MainViewTab/StudentsAgentEditor/StudentsAgentEditor';
@@ -22,7 +23,6 @@ import { academic_background_header } from '../../../utils/contants';
 import {
     anyStudentWithoutApplicationSelection,
     isAnyCVNotAssigned,
-    isProgramDecided,
     is_any_base_documents_uploaded,
     is_any_programs_ready_to_submit,
     is_any_vpd_missing,

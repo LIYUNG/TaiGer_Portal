@@ -1,14 +1,8 @@
-const { model, Schema } = require('mongoose');
+const { Schema } = require('mongoose');
+const { basedocumentationslinksSchema } = require('@taiger-common/model');
 
-const basedocumentationslinksSchema = new Schema({
-  key: { type: String, default: '' },
-  category: { type: String, default: 'general' },
-  link: { type: String, default: '' },
-  updatedAt: Date
-});
+const basedocumentationslinks = new Schema(basedocumentationslinksSchema);
 
-const Basedocumentationslink = model(
-  'Basedocumentationslink',
-  basedocumentationslinksSchema
-);
-module.exports = { Basedocumentationslink, basedocumentationslinksSchema };
+module.exports = {
+  basedocumentationslinksSchema: basedocumentationslinks
+};

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link as LinkDom } from 'react-router-dom';
 import { Link, TableCell, TableRow } from '@mui/material';
+import { isProgramDecided } from '@taiger-common/core';
 
 import DEMO from '../../../../store/constant';
 import { convertDate } from '../../../../utils/contants';
-import { isProgramDecided } from '../../../Utils/checking-functions';
 
 function RespondedThreads(props) {
     var unread_general_generaldocs;

@@ -30,7 +30,11 @@ import {
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import { is_TaiGer_Editor, is_TaiGer_role } from '@taiger-common/core';
+import {
+    is_TaiGer_Editor,
+    is_TaiGer_role,
+    isProgramDecided
+} from '@taiger-common/core';
 
 import { TopBar } from '../../components/TopBar/TopBar';
 import BaseDocument_StudentView from '../BaseDocuments/BaseDocument_StudentView';
@@ -48,7 +52,6 @@ import {
     TENFOLD_AI_DOMAIN
 } from '../../utils/contants';
 import {
-    isProgramDecided,
     needGraduatedApplicantsButStudentNotGraduated,
     needGraduatedApplicantsPrograms
 } from '../Utils/checking-functions';

@@ -30,7 +30,8 @@ import { useTranslation } from 'react-i18next';
 import {
     is_TaiGer_role,
     is_TaiGer_Student,
-    is_TaiGer_Admin
+    is_TaiGer_Admin,
+    isProgramDecided
 } from '@taiger-common/core';
 import { differenceInDays } from 'date-fns';
 
@@ -42,7 +43,6 @@ import {
     isCVFinished,
     application_deadline_calculator,
     isProgramSubmitted,
-    isProgramDecided,
     isProgramAdmitted
 } from '../Utils/checking-functions';
 import OverlayButton from '../../components/Overlay/OverlayButton';

@@ -11,8 +11,6 @@ const {
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
-const { complaintSchema } = require('../../models/Complaint');
-const { generateComlaintTicket } = require('../fixtures/faker');
 const { communicationsSchema } = require('../../models/Communication');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {

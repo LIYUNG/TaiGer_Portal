@@ -12,6 +12,7 @@ import {
     DocumentStatusType,
     is_TaiGer_Agent,
     is_TaiGer_Editor,
+    isProgramDecided,
     ProfileNameType
 } from '@taiger-common/core';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
@@ -743,11 +744,6 @@ export const isEnglishOK = (program, student) => {
     }
 
     return true;
-};
-
-// Tested
-export const isProgramDecided = (application) => {
-    return application.decided === 'O';
 };
 
 // Tested

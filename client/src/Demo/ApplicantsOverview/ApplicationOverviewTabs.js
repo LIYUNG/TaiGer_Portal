@@ -11,11 +11,10 @@ import {
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import { Link as LinkDom } from 'react-router-dom';
-import { is_TaiGer_role } from '@taiger-common/core';
+import { is_TaiGer_role, isProgramDecided } from '@taiger-common/core';
 
 import {
     frequencyDistribution,
-    isProgramDecided,
     isProgramSubmitted,
     programs_refactor
 } from '../Utils/checking-functions';

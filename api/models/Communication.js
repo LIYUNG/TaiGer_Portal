@@ -1,42 +1,12 @@
-const {
-  model,
-  Schema,
-  Types: { ObjectId }
-} = require('mongoose');
+const { Schema } = require('mongoose');
+const { communicationsSchema } = require('@taiger-common/model');
 
-const communicationsSchema = new Schema(
-  {
-    student_id: { type: ObjectId, ref: 'User' },
-    user_id: { type: ObjectId, ref: 'User' },
-    message: {
-      type: String,
-      default: ''
-    },
-    readBy: [{ type: ObjectId, ref: 'User' }],
-    timeStampReadBy: Schema.Types.Mixed,
-    files: [
-      {
-        name: {
-          type: String,
-          required: true
-        },
-        path: {
-          type: String,
-          required: true
-        }
-      }
-    ],
-    createdAt: Date,
-    ignore_message: Boolean,
-    ignoredMessageUpdatedAt: Date,
-    ignoredMessageBy: { type: ObjectId, ref: 'User' }
-  },
-  { timestamps: true }
-);
+const communications = new Schema(communicationsSchema, {
+  timestamps: true
+});
 
-communicationsSchema.index({ student_id: 1 });
-const Communication = model('Communication', communicationsSchema);
+communications.index({ student_id: 1 });
+
 module.exports = {
-  Communication,
-  communicationsSchema
+  communicationsSchema: communications
 };

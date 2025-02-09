@@ -17,13 +17,13 @@ import isoWeek from 'dayjs/plugin/isoWeek';
 dayjs.extend(isoWeek);
 
 import { LineChart } from '@mui/x-charts/LineChart';
+import { isProgramDecided } from '@taiger-common/core';
 
 import SingleBarChart from '../../../components/Charts/SingleBarChart';
 import VerticalDistributionBarCharts from '../../../components/Charts/VerticalDistributionBarChart';
 import VerticalSingleBarChart from '../../../components/Charts/VerticalSingleChart';
 import {
     open_tasks_with_editors,
-    isProgramDecided,
     isProgramSubmitted
 } from '../../Utils/checking-functions';
 

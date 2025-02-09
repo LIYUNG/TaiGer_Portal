@@ -99,6 +99,6 @@ const ProgramSpecificDocumentCheckCard = (props) => {
             />
         </Card>
     );
-}
+};
 
 export default ProgramSpecificDocumentCheckCard;

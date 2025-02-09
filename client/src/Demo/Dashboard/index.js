@@ -22,6 +22,6 @@ const Dashboard = () => {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default Dashboard;

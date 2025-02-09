@@ -71,6 +71,6 @@ const CourseAnalysisConfirmDialog = ({
             </DialogActions>
         </Dialog>
     );
-}
+};
 
 export default CourseAnalysisConfirmDialog;

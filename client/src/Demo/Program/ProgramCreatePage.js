@@ -45,16 +45,16 @@ const ProgramCreatePage = () => {
                 <Await resolve={distinctSchools}>
                     {(loadedData) => (
                         <NewProgramEdit
-                                handleClick={onClickIsCreateApplicationMode}
-                                handleSubmit_Program={handleSubmitProgram}
-                                isSubmitting={isPending}
-                                programs={loadedData}
-                                type="create"
-                            />
+                            handleClick={onClickIsCreateApplicationMode}
+                            handleSubmit_Program={handleSubmitProgram}
+                            isSubmitting={isPending}
+                            programs={loadedData}
+                            type="create"
+                        />
                     )}
                 </Await>
             </Suspense>
         </Box>
     );
-}
+};
 export default ProgramCreatePage;

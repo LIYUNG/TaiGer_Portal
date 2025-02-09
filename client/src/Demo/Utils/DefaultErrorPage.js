@@ -75,6 +75,6 @@ const DefaultErrorPage = () => {
             </Card>
         </Box>
     );
-}
+};
 
 export default DefaultErrorPage;

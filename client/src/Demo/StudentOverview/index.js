@@ -47,6 +47,6 @@ const StudentOverviewPage = () => {
             />
         </Box>
     );
-}
+};
 
 export default StudentOverviewPage;

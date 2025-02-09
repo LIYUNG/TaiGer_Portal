@@ -136,6 +136,6 @@ const Accounting = () => {
             </Card>
         </Box>
     );
-}
+};
 
 export default Accounting;

@@ -152,10 +152,12 @@ const StudentItem = ({ student, selectedStudentId, onClick }) => {
                             </Typography>
                         }
                     />
-                    {highlightItem ? <FiberManualRecordIcon
+                    {highlightItem ? (
+                        <FiberManualRecordIcon
                             fontSize="tiny"
                             title="Not Reply Yet"
-                        /> : null}
+                        />
+                    ) : null}
                 </Stack>
             </ListItemButton>
         </ListItem>
@@ -214,7 +216,8 @@ const ThreadItem = ({ thread, onClick }) => {
                             </Typography>
                         }
                         secondary={
-                            thread?.program_id ? <Typography
+                            thread?.program_id ? (
+                                <Typography
                                     sx={{
                                         whiteSpace: 'nowrap',
                                         overflow: 'hidden',
@@ -223,14 +226,17 @@ const ThreadItem = ({ thread, onClick }) => {
                                     variant="body2"
                                 >
                                     {programName}
-                                </Typography> : null
+                                </Typography>
+                            ) : null
                         }
                     />
 
-                    {highlightItem ? <FiberManualRecordIcon
+                    {highlightItem ? (
+                        <FiberManualRecordIcon
                             fontSize="tiny"
                             title="Not Reply Yet"
-                        /> : null}
+                        />
+                    ) : null}
                 </Stack>
             </ListItemButton>
         </ListItem>
@@ -415,7 +421,8 @@ const DocumentCommunicationExpandPage = () => {
 
                                 return (
                                     <React.Fragment key={thread._id}>
-                                        {showCategoryLabel ? <Divider
+                                        {showCategoryLabel ? (
+                                            <Divider
                                                 sx={{
                                                     paddingX: 3,
                                                     paddingY: 1
@@ -423,7 +430,8 @@ const DocumentCommunicationExpandPage = () => {
                                                 textAlign="center"
                                             >
                                                 {category}
-                                            </Divider> : null}
+                                            </Divider>
+                                        ) : null}
                                         <ThreadItem
                                             onClick={() => {
                                                 handleOnClickThread(thread._id);
@@ -436,14 +444,16 @@ const DocumentCommunicationExpandPage = () => {
                     </List>
                 </Grid>
                 <Grid item xs={8}>
-                    {threadId ? <DocModificationThreadPage
+                    {threadId ? (
+                        <DocModificationThreadPage
                             isEmbedded
                             threadId={threadId}
-                        /> : null}
+                        />
+                    ) : null}
                 </Grid>
             </Grid>
         </Box>
     );
-}
+};
 
 export default DocumentCommunicationExpandPage;

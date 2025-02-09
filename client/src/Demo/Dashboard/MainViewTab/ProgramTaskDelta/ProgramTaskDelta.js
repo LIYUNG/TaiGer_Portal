@@ -5,8 +5,6 @@ import { Link, TableBody, TableCell, TableRow } from '@mui/material';
 import DEMO from '../../../../store/constant';
 
 const ProgramTaskDelta = ({ program, students }) => {
-    
-
     return (
         students?.length !== 0 && (
             <TableBody>
@@ -60,6 +58,6 @@ const ProgramTaskDelta = ({ program, students }) => {
             </TableBody>
         )
     );
-}
+};
 
 export default ProgramTaskDelta;

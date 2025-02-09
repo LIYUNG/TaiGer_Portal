@@ -129,63 +129,81 @@ const CommunicationThreadEditor = (props) => {
                 <EditorV2 />
             </Box>
             <Box>
-                {is_TaiGer_role(user) ? props.files?.map((fl, i) => (
-                        <Box
-                            key={`${fl.name}${i}`}
-                            sx={{
-                                wordBreak: 'break-word', // Breaks the word to avoid overflow
-                                overflowWrap: 'break-word' // Add this line
-                            }}
-                        >
-                            <Typography variant="body1">{fl.name} :</Typography>
-                            {props.checkResult?.length ? Object.keys(props.checkResult[i]).map((ky) => (
-                                    <Typography
-                                        key={props.checkResult[i][ky].text}
-                                        sx={{ ml: 2 }}
-                                    >
-                                        {props.checkResult[i][ky].value ===
-                                        undefined
-                                            ? CVMLRL_DOC_PRECHECK_STATUS_E.WARNING_SYMBOK
-                                            : props.checkResult[i][ky].value
-                                              ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
-                                              : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
-                                        {props.checkResult[i][ky].text}
-                                        {props.checkResult[i][ky].hasMetadata ? props.checkResult[i][ky].metaData : null}
-                                    </Typography>
-                                )) : null}
-                        </Box>
-                    )) : null}
-                {is_TaiGer_Student(user) ? props.files?.map((fl, i) => (
-                        <Box key={`${fl.name}${i}`}>
-                            <Typography
-                                sx={{
-                                    overflowWrap: 'break-word' // Add this line
-                                }}
-                                variant="body1"
-                            >
-                                {fl.name}
-                            </Typography>
-                        </Box>
-                    )) : null}
+                {is_TaiGer_role(user)
+                    ? props.files?.map((fl, i) => (
+                          <Box
+                              key={`${fl.name}${i}`}
+                              sx={{
+                                  wordBreak: 'break-word', // Breaks the word to avoid overflow
+                                  overflowWrap: 'break-word' // Add this line
+                              }}
+                          >
+                              <Typography variant="body1">
+                                  {fl.name} :
+                              </Typography>
+                              {props.checkResult?.length
+                                  ? Object.keys(props.checkResult[i]).map(
+                                        (ky) => (
+                                            <Typography
+                                                key={
+                                                    props.checkResult[i][ky]
+                                                        .text
+                                                }
+                                                sx={{ ml: 2 }}
+                                            >
+                                                {props.checkResult[i][ky]
+                                                    .value === undefined
+                                                    ? CVMLRL_DOC_PRECHECK_STATUS_E.WARNING_SYMBOK
+                                                    : props.checkResult[i][ky]
+                                                            .value
+                                                      ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
+                                                      : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
+                                                {props.checkResult[i][ky].text}
+                                                {props.checkResult[i][ky]
+                                                    .hasMetadata
+                                                    ? props.checkResult[i][ky]
+                                                          .metaData
+                                                    : null}
+                                            </Typography>
+                                        )
+                                    )
+                                  : null}
+                          </Box>
+                      ))
+                    : null}
+                {is_TaiGer_Student(user)
+                    ? props.files?.map((fl, i) => (
+                          <Box key={`${fl.name}${i}`}>
+                              <Typography
+                                  sx={{
+                                      overflowWrap: 'break-word' // Add this line
+                                  }}
+                                  variant="body1"
+                              >
+                                  {fl.name}
+                              </Typography>
+                          </Box>
+                      ))
+                    : null}
             </Box>
             <Box sx={{ mb: 2 }}>
                 {!statedata.editorState.blocks ||
                 statedata.editorState.blocks.length === 0 ||
                 props.buttonDisabled ? (
                     <Tooltip
-                            placement="top"
-                            title={t(
-                                'Please write some text to improve the communication and understanding.'
-                            )}
+                        placement="top"
+                        title={t(
+                            'Please write some text to improve the communication and understanding.'
+                        )}
+                    >
+                        <Button
+                            color="primary"
+                            startIcon={<SendIcon />}
+                            variant="outlined"
                         >
-                            <Button
-                                color="primary"
-                                startIcon={<SendIcon />}
-                                variant="outlined"
-                            >
-                                {t('Send', { ns: 'common' })}
-                            </Button>
-                        </Tooltip>
+                            {t('Send', { ns: 'common' })}
+                        </Button>
+                    </Tooltip>
                 ) : (
                     <Button
                         color="primary"
@@ -198,7 +216,8 @@ const CommunicationThreadEditor = (props) => {
                         {t('Send', { ns: 'common' })}
                     </Button>
                 )}
-                {props.showCancelButton ? <Button
+                {props.showCancelButton ? (
+                    <Button
                         color="primary"
                         onClick={(e) =>
                             props.handleClickSave(e, statedata.editorState)
@@ -206,7 +225,8 @@ const CommunicationThreadEditor = (props) => {
                         variant="outlined"
                     >
                         {t('Cancel', { ns: 'common' })}
-                    </Button> : null}
+                    </Button>
+                ) : null}
                 <Tooltip placement="top" title={t('Attach files')}>
                     <span>
                         <input
@@ -226,7 +246,8 @@ const CommunicationThreadEditor = (props) => {
                         </IconButton>
                     </span>
                 </Tooltip>
-                {appConfig.AIEnable && is_TaiGer_role(user) ? <IconButton
+                {appConfig.AIEnable && is_TaiGer_role(user) ? (
+                    <IconButton
                         disabled={statedata.isGenerating}
                         onClick={onSubmit}
                     >
@@ -235,15 +256,18 @@ const CommunicationThreadEditor = (props) => {
                         ) : (
                             <AutoFixHighIcon />
                         )}
-                    </IconButton> : null}
-                {is_TaiGer_Agent(user) ? <Typography variant="body1">
+                    </IconButton>
+                ) : null}
+                {is_TaiGer_Agent(user) ? (
+                    <Typography variant="body1">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                             {statedata.data}
                         </ReactMarkdown>
-                    </Typography> : null}
+                    </Typography>
+                ) : null}
             </Box>
         </>
     );
-}
+};
 
 export default CommunicationThreadEditor;

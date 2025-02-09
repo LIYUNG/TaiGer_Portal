@@ -57,6 +57,6 @@ const BaseDocumentCheckingTable = (props) => {
             </Card>
         </Box>
     );
-}
+};
 
 export default BaseDocumentCheckingTable;

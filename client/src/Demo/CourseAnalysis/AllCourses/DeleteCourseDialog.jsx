@@ -50,50 +50,52 @@ export const DeleteCourseDialog = ({
 
     return (
         <Dialog fullWidth maxWidth="sm" onClose={onClose} open={open}>
-                <DialogTitle>
-                    {i18next.t('Delete Course', { ns: 'common' })}
-                </DialogTitle>
-                <DialogContent>
-                    {!isMutateError ? (
-                        <>
-                            {i18next.t(
-                                'Are you sure you want to delete the course?'
-                            )}{' '}
-                            {courses?.map(
-                                (
-                                    { all_course_chinese, all_course_english },
-                                    index
-                                ) => (
-                                    <Box key={index}>
-                                        {`${all_course_chinese} - ${all_course_english}`}
-                                    </Box>
-                                )
-                            )}
-                        </>
-                    ) : (
-                        <></>
-                    )}
-                    {isMutateError ? <Typography color="error">
-                            An error occurred: {mutateError.message}
-                        </Typography> : null}
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        color="primary"
-                        disabled={isPending}
-                        onClick={(e) => handleSubmit(e)}
-                        variant="contained"
-                    >
-                        {isPending ? (
-                            <CircularProgress size={20} />
-                        ) : (
-                            i18next.t('Delete', { ns: 'common' })
+            <DialogTitle>
+                {i18next.t('Delete Course', { ns: 'common' })}
+            </DialogTitle>
+            <DialogContent>
+                {!isMutateError ? (
+                    <>
+                        {i18next.t(
+                            'Are you sure you want to delete the course?'
+                        )}{' '}
+                        {courses?.map(
+                            (
+                                { all_course_chinese, all_course_english },
+                                index
+                            ) => (
+                                <Box key={index}>
+                                    {`${all_course_chinese} - ${all_course_english}`}
+                                </Box>
+                            )
                         )}
-                    </Button>
-                    <Button color="primary" onClick={onClose}>
-                        {i18next.t('Close')}
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                    </>
+                ) : (
+                    <></>
+                )}
+                {isMutateError ? (
+                    <Typography color="error">
+                        An error occurred: {mutateError.message}
+                    </Typography>
+                ) : null}
+            </DialogContent>
+            <DialogActions>
+                <Button
+                    color="primary"
+                    disabled={isPending}
+                    onClick={(e) => handleSubmit(e)}
+                    variant="contained"
+                >
+                    {isPending ? (
+                        <CircularProgress size={20} />
+                    ) : (
+                        i18next.t('Delete', { ns: 'common' })
+                    )}
+                </Button>
+                <Button color="primary" onClick={onClose}>
+                    {i18next.t('Close')}
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 };

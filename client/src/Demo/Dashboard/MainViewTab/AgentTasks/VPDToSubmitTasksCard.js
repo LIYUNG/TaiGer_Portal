@@ -28,56 +28,58 @@ const VPDToSubmitTasks = (props) => {
     return (
         <>
             {/* check uni-assist */}
-            {!is_all_uni_assist_vpd_uploaded(props.student) ? props.student.applications.map(
-                    (application, i) =>
-                        isUniAssistVPDNeeded(application) && (
-                            <TableRow key={i}>
-                                <TableCell>
-                                    <Link
-                                        component={LinkDom}
-                                        to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                            props.student._id.toString(),
-                                            DEMO.UNIASSIST_HASH
-                                        )}`}
-                                    >
-                                        {props.student.firstname}{' '}
-                                        {props.student.lastname}
-                                    </Link>
-                                </TableCell>
-                                {is_uni_assist_paid_and_docs_uploaded(
-                                    application
-                                ) ? (
-                                    <TableCell className="text-warning">
-                                            {t('Paid', { ns: 'common' })},{' '}
-                                            {t('Waiting VPD result', {
-                                                ns: 'common'
-                                            })}
-                                        </TableCell>
-                                ) : (
-                                    <TableCell>
-                                        <Typography color="text.secondary">
-                                            {t('Not paid', { ns: 'common' })}
-                                        </Typography>
-                                    </TableCell>
-                                )}
-                                <TableCell>
-                                    <b>
-                                        {application_deadline_calculator(
-                                            props.student,
-                                            application
-                                        )}
-                                    </b>
-                                </TableCell>
-                                <TableCell>
-                                    {application.programId.school}{' '}
-                                    {application.programId.program_name}
-                                </TableCell>
-                            </TableRow>
-                        )
-                ) : null}
+            {!is_all_uni_assist_vpd_uploaded(props.student)
+                ? props.student.applications.map(
+                      (application, i) =>
+                          isUniAssistVPDNeeded(application) && (
+                              <TableRow key={i}>
+                                  <TableCell>
+                                      <Link
+                                          component={LinkDom}
+                                          to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                              props.student._id.toString(),
+                                              DEMO.UNIASSIST_HASH
+                                          )}`}
+                                      >
+                                          {props.student.firstname}{' '}
+                                          {props.student.lastname}
+                                      </Link>
+                                  </TableCell>
+                                  {is_uni_assist_paid_and_docs_uploaded(
+                                      application
+                                  ) ? (
+                                      <TableCell className="text-warning">
+                                          {t('Paid', { ns: 'common' })},{' '}
+                                          {t('Waiting VPD result', {
+                                              ns: 'common'
+                                          })}
+                                      </TableCell>
+                                  ) : (
+                                      <TableCell>
+                                          <Typography color="text.secondary">
+                                              {t('Not paid', { ns: 'common' })}
+                                          </Typography>
+                                      </TableCell>
+                                  )}
+                                  <TableCell>
+                                      <b>
+                                          {application_deadline_calculator(
+                                              props.student,
+                                              application
+                                          )}
+                                      </b>
+                                  </TableCell>
+                                  <TableCell>
+                                      {application.programId.school}{' '}
+                                      {application.programId.program_name}
+                                  </TableCell>
+                              </TableRow>
+                          )
+                  )
+                : null}
         </>
     );
-}
+};
 
 const VPDToSubmitTasksCard = (props) => {
     const { user } = useAuth();
@@ -115,6 +117,6 @@ const VPDToSubmitTasksCard = (props) => {
             </TableContainer>
         </Card>
     );
-}
+};
 
 export default VPDToSubmitTasksCard;

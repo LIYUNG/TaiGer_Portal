@@ -115,5 +115,5 @@ const ProgramReportDeleteModal = (props) => {
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default ProgramReportDeleteModal;

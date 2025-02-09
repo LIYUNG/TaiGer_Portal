@@ -203,6 +203,6 @@ const EssayDashboard = () => {
             />
         </Box>
     );
-}
+};
 
 export default EssayDashboard;

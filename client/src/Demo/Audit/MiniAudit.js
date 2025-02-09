@@ -104,7 +104,8 @@ const MiniAudit = ({ audit }) => {
                                                 : ''}
                                         </TableCell>
                                         <TableCell>
-                                            {record?.targetDocumentThreadId ? <Link
+                                            {record?.targetDocumentThreadId ? (
+                                                <Link
                                                     component={LinkDom}
                                                     target="_blank"
                                                     title={program_name}
@@ -121,8 +122,10 @@ const MiniAudit = ({ audit }) => {
                                                         record?.targetUserId
                                                             ?.lastname
                                                     }
-                                                </Link> : null}
-                                            {record?.interviewThreadId ? <Link
+                                                </Link>
+                                            ) : null}
+                                            {record?.interviewThreadId ? (
+                                                <Link
                                                     component={LinkDom}
                                                     target="_blank"
                                                     title={program_name}
@@ -139,7 +142,8 @@ const MiniAudit = ({ audit }) => {
                                                         record?.targetUserId
                                                             ?.lastname
                                                     }
-                                                </Link> : null}
+                                                </Link>
+                                            ) : null}
                                             {isNewUser || isAssign
                                                 ? `${record?.targetUserId?.firstname} ${record?.targetUserId?.lastname}`
                                                 : ''}
@@ -162,6 +166,6 @@ const MiniAudit = ({ audit }) => {
             </Box>
         </Box>
     );
-}
+};
 
 export default MiniAudit;

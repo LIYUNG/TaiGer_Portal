@@ -353,11 +353,13 @@ const Profile = () => {
     ];
     return (
         <Box>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
                     color="inherit"
@@ -367,7 +369,8 @@ const Profile = () => {
                 >
                     {appConfig.companyName}
                 </Link>
-                {user_id ? <Link
+                {user_id ? (
+                    <Link
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
@@ -387,7 +390,8 @@ const Profile = () => {
                                 ? profileState.personaldata.lastname_chinese
                                 : ' '
                         }`}
-                    </Link> : null}
+                    </Link>
+                ) : null}
 
                 <Typography color="text.primary">
                     {t('Personal Data', { ns: 'common' })}
@@ -396,9 +400,8 @@ const Profile = () => {
             <Box component="form" noValidate sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        {!is_personal_data_filled(
-                            profileState.personaldata
-                        ) ? <Accordion
+                        {!is_personal_data_filled(profileState.personaldata) ? (
+                            <Accordion
                                 defaultExpanded
                                 disableGutters
                                 sx={{ backgroundColor: '#FF0000' }}
@@ -435,7 +438,8 @@ const Profile = () => {
                                         )}
                                     </List>
                                 </AccordionDetails>
-                            </Accordion> : null}
+                            </Accordion>
+                        ) : null}
                     </Grid>
                     {personalDataFields.map(
                         ({
@@ -485,7 +489,8 @@ const Profile = () => {
                     {t('Update', { ns: 'common' })}
                 </Button>
             </Box>
-            {!user_id && is_TaiGer_Agent(user) ? <>
+            {!user_id && is_TaiGer_Agent(user) ? (
+                <>
                     <Card sx={{ padding: 2, mb: 2 }}>
                         <Typography>
                             {t('Profile', { ns: 'common' })}
@@ -495,7 +500,8 @@ const Profile = () => {
                         </Typography>
                         <Typography>{user.selfIntroduction}</Typography>
                     </Card>
-                    {is_TaiGer_Agent(profileState.personaldata) ? <Card sx={{ padding: 2, mb: 2 }}>
+                    {is_TaiGer_Agent(profileState.personaldata) ? (
+                        <Card sx={{ padding: 2, mb: 2 }}>
                             <Typography variant="h6">
                                 {t('Office Hours', { ns: 'common' })}
                             </Typography>
@@ -612,8 +618,10 @@ const Profile = () => {
                             >
                                 {t('Update', { ns: 'common' })}
                             </Button>
-                        </Card> : null}
-                </> : null}
+                        </Card>
+                    ) : null}
+                </>
+            ) : null}
             <Dialog
                 aria-labelledby="contained-modal-title-vcenter"
                 onClose={setmodalhide}
@@ -660,6 +668,6 @@ const Profile = () => {
             </Dialog>
         </Box>
     );
-}
+};
 
 export default Profile;

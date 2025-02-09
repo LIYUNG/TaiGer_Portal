@@ -36,7 +36,9 @@ const AllCourses = () => {
                 </Typography>
             </Breadcrumbs>
             {isLoading ? <Loading /> : null}
-            {!isLoading ? <AllCoursesTable data={courses} isLoading={isLoading} /> : null}
+            {!isLoading ? (
+                <AllCoursesTable data={courses} isLoading={isLoading} />
+            ) : null}
         </>
     );
 };

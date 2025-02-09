@@ -34,6 +34,6 @@ const BaseDocumentCheckingTasks = (props) => {
             )}
         </>
     );
-}
+};
 
 export default BaseDocumentCheckingTasks;

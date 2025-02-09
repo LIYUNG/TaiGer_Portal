@@ -69,7 +69,8 @@ const NoWritersEssaysCard = (props) => {
         return (
             <>
                 <TableRow>
-                    {is_TaiGer_role(user) && !props.isArchivPage ? <TableCell>
+                    {is_TaiGer_role(user) && !props.isArchivPage ? (
+                        <TableCell>
                             <Button
                                 aria-controls={open ? 'basic-menu' : undefined}
                                 aria-expanded={open ? 'true' : undefined}
@@ -94,7 +95,8 @@ const NoWritersEssaysCard = (props) => {
                                     Edit Essay Writer
                                 </MenuItem>
                             </Menu>
-                        </TableCell> : null}
+                        </TableCell>
+                    ) : null}
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -179,21 +181,23 @@ const NoWritersEssaysCard = (props) => {
                     </TableCell>
                 </TableRow>
                 {is_TaiGer_role(user) &&
-                    noEditorsStudentsCardState.showEditorPage ? <EditEssayWritersSubpage
-                            actor="Essay Writer"
-                            essayDocumentThread={props.essayDocumentThread}
-                            onHide={setEditorModalhide}
-                            setmodalhide={setEditorModalhide}
-                            show={noEditorsStudentsCardState.showEditorPage}
-                            submitUpdateEssayWriterlist={
-                                submitUpdateEssayWriterlist
-                            }
-                        /> : null}
+                noEditorsStudentsCardState.showEditorPage ? (
+                    <EditEssayWritersSubpage
+                        actor="Essay Writer"
+                        essayDocumentThread={props.essayDocumentThread}
+                        onHide={setEditorModalhide}
+                        setmodalhide={setEditorModalhide}
+                        show={noEditorsStudentsCardState.showEditorPage}
+                        submitUpdateEssayWriterlist={
+                            submitUpdateEssayWriterlist
+                        }
+                    />
+                ) : null}
             </>
         );
     } else {
         return <></>;
     }
-}
+};
 
 export default NoWritersEssaysCard;

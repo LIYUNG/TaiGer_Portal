@@ -64,7 +64,7 @@ const FileItem = (props) => {
                             stroke="#000"
                             strokeLinecap="round"
                             strokeWidth="2"
-                         />
+                        />
                     </svg>
                 </Link>
                 by {props.message.user_id.firstname}{' '}
@@ -74,6 +74,6 @@ const FileItem = (props) => {
     ));
 
     return <>{files_info}</>;
-}
+};
 
 export default FileItem;

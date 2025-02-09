@@ -149,7 +149,7 @@ const StudentBriefOverview = (props) => {
                             {...stringAvatar(
                                 `${agent.firstname} ${agent.lastname}`
                             )}
-                         />
+                        />
                     </Link>
                 </Tooltip>
             )) || <></>
@@ -173,7 +173,7 @@ const StudentBriefOverview = (props) => {
                             {...stringAvatar(
                                 `${editor.firstname} ${editor.lastname}`
                             )}
-                         />
+                        />
                     </Link>
                 </Tooltip>
             )) || <></>
@@ -186,7 +186,8 @@ const StudentBriefOverview = (props) => {
                 <Grid container spacing={2}>
                     <Grid item md={6} xs={12}>
                         <Stack alignItems="center" direction="row" spacing={1}>
-                            {!is_TaiGer_Editor(user) ? <Box sx={{ display: 'flex' }}>
+                            {!is_TaiGer_Editor(user) ? (
+                                <Box sx={{ display: 'flex' }}>
                                     <Tooltip
                                         placement="bottom-start"
                                         title={
@@ -207,7 +208,8 @@ const StudentBriefOverview = (props) => {
                                             )}
                                         </IconButton>
                                     </Tooltip>
-                                </Box> : null}
+                                </Box>
+                            ) : null}
                             <Box>
                                 <Typography
                                     color="textSecondary"
@@ -232,16 +234,20 @@ const StudentBriefOverview = (props) => {
                                 <Typography variant="body2">
                                     {props.student.email}
                                 </Typography>
-                                {is_TaiGer_role(user) ? props.student.attributes?.map(
-                                        (attribute) => (
-                                            <Chip
-                                                color={COLORS[attribute.value]}
-                                                key={attribute._id}
-                                                label={attribute.name}
-                                                size="small"
-                                            />
-                                        )
-                                    ) : null}
+                                {is_TaiGer_role(user)
+                                    ? props.student.attributes?.map(
+                                          (attribute) => (
+                                              <Chip
+                                                  color={
+                                                      COLORS[attribute.value]
+                                                  }
+                                                  key={attribute._id}
+                                                  label={attribute.name}
+                                                  size="small"
+                                              />
+                                          )
+                                      )
+                                    : null}
                                 <ButtonBase
                                     onClick={() => startEditingAttributes()}
                                     sx={{
@@ -321,28 +327,36 @@ const StudentBriefOverview = (props) => {
                     </Grid>
                 </Grid>
             </Box>
-            {is_TaiGer_role(user) ? <>
-                    {studentBriefOverviewState.showAgentPage ? <EditAgentsSubpage
+            {is_TaiGer_role(user) ? (
+                <>
+                    {studentBriefOverviewState.showAgentPage ? (
+                        <EditAgentsSubpage
                             onHide={setAgentModalhide}
                             show={studentBriefOverviewState.showAgentPage}
                             student={props.student}
                             submitUpdateAgentlist={submitUpdateAgentlist}
-                        /> : null}
-                    {studentBriefOverviewState.showEditorPage ? <EditEditorsSubpage
+                        />
+                    ) : null}
+                    {studentBriefOverviewState.showEditorPage ? (
+                        <EditEditorsSubpage
                             onHide={setEditorModalhide}
                             show={studentBriefOverviewState.showEditorPage}
                             student={props.student}
                             submitUpdateEditorlist={submitUpdateEditorlist}
-                        /> : null}
-                    {studentBriefOverviewState.showAttributesPage ? <EditAttributesSubpage
+                        />
+                    ) : null}
+                    {studentBriefOverviewState.showAttributesPage ? (
+                        <EditAttributesSubpage
                             onHide={setAttributeModalhide}
                             show={studentBriefOverviewState.showAttributesPage}
                             student={props.student}
                             submitUpdateAttributeslist={
                                 submitUpdateAttributeslist
                             }
-                        /> : null}
-                    {studentBriefOverviewState.showArchivModalPage ? <Dialog
+                        />
+                    ) : null}
+                    {studentBriefOverviewState.showArchivModalPage ? (
+                        <Dialog
                             onClose={setArchivModalhide}
                             open={studentBriefOverviewState.showArchivModalPage}
                         >
@@ -396,10 +410,12 @@ const StudentBriefOverview = (props) => {
                                     {t('Cancel', { ns: 'common' })}
                                 </Button>
                             </DialogActions>
-                        </Dialog> : null}
-                </> : null}
+                        </Dialog>
+                    ) : null}
+                </>
+            ) : null}
         </>
     );
-}
+};
 
 export default StudentBriefOverview;

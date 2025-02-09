@@ -32,44 +32,44 @@ const StudentTasksResponsive = (props) => {
             (generaldocs_threads, i) => (
                 <TableRow key={i}>
                     {!generaldocs_threads.isFinalVersion &&
-                        generaldocs_threads.latest_message_left_by_id !==
-                            props.student._id.toString() ? <>
-                                <TableCell>
-                                    <Link
-                                        component={LinkDom}
-                                        to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                                            generaldocs_threads.doc_thread_id
-                                                ._id
-                                        )}
-                                        underline="hover"
-                                    >
-                                        {
-                                            generaldocs_threads.doc_thread_id
-                                                .file_type
-                                        }
-                                    </Link>
-                                </TableCell>
-                                <TableCell>
-                                    <Link
-                                        component={LinkDom}
-                                        to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                                            generaldocs_threads.doc_thread_id
-                                                ._id
-                                        )}
-                                        underline="hover"
-                                    >
-                                        My{' '}
-                                        {
-                                            generaldocs_threads.doc_thread_id
-                                                .file_type
-                                        }
-                                    </Link>
-                                </TableCell>
-                                <TableCell>
-                                    {' '}
-                                    {convertDate(generaldocs_threads.updatedAt)}
-                                </TableCell>
-                            </> : null}
+                    generaldocs_threads.latest_message_left_by_id !==
+                        props.student._id.toString() ? (
+                        <>
+                            <TableCell>
+                                <Link
+                                    component={LinkDom}
+                                    to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                                        generaldocs_threads.doc_thread_id._id
+                                    )}
+                                    underline="hover"
+                                >
+                                    {
+                                        generaldocs_threads.doc_thread_id
+                                            .file_type
+                                    }
+                                </Link>
+                            </TableCell>
+                            <TableCell>
+                                <Link
+                                    component={LinkDom}
+                                    to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                                        generaldocs_threads.doc_thread_id._id
+                                    )}
+                                    underline="hover"
+                                >
+                                    My{' '}
+                                    {
+                                        generaldocs_threads.doc_thread_id
+                                            .file_type
+                                    }
+                                </Link>
+                            </TableCell>
+                            <TableCell>
+                                {' '}
+                                {convertDate(generaldocs_threads.updatedAt)}
+                            </TableCell>
+                        </>
+                    ) : null}
                 </TableRow>
             )
         );
@@ -84,50 +84,49 @@ const StudentTasksResponsive = (props) => {
                           (application_doc_thread, idx) => (
                               <TableRow key={idx}>
                                   {!application_doc_thread.isFinalVersion &&
-                                      application_doc_thread.latest_message_left_by_id !==
-                                          props.student._id.toString() ? <>
-                                              <TableCell>
-                                                  <Link
-                                                      component={LinkDom}
-                                                      to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                                                          application_doc_thread
-                                                              .doc_thread_id._id
-                                                      )}
-                                                      underline="hover"
-                                                  >
-                                                      {
-                                                          application_doc_thread
-                                                              .doc_thread_id
-                                                              .file_type
-                                                      }
-                                                  </Link>
-                                              </TableCell>
-                                              <TableCell>
-                                                  <Link
-                                                      component={LinkDom}
-                                                      to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                                                          application_doc_thread
-                                                              .doc_thread_id._id
-                                                      )}
-                                                      underline="hover"
-                                                  >
-                                                      {
-                                                          application.programId
-                                                              .school
-                                                      }
-                                                      {' - '}
-                                                      {
-                                                          application.programId
-                                                              .program_name
-                                                      }
-                                                  </Link>
-                                              </TableCell>
-                                              <TableCell>
-                                                  {convertDate(
-                                                      application_doc_thread.updatedAt
+                                  application_doc_thread.latest_message_left_by_id !==
+                                      props.student._id.toString() ? (
+                                      <>
+                                          <TableCell>
+                                              <Link
+                                                  component={LinkDom}
+                                                  to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                                                      application_doc_thread
+                                                          .doc_thread_id._id
                                                   )}
-                                              </TableCell>
-                                          </> : null}
+                                                  underline="hover"
+                                              >
+                                                  {
+                                                      application_doc_thread
+                                                          .doc_thread_id
+                                                          .file_type
+                                                  }
+                                              </Link>
+                                          </TableCell>
+                                          <TableCell>
+                                              <Link
+                                                  component={LinkDom}
+                                                  to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                                                      application_doc_thread
+                                                          .doc_thread_id._id
+                                                  )}
+                                                  underline="hover"
+                                              >
+                                                  {application.programId.school}
+                                                  {' - '}
+                                                  {
+                                                      application.programId
+                                                          .program_name
+                                                  }
+                                              </Link>
+                                          </TableCell>
+                                          <TableCell>
+                                              {convertDate(
+                                                  application_doc_thread.updatedAt
+                                              )}
+                                          </TableCell>
+                                      </>
+                                  ) : null}
                               </TableRow>
                           )
                       )
@@ -136,13 +135,14 @@ const StudentTasksResponsive = (props) => {
 
     return (
         <>
-            {(!check_academic_background_filled(
+            {!check_academic_background_filled(
                 props.student.academic_background
             ) ||
-                !check_application_preference_filled(
-                    props.student.application_preference
-                ) ||
-                !check_languages_filled(props.student.academic_background)) ? <TableRow>
+            !check_application_preference_filled(
+                props.student.application_preference
+            ) ||
+            !check_languages_filled(props.student.academic_background) ? (
+                <TableRow>
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -167,41 +167,42 @@ const StudentTasksResponsive = (props) => {
                         </Typography>
                     </TableCell>
                     <TableCell />
-                </TableRow> : null}
+                </TableRow>
+            ) : null}
             {!props.isCoursesFilled &&
-                (props.student.academic_background?.university?.isGraduated ===
-                    'pending' ||
-                    props.student.academic_background?.university
-                        ?.isGraduated === 'Yes') ? <TableRow>
-                        <TableCell>
-                            <Link
-                                component={LinkDom}
-                                to={`${DEMO.COURSES_LINK}`}
-                                underline="hover"
-                            >
-                                <Typography
-                                    sx={{ display: 'flex' }}
-                                    variant="body2"
-                                >
-                                    {t('My Courses', { ns: 'common' })}
-                                    <LaunchIcon fontSize="small" />
-                                </Typography>
-                            </Link>
-                        </TableCell>
-                        <TableCell>
+            (props.student.academic_background?.university?.isGraduated ===
+                'pending' ||
+                props.student.academic_background?.university?.isGraduated ===
+                    'Yes') ? (
+                <TableRow>
+                    <TableCell>
+                        <Link
+                            component={LinkDom}
+                            to={`${DEMO.COURSES_LINK}`}
+                            underline="hover"
+                        >
                             <Typography
                                 sx={{ display: 'flex' }}
                                 variant="body2"
                             >
-                                {t(
-                                    'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.',
-                                    { ns: 'courses' }
-                                )}
+                                {t('My Courses', { ns: 'common' })}
+                                <LaunchIcon fontSize="small" />
                             </Typography>
-                        </TableCell>
-                        <TableCell />
-                    </TableRow> : null}
-            {!check_applications_to_decided(props.student) ? <TableRow>
+                        </Link>
+                    </TableCell>
+                    <TableCell>
+                        <Typography sx={{ display: 'flex' }} variant="body2">
+                            {t(
+                                'Please complete My Courses table. The agent will provide you with course analysis and courses suggestion.',
+                                { ns: 'courses' }
+                            )}
+                        </Typography>
+                    </TableCell>
+                    <TableCell />
+                </TableRow>
+            ) : null}
+            {!check_applications_to_decided(props.student) ? (
+                <TableRow>
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -226,8 +227,10 @@ const StudentTasksResponsive = (props) => {
                         </Typography>
                     </TableCell>
                     <TableCell />
-                </TableRow> : null}
-            {!all_applications_results_updated(props.student) ? <TableRow>
+                </TableRow>
+            ) : null}
+            {!all_applications_results_updated(props.student) ? (
+                <TableRow>
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -254,8 +257,10 @@ const StudentTasksResponsive = (props) => {
                         </Typography>
                     </TableCell>
                     <TableCell />
-                </TableRow> : null}
-            {has_admissions(props.student) ? <TableRow>
+                </TableRow>
+            ) : null}
+            {has_admissions(props.student) ? (
+                <TableRow>
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -282,39 +287,40 @@ const StudentTasksResponsive = (props) => {
                         </Typography>
                     </TableCell>
                     <TableCell />
-                </TableRow> : null}
+                </TableRow>
+            ) : null}
             {/* check uni-assist */}
             {appConfig.vpdEnable &&
-                !is_all_uni_assist_vpd_uploaded(props.student) ? <TableRow>
-                        <TableCell>
-                            <Link
-                                component={LinkDom}
-                                to={`${DEMO.UNI_ASSIST_LINK}`}
-                                underline="hover"
-                            >
-                                <Typography
-                                    sx={{ display: 'flex' }}
-                                    variant="body2"
-                                >
-                                    Uni-Assist
-                                    <LaunchIcon fontSize="small" />
-                                </Typography>
-                            </Link>
-                        </TableCell>
-                        <TableCell>
+            !is_all_uni_assist_vpd_uploaded(props.student) ? (
+                <TableRow>
+                    <TableCell>
+                        <Link
+                            component={LinkDom}
+                            to={`${DEMO.UNI_ASSIST_LINK}`}
+                            underline="hover"
+                        >
                             <Typography
                                 sx={{ display: 'flex' }}
                                 variant="body2"
                             >
-                                {t(
-                                    'Please go to the Uni-Assist section, follow the instructions to complete',
-                                    { ns: 'courses' }
-                                )}
+                                Uni-Assist
+                                <LaunchIcon fontSize="small" />
                             </Typography>
-                        </TableCell>
-                        <TableCell />
-                    </TableRow> : null}
-            {!is_personal_data_filled(props.student) ? <TableRow>
+                        </Link>
+                    </TableCell>
+                    <TableCell>
+                        <Typography sx={{ display: 'flex' }} variant="body2">
+                            {t(
+                                'Please go to the Uni-Assist section, follow the instructions to complete',
+                                { ns: 'courses' }
+                            )}
+                        </Typography>
+                    </TableCell>
+                    <TableCell />
+                </TableRow>
+            ) : null}
+            {!is_personal_data_filled(props.student) ? (
+                <TableRow>
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -339,8 +345,10 @@ const StudentTasksResponsive = (props) => {
                         </Typography>
                     </TableCell>
                     <TableCell />
-                </TableRow> : null}
-            {are_base_documents_missing(props.student) ? <TableRow>
+                </TableRow>
+            ) : null}
+            {are_base_documents_missing(props.student) ? (
+                <TableRow>
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -365,8 +373,10 @@ const StudentTasksResponsive = (props) => {
                         </Typography>
                     </TableCell>
                     <TableCell />
-                </TableRow> : null}
-            {to_register_application_portals(props.student) ? <TableRow>
+                </TableRow>
+            ) : null}
+            {to_register_application_portals(props.student) ? (
+                <TableRow>
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -391,11 +401,12 @@ const StudentTasksResponsive = (props) => {
                         </Typography>
                     </TableCell>
                     <TableCell />
-                </TableRow> : null}
+                </TableRow>
+            ) : null}
             {unread_general_generaldocs}
             {unread_applications_docthread}
         </>
     );
-}
+};
 
 export default StudentTasksResponsive;

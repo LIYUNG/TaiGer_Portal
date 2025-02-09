@@ -223,11 +223,13 @@ const OfficeHours = () => {
     const has_officehours = available_termins?.length !== 0 ? true : false;
     return (
         <Box>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
                     color="inherit"
@@ -255,31 +257,33 @@ const OfficeHours = () => {
                             isInTheFuture(event.end) &&
                             (!event.isConfirmedReceiver ||
                                 !event.isConfirmedRequester)
-                    ).length !== 0 ? _.reverse(
-                            _.sortBy(
-                                events?.filter(
-                                    (event) =>
-                                        isInTheFuture(event.end) &&
-                                        (!event.isConfirmedReceiver ||
-                                            !event.isConfirmedRequester)
-                                ),
-                                ['start']
-                            )
-                        ).map((event, i) => (
-                            <EventConfirmationCard
-                                event={event}
-                                handleConfirmAppointmentModalOpen={
-                                    handleConfirmAppointmentModalOpen
-                                }
-                                handleDeleteAppointmentModalOpen={
-                                    handleDeleteAppointmentModalOpen
-                                }
-                                handleEditAppointmentModalOpen={
-                                    handleEditAppointmentModalOpen
-                                }
-                                key={i}
-                            />
-                        )) : null}
+                    ).length !== 0
+                        ? _.reverse(
+                              _.sortBy(
+                                  events?.filter(
+                                      (event) =>
+                                          isInTheFuture(event.end) &&
+                                          (!event.isConfirmedReceiver ||
+                                              !event.isConfirmedRequester)
+                                  ),
+                                  ['start']
+                              )
+                          ).map((event, i) => (
+                              <EventConfirmationCard
+                                  event={event}
+                                  handleConfirmAppointmentModalOpen={
+                                      handleConfirmAppointmentModalOpen
+                                  }
+                                  handleDeleteAppointmentModalOpen={
+                                      handleDeleteAppointmentModalOpen
+                                  }
+                                  handleEditAppointmentModalOpen={
+                                      handleEditAppointmentModalOpen
+                                  }
+                                  key={i}
+                              />
+                          ))
+                        : null}
                     <Card sx={{ p: 2 }}>
                         <Box>
                             <Typography variant="h6">
@@ -564,7 +568,8 @@ const OfficeHours = () => {
                         {events?.filter(
                             (event) =>
                                 differenceInDays(event.start, new Date()) >= -1
-                        ).length !== 0 ? <Banner
+                        ).length !== 0 ? (
+                            <Banner
                                 ReadOnlyMode={true}
                                 bg="primary"
                                 link_name=""
@@ -577,8 +582,10 @@ const OfficeHours = () => {
                                     </>
                                 }
                                 title="info"
-                            /> : null}
-                        {!has_officehours ? <Banner
+                            />
+                        ) : null}
+                        {!has_officehours ? (
+                            <Banner
                                 ReadOnlyMode={true}
                                 bg="primary"
                                 link_name=""
@@ -592,7 +599,8 @@ const OfficeHours = () => {
                                     </>
                                 }
                                 title="info"
-                            /> : null}
+                            />
+                        ) : null}
                         <MyCalendar
                             BookButtonDisable={BookButtonDisable}
                             events={[...available_termins]}
@@ -627,6 +635,6 @@ const OfficeHours = () => {
             )}
         </Box>
     );
-}
+};
 
 export default OfficeHours;

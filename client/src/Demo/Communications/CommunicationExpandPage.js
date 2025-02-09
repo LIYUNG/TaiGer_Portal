@@ -231,7 +231,8 @@ const CommunicationExpandPage = () => {
                             display: 'flex'
                         }}
                     >
-                        {ismobile ? <IconButton
+                        {ismobile ? (
+                            <IconButton
                                 aria-label="open drawer"
                                 color="inherit"
                                 edge="start"
@@ -239,10 +240,9 @@ const CommunicationExpandPage = () => {
                                 style={{ marginLeft: '4px' }}
                             >
                                 <ArrowBackIcon />
-                            </IconButton> : null}
-                        <Avatar
-                            {...stringAvatar(student_name_english)}
-                         />
+                            </IconButton>
+                        ) : null}
+                        <Avatar {...stringAvatar(student_name_english)} />
                         <Box>
                             <Link
                                 component={LinkDom}
@@ -377,7 +377,8 @@ const CommunicationExpandPage = () => {
                     </Box>
                 </Grid>
                 <Grid item md xs={12}>
-                    {ismobile ? <Drawer
+                    {ismobile ? (
+                        <Drawer
                             anchor="right"
                             open={open}
                             sx={{
@@ -390,7 +391,8 @@ const CommunicationExpandPage = () => {
                             variant="temporary"
                         >
                             <TopBar />
-                            {student_id ? isLoading ? (
+                            {student_id ? (
+                                isLoading ? (
                                     <Loading />
                                 ) : (
                                     <Box
@@ -406,10 +408,12 @@ const CommunicationExpandPage = () => {
                                             student_id={student_id}
                                         />
                                     </Box>
-                                ) : null}
-                        </Drawer> : null}
-                    {!ismobile &&
-                        student_id ? isLoading ? (
+                                )
+                            ) : null}
+                        </Drawer>
+                    ) : null}
+                    {!ismobile && student_id ? (
+                        isLoading ? (
                             <Box
                                 sx={{
                                     display: 'flex',
@@ -438,9 +442,11 @@ const CommunicationExpandPage = () => {
                                     />
                                 </Box>
                             </Box>
-                        ) : null}
+                        )
+                    ) : null}
                     {!student_id ? <Typography>Empty</Typography> : null}
-                    {ismobile ? <Box
+                    {ismobile ? (
+                        <Box
                             onClick={(e) => handleDrawerOpen(e)}
                             sx={{
                                 display: { md: 'flex' },
@@ -449,7 +455,8 @@ const CommunicationExpandPage = () => {
                             }}
                         >
                             <EmbeddedChatList student_id={student_id} />
-                        </Box> : null}
+                        </Box>
+                    ) : null}
                 </Grid>
                 <Box sx={{ marginLeft: 0 }}>
                     <MemorizedStudentDetailModal
@@ -465,6 +472,6 @@ const CommunicationExpandPage = () => {
             </Grid>
         </Box>
     );
-}
+};
 
 export default CommunicationExpandPage;

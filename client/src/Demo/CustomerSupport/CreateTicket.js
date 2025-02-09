@@ -132,6 +132,6 @@ const CreateComplaintTicket = () => {
             </Button>
         </Box>
     );
-}
+};
 
 export default CreateComplaintTicket;

@@ -18,7 +18,8 @@ const DescriptionEditor = (props) => {
                     thread={props.thread}
                 />
             </Card>
-            {!props.readOnly ? props.buttonDisabled ? (
+            {!props.readOnly ? (
+                props.buttonDisabled ? (
                     <Tooltip title="Please write some text to improve the communication and understanding.">
                         <span>
                             <Button
@@ -46,9 +47,10 @@ const DescriptionEditor = (props) => {
                             </Button>
                         </span>
                     </Tooltip>
-                ) : null}
+                )
+            ) : null}
         </>
     );
-}
+};
 
 export default DescriptionEditor;

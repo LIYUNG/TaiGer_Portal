@@ -252,14 +252,17 @@ const CVMLRLCenter = () => {
                     >
                         {appConfig.companyName}
                     </Link>
-                    {is_TaiGer_role(user) ? <Typography color="text.primary">
+                    {is_TaiGer_role(user) ? (
+                        <Typography color="text.primary">
                             {t('My Students', { ns: 'common' })}
-                        </Typography> : null}
+                        </Typography>
+                    ) : null}
                     <Typography color="text.primary">
                         {t('CV/ML/RL Center', { ns: 'common' })}
                     </Typography>
                 </Breadcrumbs>
-                {is_TaiGer_role(user) ? <Button
+                {is_TaiGer_role(user) ? (
+                    <Button
                         color="primary"
                         component={LinkDom}
                         size="small"
@@ -267,9 +270,11 @@ const CVMLRLCenter = () => {
                         variant="contained"
                     >
                         {t('Switch View', { ns: 'common' })}
-                    </Button> : null}
+                    </Button>
+                ) : null}
             </Box>
-            {!is_TaiGer_role(user) ? <Card sx={{ p: 2 }}>
+            {!is_TaiGer_role(user) ? (
+                <Card sx={{ p: 2 }}>
                     <Typography variant="body1">Instructions</Typography>
                     若您為初次使用，可能無任何
                     Tasks。請聯絡您的顧問處理選校等，方能開始準備文件。
@@ -282,7 +287,8 @@ const CVMLRLCenter = () => {
                     >
                         <b>{t('Click me')}</b>
                     </Link>
-                </Card> : null}
+                </Card>
+            ) : null}
             <CVMLRLOverview
                 closed_tasks={closed_tasks}
                 fav_message_tasks={fav_message_tasks}
@@ -296,6 +302,6 @@ const CVMLRLCenter = () => {
             />
         </Box>
     );
-}
+};
 
 export default CVMLRLCenter;

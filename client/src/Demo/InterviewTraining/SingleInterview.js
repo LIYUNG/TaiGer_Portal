@@ -438,11 +438,13 @@ const SingleInterview = () => {
     TabTitle(`Interview: ${interview_name}`);
     return (
         <>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
                     color="inherit"
@@ -551,8 +553,8 @@ const SingleInterview = () => {
                                         thread={interview.thread_id}
                                     />
                                 )}
-                                {is_TaiGer_role(user) ? !singleInterviewState.interview
-                                        .isClosed ? (
+                                {is_TaiGer_role(user) ? (
+                                    !singleInterviewState.interview.isClosed ? (
                                         <Button
                                             color="success"
                                             fullWidth
@@ -588,7 +590,8 @@ const SingleInterview = () => {
                                                 <CircularProgress size={24} />
                                             )}
                                         </Button>
-                                    ) : null}
+                                    )
+                                ) : null}
                             </Card>
                         ) : (
                             <Card>
@@ -687,12 +690,14 @@ const SingleInterview = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
         </>
     );
-}
+};
 export default SingleInterview;

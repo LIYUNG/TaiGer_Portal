@@ -36,7 +36,7 @@ const Layout = () => {
             </NavBar>
         </>
     );
-}
+};
 
 const WrapperPublic = () => {
     const { isAuthenticated } = useAuth();
@@ -53,7 +53,7 @@ const WrapperPublic = () => {
             <Outlet />
         </Suspense>
     );
-}
+};
 
 const router = createBrowserRouter([
     {
@@ -74,6 +74,6 @@ const router = createBrowserRouter([
 
 const App = () => {
     return <RouterProvider router={router} />;
-}
+};
 
 export default App;

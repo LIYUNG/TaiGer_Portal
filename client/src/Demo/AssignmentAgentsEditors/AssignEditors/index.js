@@ -30,17 +30,19 @@ const AssignEditors = () => {
 
     return (
         <Box data-testid="assignment_editors">
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <AssignEditorsPage
                 students={students}
                 submitUpdateEditorlist={submitUpdateEditorlist}
             />
         </Box>
     );
-}
+};
 
 export default AssignEditors;

@@ -67,6 +67,6 @@ const MyStudentsOverview = () => {
             />
         </Box>
     );
-}
+};
 
 export default MyStudentsOverview;

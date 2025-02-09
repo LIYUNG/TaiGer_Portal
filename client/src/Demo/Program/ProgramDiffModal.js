@@ -51,16 +51,18 @@ const ProgramDiffModal = (props) => {
                     onChange={(e) => setChangeIndex(e.target.value)}
                     value={changeIndex}
                 >
-                    {incomingChanges.length > 0 ? incomingChanges.map((change, index) => {
-                            return (
-                                <MenuItem key={index} value={index}>
-                                    {convertDate(change?.updatedAt)} -{' '}
-                                    {change.requestedBy
-                                        ? `${change.requestedBy.firstname} ${change.requestedBy.lastname} `
-                                        : 'External Source'}
-                                </MenuItem>
-                            );
-                        }) : null}
+                    {incomingChanges.length > 0
+                        ? incomingChanges.map((change, index) => {
+                              return (
+                                  <MenuItem key={index} value={index}>
+                                      {convertDate(change?.updatedAt)} -{' '}
+                                      {change.requestedBy
+                                          ? `${change.requestedBy.firstname} ${change.requestedBy.lastname} `
+                                          : 'External Source'}
+                                  </MenuItem>
+                              );
+                          })
+                        : null}
                 </Select>
             </FormControl>
             <ProgramCompare
@@ -77,5 +79,5 @@ const ProgramDiffModal = (props) => {
             </Button>
         </ModalNew>
     );
-}
+};
 export default ProgramDiffModal;

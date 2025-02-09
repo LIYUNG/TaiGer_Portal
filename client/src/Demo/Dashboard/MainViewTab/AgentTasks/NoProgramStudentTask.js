@@ -9,7 +9,8 @@ const NoProgramStudentTask = (props) => {
     return (
         <>
             {/* check if no program selected */}
-            {!hasApplications(props.student) ? <TableRow>
+            {!hasApplications(props.student) ? (
+                <TableRow>
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -33,9 +34,10 @@ const NoProgramStudentTask = (props) => {
                             <span className="text-danger">TBD</span>
                         )}
                     </TableCell>
-                </TableRow> : null}
+                </TableRow>
+            ) : null}
         </>
     );
-}
+};
 
 export default NoProgramStudentTask;

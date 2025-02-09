@@ -42,7 +42,8 @@ const AdminTasks = (props) => {
 
     return (
         <>
-            {!does_student_have_agents(props.students) ? <TableRow>
+            {!does_student_have_agents(props.students) ? (
+                <TableRow>
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -54,8 +55,10 @@ const AdminTasks = (props) => {
                     <TableCell>
                         {t('Please assign agents', { ns: 'common' })}
                     </TableCell>
-                </TableRow> : null}
-            {!does_student_have_editors(props.students) ? <TableRow>
+                </TableRow>
+            ) : null}
+            {!does_student_have_editors(props.students) ? (
+                <TableRow>
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -67,12 +70,14 @@ const AdminTasks = (props) => {
                     <TableCell>
                         {t('Please assign editors', { ns: 'common' })}
                     </TableCell>
-                </TableRow> : null}
+                </TableRow>
+            ) : null}
             {!does_essay_have_writers(
                 props.essayDocumentThreads.filter(
                     (thread) => !thread.isFinalVersion
                 )
-            ) ? <TableRow>
+            ) ? (
+                <TableRow>
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -84,11 +89,12 @@ const AdminTasks = (props) => {
                     <TableCell>
                         {t('Please assign essay writers', { ns: 'common' })}
                     </TableCell>
-                </TableRow> : null}
+                </TableRow>
+            ) : null}
             {/* assign number of application according to contract */}
             {missing_number_of_applications_students}
         </>
     );
-}
+};
 
 export default AdminTasks;

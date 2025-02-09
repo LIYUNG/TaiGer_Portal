@@ -42,5 +42,5 @@ const UniAssistListCard = (props) => {
             )}
         </>
     );
-}
+};
 export default UniAssistListCard;

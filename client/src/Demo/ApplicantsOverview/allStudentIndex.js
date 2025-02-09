@@ -38,6 +38,6 @@ const AllApplicantsOverview = () => {
             <ApplicationOverviewTabs students={data.data} />
         </Box>
     );
-}
+};
 
 export default AllApplicantsOverview;

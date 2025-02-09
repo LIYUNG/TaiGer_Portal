@@ -276,12 +276,14 @@ const ProgramReport = (props) => {
                         <LinkableNewlineText text={ticket.feedback} />
                     </Typography>
                 </Grid>
-                {(is_TaiGer_AdminAgent(user) || is_TaiGer_Editor(user)) ? <Grid item xs={12}>
+                {is_TaiGer_AdminAgent(user) || is_TaiGer_Editor(user) ? (
+                    <Grid item xs={12}>
                         <Typography>
                             {t('Reqested by')}:{' '}
                             {`${ticket.requester_id?.firstname} ${ticket.requester_id?.lastname}`}
                         </Typography>
-                    </Grid> : null}
+                    </Grid>
+                ) : null}
                 <Grid item xs={12}>
                     <Typography>
                         {t('updated at')}: {convertDate(ticket.updatedAt)}
@@ -330,11 +332,13 @@ const ProgramReport = (props) => {
                 {t('Report', { ns: 'programList' })}
             </Button>
             {tickets}
-            {programReportState.res_modal_status >= 400 ? <ModalMain
+            {programReportState.res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={programReportState.res_modal_message}
                     res_modal_status={programReportState.res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <ProgramReportModal
                 isReport={programReportState.isReport}
                 program_id={props.program_id.toString()}
@@ -363,5 +367,5 @@ const ProgramReport = (props) => {
             />
         </>
     );
-}
+};
 export default ProgramReport;

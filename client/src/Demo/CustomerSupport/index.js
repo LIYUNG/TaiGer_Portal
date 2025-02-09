@@ -25,6 +25,6 @@ const CustomerSupport = () => {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default CustomerSupport;

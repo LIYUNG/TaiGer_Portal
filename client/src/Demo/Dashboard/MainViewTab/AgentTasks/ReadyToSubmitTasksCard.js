@@ -158,6 +158,6 @@ const ReadyToSubmitTasksCard = (props) => {
             </TableContainer>
         </Card>
     );
-}
+};
 
 export default ReadyToSubmitTasksCard;

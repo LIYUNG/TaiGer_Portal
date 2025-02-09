@@ -291,82 +291,88 @@ export const ExtendableTable = ({ data }) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {singleStudent.generaldocs_threads ? singleStudent.generaldocs_threads.map(
-                                    (thread, i) => (
-                                        <TableRow key={i}>
-                                            <TableCell>
-                                                <CheckIcon
-                                                    color={
-                                                        thread.isFinalVersion
-                                                            ? green[500]
-                                                            : grey[400]
-                                                    }
-                                                    fontSize="small"
-                                                    title={
-                                                        thread.isFinalVersion
-                                                            ? 'Finished'
-                                                            : 'Not finished'
-                                                    }
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <Link
-                                                    component={LinkDom}
-                                                    to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                                                        thread.doc_thread_id?._id.toString()
-                                                    )}
-                                                >
-                                                    {
-                                                        thread.doc_thread_id
-                                                            .file_type
-                                                    }
-                                                </Link>
-                                            </TableCell>
-                                            <TableCell>{`${convertDate(thread.updatedAt)}`}</TableCell>
-                                        </TableRow>
-                                    )
-                                ) : null}
-                            {singleStudent.applications ? singleStudent.applications.map(
-                                    (application, i) =>
-                                        application.doc_modification_thread.map(
-                                            (thread, x) => (
-                                                <TableRow key={10000 * i + x}>
-                                                    <TableCell>
-                                                        <CheckIcon
-                                                            color={
-                                                                thread.isFinalVersion
-                                                                    ? green[500]
-                                                                    : grey[400]
-                                                            }
-                                                            fontSize="small"
-                                                            title={
-                                                                thread.isFinalVersion
-                                                                    ? 'Finished'
-                                                                    : 'Not finished'
-                                                            }
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Link
-                                                            component={LinkDom}
-                                                            to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                                                                thread.doc_thread_id?._id.toString()
-                                                            )}
-                                                        >
-                                                            {`${thread.doc_thread_id.file_type} - ${application.programId.school} ${application.programId.program_name}`}
-                                                        </Link>
-                                                    </TableCell>
-                                                    <TableCell>{`${convertDate(
-                                                        thread.updatedAt
-                                                    )}`}</TableCell>
-                                                </TableRow>
-                                            )
-                                        )
-                                ) : null}
+                            {singleStudent.generaldocs_threads
+                                ? singleStudent.generaldocs_threads.map(
+                                      (thread, i) => (
+                                          <TableRow key={i}>
+                                              <TableCell>
+                                                  <CheckIcon
+                                                      color={
+                                                          thread.isFinalVersion
+                                                              ? green[500]
+                                                              : grey[400]
+                                                      }
+                                                      fontSize="small"
+                                                      title={
+                                                          thread.isFinalVersion
+                                                              ? 'Finished'
+                                                              : 'Not finished'
+                                                      }
+                                                  />
+                                              </TableCell>
+                                              <TableCell>
+                                                  <Link
+                                                      component={LinkDom}
+                                                      to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                                                          thread.doc_thread_id?._id.toString()
+                                                      )}
+                                                  >
+                                                      {
+                                                          thread.doc_thread_id
+                                                              .file_type
+                                                      }
+                                                  </Link>
+                                              </TableCell>
+                                              <TableCell>{`${convertDate(thread.updatedAt)}`}</TableCell>
+                                          </TableRow>
+                                      )
+                                  )
+                                : null}
+                            {singleStudent.applications
+                                ? singleStudent.applications.map(
+                                      (application, i) =>
+                                          application.doc_modification_thread.map(
+                                              (thread, x) => (
+                                                  <TableRow key={10000 * i + x}>
+                                                      <TableCell>
+                                                          <CheckIcon
+                                                              color={
+                                                                  thread.isFinalVersion
+                                                                      ? green[500]
+                                                                      : grey[400]
+                                                              }
+                                                              fontSize="small"
+                                                              title={
+                                                                  thread.isFinalVersion
+                                                                      ? 'Finished'
+                                                                      : 'Not finished'
+                                                              }
+                                                          />
+                                                      </TableCell>
+                                                      <TableCell>
+                                                          <Link
+                                                              component={
+                                                                  LinkDom
+                                                              }
+                                                              to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                                                                  thread.doc_thread_id?._id.toString()
+                                                              )}
+                                                          >
+                                                              {`${thread.doc_thread_id.file_type} - ${application.programId.school} ${application.programId.program_name}`}
+                                                          </Link>
+                                                      </TableCell>
+                                                      <TableCell>{`${convertDate(
+                                                          thread.updatedAt
+                                                      )}`}</TableCell>
+                                                  </TableRow>
+                                              )
+                                          )
+                                  )
+                                : null}
                         </TableBody>
                     </Table>
                 </DialogContent>
             </Dialog>
         </>
     );
-}
+};

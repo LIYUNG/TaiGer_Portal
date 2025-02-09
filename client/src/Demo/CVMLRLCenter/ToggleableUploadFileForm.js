@@ -89,6 +89,6 @@ const ToggleableUploadFileForm = (props) => {
             </Grid>
         </Grid>
     );
-}
+};
 
 export default ToggleableUploadFileForm;

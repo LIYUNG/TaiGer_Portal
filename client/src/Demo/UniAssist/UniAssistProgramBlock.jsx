@@ -83,28 +83,30 @@ const SetNeedButtons = ({ application, setAsNotNeededModelOpen }) => {
     return (
         <span>
             {is_TaiGer_AdminAgent(user) &&
-                application.uni_assist?.vpd_paid_confirmation_file_path ===
-                    '' &&
-                application.uni_assist?.vpd_file_path === '' &&
-                !application.uni_assist?.isPaid &&
-                application.uni_assist?.status !==
-                    DocumentStatusType.NotNeeded ? <Button
-                        color="success"
-                        onClick={(e) => opensetAsNotNeededWindow(e)}
-                        size="small"
-                        variant="contained"
-                    >
-                        {i18next.t('Set Not Needed', { ns: 'common' })}
-                    </Button> : null}
+            application.uni_assist?.vpd_paid_confirmation_file_path === '' &&
+            application.uni_assist?.vpd_file_path === '' &&
+            !application.uni_assist?.isPaid &&
+            application.uni_assist?.status !== DocumentStatusType.NotNeeded ? (
+                <Button
+                    color="success"
+                    onClick={(e) => opensetAsNotNeededWindow(e)}
+                    size="small"
+                    variant="contained"
+                >
+                    {i18next.t('Set Not Needed', { ns: 'common' })}
+                </Button>
+            ) : null}
             {application.uni_assist?.status === DocumentStatusType.NotNeeded &&
-                is_TaiGer_AdminAgent(user) ? <Button
-                        color="success"
-                        onClick={(e) => opensetAsNotNeededWindow(e)}
-                        size="small"
-                        variant="outlined"
-                    >
-                        {i18next.t('Set needed')}
-                    </Button> : null}
+            is_TaiGer_AdminAgent(user) ? (
+                <Button
+                    color="success"
+                    onClick={(e) => opensetAsNotNeededWindow(e)}
+                    size="small"
+                    variant="outlined"
+                >
+                    {i18next.t('Set needed')}
+                </Button>
+            ) : null}
         </span>
     );
 };
@@ -232,7 +234,8 @@ export const UniAssistProgramBlock = ({ application, student }) => {
 
     return (
         <Box>
-            {applicationState.programId.uni_assist?.includes('Yes-VPD') ? <>
+            {applicationState.programId.uni_assist?.includes('Yes-VPD') ? (
+                <>
                     <Box sx={{ display: 'flex' }}>
                         <ProgramName application={applicationState} />
                         <SetNeedButtons
@@ -242,14 +245,18 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                         />
                     </Box>
                     {applicationState.uni_assist?.status ===
-                        DocumentStatusType.NotNeeded ? <Typography variant="string">
+                    DocumentStatusType.NotNeeded ? (
+                        <Typography variant="string">
                             {i18next.t('uni-assist-not-necessary', {
                                 ns: 'uniassist'
                             })}
-                        </Typography> : null}
+                        </Typography>
+                    ) : null}
                     {applicationState.uni_assist?.status !==
-                        DocumentStatusType.NotNeeded ? <Box>
-                            {is_TaiGer_AdminAgent(user) ? <FormControlLabel
+                    DocumentStatusType.NotNeeded ? (
+                        <Box>
+                            {is_TaiGer_AdminAgent(user) ? (
+                                <FormControlLabel
                                     control={
                                         <Checkbox
                                             checked={
@@ -282,7 +289,8 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                         `All document uploaded to Uni-Assist and paid, waiting for VPD`,
                                         { ns: 'uniassist' }
                                     )}
-                                /> : null}
+                                />
+                            ) : null}
                             <Stack
                                 alignItems="center"
                                 direction="row"
@@ -484,9 +492,12 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                     )}
                                 </Typography>
                             </Stack>
-                        </Box> : null}
-                </> : null}
-            {applicationState.programId.uni_assist?.includes('Yes-FULL') ? <Grid container spacing={2}>
+                        </Box>
+                    ) : null}
+                </>
+            ) : null}
+            {applicationState.programId.uni_assist?.includes('Yes-FULL') ? (
+                <Grid container spacing={2}>
                     <Grid item sx={{ display: 'flex' }} xs={12}>
                         <ProgramName application={applicationState} />
                     </Grid>
@@ -495,7 +506,8 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                             {i18next.t('uni-assist full', { ns: 'uniassist' })}
                         </Typography>
                     </Grid>
-                </Grid> : null}
+                </Grid>
+            ) : null}
             <Dialog
                 aria-labelledby="contained-modal-title-vcenter"
                 onClose={() => setDeleteVPDFileWarningModelOpen(false)}
@@ -514,7 +526,9 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                         color="secondary"
                         disabled={isDeleting}
                         onClick={() => handleUniAssistDocDeleteV2()}
-                        startIcon={isDeleting ? <CircularProgress size={20} /> : null}
+                        startIcon={
+                            isDeleting ? <CircularProgress size={20} /> : null
+                        }
                         variant="contained"
                     >
                         {isDeleting
@@ -549,7 +563,9 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                         color="primary"
                         disabled={isUpdating}
                         onClick={handleSetAsNotNeededV2}
-                        startIcon={isUpdating ? <CircularProgress size={20} /> : null}
+                        startIcon={
+                            isUpdating ? <CircularProgress size={20} /> : null
+                        }
                         variant="contained"
                     >
                         {isUpdating

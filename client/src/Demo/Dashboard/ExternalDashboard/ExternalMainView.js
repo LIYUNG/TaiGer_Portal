@@ -33,19 +33,19 @@ const ExternalMainView = (props) => {
 
     return (
         <Grid container spacing={2}>
-                <Grid item md={3} xs={12}>
-                    <Card sx={{ p: 2 }}>
-                        <Typography>External Dashboard</Typography>
-                        <Typography variant="h6">
-                            {t('Coming soon', { ns: 'common' })}
-                        </Typography>
-                    </Card>
-                </Grid>
-                <Grid item sm={3} xs={12}>
-                    <ProgramReportCard />
-                </Grid>
+            <Grid item md={3} xs={12}>
+                <Card sx={{ p: 2 }}>
+                    <Typography>External Dashboard</Typography>
+                    <Typography variant="h6">
+                        {t('Coming soon', { ns: 'common' })}
+                    </Typography>
+                </Card>
             </Grid>
+            <Grid item sm={3} xs={12}>
+                <ProgramReportCard />
+            </Grid>
+        </Grid>
     );
-}
+};
 
 export default ExternalMainView;

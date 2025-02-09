@@ -9,6 +9,6 @@ const StudentApplicationsIndividual = () => {
     } = useLoaderData();
 
     return <StudentApplicationsTableTemplate student={student} />;
-}
+};
 
 export default StudentApplicationsIndividual;

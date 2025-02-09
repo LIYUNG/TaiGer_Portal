@@ -314,7 +314,8 @@ const AgentMainView = (props) => {
                                                     </TableCell>
                                                 </TableRow>
                                                 {agentMainViewState
-                                                    .collapsedRows[idx] ? <TableRow>
+                                                    .collapsedRows[idx] ? (
+                                                    <TableRow>
                                                         <TableCell colSpan="12">
                                                             <ApplicationProgressCardBody
                                                                 application={
@@ -325,7 +326,8 @@ const AgentMainView = (props) => {
                                                                 }
                                                             />
                                                         </TableCell>
-                                                    </TableRow> : null}
+                                                    </TableRow>
+                                                ) : null}
                                             </Fragment>
                                         )
                                     )}
@@ -334,24 +336,32 @@ const AgentMainView = (props) => {
                         </div>
                     </Card>
                 </Grid>
-                {is_any_programs_ready_to_submit(myStudents) ? <Grid item md={6} sm={12}>
+                {is_any_programs_ready_to_submit(myStudents) ? (
+                    <Grid item md={6} sm={12}>
                         <ReadyToSubmitTasksCard
                             students={students}
                             user={user}
                         />
-                    </Grid> : null}
-                {appConfig.vpdEnable && is_any_vpd_missing(myStudents) ? <Grid item md={4} xs={12}>
+                    </Grid>
+                ) : null}
+                {appConfig.vpdEnable && is_any_vpd_missing(myStudents) ? (
+                    <Grid item md={4} xs={12}>
                         <VPDToSubmitTasksCard students={students} user={user} />
-                    </Grid> : null}
+                    </Grid>
+                ) : null}
                 <Grid item md={4} sm={6} xs={12}>
                     <ProgramReportCard />
                 </Grid>
-                {is_any_base_documents_uploaded(myStudents) ? <Grid item md={4} sm={6} xs={12}>
+                {is_any_base_documents_uploaded(myStudents) ? (
+                    <Grid item md={4} sm={6} xs={12}>
                         <BaseDocumentCheckingTable students={students} />
-                    </Grid> : null}
-                {isAnyCVNotAssigned(myStudents) ? <Grid item md={4} sm={6} xs={12}>
+                    </Grid>
+                ) : null}
+                {isAnyCVNotAssigned(myStudents) ? (
+                    <Grid item md={4} sm={6} xs={12}>
                         <CVAssignTasksCard students={students} user={user} />
-                    </Grid> : null}
+                    </Grid>
+                ) : null}
                 <NoProgramStudentTable students={students} />
                 <Grid item md={4} sm={6} xs={12}>
                     <ProgramSpecificDocumentCheckCard students={students} />
@@ -363,13 +373,15 @@ const AgentMainView = (props) => {
                     />
                 </Grid>
             </Grid>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
         </Box>
     );
-}
+};
 
 export default AgentMainView;

@@ -86,5 +86,5 @@ const GrantManagerModal = (props) => {
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default GrantManagerModal;

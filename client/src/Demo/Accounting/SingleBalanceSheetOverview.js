@@ -158,6 +158,6 @@ const SingleBalanceSheetOverview = () => {
             </Link>
         </Box>
     );
-}
+};
 
 export default SingleBalanceSheetOverview;

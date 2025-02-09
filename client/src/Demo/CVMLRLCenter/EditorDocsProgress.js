@@ -640,15 +640,17 @@ const EditorDocsProgress = (props) => {
                 </Grid>
             </AccordionSummary>
         );
-    }
+    };
 
     return (
         <Box>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <ManualFiles
                 application={null}
                 filetype="General"
@@ -888,6 +890,6 @@ const EditorDocsProgress = (props) => {
             </Dialog>
         </Box>
     );
-}
+};
 
 export default EditorDocsProgress;

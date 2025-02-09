@@ -110,11 +110,13 @@ const AllOfficeHours = () => {
 
     return (
         <Box>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
                     color="inherit"
@@ -146,31 +148,33 @@ const AllOfficeHours = () => {
                             isInTheFuture(event.end) &&
                             (!event.isConfirmedReceiver ||
                                 !event.isConfirmedRequester)
-                    ).length !== 0 ? _.reverse(
-                            _.sortBy(
-                                events?.filter(
-                                    (event) =>
-                                        isInTheFuture(event.end) &&
-                                        (!event.isConfirmedReceiver ||
-                                            !event.isConfirmedRequester)
-                                ),
-                                ['start']
-                            )
-                        ).map((event, i) => (
-                            <EventConfirmationCard
-                                event={event}
-                                handleConfirmAppointmentModalOpen={
-                                    handleConfirmAppointmentModalOpen
-                                }
-                                handleDeleteAppointmentModalOpen={
-                                    handleDeleteAppointmentModalOpen
-                                }
-                                handleEditAppointmentModalOpen={
-                                    handleEditAppointmentModalOpen
-                                }
-                                key={i}
-                            />
-                        )) : null}
+                    ).length !== 0
+                        ? _.reverse(
+                              _.sortBy(
+                                  events?.filter(
+                                      (event) =>
+                                          isInTheFuture(event.end) &&
+                                          (!event.isConfirmedReceiver ||
+                                              !event.isConfirmedRequester)
+                                  ),
+                                  ['start']
+                              )
+                          ).map((event, i) => (
+                              <EventConfirmationCard
+                                  event={event}
+                                  handleConfirmAppointmentModalOpen={
+                                      handleConfirmAppointmentModalOpen
+                                  }
+                                  handleDeleteAppointmentModalOpen={
+                                      handleDeleteAppointmentModalOpen
+                                  }
+                                  handleEditAppointmentModalOpen={
+                                      handleEditAppointmentModalOpen
+                                  }
+                                  key={i}
+                              />
+                          ))
+                        : null}
                     <Card sx={{ p: 2 }}>
                         <Typography variant="h6">
                             {t('Upcoming', { ns: 'common' })}
@@ -374,7 +378,7 @@ const AllOfficeHours = () => {
                         placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
                         type="textarea"
                         value={event_temp.description || ''}
-                     />
+                    />
                     <Badge
                         bg={`${
                             event_temp.description?.length > 2000
@@ -416,6 +420,6 @@ const AllOfficeHours = () => {
             </Dialog>
         </Box>
     );
-}
+};
 
 export default AllOfficeHours;

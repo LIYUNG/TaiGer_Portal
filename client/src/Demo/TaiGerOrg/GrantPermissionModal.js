@@ -164,5 +164,5 @@ const GrantPermissionModal = (props) => {
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default GrantPermissionModal;

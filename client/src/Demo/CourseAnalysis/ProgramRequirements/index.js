@@ -49,6 +49,6 @@ const ProgramRequirements = () => {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default ProgramRequirements;

@@ -61,7 +61,8 @@ const NoEditorsStudentsCard = (props) => {
         return (
             <>
                 <TableRow>
-                    {is_TaiGer_role(user) && !props.isArchivPage ? <TableCell>
+                    {is_TaiGer_role(user) && !props.isArchivPage ? (
+                        <TableCell>
                             <Button
                                 aria-controls={open ? 'basic-menu' : undefined}
                                 aria-expanded={open ? 'true' : undefined}
@@ -86,7 +87,8 @@ const NoEditorsStudentsCard = (props) => {
                                     Edit Editor
                                 </MenuItem>
                             </Menu>
-                        </TableCell> : null}
+                        </TableCell>
+                    ) : null}
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -130,18 +132,20 @@ const NoEditorsStudentsCard = (props) => {
                     </TableCell>
                 </TableRow>
                 {is_TaiGer_role(user) &&
-                    noEditorsStudentsCardState.showEditorPage ? <EditEditorsSubpage
-                            onHide={setEditorModalhide}
-                            setmodalhide={setEditorModalhide}
-                            show={noEditorsStudentsCardState.showEditorPage}
-                            student={props.student}
-                            submitUpdateEditorlist={submitUpdateEditorlist}
-                        /> : null}
+                noEditorsStudentsCardState.showEditorPage ? (
+                    <EditEditorsSubpage
+                        onHide={setEditorModalhide}
+                        setmodalhide={setEditorModalhide}
+                        show={noEditorsStudentsCardState.showEditorPage}
+                        student={props.student}
+                        submitUpdateEditorlist={submitUpdateEditorlist}
+                    />
+                ) : null}
             </>
         );
     } else {
         return <></>;
     }
-}
+};
 
 export default NoEditorsStudentsCard;

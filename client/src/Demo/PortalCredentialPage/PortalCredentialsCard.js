@@ -253,12 +253,15 @@ export default function PortalCredentialsCard(props) {
 
     return (
         <Box>
-            {statedata.res_modal_status >= 400 ? <ModalMain
+            {statedata.res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={statedata.res_modal_message}
                     res_modal_status={statedata.res_modal_status}
-                /> : null}
-            {!props.showTitle ? <Breadcrumbs aria-label="breadcrumb">
+                />
+            ) : null}
+            {!props.showTitle ? (
+                <Breadcrumbs aria-label="breadcrumb">
                     <Link
                         color="inherit"
                         component={LinkDom}
@@ -270,7 +273,8 @@ export default function PortalCredentialsCard(props) {
                     <Typography color="text.primary">
                         Portal Credentials
                     </Typography>
-                </Breadcrumbs> : null}
+                </Breadcrumbs>
+            ) : null}
 
             <Card sx={{ padding: 2 }}>
                 <Typography>
@@ -292,7 +296,8 @@ export default function PortalCredentialsCard(props) {
 
                 {statedata.applications.map((application, i) => (
                     <Fragment key={i}>
-                        {isProgramDecided(application) ? <>
+                        {isProgramDecided(application) ? (
+                            <>
                                 <Divider />
                                 <Grid container spacing={2}>
                                     <Grid item xs={12}>
@@ -308,10 +313,11 @@ export default function PortalCredentialsCard(props) {
                                                     {`${application.programId.school} - ${application.programId.program_name} - ${application.programId.semester} - ${application.programId.degree}`}
                                                 </b>
                                             </Link>{' '}
-                                            {(application.programId
+                                            {application.programId
                                                 .application_portal_a ||
-                                                application.programId
-                                                    .application_portal_b) ? <Button
+                                            application.programId
+                                                .application_portal_b ? (
+                                                <Button
                                                     color="primary"
                                                     disabled={
                                                         !statedata
@@ -342,14 +348,15 @@ export default function PortalCredentialsCard(props) {
                                                         : t('Update', {
                                                               ns: 'common'
                                                           })}
-                                                </Button> : null}
+                                                </Button>
+                                            ) : null}
                                         </Typography>
                                     </Grid>
                                 </Grid>
-                                {(application.programId.application_portal_a ||
-                                    application.programId
-                                        .application_portal_b) ? <>
-                                        {((application.programId
+                                {application.programId.application_portal_a ||
+                                application.programId.application_portal_b ? (
+                                    <>
+                                        {(application.programId
                                             .application_portal_a &&
                                             (!statedata.credentials[
                                                 application.programId._id.toString()
@@ -357,14 +364,15 @@ export default function PortalCredentialsCard(props) {
                                                 !statedata.credentials[
                                                     application.programId._id.toString()
                                                 ].password_portal_a)) ||
-                                            (application.programId
-                                                .application_portal_b &&
-                                                (!statedata.credentials[
+                                        (application.programId
+                                            .application_portal_b &&
+                                            (!statedata.credentials[
+                                                application.programId._id.toString()
+                                            ].account_portal_b ||
+                                                !statedata.credentials[
                                                     application.programId._id.toString()
-                                                ].account_portal_b ||
-                                                    !statedata.credentials[
-                                                        application.programId._id.toString()
-                                                    ].password_portal_b))) ? <div>
+                                                ].password_portal_b)) ? (
+                                            <div>
                                                 <Banner
                                                     ReadOnlyMode={true}
                                                     bg={'danger'}
@@ -376,8 +384,9 @@ export default function PortalCredentialsCard(props) {
                                                     link_name={''}
                                                     // removeBanner={this.removeBanner}
                                                     notification_key={undefined}
-                                                 />
-                                            </div> : null}
+                                                />
+                                            </div>
+                                        ) : null}
                                         <Grid
                                             container
                                             spacing={2}
@@ -409,7 +418,8 @@ export default function PortalCredentialsCard(props) {
                                             </Grid>
                                         </Grid>
                                         {application.programId
-                                            .application_portal_a ? <Grid
+                                            .application_portal_a ? (
+                                            <Grid
                                                 container
                                                 spacing={2}
                                                 sx={{ marginLeft: 0 }}
@@ -466,9 +476,11 @@ export default function PortalCredentialsCard(props) {
                                                         }
                                                     />
                                                 </Grid>
-                                            </Grid> : null}
+                                            </Grid>
+                                        ) : null}
                                         {application.programId
-                                            .application_portal_b ? <Grid
+                                            .application_portal_b ? (
+                                            <Grid
                                                 container
                                                 spacing={2}
                                                 sx={{ marginLeft: 0 }}
@@ -525,9 +537,12 @@ export default function PortalCredentialsCard(props) {
                                                         }
                                                     />
                                                 </Grid>
-                                            </Grid> : null}
-                                    </> : null}
-                            </> : null}
+                                            </Grid>
+                                        ) : null}
+                                    </>
+                                ) : null}
+                            </>
+                        ) : null}
                     </Fragment>
                 ))}
             </Card>

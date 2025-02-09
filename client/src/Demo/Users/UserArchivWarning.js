@@ -52,5 +52,5 @@ const UserArchivWarning = (props) => {
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default UserArchivWarning;

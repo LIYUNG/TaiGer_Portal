@@ -61,6 +61,6 @@ const NoProgramStudentTable = (props) => {
             </Grid>
         )
     );
-}
+};
 
 export default NoProgramStudentTable;

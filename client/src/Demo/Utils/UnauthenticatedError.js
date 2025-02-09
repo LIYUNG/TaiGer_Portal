@@ -9,6 +9,6 @@ const UnauthenticatedError = () => {
             </Card>
         </Box>
     );
-}
+};
 
 export default UnauthenticatedError;

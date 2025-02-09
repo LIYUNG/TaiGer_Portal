@@ -117,7 +117,8 @@ const Audit = ({ audit }) => {
                                                 : ''}
                                         </TableCell>
                                         <TableCell>
-                                            {record?.targetDocumentThreadId ? <Link
+                                            {record?.targetDocumentThreadId ? (
+                                                <Link
                                                     component={LinkDom}
                                                     target="_blank"
                                                     to={DEMO.DOCUMENT_MODIFICATION_LINK(
@@ -125,8 +126,10 @@ const Audit = ({ audit }) => {
                                                     )}
                                                 >
                                                     {fileName}
-                                                </Link> : null}
-                                            {record?.interviewThreadId ? <Link
+                                                </Link>
+                                            ) : null}
+                                            {record?.interviewThreadId ? (
+                                                <Link
                                                     component={LinkDom}
                                                     target="_blank"
                                                     to={DEMO.INTERVIEW_SINGLE_LINK(
@@ -134,7 +137,8 @@ const Audit = ({ audit }) => {
                                                     )}
                                                 >
                                                     {interview_name}
-                                                </Link> : null}
+                                                </Link>
+                                            ) : null}
                                         </TableCell>
                                         <TableCell>
                                             {convertDate(record.createdAt)}
@@ -148,6 +152,6 @@ const Audit = ({ audit }) => {
             </Box>
         </Box>
     );
-}
+};
 
 export default Audit;

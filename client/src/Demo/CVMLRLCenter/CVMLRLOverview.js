@@ -263,14 +263,14 @@ const CVMLRLOverview = (props) => {
                 )}`;
                 return (
                     <Link
-                            component={LinkDom}
-                            target="_blank"
-                            title={params.value}
-                            to={linkUrl}
-                            underline="hover"
-                        >
-                            {params.value}
-                        </Link>
+                        component={LinkDom}
+                        target="_blank"
+                        title={params.value}
+                        to={linkUrl}
+                        underline="hover"
+                    >
+                        {params.value}
+                    </Link>
                 );
             }
         },
@@ -281,11 +281,13 @@ const CVMLRLOverview = (props) => {
 
     return (
         <>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
 
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
@@ -439,6 +441,6 @@ const CVMLRLOverview = (props) => {
             </CustomTabPanel>
         </>
     );
-}
+};
 
 export default CVMLRLOverview;

@@ -276,7 +276,8 @@ export const ImportStudentProgramsCard = (props) => {
                         value={importStudentProgramsCard.searchTerm}
                         variant="outlined"
                     />
-                    {importStudentProgramsCard.isResultsVisible ? importStudentProgramsCard.searchResults?.length > 0 ? (
+                    {importStudentProgramsCard.isResultsVisible ? (
+                        importStudentProgramsCard.searchResults?.length > 0 ? (
                             <Paper
                                 sx={{
                                     marginTop: '5px',
@@ -310,7 +311,8 @@ export const ImportStudentProgramsCard = (props) => {
                                                                 } ${result.lastname_chinese || ''}`,
                                                                 importStudentProgramsCard.searchTerm
                                                             )}
-                                                            {result.email ? <Box
+                                                            {result.email ? (
+                                                                <Box
                                                                     component="span"
                                                                     sx={{
                                                                         display:
@@ -329,7 +331,8 @@ export const ImportStudentProgramsCard = (props) => {
                                                                         result.email,
                                                                         importStudentProgramsCard.searchTerm
                                                                     )}
-                                                                </Box> : null}
+                                                                </Box>
+                                                            ) : null}
                                                         </>
                                                     }
                                                 />
@@ -354,7 +357,8 @@ export const ImportStudentProgramsCard = (props) => {
                                     </ListItem>
                                 </List>
                             </Paper>
-                        ) : null}
+                        )
+                    ) : null}
                 </Box>
             </Card>
             <Dialog

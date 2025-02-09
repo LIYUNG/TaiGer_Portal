@@ -98,6 +98,6 @@ const CVMLRLCenterAll = () => {
             />
         </Box>
     );
-}
+};
 
 export default CVMLRLCenterAll;

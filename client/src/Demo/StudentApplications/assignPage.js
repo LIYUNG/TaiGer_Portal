@@ -9,6 +9,6 @@ const StudentApplicationsAssignPage = () => {
     } = useLoaderData();
 
     return <StudentApplicationsAssignProgramlistPage student={student} />;
-}
+};
 
 export default StudentApplicationsAssignPage;

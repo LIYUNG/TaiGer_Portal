@@ -155,13 +155,15 @@ const BaseDocument_StudentView = ({ student, base_docs_link }) => {
             </Alert>
             {myDocumentsCard}
             {SYMBOL_EXPLANATION}
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
         </Box>
     );
-}
+};
 
 export default BaseDocument_StudentView;

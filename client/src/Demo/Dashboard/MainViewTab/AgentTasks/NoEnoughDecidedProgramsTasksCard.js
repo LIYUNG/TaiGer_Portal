@@ -52,7 +52,8 @@ const NoEnoughDecidedProgramsTasks = (props) => {
             ) : (
                 <>
                     {/* select enough program task */}
-                    {!areProgramsDecidedMoreThanContract(props.student) ? <TableRow>
+                    {!areProgramsDecidedMoreThanContract(props.student) ? (
+                        <TableRow>
                             <TableCell>
                                 <Link
                                     component={LinkDom}
@@ -81,7 +82,8 @@ const NoEnoughDecidedProgramsTasks = (props) => {
                                         ?.expected_application_date
                                 }
                             </TableCell>
-                        </TableRow> : null}
+                        </TableRow>
+                    ) : null}
                 </>
             )}
             {/* TODO: add Portal register tasks */}
@@ -124,6 +126,6 @@ const NoEnoughDecidedProgramsTasksCard = (props) => {
             </TableContainer>
         </Card>
     );
-}
+};
 
 export default NoEnoughDecidedProgramsTasksCard;

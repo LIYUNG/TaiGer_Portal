@@ -20,14 +20,14 @@ const DocPageEdit = (props) => {
     };
     return (
         <Card sx={{ px: 8, py: 2, mt: 2 }}>
-                <DocumentsListItemsEditor
-                    category={props.category}
-                    doc_title="not_used"
-                    editorState={props.editorState}
-                    handleClickEditToggle={props.handleClickEditToggle}
-                    handleClickSave={handleClickSave}
-                />
-            </Card>
+            <DocumentsListItemsEditor
+                category={props.category}
+                doc_title="not_used"
+                editorState={props.editorState}
+                handleClickEditToggle={props.handleClickEditToggle}
+                handleClickSave={handleClickSave}
+            />
+        </Card>
     );
-}
+};
 export default DocPageEdit;

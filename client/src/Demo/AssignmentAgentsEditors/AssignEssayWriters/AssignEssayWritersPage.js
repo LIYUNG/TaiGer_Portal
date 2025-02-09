@@ -110,11 +110,13 @@ const AssignEssayWritersPage = (props) => {
 
     return (
         <Box>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Card sx={{ p: 2 }}>
                 <Typography variant="h6">{t('No Essay Writer')}</Typography>
                 <TableContainer style={{ overflowX: 'auto' }}>
@@ -151,6 +153,6 @@ const AssignEssayWritersPage = (props) => {
             </Card>
         </Box>
     );
-}
+};
 
 export default AssignEssayWritersPage;

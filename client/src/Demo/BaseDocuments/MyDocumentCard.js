@@ -359,7 +359,8 @@ const MyDocumentCard = (props) => {
                                     <LaunchIcon fontSize="small" />
                                 </IconButton>
                             </Tooltip>
-                            {is_TaiGer_Admin(user) ? <Typography
+                            {is_TaiGer_Admin(user) ? (
+                                <Typography
                                     color="primary"
                                     component="a"
                                     onClick={() =>
@@ -367,12 +368,15 @@ const MyDocumentCard = (props) => {
                                     }
                                 >
                                     {t('Edit', { ns: 'common' })}
-                                </Typography> : null}
+                                </Typography>
+                            ) : null}
                         </Stack>
-                        {st === DocumentStatusType.Rejected ? <Typography fontWeight="bold" variant="body2">
+                        {st === DocumentStatusType.Rejected ? (
+                            <Typography fontWeight="bold" variant="body2">
                                 {t('Message', { ns: 'common' })}:{' '}
                                 {MyDocumentCardState.comments}
-                            </Typography> : null}
+                            </Typography>
+                        ) : null}
                         <Typography color="textSecondary" variant="body2">
                             {convertDate(props.time)}
                         </Typography>
@@ -386,57 +390,67 @@ const MyDocumentCard = (props) => {
                         >
                             {(st === DocumentStatusType.Missing ||
                                 st === DocumentStatusType.NotNeeded) &&
-                                (is_TaiGer_Student(user) ||
-                                    is_TaiGer_AdminAgent(user)) ? <UploadIconButton
-                                        buttonState={MyDocumentCardState}
-                                        category={props.category}
-                                        handleGeneralDocSubmit={
-                                            handleGeneralDocSubmitV2
-                                        }
-                                        isLoading={isUploadingFile}
-                                        user={user}
-                                    /> : null}
-                            {(st === DocumentStatusType.Rejected ||
-                                st === DocumentStatusType.Uploaded ||
-                                st === DocumentStatusType.Accepted) ? <DownloadIconButton
+                            (is_TaiGer_Student(user) ||
+                                is_TaiGer_AdminAgent(user)) ? (
+                                <UploadIconButton
+                                    buttonState={MyDocumentCardState}
+                                    category={props.category}
+                                    handleGeneralDocSubmit={
+                                        handleGeneralDocSubmitV2
+                                    }
+                                    isLoading={isUploadingFile}
+                                    user={user}
+                                />
+                            ) : null}
+                            {st === DocumentStatusType.Rejected ||
+                            st === DocumentStatusType.Uploaded ||
+                            st === DocumentStatusType.Accepted ? (
+                                <DownloadIconButton
                                     showPreview={() => setShowPreview(true)}
-                                /> : null}
+                                />
+                            ) : null}
                             {st === DocumentStatusType.Rejected &&
-                                !is_TaiGer_Student(user) ? <CommentsIconButton
-                                        buttonState={MyDocumentCardState}
-                                        category={props.category}
-                                        openCommentWindow={openCommentWindow}
-                                    /> : null}
-                            {st === DocumentStatusType.NotNeeded ? <SetNeededIconButton
+                            !is_TaiGer_Student(user) ? (
+                                <CommentsIconButton
+                                    buttonState={MyDocumentCardState}
+                                    category={props.category}
+                                    openCommentWindow={openCommentWindow}
+                                />
+                            ) : null}
+                            {st === DocumentStatusType.NotNeeded ? (
+                                <SetNeededIconButton
                                     buttonState={MyDocumentCardState}
                                     category={props.category}
                                     onUpdateProfileDocStatus={
                                         onUpdateProfileDocStatus
                                     }
-                                /> : null}
+                                />
+                            ) : null}
                             {(st === DocumentStatusType.Uploaded ||
                                 st === DocumentStatusType.Rejected ||
                                 (st === DocumentStatusType.Accepted &&
                                     is_TaiGer_AdminAgent(user))) &&
-                                !is_TaiGer_Editor(user) ? <DeleteIconButton
-                                        category={props.category}
-                                        docName={props.docName}
-                                        isLoading={isDeletingFile}
-                                        onDeleteFileWarningPopUp={
-                                            onDeleteFileWarningPopUp
-                                        }
-                                        student_id={
-                                            MyDocumentCardState.student_id
-                                        }
-                                    /> : null}
+                            !is_TaiGer_Editor(user) ? (
+                                <DeleteIconButton
+                                    category={props.category}
+                                    docName={props.docName}
+                                    isLoading={isDeletingFile}
+                                    onDeleteFileWarningPopUp={
+                                        onDeleteFileWarningPopUp
+                                    }
+                                    student_id={MyDocumentCardState.student_id}
+                                />
+                            ) : null}
                             {st === DocumentStatusType.Missing &&
-                                is_TaiGer_AdminAgent(user) ? <SetNotNeededIconButton
-                                        buttonState={MyDocumentCardState}
-                                        category={props.category}
-                                        onUpdateProfileDocStatus={
-                                            onUpdateProfileDocStatus
-                                        }
-                                    /> : null}
+                            is_TaiGer_AdminAgent(user) ? (
+                                <SetNotNeededIconButton
+                                    buttonState={MyDocumentCardState}
+                                    category={props.category}
+                                    onUpdateProfileDocStatus={
+                                        onUpdateProfileDocStatus
+                                    }
+                                />
+                            ) : null}
                         </Stack>
                     </Grid>
                 </Grid>
@@ -586,11 +600,14 @@ const MyDocumentCard = (props) => {
                     path={`${MyDocumentCardState.student_id}/${fileName}`}
                 />
                 <DialogContent>
-                    {is_TaiGer_AdminAgent(user) ? <>
+                    {is_TaiGer_AdminAgent(user) ? (
+                        <>
                             <Typography fontWeight="bold" variant="body1">
                                 {base_documents_checklist[props.category] &&
-                                    base_documents_checklist[props.category]
-                                        .length !== 0 ? 'Check list: Please check the following points so that you can flag this document as valid.' : null}
+                                base_documents_checklist[props.category]
+                                    .length !== 0
+                                    ? 'Check list: Please check the following points so that you can flag this document as valid.'
+                                    : null}
                             </Typography>
                             {base_documents_checklist[props.category]
                                 ? base_documents_checklist[props.category].map(
@@ -610,8 +627,10 @@ const MyDocumentCard = (props) => {
                                       )
                                   )
                                 : t('No', { ns: 'common' })}
-                        </> : null}
-                    {fileName && fileName.split('.')[1] !== 'pdf' ? <a
+                        </>
+                    ) : null}
+                    {fileName && fileName.split('.')[1] !== 'pdf' ? (
+                        <a
                             download
                             href={`${BASE_URL}${apiPath}`}
                             rel="noopener noreferrer"
@@ -626,11 +645,14 @@ const MyDocumentCard = (props) => {
                             >
                                 {t('Download', { ns: 'common' })}
                             </Button>
-                        </a> : null}
+                        </a>
+                    ) : null}
                 </DialogContent>
                 <DialogActions>
-                    {is_TaiGer_AdminAgent(user) ? <>
-                            {status !== DocumentStatusType.Accepted ? <Button
+                    {is_TaiGer_AdminAgent(user) ? (
+                        <>
+                            {status !== DocumentStatusType.Accepted ? (
+                                <Button
                                     color="primary"
                                     disabled={
                                         !MyDocumentCardState.isLoaded ||
@@ -653,7 +675,8 @@ const MyDocumentCard = (props) => {
                                     variant="contained"
                                 >
                                     {t('Accept', { ns: 'common' })}
-                                </Button> : null}
+                                </Button>
+                            ) : null}
                             <Button
                                 color="secondary"
                                 disabled={!MyDocumentCardState.isLoaded}
@@ -673,7 +696,8 @@ const MyDocumentCard = (props) => {
                             >
                                 {t('Reject', { ns: 'documents' })}
                             </Button>
-                        </> : null}
+                        </>
+                    ) : null}
                     <Button
                         onClick={() => setShowPreview(false)}
                         size="small"
@@ -755,6 +779,6 @@ const MyDocumentCard = (props) => {
             />
         </>
     );
-}
+};
 
 export default MyDocumentCard;

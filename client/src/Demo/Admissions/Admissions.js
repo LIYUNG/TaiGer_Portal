@@ -55,7 +55,8 @@ const Admissions = () => {
             </Breadcrumbs>
             {isLoading ? <Loading /> : null}
             {isError ? <>{error}</> : null}
-            {!isLoading && !isError ? <>
+            {!isLoading && !isError ? (
+                <>
                     <Box>
                         <Tabs
                             aria-label="basic tabs example"
@@ -82,9 +83,10 @@ const Admissions = () => {
                     <CustomTabPanel index={1} value={value}>
                         <AdmissionsStat result={result} />
                     </CustomTabPanel>
-                </> : null}
+                </>
+            ) : null}
         </Box>
     );
-}
+};
 
 export default Admissions;

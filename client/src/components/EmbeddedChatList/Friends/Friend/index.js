@@ -126,12 +126,14 @@ const Friend = (props) => {
                         <IconButton edge="end">
                             {props.data?.latestCommunication?.user_id ===
                                 props.data?.latestCommunication?.student_id &&
-                                props.data?.latestCommunication
-                                    ?.ignore_message !== true ? <FiberManualRecordIcon
-                                        fontSize="small"
-                                        style={{ marginLeft: '4px' }}
-                                        title="Not Reply Yet"
-                                    /> : null}
+                            props.data?.latestCommunication?.ignore_message !==
+                                true ? (
+                                <FiberManualRecordIcon
+                                    fontSize="small"
+                                    style={{ marginLeft: '4px' }}
+                                    title="Not Reply Yet"
+                                />
+                            ) : null}
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListItemIcon>

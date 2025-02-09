@@ -101,22 +101,24 @@ const MessageEdit = (props) => {
                         </b>
                         <span style={{ float: 'right' }}>
                             {convertDate(props.message.createdAt)}
-                            {props.editable ? <IconButton
-                                        aria-label="delete"
-                                        onClick={(e) =>
-                                            onOpendeleteMessageModalShow(
-                                                e,
-                                                props.message._id.toString(),
-                                                props.message.createdAt
-                                            )
-                                        }
-                                    >
-                                        <CloseIcon
-                                            fontSize="small"
-                                            style={{ cursor: 'pointer' }}
-                                            title="Delete this message and file"
-                                        />
-                                    </IconButton> : null}
+                            {props.editable ? (
+                                <IconButton
+                                    aria-label="delete"
+                                    onClick={(e) =>
+                                        onOpendeleteMessageModalShow(
+                                            e,
+                                            props.message._id.toString(),
+                                            props.message.createdAt
+                                        )
+                                    }
+                                >
+                                    <CloseIcon
+                                        fontSize="small"
+                                        style={{ cursor: 'pointer' }}
+                                        title="Delete this message and file"
+                                    />
+                                </IconButton>
+                            ) : null}
                         </span>
                     </Typography>
                 </AccordionSummary>
@@ -206,6 +208,6 @@ const MessageEdit = (props) => {
             </Dialog>
         </>
     );
-}
+};
 
 export default MessageEdit;

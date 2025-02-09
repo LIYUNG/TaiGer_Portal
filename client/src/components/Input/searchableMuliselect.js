@@ -114,7 +114,9 @@ const SearchableMultiSelect = ({
                                 gap: '16px'
                             }}
                         >
-                            {!Array.isArray(data) && data?.[option]?.label ? <span>{data?.[option].label}</span> : null}
+                            {!Array.isArray(data) && data?.[option]?.label ? (
+                                <span>{data?.[option].label}</span>
+                            ) : null}
                             <span>{option}</span>
                         </li>
                     );

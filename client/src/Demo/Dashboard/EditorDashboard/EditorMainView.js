@@ -99,198 +99,198 @@ const EditorMainView = (props) => {
 
     return (
         <Grid container spacing={2}>
-                <Grid item md={3} xs={6}>
+            <Grid item md={3} xs={6}>
+                <Card sx={{ p: 2 }}>
+                    <Typography>
+                        {t('Action required', { ns: 'common' })}
+                    </Typography>
+                    <Typography variant="h6">
+                        <Link
+                            component={LinkDom}
+                            to={DEMO.CV_ML_RL_CENTER_LINK}
+                            underline="hover"
+                        >
+                            <b>
+                                {t('Task', {
+                                    ns: 'common',
+                                    count: unreplied_task?.length || 0
+                                })}
+                            </b>
+                        </Link>
+                    </Typography>
+                </Card>
+            </Grid>
+            <Grid item md={3} xs={6}>
+                <Card sx={{ p: 2 }}>
+                    <Typography>{t('Follow up', { ns: 'common' })}</Typography>
+                    <Typography variant="h6">
+                        <Link
+                            component={LinkDom}
+                            to={DEMO.CV_ML_RL_CENTER_LINK}
+                            underline="hover"
+                        >
+                            <b>
+                                {t('Task', {
+                                    ns: 'common',
+                                    count: follow_up_task?.length || 0
+                                })}
+                            </b>
+                        </Link>
+                    </Typography>
+                </Card>
+            </Grid>
+            <Grid item md={3} xs={12}>
+                <Card sx={{ p: 2 }}>
+                    <Typography>
+                        {t('student-count', {
+                            ns: 'common'
+                        })}
+                    </Typography>
+                    <Typography variant="h6">
+                        <Link
+                            component={LinkDom}
+                            to={DEMO.STUDENT_APPLICATIONS_LINK}
+                            underline="hover"
+                        >
+                            <b>
+                                {
+                                    props.students.filter((student) =>
+                                        student.editors.some(
+                                            (editor) =>
+                                                editor._id ===
+                                                user._id.toString()
+                                        )
+                                    )?.length
+                                }
+                            </b>
+                        </Link>
+                    </Typography>
+                </Card>
+            </Grid>
+            <Grid item md={3} xs={12}>
+                <Card sx={{ p: 2 }}>
+                    <Typography>XXXXXX</Typography>
+                    <Typography variant="h6">
+                        {t('Coming soon', { ns: 'common' })}
+                    </Typography>
+                </Card>
+            </Grid>
+            {!does_student_have_editors(props.students) ||
+            !does_essay_have_writers(props.essayDocumentThreads) ? (
+                <Grid item md={12} xs={12}>
                     <Card sx={{ p: 2 }}>
-                        <Typography>
-                            {t('Action required', { ns: 'common' })}
+                        <Typography fontWeight="bold">
+                            {t('To Do Tasks', { ns: 'common' })}{' '}
                         </Typography>
-                        <Typography variant="h6">
-                            <Link
-                                component={LinkDom}
-                                to={DEMO.CV_ML_RL_CENTER_LINK}
-                                underline="hover"
-                            >
-                                <b>
-                                    {t('Task', {
-                                        ns: 'common',
-                                        count: unreplied_task?.length || 0
-                                    })}
-                                </b>
-                            </Link>
-                        </Typography>
-                    </Card>
-                </Grid>
-                <Grid item md={3} xs={6}>
-                    <Card sx={{ p: 2 }}>
-                        <Typography>
-                            {t('Follow up', { ns: 'common' })}
-                        </Typography>
-                        <Typography variant="h6">
-                            <Link
-                                component={LinkDom}
-                                to={DEMO.CV_ML_RL_CENTER_LINK}
-                                underline="hover"
-                            >
-                                <b>
-                                    {t('Task', {
-                                        ns: 'common',
-                                        count: follow_up_task?.length || 0
-                                    })}
-                                </b>
-                            </Link>
-                        </Typography>
-                    </Card>
-                </Grid>
-                <Grid item md={3} xs={12}>
-                    <Card sx={{ p: 2 }}>
-                        <Typography>
-                            {t('student-count', {
-                                ns: 'common'
-                            })}
-                        </Typography>
-                        <Typography variant="h6">
-                            <Link
-                                component={LinkDom}
-                                to={DEMO.STUDENT_APPLICATIONS_LINK}
-                                underline="hover"
-                            >
-                                <b>
-                                    {
-                                        props.students.filter((student) =>
-                                            student.editors.some(
-                                                (editor) =>
-                                                    editor._id ===
-                                                    user._id.toString()
-                                            )
-                                        )?.length
-                                    }
-                                </b>
-                            </Link>
-                        </Typography>
-                    </Card>
-                </Grid>
-                <Grid item md={3} xs={12}>
-                    <Card sx={{ p: 2 }}>
-                        <Typography>XXXXXX</Typography>
-                        <Typography variant="h6">
-                            {t('Coming soon', { ns: 'common' })}
-                        </Typography>
-                    </Card>
-                </Grid>
-                {(!does_student_have_editors(props.students) ||
-                    !does_essay_have_writers(props.essayDocumentThreads)) ? <Grid item md={12} xs={12}>
-                        <Card sx={{ p: 2 }}>
-                            <Typography fontWeight="bold">
-                                {t('To Do Tasks', { ns: 'common' })}{' '}
-                            </Typography>
-                            <Table size="small">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>
-                                            {t('Tasks', { ns: 'common' })}
-                                        </TableCell>
-                                        <TableCell>
-                                            {t('Description', { ns: 'common' })}
-                                        </TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>
+                                        {t('Tasks', { ns: 'common' })}
+                                    </TableCell>
+                                    <TableCell>
+                                        {t('Description', { ns: 'common' })}
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell>
+                                        <Link
+                                            component={LinkDom}
+                                            to={`${DEMO.ASSIGN_EDITOR_LINK}`}
+                                        >
+                                            {t('Assign Editors')}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell>
+                                        {t('Please assign editors', {
+                                            ns: 'common'
+                                        })}
+                                    </TableCell>
+                                    <TableCell />
+                                </TableRow>
+                                {!does_essay_have_writers(
+                                    props.essayDocumentThreads?.filter(
+                                        (thread) => !thread.isFinalVersion
+                                    )
+                                ) ? (
                                     <TableRow>
                                         <TableCell>
                                             <Link
                                                 component={LinkDom}
-                                                to={`${DEMO.ASSIGN_EDITOR_LINK}`}
+                                                to={`${DEMO.ASSIGN_ESSAY_WRITER_LINK}`}
                                             >
-                                                {t('Assign Editors')}
+                                                {t('Assign Essay Writer', {
+                                                    ns: 'common'
+                                                })}
                                             </Link>
                                         </TableCell>
                                         <TableCell>
-                                            {t('Please assign editors', {
+                                            {t('Please assign essay writers', {
                                                 ns: 'common'
                                             })}
                                         </TableCell>
-                                        <TableCell />
                                     </TableRow>
-                                    {!does_essay_have_writers(
-                                        props.essayDocumentThreads?.filter(
-                                            (thread) => !thread.isFinalVersion
-                                        )
-                                    ) ? <TableRow>
-                                            <TableCell>
-                                                <Link
-                                                    component={LinkDom}
-                                                    to={`${DEMO.ASSIGN_ESSAY_WRITER_LINK}`}
-                                                >
-                                                    {t('Assign Essay Writer', {
-                                                        ns: 'common'
-                                                    })}
-                                                </Link>
-                                            </TableCell>
-                                            <TableCell>
-                                                {t(
-                                                    'Please assign essay writers',
-                                                    { ns: 'common' }
-                                                )}
-                                            </TableCell>
-                                        </TableRow> : null}
-                                </TableBody>
-                            </Table>
-                        </Card>
-                    </Grid> : null}
-                <Grid item md={12} xs={12}>
-                    <Card sx={{ p: 2 }}>
-                        <Box>
-                            <Typography>My workload over time</Typography>
-                            Tasks distribute among the date. Note that CVs, MLs,
-                            RLs, and Essay are mixed together.
-                            <Typography>
-                                <b style={{ color: 'red' }}>active:</b> students
-                                decide programs. These will be shown in{' '}
-                                <Link
-                                    component={LinkDom}
-                                    to={`${DEMO.CV_ML_RL_DASHBOARD_LINK}`}
-                                    underline="hover"
-                                >
-                                    Tasks Dashboard
-                                </Link>
-                            </Typography>
-                            <Typography>
-                                <b style={{ color: '#A9A9A9' }}>potentials:</b>{' '}
-                                students do not decide programs yet. But the
-                                tasks will be potentially active when they
-                                decided.
-                            </Typography>
-                            <TasksDistributionBarChart
-                                data={sorted_date_freq_pair}
-                                k="name"
-                                value1="active"
-                                value2="potentials"
-                                yLabel="Tasks"
-                            />
-                        </Box>
+                                ) : null}
+                            </TableBody>
+                        </Table>
                     </Card>
                 </Grid>
+            ) : null}
+            <Grid item md={12} xs={12}>
+                <Card sx={{ p: 2 }}>
+                    <Box>
+                        <Typography>My workload over time</Typography>
+                        Tasks distribute among the date. Note that CVs, MLs,
+                        RLs, and Essay are mixed together.
+                        <Typography>
+                            <b style={{ color: 'red' }}>active:</b> students
+                            decide programs. These will be shown in{' '}
+                            <Link
+                                component={LinkDom}
+                                to={`${DEMO.CV_ML_RL_DASHBOARD_LINK}`}
+                                underline="hover"
+                            >
+                                Tasks Dashboard
+                            </Link>
+                        </Typography>
+                        <Typography>
+                            <b style={{ color: '#A9A9A9' }}>potentials:</b>{' '}
+                            students do not decide programs yet. But the tasks
+                            will be potentially active when they decided.
+                        </Typography>
+                        <TasksDistributionBarChart
+                            data={sorted_date_freq_pair}
+                            k="name"
+                            value1="active"
+                            value2="potentials"
+                            yLabel="Tasks"
+                        />
+                    </Box>
+                </Card>
+            </Grid>
 
-                {/* <Grid item xs={12} md={12}>
+            {/* <Grid item xs={12} md={12}>
           <TabProgramConflict students={props.students} />
         </Grid> */}
-                <Grid item md={12} xs={12}>
-                    <Table size="small">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell />
-                                {header.map((name, index) => (
-                                    <TableCell key={index}>
-                                        {t(name, { ns: 'common' })}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>{students_agent_editor}</TableBody>
-                    </Table>
-                </Grid>
+            <Grid item md={12} xs={12}>
+                <Table size="small">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell />
+                            {header.map((name, index) => (
+                                <TableCell key={index}>
+                                    {t(name, { ns: 'common' })}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>{students_agent_editor}</TableBody>
+                </Table>
             </Grid>
+        </Grid>
     );
-}
+};
 
 export default EditorMainView;

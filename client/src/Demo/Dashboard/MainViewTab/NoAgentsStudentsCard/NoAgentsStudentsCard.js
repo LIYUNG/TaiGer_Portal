@@ -55,7 +55,8 @@ const NoAgentsStudentsCard = (props) => {
         return (
             <>
                 <TableRow>
-                    {is_TaiGer_Admin(user) && !props.isArchivPage ? <TableCell>
+                    {is_TaiGer_Admin(user) && !props.isArchivPage ? (
+                        <TableCell>
                             <Button
                                 aria-controls={open ? 'basic-menu' : undefined}
                                 aria-expanded={open ? 'true' : undefined}
@@ -80,7 +81,8 @@ const NoAgentsStudentsCard = (props) => {
                                     {t('Edit Agent', { ns: 'dashboard' })}
                                 </MenuItem>
                             </Menu>
-                        </TableCell> : null}
+                        </TableCell>
+                    ) : null}
                     <TableCell>
                         <Link
                             component={LinkDom}
@@ -103,18 +105,20 @@ const NoAgentsStudentsCard = (props) => {
                     </TableCell>
                 </TableRow>
                 {is_TaiGer_Admin(user) &&
-                    noAgentsStudentsCardState.showAgentPage ? <EditAgentsSubpage
-                            onHide={setAgentModalhide}
-                            setmodalhide={setAgentModalhide}
-                            show={noAgentsStudentsCardState.showAgentPage}
-                            student={props.student}
-                            submitUpdateAgentlist={submitUpdateAgentlist}
-                        /> : null}
+                noAgentsStudentsCardState.showAgentPage ? (
+                    <EditAgentsSubpage
+                        onHide={setAgentModalhide}
+                        setmodalhide={setAgentModalhide}
+                        show={noAgentsStudentsCardState.showAgentPage}
+                        student={props.student}
+                        submitUpdateAgentlist={submitUpdateAgentlist}
+                    />
+                ) : null}
             </>
         );
     } else {
         return <></>;
     }
-}
+};
 
 export default NoAgentsStudentsCard;

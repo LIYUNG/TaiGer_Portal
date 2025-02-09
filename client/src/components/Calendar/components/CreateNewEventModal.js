@@ -83,21 +83,25 @@ export const CreateNewEventModal = (props) => {
                 </span>
                 <Typography sx={{ mt: 2 }} variant="body1">
                     Time zone: {user.timezone}
-                    {available_termins[0] ? ` ( UTC +${
-                            getUTCTimezoneOffset(
-                                available_termins[0].start,
-                                user.timezone
-                            ) / 60
-                        } ) ` : null}
+                    {available_termins[0]
+                        ? ` ( UTC +${
+                              getUTCTimezoneOffset(
+                                  available_termins[0].start,
+                                  user.timezone
+                              ) / 60
+                          } ) `
+                        : null}
                 </Typography>
                 <Typography variant="body1">
                     Date:{' '}
-                    {available_termins[0] ? getDate(
-                            getLocalTime(
-                                available_termins[0]?.start,
-                                user.timezone
-                            )
-                        ) : null}
+                    {available_termins[0]
+                        ? getDate(
+                              getLocalTime(
+                                  available_termins[0]?.start,
+                                  user.timezone
+                              )
+                          )
+                        : null}
                 </Typography>
                 <FormControl fullWidth sx={{ my: 2 }}>
                     <InputLabel id="time_slot">
@@ -191,4 +195,4 @@ export const CreateNewEventModal = (props) => {
             </DialogActions>
         </Dialog>
     );
-}
+};

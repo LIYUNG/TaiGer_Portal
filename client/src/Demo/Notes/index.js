@@ -88,6 +88,6 @@ const Notes = (props) => {
             />
         </Box>
     );
-}
+};
 
 export default Notes;

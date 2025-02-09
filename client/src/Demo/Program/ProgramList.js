@@ -46,6 +46,6 @@ const ProgramList = () => {
             <ProgramsTable data={programs} isLoading={isLoading} />
         </Box>
     );
-}
+};
 
 export default ProgramList;

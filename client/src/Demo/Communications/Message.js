@@ -207,7 +207,8 @@ const Message = (props) => {
                         <b style={{ cursor: 'pointer' }}>{full_name}</b>
                         <span style={{ display: 'flex', float: 'right' }}>
                             {convertDate(props.message.createdAt)}
-                            {editable ? <>
+                            {editable ? (
+                                <>
                                     <IconButton
                                         onClick={() => props.onEditMode()}
                                     >
@@ -233,7 +234,8 @@ const Message = (props) => {
                                             title="Delete this message and file"
                                         />
                                     </IconButton>
-                                </> : null}
+                                </>
+                            ) : null}
                         </span>
                     </Box>
                 </AccordionSummary>
@@ -298,7 +300,7 @@ const Message = (props) => {
                                                 stroke="#000"
                                                 strokeLinecap="round"
                                                 strokeWidth="2"
-                                             />
+                                            />
                                         </svg>
                                     </Typography>
                                 </span>
@@ -310,7 +312,8 @@ const Message = (props) => {
                         display="flex"
                         justifyContent="space-between"
                     >
-                        {is_TaiGer_AdminAgent(user) ? <AvatarGroup>
+                        {is_TaiGer_AdminAgent(user) ? (
+                            <AvatarGroup>
                                 {props.message?.readBy
                                     ?.filter(
                                         (usr) =>
@@ -343,46 +346,51 @@ const Message = (props) => {
                                             />
                                         </Tooltip>
                                     ))}
-                            </AvatarGroup> : null}
+                            </AvatarGroup>
+                        ) : null}
                         <Stack
                             alignItems="center"
                             direction="row"
                             justifyContent="flex-end"
                         >
                             {!is_TaiGer_Student(user) &&
-                                is_TaiGer_Student(props.message.user_id) ? <>
-                                        {messageState.ignore_message ? <Avatar
-                                                key={user._id?.toString()}
-                                                {...stringAvatar(
+                            is_TaiGer_Student(props.message.user_id) ? (
+                                <>
+                                    {messageState.ignore_message ? (
+                                        <Avatar
+                                            key={user._id?.toString()}
+                                            {...stringAvatar(
+                                                `${messageState.ignoredMessageBy?.firstname} ${messageState.ignoredMessageBy?.lastname}`
+                                            )}
+                                            size="small"
+                                            sx={{
+                                                ...stringAvatar(
                                                     `${messageState.ignoredMessageBy?.firstname} ${messageState.ignoredMessageBy?.lastname}`
-                                                )}
-                                                size="small"
-                                                sx={{
-                                                    ...stringAvatar(
-                                                        `${messageState.ignoredMessageBy?.firstname} ${messageState.ignoredMessageBy?.lastname}`
-                                                    ).sx,
-                                                    width: 8,
-                                                    height: 8 // Override the size
-                                                }}
-                                                title={`Ignored by ${messageState.ignoredMessageBy?.firstname} ${messageState.ignoredMessageBy?.lastname} at ${convertDate(messageState.ignoredMessageUpdatedAt)}`}
-                                            /> : null}
-                                        <FormGroup>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={
-                                                            messageState.ignore_message
-                                                        }
-                                                        onChange={
-                                                            handleCheckboxChange
-                                                        }
-                                                    />
-                                                }
-                                                label="no need to reply"
-                                                labelPlacement="start"
-                                            />
-                                        </FormGroup>
-                                    </> : null}
+                                                ).sx,
+                                                width: 8,
+                                                height: 8 // Override the size
+                                            }}
+                                            title={`Ignored by ${messageState.ignoredMessageBy?.firstname} ${messageState.ignoredMessageBy?.lastname} at ${convertDate(messageState.ignoredMessageUpdatedAt)}`}
+                                        />
+                                    ) : null}
+                                    <FormGroup>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={
+                                                        messageState.ignore_message
+                                                    }
+                                                    onChange={
+                                                        handleCheckboxChange
+                                                    }
+                                                />
+                                            }
+                                            label="no need to reply"
+                                            labelPlacement="start"
+                                        />
+                                    </FormGroup>
+                                </>
+                            ) : null}
                         </Stack>
                     </Box>
                 </AccordionDetails>
@@ -431,7 +439,8 @@ const Message = (props) => {
                     path={messageState.fileName}
                 />
                 <DialogContent>
-                    {props.path && props.path.split('.')[1] !== 'pdf' ? <a
+                    {props.path && props.path.split('.')[1] !== 'pdf' ? (
+                        <a
                             download
                             href={`${BASE_URL}}${messageState.filePath}`}
                             rel="noopener noreferrer"
@@ -446,7 +455,8 @@ const Message = (props) => {
                             >
                                 {t('Download', { ns: 'common' })}
                             </Button>
-                        </a> : null}
+                        </a>
+                    ) : null}
                 </DialogContent>
                 <DialogActions>
                     <Button
@@ -464,6 +474,6 @@ const Message = (props) => {
             </Dialog>
         </>
     );
-}
+};
 
 export default Message;

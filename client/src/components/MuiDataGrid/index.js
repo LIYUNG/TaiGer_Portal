@@ -97,7 +97,7 @@ export const MuiDataGrid = (props) => {
                     }
                 }}
                 slots={{ toolbar: GridToolbar }}
-             />
+            />
         </div>
     );
 };

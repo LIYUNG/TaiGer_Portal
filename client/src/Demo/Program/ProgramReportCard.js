@@ -101,5 +101,5 @@ const ProgramReportCard = () => {
             </Table>
         </Card>
     );
-}
+};
 export default ProgramReportCard;

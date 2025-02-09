@@ -419,7 +419,8 @@ const TaiGerOrg = () => {
                 </Typography>
             </Breadcrumbs>
             <Card>
-                {is_TaiGer_Admin(user) ? <>
+                {is_TaiGer_Admin(user) ? (
+                    <>
                         <Typography variant="h5">Admin:</Typography>
                         {admins.map((admin, i) => (
                             <Typography key={i}>
@@ -432,7 +433,8 @@ const TaiGerOrg = () => {
                                 </b>
                             </Typography>
                         ))}
-                    </> : null}
+                    </>
+                ) : null}
             </Card>
             <Card>
                 <Typography variant="h5">
@@ -515,24 +517,28 @@ const TaiGerOrg = () => {
                     </Table>
                 </TableContainer>
             </Card>
-            {taiGerOrgState.modalShow ? <GrantPermissionModal
+            {taiGerOrgState.modalShow ? (
+                <GrantPermissionModal
                     firstname={taiGerOrgState.firstname}
                     lastname={taiGerOrgState.lastname}
                     modalShow={taiGerOrgState.modalShow}
                     onUpdatePermissions={onUpdatePermissions}
                     setModalHide={setModalHide}
                     user_permissions={taiGerOrgState.user_permissions}
-                /> : null}
-            {taiGerOrgState.managerModalShow ? <GrantManagerModal
+                />
+            ) : null}
+            {taiGerOrgState.managerModalShow ? (
+                <GrantManagerModal
                     firstname={taiGerOrgState.firstname}
                     lastname={taiGerOrgState.lastname}
                     managerModalShow={taiGerOrgState.managerModalShow}
                     onUpdatePermissions={onUpdatePermissions}
                     setManagerModalHide={setManagerModalHide}
                     user_permissions={taiGerOrgState.user_permissions}
-                /> : null}
+                />
+            ) : null}
         </Box>
     );
-}
+};
 
 export default TaiGerOrg;

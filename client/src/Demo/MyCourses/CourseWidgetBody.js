@@ -320,11 +320,13 @@ export default function CourseWidgetBody({ programRequirements }) {
 
     return (
         <Box>
-            {statedata.res_modal_status >= 400 ? <ModalMain
+            {statedata.res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={statedata.res_modal_message}
                     res_modal_status={statedata.res_modal_status}
-                /> : null}
+                />
+            ) : null}
 
             <Box
                 alignItems="center"
@@ -441,9 +443,7 @@ export default function CourseWidgetBody({ programRequirements }) {
                                 name="study_group"
                                 onChange={(e) => handleChange_study_group(e)}
                             >
-                                <MenuItem value="">
-                                    Select Study Group
-                                </MenuItem>
+                                <MenuItem value="">Select Study Group</MenuItem>
                                 {study_group.map((cat, i) => (
                                     <MenuItem key={i} value={cat.key}>
                                         {cat.value}

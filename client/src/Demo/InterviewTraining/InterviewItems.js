@@ -267,18 +267,21 @@ const InterviewItems = (props) => {
                         &nbsp;
                         {interview.status}
                         &nbsp;
-                        {props.interview.event_id?.start ? <>
+                        {props.interview.event_id?.start ? (
+                            <>
                                 {`${convertDate(utcTime)} ${NoonNightLabel(utcTime)} ${
                                     Intl.DateTimeFormat().resolvedOptions()
                                         .timeZone
                                 }`}
                                 {showTimezoneOffset()}
                                 &nbsp;
-                            </> : null}
+                            </>
+                        ) : null}
                         <b>{` ${interview.student_id.firstname} - ${interview.student_id.lastname}`}</b>
                     </Typography>
                     <span style={{ float: 'right', cursor: 'pointer' }}>
-                        {is_TaiGer_role(user) ? <Button
+                        {is_TaiGer_role(user) ? (
+                            <Button
                                 color="error"
                                 onClick={(e) =>
                                     props.openDeleteDocModalWindow(e, interview)
@@ -289,7 +292,8 @@ const InterviewItems = (props) => {
                                 variant="contained"
                             >
                                 {t('Delete', { ns: 'common' })}
-                            </Button> : null}
+                            </Button>
+                        ) : null}
                     </span>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -333,30 +337,32 @@ const InterviewItems = (props) => {
                                             />
                                         </Box>
                                     ))}
-                                    {is_TaiGer_role(user) &&
-                                        !props.readOnly ? <Button
-                                                color="secondary"
-                                                onClick={openModal}
-                                                size="small"
-                                                variant="contained"
-                                            >
-                                                {t('Change Trainer')}
-                                            </Button> : null}
+                                    {is_TaiGer_role(user) && !props.readOnly ? (
+                                        <Button
+                                            color="secondary"
+                                            onClick={openModal}
+                                            size="small"
+                                            variant="contained"
+                                        >
+                                            {t('Change Trainer')}
+                                        </Button>
+                                    ) : null}
                                 </>
                             ) : (
                                 <>
                                     <Typography>
                                         {t('No Trainer Assigned')}
                                     </Typography>
-                                    {is_TaiGer_role(user) &&
-                                        !props.readOnly ? <Button
-                                                color="primary"
-                                                onClick={openModal}
-                                                size="small"
-                                                variant="contained"
-                                            >
-                                                {t('Assign Trainer')}
-                                            </Button> : null}
+                                    {is_TaiGer_role(user) && !props.readOnly ? (
+                                        <Button
+                                            color="primary"
+                                            onClick={openModal}
+                                            size="small"
+                                            variant="contained"
+                                        >
+                                            {t('Assign Trainer')}
+                                        </Button>
+                                    ) : null}
                                 </>
                             )}
                             <Typography
@@ -369,7 +375,8 @@ const InterviewItems = (props) => {
                                 })}
                                 :&nbsp;
                             </Typography>
-                            {is_TaiGer_role(user) ? <>
+                            {is_TaiGer_role(user) ? (
+                                <>
                                     {interview.trainer_id?.length !== 0 ? (
                                         <>
                                             <TimezoneSelect
@@ -416,8 +423,10 @@ const InterviewItems = (props) => {
                                             )}
                                         </>
                                     )}
-                                </> : null}
-                            {!is_TaiGer_role(user) ? props.interview.event_id?.start ? (
+                                </>
+                            ) : null}
+                            {!is_TaiGer_role(user) ? (
+                                props.interview.event_id?.start ? (
                                     <Typography>
                                         {`${convertDate(utcTime)} ${NoonNightLabel(utcTime)} ${
                                             Intl.DateTimeFormat().resolvedOptions()
@@ -429,7 +438,8 @@ const InterviewItems = (props) => {
                                     <Typography variant="body1">
                                         To be announced
                                     </Typography>
-                                ) : null}
+                                )
+                            ) : null}
                             <Typography
                                 fontWeight="bold"
                                 sx={{ mt: 2 }}
@@ -491,12 +501,14 @@ const InterviewItems = (props) => {
                             >
                                 {`${interview.program_id.school} - ${interview.program_id.program_name} ${interview.program_id.degree}`}
                             </Link>
-                            {is_TaiGer_role(user) ? <Typography variant="body1">
+                            {is_TaiGer_role(user) ? (
+                                <Typography variant="body1">
                                     {t('Previous questions records:')}&nbsp;
                                     <Button size="small" variant="outlined">
                                         {props.questionsNum}
                                     </Button>
-                                </Typography> : null}
+                                </Typography>
+                            ) : null}
                             <Typography
                                 fontWeight="bold"
                                 sx={{ mt: 2 }}
@@ -632,13 +644,15 @@ const InterviewItems = (props) => {
                     </Button>
                 </DialogActions>
             </Dialog>
-            {interviewItemsState.res_modal_status >= 400 ? <ModalMain
+            {interviewItemsState.res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={interviewItemsState.res_modal_message}
                     res_modal_status={interviewItemsState.res_modal_status}
-                /> : null}
+                />
+            ) : null}
         </>
     );
-}
+};
 
 export default InterviewItems;

@@ -153,5 +153,5 @@ const AddUserModal = (props) => {
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default AddUserModal;

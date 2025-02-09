@@ -97,6 +97,6 @@ const ProgramUpdateStatusTable = (props) => {
             />
         </Box>
     );
-}
+};
 
 export default ProgramUpdateStatusTable;

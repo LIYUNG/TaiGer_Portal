@@ -327,7 +327,8 @@ const NavBar = (props) => {
                 horizontal: 'right'
             }}
         >
-            {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) ? <MenuItem onClick={handleNavigateCalendar}>
+            {is_TaiGer_Agent(user) || is_TaiGer_Student(user) ? (
+                <MenuItem onClick={handleNavigateCalendar}>
                     <IconButton
                         aria-label="show upcoming meeting event"
                         color="inherit"
@@ -343,8 +344,10 @@ const NavBar = (props) => {
                     <Typography>
                         {i18next.t('Calendar', { ns: 'common' })}
                     </Typography>
-                </MenuItem> : null}
-            {(is_TaiGer_AdminAgent(user) || is_TaiGer_Student(user)) ? <MenuItem onClick={handleOpenChat}>
+                </MenuItem>
+            ) : null}
+            {is_TaiGer_AdminAgent(user) || is_TaiGer_Student(user) ? (
+                <MenuItem onClick={handleOpenChat}>
                     <IconButton
                         aria-controls={menuId}
                         aria-haspopup="true"
@@ -362,7 +365,8 @@ const NavBar = (props) => {
                     <Typography>
                         {i18next.t('Messages', { ns: 'common' })}
                     </Typography>
-                </MenuItem> : null}
+                </MenuItem>
+            ) : null}
             <MenuItem onClick={handleProfileMenuOpen}>
                 <IconButton
                     aria-controls="primary-search-account-menu"
@@ -429,12 +433,15 @@ const NavBar = (props) => {
                             style={{ maxHeight: '48px', marginRight: '2px' }}
                         />
                     </Link>
-                    {(is_TaiGer_Agent(user) ||
-                        is_TaiGer_Editor(user) ||
-                        is_TaiGer_Admin(user)) ? <NavSearch /> : null}
+                    {is_TaiGer_Agent(user) ||
+                    is_TaiGer_Editor(user) ||
+                    is_TaiGer_Admin(user) ? (
+                        <NavSearch />
+                    ) : null}
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) ? <IconButton
+                        {is_TaiGer_Agent(user) || is_TaiGer_Student(user) ? (
+                            <IconButton
                                 aria-label="show active event"
                                 color="inherit"
                                 onClick={handleNavigateCalendar}
@@ -446,9 +453,11 @@ const NavBar = (props) => {
                                 >
                                     <CalendarMonthIcon />
                                 </Badge>
-                            </IconButton> : null}
-                        {(is_TaiGer_AdminAgent(user) ||
-                            is_TaiGer_Student(user)) ? <IconButton
+                            </IconButton>
+                        ) : null}
+                        {is_TaiGer_AdminAgent(user) ||
+                        is_TaiGer_Student(user) ? (
+                            <IconButton
                                 aria-controls={chatId}
                                 aria-haspopup="true"
                                 aria-label="show unread new messages"
@@ -462,7 +471,8 @@ const NavBar = (props) => {
                                 >
                                     <MailIcon />
                                 </Badge>
-                            </IconButton> : null}
+                            </IconButton>
+                        ) : null}
                         <Tooltip
                             placement="bottom-start"
                             title="Account settings"
@@ -487,7 +497,8 @@ const NavBar = (props) => {
                         </Tooltip>
                     </Box>
                     <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                        {(is_TaiGer_Agent(user) || is_TaiGer_Student(user)) ? <IconButton
+                        {is_TaiGer_Agent(user) || is_TaiGer_Student(user) ? (
+                            <IconButton
                                 aria-label="show active event"
                                 color="inherit"
                                 onClick={handleNavigateCalendar}
@@ -499,9 +510,11 @@ const NavBar = (props) => {
                                 >
                                     <CalendarMonthIcon />
                                 </Badge>
-                            </IconButton> : null}
-                        {(is_TaiGer_AdminAgent(user) ||
-                            is_TaiGer_Student(user)) ? <IconButton
+                            </IconButton>
+                        ) : null}
+                        {is_TaiGer_AdminAgent(user) ||
+                        is_TaiGer_Student(user) ? (
+                            <IconButton
                                 aria-controls={chatId}
                                 aria-haspopup="true"
                                 aria-label="show unread new messages"
@@ -515,7 +528,8 @@ const NavBar = (props) => {
                                 >
                                     <MailIcon />
                                 </Badge>
-                            </IconButton> : null}
+                            </IconButton>
+                        ) : null}
                         <Tooltip
                             placement="bottom-start"
                             title="Account settings"
@@ -564,6 +578,6 @@ const NavBar = (props) => {
             </Main>
         </Box>
     );
-}
+};
 
 export default NavBar;

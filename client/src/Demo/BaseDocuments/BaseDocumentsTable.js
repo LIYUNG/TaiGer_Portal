@@ -261,9 +261,7 @@ export const BaseDocumentsTable = (props) => {
                         </>
                     );
                 } else {
-                    return (
-                        <IconButton>{FILE_MISSING_SYMBOL}</IconButton>
-                    );
+                    return <IconButton>{FILE_MISSING_SYMBOL}</IconButton>;
                 }
             }
         };
@@ -281,14 +279,14 @@ export const BaseDocumentsTable = (props) => {
                 )}`;
                 return (
                     <Link
-                            component={LinkDom}
-                            target="_blank"
-                            title={params.value}
-                            to={linkUrl}
-                            underline="hover"
-                        >
-                            {params.value}
-                        </Link>
+                        component={LinkDom}
+                        target="_blank"
+                        title={params.value}
+                        to={linkUrl}
+                        underline="hover"
+                    >
+                        {params.value}
+                    </Link>
                 );
             }
         },
@@ -365,4 +363,4 @@ export const BaseDocumentsTable = (props) => {
             </Dialog>
         </Box>
     );
-}
+};

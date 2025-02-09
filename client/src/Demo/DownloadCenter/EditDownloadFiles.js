@@ -35,7 +35,8 @@ const EditDownloadFiles = (props) => {
             <TableRow key={i + 1}>
                 <TableCell>{template.name}</TableCell>
                 <TableCell>
-                    {is_TaiGer_Admin(props.user) ? <Box>
+                    {is_TaiGer_Admin(props.user) ? (
+                        <Box>
                             {object_init[template.prop] === 'uploaded' ? (
                                 <Button
                                     color="error"
@@ -65,7 +66,8 @@ const EditDownloadFiles = (props) => {
                                     type="file"
                                 />
                             )}
-                        </Box> : null}
+                        </Box>
+                    ) : null}
                 </TableCell>
                 <TableCell>
                     {object_init[template.prop] === 'uploaded' ? (

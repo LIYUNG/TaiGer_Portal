@@ -104,7 +104,8 @@ const StudentDashboard = (props) => {
 
     return (
         <>
-            {student.archiv ? <Card sx={{ p: 2 }}>
+            {student.archiv ? (
+                <Card sx={{ p: 2 }}>
                     <Typography color="red" variant="h5">
                         Status: <b>Close</b> - Your {appConfig.companyName}{' '}
                         Portal Service is terminated.
@@ -112,328 +113,308 @@ const StudentDashboard = (props) => {
                     <Typography color="red" variant="body1">
                         {t('acctount_deactivated_text', { ns: 'dashboard' })}
                     </Typography>
-                </Card> : null}
+                </Card>
+            ) : null}
             <Alert severity="info">{t('announcement', { ns: 'common' })}</Alert>
             <Grid container spacing={1} sx={{ mt: 0 }}>
                 {student.notification &&
-                    !student.notification.isRead_survey_not_complete &&
-                    !check_academic_background_filled(
-                        student.academic_background
-                    ) ? <Grid item xs={12}>
-                            <Alert
-                                onClose={(e) =>
-                                    removeBanner(
-                                        e,
-                                        'isRead_survey_not_complete'
-                                    )
-                                }
-                                severity="warning"
-                                sx={{ display: 'flex', alignItems: 'center' }}
-                            >
-                                <Typography
-                                    sx={{ flexGrow: 1 }}
-                                    variant="body2"
+                !student.notification.isRead_survey_not_complete &&
+                !check_academic_background_filled(
+                    student.academic_background
+                ) ? (
+                    <Grid item xs={12}>
+                        <Alert
+                            onClose={(e) =>
+                                removeBanner(e, 'isRead_survey_not_complete')
+                            }
+                            severity="warning"
+                            sx={{ display: 'flex', alignItems: 'center' }}
+                        >
+                            <Typography sx={{ flexGrow: 1 }} variant="body2">
+                                {t(
+                                    'It looks like you did not finish survey. See',
+                                    {
+                                        ns: 'common'
+                                    }
+                                )}{' '}
+                                <Link
+                                    component={LinkDom}
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        ml: 1
+                                    }}
+                                    target="_blank"
+                                    to={DEMO.SURVEY_LINK}
+                                    underline="hover"
                                 >
-                                    {t(
-                                        'It looks like you did not finish survey. See',
-                                        {
-                                            ns: 'common'
-                                        }
-                                    )}{' '}
-                                    <Link
-                                        component={LinkDom}
-                                        sx={{
-                                            fontWeight: 'bold',
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            ml: 1
-                                        }}
-                                        target="_blank"
-                                        to={DEMO.SURVEY_LINK}
-                                        underline="hover"
-                                    >
-                                        {t('Survey')}
-                                        <LaunchIcon
-                                            fontSize="small"
-                                            sx={{ ml: 0.5 }}
-                                        />
-                                    </Link>
-                                </Typography>
-                            </Alert>
-                        </Grid> : null}
+                                    {t('Survey')}
+                                    <LaunchIcon
+                                        fontSize="small"
+                                        sx={{ ml: 0.5 }}
+                                    />
+                                </Link>
+                            </Typography>
+                        </Alert>
+                    </Grid>
+                ) : null}
 
                 {student.notification &&
-                    !student.notification.isRead_uni_assist_task_assigned &&
-                    appConfig.vpdEnable &&
-                    !is_all_uni_assist_vpd_uploaded(student) ? <Grid item xs={12}>
-                            <Alert
-                                onClose={(e) =>
-                                    removeBanner(
-                                        e,
-                                        'isRead_uni_assist_task_assigned'
-                                    )
-                                }
-                                severity="warning"
-                                sx={{ display: 'flex', alignItems: 'center' }}
-                            >
-                                <Typography
-                                    sx={{ flexGrow: 1 }}
-                                    variant="body2"
+                !student.notification.isRead_uni_assist_task_assigned &&
+                appConfig.vpdEnable &&
+                !is_all_uni_assist_vpd_uploaded(student) ? (
+                    <Grid item xs={12}>
+                        <Alert
+                            onClose={(e) =>
+                                removeBanner(
+                                    e,
+                                    'isRead_uni_assist_task_assigned'
+                                )
+                            }
+                            severity="warning"
+                            sx={{ display: 'flex', alignItems: 'center' }}
+                        >
+                            <Typography sx={{ flexGrow: 1 }} variant="body2">
+                                {t(
+                                    'Please go to Uni-Assist to apply or to get VPD'
+                                )}{' '}
+                                <Link
+                                    component={LinkDom}
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        ml: 1
+                                    }}
+                                    target="_blank"
+                                    to={DEMO.UNI_ASSIST_LINK}
+                                    underline="hover"
                                 >
-                                    {t(
-                                        'Please go to Uni-Assist to apply or to get VPD'
-                                    )}{' '}
-                                    <Link
-                                        component={LinkDom}
-                                        sx={{
-                                            fontWeight: 'bold',
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            ml: 1
-                                        }}
-                                        target="_blank"
-                                        to={DEMO.UNI_ASSIST_LINK}
-                                        underline="hover"
-                                    >
-                                        {t('Uni-Assist')}
-                                        <LaunchIcon
-                                            fontSize="small"
-                                            sx={{ ml: 0.5 }}
-                                        />
-                                    </Link>
-                                </Typography>
-                            </Alert>
-                        </Grid> : null}
+                                    {t('Uni-Assist')}
+                                    <LaunchIcon
+                                        fontSize="small"
+                                        sx={{ ml: 0.5 }}
+                                    />
+                                </Link>
+                            </Typography>
+                        </Alert>
+                    </Grid>
+                ) : null}
                 {/* new agents assigned banner */}
                 {student.notification &&
-                    !student.notification.isRead_new_agent_assigned ? <Grid item xs={12}>
-                            <Alert
-                                onClose={(e) =>
-                                    removeBanner(e, 'isRead_new_agent_assigned')
-                                }
-                                severity="success"
-                            >
-                                {t('New agent is assigned to you')}
-                            </Alert>
-                        </Grid> : null}
+                !student.notification.isRead_new_agent_assigned ? (
+                    <Grid item xs={12}>
+                        <Alert
+                            onClose={(e) =>
+                                removeBanner(e, 'isRead_new_agent_assigned')
+                            }
+                            severity="success"
+                        >
+                            {t('New agent is assigned to you')}
+                        </Alert>
+                    </Grid>
+                ) : null}
                 {/* new editors assigned banner */}
                 {student.notification &&
-                    !student.notification.isRead_new_editor_assigned ? <Grid item xs={12}>
-                            <Alert
-                                onClose={(e) =>
-                                    removeBanner(
-                                        e,
-                                        'isRead_new_editor_assigned'
-                                    )
-                                }
-                                severity="success"
-                            >
-                                {t('New editor is assigned to you')}
-                            </Alert>
-                        </Grid> : null}
+                !student.notification.isRead_new_editor_assigned ? (
+                    <Grid item xs={12}>
+                        <Alert
+                            onClose={(e) =>
+                                removeBanner(e, 'isRead_new_editor_assigned')
+                            }
+                            severity="success"
+                        >
+                            {t('New editor is assigned to you')}
+                        </Alert>
+                    </Grid>
+                ) : null}
                 {/* new CV ML RL Essay message */}
                 {student.notification &&
-                    !student.notification.isRead_new_cvmlrl_messsage ? <Grid item xs={12}>
-                            <Alert
-                                onClose={(e) =>
-                                    removeBanner(
-                                        e,
-                                        'isRead_new_cvmlrl_messsage'
-                                    )
-                                }
-                                severity="warning"
-                                sx={{ display: 'flex', alignItems: 'center' }}
-                            >
-                                <Typography
-                                    sx={{ flexGrow: 1 }}
-                                    variant="body2"
+                !student.notification.isRead_new_cvmlrl_messsage ? (
+                    <Grid item xs={12}>
+                        <Alert
+                            onClose={(e) =>
+                                removeBanner(e, 'isRead_new_cvmlrl_messsage')
+                            }
+                            severity="warning"
+                            sx={{ display: 'flex', alignItems: 'center' }}
+                        >
+                            <Typography sx={{ flexGrow: 1 }} variant="body2">
+                                {t('New feedback from your Editor')}{' '}
+                                <Link
+                                    component={LinkDom}
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        ml: 1
+                                    }}
+                                    target="_blank"
+                                    to={DEMO.CV_ML_RL_CENTER_LINK}
+                                    underline="hover"
                                 >
-                                    {t('New feedback from your Editor')}{' '}
-                                    <Link
-                                        component={LinkDom}
-                                        sx={{
-                                            fontWeight: 'bold',
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            ml: 1
-                                        }}
-                                        target="_blank"
-                                        to={DEMO.CV_ML_RL_CENTER_LINK}
-                                        underline="hover"
-                                    >
-                                        {t('CV/ML/RL Center', { ns: 'common' })}
-                                        <LaunchIcon
-                                            fontSize="small"
-                                            sx={{ ml: 0.5 }}
-                                        />
-                                    </Link>
-                                </Typography>
-                            </Alert>
-                        </Grid> : null}
+                                    {t('CV/ML/RL Center', { ns: 'common' })}
+                                    <LaunchIcon
+                                        fontSize="small"
+                                        sx={{ ml: 0.5 }}
+                                    />
+                                </Link>
+                            </Typography>
+                        </Alert>
+                    </Grid>
+                ) : null}
                 {/* TODO: check function : new cv ml rl tasks are asigned to you */}
                 {student.notification &&
-                    !student.notification.isRead_new_cvmlrl_tasks_created ? <Grid item xs={12}>
-                            <Alert
-                                onClose={(e) =>
-                                    removeBanner(
-                                        e,
-                                        'isRead_new_cvmlrl_tasks_created'
-                                    )
-                                }
-                                severity="warning"
-                                sx={{ display: 'flex', alignItems: 'center' }}
-                            >
-                                <Typography
-                                    sx={{ flexGrow: 1 }}
-                                    variant="body2"
+                !student.notification.isRead_new_cvmlrl_tasks_created ? (
+                    <Grid item xs={12}>
+                        <Alert
+                            onClose={(e) =>
+                                removeBanner(
+                                    e,
+                                    'isRead_new_cvmlrl_tasks_created'
+                                )
+                            }
+                            severity="warning"
+                            sx={{ display: 'flex', alignItems: 'center' }}
+                        >
+                            <Typography sx={{ flexGrow: 1 }} variant="body2">
+                                {t('New tasks are assigned to you')}{' '}
+                                <Link
+                                    component={LinkDom}
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        ml: 1
+                                    }}
+                                    target="_blank"
+                                    to={DEMO.CV_ML_RL_CENTER_LINK}
+                                    underline="hover"
                                 >
-                                    {t('New tasks are assigned to you')}{' '}
-                                    <Link
-                                        component={LinkDom}
-                                        sx={{
-                                            fontWeight: 'bold',
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            ml: 1
-                                        }}
-                                        target="_blank"
-                                        to={DEMO.CV_ML_RL_CENTER_LINK}
-                                        underline="hover"
-                                    >
-                                        {t('CV/ML/RL Center', { ns: 'common' })}
-                                        <LaunchIcon
-                                            fontSize="small"
-                                            sx={{ ml: 0.5 }}
-                                        />
-                                    </Link>
-                                </Typography>
-                            </Alert>
-                        </Grid> : null}
+                                    {t('CV/ML/RL Center', { ns: 'common' })}
+                                    <LaunchIcon
+                                        fontSize="small"
+                                        sx={{ ml: 0.5 }}
+                                    />
+                                </Link>
+                            </Typography>
+                        </Alert>
+                    </Grid>
+                ) : null}
                 {student.notification &&
-                    !student.notification.isRead_new_programs_assigned &&
-                    !check_applications_to_decided(student) ? <Grid item xs={12}>
-                            <Alert
-                                onClose={(e) =>
-                                    removeBanner(
-                                        e,
-                                        'isRead_new_programs_assigned'
-                                    )
-                                }
-                                severity="warning"
-                                sx={{ display: 'flex', alignItems: 'center' }}
-                            >
-                                <Typography
-                                    sx={{ flexGrow: 1 }}
-                                    variant="body2"
+                !student.notification.isRead_new_programs_assigned &&
+                !check_applications_to_decided(student) ? (
+                    <Grid item xs={12}>
+                        <Alert
+                            onClose={(e) =>
+                                removeBanner(e, 'isRead_new_programs_assigned')
+                            }
+                            severity="warning"
+                            sx={{ display: 'flex', alignItems: 'center' }}
+                        >
+                            <Typography sx={{ flexGrow: 1 }} variant="body2">
+                                {t('It looks like you did not decide programs')}{' '}
+                                <Link
+                                    component={LinkDom}
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        ml: 1
+                                    }}
+                                    target="_blank"
+                                    to={DEMO.STUDENT_APPLICATIONS_LINK}
+                                    underline="hover"
                                 >
-                                    {t(
-                                        'It looks like you did not decide programs'
-                                    )}{' '}
-                                    <Link
-                                        component={LinkDom}
-                                        sx={{
-                                            fontWeight: 'bold',
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            ml: 1
-                                        }}
-                                        target="_blank"
-                                        to={DEMO.STUDENT_APPLICATIONS_LINK}
-                                        underline="hover"
-                                    >
-                                        {t('Application Overview', {
-                                            ns: 'common'
-                                        })}
-                                        <LaunchIcon
-                                            fontSize="small"
-                                            sx={{ ml: 0.5 }}
-                                        />
-                                    </Link>
-                                </Typography>
-                            </Alert>
-                        </Grid> : null}
+                                    {t('Application Overview', {
+                                        ns: 'common'
+                                    })}
+                                    <LaunchIcon
+                                        fontSize="small"
+                                        sx={{ ml: 0.5 }}
+                                    />
+                                </Link>
+                            </Typography>
+                        </Alert>
+                    </Grid>
+                ) : null}
                 {student.notification &&
-                    !student.notification.isRead_base_documents_missing &&
-                    are_base_documents_missing(student) ? <Grid item xs={12}>
-                            <Alert
-                                onClose={(e) =>
-                                    removeBanner(
-                                        e,
-                                        'isRead_base_documents_missing'
-                                    )
-                                }
-                                severity="warning"
-                                sx={{ display: 'flex', alignItems: 'center' }}
-                            >
-                                <Typography
-                                    sx={{ flexGrow: 1 }}
-                                    variant="body2"
+                !student.notification.isRead_base_documents_missing &&
+                are_base_documents_missing(student) ? (
+                    <Grid item xs={12}>
+                        <Alert
+                            onClose={(e) =>
+                                removeBanner(e, 'isRead_base_documents_missing')
+                            }
+                            severity="warning"
+                            sx={{ display: 'flex', alignItems: 'center' }}
+                        >
+                            <Typography sx={{ flexGrow: 1 }} variant="body2">
+                                {t('Some of Base Documents are still missing')}{' '}
+                                <Link
+                                    component={LinkDom}
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        ml: 1
+                                    }}
+                                    target="_blank"
+                                    to={DEMO.BASE_DOCUMENTS_LINK}
+                                    underline="hover"
                                 >
-                                    {t(
-                                        'Some of Base Documents are still missing'
-                                    )}{' '}
-                                    <Link
-                                        component={LinkDom}
-                                        sx={{
-                                            fontWeight: 'bold',
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            ml: 1
-                                        }}
-                                        target="_blank"
-                                        to={DEMO.BASE_DOCUMENTS_LINK}
-                                        underline="hover"
-                                    >
-                                        {t('My Documents', { ns: 'common' })}
-                                        <LaunchIcon
-                                            fontSize="small"
-                                            sx={{ ml: 0.5 }}
-                                        />
-                                    </Link>
-                                </Typography>
-                            </Alert>
-                        </Grid> : null}
+                                    {t('My Documents', { ns: 'common' })}
+                                    <LaunchIcon
+                                        fontSize="small"
+                                        sx={{ ml: 0.5 }}
+                                    />
+                                </Link>
+                            </Typography>
+                        </Alert>
+                    </Grid>
+                ) : null}
                 {student.notification &&
-                    !student.notification.isRead_base_documents_rejected &&
-                    isBaseDocumentsRejected(student) ? <Grid item xs={12}>
-                            <Alert
-                                onClose={(e) =>
-                                    removeBanner(
-                                        e,
-                                        'isRead_base_documents_rejected'
-                                    )
-                                }
-                                severity="warning"
-                                sx={{ display: 'flex', alignItems: 'center' }}
-                            >
-                                <Typography
-                                    sx={{ flexGrow: 1 }}
-                                    variant="body2"
+                !student.notification.isRead_base_documents_rejected &&
+                isBaseDocumentsRejected(student) ? (
+                    <Grid item xs={12}>
+                        <Alert
+                            onClose={(e) =>
+                                removeBanner(
+                                    e,
+                                    'isRead_base_documents_rejected'
+                                )
+                            }
+                            severity="warning"
+                            sx={{ display: 'flex', alignItems: 'center' }}
+                        >
+                            <Typography sx={{ flexGrow: 1 }} variant="body2">
+                                {t('Some of Base Documents are rejected')}{' '}
+                                <Link
+                                    component={LinkDom}
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        ml: 1
+                                    }}
+                                    target="_blank"
+                                    to={DEMO.BASE_DOCUMENTS_LINK}
+                                    underline="hover"
                                 >
-                                    {t('Some of Base Documents are rejected')}{' '}
-                                    <Link
-                                        component={LinkDom}
-                                        sx={{
-                                            fontWeight: 'bold',
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            ml: 1
-                                        }}
-                                        target="_blank"
-                                        to={DEMO.BASE_DOCUMENTS_LINK}
-                                        underline="hover"
-                                    >
-                                        {t('My Documents', { ns: 'common' })}
-                                        <LaunchIcon
-                                            fontSize="small"
-                                            sx={{ ml: 0.5 }}
-                                        />
-                                    </Link>
-                                </Typography>
-                            </Alert>
-                        </Grid> : null}
+                                    {t('My Documents', { ns: 'common' })}
+                                    <LaunchIcon
+                                        fontSize="small"
+                                        sx={{ ml: 0.5 }}
+                                    />
+                                </Link>
+                            </Typography>
+                        </Alert>
+                    </Grid>
+                ) : null}
                 <Grid item md={12} xs={12}>
-                    {needGraduatedApplicantsButStudentNotGraduated(student) ? <Card sx={{ border: '4px solid red' }}>
+                    {needGraduatedApplicantsButStudentNotGraduated(student) ? (
+                        <Card sx={{ border: '4px solid red' }}>
                             <Alert severity="warning">
                                 {t(
                                     'Programs below are only for graduated applicants',
@@ -461,7 +442,8 @@ const StudentDashboard = (props) => {
                                     </Link>
                                 </ListItem>
                             ))}
-                        </Card> : null}
+                        </Card>
+                    ) : null}
                 </Grid>
                 <Grid item md={12} xs={12}>
                     <ProgramLanguageNotMatchedBanner student={student} />
@@ -497,7 +479,8 @@ const StudentDashboard = (props) => {
                 </Grid>
                 <Grid item md={4} xs={12}>
                     <Box>
-                        {appConfig.meetingEnable ? <Grid container spacing={2}>
+                        {appConfig.meetingEnable ? (
+                            <Grid container spacing={2}>
                                 <Grid item xs={12}>
                                     <Card sx={{ p: 2 }}>
                                         <Grid container spacing={2}>
@@ -605,7 +588,8 @@ const StudentDashboard = (props) => {
                                         </Grid>
                                     </Card>
                                 </Grid>
-                            </Grid> : null}
+                            </Grid>
+                        ) : null}
                     </Box>
                 </Grid>
             </Grid>
@@ -623,6 +607,6 @@ const StudentDashboard = (props) => {
             </Grid>
         </>
     );
-}
+};
 
 export default StudentDashboard;

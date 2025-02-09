@@ -89,12 +89,15 @@ const StudentApplicationsAssignProgramlistPage = (props) => {
 
     return (
         <Box>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
-            {is_TaiGer_Student(user) ? <Dialog open={showProgramCorrectnessReminderModal}>
+                />
+            ) : null}
+            {is_TaiGer_Student(user) ? (
+                <Dialog open={showProgramCorrectnessReminderModal}>
                     <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                     <DialogContent>
                         <Typography
@@ -116,7 +119,8 @@ const StudentApplicationsAssignProgramlistPage = (props) => {
                             {t('Accept', { ns: 'common' })}
                         </Button>
                     </DialogActions>
-                </Dialog> : null}
+                </Dialog>
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
                     color="inherit"
@@ -126,7 +130,8 @@ const StudentApplicationsAssignProgramlistPage = (props) => {
                 >
                     {appConfig.companyName}
                 </Link>
-                {is_TaiGer_role(user) ? <Link
+                {is_TaiGer_role(user) ? (
+                    <Link
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
@@ -136,7 +141,8 @@ const StudentApplicationsAssignProgramlistPage = (props) => {
                         underline="hover"
                     >
                         {props.student.firstname} {props.student.lastname}
-                    </Link> : null}
+                    </Link>
+                ) : null}
                 <Typography color="text.primary">
                     {t('Applications')}
                 </Typography>
@@ -145,9 +151,11 @@ const StudentApplicationsAssignProgramlistPage = (props) => {
                 <Grid item md={is_TaiGer_role(user) ? 6 : 12} xs={12}>
                     <StudentPreferenceCard student={props.student} />
                 </Grid>
-                {is_TaiGer_role(user) ? <Grid item md={6} xs={12}>
+                {is_TaiGer_role(user) ? (
+                    <Grid item md={6} xs={12}>
                         <ImportStudentProgramsCard student={props.student} />
-                    </Grid> : null}
+                    </Grid>
+                ) : null}
             </Grid>
             <>
                 <ProgramList
@@ -165,6 +173,6 @@ const StudentApplicationsAssignProgramlistPage = (props) => {
             </>
         </Box>
     );
-}
+};
 
 export default StudentApplicationsAssignProgramlistPage;

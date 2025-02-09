@@ -290,11 +290,13 @@ const DocCreatePage = (props) => {
     TabTitle('Docs Database');
     return (
         <Box>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
                     color="inherit"
@@ -314,47 +316,47 @@ const DocCreatePage = (props) => {
 
             {DocCreatePageState.isEdit ? (
                 <Card sx={{ mt: 2, p: 4 }}>
-                        <FormControl fullWidth size="small">
-                            <InputLabel id="select-target-group">
-                                {t('Select Target Group')}
-                            </InputLabel>
-                            <Select
-                                id="decided"
-                                label="Select target group"
-                                labelId="decided"
-                                name="decided"
-                                onChange={(e) => handleChange_category(e)}
-                            >
-                                <MenuItem value="">
-                                    Select Document Category
+                    <FormControl fullWidth size="small">
+                        <InputLabel id="select-target-group">
+                            {t('Select Target Group')}
+                        </InputLabel>
+                        <Select
+                            id="decided"
+                            label="Select target group"
+                            labelId="decided"
+                            name="decided"
+                            onChange={(e) => handleChange_category(e)}
+                        >
+                            <MenuItem value="">
+                                Select Document Category
+                            </MenuItem>
+                            {valid_categories.map((cat, i) => (
+                                <MenuItem key={i} value={cat.key}>
+                                    {cat.value}
                                 </MenuItem>
-                                {valid_categories.map((cat, i) => (
-                                    <MenuItem key={i} value={cat.key}>
-                                        {cat.value}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <TextField
-                            defaultValue=""
-                            id="doc_title"
-                            label="title"
-                            onChange={(e) => handleChange_doc_title(e)}
-                            placeholder="title"
-                            size="small"
-                            sx={{ mt: 1 }}
-                            type="text"
-                        />
-                        <DocumentsListItemsEditor
-                            category={DocCreatePageState.category}
-                            doc_title={DocCreatePageState.doc_title}
-                            editorState={DocCreatePageState.editorState}
-                            handleClickSave={handleClickSave}
-                            handleClickEditToggle={handleClickEditToggle}
-                            // readOnlyMode={readOnlyMode}
-                            role={props.role}
-                        />
-                    </Card>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <TextField
+                        defaultValue=""
+                        id="doc_title"
+                        label="title"
+                        onChange={(e) => handleChange_doc_title(e)}
+                        placeholder="title"
+                        size="small"
+                        sx={{ mt: 1 }}
+                        type="text"
+                    />
+                    <DocumentsListItemsEditor
+                        category={DocCreatePageState.category}
+                        doc_title={DocCreatePageState.doc_title}
+                        editorState={DocCreatePageState.editorState}
+                        handleClickSave={handleClickSave}
+                        handleClickEditToggle={handleClickEditToggle}
+                        // readOnlyMode={readOnlyMode}
+                        role={props.role}
+                    />
+                </Card>
             ) : (
                 <Grid container spacing={2} sx={{ mt: 1 }}>
                     {documentlist_key.map((catego, i) => (
@@ -368,13 +370,15 @@ const DocCreatePage = (props) => {
                         </Grid>
                     ))}
                     <Grid item xs={12}>
-                        {is_TaiGer_AdminAgent(user) ? <Button
+                        {is_TaiGer_AdminAgent(user) ? (
+                            <Button
                                 color="primary"
                                 onClick={handleClick}
                                 variant="contained"
                             >
                                 {t('Add', { ns: 'common' })}
-                            </Button> : null}
+                            </Button>
+                        ) : null}
                     </Grid>
                 </Grid>
             )}
@@ -400,6 +404,6 @@ const DocCreatePage = (props) => {
             </Dialog>
         </Box>
     );
-}
+};
 
 export default DocCreatePage;

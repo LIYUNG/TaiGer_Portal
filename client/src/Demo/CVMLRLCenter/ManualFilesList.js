@@ -46,6 +46,6 @@ const ManualFilesList = (props) => {
     }
 
     return <>{message_threads}</>;
-}
+};
 
 export default ManualFilesList;

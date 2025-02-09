@@ -274,7 +274,8 @@ const ApplicationOverviewTabs = (props) => {
                     </Tabs>
                 </Box>
                 <CustomTabPanel index={0} value={value}>
-                    {is_TaiGer_role(user) ? <TabStudBackgroundDashboard
+                    {is_TaiGer_role(user) ? (
+                        <TabStudBackgroundDashboard
                             students={students?.filter(
                                 (student) => !student.archiv
                             )}
@@ -286,7 +287,8 @@ const ApplicationOverviewTabs = (props) => {
                             updateStudentArchivStatus={
                                 updateStudentArchivStatus
                             }
-                        /> : null}
+                        />
+                    ) : null}
                 </CustomTabPanel>
                 <CustomTabPanel index={1} value={value}>
                     <div style={{ height: '50%', width: '100%' }}>
@@ -375,13 +377,15 @@ const ApplicationOverviewTabs = (props) => {
                     />
                 </CustomTabPanel>
             </Box>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
         </>
     );
-}
+};
 
 export default ApplicationOverviewTabs;

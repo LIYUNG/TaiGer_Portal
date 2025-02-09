@@ -23,6 +23,6 @@ const LearningResources = () => {
             </Card>
         </Box>
     );
-}
+};
 
 export default LearningResources;

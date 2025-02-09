@@ -693,9 +693,11 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                 </Grid>
                 {/* Right content */}
                 {/* Right side: Configuration panel */}
-                {!isSmallScreen ? <Grid item md={5} sx={{ overflowY: 'auto' }} xs={12}>
+                {!isSmallScreen ? (
+                    <Grid item md={5} sx={{ overflowY: 'auto' }} xs={12}>
                         <Paper style={{ padding: 16 }}>
-                            {selectedARow ? <EditCard
+                            {selectedARow ? (
+                                <EditCard
                                     data={
                                         courseKeywordSetsState[
                                             parseInt(
@@ -706,12 +708,15 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                                     setCourseKeywordSetsState={
                                         setCourseKeywordSetsState
                                     }
-                                /> : null}
+                                />
+                            ) : null}
                         </Paper>
-                    </Grid> : null}
+                    </Grid>
+                ) : null}
             </Grid>
             {/* Drawer for small screens */}
-            {isSmallScreen ? <Drawer
+            {isSmallScreen ? (
+                <Drawer
                     anchor="right"
                     onClose={handleDrawerClose}
                     open={drawerOpen}
@@ -742,7 +747,8 @@ const CourseKeywordsOverview = ({ courseKeywordSets }) => {
                             {t('Close')}
                         </Button>
                     </div>
-                </Drawer> : null}
+                </Drawer>
+            ) : null}
             <Dialog
                 aria-describedby="error-dialog-description"
                 aria-labelledby="error-dialog-title"

@@ -111,18 +111,20 @@ const SingleProgram = () => {
                                 open={modalShowAssignWindowOpen}
                                 programs={[loadedData.data]}
                             />
-                            {singleProgramState.modalShowDiffWindow ? <ProgramDiffModal
+                            {singleProgramState.modalShowDiffWindow ? (
+                                <ProgramDiffModal
                                     open={
                                         singleProgramState.modalShowDiffWindow
                                     }
                                     originalProgram={loadedData.data}
                                     setModalHide={setDiffModal(false)}
-                                /> : null}
+                                />
+                            ) : null}
                         </>
                     )}
                 </Await>
             </Suspense>
         </Box>
     );
-}
+};
 export default SingleProgram;

@@ -28,36 +28,38 @@ const CVAssignTasksCard = (props) => {
             <>
                 {/* cv assign tasks */}
                 {!isCVFinished(props.student) &&
-                    !is_cv_assigned(props.student) ? <>
-                            <TableCell>
-                                <Link
-                                    component={LinkDom}
-                                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                        props.student._id.toString(),
-                                        DEMO.CVMLRL_HASH
-                                    )}`}
-                                >
-                                    CV
-                                </Link>
-                            </TableCell>
-                            <TableCell>
-                                <b>
-                                    {props.student.firstname}{' '}
-                                    {props.student.lastname}
-                                </b>
-                            </TableCell>
-                            <TableCell>
-                                {props.student.application_preference
-                                    ?.expected_application_date || (
-                                    <span className="text-danger">TBD</span>
-                                )}
-                                /
-                                {props.student.application_preference
-                                    ?.expected_application_semester || (
-                                    <span className="text-danger">TBD</span>
-                                )}
-                            </TableCell>
-                        </> : null}
+                !is_cv_assigned(props.student) ? (
+                    <>
+                        <TableCell>
+                            <Link
+                                component={LinkDom}
+                                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                    props.student._id.toString(),
+                                    DEMO.CVMLRL_HASH
+                                )}`}
+                            >
+                                CV
+                            </Link>
+                        </TableCell>
+                        <TableCell>
+                            <b>
+                                {props.student.firstname}{' '}
+                                {props.student.lastname}
+                            </b>
+                        </TableCell>
+                        <TableCell>
+                            {props.student.application_preference
+                                ?.expected_application_date || (
+                                <span className="text-danger">TBD</span>
+                            )}
+                            /
+                            {props.student.application_preference
+                                ?.expected_application_semester || (
+                                <span className="text-danger">TBD</span>
+                            )}
+                        </TableCell>
+                    </>
+                ) : null}
             </>
         );
     };
@@ -73,28 +75,28 @@ const CVAssignTasksCard = (props) => {
         ));
     return (
         <Card sx={{ mb: 2 }}>
-                <Alert severity="error">
-                    <Typography>{t('CV Not Assigned Yet')}</Typography>
-                </Alert>
-                <TableContainer style={{ maxHeight: '300px' }}>
-                    <Table size="small">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Docs</TableCell>
-                                <TableCell>
-                                    {t('Student', { ns: 'common' })}
-                                </TableCell>
-                                <TableCell>
-                                    {t('Year', { ns: 'common' })}/
-                                    {t('Semester', { ns: 'common' })}
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>{cv_assign_tasks}</TableBody>
-                    </Table>
-                </TableContainer>
-            </Card>
+            <Alert severity="error">
+                <Typography>{t('CV Not Assigned Yet')}</Typography>
+            </Alert>
+            <TableContainer style={{ maxHeight: '300px' }}>
+                <Table size="small">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Docs</TableCell>
+                            <TableCell>
+                                {t('Student', { ns: 'common' })}
+                            </TableCell>
+                            <TableCell>
+                                {t('Year', { ns: 'common' })}/
+                                {t('Semester', { ns: 'common' })}
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>{cv_assign_tasks}</TableBody>
+                </Table>
+            </TableContainer>
+        </Card>
     );
-}
+};
 
 export default CVAssignTasksCard;

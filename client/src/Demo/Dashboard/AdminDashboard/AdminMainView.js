@@ -96,13 +96,15 @@ const AdminMainView = (props) => {
                     />
                 </Grid>
             </Grid>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
         </>
     );
-}
+};
 
 export default AdminMainView;

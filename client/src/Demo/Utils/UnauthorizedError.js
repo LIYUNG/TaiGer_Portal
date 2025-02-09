@@ -12,6 +12,6 @@ const UnauthorizedError = () => {
             </Card>
         </Box>
     );
-}
+};
 
 export default UnauthorizedError;

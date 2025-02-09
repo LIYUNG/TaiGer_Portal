@@ -8,6 +8,6 @@ const ResourceLockedError = () => {
             <Card>The resource is locked and can not be changed.</Card>
         </Box>
     );
-}
+};
 
 export default ResourceLockedError;

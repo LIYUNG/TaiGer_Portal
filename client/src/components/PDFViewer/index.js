@@ -88,19 +88,19 @@ const PDFViewer = (apiFilePath, path) => {
                                 size="small"
                                 startIcon={<ZoomInIcon />}
                                 variant="outlined"
-                             />
+                            />
                             <Button
                                 onClick={handleZoomOut}
                                 size="small"
                                 startIcon={<ZoomOutIcon />}
                                 variant="outlined"
-                             />
+                            />
                             <Button
                                 onClick={handleDownload}
                                 size="small"
                                 startIcon={<DownloadIcon />}
                                 variant="outlined"
-                             />
+                            />
                         </Box>
                     </Box>
                 </>

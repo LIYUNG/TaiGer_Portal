@@ -95,5 +95,5 @@ const ProgramReportUpdateModal = (props) => {
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default ProgramReportUpdateModal;

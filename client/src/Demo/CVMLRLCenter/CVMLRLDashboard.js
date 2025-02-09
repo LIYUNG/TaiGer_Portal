@@ -87,11 +87,13 @@ const CVMLRLDashboard = (props) => {
 
     return (
         <>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
 
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
@@ -199,6 +201,6 @@ const CVMLRLDashboard = (props) => {
             </CustomTabPanel>
         </>
     );
-}
+};
 
 export default CVMLRLDashboard;

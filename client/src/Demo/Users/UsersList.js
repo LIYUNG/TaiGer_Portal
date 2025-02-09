@@ -287,11 +287,13 @@ const UsersList = (props) => {
 
     return (
         <>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Table size="small">
                 <TableHead>{headers}</TableHead>
                 <TableBody>{users}</TableBody>
@@ -329,6 +331,6 @@ const UsersList = (props) => {
             />
         </>
     );
-}
+};
 
 export default UsersList;

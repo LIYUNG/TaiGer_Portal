@@ -18,6 +18,6 @@ const MessageList = (props) => {
         />
     ));
     return <>{thread}</>;
-}
+};
 
 export default MessageList;

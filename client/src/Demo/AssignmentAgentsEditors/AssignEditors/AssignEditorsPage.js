@@ -75,6 +75,6 @@ const AssignEditorsPage = (props) => {
             </Card>
         </Box>
     );
-}
+};
 
 export default AssignEditorsPage;

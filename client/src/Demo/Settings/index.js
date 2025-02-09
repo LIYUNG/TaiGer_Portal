@@ -162,11 +162,13 @@ const Settings = () => {
                 </Typography>
             </Breadcrumbs>
 
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
 
             <Box sx={{ mx: 2 }}>
                 <Typography variant="h6">{t('Preference')}</Typography>
@@ -275,6 +277,6 @@ const Settings = () => {
             </Dialog>
         </Box>
     );
-}
+};
 
 export default Settings;

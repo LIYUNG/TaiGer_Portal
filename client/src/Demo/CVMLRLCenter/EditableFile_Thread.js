@@ -101,22 +101,24 @@ const EditableFile_Thread = (props) => {
                         spacing={1}
                     >
                         {is_TaiGer_role(user) &&
-                            !props.thread.isFinalVersion ? <Tooltip
-                                    title={t('Set as final version', {
-                                        ns: 'common'
-                                    })}
+                        !props.thread.isFinalVersion ? (
+                            <Tooltip
+                                title={t('Set as final version', {
+                                    ns: 'common'
+                                })}
+                            >
+                                <IconButton
+                                    onClick={() =>
+                                        handleAsFinalFileThread(
+                                            documenName,
+                                            true
+                                        )
+                                    }
                                 >
-                                    <IconButton
-                                        onClick={() =>
-                                            handleAsFinalFileThread(
-                                                documenName,
-                                                true
-                                            )
-                                        }
-                                    >
-                                        <CheckIcon color="success" size={24} />
-                                    </IconButton>
-                                </Tooltip> : null}
+                                    <CheckIcon color="success" size={24} />
+                                </IconButton>
+                            </Tooltip>
+                        ) : null}
                         {props.thread.isFinalVersion ? (
                             is_TaiGer_role(user) ? (
                                 <Tooltip title={t('Undo', { ns: 'common' })}>
@@ -139,7 +141,8 @@ const EditableFile_Thread = (props) => {
                         ) : (
                             <></>
                         )}
-                        {is_TaiGer_role(user) ? <Tooltip title={t('Delete', { ns: 'common' })}>
+                        {is_TaiGer_role(user) ? (
+                            <Tooltip title={t('Delete', { ns: 'common' })}>
                                 <IconButton>
                                     <DeleteIcon
                                         onClick={() =>
@@ -147,7 +150,8 @@ const EditableFile_Thread = (props) => {
                                         }
                                     />
                                 </IconButton>
-                            </Tooltip> : null}
+                            </Tooltip>
+                        ) : null}
                     </Stack>
                 </Grid>
             </Grid>
@@ -155,6 +159,6 @@ const EditableFile_Thread = (props) => {
     );
 
     return <>{fileStatus}</>;
-}
+};
 
 export default EditableFile_Thread;

@@ -9,6 +9,6 @@ const SurveyComponent = () => {
             <SurveyEditableComponent />
         </Box>
     );
-}
+};
 
 export default SurveyComponent;

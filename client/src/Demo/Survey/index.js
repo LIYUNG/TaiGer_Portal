@@ -26,7 +26,8 @@ const Survey = () => {
 
     return (
         <Box data-testid="student_survey">
-            {is_TaiGer_Student(user) ? <Breadcrumbs aria-label="breadcrumb">
+            {is_TaiGer_Student(user) ? (
+                <Breadcrumbs aria-label="breadcrumb">
                     <Link
                         color="inherit"
                         component={LinkDom}
@@ -38,7 +39,8 @@ const Survey = () => {
                     <Typography color="text.primary">
                         {t('My Profile', { ns: 'common' })}
                     </Typography>
-                </Breadcrumbs> : null}
+                </Breadcrumbs>
+            ) : null}
             <Box
                 alignItems="center"
                 display="flex"
@@ -63,6 +65,6 @@ const Survey = () => {
             </SurveyProvider>
         </Box>
     );
-}
+};
 
 export default Survey;

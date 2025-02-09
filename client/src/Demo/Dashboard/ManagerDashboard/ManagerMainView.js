@@ -226,7 +226,8 @@ const ManagerMainView = (props) => {
                                         </TableRow>
                                         {managerMainViewState.collapsedRows[
                                             idx
-                                        ] ? <TableRow>
+                                        ] ? (
+                                            <TableRow>
                                                 <td colSpan="12">
                                                     <ApplicationProgressCardBody
                                                         application={
@@ -237,7 +238,8 @@ const ManagerMainView = (props) => {
                                                         }
                                                     />
                                                 </td>
-                                            </TableRow> : null}
+                                            </TableRow>
+                                        ) : null}
                                     </Fragment>
                                 ))}
                             </TableBody>
@@ -254,27 +256,32 @@ const ManagerMainView = (props) => {
                             (agent) => agent._id === user._id.toString()
                         )
                     )
-                ) ? <ReadyToSubmitTasksCard
+                ) ? (
+                    <ReadyToSubmitTasksCard
                         students={props.students}
                         user={user}
-                    /> : null}
+                    />
+                ) : null}
                 {is_any_vpd_missing(
                     props.students.filter((student) =>
                         student.agents.some(
                             (agent) => agent._id === user._id.toString()
                         )
                     )
-                ) ? <VPDToSubmitTasksCard
+                ) ? (
+                    <VPDToSubmitTasksCard
                         students={props.students}
                         user={user}
-                    /> : null}
+                    />
+                ) : null}
                 {is_any_base_documents_uploaded(
                     props.students.filter((student) =>
                         student.agents.some(
                             (agent) => agent._id === user._id.toString()
                         )
                     )
-                ) ? <Card>
+                ) ? (
+                    <Card>
                         <ReportProblemIcon size={18} /> Check uploaded base
                         documents:
                         <Box className="py-0 px-0 card-scrollable-body">
@@ -306,26 +313,26 @@ const ManagerMainView = (props) => {
                                 </TableBody>
                             </Table>
                         </Box>
-                    </Card> : null}
+                    </Card>
+                ) : null}
                 {isAnyCVNotAssigned(
                     props.students.filter((student) =>
                         student.agents.some(
                             (agent) => agent._id === user._id.toString()
                         )
                     )
-                ) ? <CVAssignTasksCard students={props.students} user={user} /> : null}
+                ) ? (
+                    <CVAssignTasksCard students={props.students} user={user} />
+                ) : null}
                 {anyStudentWithoutApplicationSelection(
                     props.students.filter((student) =>
                         student.agents.some(
                             (agent) => agent._id === user._id.toString()
                         )
                     )
-                ) ? <Grid item xs={6}>
-                        <Card
-                            bg="danger"
-                            className="my-2 mx-0"
-                            text="light"
-                        >
+                ) ? (
+                    <Grid item xs={6}>
+                        <Card bg="danger" className="my-2 mx-0" text="light">
                             <Typography variant="h6">
                                 <ReportProblemIcon size={18} /> No Program
                                 Selected Yet:
@@ -342,7 +349,8 @@ const ManagerMainView = (props) => {
                                 </TableBody>
                             </Table>
                         </Card>
-                    </Grid> : null}
+                    </Grid>
+                ) : null}
                 <NoEnoughDecidedProgramsTasksCard
                     students={props.students}
                     user={user}
@@ -363,6 +371,6 @@ const ManagerMainView = (props) => {
             </Box>
         </>
     );
-}
+};
 
 export default ManagerMainView;

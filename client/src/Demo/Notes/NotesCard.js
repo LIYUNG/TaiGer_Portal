@@ -77,15 +77,15 @@ const NotesCard = (props) => {
 
     return (
         <NotesEditor
-                buttonDisabled={notesCardState.buttonDisabled}
-                editorState={notesCardState.editorState}
-                handleClickSave={handleClickSave}
-                handleEditorChange={handleEditorChange}
-                notes_id={`notes-${props.student_id}`}
-                thread={notesCardState.thread}
-                unique_id={props.student_id}
-            />
+            buttonDisabled={notesCardState.buttonDisabled}
+            editorState={notesCardState.editorState}
+            handleClickSave={handleClickSave}
+            handleEditorChange={handleEditorChange}
+            notes_id={`notes-${props.student_id}`}
+            thread={notesCardState.thread}
+            unique_id={props.student_id}
+        />
     );
-}
+};
 
 export default NotesCard;

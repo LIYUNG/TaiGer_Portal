@@ -9,6 +9,6 @@ const PageNotFoundError = () => {
             </Card>
         </Box>
     );
-}
+};
 
 export default PageNotFoundError;

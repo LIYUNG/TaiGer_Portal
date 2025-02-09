@@ -47,9 +47,11 @@ const BaseDocuments = () => {
                 >
                     {appConfig.companyName}
                 </Link>
-                {is_TaiGer_role(user) ? <Typography color="text.primary">
+                {is_TaiGer_role(user) ? (
+                    <Typography color="text.primary">
                         {t('My Students', { ns: 'common' })}
-                    </Typography> : null}
+                    </Typography>
+                ) : null}
                 {is_TaiGer_role(user) ? (
                     <Typography color="text.primary">
                         {t('Base Documents', { ns: 'common' })}
@@ -62,14 +64,15 @@ const BaseDocuments = () => {
             </Breadcrumbs>
             {isLoading ? <Loading /> : null}
             {isError ? <>{error}</> : null}
-            {!isLoading &&
-                !isError ? is_TaiGer_role(user) ? (
+            {!isLoading && !isError ? (
+                is_TaiGer_role(user) ? (
                     <BaseDocumentsTable students={students} />
                 ) : (
                     <StudentDocoumentsView />
-                ) : null}
+                )
+            ) : null}
         </Box>
     );
-}
+};
 
 export default BaseDocuments;

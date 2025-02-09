@@ -518,14 +518,18 @@ export default function MyCourses() {
 
     return (
         <Box data-testid="student_course_view">
-            {statedata.res_modal_status >= 400 ? <ModalMain
+            {statedata.res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={statedata.res_modal_message}
                     res_modal_status={statedata.res_modal_status}
-                /> : null}
-            {statedata.student.archiv ? <Box className="sticky-top">
+                />
+            ) : null}
+            {statedata.student.archiv ? (
+                <Box className="sticky-top">
                     <TopBar />
-                </Box> : null}
+                </Box>
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
                     color="inherit"
@@ -535,7 +539,8 @@ export default function MyCourses() {
                 >
                     {appConfig.companyName}
                 </Link>
-                {is_TaiGer_role(user) ? <Link
+                {is_TaiGer_role(user) ? (
+                    <Link
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
@@ -546,7 +551,8 @@ export default function MyCourses() {
                     >
                         {statedata.student.firstname}{' '}
                         {statedata.student.lastname}
-                    </Link> : null}
+                    </Link>
+                ) : null}
                 <Typography color="text.primary">
                     {t('My Courses', { ns: 'common' })}
                 </Typography>
@@ -680,7 +686,8 @@ export default function MyCourses() {
                     />
                 </TableContainer>
             </Card>
-            {is_TaiGer_AdminAgent(user) ? <Box sx={{ mt: 2 }}>
+            {is_TaiGer_AdminAgent(user) ? (
+                <Box sx={{ mt: 2 }}>
                     <FormControlLabel
                         control={
                             <Checkbox
@@ -691,7 +698,8 @@ export default function MyCourses() {
                         }
                         label="Lock Table 1 preventing student modifying it."
                     />
-                </Box> : null}
+                </Box>
+            ) : null}
             <Typography sx={{ my: 2 }} variant="body2">
                 {t('Last update', { ns: 'common' })}&nbsp;
                 {convertDate(statedata.updatedAt)}
@@ -717,15 +725,18 @@ export default function MyCourses() {
                     { ns: 'courses' }
                 )}
             </Typography>
-            {is_TaiGer_Guest(user) ? <Card sx={{ mt: 2 }}>
+            {is_TaiGer_Guest(user) ? (
+                <Card sx={{ mt: 2 }}>
                     <Typography>
                         Do you want to see result? Contact our consultant!
                     </Typography>
                     <br />
-                </Card> : null}
+                </Card>
+            ) : null}
 
             <Card sx={{ mt: 2, p: 2 }}>
-                {is_TaiGer_AdminAgent(user) ? <>
+                {is_TaiGer_AdminAgent(user) ? (
+                    <>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <Tabs
                                 aria-label="basic tabs example"
@@ -737,10 +748,7 @@ export default function MyCourses() {
                                 <Tab label="Default" {...a11yProps(0)} />
                                 <Tab
                                     label={
-                                        <Badge
-                                            badgeContent="V2"
-                                            color="error"
-                                        >
+                                        <Badge badgeContent="V2" color="error">
                                             New Analyzer
                                         </Badge>
                                     }
@@ -811,9 +819,7 @@ export default function MyCourses() {
                                             <MenuItem value="">
                                                 Select Study Group
                                             </MenuItem>
-                                            <MenuItem value="zh">
-                                                中文
-                                            </MenuItem>
+                                            <MenuItem value="zh">中文</MenuItem>
                                             <MenuItem value="en">
                                                 English (Beta Version)
                                             </MenuItem>
@@ -894,8 +900,10 @@ export default function MyCourses() {
                                 </Typography>
                             )}
                         </CustomTabPanel>
-                    </> : null}
-                {value === 0 ? <Grid container spacing={2}>
+                    </>
+                ) : null}
+                {value === 0 ? (
+                    <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <Typography variant="h6">
                                 {t('Courses Analysis', { ns: 'courses' })}
@@ -952,7 +960,8 @@ export default function MyCourses() {
                                 </Typography>
                             )}
                         </Grid>
-                    </Grid> : null}
+                    </Grid>
+                ) : null}
             </Card>
 
             <Dialog

@@ -156,10 +156,12 @@ const SingleProgramView = (props) => {
                                 {...a11yProps(3)}
                             />
                             <Tab label={t('Others')} {...a11yProps(4)} />
-                            {versions?.changes?.length > 0 ? <Tab
+                            {versions?.changes?.length > 0 ? (
+                                <Tab
                                     label={t('Edit History', { ns: 'common' })}
                                     {...a11yProps(5)}
-                                /> : null}
+                                />
+                            ) : null}
                         </Tabs>
                     </Box>
                     <CustomTabPanel index={0} value={value}>
@@ -265,7 +267,8 @@ const SingleProgramView = (props) => {
                                             <Grid item md={2} xs={3}>
                                                 {props.program[
                                                     `${program_field.prop}_reading`
-                                                ] ? <Typography fontWeight="bold">
+                                                ] ? (
+                                                    <Typography fontWeight="bold">
                                                         {t('Reading', {
                                                             ns: 'common'
                                                         })}
@@ -275,12 +278,14 @@ const SingleProgramView = (props) => {
                                                                 `${program_field.prop}_reading`
                                                             ]
                                                         }
-                                                    </Typography> : null}{' '}
+                                                    </Typography>
+                                                ) : null}{' '}
                                             </Grid>
                                             <Grid item md={2} xs={3}>
                                                 {props.program[
                                                     `${program_field.prop}_listening`
-                                                ] ? <Typography fontWeight="bold">
+                                                ] ? (
+                                                    <Typography fontWeight="bold">
                                                         {t('Listening', {
                                                             ns: 'common'
                                                         })}
@@ -290,12 +295,14 @@ const SingleProgramView = (props) => {
                                                                 `${program_field.prop}_listening`
                                                             ]
                                                         }
-                                                    </Typography> : null}{' '}
+                                                    </Typography>
+                                                ) : null}{' '}
                                             </Grid>
                                             <Grid item md={2} xs={3}>
                                                 {props.program[
                                                     `${program_field.prop}_speaking`
-                                                ] ? <Typography fontWeight="bold">
+                                                ] ? (
+                                                    <Typography fontWeight="bold">
                                                         {t('Speaking', {
                                                             ns: 'common'
                                                         })}
@@ -305,12 +312,14 @@ const SingleProgramView = (props) => {
                                                                 `${program_field.prop}_speaking`
                                                             ]
                                                         }
-                                                    </Typography> : null}{' '}
+                                                    </Typography>
+                                                ) : null}{' '}
                                             </Grid>
                                             <Grid item md={2} xs={3}>
                                                 {props.program[
                                                     `${program_field.prop}_writing`
-                                                ] ? <Typography fontWeight="bold">
+                                                ] ? (
+                                                    <Typography fontWeight="bold">
                                                         {t('Writing', {
                                                             ns: 'common'
                                                         })}
@@ -320,7 +329,8 @@ const SingleProgramView = (props) => {
                                                                 `${program_field.prop}_writing`
                                                             ]
                                                         }
-                                                    </Typography> : null}
+                                                    </Typography>
+                                                ) : null}
                                             </Grid>
                                         </Fragment>
                                     )
@@ -427,7 +437,8 @@ const SingleProgramView = (props) => {
                                         />
                                     </span>
                                 </Grid>
-                                {props.program.application_portal_a ? <>
+                                {props.program.application_portal_a ? (
+                                    <>
                                         <Grid item md={4} xs={12}>
                                             <Typography fontWeight="bold">
                                                 Portal Link 1
@@ -455,8 +466,10 @@ const SingleProgramView = (props) => {
                                                 }
                                             />
                                         </Grid>
-                                    </> : null}
-                                {props.program.application_portal_b ? <>
+                                    </>
+                                ) : null}
+                                {props.program.application_portal_b ? (
+                                    <>
                                         <Grid item md={4} xs={12}>
                                             <Typography fontWeight="bold">
                                                 Portal Link 2
@@ -483,7 +496,8 @@ const SingleProgramView = (props) => {
                                                 }
                                             />
                                         </Grid>
-                                    </> : null}
+                                    </>
+                                ) : null}
                                 <Grid item md={4} xs={12}>
                                     <Typography fontWeight="bold">
                                         {t('Last update', { ns: 'common' })}
@@ -494,7 +508,8 @@ const SingleProgramView = (props) => {
                                         {convertDate(props.program.updatedAt)}
                                     </Typography>
                                 </Grid>
-                                {is_TaiGer_AdminAgent(user) ? <>
+                                {is_TaiGer_AdminAgent(user) ? (
+                                    <>
                                         <Grid item md={4} xs={12}>
                                             <Typography>
                                                 {t('Updated by', {
@@ -512,21 +527,25 @@ const SingleProgramView = (props) => {
                                                 {t('Group', { ns: 'common' })}
                                             </Typography>
                                         </Grid>
-                                    </> : null}
+                                    </>
+                                ) : null}
                             </Grid>
                         </Card>
                     </CustomTabPanel>
-                    {versions?.changes?.length > 0 ? <CustomTabPanel
+                    {versions?.changes?.length > 0 ? (
+                        <CustomTabPanel
                             index={5}
                             style={{ width: '100%', overflowY: 'auto' }}
                             value={value}
                         >
-                            {IS_DEV ? <Button
+                            {IS_DEV ? (
+                                <Button
                                     onClick={() => props.setDiffModalShow()}
                                 >
                                     <CompareIcon fontSize="small" /> Incoming
                                     changes - Compare
-                                </Button> : null}
+                                </Button>
+                            ) : null}
                             <Table>
                                 <TableHead>
                                     <TableRow>
@@ -580,11 +599,13 @@ const SingleProgramView = (props) => {
                                                         >
                                                             <Typography>
                                                                 {reverseIndex}{' '}
-                                                                {change?.changeRequest ? <div
+                                                                {change?.changeRequest ? (
+                                                                    <div
                                                                         title={`from change request ${change?.changeRequest}`}
                                                                     >
                                                                         <InfoIcon fontSize="small" />
-                                                                    </div> : null}
+                                                                    </div>
+                                                                ) : null}
                                                             </Typography>
                                                         </TableCell>
                                                         <TableCell
@@ -640,12 +661,14 @@ const SingleProgramView = (props) => {
                                         })}
                                 </TableBody>
                             </Table>
-                        </CustomTabPanel> : null}
+                        </CustomTabPanel>
+                    ) : null}
                 </Grid>
                 <Grid item md={4} xs={12}>
-                    {(is_TaiGer_AdminAgent(user) ||
-                        is_TaiGer_External(user)) ? <Grid alignItems="center" container spacing={1}>
-                            {is_TaiGer_AdminAgent(user) ? <Grid item>
+                    {is_TaiGer_AdminAgent(user) || is_TaiGer_External(user) ? (
+                        <Grid alignItems="center" container spacing={1}>
+                            {is_TaiGer_AdminAgent(user) ? (
+                                <Grid item>
                                     <Button
                                         color="primary"
                                         fullWidth
@@ -656,7 +679,8 @@ const SingleProgramView = (props) => {
                                     >
                                         {t('Assign', { ns: 'common' })}
                                     </Button>
-                                </Grid> : null}
+                                </Grid>
+                            ) : null}
                             <Grid item>
                                 <Button
                                     color="info"
@@ -670,7 +694,8 @@ const SingleProgramView = (props) => {
                                 </Button>
                             </Grid>
 
-                            {is_TaiGer_Admin(user) ? <Grid item>
+                            {is_TaiGer_Admin(user) ? (
+                                <Grid item>
                                     <Button
                                         color="error"
                                         onClick={() =>
@@ -682,8 +707,10 @@ const SingleProgramView = (props) => {
                                     >
                                         {t('Delete', { ns: 'common' })}
                                     </Button>
-                                </Grid> : null}
-                        </Grid> : null}
+                                </Grid>
+                            ) : null}
+                        </Grid>
+                    ) : null}
                     <Box sx={{ my: 2 }}>
                         <Link
                             component={LinkDom}
@@ -705,7 +732,8 @@ const SingleProgramView = (props) => {
                             </Button>
                         </Link>
                     </Box>
-                    {is_TaiGer_role(user) ? <>
+                    {is_TaiGer_role(user) ? (
+                        <>
                             <Card className="card-with-scroll" sx={{ p: 2 }}>
                                 <div className="card-scrollable-body">
                                     <Tabs
@@ -929,7 +957,8 @@ const SingleProgramView = (props) => {
                                     </Button>
                                 </CardContent>
                             </Card>
-                        </> : null}
+                        </>
+                    ) : null}
                     <Card className="card-with-scroll">
                         <CardContent className="card-scrollable-body">
                             <Typography>
@@ -946,5 +975,5 @@ const SingleProgramView = (props) => {
             </Grid>
         </>
     );
-}
+};
 export default SingleProgramView;

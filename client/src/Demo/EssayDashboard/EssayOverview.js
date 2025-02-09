@@ -260,11 +260,13 @@ const EssayOverview = (props) => {
 
     return (
         <>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
                     aria-label="basic tabs example"
@@ -457,6 +459,6 @@ const EssayOverview = (props) => {
             </CustomTabPanel>
         </>
     );
-}
+};
 
 export default EssayOverview;

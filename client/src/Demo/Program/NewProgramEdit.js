@@ -196,7 +196,9 @@ const NewProgramEdit = (props) => {
                         <FormControl fullWidth>
                             <Select
                                 disabled={
-                                    props.type === 'edit' ? !is_TaiGer_Admin(user) : null
+                                    props.type === 'edit'
+                                        ? !is_TaiGer_Admin(user)
+                                        : null
                                 }
                                 id="degree"
                                 labelId="degree"
@@ -225,7 +227,9 @@ const NewProgramEdit = (props) => {
                         <FormControl fullWidth>
                             <Select
                                 disabled={
-                                    props.type === 'edit' ? !is_TaiGer_Admin(user) : null
+                                    props.type === 'edit'
+                                        ? !is_TaiGer_Admin(user)
+                                        : null
                                 }
                                 id="semester"
                                 labelId="semester"
@@ -349,7 +353,8 @@ const NewProgramEdit = (props) => {
                             value={program.application_deadline || ''}
                         />
                     </Grid>
-                    {appConfig.vpdEnable ? <>
+                    {appConfig.vpdEnable ? (
+                        <>
                             <Grid item md={6} xs={12}>
                                 <Typography variant="body1">
                                     {t('Need Uni-Assist?', { ns: 'common' })}
@@ -378,7 +383,8 @@ const NewProgramEdit = (props) => {
                                     </Select>
                                 </FormControl>
                             </Grid>
-                        </> : null}
+                        </>
+                    ) : null}
                     <Grid item md={6} xs={12}>
                         <Typography variant="body1">
                             {t('English Test Can Submit Later', {
@@ -1229,5 +1235,5 @@ const NewProgramEdit = (props) => {
             </Card>
         </>
     );
-}
+};
 export default NewProgramEdit;

@@ -10,14 +10,16 @@ const DocumentsListItems = (props) => {
     const { user } = useAuth();
     return (
         <Box sx={{ mx: 2, my: 1 }}>
-            {is_TaiGer_Admin(user) ? <CloseIcon
+            {is_TaiGer_Admin(user) ? (
+                <CloseIcon
                     fontSize="small"
                     onClick={() =>
                         props.openDeleteDocModalWindow(props.document)
                     }
                     style={{ cursor: 'pointer' }}
                     title="Delete"
-                /> : null}
+                />
+            ) : null}
             {props.idx}
             {'. '}
             <Link
@@ -28,6 +30,6 @@ const DocumentsListItems = (props) => {
             </Link>
         </Box>
     );
-}
+};
 
 export default DocumentsListItems;

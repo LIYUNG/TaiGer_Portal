@@ -315,11 +315,13 @@ export const SingleStudentPageMainContent = ({
     );
     return (
         <>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Box
                 alignItems="center"
                 display="flex"
@@ -406,7 +408,8 @@ export const SingleStudentPageMainContent = ({
                 <>
                     {needGraduatedApplicantsButStudentNotGraduated(
                         singleStudentPage.student
-                    ) ? <Card sx={{ border: '4px solid red', borderRadius: 2 }}>
+                    ) ? (
+                        <Card sx={{ border: '4px solid red', borderRadius: 2 }}>
                             <Alert severity="warning">
                                 {t(
                                     'Programs below are only for graduated applicants',
@@ -434,7 +437,8 @@ export const SingleStudentPageMainContent = ({
                                     </Link>
                                 </ListItem>
                             ))}
-                        </Card> : null}
+                        </Card>
+                    ) : null}
                     <Grid container spacing={0} sx={{ mt: 0 }}>
                         <Grid item md={12} xs={12}>
                             <ProgramLanguageNotMatchedBanner
@@ -538,7 +542,8 @@ export const SingleStudentPageMainContent = ({
                                     {t('Program Recommender', { ns: 'common' })}
                                 </Button>
                             </Badge>
-                            {!is_TaiGer_Editor(user) ? <Link
+                            {!is_TaiGer_Editor(user) ? (
+                                <Link
                                     component={LinkDom}
                                     sx={{ mr: 1 }}
                                     target="_blank"
@@ -554,7 +559,8 @@ export const SingleStudentPageMainContent = ({
                                     >
                                         {t('Edit', { ns: 'common' })}
                                     </Button>
-                                </Link> : null}
+                                </Link>
+                            ) : null}
                             <Typography variant="body1">
                                 Applications (Selected / Decided / Contract):{' '}
                                 {singleStudentPage.student
@@ -716,5 +722,5 @@ const SingleStudentPage = () => {
             survey_link={survey_link}
         />
     );
-}
+};
 export default SingleStudentPage;

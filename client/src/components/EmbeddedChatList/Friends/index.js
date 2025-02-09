@@ -26,6 +26,6 @@ const Friends = (props) => {
     });
 
     return <Box>{friendList}</Box>;
-}
+};
 
 export default Friends;

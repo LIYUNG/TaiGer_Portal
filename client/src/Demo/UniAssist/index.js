@@ -74,5 +74,5 @@ const UniAssistList = () => {
             )}
         </>
     );
-}
+};
 export default UniAssistList;

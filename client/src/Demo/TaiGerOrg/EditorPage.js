@@ -280,6 +280,6 @@ const EditorPage = () => {
             </Box>
         </Box>
     );
-}
+};
 
 export default EditorPage;

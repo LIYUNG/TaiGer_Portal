@@ -116,6 +116,6 @@ const AgentPage = () => {
             </Link>
         </Box>
     );
-}
+};
 
 export default AgentPage;

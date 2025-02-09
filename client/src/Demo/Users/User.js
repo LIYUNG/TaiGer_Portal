@@ -32,7 +32,8 @@ const User = (props) => {
         return (
             <TableRow key={props.user._id}>
                 <TableCell>
-                    {!is_TaiGer_Admin(props.user) ? <>
+                    {!is_TaiGer_Admin(props.user) ? (
+                        <>
                             <Button
                                 aria-controls={open ? 'basic-menu' : undefined}
                                 aria-expanded={open ? 'true' : undefined}
@@ -95,7 +96,8 @@ const User = (props) => {
                                     {i18next.t('Delete', { ns: 'common' })}
                                 </MenuItem>
                             </Menu>
-                        </> : null}
+                        </>
+                    ) : null}
                 </TableCell>
                 {UserlistHeader.map((y, k) => (
                     <TableCell key={k}>
@@ -144,6 +146,6 @@ const User = (props) => {
     } else {
         return <></>;
     }
-}
+};
 
 export default User;

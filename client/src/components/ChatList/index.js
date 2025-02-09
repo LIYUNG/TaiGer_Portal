@@ -160,16 +160,19 @@ const ChatList = (props) => {
                     value={searchTerm}
                 />
             </Search>
-            {!chatListState.isLoaded ? [0, 1, 2, 3].map((x, i) => (
-                    <MenuItem key={i}>
-                        <Skeleton
-                            height={40}
-                            variant="rectangular"
-                            width={menuWidth}
-                        />
-                    </MenuItem>
-                )) : null}
-            {chatListState.isLoaded ? <Friends
+            {!chatListState.isLoaded
+                ? [0, 1, 2, 3].map((x, i) => (
+                      <MenuItem key={i}>
+                          <Skeleton
+                              height={40}
+                              variant="rectangular"
+                              width={menuWidth}
+                          />
+                      </MenuItem>
+                  ))
+                : null}
+            {chatListState.isLoaded ? (
+                <Friends
                     handleCloseChat={props.handleCloseChat}
                     students={
                         chatListState.searchMode
@@ -177,7 +180,8 @@ const ChatList = (props) => {
                             : chatListState.students
                     }
                     user={user}
-                /> : null}
+                />
+            ) : null}
         </>
     );
 };

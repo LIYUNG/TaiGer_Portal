@@ -54,7 +54,8 @@ const ProgramEditPage = () => {
                     {(loadedData) => (
                         <>
                             {isLoading ? <Loading /> : null}
-                            {!isLoading ? <NewProgramEdit
+                            {!isLoading ? (
+                                <NewProgramEdit
                                     handleClick={onClickIToSingleProgramPage}
                                     handleSubmit_Program={handleSubmitProgram}
                                     isLoading={isLoading}
@@ -62,12 +63,13 @@ const ProgramEditPage = () => {
                                     program={data?.data}
                                     programs={loadedData}
                                     type="edit"
-                                /> : null}
+                                />
+                            ) : null}
                         </>
                     )}
                 </Await>
             </Suspense>
         </Box>
     );
-}
+};
 export default ProgramEditPage;

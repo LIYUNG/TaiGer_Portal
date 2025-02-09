@@ -334,7 +334,8 @@ const SchoolConfigContent = ({ data }) => {
                 </Grid>
 
                 {/* Right side: Configuration panel */}
-                {!isSmallScreen ? <Grid item md={5} xs={12}>
+                {!isSmallScreen ? (
+                    <Grid item md={5} xs={12}>
                         <Paper style={{ padding: 16 }}>
                             {Object.keys(rowSelection) &&
                             Object.keys(rowSelection)[0] ? (
@@ -356,7 +357,8 @@ const SchoolConfigContent = ({ data }) => {
                                 </Typography>
                             )}
                         </Paper>
-                    </Grid> : null}
+                    </Grid>
+                ) : null}
             </Grid>
 
             {/* Drawer for small screens */}

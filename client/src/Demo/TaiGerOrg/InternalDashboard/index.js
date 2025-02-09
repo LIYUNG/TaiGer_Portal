@@ -231,6 +231,6 @@ const InternalDashboard = () => {
             </CustomTabPanel>
         </Box>
     );
-}
+};
 
 export default InternalDashboard;

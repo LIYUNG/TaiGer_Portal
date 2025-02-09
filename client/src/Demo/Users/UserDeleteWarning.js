@@ -69,5 +69,5 @@ const UserDeleteWarning = (props) => {
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default UserDeleteWarning;

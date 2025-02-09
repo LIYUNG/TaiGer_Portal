@@ -56,6 +56,6 @@ const ProgramRequirementsNewIndex = () => {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default ProgramRequirementsNewIndex;

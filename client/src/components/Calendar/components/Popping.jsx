@@ -58,7 +58,7 @@ const Popping = ({
                             placeholder="Example：我想定案選校、選課，我想討論簽證，德語班。"
                             type="textarea"
                             value={newDescription || ''}
-                         />
+                        />
                         <br />
                         <Badge
                             bg={`${
@@ -87,9 +87,9 @@ const Popping = ({
                                         : ''
                                 }
                             >
-                                {is_TaiGer_Student(user) ? <MenuItem value="">
-                                        Please Select
-                                    </MenuItem> : null}
+                                {is_TaiGer_Student(user) ? (
+                                    <MenuItem value="">Please Select</MenuItem>
+                                ) : null}
                                 {is_TaiGer_Student(user) ? (
                                     <MenuItem
                                         value={event.provider._id.toString()}

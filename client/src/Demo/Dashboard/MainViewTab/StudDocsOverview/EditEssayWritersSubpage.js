@@ -178,5 +178,5 @@ const EditEssayWritersSubpage = (props) => {
             )}
         </Dialog>
     );
-}
+};
 export default EditEssayWritersSubpage;

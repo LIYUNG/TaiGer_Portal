@@ -60,5 +60,5 @@ const UsersListSubpage = (props) => {
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default UsersListSubpage;

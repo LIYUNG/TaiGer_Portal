@@ -147,6 +147,6 @@ const EditAgentsSubpage = (props) => {
             </DialogContent>
         </Dialog>
     );
-}
+};
 
 export default EditAgentsSubpage;

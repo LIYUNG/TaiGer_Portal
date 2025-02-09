@@ -241,11 +241,13 @@ const AdmissionsTable = (props) => {
                         to={linkUrl}
                         underline="hover"
                     >
-                        {params.row.admission_file_path !== '' ? params.row.admission === 'O'
+                        {params.row.admission_file_path !== ''
+                            ? params.row.admission === 'O'
                                 ? t('Admission Letter', { ns: 'common' })
                                 : params.row.admission === 'X'
                                   ? t('Rejection Letter', { ns: 'common' })
-                                  : '' : null}
+                                  : ''
+                            : null}
                     </Link>
                 );
             }
@@ -320,6 +322,6 @@ const AdmissionsTable = (props) => {
             </CustomTabPanel>
         </>
     );
-}
+};
 
 export default AdmissionsTable;

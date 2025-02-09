@@ -105,6 +105,6 @@ const EditAttributesSubpage = (props) => {
             </DialogActions>
         </Dialog>
     );
-}
+};
 
 export default EditAttributesSubpage;

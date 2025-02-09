@@ -37,6 +37,6 @@ const TabProgramConflict = (props) => {
             )}
         </>
     );
-}
+};
 
 export default TabProgramConflict;

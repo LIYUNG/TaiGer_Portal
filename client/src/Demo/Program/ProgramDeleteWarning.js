@@ -51,5 +51,5 @@ const ProgramDeleteWarning = (props) => {
             </DialogActions>
         </Dialog>
     );
-}
+};
 export default ProgramDeleteWarning;

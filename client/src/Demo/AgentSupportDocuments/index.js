@@ -180,7 +180,8 @@ const AgentSupportDocuments = () => {
                     {t('Agent Support Documents', { ns: 'common' })}
                 </Typography>
             </Breadcrumbs>
-            {!is_TaiGer_role(user) ? <Card sx={{ p: 2 }}>
+            {!is_TaiGer_role(user) ? (
+                <Card sx={{ p: 2 }}>
                     <Typography variant="body1">Instructions</Typography>
                     若您為初次使用，可能無任何
                     Tasks。請聯絡您的顧問處理選校等，方能開始準備文件。
@@ -193,7 +194,8 @@ const AgentSupportDocuments = () => {
                     >
                         <b>Click me</b>
                     </Link>
-                </Card> : null}
+                </Card>
+            ) : null}
             <CVMLRLOverview
                 closed_tasks={closed_tasks}
                 fav_message_tasks={fav_message_tasks}
@@ -207,6 +209,6 @@ const AgentSupportDocuments = () => {
             />
         </Box>
     );
-}
+};
 
 export default AgentSupportDocuments;

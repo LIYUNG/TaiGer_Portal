@@ -5,8 +5,6 @@ import { Link, TableBody, TableCell, TableRow } from '@mui/material';
 import DEMO from '../../../../store/constant';
 
 const ProgramConflict = ({ students, program }) => {
-    
-
     return (
         <TableBody>
             <TableRow>
@@ -54,6 +52,6 @@ const ProgramConflict = ({ students, program }) => {
             ))}
         </TableBody>
     );
-}
+};
 
 export default ProgramConflict;

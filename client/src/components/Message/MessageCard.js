@@ -172,7 +172,7 @@ const MessageCard = (props) => {
                             stroke="#000"
                             strokeLinecap="round"
                             strokeWidth="2"
-                         />
+                        />
                     </svg>
                 </Link>
             </span>
@@ -208,7 +208,8 @@ const MessageCard = (props) => {
                     </Typography>
                     <Typography style={{ display: 'flex', float: 'right' }}>
                         {convertDate(props.message.createdAt)}
-                        {editable ? <IconButton
+                        {editable ? (
+                            <IconButton
                                 onClick={(e) =>
                                     onOpendeleteMessageModalShow(
                                         e,
@@ -222,7 +223,8 @@ const MessageCard = (props) => {
                                     style={{ cursor: 'pointer' }}
                                     title="Delete this message and file"
                                 />
-                            </IconButton> : null}
+                            </IconButton>
+                        ) : null}
                     </Typography>
                 </AccordionSummary>
                 <AccordionDetails
@@ -238,20 +240,20 @@ const MessageCard = (props) => {
                     />
                     {files_info}
                     {!is_TaiGer_Student(user) &&
-                        is_TaiGer_Student(props.message.user_id) ? <FormGroup>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={
-                                                messageState.ignore_message
-                                            }
-                                            onChange={handleCheckboxChange}
-                                        />
-                                    }
-                                    label="no need to reply"
-                                    labelPlacement="start"
-                                />
-                            </FormGroup> : null}
+                    is_TaiGer_Student(props.message.user_id) ? (
+                        <FormGroup>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={messageState.ignore_message}
+                                        onChange={handleCheckboxChange}
+                                    />
+                                }
+                                label="no need to reply"
+                                labelPlacement="start"
+                            />
+                        </FormGroup>
+                    ) : null}
                 </AccordionDetails>
             </Accordion>
             <Dialog
@@ -289,6 +291,6 @@ const MessageCard = (props) => {
             </Dialog>
         </>
     );
-}
+};
 
 export default MessageCard;

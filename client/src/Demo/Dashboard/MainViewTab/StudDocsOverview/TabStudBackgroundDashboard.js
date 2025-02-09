@@ -49,6 +49,6 @@ const TabStudBackgroundDashboard = (props) => {
             </Table>
         </TableContainer>
     );
-}
+};
 
 export default TabStudBackgroundDashboard;

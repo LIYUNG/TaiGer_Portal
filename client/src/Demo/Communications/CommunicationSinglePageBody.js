@@ -80,7 +80,8 @@ const CommunicationSinglePageBody = ({ loadedData }) => {
                             >
                                 {appConfig.companyName}
                             </Link>
-                            {is_TaiGer_role(user) ? <Link
+                            {is_TaiGer_role(user) ? (
+                                <Link
                                     color="inherit"
                                     component={LinkDom}
                                     to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
@@ -90,7 +91,8 @@ const CommunicationSinglePageBody = ({ loadedData }) => {
                                     underline="hover"
                                 >
                                     {student_name}
-                                </Link> : null}
+                                </Link>
+                            ) : null}
                             <Typography color="text.primary">
                                 {t('Message', { ns: 'common' })}
                             </Typography>
@@ -203,7 +205,8 @@ const CommunicationSinglePageBody = ({ loadedData }) => {
                 {t('Load')}
             </Button>
             <Box>
-                {upperThread.length > 0 ? <MessageList
+                {upperThread.length > 0 ? (
+                    <MessageList
                         accordionKeys={uppderaccordionKeys}
                         isDeleting={isDeleting}
                         isUpperMessagList={true}
@@ -211,7 +214,8 @@ const CommunicationSinglePageBody = ({ loadedData }) => {
                         student_id={student._id.toString()}
                         thread={upperThread}
                         user={user}
-                    /> : null}
+                    />
+                ) : null}
                 <MessageList
                     accordionKeys={accordionKeys}
                     isDeleting={isDeleting}
@@ -260,6 +264,6 @@ const CommunicationSinglePageBody = ({ loadedData }) => {
             )}
         </Box>
     );
-}
+};
 
 export default CommunicationSinglePageBody;

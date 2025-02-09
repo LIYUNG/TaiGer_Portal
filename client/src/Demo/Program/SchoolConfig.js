@@ -62,6 +62,6 @@ const SchoolConfig = () => {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default SchoolConfig;

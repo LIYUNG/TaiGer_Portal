@@ -97,11 +97,13 @@ const AgentProfile = () => {
 
     return (
         <Box>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
 
             <Card sx={{ p: 2 }}>
                 <Grid container spacing={2}>
@@ -171,17 +173,16 @@ const AgentProfile = () => {
                                     agentProfileState.agent.officehours[day]
                                         ?.active ? (
                                         <Select
-                                                id={`${day}`}
-                                                isDisabled={true}
-                                                isMulti
-                                                label={i18next.t('Timeslots')}
-                                                options={time_slots}
-                                                value={
-                                                    agentProfileState.agent
-                                                        .officehours[day]
-                                                        .time_slots
-                                                }
-                                            />
+                                            id={`${day}`}
+                                            isDisabled={true}
+                                            isMulti
+                                            label={i18next.t('Timeslots')}
+                                            options={time_slots}
+                                            value={
+                                                agentProfileState.agent
+                                                    .officehours[day].time_slots
+                                            }
+                                        />
                                     ) : (
                                         <Typography>
                                             {i18next.t('Close', {
@@ -192,7 +193,8 @@ const AgentProfile = () => {
                                 </Grid>
                             ))}
                         </Grid>
-                        {is_TaiGer_Student(user) ? <>
+                        {is_TaiGer_Student(user) ? (
+                            <>
                                 <Typography sx={{ my: 2 }} variant="body1">
                                     想要與顧問討論？
                                 </Typography>
@@ -206,12 +208,13 @@ const AgentProfile = () => {
                                         {i18next.t('Book')}
                                     </Button>
                                 </Link>
-                            </> : null}
+                            </>
+                        ) : null}
                     </Box>
                 </Grid>
             </Card>
         </Box>
     );
-}
+};
 
 export default AgentProfile;

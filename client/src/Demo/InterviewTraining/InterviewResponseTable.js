@@ -160,14 +160,14 @@ const InterviewResponseTable = () => {
                 )}`;
                 return (
                     <Link
-                            component={LinkDom}
-                            target="_blank"
-                            title={params.value}
-                            to={linkUrl}
-                            underline="hover"
-                        >
-                            {params.value}
-                        </Link>
+                        component={LinkDom}
+                        target="_blank"
+                        title={params.value}
+                        to={linkUrl}
+                        underline="hover"
+                    >
+                        {params.value}
+                    </Link>
                 );
             }
         },
@@ -273,11 +273,13 @@ const InterviewResponseTable = () => {
 
     return (
         <Box>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
 
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
@@ -295,18 +297,9 @@ const InterviewResponseTable = () => {
                 </Typography>
             </Breadcrumbs>
             {!is_TaiGer_role(user) &&
-                interviewTrainingState.available_interview_request_programs
-                    ?.length > 0 ? <Button
-                        color="primary"
-                        fullWidth
-                        onClick={handleClick}
-                        size="small"
-                        sx={{ my: 1 }}
-                        variant="contained"
-                    >
-                        {t('Add', { ns: 'common' })}
-                    </Button> : null}
-            {is_TaiGer_role(user) ? <Button
+            interviewTrainingState.available_interview_request_programs
+                ?.length > 0 ? (
+                <Button
                     color="primary"
                     fullWidth
                     onClick={handleClick}
@@ -315,10 +308,23 @@ const InterviewResponseTable = () => {
                     variant="contained"
                 >
                     {t('Add', { ns: 'common' })}
-                </Button> : null}
+                </Button>
+            ) : null}
+            {is_TaiGer_role(user) ? (
+                <Button
+                    color="primary"
+                    fullWidth
+                    onClick={handleClick}
+                    size="small"
+                    sx={{ my: 1 }}
+                    variant="contained"
+                >
+                    {t('Add', { ns: 'common' })}
+                </Button>
+            ) : null}
             <MuiDataGrid columns={memoizedColumns} rows={rows} />
         </Box>
     );
-}
+};
 
 export default InterviewResponseTable;

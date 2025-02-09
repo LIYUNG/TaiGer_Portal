@@ -70,6 +70,6 @@ const AssignAgentsPage = (props) => {
             </Card>
         </Box>
     );
-}
+};
 
 export default AssignAgentsPage;

@@ -55,6 +55,6 @@ const ProgramRequirementsEditIndex = () => {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default ProgramRequirementsEditIndex;

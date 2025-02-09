@@ -171,11 +171,13 @@ const Documentation = (props) => {
     TabTitle(`Doc: ${category_name}`);
     return (
         <>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
                     color="inherit"
@@ -213,6 +215,6 @@ const Documentation = (props) => {
             )}
         </>
     );
-}
+};
 
 export default Documentation;

@@ -22,6 +22,6 @@ const CommunicationSinglePage = () => {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default CommunicationSinglePage;

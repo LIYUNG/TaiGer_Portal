@@ -61,18 +61,18 @@ const ProgressButton = ({
 }) => {
     return (
         <Button {...buttonProps} onClick={onClick}>
-                {isProgress ? (
-                    <>
-                        <CircularProgress
-                            size={15}
-                            sx={{ marginRight: '0.5rem' }}
-                        />
-                        {progressLabel}
-                    </>
-                ) : (
-                    label
-                )}
-            </Button>
+            {isProgress ? (
+                <>
+                    <CircularProgress
+                        size={15}
+                        sx={{ marginRight: '0.5rem' }}
+                    />
+                    {progressLabel}
+                </>
+            ) : (
+                label
+            )}
+        </Button>
     );
 };
 
@@ -91,7 +91,9 @@ const LastModifiedText = ({ updatedAt, isFinalVersion }) => {
                     <Typography variant="body2">
                         Last Modified: <strong>{convertDate(updatedAt)}</strong>
                     </Typography>
-                    {isFinalVersion ? <Chip color="info" label="Final" size="medium" /> : null}
+                    {isFinalVersion ? (
+                        <Chip color="info" label="Final" size="medium" />
+                    ) : null}
                 </Box>
             ) : (
                 <Chip
@@ -127,7 +129,8 @@ const SurveyForm = ({
 
     return (
         <Box>
-            {title ? <>
+            {title ? (
+                <>
                     <Box
                         onClick={handleTitleClick}
                         sx={{
@@ -154,7 +157,8 @@ const SurveyForm = ({
                             <Grid item>
                                 <Typography variant="h5">{title}</Typography>
                             </Grid>
-                            {showEditButton ? <Grid item>
+                            {showEditButton ? (
+                                <Grid item>
                                     <Button
                                         onClick={(event) => {
                                             event.stopPropagation();
@@ -173,7 +177,8 @@ const SurveyForm = ({
                                             fontSize="small"
                                         />
                                     </Button>
-                                </Grid> : null}
+                                </Grid>
+                            ) : null}
                             <Grid item sx={{ marginLeft: 'auto' }}>
                                 <LastModifiedText
                                     isFinalVersion={surveyInput?.isFinalVersion}
@@ -184,13 +189,16 @@ const SurveyForm = ({
                     </Box>
                     <Divider />
                     <Box marginTop={2} />
-                </> : null}
-            {!title ? <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
+                </>
+            ) : null}
+            {!title ? (
+                <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
                     <LastModifiedText
                         isFinalVersion={surveyInput?.isFinalVersion}
                         updatedAt={surveyInput?.updatedAt}
                     />
-                </Box> : null}
+                </Box>
+            ) : null}
             <Collapse in={collapseOpen}>
                 <Grid container sx={{ gap: 1 }}>
                     {surveyInput.surveyContent.map((questionItem, index) => (
@@ -338,7 +346,9 @@ const InputGenerator = ({
                 </Grid>
 
                 <Grid item xs={12}>
-                    {(!isGenerating || data) ? <LinkableNewlineText text={data} /> : null}
+                    {!isGenerating || data ? (
+                        <LinkableNewlineText text={data} />
+                    ) : null}
                 </Grid>
             </Grid>
         </>
@@ -713,7 +723,8 @@ const DocModificationThreadInput = () => {
             </Breadcrumbs>
 
             {!isLoaded ? <Loading /> : null}
-            {docModificationThreadInputState.res_modal_status >= 400 ? <ModalMain
+            {docModificationThreadInputState.res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={
                         docModificationThreadInputState.res_modal_message
@@ -721,7 +732,8 @@ const DocModificationThreadInput = () => {
                     res_modal_status={
                         docModificationThreadInputState.res_modal_status
                     }
-                /> : null}
+                />
+            ) : null}
 
             <Card sx={{ p: 2, mb: 2 }}>
                 <Typography fontWeight="bold">Requirements:</Typography>
@@ -745,7 +757,8 @@ const DocModificationThreadInput = () => {
                         </Typography>
                     </Grid>
 
-                    {showUnchangeAlert ? <Grid item xs={12}>
+                    {showUnchangeAlert ? (
+                        <Grid item xs={12}>
                             <Alert
                                 id="alert-message"
                                 severity="error"
@@ -757,9 +770,11 @@ const DocModificationThreadInput = () => {
                                     )}
                                 </Typography>
                             </Alert>
-                        </Grid> : null}
+                        </Grid>
+                    ) : null}
 
-                    {Object.keys(surveyInputs?.general).length > 0 ? <Grid item xs={12}>
+                    {Object.keys(surveyInputs?.general).length > 0 ? (
+                        <Grid item xs={12}>
                             <SurveyForm
                                 disableEdit={isFinalLocked || isFinalVersion}
                                 isCollapse={!surveyInputs?.general?.updatedAt}
@@ -767,19 +782,22 @@ const DocModificationThreadInput = () => {
                                 surveyInput={surveyInputs.general}
                                 surveyType="general"
                                 title={thread?.program_id ? 'General' : null}
-                             />
-                        </Grid> : null}
+                            />
+                        </Grid>
+                    ) : null}
 
                     {thread?.program_id &&
-                        Object.keys(surveyInputs?.specific).length > 0 ? <Grid item xs={12}>
-                                <SurveyForm
-                                    disableEdit={isFinalVersion}
-                                    onChange={onChange}
-                                    surveyInput={surveyInputs.specific}
-                                    surveyType="specific"
-                                    title="Program"
-                                 />
-                            </Grid> : null}
+                    Object.keys(surveyInputs?.specific).length > 0 ? (
+                        <Grid item xs={12}>
+                            <SurveyForm
+                                disableEdit={isFinalVersion}
+                                onChange={onChange}
+                                surveyInput={surveyInputs.specific}
+                                surveyType="specific"
+                                title="Program"
+                            />
+                        </Grid>
+                    ) : null}
 
                     <Grid item xs={12}>
                         <FormControl>
@@ -813,7 +831,8 @@ const DocModificationThreadInput = () => {
                         sx={{ gap: 1 }}
                         xs={12}
                     >
-                        {!isFinalLocked ? <ProgressButton
+                        {!isFinalLocked ? (
+                            <ProgressButton
                                 color="primary"
                                 disabled={isSubmitting}
                                 isProgress={isSubmitting}
@@ -821,7 +840,8 @@ const DocModificationThreadInput = () => {
                                 onClick={onSubmit}
                                 size="small"
                                 variant="contained"
-                            /> : null}
+                            />
+                        ) : null}
                         <LinkDom relative="path" to="..">
                             <Button color="secondary" variant="contained">
                                 Back
@@ -832,7 +852,8 @@ const DocModificationThreadInput = () => {
             </Card>
 
             {/* GPT input generation -> only for internal users */}
-            {is_TaiGer_role(user) ? <Card sx={{ p: 2, mb: 2 }}>
+            {is_TaiGer_role(user) ? (
+                <Card sx={{ p: 2, mb: 2 }}>
                     <InputGenerator
                         data={gptData}
                         isChecked={
@@ -843,9 +864,10 @@ const DocModificationThreadInput = () => {
                         onChange={onChangeEditorRequirements}
                         onGenerate={onGenerate}
                     />
-                </Card> : null}
+                </Card>
+            ) : null}
         </Box>
     );
-}
+};
 
 export default DocModificationThreadInput;

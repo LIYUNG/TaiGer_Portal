@@ -357,7 +357,8 @@ const InternalDocCreatePage = (props) => {
                             </Box>
                         ) : (
                             <>
-                                {is_TaiGer_AdminAgent(user) ? <Button
+                                {is_TaiGer_AdminAgent(user) ? (
+                                    <Button
                                         color="primary"
                                         fullWidth
                                         onClick={handleClickEditToggle}
@@ -367,7 +368,8 @@ const InternalDocCreatePage = (props) => {
                                         variant="contained"
                                     >
                                         {t('Add', { ns: 'common' })}
-                                    </Button> : null}
+                                    </Button>
+                                ) : null}
                                 {documentlist_key.map((catego, i) => (
                                     <Box key={i} sx={{ p: 1 }}>
                                         <Typography variant="h6">
@@ -386,11 +388,13 @@ const InternalDocCreatePage = (props) => {
                     </Card>
                 </Grid>
             </Grid>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Dialog
                 onClose={closeDeleteDocModalWindow}
                 open={internalDocCreatePageState.SetDeleteDocModel}
@@ -413,6 +417,6 @@ const InternalDocCreatePage = (props) => {
             </Dialog>
         </Box>
     );
-}
+};
 
 export default InternalDocCreatePage;

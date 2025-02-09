@@ -59,6 +59,6 @@ const ApplicantsOverview = () => {
             <ApplicationOverviewTabs students={myStudents} />
         </Box>
     );
-}
+};
 
 export default ApplicantsOverview;

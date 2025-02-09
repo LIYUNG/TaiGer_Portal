@@ -45,15 +45,20 @@ const ModalMain = (props) => {
                 <DialogTitle>{t('Error')}</DialogTitle>
                 <DialogContent>
                     <Box>
-                        {res_modal_status === 403 ? <>
+                        {res_modal_status === 403 ? (
+                            <>
                                 <Typography>
                                     Operation forbidden. Please contact{' '}
                                     {appConfig.companyName} for more detail.
                                 </Typography>
                                 <Typography>{res_modal_message}</Typography>
-                            </> : null}
-                        {res_modal_status === 404 ? <>404: {res_modal_message}</> : null}
-                        {res_modal_status === 413 ? <>
+                            </>
+                        ) : null}
+                        {res_modal_status === 404 ? (
+                            <>404: {res_modal_message}</>
+                        ) : null}
+                        {res_modal_status === 413 ? (
+                            <>
                                 <Typography>{res_modal_message}</Typography>
                                 Please use third party WebApp like{' '}
                                 <a
@@ -72,13 +77,16 @@ const ModalMain = (props) => {
                                     <b>Adobe WebApp</b>
                                 </a>
                                 to compress your file!
-                            </> : null}
-                        {res_modal_status === 415 ? <>
+                            </>
+                        ) : null}
+                        {res_modal_status === 415 ? (
+                            <>
                                 <Typography>{res_modal_message}</Typography>
                                 <Typography>
                                     請確認您的檔案格式。壓縮過後的檔案仍然需要是上述格式。
                                 </Typography>
-                            </> : null}
+                            </>
+                        ) : null}
                     </Box>
                 </DialogContent>
                 <DialogActions>
@@ -93,6 +101,6 @@ const ModalMain = (props) => {
             </Dialog>
         </>
     );
-}
+};
 
 export default ModalMain;

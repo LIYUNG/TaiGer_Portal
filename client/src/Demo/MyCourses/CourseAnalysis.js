@@ -230,11 +230,13 @@ export default function CourseAnalysis() {
 
     return (
         <Box>
-            {statedata.res_modal_status >= 400 ? <ModalMain
+            {statedata.res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={statedata.res_modal_message}
                     res_modal_status={statedata.res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
                     color="inherit"
@@ -244,7 +246,8 @@ export default function CourseAnalysis() {
                 >
                     {appConfig.companyName}
                 </Link>
-                {is_TaiGer_role(user) ? <Link
+                {is_TaiGer_role(user) ? (
+                    <Link
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
@@ -254,7 +257,8 @@ export default function CourseAnalysis() {
                         underline="hover"
                     >
                         {statedata.student_name}
-                    </Link> : null}
+                    </Link>
+                ) : null}
                 <Link
                     color="inherit"
                     component={LinkDom}

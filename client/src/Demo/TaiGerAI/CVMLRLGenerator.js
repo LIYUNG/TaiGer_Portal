@@ -140,6 +140,6 @@ const CVMLRLGenerator = () => {
             </Typography>
         </Box>
     );
-}
+};
 
 export default CVMLRLGenerator;

@@ -41,7 +41,8 @@ const AcceptProfileFileModel = (props) => {
                     }`}
                     path={props.preview_path}
                 />
-                {props.path?.split('.')[1] !== 'pdf' ? <a
+                {props.path?.split('.')[1] !== 'pdf' ? (
+                    <a
                         download
                         href={`${BASE_URL}/api/students/${props.student_id?.toString()}/files/${
                             props.path
@@ -58,10 +59,12 @@ const AcceptProfileFileModel = (props) => {
                         >
                             {t('Download', { ns: 'common' })}
                         </Button>
-                    </a> : null}
+                    </a>
+                ) : null}
             </DialogContent>
             <DialogActions>
-                {!(is_TaiGer_Editor(user) || is_TaiGer_Student(user)) ? <Button
+                {!(is_TaiGer_Editor(user) || is_TaiGer_Student(user)) ? (
+                    <Button
                         color="secondary"
                         disabled={!props.isLoaded}
                         onClick={(e) =>
@@ -78,7 +81,8 @@ const AcceptProfileFileModel = (props) => {
                         variant="contained"
                     >
                         {t('Reject', { ns: 'documents' })}
-                    </Button> : null}
+                    </Button>
+                ) : null}
                 <Button
                     color="primary"
                     onClick={props.closePreviewWindow}
@@ -99,6 +103,6 @@ const AcceptProfileFileModel = (props) => {
             </DialogActions>
         </Dialog>
     );
-}
+};
 
 export default AcceptProfileFileModel;

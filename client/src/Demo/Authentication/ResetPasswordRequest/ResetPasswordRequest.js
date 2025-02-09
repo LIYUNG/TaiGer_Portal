@@ -57,12 +57,12 @@ export default function ResetPasswordRequest() {
             </Typography>
             {emailSent ? (
                 <Typography>
-                        {t(
-                            'Password reset email is already sent to your give email address'
-                        )}
-                        <br />
-                        {t('Please have a check')}
-                    </Typography>
+                    {t(
+                        'Password reset email is already sent to your give email address'
+                    )}
+                    <br />
+                    {t('Please have a check')}
+                </Typography>
             ) : (
                 <>
                     <Typography component="h1" variant="h6">

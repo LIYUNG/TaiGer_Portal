@@ -15,6 +15,6 @@ const FilesList = (props) => {
         />
     ));
     return <>{thread}</>;
-}
+};
 
 export default FilesList;

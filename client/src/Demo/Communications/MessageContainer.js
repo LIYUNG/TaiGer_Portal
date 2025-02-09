@@ -107,20 +107,20 @@ const MessageContainer = (props) => {
         <>
             {messageContainerState.isEdit ? (
                 <MessageEdit
-                        buttonDisabled={isPending}
-                        editable={editable}
-                        editorState={messageContainerState.editorState}
-                        full_name={full_name}
-                        handleCancelEdit={handleCancelEdit}
-                        handleClickSave={updateMessage}
-                        idx={props.idx}
-                        isDeleting={props.isDeleting}
-                        isTaiGerView={props.isTaiGerView}
-                        lastupdate={props.lastupdate}
-                        message={props.message}
-                        onDeleteSingleMessage={props.onDeleteSingleMessage}
-                        onTrashClick={props.onTrashClick}
-                    />
+                    buttonDisabled={isPending}
+                    editable={editable}
+                    editorState={messageContainerState.editorState}
+                    full_name={full_name}
+                    handleCancelEdit={handleCancelEdit}
+                    handleClickSave={updateMessage}
+                    idx={props.idx}
+                    isDeleting={props.isDeleting}
+                    isTaiGerView={props.isTaiGerView}
+                    lastupdate={props.lastupdate}
+                    message={props.message}
+                    onDeleteSingleMessage={props.onDeleteSingleMessage}
+                    onTrashClick={props.onTrashClick}
+                />
             ) : (
                 <Message
                     accordionKeys={props.accordionKeys}
@@ -136,6 +136,6 @@ const MessageContainer = (props) => {
             )}
         </>
     );
-}
+};
 
 export default MessageContainer;

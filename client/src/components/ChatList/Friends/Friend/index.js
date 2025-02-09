@@ -127,12 +127,14 @@ const Friend = (props) => {
                         <Typography variant="body2">
                             {props.data?.latestCommunication?.user_id ===
                                 props.data?.latestCommunication?.student_id &&
-                                props.data?.latestCommunication
-                                    ?.ignore_message !== true ? <FiberManualRecordIcon
-                                        fontSize="small"
-                                        style={{ marginLeft: '4px' }}
-                                        title="Not Reply Yet"
-                                    /> : null}
+                            props.data?.latestCommunication?.ignore_message !==
+                                true ? (
+                                <FiberManualRecordIcon
+                                    fontSize="small"
+                                    style={{ marginLeft: '4px' }}
+                                    title="Not Reply Yet"
+                                />
+                            ) : null}
                         </Typography>
                     </Box>
                 </Grid>

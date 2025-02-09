@@ -210,7 +210,8 @@ const StudentsAgentEditor = (props) => {
                 title={props.student.archiv === true ? 'Closed' : 'Open'}
             >
                 <TableCell>
-                    {is_TaiGer_role(user) && !props.isArchivPage ? <>
+                    {is_TaiGer_role(user) && !props.isArchivPage ? (
+                        <>
                             <Button
                                 aria-controls={open ? 'basic-menu' : undefined}
                                 aria-expanded={open ? 'true' : undefined}
@@ -237,14 +238,17 @@ const StudentsAgentEditor = (props) => {
                                 <MenuItem onClick={() => startEditingEditor()}>
                                     {t('Edit Editor', { ns: 'dashboard' })}
                                 </MenuItem>
-                                {!is_TaiGer_Editor(user) ? <MenuItem
+                                {!is_TaiGer_Editor(user) ? (
+                                    <MenuItem
                                         onClick={() => startEditingAttributes()}
                                     >
                                         {t('Configure Attribute', {
                                             ns: 'dashboard'
                                         })}
-                                    </MenuItem> : null}
-                                {!is_TaiGer_Editor(user) ? <MenuItem
+                                    </MenuItem>
+                                ) : null}
+                                {!is_TaiGer_Editor(user) ? (
+                                    <MenuItem
                                         onClick={() => setArchivModalOpen()}
                                     >
                                         {is_User_Archived(props.student)
@@ -254,9 +258,11 @@ const StudentsAgentEditor = (props) => {
                                             : t('Move to Archive', {
                                                   ns: 'common'
                                               })}
-                                    </MenuItem> : null}
+                                    </MenuItem>
+                                ) : null}
                             </Menu>
-                        </> : null}
+                        </>
+                    ) : null}
                 </TableCell>
                 {!is_TaiGer_Student(user) ? (
                     <TableCell>
@@ -283,14 +289,16 @@ const StudentsAgentEditor = (props) => {
                         <Typography variant="body2">
                             {props.student.email}
                         </Typography>
-                        {is_TaiGer_role(user) ? props.student.attributes?.map((attribute) => (
-                                <Chip
-                                    color={COLORS[attribute.value]}
-                                    key={attribute._id}
-                                    label={attribute.name}
-                                    size="small"
-                                />
-                            )) : null}
+                        {is_TaiGer_role(user)
+                            ? props.student.attributes?.map((attribute) => (
+                                  <Chip
+                                      color={COLORS[attribute.value]}
+                                      key={attribute._id}
+                                      label={attribute.name}
+                                      size="small"
+                                  />
+                              ))
+                            : null}
                     </TableCell>
                 ) : (
                     <></>
@@ -372,28 +380,36 @@ const StudentsAgentEditor = (props) => {
                     </Typography>
                 </TableCell>
             </TableRow>
-            {is_TaiGer_role(user) ? <>
-                    {studentsAgentEditor.showAgentPage ? <EditAgentsSubpage
+            {is_TaiGer_role(user) ? (
+                <>
+                    {studentsAgentEditor.showAgentPage ? (
+                        <EditAgentsSubpage
                             onHide={setAgentModalhide}
                             show={studentsAgentEditor.showAgentPage}
                             student={props.student}
                             submitUpdateAgentlist={submitUpdateAgentlist}
-                        /> : null}
-                    {studentsAgentEditor.showEditorPage ? <EditEditorsSubpage
+                        />
+                    ) : null}
+                    {studentsAgentEditor.showEditorPage ? (
+                        <EditEditorsSubpage
                             onHide={setEditorModalhide}
                             show={studentsAgentEditor.showEditorPage}
                             student={props.student}
                             submitUpdateEditorlist={submitUpdateEditorlist}
-                        /> : null}
-                    {studentsAgentEditor.showAttributesPage ? <EditAttributesSubpage
+                        />
+                    ) : null}
+                    {studentsAgentEditor.showAttributesPage ? (
+                        <EditAttributesSubpage
                             onHide={setAttributeModalhide}
                             show={studentsAgentEditor.showAttributesPage}
                             student={props.student}
                             submitUpdateAttributeslist={
                                 submitUpdateAttributeslist
                             }
-                        /> : null}
-                    {studentsAgentEditor.showArchivModalPage ? <Dialog
+                        />
+                    ) : null}
+                    {studentsAgentEditor.showArchivModalPage ? (
+                        <Dialog
                             aria-labelledby="contained-modal-title-vcenter"
                             onClose={setArchivModalhide}
                             open={studentsAgentEditor.showArchivModalPage}
@@ -447,10 +463,12 @@ const StudentsAgentEditor = (props) => {
                                     {t('Cancel', { ns: 'common' })}
                                 </Button>
                             </DialogActions>
-                        </Dialog> : null}
-                </> : null}
+                        </Dialog>
+                    ) : null}
+                </>
+            ) : null}
         </>
     );
-}
+};
 
 export default StudentsAgentEditor;

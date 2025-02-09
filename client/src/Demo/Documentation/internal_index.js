@@ -158,11 +158,13 @@ const InternaldocsPage = (props) => {
     TabTitle(t('Internal Documentation', { ns: 'common' }));
     return (
         <>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Alert severity="info">
                 {t('Internal Documentation', { ns: 'common' })}
             </Alert>
@@ -189,6 +191,6 @@ const InternaldocsPage = (props) => {
             )}
         </>
     );
-}
+};
 
 export default InternaldocsPage;

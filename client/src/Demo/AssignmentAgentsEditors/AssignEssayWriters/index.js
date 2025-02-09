@@ -41,6 +41,6 @@ const AssignEssayWriters = () => {
             />
         </Box>
     );
-}
+};
 
 export default AssignEssayWriters;

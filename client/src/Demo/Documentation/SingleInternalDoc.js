@@ -169,5 +169,5 @@ const SingleDoc = (props) => {
             />
         );
     }
-}
+};
 export default SingleDoc;

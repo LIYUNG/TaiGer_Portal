@@ -13,6 +13,6 @@ const DocumentsListItemsEditor = (props) => {
             readOnly={false}
         />
     );
-}
+};
 
 export default DocumentsListItemsEditor;

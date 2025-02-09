@@ -307,11 +307,13 @@ const TaiGerOfficeHours = () => {
 
     return (
         <Box>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
                     color="inherit"
@@ -372,37 +374,40 @@ const TaiGerOfficeHours = () => {
                         </Button>
                     </ButtonGroup>
 
-                    {viewMode === 'future' ? <>
+                    {viewMode === 'future' ? (
+                        <>
                             {events?.filter(
                                 (event) =>
                                     isInTheFuture(event.end) &&
                                     (!event.isConfirmedReceiver ||
                                         !event.isConfirmedRequester)
-                            ).length !== 0 ? _.reverse(
-                                    _.sortBy(
-                                        events?.filter(
-                                            (event) =>
-                                                isInTheFuture(event.end) &&
-                                                (!event.isConfirmedReceiver ||
-                                                    !event.isConfirmedRequester)
-                                        ),
-                                        ['start']
-                                    )
-                                )?.map((event, i) => (
-                                    <EventConfirmationCard
-                                        event={event}
-                                        handleConfirmAppointmentModalOpen={
-                                            handleConfirmAppointmentModalOpen
-                                        }
-                                        handleDeleteAppointmentModalOpen={
-                                            handleDeleteAppointmentModalOpen
-                                        }
-                                        handleEditAppointmentModalOpen={
-                                            handleEditAppointmentModalOpen
-                                        }
-                                        key={i}
-                                    />
-                                )) : null}
+                            ).length !== 0
+                                ? _.reverse(
+                                      _.sortBy(
+                                          events?.filter(
+                                              (event) =>
+                                                  isInTheFuture(event.end) &&
+                                                  (!event.isConfirmedReceiver ||
+                                                      !event.isConfirmedRequester)
+                                          ),
+                                          ['start']
+                                      )
+                                  )?.map((event, i) => (
+                                      <EventConfirmationCard
+                                          event={event}
+                                          handleConfirmAppointmentModalOpen={
+                                              handleConfirmAppointmentModalOpen
+                                          }
+                                          handleDeleteAppointmentModalOpen={
+                                              handleDeleteAppointmentModalOpen
+                                          }
+                                          handleEditAppointmentModalOpen={
+                                              handleEditAppointmentModalOpen
+                                          }
+                                          key={i}
+                                      />
+                                  ))
+                                : null}
                             <Card sx={{ p: 2 }}>
                                 <Typography variant="h6">
                                     {t('Upcoming', { ns: 'common' })}
@@ -446,9 +451,11 @@ const TaiGerOfficeHours = () => {
                                           })}
                                 </Box>
                             </Card>
-                        </> : null}
+                        </>
+                    ) : null}
 
-                    {viewMode === 'past' ? isLoaded ? (
+                    {viewMode === 'past' ? (
+                        isLoaded ? (
                             <Card sx={{ p: 2 }}>
                                 <DateRangePickerBasic />
                                 <Typography sx={{ p: 2 }} variant="h6">
@@ -477,7 +484,8 @@ const TaiGerOfficeHours = () => {
                             </Card>
                         ) : (
                             <CircularProgress />
-                        ) : null}
+                        )
+                    ) : null}
 
                     <Dialog
                         centered
@@ -719,7 +727,8 @@ const TaiGerOfficeHours = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-            {is_TaiGer_Agent(user) ? <CreateNewEventModal
+            {is_TaiGer_Agent(user) ? (
+                <CreateNewEventModal
                     // {...props}
                     BookButtonDisable={BookButtonDisable}
                     available_termins={available_termins_full}
@@ -732,9 +741,10 @@ const TaiGerOfficeHours = () => {
                     newEventStart={newEventStart}
                     student_id={student_id}
                     students={students}
-                /> : null}
+                />
+            ) : null}
         </Box>
     );
-}
+};
 
 export default TaiGerOfficeHours;

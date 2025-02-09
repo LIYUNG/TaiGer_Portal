@@ -98,6 +98,6 @@ const AdminPage = () => {
             </Card>
         </Box>
     );
-}
+};
 
 export default AdminPage;

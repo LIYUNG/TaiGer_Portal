@@ -126,7 +126,9 @@ const CourseEdit = () => {
                             course.all_course_chinese === '' ||
                             course.all_course_english === ''
                         }
-                        startIcon={isPending ? <CircularProgress size={20} /> : null}
+                        startIcon={
+                            isPending ? <CircularProgress size={20} /> : null
+                        }
                         type="submit"
                         variant="contained"
                     >

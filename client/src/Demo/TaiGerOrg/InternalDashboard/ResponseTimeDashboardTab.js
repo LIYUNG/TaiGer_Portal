@@ -112,7 +112,7 @@ const ResponseTimeBarChart = ({ chartData, onBarClick }) => {
                 }
             ]}
             yAxis={[{ label: 'Average duration (days)' }]}
-         />
+        />
     );
 };
 
@@ -221,48 +221,55 @@ const StudentProgramOverview = ({
             />
             <CardContent>
                 <Collapse in={isCollapsed}>
-                    {threadIntervals.length !== 0 ? threadIntervals.map((thread) => (
-                            <React.Fragment key={thread.threadId}>
-                                {thread.intervalType ? <Divider
-                                        sx={{ mb: 10, px: 6 }}
-                                        textAlign="left"
-                                    >
-                                        <Typography sx={{ px: 1 }} variant="h6">
-                                            {thread.intervalType}
-                                        </Typography>
-                                    </Divider> : null}
-                                <LineChart
-                                    dataset={thread.intervals
-                                        .map((item) => ({
-                                            ...item,
-                                            intervalStartAt: new Date(
-                                                item.intervalStartAt
-                                            )
-                                        }))
-                                        .sort(
-                                            (a, b) =>
-                                                a.intervalStartAt -
-                                                b.intervalStartAt
-                                        )}
-                                    height={400}
-                                    margin={{
-                                        top: 20,
-                                        right: 30,
-                                        left: 50,
-                                        bottom: 110
-                                    }}
-                                    series={[{ dataKey: 'interval' }]}
-                                    xAxis={[
-                                        {
-                                            // label: thread.intervalType,
-                                            dataKey: 'intervalStartAt',
-                                            scaleType: 'time'
-                                        }
-                                    ]}
-                                    yAxis={[{ label: 'Duration (days)' }]}
-                                />
-                            </React.Fragment>
-                        )) : null}
+                    {threadIntervals.length !== 0
+                        ? threadIntervals.map((thread) => (
+                              <React.Fragment key={thread.threadId}>
+                                  {thread.intervalType ? (
+                                      <Divider
+                                          sx={{ mb: 10, px: 6 }}
+                                          textAlign="left"
+                                      >
+                                          <Typography
+                                              sx={{ px: 1 }}
+                                              variant="h6"
+                                          >
+                                              {thread.intervalType}
+                                          </Typography>
+                                      </Divider>
+                                  ) : null}
+                                  <LineChart
+                                      dataset={thread.intervals
+                                          .map((item) => ({
+                                              ...item,
+                                              intervalStartAt: new Date(
+                                                  item.intervalStartAt
+                                              )
+                                          }))
+                                          .sort(
+                                              (a, b) =>
+                                                  a.intervalStartAt -
+                                                  b.intervalStartAt
+                                          )}
+                                      height={400}
+                                      margin={{
+                                          top: 20,
+                                          right: 30,
+                                          left: 50,
+                                          bottom: 110
+                                      }}
+                                      series={[{ dataKey: 'interval' }]}
+                                      xAxis={[
+                                          {
+                                              // label: thread.intervalType,
+                                              dataKey: 'intervalStartAt',
+                                              scaleType: 'time'
+                                          }
+                                      ]}
+                                      yAxis={[{ label: 'Duration (days)' }]}
+                                  />
+                              </React.Fragment>
+                          ))
+                        : null}
                 </Collapse>
             </CardContent>
         </Card>
@@ -286,30 +293,36 @@ const StudentOverview = ({ studentId }) => {
     return (
         <>
             {studentIntervals !== 'error' &&
-                !studentIntervals?.communicationThreadIntervals &&
-                studentIntervals?.applications?.length == 0 ? <Typography sx={{ p: 2 }} variant="h5">
-                        No data available.
-                    </Typography> : null}
+            !studentIntervals?.communicationThreadIntervals &&
+            studentIntervals?.applications?.length == 0 ? (
+                <Typography sx={{ p: 2 }} variant="h5">
+                    No data available.
+                </Typography>
+            ) : null}
             {studentIntervals !== 'error' &&
-                studentIntervals?.communicationThreadIntervals?.length > 0 ? <StudentProgramOverview
-                        collapse={true}
-                        key="communication"
-                        threadIntervals={[
-                            {
-                                intervals:
-                                    studentIntervals?.communicationThreadIntervals
-                            }
-                        ]}
-                        title="Communication Thread"
-                    /> : null}
+            studentIntervals?.communicationThreadIntervals?.length > 0 ? (
+                <StudentProgramOverview
+                    collapse={true}
+                    key="communication"
+                    threadIntervals={[
+                        {
+                            intervals:
+                                studentIntervals?.communicationThreadIntervals
+                        }
+                    ]}
+                    title="Communication Thread"
+                />
+            ) : null}
             {studentIntervals !== 'error' &&
-                studentIntervals?.applications?.length > 0 ? studentIntervals.applications.map((application) => (
-                    <StudentProgramOverview
-                        key={application._id}
-                        threadIntervals={application?.threadIntervals}
-                        title={`${application.school} - ${application.program_name} (${application.threadIntervals.length})`}
-                    />
-                )) : null}
+            studentIntervals?.applications?.length > 0
+                ? studentIntervals.applications.map((application) => (
+                      <StudentProgramOverview
+                          key={application._id}
+                          threadIntervals={application?.threadIntervals}
+                          title={`${application.school} - ${application.program_name} (${application.threadIntervals.length})`}
+                      />
+                  ))
+                : null}
         </>
     );
 };
@@ -401,7 +414,8 @@ const ResponseTimeDashboardTab = ({
 
     return (
         <Grid container spacing={2}>
-            {!member && !student ? <>
+            {!member && !student ? (
+                <>
                     <Grid item xs={12}>
                         <Box sx={{ p: 2 }}>
                             <ButtonGroup
@@ -439,8 +453,10 @@ const ResponseTimeDashboardTab = ({
                             teamType={viewMode}
                         />
                     </Grid>
-                </> : null}
-            {member && !student ? <>
+                </>
+            ) : null}
+            {member && !student ? (
+                <>
                     <Grid item xs={12}>
                         <Box sx={{ p: 2 }}>
                             <Button
@@ -464,8 +480,10 @@ const ResponseTimeDashboardTab = ({
                             teamType={viewMode}
                         />
                     </Grid>
-                </> : null}
-            {student ? <Grid item xs={12}>
+                </>
+            ) : null}
+            {student ? (
+                <Grid item xs={12}>
                     <Box sx={{ p: 2 }}>
                         <Button
                             color="primary"
@@ -488,7 +506,8 @@ const ResponseTimeDashboardTab = ({
                     <Grid item xs={12}>
                         <StudentOverview studentId={student?.userId} />
                     </Grid>
-                </Grid> : null}
+                </Grid>
+            ) : null}
         </Grid>
     );
 };

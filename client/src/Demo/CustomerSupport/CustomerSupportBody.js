@@ -213,6 +213,6 @@ const CustomerSupportBody = ({ complaintTickets }) => {
             </Box>
         </Box>
     );
-}
+};
 
 export default CustomerSupportBody;

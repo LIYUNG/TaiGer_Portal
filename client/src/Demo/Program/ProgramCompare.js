@@ -99,9 +99,11 @@ const DiffRow = ({
                 </Typography>
             </TableCell>
             <TableCell>
-                {showToggleButton ? <Button onClick={toggleAccept}>
+                {showToggleButton ? (
+                    <Button onClick={toggleAccept}>
                         {isAccepted ? <RestoreIcon /> : <ArrowBackIcon />}
-                    </Button> : null}
+                    </Button>
+                ) : null}
             </TableCell>
             <TableCell
                 sx={

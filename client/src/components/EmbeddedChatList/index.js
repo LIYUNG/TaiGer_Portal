@@ -118,27 +118,31 @@ const EmbeddedChatList = ({ student_id }) => {
                     value={searchTerm}
                 />
             </Search>
-            {isLoading ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-                    <MenuItem key={i}>
-                        <Skeleton height={40} variant="circular" width={40} />
-                        <Skeleton
-                            height={54}
-                            style={{
-                                marginLeft: '10px'
-                            }}
-                            variant="rectangular"
-                            width={EmbeddedChatListWidth - 50}
-                        />
-                    </MenuItem>
-                )) : null}
-            {!isLoading ? <Friends
+            {isLoading
+                ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+                      <MenuItem key={i}>
+                          <Skeleton height={40} variant="circular" width={40} />
+                          <Skeleton
+                              height={54}
+                              style={{
+                                  marginLeft: '10px'
+                              }}
+                              variant="rectangular"
+                              width={EmbeddedChatListWidth - 50}
+                          />
+                      </MenuItem>
+                  ))
+                : null}
+            {!isLoading ? (
+                <Friends
                     students={
                         chatListState.searchMode
                             ? searchResults
                             : data?.data?.students || []
                     }
                     user={user}
-                /> : null}
+                />
+            ) : null}
         </Box>
     );
 };

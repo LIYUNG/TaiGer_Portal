@@ -110,6 +110,6 @@ const Contact = () => {
             </Card>
         </Box>
     );
-}
+};
 
 export default Contact;

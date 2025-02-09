@@ -88,9 +88,7 @@ const AdmissionsStat = (props) => {
         [admisstionStatColumns]
     );
 
-    return (
-        <MuiDataGrid columns={memoizedColumns} rows={result} />
-    );
-}
+    return <MuiDataGrid columns={memoizedColumns} rows={result} />;
+};
 
 export default AdmissionsStat;

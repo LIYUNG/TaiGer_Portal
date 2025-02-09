@@ -42,9 +42,11 @@ const AllBaseDocuments = () => {
                     {t('All Documents', { ns: 'common' })}
                 </Typography>
             </Breadcrumbs>
-            {is_TaiGer_role(user) ? <BaseDocumentsTable students={data.data} /> : null}
+            {is_TaiGer_role(user) ? (
+                <BaseDocumentsTable students={data.data} />
+            ) : null}
         </Box>
     );
-}
+};
 
 export default AllBaseDocuments;

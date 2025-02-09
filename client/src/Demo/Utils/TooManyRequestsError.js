@@ -7,6 +7,6 @@ const TooManyRequestsError = () => {
             <Card>Too many requests. Please try later.</Card>
         </Box>
     );
-}
+};
 
 export default TooManyRequestsError;

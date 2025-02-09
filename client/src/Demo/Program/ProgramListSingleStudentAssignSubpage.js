@@ -102,6 +102,6 @@ const ProgramListSingleStudentAssignSubpage = (props) => {
             </DialogActions>
         </Dialog>
     );
-}
+};
 
 export default ProgramListSingleStudentAssignSubpage;

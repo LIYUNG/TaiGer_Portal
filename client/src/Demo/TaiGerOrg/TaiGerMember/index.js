@@ -121,7 +121,8 @@ const TaiGerMember = () => {
                 </Typography>
             </Breadcrumbs>
             <Card>
-                {is_TaiGer_Admin(user) ? <>
+                {is_TaiGer_Admin(user) ? (
+                    <>
                         <Typography variant="h5">
                             {t('Admin', { ns: 'common' })}:
                         </Typography>
@@ -135,7 +136,8 @@ const TaiGerMember = () => {
                                 </Link>
                             </Typography>
                         ))}
-                    </> : null}
+                    </>
+                ) : null}
 
                 <Typography variant="h5">
                     {t('Agent', { ns: 'common' })}:
@@ -192,6 +194,6 @@ const TaiGerMember = () => {
             </Card>
         </Box>
     );
-}
+};
 
 export default TaiGerMember;

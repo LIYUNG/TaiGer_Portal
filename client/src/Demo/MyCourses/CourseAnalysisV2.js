@@ -306,7 +306,8 @@ export const EstimationCard = ({
                                         }}
                                     >
                                         <TableCell>
-                                            {row.expandable ? <IconButton
+                                            {row.expandable ? (
+                                                <IconButton
                                                     aria-label="expand row"
                                                     onClick={() =>
                                                         setOpen(!open)
@@ -318,7 +319,8 @@ export const EstimationCard = ({
                                                     ) : (
                                                         <KeyboardArrowDownIcon />
                                                     )}
-                                                </IconButton> : null}
+                                                </IconButton>
+                                            ) : null}
                                         </TableCell>
                                         <TableCell>{row.name}</TableCell>
                                         <TableCell align="right">
@@ -334,7 +336,8 @@ export const EstimationCard = ({
                                             {row.value100}
                                         </TableCell>
                                     </TableRow>
-                                    {row.expandable ? <TableRow>
+                                    {row.expandable ? (
+                                        <TableRow>
                                             <TableCell
                                                 colSpan={6}
                                                 style={{
@@ -357,7 +360,8 @@ export const EstimationCard = ({
                                                     </Box>
                                                 </Collapse>
                                             </TableCell>
-                                        </TableRow> : null}
+                                        </TableRow>
+                                    ) : null}
                                 </Fragment>
                             ))}
                         </TableBody>
@@ -390,11 +394,13 @@ export const EstimationCard = ({
                     you will get directly rejected.
                 </Typography>
                 {scores[directRej.name] !== scores[directAd.name] &&
-                    scores[directAd.name] !== 0 ? <Typography>
-                            If your total score is between{' '}
-                            {scores[directAd.name]} and {scores[directRej.name]}
-                            , you will get to next round evalution.
-                        </Typography> : null}
+                scores[directAd.name] !== 0 ? (
+                    <Typography>
+                        If your total score is between {scores[directAd.name]}{' '}
+                        and {scores[directRej.name]}, you will get to next round
+                        evalution.
+                    </Typography>
+                ) : null}
             </CardContent>
         </Card>
     );
@@ -465,7 +471,8 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                                 justifyContent="flex-end"
                             >
                                 {getMaxScoreECTS(sortedCourses[category]) !==
-                                    0 ? <Typography fontWeight="bold" variant="h5">
+                                0 ? (
+                                    <Typography fontWeight="bold" variant="h5">
                                         {i18next.t('acquired-score')}:{' '}
                                         {satisfiedRequirement(
                                             sortedCourses[category]
@@ -478,12 +485,14 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                                         {getMaxScoreECTS(
                                             sortedCourses[category]
                                         )}
-                                    </Typography> : null}
+                                    </Typography>
+                                ) : null}
                             </Stack>
                         </Box>
 
                         {/* Sorted Courses */}
-                        {sortedCourses[category].length > 0 ? <Box
+                        {sortedCourses[category].length > 0 ? (
+                            <Box
                                 display="flex"
                                 flexDirection="column"
                                 gap={2}
@@ -579,27 +588,26 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                                     data={sortedCourses[category]?.slice(0, -1)}
                                     tableKey={category}
                                 />
-                            </Box> : null}
+                            </Box>
+                        ) : null}
 
                         {/* Suggested Courses */}
                         {suggestedCourses[category] &&
-                            suggestedCourses[category].length > 0 ? <Box
-                                    display="flex"
-                                    flexDirection="column"
-                                    gap={2}
-                                >
-                                    <Typography variant="h6">
-                                        {i18next.t('Suggested Courses', {
-                                            ns: 'courses'
-                                        })}
-                                    </Typography>
-                                    <Typography variant="body1">
-                                        {suggestedCourses[category]
-                                            .map((sug) => sug['建議修課'])
-                                            .filter((sug) => sug)
-                                            .join('， ')}
-                                    </Typography>
-                                </Box> : null}
+                        suggestedCourses[category].length > 0 ? (
+                            <Box display="flex" flexDirection="column" gap={2}>
+                                <Typography variant="h6">
+                                    {i18next.t('Suggested Courses', {
+                                        ns: 'courses'
+                                    })}
+                                </Typography>
+                                <Typography variant="body1">
+                                    {suggestedCourses[category]
+                                        .map((sug) => sug['建議修課'])
+                                        .filter((sug) => sug)
+                                        .join('， ')}
+                                </Typography>
+                            </Box>
+                        ) : null}
                     </Paper>
                 ))}
             </Grid>
@@ -627,7 +635,8 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                         </Stack>
                     </CardContent>
                 </Card>
-                {firstRoundConsidered && firstRoundConsidered?.length > 0 ? <EstimationCard
+                {firstRoundConsidered && firstRoundConsidered?.length > 0 ? (
+                    <EstimationCard
                         academic_background={academic_background}
                         directAd={DIRECT_ADMISSION_SCORE}
                         directRej={DIRECT_REJECTION_SCORE}
@@ -636,8 +645,10 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                         sortedCourses={sortedCourses}
                         stage={1}
                         subtitle="Basic Academic background check"
-                    /> : null}
-                {secondRoundConsidered && secondRoundConsidered?.length > 0 ? <EstimationCard
+                    />
+                ) : null}
+                {secondRoundConsidered && secondRoundConsidered?.length > 0 ? (
+                    <EstimationCard
                         academic_background={academic_background}
                         directAd={DIRECT_ADMISSION_SECOND_SCORE}
                         directRej={DIRECT_REJECTION_SECOND_SCORE}
@@ -646,7 +657,8 @@ export const CourseAnalysisComponent = ({ sheet, student }) => {
                         sortedCourses={sortedCourses}
                         stage={2}
                         subtitle="Advanced academic background check"
-                    /> : null}
+                    />
+                ) : null}
             </Grid>
         </Grid>
     );
@@ -900,11 +912,13 @@ export default function CourseAnalysisV2() {
 
     return (
         <Box>
-            {statedata.res_modal_status >= 400 ? <ModalMain
+            {statedata.res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={statedata.res_modal_message}
                     res_modal_status={statedata.res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
                     color="inherit"
@@ -915,34 +929,42 @@ export default function CourseAnalysisV2() {
                     {appConfig.companyName}
                 </Link>
                 {!window.location.href.includes('internal') &&
-                    is_TaiGer_role(user) ? <Link
-                            color="inherit"
-                            component={LinkDom}
-                            to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                statedata.student?._id?.toString(),
-                                DEMO.PROFILE_HASH
-                            )}`}
-                            underline="hover"
-                        >
-                            {student_name}
-                        </Link> : null}
-                {window.location.href.includes('internal') ? <Typography>{t('Tools', { ns: 'common' })}</Typography> : null}
-                {window.location.href.includes('internal') ? <Link
+                is_TaiGer_role(user) ? (
+                    <Link
+                        color="inherit"
+                        component={LinkDom}
+                        to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                            statedata.student?._id?.toString(),
+                            DEMO.PROFILE_HASH
+                        )}`}
+                        underline="hover"
+                    >
+                        {student_name}
+                    </Link>
+                ) : null}
+                {window.location.href.includes('internal') ? (
+                    <Typography>{t('Tools', { ns: 'common' })}</Typography>
+                ) : null}
+                {window.location.href.includes('internal') ? (
+                    <Link
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.INTERNAL_WIDGET_COURSE_ANALYSER_LINK}`}
                         underline="hover"
                     >
                         {t('Course Analyser', { ns: 'common' })}
-                    </Link> : null}
-                {!window.location.href.includes('internal') ? <Link
+                    </Link>
+                ) : null}
+                {!window.location.href.includes('internal') ? (
+                    <Link
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.COURSES_INPUT_LINK(statedata.student?._id?.toString())}`}
                         underline="hover"
                     >
                         {t('My Courses')}
-                    </Link> : null}
+                    </Link>
+                ) : null}
                 <Typography color="text.primary">
                     {t('Courses Analysis')} Beta
                 </Typography>
@@ -989,14 +1011,18 @@ export default function CourseAnalysisV2() {
                     </MenuItem>
                 ))}
             </Select>
-            {sheetName === 'General' ? <GeneralCourseAnalysisComponent
+            {sheetName === 'General' ? (
+                <GeneralCourseAnalysisComponent
                     sheets={statedata.sheets}
                     student={statedata.student}
-                /> : null}
-            {sheetName !== 'General' ? <CourseAnalysisComponent
+                />
+            ) : null}
+            {sheetName !== 'General' ? (
+                <CourseAnalysisComponent
                     sheet={statedata.sheets?.[sheetName]}
                     student={statedata.student}
-                /> : null}
+                />
+            ) : null}
             {t('Last update', { ns: 'common' })}{' '}
             {convertDate(statedata.timestamp)}
         </Box>

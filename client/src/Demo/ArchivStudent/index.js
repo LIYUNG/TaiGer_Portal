@@ -136,11 +136,13 @@ const ArchivStudents = () => {
                         {` (${archivStudentsState.students.length})`}
                     </Typography>
                 </Breadcrumbs>
-                {res_modal_status >= 400 ? <ModalMain
+                {res_modal_status >= 400 ? (
+                    <ModalMain
                         ConfirmError={ConfirmError}
                         res_modal_message={res_modal_message}
                         res_modal_status={res_modal_status}
-                    /> : null}
+                    />
+                ) : null}
                 <Box sx={{ mt: 2 }}>
                     <TabStudBackgroundDashboard
                         students={archivStudentsState.students}
@@ -150,6 +152,6 @@ const ArchivStudents = () => {
             </Box>
         );
     }
-}
+};
 
 export default ArchivStudents;

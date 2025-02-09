@@ -324,7 +324,8 @@ const StudentApplicationsTableTemplate = (props) => {
             studentApplicationsTableTemplateState.student.applications.map(
                 (application, application_idx) => (
                     <TableRow key={application_idx}>
-                        {!is_TaiGer_Student(user) ? <TableCell>
+                        {!is_TaiGer_Student(user) ? (
+                            <TableCell>
                                 <Button
                                     color="primary"
                                     onClick={(e) =>
@@ -340,7 +341,8 @@ const StudentApplicationsTableTemplate = (props) => {
                                 >
                                     <DeleteIcon fontSize="small" />
                                 </Button>
-                            </TableCell> : null}
+                            </TableCell>
+                        ) : null}
                         <TableCell>
                             <Typography>
                                 <Link
@@ -608,12 +610,15 @@ const StudentApplicationsTableTemplate = (props) => {
     }
     return (
         <Box>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
-            {is_TaiGer_Student(user) ? <Dialog open={showProgramCorrectnessReminderModal}>
+                />
+            ) : null}
+            {is_TaiGer_Student(user) ? (
+                <Dialog open={showProgramCorrectnessReminderModal}>
                     <DialogTitle>{t('Warning', { ns: 'common' })}</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
@@ -631,7 +636,8 @@ const StudentApplicationsTableTemplate = (props) => {
                             {t('Accept', { ns: 'common' })}
                         </Button>
                     </DialogActions>
-                </Dialog> : null}
+                </Dialog>
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
                     color="inherit"
@@ -641,15 +647,18 @@ const StudentApplicationsTableTemplate = (props) => {
                 >
                     {appConfig.companyName}
                 </Link>
-                {is_TaiGer_role(user) ? <Link
+                {is_TaiGer_role(user) ? (
+                    <Link
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.STUDENT_DATABASE_LINK}`}
                         underline="hover"
                     >
                         {t('Students Database', { ns: 'common' })}
-                    </Link> : null}
-                {is_TaiGer_role(user) ? <Link
+                    </Link>
+                ) : null}
+                {is_TaiGer_role(user) ? (
+                    <Link
                         color="inherit"
                         component={LinkDom}
                         to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
@@ -660,7 +669,8 @@ const StudentApplicationsTableTemplate = (props) => {
                     >
                         {t('Student', { ns: 'common' })}{' '}
                         {props.student.firstname} {props.student.lastname}
-                    </Link> : null}
+                    </Link>
+                ) : null}
                 <Typography color="text.primary">
                     {t('Applications', { ns: 'common' })}
                 </Typography>
@@ -670,28 +680,34 @@ const StudentApplicationsTableTemplate = (props) => {
                     <Grid item md={is_TaiGer_role(user) ? 6 : 12} xs={12}>
                         <StudentPreferenceCard student={props.student} />
                     </Grid>
-                    {is_TaiGer_role(user) ? <Grid item md={6} xs={12}>
+                    {is_TaiGer_role(user) ? (
+                        <Grid item md={6} xs={12}>
                             <ImportStudentProgramsCard
                                 student={props.student}
                             />
-                        </Grid> : null}
+                        </Grid>
+                    ) : null}
                 </Grid>
             </Box>
             <>
                 {isProgramNotSelectedEnough([
                     studentApplicationsTableTemplateState.student
-                ]) ? <Card>
+                ]) ? (
+                    <Card>
                         {props.student.firstname} {props.student.lastname} did
                         not choose enough programs.
-                    </Card> : null}
+                    </Card>
+                ) : null}
                 {is_TaiGer_Admin(user) &&
-                    is_num_Program_Not_specified(
-                        studentApplicationsTableTemplateState.student
-                    ) ? <Card>
-                            The number of student&apos;s applications is not
-                            specified! Please determine the number of the
-                            programs according to the contract
-                        </Card> : null}
+                is_num_Program_Not_specified(
+                    studentApplicationsTableTemplateState.student
+                ) ? (
+                    <Card>
+                        The number of student&apos;s applications is not
+                        specified! Please determine the number of the programs
+                        according to the contract
+                    </Card>
+                ) : null}
                 <Grid container spacing={2}>
                     <Grid item xs={4}>
                         <Typography variant="h6">
@@ -728,13 +744,13 @@ const StudentApplicationsTableTemplate = (props) => {
                         </Grid>
                     ) : (
                         <Grid item xs={2}>
-                                <Typography variant="h6">
-                                    {
-                                        studentApplicationsTableTemplateState
-                                            .student.applying_program_count
-                                    }
-                                </Typography>
-                            </Grid>
+                            <Typography variant="h6">
+                                {
+                                    studentApplicationsTableTemplateState
+                                        .student.applying_program_count
+                                }
+                            </Typography>
+                        </Grid>
                     )}
                 </Grid>
                 <Box>
@@ -774,7 +790,9 @@ const StudentApplicationsTableTemplate = (props) => {
                                 <Table size="small">
                                     <TableHead>
                                         <TableRow>
-                                            {!is_TaiGer_Student(user) ? <TableCell>-</TableCell> : null}
+                                            {!is_TaiGer_Student(user) ? (
+                                                <TableCell>-</TableCell>
+                                            ) : null}
                                             {programstatuslist.map(
                                                 (doc, index) => (
                                                     <TableCell key={index}>
@@ -820,7 +838,8 @@ const StudentApplicationsTableTemplate = (props) => {
                             )}
                         </Button>
                     </Box>
-                    {is_TaiGer_role(user) ? <>
+                    {is_TaiGer_role(user) ? (
+                        <>
                             <Box>
                                 <Typography>
                                     <span
@@ -856,7 +875,8 @@ const StudentApplicationsTableTemplate = (props) => {
                                     </span>
                                 </Typography>
                             </Box>
-                        </> : null}
+                        </>
+                    ) : null}
                     <Dialog
                         aria-labelledby="contained-modal-title-vcenter"
                         onClose={onHideModalDeleteApplication}
@@ -927,6 +947,6 @@ const StudentApplicationsTableTemplate = (props) => {
             </>
         </Box>
     );
-}
+};
 
 export default StudentApplicationsTableTemplate;

@@ -365,7 +365,9 @@ const CustomerTicketDetailPageBody = ({ complaintTicket }) => {
                 </Link>
                 <Typography color="text.primary">{`${complaintTicket.title} (Ticket Nr. ${complaintTicket._id})`}</Typography>
             </Breadcrumbs>
-            {customerTicketDetailPageBodyState.thread.status === 'resolved' ? <TopBar /> : null}
+            {customerTicketDetailPageBodyState.thread.status === 'resolved' ? (
+                <TopBar />
+            ) : null}
             {isDeleted ? (
                 <Box>
                     <Grid container spacing={2} sx={{ mt: 1 }}>
@@ -567,7 +569,8 @@ const CustomerTicketDetailPageBody = ({ complaintTicket }) => {
                                 </Typography>
                             </Card>
                         )}
-                        {is_TaiGer_role(user) ? customerTicketDetailPageBodyState.thread.status ===
+                        {is_TaiGer_role(user) ? (
+                            customerTicketDetailPageBodyState.thread.status ===
                             'open' ? (
                                 <Button
                                     color="success"
@@ -608,7 +611,8 @@ const CustomerTicketDetailPageBody = ({ complaintTicket }) => {
                                         <CircularProgress />
                                     )}
                                 </Button>
-                            ) : null}
+                            )
+                        ) : null}
                     </Box>
                 </Box>
             )}
@@ -675,6 +679,6 @@ const CustomerTicketDetailPageBody = ({ complaintTicket }) => {
             </Dialog>
         </Box>
     );
-}
+};
 
 export default CustomerTicketDetailPageBody;

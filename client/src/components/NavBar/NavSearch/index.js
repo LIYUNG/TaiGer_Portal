@@ -161,11 +161,13 @@ const NavSearch = () => {
 
     return (
         <Box>
-            {isError ? <ModalMain
+            {isError ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={statedata.res_modal_message}
                     res_modal_status={statedata.res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Box className="search-container" ref={searchContainerRef}>
                 <Search>
                     <SearchIconWrapper>
@@ -182,7 +184,8 @@ const NavSearch = () => {
                     />
                 </Search>
                 {/* {loading && <div>Loading...</div>} */}
-                {isResultsVisible ? searchResults.length > 0 ? (
+                {isResultsVisible ? (
+                    searchResults.length > 0 ? (
                         <Box className="search-results result-list">
                             {searchResults.map((result, i) =>
                                 result.role === Role.Student ? (
@@ -256,7 +259,8 @@ const NavSearch = () => {
                         <Box className="search-results result-list">
                             <li>No result</li>
                         </Box>
-                    ) : null}
+                    )
+                ) : null}
             </Box>
         </Box>
     );

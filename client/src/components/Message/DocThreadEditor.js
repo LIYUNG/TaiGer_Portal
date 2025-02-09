@@ -63,27 +63,34 @@ const DocThreadEditor = ({
         1. contain student name for each file, 
         2. CV: no gap
          */}
-            {is_TaiGer_role(user) ? <Grid item xs={12}>
+            {is_TaiGer_role(user) ? (
+                <Grid item xs={12}>
                     {file?.map((fl, i) => (
                         <Box key={`${fl.name}${i}`}>
                             <Typography>{fl.name} :</Typography>
-                            {checkResult?.length ? Object.keys(checkResult[i]).map((ky) => (
-                                    <Typography
-                                        key={checkResult[i][ky].text}
-                                        sx={{ ml: 2 }}
-                                    >
-                                        {checkResult[i][ky].value === undefined
-                                            ? CVMLRL_DOC_PRECHECK_STATUS_E.WARNING_SYMBOK
-                                            : checkResult[i][ky].value
-                                              ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
-                                              : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
-                                        {checkResult[i][ky].text}
-                                        {checkResult[i][ky].hasMetadata ? checkResult[i][ky].metaData : null}
-                                    </Typography>
-                                )) : null}
+                            {checkResult?.length
+                                ? Object.keys(checkResult[i]).map((ky) => (
+                                      <Typography
+                                          key={checkResult[i][ky].text}
+                                          sx={{ ml: 2 }}
+                                      >
+                                          {checkResult[i][ky].value ===
+                                          undefined
+                                              ? CVMLRL_DOC_PRECHECK_STATUS_E.WARNING_SYMBOK
+                                              : checkResult[i][ky].value
+                                                ? CVMLRL_DOC_PRECHECK_STATUS_E.OK_SYMBOL
+                                                : CVMLRL_DOC_PRECHECK_STATUS_E.NOT_OK_SYMBOL}
+                                          {checkResult[i][ky].text}
+                                          {checkResult[i][ky].hasMetadata
+                                              ? checkResult[i][ky].metaData
+                                              : null}
+                                      </Typography>
+                                  ))
+                                : null}
                         </Box>
                     ))}
-                </Grid> : null}
+                </Grid>
+            ) : null}
 
             <Grid item xs={12}>
                 <TextField

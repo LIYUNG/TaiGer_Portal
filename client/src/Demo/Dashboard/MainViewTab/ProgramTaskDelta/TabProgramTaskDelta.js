@@ -9,8 +9,6 @@ import {
 import ProgramTaskDelta from './ProgramTaskDelta';
 
 const TabProgramTaskDelta = ({ deltas }) => {
-    
-
     const taskDeltas = deltas.map((delta, i) => (
         <ProgramTaskDelta
             key={i}
@@ -39,6 +37,6 @@ const TabProgramTaskDelta = ({ deltas }) => {
             )}
         </>
     );
-}
+};
 
 export default TabProgramTaskDelta;

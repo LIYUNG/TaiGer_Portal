@@ -21,28 +21,29 @@ const RespondedThreads = (props) => {
             (generaldocs_threads, i) => (
                 <TableRow key={i}>
                     {!generaldocs_threads.isFinalVersion &&
-                        generaldocs_threads.latest_message_left_by_id ===
-                            props.student._id.toString() ? <>
-                                <TableCell>
-                                    <Link
-                                        component={LinkDom}
-                                        to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                                            generaldocs_threads.doc_thread_id
-                                                ._id
-                                        )}
-                                        underline="hover"
-                                    >
-                                        {
-                                            generaldocs_threads.doc_thread_id
-                                                .file_type
-                                        }
-                                    </Link>
-                                </TableCell>
-                                <TableCell>
-                                    {' '}
-                                    {convertDate(generaldocs_threads.updatedAt)}
-                                </TableCell>
-                            </> : null}
+                    generaldocs_threads.latest_message_left_by_id ===
+                        props.student._id.toString() ? (
+                        <>
+                            <TableCell>
+                                <Link
+                                    component={LinkDom}
+                                    to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                                        generaldocs_threads.doc_thread_id._id
+                                    )}
+                                    underline="hover"
+                                >
+                                    {
+                                        generaldocs_threads.doc_thread_id
+                                            .file_type
+                                    }
+                                </Link>
+                            </TableCell>
+                            <TableCell>
+                                {' '}
+                                {convertDate(generaldocs_threads.updatedAt)}
+                            </TableCell>
+                        </>
+                    ) : null}
                 </TableRow>
             )
         );
@@ -53,37 +54,36 @@ const RespondedThreads = (props) => {
                     (application_doc_thread, idx) => (
                         <TableRow key={idx}>
                             {!application_doc_thread.isFinalVersion &&
-                                application_doc_thread.latest_message_left_by_id ===
-                                    props.student._id.toString() &&
-                                isProgramDecided(application) ? <>
-                                        <TableCell>
-                                            <Link
-                                                component={LinkDom}
-                                                to={DEMO.DOCUMENT_MODIFICATION_LINK(
-                                                    application_doc_thread
-                                                        .doc_thread_id._id
-                                                )}
-                                                underline="hover"
-                                            >
-                                                {
-                                                    application_doc_thread
-                                                        .doc_thread_id.file_type
-                                                }
-                                                {' - '}
-                                                {application.programId.school}
-                                                {' - '}
-                                                {
-                                                    application.programId
-                                                        .program_name
-                                                }
-                                            </Link>
-                                        </TableCell>
-                                        <TableCell>
-                                            {convertDate(
-                                                application_doc_thread.updatedAt
+                            application_doc_thread.latest_message_left_by_id ===
+                                props.student._id.toString() &&
+                            isProgramDecided(application) ? (
+                                <>
+                                    <TableCell>
+                                        <Link
+                                            component={LinkDom}
+                                            to={DEMO.DOCUMENT_MODIFICATION_LINK(
+                                                application_doc_thread
+                                                    .doc_thread_id._id
                                             )}
-                                        </TableCell>
-                                    </> : null}
+                                            underline="hover"
+                                        >
+                                            {
+                                                application_doc_thread
+                                                    .doc_thread_id.file_type
+                                            }
+                                            {' - '}
+                                            {application.programId.school}
+                                            {' - '}
+                                            {application.programId.program_name}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell>
+                                        {convertDate(
+                                            application_doc_thread.updatedAt
+                                        )}
+                                    </TableCell>
+                                </>
+                            ) : null}
                         </TableRow>
                     )
                 )
@@ -96,6 +96,6 @@ const RespondedThreads = (props) => {
             {unread_applications_docthread}
         </>
     );
-}
+};
 
 export default RespondedThreads;

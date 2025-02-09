@@ -50,7 +50,8 @@ export default function Activation() {
     // if return 200, then show Start button, otherwise, resend the activation email with token.
     return (
         <AuthWrapper>
-            {activationsuccess ? <>
+            {activationsuccess ? (
+                <>
                     <Typography>{t('Account activated')}</Typography>
                     <Typography>
                         {t('You have activated the account successfully!')}
@@ -58,8 +59,10 @@ export default function Activation() {
                     <Button color="primary" onClick={() => handleonClick()}>
                         {t('Start')}
                     </Button>
-                </> : null}
-            {!activationsuccess && emailsent ? <>
+                </>
+            ) : null}
+            {!activationsuccess && emailsent ? (
+                <>
                     <Typography>{t('Confirmation Email sent')}</Typography>
                     <Typography>
                         {t(
@@ -68,8 +71,10 @@ export default function Activation() {
                         :
                     </Typography>
                     <Typography>{email}</Typography>
-                </> : null}
-            {!activationsuccess && !emailsent ? <>
+                </>
+            ) : null}
+            {!activationsuccess && !emailsent ? (
+                <>
                     <Typography>{t('Link Expired')}</Typography>
                     <Typography>
                         {t(
@@ -83,7 +88,8 @@ export default function Activation() {
                     >
                         {t('Resend')}
                     </Button>
-                </> : null}
+                </>
+            ) : null}
         </AuthWrapper>
     );
 }

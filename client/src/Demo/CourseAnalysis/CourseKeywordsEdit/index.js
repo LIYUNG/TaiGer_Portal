@@ -57,6 +57,6 @@ const CourseKeywords = () => {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default CourseKeywords;

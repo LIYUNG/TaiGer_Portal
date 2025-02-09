@@ -45,7 +45,7 @@ const NotFound = () => {
             </Grid>
         </Box>
     );
-}
+};
 
 const CustomerTicketDetailPage = () => {
     const { t } = useTranslation();
@@ -66,6 +66,6 @@ const CustomerTicketDetailPage = () => {
             </Suspense>
         </Box>
     );
-}
+};
 
 export default CustomerTicketDetailPage;

@@ -216,11 +216,13 @@ const AddInterview = () => {
 
     return (
         <Box>
-            {res_modal_status >= 400 ? <ModalMain
+            {res_modal_status >= 400 ? (
+                <ModalMain
                     ConfirmError={ConfirmError}
                     res_modal_message={res_modal_message}
                     res_modal_status={res_modal_status}
-                /> : null}
+                />
+            ) : null}
             <Breadcrumbs aria-label="breadcrumb">
                 <Link
                     color="inherit"
@@ -278,7 +280,8 @@ const AddInterview = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {is_TaiGer_role(user) ? <TableRow>
+                        {is_TaiGer_role(user) ? (
+                            <TableRow>
                                 <TableCell>
                                     <Typography>{t('Student')}</Typography>
                                 </TableCell>
@@ -314,7 +317,8 @@ const AddInterview = () => {
                                         )}
                                     </TextField>
                                 </TableCell>
-                            </TableRow> : null}
+                            </TableRow>
+                        ) : null}
                         <TableRow>
                             <TableCell>
                                 <Typography>
@@ -417,9 +421,7 @@ const AddInterview = () => {
                                             ?.program_id || ''
                                     }
                                 >
-                                    <MenuItem value="">
-                                        Select Program
-                                    </MenuItem>
+                                    <MenuItem value="">Select Program</MenuItem>
                                     {available_interview_request_programs?.map(
                                         (cat, i) => (
                                             <MenuItem key={i} value={cat.key}>
@@ -486,6 +488,6 @@ const AddInterview = () => {
             </Card>
         </Box>
     );
-}
+};
 
 export default AddInterview;

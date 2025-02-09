@@ -7,6 +7,6 @@ const TimeOutErrors = () => {
             <Card>Time out error. Please login again!</Card>
         </Box>
     );
-}
+};
 
 export default TimeOutErrors;

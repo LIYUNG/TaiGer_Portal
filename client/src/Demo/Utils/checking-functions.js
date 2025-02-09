@@ -971,33 +971,18 @@ export const has_agent_program_specific_tasks = (student) => {
 };
 
 export const anyStudentWithoutApplicationSelection = (students) => {
-    for (let i = 0; i < students.length; i += 1) {
-        if (!hasApplications(students[i])) {
-            return true;
-        }
-    }
-    return false;
+    return students.some((student) => !hasApplications(student));
 };
 
 export const is_num_Program_Not_specified = (student) => {
-    if (
-        student.applying_program_count === 0 ||
-        student.applying_program_count === undefined
-    ) {
-        return true;
-    }
-    return false;
+    return !student.applying_program_count;
 };
 
 export const isProgramNotSelectedEnough = (students) => {
-    for (let i = 0; i < students.length; i += 1) {
-        if (
-            students[i].applications.length < students[i].applying_program_count
-        ) {
-            return true;
-        }
-    }
-    return false;
+    return students.some(
+        (student) =>
+            student.applications.length < student.applying_program_count
+    );
 };
 
 export const numApplicationsDecided = (student) => {

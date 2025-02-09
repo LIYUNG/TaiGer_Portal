@@ -3,7 +3,11 @@ import { Link as LinkDom } from 'react-router-dom';
 import { Link, TableCell, TableRow, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { differenceInDays } from 'date-fns';
-import { isProgramDecided, isProgramSubmitted, isProgramWithdraw } from '@taiger-common/core';
+import {
+    isProgramDecided,
+    isProgramSubmitted,
+    isProgramWithdraw
+} from '@taiger-common/core';
 
 import {
     ADMISSION_STATUS_E,

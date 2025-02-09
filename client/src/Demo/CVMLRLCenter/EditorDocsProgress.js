@@ -23,7 +23,11 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
 import LaunchIcon from '@mui/icons-material/Launch';
-import { isProgramDecided, isProgramSubmitted, isProgramWithdraw } from '@taiger-common/core';
+import {
+    isProgramDecided,
+    isProgramSubmitted,
+    isProgramWithdraw
+} from '@taiger-common/core';
 
 import ManualFiles from './ManualFiles';
 import {

@@ -138,28 +138,28 @@ const SingleProgramView = (props) => {
                             value={value}
                             variant="scrollable"
                         >
-                            <Tab label={t('Overview')} {...a11yProps(0)} />
+                            <Tab label={t('Overview')} {...a11yProps(value, 0)} />
                             <Tab
                                 label={t('Application Deadline', {
                                     ns: 'common'
                                 })}
-                                {...a11yProps(1)}
+                                {...a11yProps(value, 1)}
                             />
                             <Tab
                                 label={t('Specific Requirements', {
                                     ns: 'common'
                                 })}
-                                {...a11yProps(2)}
+                                {...a11yProps(value, 2)}
                             />
                             <Tab
                                 label={t('Special Documents', { ns: 'common' })}
-                                {...a11yProps(3)}
+                                {...a11yProps(value, 3)}
                             />
-                            <Tab label={t('Others')} {...a11yProps(4)} />
+                            <Tab label={t('Others')} {...a11yProps(value, 4)} />
                             {versions?.changes?.length > 0 ? (
                                 <Tab
                                     label={t('Edit History', { ns: 'common' })}
-                                    {...a11yProps(5)}
+                                    {...a11yProps(value, 5)}
                                 />
                             ) : null}
                         </Tabs>
@@ -745,9 +745,9 @@ const SingleProgramView = (props) => {
                                     >
                                         <Tab
                                             label="In Progress"
-                                            {...a11yProps(0)}
+                                            {...a11yProps(value, 0)}
                                         />
-                                        <Tab label="Closed" {...a11yProps(1)} />
+                                        <Tab label="Closed" {...a11yProps(value, 1)} />
                                     </Tabs>
                                     <CustomTabPanel
                                         index={0}

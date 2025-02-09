@@ -479,11 +479,11 @@ const SingleInterview = () => {
                     >
                         <Tab
                             label={t('discussion-thread', { ns: 'common' })}
-                            {...a11yProps(0)}
+                            {...a11yProps(value, 0)}
                         />
                         <Tab
                             label={t('Audit', { ns: 'common' })}
-                            {...a11yProps(1)}
+                            {...a11yProps(value, 1)}
                         />
                     </Tabs>
                     <CustomTabPanel index={0} value={value}>

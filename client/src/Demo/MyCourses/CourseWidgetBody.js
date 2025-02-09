@@ -418,14 +418,14 @@ export default function CourseWidgetBody({ programRequirements }) {
                             value={value}
                             variant="scrollable"
                         >
-                            <Tab label="Default" {...a11yProps(0)} />
+                            <Tab label="Default" {...a11yProps(value, 0)} />
                             <Tab
                                 label={
                                     <Badge badgeContent="V2" color="error">
                                         New Analyzer
                                     </Badge>
                                 }
-                                {...a11yProps(1)}
+                                {...a11yProps(value, 1)}
                             />
                         </Tabs>
                     </Box>

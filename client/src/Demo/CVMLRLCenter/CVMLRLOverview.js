@@ -301,31 +301,31 @@ const CVMLRLOverview = (props) => {
                         label={`${t('TODO', { ns: 'common' })} (${
                             props.new_message_tasks?.length || 0
                         }) `}
-                        {...a11yProps(0)}
+                        {...a11yProps(tabTag, 0)}
                     />
                     <Tab
                         label={`${t('My Favorites', { ns: 'common' })} (${
                             props.fav_message_tasks?.length || 0
                         })`}
-                        {...a11yProps(1)}
+                        {...a11yProps(tabTag, 1)}
                     />
                     <Tab
                         label={`${t('Follow up', { ns: 'common' })} (${
                             props.followup_tasks?.length || 0
                         })`}
-                        {...a11yProps(2)}
+                        {...a11yProps(tabTag, 2)}
                     />
                     <Tab
                         label={`${t('No Action', { ns: 'common' })} (${
                             props.pending_progress_tasks?.length || 0
                         })`}
-                        {...a11yProps(3)}
+                        {...a11yProps(tabTag, 3)}
                     />
                     <Tab
                         label={`${t('Closed', { ns: 'common' })} (${
                             props.closed_tasks?.length || 0
                         })`}
-                        {...a11yProps(4)}
+                        {...a11yProps(tabTag, 4)}
                     />
                 </Tabs>
             </Box>

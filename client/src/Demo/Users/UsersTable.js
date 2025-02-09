@@ -212,29 +212,29 @@ const UsersTable = () => {
                         label={`${t('Student', { ns: 'common' })} (${
                             student_list?.length
                         })`}
-                        {...a11yProps(0)}
+                        {...a11yProps(value, 0)}
                     />
                     <Tab
                         data-testid="users_table_page_agent_tab"
                         label={`${t('Agents', { ns: 'common' })} (${agent_list.length})`}
-                        {...a11yProps(1)}
+                        {...a11yProps(value, 1)}
                     />
                     <Tab
                         data-testid="users_table_page_editor_tab"
                         label={`${t('Editor', { ns: 'common' })} (${editor_list.length})`}
-                        {...a11yProps(2)}
+                        {...a11yProps(value, 2)}
                     />
                     <Tab
                         data-testid="users_table_page_external_tab"
                         label={`${t('External', { ns: 'common' })} (${
                             external_list.length
                         })`}
-                        {...a11yProps(3)}
+                        {...a11yProps(value, 3)}
                     />
                     <Tab
                         data-testid="users_table_page_admin_tab"
                         label={`${t('Admin', { ns: 'common' })} (${admin_list.length})`}
-                        {...a11yProps(4)}
+                        {...a11yProps(value, 4)}
                     />
                 </Tabs>
             </Box>

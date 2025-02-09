@@ -66,11 +66,11 @@ const Admissions = () => {
                                 label={`${t('Admissions', {
                                     ns: 'admissions'
                                 })}`}
-                                {...a11yProps(0)}
+                                {...a11yProps(value, 0)}
                             />
                             <Tab
                                 label={`${t('Statistics', { ns: 'admissions' })}`}
-                                {...a11yProps(1)}
+                                {...a11yProps(value, 1)}
                             />
                         </Tabs>
                     </Box>

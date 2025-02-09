@@ -1292,15 +1292,24 @@ const DocModificationThreadPage = ({ threadId, isEmbedded = false }) => {
             >
                 <Tab
                     label={i18next.t('discussion-thread', { ns: 'common' })}
-                    {...a11yProps(0)}
+                    {...a11yProps(value, 0)}
+                    sx={{
+                        fontWeight: value === 0 ? 'bold' : 'normal' // Bold for selected tab
+                    }}
                 />
                 <Tab
                     label={i18next.t('files', { ns: 'common' })}
-                    {...a11yProps(1)}
+                    {...a11yProps(value, 1)}
+                    sx={{
+                        fontWeight: value === 1 ? 'bold' : 'normal' // Bold for selected tab
+                    }}
                 />
                 <Tab
                     label={i18next.t('Audit', { ns: 'common' })}
-                    {...a11yProps(2)}
+                    {...a11yProps(value, 2)}
+                    sx={{
+                        fontWeight: value === 2 ? 'bold' : 'normal' // Bold for selected tab
+                    }}
                 />
             </Tabs>
             <CustomTabPanel index={0} value={value}>

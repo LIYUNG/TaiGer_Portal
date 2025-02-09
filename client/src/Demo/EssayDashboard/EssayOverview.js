@@ -279,31 +279,31 @@ const EssayOverview = (props) => {
                         label={`NO ESSAY WRITER (${
                             props.no_essay_writer_tasks?.length || 0
                         }) `}
-                        {...a11yProps(0)}
+                        {...a11yProps(value, 0)}
                     />
                     <Tab
                         label={`TODO (${props.new_message_tasks?.length || 0}) `}
-                        {...a11yProps(1)}
+                        {...a11yProps(value, 1)}
                     />
                     <Tab
                         label={`My Favorites (${props.fav_message_tasks?.length || 0})`}
-                        {...a11yProps(2)}
+                        {...a11yProps(value, 2)}
                     />
                     <Tab
                         label={`FOLLOW UP (${props.followup_tasks?.length || 0})`}
-                        {...a11yProps(3)}
+                        {...a11yProps(value, 3)}
                     />
                     <Tab
                         label={`NO ACTION (${props.pending_progress_tasks?.length || 0})`}
-                        {...a11yProps(4)}
+                        {...a11yProps(value, 4)}
                     />
                     <Tab
                         label={`CLOSED (${props.closed_tasks?.length || 0})`}
-                        {...a11yProps(5)}
+                        {...a11yProps(value, 5)}
                     />
                     <Tab
                         label={`All (${props.all_active_message_tasks?.length || 0})`}
-                        {...a11yProps(6)}
+                        {...a11yProps(value, 6)}
                     />
                 </Tabs>
             </Box>

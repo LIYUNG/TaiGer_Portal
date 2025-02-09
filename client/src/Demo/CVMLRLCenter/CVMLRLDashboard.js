@@ -107,25 +107,25 @@ const CVMLRLDashboard = (props) => {
                         label={`${t('In Progress', { ns: 'common' })} (${
                             cvmlrl_active_tasks?.length || 0
                         })`}
-                        {...a11yProps(0)}
+                        {...a11yProps(value, 0)}
                     />
                     <Tab
                         label={`${t('No Input', { ns: 'common' })} (${
                             cvmlrl_idle_tasks?.length || 0
                         })`}
-                        {...a11yProps(1)}
+                        {...a11yProps(value, 1)}
                     />
                     <Tab
                         label={`${t('Closed', { ns: 'common' })} (${
                             cvmlrl_closed_v2?.length || 0
                         })`}
-                        {...a11yProps(2)}
+                        {...a11yProps(value, 2)}
                     />
                     <Tab
                         label={`${t('All', { ns: 'common' })} (${
                             cvmlrl_all_v2?.length || 0
                         })`}
-                        {...a11yProps(2)}
+                        {...a11yProps(value, 2)}
                     />
                 </Tabs>
             </Box>

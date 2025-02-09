@@ -276,25 +276,25 @@ const AdmissionsTable = ({ admissions }) => {
                         label={`${t('Admissions', {
                             ns: 'admissions'
                         })} ( ${admissions_table?.length || 0} )`}
-                        {...a11yProps(0)}
+                        {...a11yProps(value, 0)}
                     />
                     <Tab
                         label={`${t('Rejections', { ns: 'admissions' })} ( ${
                             rejections_table?.length || 0
                         } )`}
-                        {...a11yProps(1)}
+                        {...a11yProps(value, 1)}
                     />
                     <Tab
                         label={`${t('Pending Result', {
                             ns: 'admissions'
                         })} ( ${pending_table?.length || 0} )`}
-                        {...a11yProps(2)}
+                        {...a11yProps(value, 2)}
                     />
                     <Tab
                         label={`${t('Not Closed Yet', { ns: 'admissions' })} ( ${
                             not_yet_closed_table?.length || 0
                         } )`}
-                        {...a11yProps(3)}
+                        {...a11yProps(value, 3)}
                     />
                 </Tabs>
             </Box>

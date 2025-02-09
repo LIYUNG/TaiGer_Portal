@@ -483,39 +483,39 @@ export const SingleStudentPageMainContent = ({
                                 label={t('Applications Overview', {
                                     ns: 'common'
                                 })}
-                                {...a11yProps(0)}
+                                {...a11yProps(value, 0)}
                             />
                             <Tab
                                 label={t('Documents', { ns: 'common' })}
-                                {...a11yProps(1)}
+                                {...a11yProps(value, 1)}
                             />
                             <Tab
                                 label={t('CV ML RL', { ns: 'common' })}
-                                {...a11yProps(2)}
+                                {...a11yProps(value, 2)}
                             />
                             <Tab
                                 label={t('Portal', { ns: 'common' })}
-                                {...a11yProps(3)}
+                                {...a11yProps(value, 3)}
                             />
                             <Tab
                                 label={t('Uni-Assist', { ns: 'common' })}
-                                {...a11yProps(4)}
+                                {...a11yProps(value, 4)}
                             />
                             <Tab
                                 label={t('Profile', { ns: 'common' })}
-                                {...a11yProps(5)}
+                                {...a11yProps(value, 5)}
                             />
                             <Tab
                                 label={t('My Courses', { ns: 'common' })}
-                                {...a11yProps(6)}
+                                {...a11yProps(value, 6)}
                             />
                             <Tab
                                 label={t('Notes', { ns: 'common' })}
-                                {...a11yProps(7)}
+                                {...a11yProps(value, 7)}
                             />
                             <Tab
                                 label={t('Audit', { ns: 'common' })}
-                                {...a11yProps(8)}
+                                {...a11yProps(value, 8)}
                             />
                         </Tabs>
                     </Box>

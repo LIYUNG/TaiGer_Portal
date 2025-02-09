@@ -179,11 +179,11 @@ const InternalDashboard = () => {
                     value={value}
                     variant="scrollable"
                 >
-                    <Tab label="Overview" {...a11yProps(0)} />
-                    <Tab label="Agents" {...a11yProps(1)} />
-                    <Tab label="KPI" {...a11yProps(2)} />
-                    <Tab label="Program List" {...a11yProps(3)} />
-                    <Tab label="Response Time" {...a11yProps(4)} />
+                    <Tab label="Overview" {...a11yProps(value, 0)} />
+                    <Tab label="Agents" {...a11yProps(value, 1)} />
+                    <Tab label="KPI" {...a11yProps(value, 2)} />
+                    <Tab label="Program List" {...a11yProps(value, 3)} />
+                    <Tab label="Response Time" {...a11yProps(value, 4)} />
                 </Tabs>
             </Box>
             <CustomTabPanel index={0} value={value}>

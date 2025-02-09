@@ -254,22 +254,22 @@ const ApplicationOverviewTabs = ({ students: stds }) => {
                         <Tab
                             data-testid="application_overview_component_active_student_list_tab"
                             label={t('Active Student List')}
-                            {...a11yProps(0)}
+                            {...a11yProps(value, 0)}
                         />
                         <Tab
                             data-testid="application_overview_component_application_overview_tab"
                             label={t('Application Overview', { ns: 'common' })}
-                            {...a11yProps(1)}
+                            {...a11yProps(value, 1)}
                         />
                         <Tab
                             data-testid="application_overview_component_programs_update_tab"
                             label={t('Programs Update Status')}
-                            {...a11yProps(2)}
+                            {...a11yProps(value, 2)}
                         />
                         <Tab
                             data-testid="application_overview_component_decided_programs_update_tab"
                             label={t('Decided Programs Update Status')}
-                            {...a11yProps(3)}
+                            {...a11yProps(value, 3)}
                         />
                     </Tabs>
                 </Box>

@@ -295,8 +295,8 @@ const OverviewDashboardTab = ({
                         </Typography>
                         <SingleBarChart
                             data={applications_data}
-                            label="Tasks"
-                            yLabel="Tasks"
+                            label="Applications"
+                            yLabel="Applications"
                         />
                     </Card>
                 </Grid>
@@ -307,8 +307,8 @@ const OverviewDashboardTab = ({
                         </Typography>
                         <SingleBarChart
                             data={admissions_data}
-                            label="Tasks"
-                            yLabel="Tasks"
+                            label="Applications"
+                            yLabel="Applications"
                         />
                     </Card>
                 </Grid>

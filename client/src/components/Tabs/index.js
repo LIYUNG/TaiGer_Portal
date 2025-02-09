@@ -20,9 +20,12 @@ export const CustomTabPanel = ({ children, value, index, ...other }) => {
     );
 };
 
-export const a11yProps = (index) => {
+export const a11yProps = (value, index) => {
     return {
         id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`
+        'aria-controls': `simple-tabpanel-${index}`,
+        sx: {
+            fontWeight: value === index ? 'bold' : 'normal' // Bold for selected tab
+        }
     };
 };

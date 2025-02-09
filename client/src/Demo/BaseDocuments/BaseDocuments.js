@@ -4,7 +4,7 @@ import { Link as LinkDom } from 'react-router-dom';
 import { Box, Breadcrumbs, Card, Link, Typography } from '@mui/material';
 import { is_TaiGer_role } from '@taiger-common/core';
 
-import BaseDocument_StudentView from './BaseDocument_StudentView';
+import BaseDocumentStudentView from './BaseDocumentStudentView';
 import { TabTitle } from '../Utils/TabTitle';
 import { useAuth } from '../../components/AuthProvider';
 import DEMO from '../../store/constant';
@@ -29,7 +29,7 @@ const BaseDocuments = () => {
     const StudentDocoumentsView = () =>
         students?.map((student, i) => (
             <Card key={i}>
-                <BaseDocument_StudentView
+                <BaseDocumentStudentView
                     base_docs_link={base_docs_link}
                     student={student}
                 />

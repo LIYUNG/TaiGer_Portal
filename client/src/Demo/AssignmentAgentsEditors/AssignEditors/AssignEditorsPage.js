@@ -19,13 +19,13 @@ import NoEditorsStudentsCard from '../../Dashboard/MainViewTab/NoEditorsStudents
 import { appConfig } from '../../../config';
 import DEMO from '../../../store/constant';
 
-const AssignEditorsPage = (props) => {
+const AssignEditorsPage = ({ students, submitUpdateEditorlist }) => {
     const { t } = useTranslation();
-    const no_editor_students = props.students.map((student, i) => (
+    const no_editor_students = students.map((student, i) => (
         <NoEditorsStudentsCard
             key={i}
             student={student}
-            submitUpdateEditorlist={props.submitUpdateEditorlist}
+            submitUpdateEditorlist={submitUpdateEditorlist}
         />
     ));
 

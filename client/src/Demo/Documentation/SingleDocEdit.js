@@ -14,16 +14,23 @@ import {
     valid_internal_categories
 } from '../../utils/contants';
 
-const SingleDocEdit = (props) => {
+const SingleDocEdit = ({
+    editorState,
+    document_title,
+    category,
+    handleClickSave,
+    handleClickEditToggle,
+    internal
+}) => {
     const [singleDocEditState, setSingleDocEdit] = useState({
-        doc_title: props.document_title,
-        category: props.category
+        doc_title: document_title,
+        category: category
     });
 
     useEffect(() => {
         setSingleDocEdit((prevState) => ({
             ...prevState,
-            doc_title: props.document_title
+            doc_title: document_title
         }));
     }, []);
 
@@ -47,9 +54,9 @@ const SingleDocEdit = (props) => {
         }));
     };
 
-    const handleClickSave = (e, editorState) => {
+    const handleClickSave2 = (e, editorState) => {
         e.preventDefault();
-        props.handleClickSave(
+        handleClickSave(
             e,
             singleDocEditState.category,
             singleDocEditState.doc_title,
@@ -59,7 +66,7 @@ const SingleDocEdit = (props) => {
 
     return (
         <Card sx={{ px: 8, py: 2, mt: 2 }}>
-            {props.internal ? (
+            {internal ? (
                 <>
                     <Typography variant="body1">
                         Category:<b>Internal</b>
@@ -111,7 +118,7 @@ const SingleDocEdit = (props) => {
                 </>
             )}
             <TextField
-                defaultValue={props.document_title}
+                defaultValue={document_title}
                 fullWidth
                 onChange={(e) => handleChange(e)}
                 placeholder="Title"
@@ -120,9 +127,9 @@ const SingleDocEdit = (props) => {
             />
             <DocumentsListItemsEditor
                 doc_title={singleDocEditState.doc_title}
-                editorState={props.editorState}
-                handleClickEditToggle={props.handleClickEditToggle}
-                handleClickSave={handleClickSave}
+                editorState={editorState}
+                handleClickEditToggle={handleClickEditToggle}
+                handleClickSave={handleClickSave2}
             />
         </Card>
     );

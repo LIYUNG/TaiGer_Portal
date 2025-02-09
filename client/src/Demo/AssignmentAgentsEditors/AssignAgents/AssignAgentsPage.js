@@ -19,13 +19,13 @@ import { appConfig } from '../../../config';
 import DEMO from '../../../store/constant';
 import NoAgentsStudentsCard from '../../Dashboard/MainViewTab/NoAgentsStudentsCard/NoAgentsStudentsCard';
 
-const AssignAgentsPage = (props) => {
+const AssignAgentsPage = ({ students, submitUpdateAgentlist }) => {
     const { t } = useTranslation();
-    const no_agent_students = props.students.map((student, i) => (
+    const no_agent_students = students.map((student, i) => (
         <NoAgentsStudentsCard
             key={i}
             student={student}
-            submitUpdateAgentlist={props.submitUpdateAgentlist}
+            submitUpdateAgentlist={submitUpdateAgentlist}
         />
     ));
 

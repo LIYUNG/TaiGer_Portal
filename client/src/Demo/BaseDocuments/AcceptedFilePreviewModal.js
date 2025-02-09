@@ -22,7 +22,16 @@ import FilePreview from '../../components/FilePreview/FilePreview';
 
 import { useAuth } from '../../components/AuthProvider';
 
-const AcceptProfileFileModel = (props) => {
+const AcceptProfileFileModel = ({
+    closePreviewWindow,
+    showPreview,
+    path,
+    k,
+    onUpdateProfileDocStatus,
+    isLoaded,
+    student_id,
+    preview_path
+}) => {
     const { user } = useAuth();
     const { t } = useTranslation();
 
@@ -30,22 +39,22 @@ const AcceptProfileFileModel = (props) => {
         <Dialog
             fullWidth={true}
             maxWidth="xl"
-            onClose={props.closePreviewWindow}
-            open={props.showPreview}
+            onClose={closePreviewWindow}
+            open={showPreview}
         >
-            <DialogTitle>{props.path}</DialogTitle>
+            <DialogTitle>{path}</DialogTitle>
             <DialogContent>
                 <FilePreview
-                    apiFilePath={`/api/students/${props.student_id.toString()}/files/${
-                        props.preview_path
+                    apiFilePath={`/api/students/${student_id.toString()}/files/${
+                        preview_path
                     }`}
-                    path={props.preview_path}
+                    path={preview_path}
                 />
-                {props.path?.split('.')[1] !== 'pdf' ? (
+                {path?.split('.')[1] !== 'pdf' ? (
                     <a
                         download
-                        href={`${BASE_URL}/api/students/${props.student_id?.toString()}/files/${
-                            props.path
+                        href={`${BASE_URL}/api/students/${student_id?.toString()}/files/${
+                            path
                         }`}
                         rel="noopener noreferrer"
                         target="_blank"
@@ -66,12 +75,12 @@ const AcceptProfileFileModel = (props) => {
                 {!(is_TaiGer_Editor(user) || is_TaiGer_Student(user)) ? (
                     <Button
                         color="secondary"
-                        disabled={!props.isLoaded}
+                        disabled={!isLoaded}
                         onClick={(e) =>
-                            props.onUpdateProfileDocStatus(
+                            onUpdateProfileDocStatus(
                                 e,
-                                props.k,
-                                props.student_id,
+                                k,
+                                student_id,
                                 DocumentStatusType.Rejected
                             )
                         }
@@ -85,7 +94,7 @@ const AcceptProfileFileModel = (props) => {
                 ) : null}
                 <Button
                     color="primary"
-                    onClick={props.closePreviewWindow}
+                    onClick={closePreviewWindow}
                     size="small"
                     startIcon={<FileDownloadIcon />}
                     title="Download"
@@ -93,8 +102,8 @@ const AcceptProfileFileModel = (props) => {
                 >
                     {t('Download', { ns: 'common' })}
                 </Button>
-                <Button onClick={props.closePreviewWindow}>
-                    {!props.isLoaded ? (
+                <Button onClick={closePreviewWindow}>
+                    {!isLoaded ? (
                         <CircularProgress />
                     ) : (
                         t('Close', { ns: 'common' })

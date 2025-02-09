@@ -4,28 +4,36 @@ import { useTranslation } from 'react-i18next';
 
 import EditorNote from '../../components/EditorJs/EditorNote';
 
-const NotesEditor = (props) => {
+const NotesEditor = ({
+    editorState,
+    handleEditorChange,
+    notes_id,
+    readOnly,
+    thread,
+    buttonDisabled,
+    handleClickSave
+}) => {
     const { t } = useTranslation();
     return (
         <>
             <Card sx={{ padding: 4, mb: 2, minHeight: 200 }}>
                 <EditorNote
                     defaultHeight={0}
-                    editorState={props.editorState}
-                    handleEditorChange={props.handleEditorChange}
-                    holder={`${props.notes_id}`}
-                    readOnly={props.readOnly}
-                    thread={props.thread}
+                    editorState={editorState}
+                    handleEditorChange={handleEditorChange}
+                    holder={`${notes_id}`}
+                    readOnly={readOnly}
+                    thread={thread}
                 />
             </Card>
-            {!props.readOnly ? (
-                props.buttonDisabled ? (
+            {!readOnly ? (
+                buttonDisabled ? (
                     <Tooltip title="Please write some text to improve the communication and understanding.">
                         <span>
                             <Button
+                                disabled={true}
                                 fullWidth
                                 variant="outlined"
-                                disabled={true}
                                 // style={{ pointerEvents: 'none' }}
                             >
                                 {t('Save', { ns: 'common' })}
@@ -38,9 +46,7 @@ const NotesEditor = (props) => {
                             <Button
                                 color="primary"
                                 fullWidth
-                                onClick={(e) =>
-                                    props.handleClickSave(e, props.editorState)
-                                }
+                                onClick={(e) => handleClickSave(e, editorState)}
                                 variant="contained"
                             >
                                 {t('Save', { ns: 'common' })}

@@ -9,7 +9,7 @@ import { updateDocumentationHelperLink } from '../../api';
 import Loading from '../../components/Loading/Loading';
 import MyDocumentCard from './MyDocumentCard';
 
-const BaseDocument_StudentView = ({ student, base_docs_link }) => {
+const BaseDocumentStudentView = ({ student, base_docs_link }) => {
     const { t } = useTranslation();
 
     const [baseDocumentStudentViewState, setBaseDocumentStudentViewState] =
@@ -166,4 +166,4 @@ const BaseDocument_StudentView = ({ student, base_docs_link }) => {
     );
 };
 
-export default BaseDocument_StudentView;
+export default BaseDocumentStudentView;

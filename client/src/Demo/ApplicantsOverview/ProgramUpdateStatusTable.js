@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next';
 import DEMO from '../../store/constant';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
-const ProgramUpdateStatusTable = (props) => {
+const ProgramUpdateStatusTable = ({ data }) => {
     const { t } = useTranslation();
     let result = [];
     var set = new Set();
 
-    props.data.forEach((program) => {
+    data.forEach((program) => {
         if (!set.has(program.program_id)) {
             set.add(program.program_id);
             program.id = program.program_id;

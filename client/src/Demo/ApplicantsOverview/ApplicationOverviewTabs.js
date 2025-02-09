@@ -40,7 +40,7 @@ CustomTabPanel.propTypes = {
     value: PropTypes.number.isRequired
 };
 
-const ApplicationOverviewTabs = (props) => {
+const ApplicationOverviewTabs = ({ students: stds }) => {
     const { user } = useAuth();
     const { t } = useTranslation();
     const [value, setValue] = useState(0);
@@ -56,7 +56,7 @@ const ApplicationOverviewTabs = (props) => {
         submitUpdateAttributeslist,
         updateStudentArchivStatus
     } = useStudents({
-        students: props.students
+        students: stds
     });
     const [hoveredRowData, setClickedRowData] = useState(null);
     const handleChange = (event, newValue) => {

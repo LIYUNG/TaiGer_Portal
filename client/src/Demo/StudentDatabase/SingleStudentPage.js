@@ -37,7 +37,7 @@ import {
 } from '@taiger-common/core';
 
 import { TopBar } from '../../components/TopBar/TopBar';
-import BaseDocument_StudentView from '../BaseDocuments/BaseDocument_StudentView';
+import BaseDocumentStudentView from '../BaseDocuments/BaseDocumentStudentView';
 import EditorDocsProgress from '../CVMLRLCenter/EditorDocsProgress';
 import UniAssistListCard from '../UniAssist/UniAssistListCard';
 import SurveyComponent from '../Survey/SurveyComponent';
@@ -617,7 +617,7 @@ export const SingleStudentPageMainContent = ({
                         )}
                     </CustomTabPanel>
                     <CustomTabPanel index={1} value={value}>
-                        <BaseDocument_StudentView
+                        <BaseDocumentStudentView
                             base_docs_link={base_docs_link}
                             student={singleStudentPage.student}
                         />

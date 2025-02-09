@@ -15,8 +15,7 @@ CustomTabPanel.propTypes = {
     value: PropTypes.number.isRequired
 };
 
-const AdmissionsStat = (props) => {
-    const result = props.result;
+const AdmissionsStat = ({ result }) => {
     const { t } = useTranslation();
 
     const admisstionStatColumns = [

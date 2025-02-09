@@ -28,9 +28,9 @@ import { updateProfileDocumentStatus } from '../../api';
 import DEMO from '../../store/constant';
 import AcceptProfileFileModel from './AcceptedFilePreviewModal';
 
-export const BaseDocumentsTable = (props) => {
+export const BaseDocumentsTable = ({ students }) => {
     const [baseDocumentsTableState, setBaseDocumentsTableState] = useState({
-        students: props.students,
+        students: students,
         isLoaded: true,
         rejectProfileFileModel: false,
         preview_path: '',

@@ -96,50 +96,38 @@ const DocumentCheckingResultModal = ({
                             <CircularProgress />
                         ) : error ? (
                             <Typography color="error">{error}</Typography>
+                        ) : canProceed ? (
+                            <>
+                                <Typography id="proceed-dialog-description">
+                                    The latest {`${student_name} ${docName} `}
+                                    looks like safe to close.
+                                </Typography>
+                                <Typography id="proceed-dialog-description">
+                                    {t('proceed-close')}
+                                </Typography>
+                            </>
                         ) : (
                             <>
-                                {canProceed ? (
-                                    <>
-                                        <Typography id="proceed-dialog-description">
-                                            The latest{' '}
-                                            {`${student_name} ${docName} `}
-                                            looks like safe to close.
-                                        </Typography>
-                                        <Typography id="proceed-dialog-description">
-                                            {t('proceed-close')}
-                                        </Typography>
-                                    </>
-                                ) : (
-                                    <>
-                                        <Typography variant="h6">
-                                            {t('gap-detected')}
-                                        </Typography>
-                                        <Typography
-                                            sx={{ my: 2 }}
-                                            variant="body1"
-                                        >
-                                            The latest{' '}
-                                            {`${student_name} ${docName} `}
-                                            did not contain pattern and very
-                                            likely has <b>gap</b>: Please
-                                            consider add the following pattern:{' '}
-                                            {reason} in the document.
-                                        </Typography>
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    checked={acknowledge}
-                                                    onChange={() =>
-                                                        setAcknowledge(
-                                                            !acknowledge
-                                                        )
-                                                    }
-                                                />
+                                <Typography variant="h6">
+                                    {t('gap-detected')}
+                                </Typography>
+                                <Typography sx={{ my: 2 }} variant="body1">
+                                    The latest {`${student_name} ${docName} `}
+                                    did not contain pattern and very likely has{' '}
+                                    <b>gap</b>: Please consider add the
+                                    following pattern: {reason} in the document.
+                                </Typography>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={acknowledge}
+                                            onChange={() =>
+                                                setAcknowledge(!acknowledge)
                                             }
-                                            label={`I checked ${docName} again and I am sure it contains the patterns above and does not have gap.`}
                                         />
-                                    </>
-                                )}
+                                    }
+                                    label={`I checked ${docName} again and I am sure it contains the patterns above and does not have gap.`}
+                                />
                             </>
                         )
                     ) : isFinalVersion ? (

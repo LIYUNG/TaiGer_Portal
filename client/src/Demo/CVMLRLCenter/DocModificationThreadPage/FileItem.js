@@ -73,7 +73,7 @@ const FileItem = (props) => {
         </Card>
     ));
 
-    return <>{files_info}</>;
+    return files_info;
 };
 
 export default FileItem;

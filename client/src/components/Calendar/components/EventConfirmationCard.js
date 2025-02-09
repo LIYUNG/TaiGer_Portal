@@ -63,16 +63,14 @@ export default function EventConfirmationCard(props) {
                     {Intl.DateTimeFormat().resolvedOptions().timeZone} UTC
                     {showTimezoneOffset()}){' '}
                     <b>
-                        {is_TaiGer_role(user) ? (
-                            <>
-                                {props.event.requester_id
-                                    ?.map(
-                                        (requester) =>
-                                            `${requester.firstname} ${requester.lastname}`
-                                    )
-                                    .join(',')}
-                            </>
-                        ) : null}
+                        {is_TaiGer_role(user)
+                            ? props.event.requester_id
+                                  ?.map(
+                                      (requester) =>
+                                          `${requester.firstname} ${requester.lastname}`
+                                  )
+                                  .join(',')
+                            : null}
                     </b>
                 </Typography>
             </AccordionSummary>
@@ -257,9 +255,7 @@ export default function EventConfirmationCard(props) {
                                                 props.event
                                                     .isConfirmedRequester ? (
                                                     props.event
-                                                        .isConfirmedReceiver ? (
-                                                        <></>
-                                                    ) : (
+                                                        .isConfirmedReceiver ? null : (
                                                         <Button
                                                             color="primary"
                                                             onClick={(e) =>
@@ -303,9 +299,7 @@ export default function EventConfirmationCard(props) {
                                                 props.event
                                                     .isConfirmedReceiver ? (
                                                     props.event
-                                                        .isConfirmedRequester ? (
-                                                        <></>
-                                                    ) : (
+                                                        .isConfirmedRequester ? null : (
                                                         <Button
                                                             color="primary"
                                                             size="small"

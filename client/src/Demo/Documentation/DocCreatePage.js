@@ -351,8 +351,8 @@ const DocCreatePage = (props) => {
                         category={DocCreatePageState.category}
                         doc_title={DocCreatePageState.doc_title}
                         editorState={DocCreatePageState.editorState}
-                        handleClickSave={handleClickSave}
                         handleClickEditToggle={handleClickEditToggle}
+                        handleClickSave={handleClickSave}
                         // readOnlyMode={readOnlyMode}
                         role={props.role}
                     />

@@ -25,7 +25,7 @@ const ProgramList = () => {
     }
 
     if (isError) {
-        return <>{error}</>;
+        return error;
     }
 
     return (

@@ -256,9 +256,7 @@ const EditorNew = (props) => {
         <>
             <Box id="editorjs" />
             {/* <div>{JSON.stringify(props.editorState)}</div> */}
-            {props.readOnly ? (
-                <></>
-            ) : (
+            {props.readOnly ? null : (
                 <>
                     <Button
                         color="primary"

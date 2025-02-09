@@ -539,10 +539,10 @@ const SingleInterview = () => {
                                     </Typography>
                                 ) : (
                                     <DocThreadEditor
-                                        checkResult={[]}
                                         buttonDisabled={
                                             singleInterviewState.buttonDisabled
                                         }
+                                        checkResult={[]}
                                         // buttonDisabled={false}
                                         editorState={
                                             singleInterviewState.editorInputState

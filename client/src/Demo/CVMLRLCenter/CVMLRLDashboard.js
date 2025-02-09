@@ -136,7 +136,7 @@ const CVMLRLDashboard = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text="Received students inputs and Active Tasks. Be aware of the deadline!"
                     title="warning"
                 />
@@ -152,7 +152,7 @@ const CVMLRLDashboard = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text="No student inputs tasks. Agents should push students"
                     title="info"
                 />
@@ -168,7 +168,7 @@ const CVMLRLDashboard = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text="These tasks are closed"
                     title="success"
                 />
@@ -190,7 +190,7 @@ const CVMLRLDashboard = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text="All tasks"
                     title="info"
                 />

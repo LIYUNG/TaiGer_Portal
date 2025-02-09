@@ -23,10 +23,10 @@ import { appConfig } from '../../../../config';
 
 const StudentTasksResponsive = (props) => {
     const { t } = useTranslation();
-    let unread_general_generaldocs = <></>;
-    let unread_applications_docthread = <></>;
+    let unread_general_generaldocs = null;
+    let unread_applications_docthread = null;
     if (props.student.generaldocs_threads === undefined) {
-        unread_general_generaldocs = <></>;
+        unread_general_generaldocs = null;
     } else {
         unread_general_generaldocs = props.student.generaldocs_threads.map(
             (generaldocs_threads, i) => (

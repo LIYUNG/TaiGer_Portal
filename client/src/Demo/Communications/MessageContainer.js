@@ -103,38 +103,34 @@ const MessageContainer = (props) => {
             : false
         : false;
     const full_name = `${firstname} ${lastname}`;
-    return (
-        <>
-            {messageContainerState.isEdit ? (
-                <MessageEdit
-                    buttonDisabled={isPending}
-                    editable={editable}
-                    editorState={messageContainerState.editorState}
-                    full_name={full_name}
-                    handleCancelEdit={handleCancelEdit}
-                    handleClickSave={updateMessage}
-                    idx={props.idx}
-                    isDeleting={props.isDeleting}
-                    isTaiGerView={props.isTaiGerView}
-                    lastupdate={props.lastupdate}
-                    message={props.message}
-                    onDeleteSingleMessage={props.onDeleteSingleMessage}
-                    onTrashClick={props.onTrashClick}
-                />
-            ) : (
-                <Message
-                    accordionKeys={props.accordionKeys}
-                    idx={props.idx}
-                    isDeleting={props.isDeleting}
-                    isTaiGerView={props.isTaiGerView}
-                    lastupdate={props.lastupdate}
-                    message={messageContainerState.message}
-                    onDeleteSingleMessage={props.onDeleteSingleMessage}
-                    onEditMode={onEditMode}
-                    onTrashClick={props.onTrashClick}
-                />
-            )}
-        </>
+    return messageContainerState.isEdit ? (
+        <MessageEdit
+            buttonDisabled={isPending}
+            editable={editable}
+            editorState={messageContainerState.editorState}
+            full_name={full_name}
+            handleCancelEdit={handleCancelEdit}
+            handleClickSave={updateMessage}
+            idx={props.idx}
+            isDeleting={props.isDeleting}
+            isTaiGerView={props.isTaiGerView}
+            lastupdate={props.lastupdate}
+            message={props.message}
+            onDeleteSingleMessage={props.onDeleteSingleMessage}
+            onTrashClick={props.onTrashClick}
+        />
+    ) : (
+        <Message
+            accordionKeys={props.accordionKeys}
+            idx={props.idx}
+            isDeleting={props.isDeleting}
+            isTaiGerView={props.isTaiGerView}
+            lastupdate={props.lastupdate}
+            message={messageContainerState.message}
+            onDeleteSingleMessage={props.onDeleteSingleMessage}
+            onEditMode={onEditMode}
+            onTrashClick={props.onTrashClick}
+        />
     );
 };
 

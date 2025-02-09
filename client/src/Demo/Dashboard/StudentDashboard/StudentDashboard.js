@@ -492,9 +492,7 @@ const StudentDashboard = (props) => {
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={12}>
-                                                {hasUpcomingAppointment ? (
-                                                    <></>
-                                                ) : (
+                                                {hasUpcomingAppointment ? null : (
                                                     <Typography>
                                                         想要一次密集討論？
                                                         可以預訂顧問 Office hour

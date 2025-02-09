@@ -3,7 +3,7 @@ import React from 'react';
 import FileItem from './FileItem';
 
 const FilesList = (props) => {
-    const thread = props.thread.messages.map((message, i) => (
+    const fileList = props.thread.messages.map((message, i) => (
         <FileItem
             documentsthreadId={props.documentsthreadId}
             id={message._id}
@@ -14,7 +14,7 @@ const FilesList = (props) => {
             message={message}
         />
     ));
-    return <>{thread}</>;
+    return fileList;
 };
 
 export default FilesList;

@@ -761,7 +761,7 @@ const StudentApplicationsTableTemplate = (props) => {
                                 bg="primary"
                                 link_name=""
                                 notification_key={undefined}
-                                removeBanner={<></>}
+                                removeBanner={null}
                                 text={`${appConfig.companyName} Portal 網站上的學程資訊主要為管理申請進度為主，學校學程詳細資訊仍以學校網站為主。`}
                                 title="info"
                                 to={`${DEMO.BASE_DOCUMENTS_LINK}`}
@@ -771,7 +771,7 @@ const StudentApplicationsTableTemplate = (props) => {
                                 bg="secondary"
                                 link_name=""
                                 notification_key={undefined}
-                                removeBanner={<></>}
+                                removeBanner={null}
                                 text="請選擇要申請的學程打在 Decided: Yes，不要申請打的 No。"
                                 title="warning"
                                 to={`${DEMO.BASE_DOCUMENTS_LINK}`}
@@ -781,7 +781,7 @@ const StudentApplicationsTableTemplate = (props) => {
                                 bg="danger"
                                 link_name=""
                                 notification_key={undefined}
-                                removeBanner={<></>}
+                                removeBanner={null}
                                 text="請選擇要申請的學程打在 Submitted: Submitted，若想中斷申請請告知顧問，或是 選擇 Withdraw (如果東西都已準備好且解鎖)"
                                 title="warning"
                                 to={`${DEMO.BASE_DOCUMENTS_LINK}`}

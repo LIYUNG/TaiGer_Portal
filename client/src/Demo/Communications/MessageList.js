@@ -3,7 +3,7 @@ import React from 'react';
 import MessageContainer from './MessageContainer';
 
 const MessageList = (props) => {
-    const thread = props.thread.map((message, i) => (
+    const messageList = props.thread.map((message, i) => (
         <MessageContainer
             accordionKeys={props.accordionKeys}
             idx={props.isUpperMessagList ? props.thread.length - i - 1 : i}
@@ -17,7 +17,7 @@ const MessageList = (props) => {
             student_id={props.student_id}
         />
     ));
-    return <>{thread}</>;
+    return messageList;
 };
 
 export default MessageList;

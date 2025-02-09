@@ -223,8 +223,8 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                             `${option.school} ${option.program_name} ${option.degree}`
                         }
                         label={t('Add Keyword Set', { ns: 'common' })}
-                        options={distinctPrograms || []}
                         onChange={(e, newValue) => handleAddProgram(newValue)} // `newValue` will be the selected object
+                        options={distinctPrograms || []}
                         renderInput={(params) => (
                             <TextField {...params} label="Program" />
                         )}
@@ -405,6 +405,7 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                                     <Grid item md={4} xs={12}>
                                         <TextField
                                             fullWidth
+                                            helperText="Max. score for this category. (if programs publish entry requirement score like TUM)"
                                             id="categoryName"
                                             label="Points (if applicable)"
                                             onChange={(e) =>
@@ -422,13 +423,10 @@ const ProgramRequirementsNew = ({ programsAndCourseKeywordSets }) => {
                                                 )
                                             }
                                             size="small"
+                                            type="number"
                                             value={programCategory.maxScore}
                                             variant="outlined"
-                                            type="number"
                                             // error={programCategory.maxScore === 0}
-                                            helperText={
-                                                'Max. score for this category. (if programs publish entry requirement score like TUM)'
-                                            }
                                         />
                                     </Grid>
                                     <Grid item md={12} xs={12}>

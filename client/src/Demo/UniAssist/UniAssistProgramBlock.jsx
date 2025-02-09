@@ -410,48 +410,44 @@ export const UniAssistProgramBlock = ({ application, student }) => {
                                     applicationState.uni_assist
                                         ?.vpd_paid_confirmation_file_path ===
                                         '' ? (
-                                        <>
-                                            {isUploading ? (
-                                                <CircularProgress size={20} />
-                                            ) : (
-                                                <Button
-                                                    color="secondary"
-                                                    component="label"
-                                                    disabled={
-                                                        !(
-                                                            !applicationState.uni_assist ||
-                                                            applicationState
-                                                                .uni_assist
-                                                                .status ===
-                                                                DocumentStatusType.Missing ||
-                                                            applicationState
-                                                                .uni_assist
-                                                                .status ===
-                                                                'notstarted'
+                                        isUploading ? (
+                                            <CircularProgress size={20} />
+                                        ) : (
+                                            <Button
+                                                color="secondary"
+                                                component="label"
+                                                disabled={
+                                                    !(
+                                                        !applicationState.uni_assist ||
+                                                        applicationState
+                                                            .uni_assist
+                                                            .status ===
+                                                            DocumentStatusType.Missing ||
+                                                        applicationState
+                                                            .uni_assist
+                                                            .status ===
+                                                            'notstarted'
+                                                    )
+                                                }
+                                                size="small"
+                                                startIcon={<CloudUploadIcon />}
+                                                variant="outlined"
+                                            >
+                                                {i18next.t('Upload file', {
+                                                    ns: 'common'
+                                                })}
+                                                <VisuallyHiddenInput
+                                                    onChange={(e) =>
+                                                        handleUniAssistVPDPaidConfirmationDocSubmit(
+                                                            e,
+                                                            student._id.toString(),
+                                                            applicationState.programId._id.toString()
                                                         )
                                                     }
-                                                    size="small"
-                                                    startIcon={
-                                                        <CloudUploadIcon />
-                                                    }
-                                                    variant="outlined"
-                                                >
-                                                    {i18next.t('Upload file', {
-                                                        ns: 'common'
-                                                    })}
-                                                    <VisuallyHiddenInput
-                                                        onChange={(e) =>
-                                                            handleUniAssistVPDPaidConfirmationDocSubmit(
-                                                                e,
-                                                                student._id.toString(),
-                                                                applicationState.programId._id.toString()
-                                                            )
-                                                        }
-                                                        type="file"
-                                                    />
-                                                </Button>
-                                            )}
-                                        </>
+                                                    type="file"
+                                                />
+                                            </Button>
+                                        )
                                     ) : (
                                         <>
                                             <Button

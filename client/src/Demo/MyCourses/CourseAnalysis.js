@@ -321,6 +321,7 @@ export default function CourseAnalysis() {
                     columns={columns}
                     disableContextMenu={true}
                     disableExpandSelection={false}
+                    disabled={true}
                     headerRowHeight={30}
                     height={6000}
                     ref={ref}
@@ -338,7 +339,6 @@ export default function CourseAnalysis() {
                     }}
                     value={statedata.sheets[statedata.sheetNames[value]]}
                     // autoAddRow={true}
-                    disabled={true}
                 />
             </TableContainer>
             {t('Last update', { ns: 'common' })}{' '}

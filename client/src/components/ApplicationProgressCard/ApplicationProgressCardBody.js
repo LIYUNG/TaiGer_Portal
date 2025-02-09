@@ -133,13 +133,10 @@ export default function ApplicationProgressCardBody(props) {
                         </Typography>
                     </ListItem>
                 )
-            ) : (
-                <></>
-            )}
+            ) : null}
             {props.application?.programId?.testdaf ? (
-                props.application?.programId?.testdaf === '-' ? (
-                    <></>
-                ) : props.student?.academic_background?.language
+                props.application?.programId?.testdaf === '-' ? null : props
+                      .student?.academic_background?.language
                       ?.german_isPassed === 'O' ? (
                     <ListItem>
                         <Typography>
@@ -175,10 +172,8 @@ export default function ApplicationProgressCardBody(props) {
                 )
             ) : null}
             {props.application?.programId?.gre ? (
-                props.application?.programId?.gre === '-' ? (
-                    <></>
-                ) : props.student?.academic_background?.language
-                      ?.gre_isPassed === 'O' ? (
+                props.application?.programId?.gre === '-' ? null : props.student
+                      ?.academic_background?.language?.gre_isPassed === 'O' ? (
                     <ListItem>
                         <Typography>
                             <Link
@@ -213,10 +208,9 @@ export default function ApplicationProgressCardBody(props) {
                 )
             ) : null}
             {props.application?.programId?.gmat ? (
-                props.application?.programId?.gmat === '-' ? (
-                    <></>
-                ) : props.student?.academic_background?.language
-                      ?.gmat_isPassed === 'O' ? (
+                props.application?.programId?.gmat === '-' ? null : props
+                      .student?.academic_background?.language?.gmat_isPassed ===
+                  'O' ? (
                     <ListItem>
                         <Typography>
                             <Link

@@ -206,16 +206,14 @@ export const ProgramRequirementsTable = ({ data, onAnalyseV2 }) => {
                                     !Object.keys(rowSelection)?.length > 0
                                 }
                                 endIcon={
-                                    statedata.isAnalysing ? (
+                                    statedata.isAnalysingV2 ? (
                                         <CircularProgress size={24} />
-                                    ) : (
-                                        <></>
-                                    )
+                                    ) : null
                                 }
                                 onClick={setModalShow2}
                                 variant="contained"
                             >
-                                {statedata.isAnalysing
+                                {statedata.isAnalysingV2
                                     ? i18next.t('Analysing', { ns: 'courses' })
                                     : i18next.t('Analyse V2', {
                                           ns: 'courses'

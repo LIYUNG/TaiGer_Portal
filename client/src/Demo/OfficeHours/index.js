@@ -575,7 +575,7 @@ const OfficeHours = () => {
                                 link_name=""
                                 notification_key={undefined}
                                 path="/"
-                                removeBanner={<></>}
+                                removeBanner={null}
                                 text={
                                     <>
                                         在您目前預訂的時段過後，您將可以再次預約時段。
@@ -591,7 +591,7 @@ const OfficeHours = () => {
                                 link_name=""
                                 notification_key={undefined}
                                 path="/"
-                                removeBanner={<></>}
+                                removeBanner={null}
                                 text={
                                     <>
                                         目前 Agent 無空出 Office hours

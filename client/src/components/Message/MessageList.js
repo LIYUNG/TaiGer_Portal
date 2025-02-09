@@ -17,7 +17,7 @@ const MessageList = (props) => {
             singleExpandtHandler={props.singleExpandtHandler}
         />
     ));
-    return <>{thread}</>;
+    return thread;
 };
 
 export default MessageList;

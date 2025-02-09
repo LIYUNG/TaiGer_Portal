@@ -117,7 +117,7 @@ const NoAgentsStudentsCard = (props) => {
             </>
         );
     } else {
-        return <></>;
+        return null;
     }
 };
 

@@ -8,47 +8,43 @@ import PDFViewer from '../../components/PDFViewer/index';
 
 const FilePreview = ({ path, apiFilePath }) => {
     const fileExtension = path.split('.')[1]?.toLowerCase();
-    return (
-        <>
-            {fileExtension === 'pdf' ? (
-                <>{PDFViewer(apiFilePath, path)}</>
-            ) : (
-                <div>
-                    <div
-                        className="center"
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            display: 'flex',
-                            'align-items': 'center',
-                            'justify-content': 'center'
-                        }}
+    return fileExtension === 'pdf' ? (
+        <>{PDFViewer(apiFilePath, path)}</>
+    ) : (
+        <div>
+            <div
+                className="center"
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    'align-items': 'center',
+                    'justify-content': 'center'
+                }}
+            >
+                <img
+                    height="60%"
+                    src={`${BASE_URL}${apiFilePath}`}
+                    width="90%"
+                />
+            </div>
+            <div>
+                <a
+                    href={`${BASE_URL}${apiFilePath}`}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                >
+                    <Button
+                        color="secondary"
+                        size="small"
+                        startIcon={<DownloadIcon />}
+                        variant="contained"
                     >
-                        <img
-                            height="60%"
-                            src={`${BASE_URL}${apiFilePath}`}
-                            width="90%"
-                        />
-                    </div>
-                    <div>
-                        <a
-                            href={`${BASE_URL}${apiFilePath}`}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                        >
-                            <Button
-                                color="secondary"
-                                size="small"
-                                startIcon={<DownloadIcon />}
-                                variant="contained"
-                            >
-                                {i18next.t('Download', { ns: 'common' })}
-                            </Button>
-                        </a>
-                    </div>
-                </div>
-            )}
-        </>
+                        {i18next.t('Download', { ns: 'common' })}
+                    </Button>
+                </a>
+            </div>
+        </div>
     );
 };
 

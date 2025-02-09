@@ -144,7 +144,7 @@ const NoEditorsStudentsCard = (props) => {
             </>
         );
     } else {
-        return <></>;
+        return null;
     }
 };
 

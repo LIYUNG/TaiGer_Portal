@@ -68,132 +68,128 @@ const CommunicationSinglePageBody = ({ loadedData }) => {
     return (
         <Box>
             {student?.archiv ? <TopBar /> : null}
-            <>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <Breadcrumbs aria-label="breadcrumb">
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <Breadcrumbs aria-label="breadcrumb">
+                        <Link
+                            color="inherit"
+                            component={LinkDom}
+                            to={`${DEMO.DASHBOARD_LINK}`}
+                            underline="hover"
+                        >
+                            {appConfig.companyName}
+                        </Link>
+                        {is_TaiGer_role(user) ? (
                             <Link
                                 color="inherit"
                                 component={LinkDom}
-                                to={`${DEMO.DASHBOARD_LINK}`}
+                                to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                    student._id.toString(),
+                                    DEMO.PROFILE_HASH
+                                )}`}
                                 underline="hover"
                             >
-                                {appConfig.companyName}
+                                {student_name}
                             </Link>
-                            {is_TaiGer_role(user) ? (
-                                <Link
-                                    color="inherit"
-                                    component={LinkDom}
-                                    to={`${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                        student._id.toString(),
-                                        DEMO.PROFILE_HASH
-                                    )}`}
-                                    underline="hover"
-                                >
-                                    {student_name}
-                                </Link>
-                            ) : null}
-                            <Typography color="text.primary">
-                                {t('Message', { ns: 'common' })}
-                            </Typography>
-                        </Breadcrumbs>
-                    </Grid>
-                    <Grid item sm={9} xs={12}>
-                        <Typography variant="h6">
-                            {t('Instructions')}:
+                        ) : null}
+                        <Typography color="text.primary">
+                            {t('Message', { ns: 'common' })}
                         </Typography>
-                        <Box variant="body1">
-                            {appConfig.companyName}
-                            顧問皆位於中歐時區，無法及時回復，為確保有
-                            <b>效率溝通</b>，留言時請注意以下幾點：
-                            <List>
-                                <ListItem>
-                                    <Typography sx={{ display: 'flex' }}>
-                                        1. 請把
-                                        <Link
-                                            component={LinkDom}
-                                            fontWeight="bold"
-                                            sx={{ display: 'flex' }}
-                                            target="_blank"
-                                            to={
-                                                is_TaiGer_Student(user)
-                                                    ? `${DEMO.SURVEY_LINK}`
-                                                    : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                                          student._id?.toString(),
-                                                          DEMO.SURVEY_HASH
-                                                      )}`
-                                            }
-                                        >
-                                            {t('Profile', { ns: 'common' })}{' '}
-                                            <LaunchIcon fontSize="small" />
-                                        </Link>
-                                        填好，
-                                        <Link
-                                            component={LinkDom}
-                                            fontWeight="bold"
-                                            sx={{ display: 'flex' }}
-                                            target="_blank"
-                                            to={
-                                                is_TaiGer_Student(user)
-                                                    ? `${DEMO.BASE_DOCUMENTS_LINK}`
-                                                    : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
-                                                          student._id?.toString(),
-                                                          DEMO.PROFILE_HASH
-                                                      )}`
-                                            }
-                                        >
-                                            {t('My Documents', {
-                                                ns: 'common'
-                                            })}{' '}
-                                            <LaunchIcon fontSize="small" />
-                                        </Link>
-                                        ，文件有的都盡量先掃描上傳，
-                                        <Link
-                                            component={LinkDom}
-                                            fontWeight="bold"
-                                            sx={{ display: 'flex' }}
-                                            target="_blank"
-                                            to={`${DEMO.COURSES_LINK}/${student._id?.toString()}`}
-                                        >
-                                            {t('My Courses', { ns: 'common' })}{' '}
-                                            <LaunchIcon fontSize="small" />
-                                        </Link>
-                                        課程填好，之後 Agent
-                                        在回答問題時比較能掌握狀況。
-                                    </Typography>
-                                </ListItem>
-                                <ListItem>
-                                    2.
-                                    描述你的問題，請盡量一次列出所有問題，顧問可以一次回答。
-                                </ListItem>
-                                <ListItem>3. 你想要完成事項。</ListItem>
-                                <ListItem>
-                                    註：或想一次處理，請準備好所有問題，並和顧問約時間通話。
-                                </ListItem>
-                                <ListItem>
-                                    {appConfig.companyName}{' '}
-                                    顧問平時的工作時段位於美國或歐洲時區，因此可能無法立即回覆您的訊息，敬請諒解。依據您的問題複雜度，顧問將會在一至五個工作日內回覆您。因此，請在訊息來往時保持有效率的溝通，以確保迅速解決問題。
-                                    顧問隨時需要了解您的進展情況，為了避免不必要的來回詢問學生資料進度，為此，請務必將您在TaiGer
-                                    Portal平台上的個人資訊保持最新，以確保訊息的準確性。
-                                </ListItem>
-                            </List>
-                        </Box>
-                    </Grid>
-                    <Grid item sm={3} xs={12}>
-                        <Typography fontWeight="bold">
-                            {t('Agents', { ns: 'common' })}:
-                        </Typography>
-                        {student?.agents?.map((agent, i) => (
-                            <Typography key={i}>
-                                <Link
-                                    component={LinkDom}
-                                    to={`${DEMO.TEAM_AGENT_PROFILE_LINK(agent._id.toString())}`}
-                                >{`${agent.firstname} ${agent.lastname}`}</Link>
-                            </Typography>
-                        ))}
-                    </Grid>
+                    </Breadcrumbs>
                 </Grid>
-            </>
+                <Grid item sm={9} xs={12}>
+                    <Typography variant="h6">{t('Instructions')}:</Typography>
+                    <Box variant="body1">
+                        {appConfig.companyName}
+                        顧問皆位於中歐時區，無法及時回復，為確保有
+                        <b>效率溝通</b>，留言時請注意以下幾點：
+                        <List>
+                            <ListItem>
+                                <Typography sx={{ display: 'flex' }}>
+                                    1. 請把
+                                    <Link
+                                        component={LinkDom}
+                                        fontWeight="bold"
+                                        sx={{ display: 'flex' }}
+                                        target="_blank"
+                                        to={
+                                            is_TaiGer_Student(user)
+                                                ? `${DEMO.SURVEY_LINK}`
+                                                : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                                      student._id?.toString(),
+                                                      DEMO.SURVEY_HASH
+                                                  )}`
+                                        }
+                                    >
+                                        {t('Profile', { ns: 'common' })}{' '}
+                                        <LaunchIcon fontSize="small" />
+                                    </Link>
+                                    填好，
+                                    <Link
+                                        component={LinkDom}
+                                        fontWeight="bold"
+                                        sx={{ display: 'flex' }}
+                                        target="_blank"
+                                        to={
+                                            is_TaiGer_Student(user)
+                                                ? `${DEMO.BASE_DOCUMENTS_LINK}`
+                                                : `${DEMO.STUDENT_DATABASE_STUDENTID_LINK(
+                                                      student._id?.toString(),
+                                                      DEMO.PROFILE_HASH
+                                                  )}`
+                                        }
+                                    >
+                                        {t('My Documents', {
+                                            ns: 'common'
+                                        })}{' '}
+                                        <LaunchIcon fontSize="small" />
+                                    </Link>
+                                    ，文件有的都盡量先掃描上傳，
+                                    <Link
+                                        component={LinkDom}
+                                        fontWeight="bold"
+                                        sx={{ display: 'flex' }}
+                                        target="_blank"
+                                        to={`${DEMO.COURSES_LINK}/${student._id?.toString()}`}
+                                    >
+                                        {t('My Courses', { ns: 'common' })}{' '}
+                                        <LaunchIcon fontSize="small" />
+                                    </Link>
+                                    課程填好，之後 Agent
+                                    在回答問題時比較能掌握狀況。
+                                </Typography>
+                            </ListItem>
+                            <ListItem>
+                                2.
+                                描述你的問題，請盡量一次列出所有問題，顧問可以一次回答。
+                            </ListItem>
+                            <ListItem>3. 你想要完成事項。</ListItem>
+                            <ListItem>
+                                註：或想一次處理，請準備好所有問題，並和顧問約時間通話。
+                            </ListItem>
+                            <ListItem>
+                                {appConfig.companyName}{' '}
+                                顧問平時的工作時段位於美國或歐洲時區，因此可能無法立即回覆您的訊息，敬請諒解。依據您的問題複雜度，顧問將會在一至五個工作日內回覆您。因此，請在訊息來往時保持有效率的溝通，以確保迅速解決問題。
+                                顧問隨時需要了解您的進展情況，為了避免不必要的來回詢問學生資料進度，為此，請務必將您在TaiGer
+                                Portal平台上的個人資訊保持最新，以確保訊息的準確性。
+                            </ListItem>
+                        </List>
+                    </Box>
+                </Grid>
+                <Grid item sm={3} xs={12}>
+                    <Typography fontWeight="bold">
+                        {t('Agents', { ns: 'common' })}:
+                    </Typography>
+                    {student?.agents?.map((agent, i) => (
+                        <Typography key={i}>
+                            <Link
+                                component={LinkDom}
+                                to={`${DEMO.TEAM_AGENT_PROFILE_LINK(agent._id.toString())}`}
+                            >{`${agent.firstname} ${agent.lastname}`}</Link>
+                        </Typography>
+                    ))}
+                </Grid>
+            </Grid>
             <Button
                 color="secondary"
                 disabled={loadButtonDisabled}

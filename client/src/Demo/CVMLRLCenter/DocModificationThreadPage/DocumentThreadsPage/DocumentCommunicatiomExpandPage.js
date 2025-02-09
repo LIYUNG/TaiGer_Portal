@@ -327,7 +327,7 @@ const DocumentCommunicationExpandPage = () => {
     }
 
     if (studentMetricsIsError) {
-        return <>{studentMetricsError}</>;
+        return studentMetricsError;
     }
 
     return (

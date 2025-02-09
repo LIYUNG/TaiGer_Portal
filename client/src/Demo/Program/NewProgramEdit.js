@@ -117,35 +117,32 @@ const NewProgramEdit = (props) => {
                         <Autocomplete
                             freeSolo
                             noOptionsText="No results" // Message when no results are found
+                            onChange={(event, value) =>
+                                onClickResultHandler(value)
+                            } // Handle selection
                             options={schoolName2Set} // Display filtered results
+                            readOnly={
+                                props.type === 'edit' && !is_TaiGer_Admin(user)
+                            } // Conditional readonly
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
-                                    fullWidth
-                                    type="text"
-                                    id="school"
-                                    name="school"
-                                    placeholder="National Taiwan University"
-                                    value={searchTerm}
-                                    onChange={(event) => handleChange(event)} // Handle input changes
                                     InputProps={{
                                         ...params.InputProps,
                                         // readOnly: props.type === 'edit' && !is_TaiGer_Admin(user), // Conditional readonly
                                         disableUnderline: true,
-                                        endAdornment: (
-                                            <>
-                                                {params.InputProps.endAdornment}
-                                            </>
-                                        )
+                                        endAdornment:
+                                            params.InputProps.endAdornment
                                     }}
+                                    fullWidth
+                                    id="school"
+                                    name="school"
+                                    onChange={(event) => handleChange(event)} // Handle input changes
+                                    placeholder="National Taiwan University"
+                                    type="text"
+                                    value={searchTerm}
                                 />
                             )}
-                            onChange={(event, value) =>
-                                onClickResultHandler(value)
-                            } // Handle selection
-                            readOnly={
-                                props.type === 'edit' && !is_TaiGer_Admin(user)
-                            } // Conditional readonly
                             size="small"
                             value={program.school}
                         />

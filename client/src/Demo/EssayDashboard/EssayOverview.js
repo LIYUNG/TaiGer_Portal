@@ -314,7 +314,7 @@ const EssayOverview = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text="Please assign essay writer to the following essays:"
                     title="warning"
                 />
@@ -334,7 +334,7 @@ const EssayOverview = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text="Follow up"
                     title="warning"
                 />
@@ -354,7 +354,7 @@ const EssayOverview = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text="My Favorite"
                     title="info"
                 />
@@ -374,7 +374,7 @@ const EssayOverview = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text="Follow up"
                     title="info"
                 />
@@ -394,7 +394,7 @@ const EssayOverview = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text={
                         is_TaiGer_role(user)
                             ? 'Waiting inputs. No action needed'
@@ -418,7 +418,7 @@ const EssayOverview = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text="These tasks are closed."
                     title="success"
                 />
@@ -444,7 +444,7 @@ const EssayOverview = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text="All Essays"
                     title="info"
                 />

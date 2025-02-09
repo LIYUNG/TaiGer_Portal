@@ -16,27 +16,21 @@ const TabProgramTaskDelta = ({ deltas }) => {
             students={delta.students}
         />
     ));
-    return (
-        <>
-            {taskDeltas.length !== 0 ? (
-                <TableContainer>
-                    <Table size="small">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>University / Programs</TableCell>
-                                <TableCell>Student Name</TableCell>
-                                <TableCell>Missing</TableCell>
-                                <TableCell>Extra</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        {taskDeltas}
-                    </Table>
-                </TableContainer>
-            ) : (
-                <></>
-            )}
-        </>
-    );
+    return taskDeltas.length !== 0 ? (
+        <TableContainer>
+            <Table size="small">
+                <TableHead>
+                    <TableRow>
+                        <TableCell>University / Programs</TableCell>
+                        <TableCell>Student Name</TableCell>
+                        <TableCell>Missing</TableCell>
+                        <TableCell>Extra</TableCell>
+                    </TableRow>
+                </TableHead>
+                {taskDeltas}
+            </Table>
+        </TableContainer>
+    ) : null;
 };
 
 export default TabProgramTaskDelta;

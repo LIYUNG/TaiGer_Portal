@@ -14,8 +14,8 @@ const RespondedThreads = (props) => {
         props.student.applications === undefined ||
         props.student.applications.length === 0
     ) {
-        unread_general_generaldocs = <></>;
-        unread_applications_docthread = <></>;
+        unread_general_generaldocs = null;
+        unread_applications_docthread = null;
     } else {
         unread_general_generaldocs = props.student.generaldocs_threads.map(
             (generaldocs_threads, i) => (

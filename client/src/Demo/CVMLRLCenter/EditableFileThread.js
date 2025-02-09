@@ -138,9 +138,7 @@ const EditableFileThread = (props) => {
                                     {t('Closed')}
                                 </Typography>
                             )
-                        ) : (
-                            <></>
-                        )}
+                        ) : null}
                         {is_TaiGer_role(user) ? (
                             <Tooltip title={t('Delete', { ns: 'common' })}>
                                 <IconButton>
@@ -158,7 +156,7 @@ const EditableFileThread = (props) => {
         </Box>
     );
 
-    return <>{fileStatus}</>;
+    return fileStatus;
 };
 
 export default EditableFileThread;

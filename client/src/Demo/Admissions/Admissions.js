@@ -54,7 +54,7 @@ const Admissions = () => {
                 </Typography>
             </Breadcrumbs>
             {isLoading ? <Loading /> : null}
-            {isError ? <>{error}</> : null}
+            {isError ? error : null}
             {!isLoading && !isError ? (
                 <>
                     <Box>

@@ -837,9 +837,7 @@ export default function MyCourses() {
                                         endIcon={
                                             statedata.isAnalysing ? (
                                                 <CircularProgress size={24} />
-                                            ) : (
-                                                <></>
-                                            )
+                                            ) : null
                                         }
                                         onClick={onAnalyse}
                                         sx={{ mr: 2 }}

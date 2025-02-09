@@ -77,33 +77,24 @@ const ProgressButton = ({
 };
 
 const LastModifiedText = ({ updatedAt, isFinalVersion }) => {
-    return (
-        <>
-            {updatedAt ? (
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
-                        justifyContent: 'right'
-                    }}
-                >
-                    <Typography variant="body2">
-                        Last Modified: <strong>{convertDate(updatedAt)}</strong>
-                    </Typography>
-                    {isFinalVersion ? (
-                        <Chip color="info" label="Final" size="medium" />
-                    ) : null}
-                </Box>
-            ) : (
-                <Chip
-                    color="secondary"
-                    label="New"
-                    size="small"
-                    variant="outlined"
-                />
-            )}
-        </>
+    return updatedAt ? (
+        <Box
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                justifyContent: 'right'
+            }}
+        >
+            <Typography variant="body2">
+                Last Modified: <strong>{convertDate(updatedAt)}</strong>
+            </Typography>
+            {isFinalVersion ? (
+                <Chip color="info" label="Final" size="medium" />
+            ) : null}
+        </Box>
+    ) : (
+        <Chip color="secondary" label="New" size="small" variant="outlined" />
     );
 };
 

@@ -491,9 +491,7 @@ export default function CourseWidgetBody({ programRequirements }) {
                             endIcon={
                                 statedata.isAnalysing ? (
                                     <CircularProgress size={24} />
-                                ) : (
-                                    <></>
-                                )
+                                ) : null
                             }
                             onClick={onAnalyse}
                             variant="contained"

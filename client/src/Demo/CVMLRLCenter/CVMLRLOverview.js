@@ -336,7 +336,7 @@ const CVMLRLOverview = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text="Please reply:"
                     title="warning"
                 />
@@ -356,7 +356,7 @@ const CVMLRLOverview = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text="Follow up"
                     title="info"
                 />
@@ -376,7 +376,7 @@ const CVMLRLOverview = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text="Follow up"
                     title="info"
                 />
@@ -396,7 +396,7 @@ const CVMLRLOverview = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text={
                         is_TaiGer_role(user)
                             ? 'Waiting inputs. No action needed'
@@ -420,7 +420,7 @@ const CVMLRLOverview = (props) => {
                     link_name=""
                     notification_key={undefined}
                     path="/"
-                    removeBanner={<></>}
+                    removeBanner={null}
                     text="These tasks are closed."
                     title="success"
                 />

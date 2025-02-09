@@ -196,7 +196,7 @@ const NoWritersEssaysCard = (props) => {
             </>
         );
     } else {
-        return <></>;
+        return null;
     }
 };
 

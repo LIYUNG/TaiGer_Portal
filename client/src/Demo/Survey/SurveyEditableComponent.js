@@ -181,9 +181,7 @@ const SurveyEditableComponent = (props) => {
                       survey.academic_background?.language
                           ?.english_test_date === '' ? (
                         <li>{t('English Test Date missing !')}</li>
-                    ) : (
-                        <></>
-                    )}
+                    ) : null}
                     {survey.academic_background?.language?.german_isPassed ===
                         '-' ||
                     !survey.academic_background?.language?.german_isPassed ? (
@@ -208,9 +206,7 @@ const SurveyEditableComponent = (props) => {
                       survey.academic_background?.language?.german_test_date ===
                           '' ? (
                         <li>{t('Expected German Test Date')}</li>
-                    ) : (
-                        <></>
-                    )}
+                    ) : null}
                     {survey.academic_background?.language?.gre_isPassed ===
                         '-' ||
                     !survey.academic_background?.language?.gre_isPassed ? (
@@ -227,9 +223,7 @@ const SurveyEditableComponent = (props) => {
                       survey.academic_background?.language?.gre_test_date ===
                           '' ? (
                         <li>GRE Test Date not given</li>
-                    ) : (
-                        <></>
-                    )}
+                    ) : null}
                     {survey.academic_background?.language?.gmat_isPassed ===
                         '-' ||
                     !survey.academic_background?.language?.gmat_isPassed ? (
@@ -246,9 +240,7 @@ const SurveyEditableComponent = (props) => {
                       survey.academic_background?.language?.gmat_test_date ===
                           '' ? (
                         <li>GMAT Test Date not given</li>
-                    ) : (
-                        <></>
-                    )}
+                    ) : null}
                 </Card>
             ) : null}
             <Box>
@@ -1632,7 +1624,7 @@ const SurveyEditableComponent = (props) => {
                                 link_name=""
                                 notification_key={undefined}
                                 path="/"
-                                removeBanner={<></>}
+                                removeBanner={null}
                                 text="若還沒考過，請在 Passed 處選 No，並填上檢定以及預計考試時間。若不需要（如德語），請填 Not Needed。方便顧問了解你的進度。"
                                 title="warning"
                             />
@@ -1650,7 +1642,7 @@ const SurveyEditableComponent = (props) => {
                                     link_name=""
                                     notification_key={undefined}
                                     path="/"
-                                    removeBanner={<></>}
+                                    removeBanner={null}
                                     text={
                                         <>
                                             報名考試時，請確認 <b>護照</b>{' '}

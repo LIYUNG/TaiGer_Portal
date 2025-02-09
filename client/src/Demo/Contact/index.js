@@ -40,38 +40,34 @@ const Contact = () => {
     }
     TabTitle(t('Contact Us', { ns: 'common' }));
 
-    const your_editors = contactState.students[0].editors ? (
-        contactState.students[0].editors.map((editor, i) => (
-            <TableRow key={i}>
-                <TableCell>{t('Editor', { ns: 'common' })}</TableCell>
-                <TableCell>
-                    {editor.firstname} - {editor.lastname}
-                </TableCell>
-                <TableCell>{editor.email}</TableCell>
-            </TableRow>
-        ))
-    ) : (
-        <></>
-    );
+    const your_editors = contactState.students[0].editors
+        ? contactState.students[0].editors.map((editor, i) => (
+              <TableRow key={i}>
+                  <TableCell>{t('Editor', { ns: 'common' })}</TableCell>
+                  <TableCell>
+                      {editor.firstname} - {editor.lastname}
+                  </TableCell>
+                  <TableCell>{editor.email}</TableCell>
+              </TableRow>
+          ))
+        : null;
 
-    const your_agents = contactState.students[0].agents ? (
-        contactState.students[0].agents.map((agent, i) => (
-            <TableRow key={i}>
-                <TableCell>{t('Agent', { ns: 'common' })}</TableCell>
-                <TableCell>
-                    <Link
-                        component={LinkDom}
-                        to={`${DEMO.TEAM_AGENT_PROFILE_LINK(agent._id.toString())}`}
-                    >
-                        {agent.firstname} - {agent.lastname}
-                    </Link>
-                </TableCell>
-                <TableCell>{agent.email}</TableCell>
-            </TableRow>
-        ))
-    ) : (
-        <></>
-    );
+    const your_agents = contactState.students[0].agents
+        ? contactState.students[0].agents.map((agent, i) => (
+              <TableRow key={i}>
+                  <TableCell>{t('Agent', { ns: 'common' })}</TableCell>
+                  <TableCell>
+                      <Link
+                          component={LinkDom}
+                          to={`${DEMO.TEAM_AGENT_PROFILE_LINK(agent._id.toString())}`}
+                      >
+                          {agent.firstname} - {agent.lastname}
+                      </Link>
+                  </TableCell>
+                  <TableCell>{agent.email}</TableCell>
+              </TableRow>
+          ))
+        : null;
 
     return (
         <Box>

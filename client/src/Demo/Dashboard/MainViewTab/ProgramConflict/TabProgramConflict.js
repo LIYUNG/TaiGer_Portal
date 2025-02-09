@@ -17,26 +17,20 @@ const TabProgramConflict = (props) => {
             students={conflict.students}
         />
     ));
-    return (
-        <>
-            {programConflicts.length !== 0 ? (
-                <TableContainer>
-                    <Table size="small">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>University / Programs</TableCell>
-                                <TableCell>Student Name</TableCell>
-                                <TableCell>Deadline</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        {programConflicts}
-                    </Table>
-                </TableContainer>
-            ) : (
-                <></>
-            )}
-        </>
-    );
+    return programConflicts.length !== 0 ? (
+        <TableContainer>
+            <Table size="small">
+                <TableHead>
+                    <TableRow>
+                        <TableCell>University / Programs</TableCell>
+                        <TableCell>Student Name</TableCell>
+                        <TableCell>Deadline</TableCell>
+                    </TableRow>
+                </TableHead>
+                {programConflicts}
+            </Table>
+        </TableContainer>
+    ) : null;
 };
 
 export default TabProgramConflict;

@@ -300,9 +300,7 @@ const StudentsAgentEditor = (props) => {
                               ))
                             : null}
                     </TableCell>
-                ) : (
-                    <></>
-                )}
+                ) : null}
                 <TableCell>
                     <Typography variant="body2">{studentsAgent}</Typography>
                 </TableCell>

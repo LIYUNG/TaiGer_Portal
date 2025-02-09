@@ -375,15 +375,15 @@ export default function PortalCredentialsCard(props) {
                                             <div>
                                                 <Banner
                                                     ReadOnlyMode={true}
-                                                    bg={'danger'}
-                                                    path={'/'}
+                                                    bg="danger"
+                                                    link_name=""
+                                                    notification_key={undefined}
+                                                    path="/"
                                                     text={t(
                                                         'Please register and provide credentials'
                                                     )}
-                                                    title={'warning'}
-                                                    link_name={''}
+                                                    title="warning"
                                                     // removeBanner={this.removeBanner}
-                                                    notification_key={undefined}
                                                 />
                                             </div>
                                         ) : null}

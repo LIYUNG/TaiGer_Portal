@@ -347,10 +347,10 @@ const InternalDocCreatePage = (props) => {
                                     editorState={
                                         internalDocCreatePageState.editorState
                                     }
-                                    handleClickSave={handleClickSave}
                                     handleClickEditToggle={
                                         handleClickEditToggle
                                     }
+                                    handleClickSave={handleClickSave}
                                     // readOnlyMode={readOnlyMode}
                                     role={props.role}
                                 />

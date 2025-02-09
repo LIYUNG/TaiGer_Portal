@@ -376,54 +376,50 @@ const InterviewItems = (props) => {
                                 :&nbsp;
                             </Typography>
                             {is_TaiGer_role(user) ? (
-                                <>
-                                    {interview.trainer_id?.length !== 0 ? (
-                                        <>
-                                            <TimezoneSelect
-                                                displayValue="UTC"
-                                                isDisabled={true}
-                                                onChange={(e) =>
-                                                    setTimezone(e.value)
-                                                }
-                                                value={timezone}
-                                            />
-                                            <LocalizationProvider
-                                                dateAdapter={AdapterDayjs}
-                                            >
-                                                <DesktopDateTimePicker
-                                                    onChange={(newValue) =>
-                                                        handleChangeInterviewTrainingTime(
-                                                            newValue
-                                                        )
-                                                    }
-                                                    value={utcTime}
-                                                />
-                                            </LocalizationProvider>
-                                            <Button
-                                                color="primary"
-                                                disabled={
-                                                    !interviewTrainingTimeChange
-                                                }
-                                                fullWidth
-                                                onClick={(e) =>
-                                                    handleSendInterviewInvitation(
-                                                        e
+                                interview.trainer_id?.length !== 0 ? (
+                                    <>
+                                        <TimezoneSelect
+                                            displayValue="UTC"
+                                            isDisabled={true}
+                                            onChange={(e) =>
+                                                setTimezone(e.value)
+                                            }
+                                            value={timezone}
+                                        />
+                                        <LocalizationProvider
+                                            dateAdapter={AdapterDayjs}
+                                        >
+                                            <DesktopDateTimePicker
+                                                onChange={(newValue) =>
+                                                    handleChangeInterviewTrainingTime(
+                                                        newValue
                                                     )
                                                 }
-                                                sx={{ mt: 1 }}
-                                                variant="contained"
-                                            >
-                                                {t('Send Invitation')}
-                                            </Button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            {t(
-                                                'Please assign Interview Trainer first.'
-                                            )}
-                                        </>
-                                    )}
-                                </>
+                                                value={utcTime}
+                                            />
+                                        </LocalizationProvider>
+                                        <Button
+                                            color="primary"
+                                            disabled={
+                                                !interviewTrainingTimeChange
+                                            }
+                                            fullWidth
+                                            onClick={(e) =>
+                                                handleSendInterviewInvitation(e)
+                                            }
+                                            sx={{ mt: 1 }}
+                                            variant="contained"
+                                        >
+                                            {t('Send Invitation')}
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        {t(
+                                            'Please assign Interview Trainer first.'
+                                        )}
+                                    </>
+                                )
                             ) : null}
                             {!is_TaiGer_role(user) ? (
                                 props.interview.event_id?.start ? (
@@ -518,21 +514,21 @@ const InterviewItems = (props) => {
                             </Typography>
                             <Typography variant="body1">
                                 <TextField
+                                    InputLabelProps={{
+                                        shrink: true
+                                    }}
                                     fullWidth
                                     id="interviewer"
                                     name="interviewer"
                                     onChange={(e) =>
                                         handleChange_UpdateInterview(e)
                                     }
+                                    placeholder="Prof. Sebastian"
                                     required
                                     size="small"
                                     type="text"
                                     value={interview.interviewer}
-                                    placeholder="Prof. Sebastian"
                                     // label={`${t('Interviewer', { ns: 'interviews' })}`}
-                                    InputLabelProps={{
-                                        shrink: true
-                                    }}
                                 />
                             </Typography>
                             <Typography

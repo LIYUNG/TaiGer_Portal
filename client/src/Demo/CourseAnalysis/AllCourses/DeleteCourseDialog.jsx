@@ -70,9 +70,7 @@ export const DeleteCourseDialog = ({
                             )
                         )}
                     </>
-                ) : (
-                    <></>
-                )}
+                ) : null}
                 {isMutateError ? (
                     <Typography color="error">
                         An error occurred: {mutateError.message}

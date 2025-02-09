@@ -20,27 +20,21 @@ const UniAssistListCard = (props) => {
             </Box>
         ));
 
-    return (
-        <>
-            {check_student_needs_uni_assist(props.student) ? (
-                <Card sx={{ padding: 2 }}>
-                    <Typography>
-                        {t(
-                            'The following program needs uni-assist process, please check if paid, uploaded document and upload VPD here'
-                        )}
-                        :{app_name}
-                    </Typography>
-                </Card>
-            ) : (
-                <Card sx={{ padding: 2 }}>
-                    <Typography>
-                        {t(
-                            'Based on the applications, Uni-Assist is NOT needed'
-                        )}
-                    </Typography>
-                </Card>
-            )}
-        </>
+    return check_student_needs_uni_assist(props.student) ? (
+        <Card sx={{ padding: 2 }}>
+            <Typography>
+                {t(
+                    'The following program needs uni-assist process, please check if paid, uploaded document and upload VPD here'
+                )}
+                :{app_name}
+            </Typography>
+        </Card>
+    ) : (
+        <Card sx={{ padding: 2 }}>
+            <Typography>
+                {t('Based on the applications, Uni-Assist is NOT needed')}
+            </Typography>
+        </Card>
     );
 };
 export default UniAssistListCard;

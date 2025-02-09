@@ -245,52 +245,48 @@ const RequirementsBlock = ({ thread, template_obj }) => {
             <Box>
                 {thread.program_id ? (
                     <LinkableNewlineText text={getRequirement(thread)} />
-                ) : (
+                ) : thread.file_type === 'CV' ? (
                     <>
-                        {thread.file_type === 'CV' ? (
-                            <>
-                                <Typography>
-                                    {i18next.t('cv-requirements-1', {
-                                        ns: 'cvmlrl'
-                                    })}
-                                    {` `}
-                                    <b>
-                                        {i18next.t('cv-requirements-1.1', {
-                                            ns: 'cvmlrl'
-                                        })}
-                                    </b>
-                                </Typography>
-                                <Typography>
-                                    {i18next.t('cv-requirements-2', {
-                                        ns: 'cvmlrl'
-                                    })}
-                                </Typography>
-                                <Typography>
-                                    {i18next.t('cv-reminder-1', {
-                                        ns: 'cvmlrl'
-                                    })}
-                                </Typography>
-                                <Typography>
-                                    {i18next.t('cv-reminder-2', {
-                                        ns: 'cvmlrl'
-                                    })}
-                                </Typography>
-                            </>
-                        ) : template_obj?.prop.includes('RL') ||
-                          template_obj?.alias.includes('Recommendation') ? (
-                            <Typography>
-                                {i18next.t('rl-requirements-1', {
+                        <Typography>
+                            {i18next.t('cv-requirements-1', {
+                                ns: 'cvmlrl'
+                            })}
+                            {` `}
+                            <b>
+                                {i18next.t('cv-requirements-1.1', {
                                     ns: 'cvmlrl'
                                 })}
-                            </Typography>
-                        ) : (
-                            <Typography>
-                                {i18next.t('No', {
-                                    ns: 'common'
-                                })}
-                            </Typography>
-                        )}
+                            </b>
+                        </Typography>
+                        <Typography>
+                            {i18next.t('cv-requirements-2', {
+                                ns: 'cvmlrl'
+                            })}
+                        </Typography>
+                        <Typography>
+                            {i18next.t('cv-reminder-1', {
+                                ns: 'cvmlrl'
+                            })}
+                        </Typography>
+                        <Typography>
+                            {i18next.t('cv-reminder-2', {
+                                ns: 'cvmlrl'
+                            })}
+                        </Typography>
                     </>
+                ) : template_obj?.prop.includes('RL') ||
+                  template_obj?.alias.includes('Recommendation') ? (
+                    <Typography>
+                        {i18next.t('rl-requirements-1', {
+                            ns: 'cvmlrl'
+                        })}
+                    </Typography>
+                ) : (
+                    <Typography>
+                        {i18next.t('No', {
+                            ns: 'common'
+                        })}
+                    </Typography>
                 )}
             </Box>
         </Box>

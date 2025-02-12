@@ -105,7 +105,10 @@ const AllOfficeHours = () => {
         id: event._id.toString(),
         start: new Date(event.start),
         end: new Date(event.end),
-        provider: event.requester_id?.[0] || { firstname: 'TBD', lastname: 'TBD' }
+        provider: event.requester_id?.[0] || {
+            firstname: 'TBD',
+            lastname: 'TBD'
+        }
     }));
 
     return (

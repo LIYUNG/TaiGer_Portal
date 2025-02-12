@@ -54,6 +54,15 @@ jest.mock('../../middlewares/permission-filter', () => {
   };
 });
 
+jest.mock('../../middlewares/chatMultitenantFilter', () => {
+  const passthrough = async (req, res, next) => next();
+
+  return {
+    ...jest.requireActual('../../middlewares/chatMultitenantFilter'),
+    chatMultitenantFilter: jest.fn().mockImplementation(passthrough)
+  };
+});
+
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 

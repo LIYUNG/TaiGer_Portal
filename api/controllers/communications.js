@@ -1,4 +1,4 @@
-const { ObjectId } = require('mongodb');
+const mongoose = require('mongoose');
 const path = require('path');
 const {
   is_TaiGer_Agent,
@@ -489,7 +489,7 @@ const getMessages = asyncHandler(async (req, res, next) => {
   const communication_thread = await req.db
     .model('Communication')
     .find({
-      student_id: studentId
+      student_id: new mongoose.Types.ObjectId(studentId)
     })
     .populate(
       'student_id user_id readBy ignoredMessageBy',
@@ -508,7 +508,7 @@ const getMessages = asyncHandler(async (req, res, next) => {
     );
 
     if (isUserNotInReadBy) {
-      lastElement.readBy.push(new ObjectId(userIdStr));
+      lastElement.readBy.push(new mongoose.Types.ObjectId(userIdStr));
 
       // Update timestamp for the user
       lastElement.timeStampReadBy = {
@@ -624,7 +624,7 @@ const postMessages = asyncHandler(async (req, res, next) => {
     student_id: studentId,
     user_id: user._id,
     message,
-    readBy: [new ObjectId(user._id)],
+    readBy: [new mongoose.Types.ObjectId(user._id)],
     timeStampReadBy: { [user._id?.toString()]: new Date() },
     files: newfile,
     createdAt: new Date()

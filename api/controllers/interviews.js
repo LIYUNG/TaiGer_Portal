@@ -635,7 +635,7 @@ const createInterview = asyncHandler(async (req, res) => {
     .findById(studentId)
     .populate('applications.programId')
     .populate('agents editors', 'firstname lastname email')
-    .exec();
+    .lean();
   if (!student) {
     logger.info('createInterview: Invalid student id!');
     throw new ErrorResponse(400, 'Invalid student id');

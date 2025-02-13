@@ -9,12 +9,9 @@ const { generateUser } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { TENANT_ID } = require('../fixtures/constants');
+const { admin } = require('../mock/user');
 
 const admins = [...Array(2)].map(() => generateUser(Role.Admin));
-const agents = [...Array(3)].map(() => generateUser(Role.Agent));
-const editors = [...Array(3)].map(() => generateUser(Role.Editor));
-const students = [...Array(5)].map(() => generateUser(Role.Student));
-const users = [...admins, ...agents, ...editors, ...students];
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -73,7 +70,6 @@ beforeEach(async () => {
 
 describe('GET /api/programs', () => {
   protect.mockImplementation(async (req, res, next) => {
-    const admin = admins[0];
     req.user = admin;
     next();
   });

@@ -200,7 +200,7 @@ const getUnreadNumberMessages = asyncHandler(async (req, res) => {
         student_id: user._id.toString()
       })
       .sort({ createdAt: -1 })
-      .exec();
+      .lean();
     return res.status(200).send({
       success: true,
       data: latestMessage.readBy?.includes(user._id.toString()) ? 0 : 1

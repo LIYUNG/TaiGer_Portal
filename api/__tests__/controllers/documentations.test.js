@@ -1,15 +1,14 @@
 const request = require('supertest');
-const { Role } = require('@taiger-common/core');
 
 const { connect, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { User, UserSchema } = require('../../models/User');
 const { programSchema } = require('../../models/Program');
-const { generateUser } = require('../fixtures/faker');
 const { generateProgram } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
+const { users, admin } = require('../mock/user');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -42,25 +41,6 @@ jest.mock('../../middlewares/auth', () => {
   };
 });
 
-const admin = generateUser(Role.Admin);
-const agents = [...Array(3)].map(() => generateUser(Role.Agent));
-const agent = generateUser(Role.Agent);
-const editors = [...Array(3)].map(() => generateUser(Role.Editor));
-const editor = generateUser(Role.Editor);
-const students = [...Array(3)].map(() => generateUser(Role.Student));
-const student = generateUser(Role.Student);
-const student2 = generateUser(Role.Student);
-const users = [
-  admin,
-  ...agents,
-  agent,
-  ...editors,
-  editor,
-  ...students,
-  student,
-  student2
-];
-
 const requiredDocuments = ['transcript', 'resume'];
 const optionalDocuments = ['certificate', 'visa'];
 const program = generateProgram(requiredDocuments, optionalDocuments);
@@ -81,11 +61,6 @@ beforeEach(async () => {
   await UserModel.insertMany(users);
   await ProgramModel.deleteMany();
   await ProgramModel.create(program);
-  // await User.deleteMany();
-  // await User.insertMany(users);
-
-  // await Program.deleteMany();
-  // await Program.create(program);
 });
 
 describe('/api/docs/:category', () => {

@@ -416,7 +416,7 @@ const getEditorData = asyncHandler(async (req, editor) => {
       editors: editor._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     })
-    .count();
+    .countDocuments();
   return editorData;
 });
 
@@ -874,8 +874,7 @@ const getSingleAgent = asyncHandler(async (req, res, next) => {
       '-messages'
     )
     .select('-notification')
-    .lean()
-    .exec();
+    .lean();
 
   const [agent, students] = await Promise.all([agentPromise, studentsPromise]);
 
@@ -980,7 +979,7 @@ const getArchivStudents = asyncHandler(async (req, res) => {
       .model('Student')
       .find({ archiv: true })
       .populate('agents editors', 'firstname lastname')
-      .exec();
+      .lean();
     res.status(200).send({ success: true, data: students });
   } else if (is_TaiGer_Agent(user)) {
     const students = await req.db
@@ -991,8 +990,7 @@ const getArchivStudents = asyncHandler(async (req, res) => {
       })
       .populate('agents editors', 'firstname lastname')
       .populate('applications.programId')
-      .lean()
-      .exec();
+      .lean();
 
     res.status(200).send({ success: true, data: students });
   } else if (user.role === Role.Editor) {

@@ -44,6 +44,7 @@ describe('AssignOutsourcerFilter middleware', () => {
     };
     const student = { agents: [], editors: ['editor_id'] };
 
+    // TODO: try not to use Documentthread
     Documentthread.findById.mockResolvedValue(document_thread);
     Student.findById.mockResolvedValue(student);
     getPermission.mockResolvedValue(permissions);

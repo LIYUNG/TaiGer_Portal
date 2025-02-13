@@ -1,14 +1,7 @@
-const fs = require('fs');
-const path = require('path');
-const { spawn } = require('child_process');
-const EventEmitter = require('events');
-const request = require('supertest');
 const { Role } = require('@taiger-common/core');
 
 const { connect, clearDatabase } = require('../fixtures/db');
-const { app } = require('../../app');
 const { UserSchema } = require('../../models/User');
-const { programSchema } = require('../../models/Program');
 const { generateUser } = require('../fixtures/faker');
 const { generateProgram } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');

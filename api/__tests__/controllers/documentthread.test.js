@@ -2,6 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const request = require('supertest');
 const { Role } = require('@taiger-common/core');
+const { mockClient } = require('aws-sdk-client-mock');
+const { GetObjectCommand } = require('@aws-sdk/client-s3');
+const { PutObjectCommand } = require('@aws-sdk/client-s3');
 
 const { UPLOAD_PATH } = require('../../config');
 const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
@@ -19,6 +22,10 @@ const {
 } = require('../../middlewares/InnerTaigerMultitenantFilter');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { TENANT_ID } = require('../fixtures/constants');
+const { users, agent, student } = require('../mock/user');
+const { s3Client } = require('../../aws');
+
+const s3ClientMock = mockClient(s3Client);
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -97,25 +104,6 @@ jest.mock('../../middlewares/InnerTaigerMultitenantFilter', () => {
 //   });
 // });
 
-const admin = generateUser(Role.Admin);
-const agents = [...Array(3)].map(() => generateUser(Role.Agent));
-const agent = generateUser(Role.Agent);
-const editors = [...Array(3)].map(() => generateUser(Role.Editor));
-const editor = generateUser(Role.Editor);
-const students = [...Array(3)].map(() => generateUser(Role.Student));
-const student = generateUser(Role.Student);
-const student2 = generateUser(Role.Student);
-const users = [
-  admin,
-  ...agents,
-  agent,
-  ...editors,
-  editor,
-  ...students,
-  student,
-  student2
-];
-
 const requiredDocuments = ['transcript', 'resume'];
 const optionalDocuments = ['certificate', 'visa'];
 const program = generateProgram(requiredDocuments, optionalDocuments);
@@ -132,7 +120,18 @@ beforeAll(async () => {
   await UserModel.insertMany(users);
   await ProgramModel.deleteMany();
   await ProgramModel.create(program);
+
+  s3ClientMock.on(PutObjectCommand).callsFake(async (input, getClient) => {
+    getClient().config.endpoint = () => ({ hostname: '' });
+    return {};
+  });
+  s3ClientMock.on(GetObjectCommand).callsFake(async () => ({
+    Body: {
+      transformToByteArray: async () => Buffer.from('mock file content')
+    }
+  }));
 });
+
 afterAll(async () => {
   const db = connectToDatabase(TENANT_ID, dbUri);
   const UserModel = db.model('User', UserSchema);
@@ -142,6 +141,7 @@ afterAll(async () => {
 
   await clearDatabase();
 });
+
 beforeEach(async () => {});
 
 afterEach(() => {
@@ -212,7 +212,7 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
     const resp = await request(app)
       .post(`/api/students/${studentId}/applications`)
       .set('tenantId', TENANT_ID)
-      .send({ program_id_set: [programId] });
+      .send({ program_id_set: [programId.toString()] });
 
     expect(resp.status).toBe(201);
 
@@ -263,12 +263,11 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
   ])(
     '%p should return %p hen program specific file type not .pdf .png, .jpg and .jpeg .docx %p',
     async (File_Name, status, success) => {
-      const buffer_1MB_exe = Buffer.alloc(1024 * 512 * 1); // 500 KB
-
+      const buffer_1kB_exe = Buffer.alloc(1024 * 1); // 1 kB
       const resp2 = await request(app)
         .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
         .set('tenantId', TENANT_ID)
-        .attach('files', buffer_1MB_exe, File_Name)
+        .attach('files', buffer_1kB_exe, { filename: File_Name })
         .field('message', '{}');
 
       // expect(resp2).toBe('status');
@@ -278,12 +277,12 @@ describe('POST /api/document-threads/init/application/:studentId/:programId/:doc
   );
   // TODO: mock S3 isntead of
 
-  it('should return 413 when program specific file size (ML, Essay) over 5 MB', async () => {
-    const buffer_10MB = Buffer.alloc(1024 * 1024 * 6); // 6 MB
+  it('should return 413 when program specific file size (ML, Essay) over 1 MB', async () => {
+    const buffer_2MB = Buffer.alloc(1024 * 1024 * 2); // 1 kB
     const resp2 = await request(app)
       .post(`/api/document-threads/${messagesThreadId}/${studentId}`)
       .set('tenantId', TENANT_ID)
-      .attach('files', buffer_10MB, filename);
+      .attach('files', buffer_2MB, { filename });
 
     expect(resp2.status).toBe(413);
     expect(resp2.body.success).toBe(false);

@@ -4,6 +4,7 @@ const {
   is_TaiGer_External,
   is_TaiGer_Student
 } = require('@taiger-common/core');
+const mongoose = require('mongoose');
 
 const { ErrorResponse } = require('../common/errors');
 const { asyncHandler } = require('../middlewares/error-handler');
@@ -12,7 +13,6 @@ const {
   userChangesHelperFunction
 } = require('../utils/utils_function');
 const logger = require('../services/logger');
-
 const {
   informEditorArchivedStudentEmail,
   informStudentArchivedStudentEmail,
@@ -486,8 +486,7 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
       })
       .populate('agents', 'firstname lastname email')
       .select('firstname firstname_chinese lastname lastname_chinese profile')
-      .lean()
-      .exec();
+      .lean();
 
     // res.status(200).send({ success: true, data: students, base_docs_link });
     res.status(200).send({ success: true, data: students, base_docs_link: {} });
@@ -516,8 +515,8 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
       .model('Student')
       .findById(user._id.toString())
       .select('firstname firstname_chinese lastname lastname_chinese profile')
-      .lean()
-      .exec();
+      .lean();
+
     const base_docs_link = await req.db.model('Basedocumentationslink').find({
       category: 'base-documents'
     });
@@ -567,8 +566,8 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
       { new: true, strict: false }
     )
     .populate('agents editors', 'firstname lastname email')
-    .lean()
-    .exec();
+    .lean();
+
   if (isArchived) {
     // return dashboard students
     if (user.role === Role.Admin) {
@@ -733,8 +732,7 @@ const assignAgentToStudent = asyncHandler(async (req, res, next) => {
         'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
         '-messages'
       )
-      .lean() // Optional: Use lean for better performance
-      .exec();
+      .lean(); // Optional: Use lean for better performance
 
     res.status(200).json({ success: true, data: studentUpdated });
 
@@ -888,8 +886,7 @@ const assignEditorToStudent = asyncHandler(async (req, res, next) => {
         'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
         '-messages'
       )
-      .lean() // Optional: Use lean for better performance
-      .exec();
+      .lean(); // Optional: Use lean for better performance
 
     res.status(200).json({ success: true, data: studentUpdated });
 
@@ -989,7 +986,7 @@ const assignAttributesToStudent = asyncHandler(async (req, res, next) => {
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
       '-messages'
     )
-    .exec();
+    .lean();
 
   res.status(200).send({ success: true, data: student_upated });
   next();
@@ -1066,11 +1063,17 @@ const createApplication = asyncHandler(async (req, res, next) => {
     );
   }
   const student = await req.db.model('Student').findById(studentId);
-  const program_ids = await req.db.model('Program').find({
-    _id: { $in: program_id_set },
-    $or: [{ isArchiv: { $exists: false } }, { isArchiv: false }]
-  });
-  if (program_ids.length !== program_id_set.length) {
+  const programObjectIds = program_id_set.map(
+    (id) => new mongoose.Types.ObjectId(id)
+  );
+  const program_ids = await req.db
+    .model('Program')
+    .find({
+      _id: { $in: programObjectIds },
+      $or: [{ isArchiv: { $exists: false } }, { isArchiv: false }]
+    })
+    .lean();
+  if (program_ids.length !== programObjectIds.length) {
     logger.error('createApplication: some program_ids invalid');
     throw new ErrorResponse(
       400,
@@ -1078,7 +1081,7 @@ const createApplication = asyncHandler(async (req, res, next) => {
     );
   }
   // limit the number in students application.
-  if (student.applications.length + program_id_set.length > max_application) {
+  if (student.applications.length + programObjectIds.length > max_application) {
     logger.error(
       `${student.firstname} ${student.lastname} has more than ${max_application} programs!`
     );
@@ -1104,7 +1107,7 @@ const createApplication = asyncHandler(async (req, res, next) => {
   // Insert only new programIds for student.
   for (let i = 0; i < new_programIds.length; i += 1) {
     const application = student.applications.create({
-      programId: new_programIds[i]
+      programId: new mongoose.Types.ObjectId(new_programIds[i])
     });
     let program = program_ids.find(
       ({ _id }) => _id.toString() === new_programIds[i]
@@ -1141,24 +1144,23 @@ const createApplication = asyncHandler(async (req, res, next) => {
             _id: { $in: genThreadIds },
             file_type: { $regex: /Recommendation_Letter_/ }
           })
-          .count();
+          .countDocuments();
 
         if (generalRLcount < nrRLrequired) {
           // create general RL tasks
           logger.info('Create general RL tasks!');
           for (let j = generalRLcount; j < nrRLrequired; j += 1) {
             const newThread = new Documentthread({
-              student_id: studentId,
+              student_id: new mongoose.Types.ObjectId(studentId),
               file_type: GENERAL_RLs_CONSTANT[j],
               updatedAt: new Date()
             });
             const threadEntry = application.doc_modification_thread.create({
-              doc_thread_id: newThread._id,
+              doc_thread_id: new mongoose.Types.ObjectId(newThread._id),
               updatedAt: new Date(),
               createdAt: new Date()
             });
 
-            threadEntry.student_id = studentId;
             student.generaldocs_threads.push(threadEntry);
             await newThread.save();
           }
@@ -1167,9 +1169,9 @@ const createApplication = asyncHandler(async (req, res, next) => {
         logger.info('Create specific RL tasks!');
         for (let j = 0; j < nrRLrequired; j += 1) {
           const newThread = new Documentthread({
-            student_id: studentId,
+            student_id: new mongoose.Types.ObjectId(studentId),
             file_type: RLs_CONSTANT[j],
-            program_id: new_programIds[i],
+            program_id: new mongoose.Types.ObjectId(new_programIds[i]),
             updatedAt: new Date()
           });
           const threadEntry = application.doc_modification_thread.create({
@@ -1178,7 +1180,6 @@ const createApplication = asyncHandler(async (req, res, next) => {
             createdAt: new Date()
           });
 
-          threadEntry.student_id = studentId;
           application.doc_modification_thread.push(threadEntry);
           await newThread.save();
         }
@@ -1191,9 +1192,9 @@ const createApplication = asyncHandler(async (req, res, next) => {
     for (const doc of PROGRAM_SPECIFIC_FILETYPE) {
       if (program[doc.required] === 'yes') {
         const new_doc_thread = new Documentthread({
-          student_id: studentId,
+          student_id: new mongoose.Types.ObjectId(studentId),
           file_type: doc.fileType,
-          program_id: new_programIds[i],
+          program_id: new mongoose.Types.ObjectId(new_programIds[i]),
           updatedAt: new Date()
         });
         const temp = application.doc_modification_thread.create({
@@ -1202,7 +1203,6 @@ const createApplication = asyncHandler(async (req, res, next) => {
           createdAt: new Date()
         });
 
-        temp.student_id = studentId;
         application.doc_modification_thread.push(temp);
         await new_doc_thread.save();
       }

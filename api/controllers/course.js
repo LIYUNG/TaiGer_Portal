@@ -91,7 +91,8 @@ const createCourse = asyncHandler(async (req, res) => {
       .model('Student')
       .findById(studentId)
       .populate('agents', 'firstname lastname email')
-      .exec();
+      .lean();
+
     for (let i = 0; i < student.agents.length; i += 1) {
       if (isNotArchiv(student)) {
         updateCoursesDataAgentEmail(
@@ -190,7 +191,7 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
     .model('Student')
     .findById(studentId)
     .populate('agents', 'firstname lastname email')
-    .exec();
+    .lean();
 
   if (isNotArchiv(student)) {
     await AnalysedCoursesDataStudentEmail(
@@ -269,7 +270,7 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
     .model('Student')
     .findById(studentId)
     .populate('agents', 'firstname lastname email')
-    .exec();
+    .lean();
 
   if (isNotArchiv(student)) {
     await AnalysedCoursesDataStudentEmail(

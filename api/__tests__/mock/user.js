@@ -21,6 +21,13 @@ const users = [
 ];
 
 module.exports = {
+  admin,
+  agent,
+  agents,
+  editors,
+  editor,
+  students,
   student,
+  student2,
   users
 };

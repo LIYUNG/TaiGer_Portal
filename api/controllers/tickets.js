@@ -81,7 +81,7 @@ const createTicket = asyncHandler(async (req, res) => {
     .model('Student')
     .findById(user._id.toString())
     .populate('agents', 'firstname lastname email')
-    .exec();
+    .lean();
 
   const [program, student] = await Promise.all([
     programPromise,

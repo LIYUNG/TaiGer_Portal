@@ -188,32 +188,30 @@ const storage_profile_s3 = multerS3({
     const directory = studentId;
     cb(null, { fieldName: file.fieldname, path: directory });
   },
-  key: (req, file, cb) => {
-    // cb(null, file.originalname + "-" + Date.now().toString());
-    // cb(null, file.originalname);
-    const { studentId } = req.params;
+  key: async (req, file, cb) => {
+    try {
+      const { studentId } = req.params;
+      if (!studentId) return cb(new Error('Missing studentId'));
 
-    req.db
-      .model('Student')
-      .findOne({ _id: studentId })
-      .populate('applications.programId')
-      .lean()
-      .exec()
-      .then((student) => {
-        if (student) {
-          let temp_name = `${student.lastname}_${student.firstname}_${
-            req.params.category
-          }${path.extname(file.originalname).toLowerCase()}`.replace(/ /g, '_');
-          temp_name = temp_name.replace(/\//g, '_');
+      const student = await req.db
+        .model('Student')
+        .findById(studentId)
+        .populate('applications.programId')
+        .lean()
+        .exec();
 
-          return {
-            fileName: temp_name
-          };
-        }
-      })
-      .then((resp) => {
-        cb(null, `${studentId}/${resp.fileName}`);
-      });
+      if (!student) return cb(new Error('Student not found'));
+
+      const fileName = `${student.lastname}_${student.firstname}_${
+        req.params.category
+      }${path.extname(file.originalname).toLowerCase()}`
+        .replace(/ /g, '_')
+        .replace(/\//g, '_');
+
+      cb(null, `${studentId}/${fileName}`);
+    } catch (error) {
+      cb(error);
+    }
   }
 });
 
@@ -366,19 +364,6 @@ const upload_profile_s3 = multer({
       return cb(new ErrorResponse(415, 'Only .pdf format are allowed'));
     }
 
-    const fileSize = parseInt(req.headers['content-length'], 10);
-    if (fileSize > MAX_FILE_SIZE_MB) {
-      return cb(
-        new ErrorResponse(
-          413,
-          `您的檔案不得超過 ${
-            MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB / File size is limited to ${
-            MAX_FILE_SIZE_MB / (1024 * 1024)
-          } MB!`
-        )
-      );
-    }
     cb(null, true);
   }
 });

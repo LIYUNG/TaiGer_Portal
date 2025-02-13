@@ -1,17 +1,14 @@
 const request = require('supertest');
-const { Role } = require('@taiger-common/core');
 
 const { connect, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { UserSchema } = require('../../models/User');
-const {
-  generateUser,
-  generateCommunicationMessage
-} = require('../fixtures/faker');
+const { generateCommunicationMessage } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { communicationsSchema } = require('../../models/Communication');
+const { users, admin, agent, student } = require('../mock/user');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -74,24 +71,6 @@ jest.mock('../../middlewares/auth', () => {
   };
 });
 
-const admin = generateUser(Role.Admin);
-const agents = [...Array(3)].map(() => generateUser(Role.Agent));
-const agent = generateUser(Role.Agent);
-const editors = [...Array(3)].map(() => generateUser(Role.Editor));
-const editor = generateUser(Role.Editor);
-const students = [...Array(3)].map(() => generateUser(Role.Student));
-const student = generateUser(Role.Student);
-const student2 = generateUser(Role.Student);
-const users = [
-  admin,
-  ...agents,
-  agent,
-  ...editors,
-  editor,
-  ...students,
-  student,
-  student2
-];
 const messages = [...Array(3)].map(() =>
   generateCommunicationMessage({ studnet_id: student._id, user_id: agent._id })
 );

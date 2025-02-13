@@ -106,11 +106,6 @@ beforeEach(async () => {
   await UserModel.insertMany(users);
   await ProgramModel.deleteMany();
   await ProgramModel.create(program);
-  // await User.deleteMany();
-  // await User.insertMany(users);
-
-  // await Program.deleteMany();
-  // await Program.create(program);
 
   protect.mockImplementation(async (req, res, next) => {
     req.user = await UserModel.findById(student._id);

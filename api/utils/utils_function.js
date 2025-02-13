@@ -682,14 +682,14 @@ const numStudentYearDistribution = (students) =>
 //   const documents_cv = await Documentthread.find({
 //     isFinalVersion: false,
 //     file_type: 'CV'
-//   }).count();
+//   }).countDocuments();
 //   // TODO: this include the tasks that created by not shown, because the programs are not decided.
 //   // So that is why the number is more than what we actually see in UI.
 //   // Case 2: if student in Archiv, but the tasks are still open!! then the number is not correct!
 //   const documents_ml = await Documentthread.find({
 //     isFinalVersion: false,
 //     file_type: 'ML'
-//   }).count();
+//   }).countDocuments();
 //   const documents_rl = await Documentthread.find({
 //     isFinalVersion: false,
 //     $or: [
@@ -700,11 +700,11 @@ const numStudentYearDistribution = (students) =>
 //       { file_type: 'Recommendation_Letter_B' },
 //       { file_type: 'Recommendation_Letter_C' }
 //     ]
-//   }).count();
+//   }).countDocuments();
 //   const documents_essay = await Documentthread.find({
 //     isFinalVersion: false,
 //     file_type: 'Essay'
-//   }).count();
+//   }).countDocuments();
 //   const documents_data = {};
 //   documents_data.CV = { count: documents_cv };
 //   documents_data.ML = { count: documents_ml };
@@ -733,7 +733,7 @@ const numStudentYearDistribution = (students) =>
 //     Obj.student_num = await Student.find({
 //       agents: agents[i]._id,
 //       $or: [{ archiv: { $exists: false } }, { archiv: false }]
-//     }).count();
+//     }).countDocuments();
 //     agents_data.push(Obj);
 //   }
 //   for (let i = 0; i < editors.length; i += 1) {
@@ -744,7 +744,7 @@ const numStudentYearDistribution = (students) =>
 //     Obj.student_num = await Student.find({
 //       editors: editors[i]._id,
 //       $or: [{ archiv: { $exists: false } }, { archiv: false }]
-//     }).count();
+//     }).countDocuments();
 //     editors_data.push(Obj);
 //   }
 //   const finished_docs = await Documentthread.find({

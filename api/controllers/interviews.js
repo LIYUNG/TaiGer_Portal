@@ -680,7 +680,7 @@ const createInterview = asyncHandler(async (req, res) => {
       logger.error(err);
       throw new ErrorResponse(404, err);
     }
-    res.status(200).send({ success: true });
+    res.status(201).send({ success: true });
     // inform interview assign
     // inform editor-lead
     const permissions = await req.db

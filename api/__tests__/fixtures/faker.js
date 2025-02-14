@@ -33,6 +33,14 @@ const generateStudent = (agentIds, editorIds) => ({
   academic_background: { language: {}, university: {} }
 });
 
+const generateInterview = (programId, studentId) => ({
+  _id: new ObjectId().toHexString(),
+  program_id: programId,
+  student_id: studentId,
+  interview_date: new Date(),
+  interview_description: faker.lorem.word(10)
+});
+
 const generateProgram = (requiredDocuments, optionalDocuments) => ({
   _id: new ObjectId().toHexString(),
   school: faker.company.name(),
@@ -99,6 +107,7 @@ module.exports = {
   generateAgent,
   generateEditor,
   generateStudent,
+  generateInterview,
   generateProgram,
   generateAllCourse,
   generateCourseKeywordsSet,

@@ -9,6 +9,7 @@ const editor = generateUser(Role.Editor);
 const students = [...Array(3)].map(() => generateUser(Role.Student));
 const student = generateUser(Role.Student);
 const student2 = generateUser(Role.Student);
+const student3 = generateUser(Role.Student);
 const users = [
   admin,
   ...agents,
@@ -17,7 +18,8 @@ const users = [
   editor,
   ...students,
   student,
-  student2
+  student2,
+  student3
 ];
 
 module.exports = {
@@ -29,5 +31,6 @@ module.exports = {
   students,
   student,
   student2,
+  student3,
   users
 };

@@ -54,6 +54,20 @@ const generateAllCourse = () => ({
   all_course_english: faker.lorem.word(10)
 });
 
+const generateCourseKeywordsSet = () => ({
+  _id: new ObjectId().toHexString(),
+  categoryName: faker.lorem.word(10),
+  description: faker.lorem.word(10),
+  keywords: {
+    zh: Array.from({ length: 3 }, () => faker.lorem.word()),
+    en: Array.from({ length: 3 }, () => faker.lorem.word())
+  },
+  antiKeywords: {
+    zh: Array.from({ length: 3 }, () => faker.lorem.word()),
+    en: Array.from({ length: 3 }, () => faker.lorem.word())
+  }
+});
+
 const generateCourse = (student_id) => ({
   _id: new ObjectId().toHexString(),
   student_id,
@@ -87,6 +101,7 @@ module.exports = {
   generateStudent,
   generateProgram,
   generateAllCourse,
+  generateCourseKeywordsSet,
   generateCourse,
   generateCommunicationMessage,
   generateComlaintTicket

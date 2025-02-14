@@ -51,7 +51,6 @@ jest.mock('../../middlewares/auth', () => {
   };
 });
 
-
 let dbUri;
 
 beforeAll(async () => {

@@ -39,7 +39,7 @@ const { connectToDatabase } = require('../middlewares/tenantMiddleware');
 const { deleteS3Objects, listS3ObjectsV2 } = require('../aws/s3');
 const { ErrorResponse } = require('../common/errors');
 
-// TODO: aws-sdk v3 not tested yet.
+// Tested: redundant image is deleted
 const threadS3GarbageCollector = async (
   req,
   collection,
@@ -87,6 +87,35 @@ const threadS3GarbageCollector = async (
     const listedObjectsPublic_files = await listS3ObjectsV2(
       listParamsPublic_files
     );
+
+    if (listedObjectsPublic_files.Contents.length > 0) {
+      listedObjectsPublic_files.Contents.forEach((Obj2) => {
+        let file_found = false;
+        if (message_a.length === 0) {
+          delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
+        }
+        for (let i = 0; i < message_a.length; i += 1) {
+          const file_name = Obj2.Key.split('/')[2];
+          for (let k = 0; k < message_a[i].file.length; k += 1) {
+            if (
+              file_name === 'img' ||
+              message_a[i].file[k].path.includes(file_name)
+            ) {
+              file_found = true;
+              break;
+            }
+          }
+          if (file_found) {
+            break;
+          }
+        }
+        if (!file_found) {
+          // if until last message_a still not found, add the Key to the delete list
+          delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
+        }
+      });
+    }
+
     if (listedObjectsPublic.Contents.length > 0) {
       listedObjectsPublic.Contents.forEach((Obj) => {
         let file_found = false;
@@ -106,30 +135,6 @@ const threadS3GarbageCollector = async (
         }
       });
     }
-    if (listedObjectsPublic_files.Contents.length > 0) {
-      listedObjectsPublic_files.Contents.forEach((Obj2) => {
-        let file_found = false;
-        if (message_a.length === 0) {
-          delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
-        }
-        for (let i = 0; i < message_a.length; i += 1) {
-          const file_name = Obj2.Key.split('/')[2];
-          for (let k = 0; k < message_a[i].file.length; k += 1) {
-            if (message_a[i].file[k].path.includes(file_name)) {
-              file_found = true;
-              break;
-            }
-          }
-          if (file_found) {
-            break;
-          }
-        }
-        if (!file_found) {
-          // if until last message_a still not found, add the Key to the delete list
-          delete_files_Params.Delete.Objects.push({ Key: Obj2.Key });
-        }
-      });
-    }
 
     if (deleteParams.Delete.Objects.length > 0) {
       await deleteS3Objects({
@@ -142,7 +147,8 @@ const threadS3GarbageCollector = async (
     } else {
       logger.info('No images to be deleted for threads.');
     }
-
+    // Bug TODO: this will also delete /img folder
+    // (as it is listed as well, and not found in the files...)
     if (delete_files_Params.Delete.Objects.length > 0) {
       await deleteS3Objects({
         bucketName: AWS_S3_BUCKET_NAME,

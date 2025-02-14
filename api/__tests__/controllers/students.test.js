@@ -8,7 +8,6 @@ const { UPLOAD_PATH } = require('../../config');
 const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { Student, UserSchema } = require('../../models/User');
-const { generateUser } = require('../fixtures/faker');
 const { protect, permit } = require('../../middlewares/auth');
 const {
   InnerTaigerMultitenantFilter
@@ -16,7 +15,6 @@ const {
 const {
   permission_canAccessStudentDatabase_filter
 } = require('../../middlewares/permission-filter');
-const { generateProgram } = require('../fixtures/faker');
 const { programSchema } = require('../../models/Program');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
@@ -33,6 +31,7 @@ const {
 const { s3Client } = require('../../aws');
 const { PutObjectCommand } = require('@aws-sdk/client-s3');
 const { GetObjectCommand } = require('@aws-sdk/client-s3');
+const { program1, programs } = require('../mock/programs');
 
 const s3ClientMock = mockClient(s3Client);
 // for small files upload:
@@ -91,11 +90,6 @@ jest.mock('../../middlewares/permission-filter', () => {
 });
 
 let dbUri;
-
-const program1 = generateProgram();
-const program2 = generateProgram();
-const program3 = generateProgram();
-const programs = [program1, program2, program3];
 
 beforeAll(async () => {
   dbUri = await connect();

@@ -11,8 +11,6 @@ const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { User, UserSchema } = require('../../models/User');
 const { programSchema } = require('../../models/Program');
-const { generateUser } = require('../fixtures/faker');
-const { generateProgram } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const {
   permission_canAccessStudentDatabase_filter
@@ -24,6 +22,7 @@ const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { TENANT_ID } = require('../fixtures/constants');
 const { users, agent, student } = require('../mock/user');
 const { s3Client } = require('../../aws');
+const { program1 } = require('../mock/programs');
 
 const s3ClientMock = mockClient(s3Client);
 
@@ -78,36 +77,6 @@ jest.mock('../../middlewares/InnerTaigerMultitenantFilter', () => {
   };
 });
 
-// jest.mock('../../aws/index', () => {
-//   const mockS3Instance = {
-//     upload: jest.fn().mockReturnThis(),
-//     promise: jest.fn().mockResolvedValue({
-//       Location: 'https://mock-s3-url.com/mock-file.jpg'
-//     }),
-//     getObject: jest.fn().mockReturnThis(),
-//     createReadStream: jest.fn(() => ({
-//       on: jest.fn((event, callback) => {
-//         if (event === 'data') {
-//           callback(Buffer.from('dummy file content'));
-//         }
-//         if (event === 'end') {
-//           callback();
-//         }
-//         if (event === 'error') {
-//           callback(new Error('S3 download error'));
-//         }
-//       })
-//     }))
-//   };
-//   return Object.assign({}, jest.requireActual('../../aws/index'), {
-//     s3: mockS3Instance
-//   });
-// });
-
-const requiredDocuments = ['transcript', 'resume'];
-const optionalDocuments = ['certificate', 'visa'];
-const program = generateProgram(requiredDocuments, optionalDocuments);
-
 let dbUri;
 
 beforeAll(async () => {
@@ -119,7 +88,7 @@ beforeAll(async () => {
   await UserModel.deleteMany();
   await UserModel.insertMany(users);
   await ProgramModel.deleteMany();
-  await ProgramModel.create(program);
+  await ProgramModel.create(program1);
 
   s3ClientMock.on(PutObjectCommand).callsFake(async (input, getClient) => {
     getClient().config.endpoint = () => ({ hostname: '' });
@@ -178,7 +147,7 @@ describe('POST /api/document-threads/:category', () => {
 // user: Agent
 describe('POST /api/document-threads/init/application/:studentId/:programId/:document_category', () => {
   const { _id: studentId } = student;
-  const { _id: programId } = program;
+  const { _id: programId } = program1;
   const { _id: agentId } = agent;
   const filename = 'my-file.pdf'; // will be overwrite to docName
 

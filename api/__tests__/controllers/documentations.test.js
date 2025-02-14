@@ -4,11 +4,11 @@ const { connect, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { User, UserSchema } = require('../../models/User');
 const { programSchema } = require('../../models/Program');
-const { generateProgram } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { users, admin } = require('../mock/user');
+const { program1 } = require('../mock/programs');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -41,9 +41,6 @@ jest.mock('../../middlewares/auth', () => {
   };
 });
 
-const requiredDocuments = ['transcript', 'resume'];
-const optionalDocuments = ['certificate', 'visa'];
-const program = generateProgram(requiredDocuments, optionalDocuments);
 let dbUri;
 
 beforeAll(async () => {
@@ -60,7 +57,7 @@ beforeEach(async () => {
   await UserModel.deleteMany();
   await UserModel.insertMany(users);
   await ProgramModel.deleteMany();
-  await ProgramModel.create(program);
+  await ProgramModel.create(program1);
 });
 
 describe('/api/docs/:category', () => {

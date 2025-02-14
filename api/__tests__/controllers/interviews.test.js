@@ -3,7 +3,6 @@ const { Role } = require('@taiger-common/core');
 const { connect, clearDatabase } = require('../fixtures/db');
 const { UserSchema } = require('../../models/User');
 const { generateUser } = require('../fixtures/faker');
-const { generateProgram } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
@@ -80,9 +79,6 @@ const users = [
   student2
 ];
 
-const requiredDocuments = ['transcript', 'resume'];
-const optionalDocuments = ['certificate', 'visa'];
-const program = generateProgram(requiredDocuments, optionalDocuments);
 let dbUri;
 
 beforeAll(async () => {

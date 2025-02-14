@@ -3,17 +3,16 @@ const path = require('path');
 const { spawn } = require('child_process');
 const EventEmitter = require('events');
 const request = require('supertest');
-const { Role } = require('@taiger-common/core');
 
 const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { UserSchema } = require('../../models/User');
 const { programSchema } = require('../../models/Program');
-const { generateUser } = require('../fixtures/faker');
-const { generateProgram } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
+const { program1 } = require('../mock/programs');
+const { users, student } = require('../mock/user');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -67,28 +66,6 @@ jest.mock('../../middlewares/auth', () => {
   };
 });
 
-const admin = generateUser(Role.Admin);
-const agents = [...Array(3)].map(() => generateUser(Role.Agent));
-const agent = generateUser(Role.Agent);
-const editors = [...Array(3)].map(() => generateUser(Role.Editor));
-const editor = generateUser(Role.Editor);
-const students = [...Array(3)].map(() => generateUser(Role.Student));
-const student = generateUser(Role.Student);
-const student2 = generateUser(Role.Student);
-const users = [
-  admin,
-  ...agents,
-  agent,
-  ...editors,
-  editor,
-  ...students,
-  student,
-  student2
-];
-
-const requiredDocuments = ['transcript', 'resume'];
-const optionalDocuments = ['certificate', 'visa'];
-const program = generateProgram(requiredDocuments, optionalDocuments);
 let dbUri;
 
 beforeAll(async () => {
@@ -105,7 +82,7 @@ beforeEach(async () => {
   await UserModel.deleteMany();
   await UserModel.insertMany(users);
   await ProgramModel.deleteMany();
-  await ProgramModel.create(program);
+  await ProgramModel.create(program1);
 
   protect.mockImplementation(async (req, res, next) => {
     req.user = await UserModel.findById(student._id);
@@ -647,9 +624,7 @@ describe('POST /api/account/survey/university', () => {
       .set('tenantId', TENANT_ID)
       .send({ university });
     const { status, body } = resp;
-    // expect(JSON.parse(resp.text)).toBe(200); // TODO: some reason that in API req.user not existed!?
 
-    // {"message": "TypeError: Cannot read property '_id' of null", "success": false}
     expect(status).toBe(200);
 
     expect(body.success).toBe(true);

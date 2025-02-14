@@ -10,7 +10,7 @@ require('./middlewares/passport');
 
 const router = require('./routes');
 const { errorHandler } = require('./middlewares/error-handler');
-const { isDev, isProd } = require('./config');
+const { isProd } = require('./config');
 const httpLogger = require('./services/httpLogger');
 const {
   tenantMiddleware,

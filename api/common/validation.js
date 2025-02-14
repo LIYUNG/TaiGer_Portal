@@ -39,18 +39,27 @@ const checkToken = body('token').isString().notEmpty();
 
 // const checkObjectID = param('id', 'Invalid id').custom(ObjectID.isValid);
 
+const validationCallBack = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+  next();
+};
+
 // Middleware to validate ObjectId
 const validateCourseId = [
   param('courseId')
     .isMongoId()
     .withMessage('Invalid course ID format. It must be a valid ObjectId.'),
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ success: false, errors: errors.array() });
-    }
-    next();
-  }
+  validationCallBack
+];
+
+const validateStudentId = [
+  param('studentId')
+    .isMongoId()
+    .withMessage('Invalid student ID format. It must be a valid ObjectId.'),
+  validationCallBack
 ];
 
 module.exports = {
@@ -62,6 +71,7 @@ module.exports = {
   checkPassword,
   checkUserRole,
   checkToken,
-  validateCourseId
+  validateCourseId,
+  validateStudentId
   // checkObjectID
 };

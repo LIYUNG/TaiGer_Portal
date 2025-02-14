@@ -33,6 +33,22 @@ const generateStudent = (agentIds, editorIds) => ({
   academic_background: { language: {}, university: {} }
 });
 
+const generateEvent = (requesterId, receiverId, minutes) => {
+  const now = new Date();
+  const start = new Date(now.getTime() + minutes * 60 * 1000);
+  const end = new Date(start.getTime() + 30 * 60 * 1000); // Add 30 minutes
+
+  return {
+    _id: new ObjectId().toHexString(),
+    requester_id: [requesterId],
+    receiver_id: [receiverId],
+    start,
+    end,
+    title: faker.lorem.word(10),
+    description: faker.lorem.word(10)
+  };
+};
+
 const generateInterview = (programId, studentId) => ({
   _id: new ObjectId().toHexString(),
   program_id: programId,
@@ -107,6 +123,7 @@ module.exports = {
   generateAgent,
   generateEditor,
   generateStudent,
+  generateEvent,
   generateInterview,
   generateProgram,
   generateAllCourse,

@@ -1,17 +1,27 @@
-const fs = require('fs');
-const path = require('path');
-const { spawn } = require('child_process');
-const EventEmitter = require('events');
 const request = require('supertest');
-const { Role } = require('@taiger-common/core');
+const { EventSchema } = require('@taiger-common/model');
 
 const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { UserSchema } = require('../../models/User');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
-const { interviewsSchema } = require('../../models/Interview');
-const { users, student } = require('../mock/user');
+const {
+  users,
+  student,
+  student2,
+  agent2,
+  student3,
+  agent
+} = require('../mock/user');
+const {
+  event3,
+  events,
+  event2,
+  eventNew,
+  eventNew2
+} = require('../mock/events');
+const { app } = require('../../app');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -76,21 +86,103 @@ beforeEach(async () => {
   const db = connectToDatabase(TENANT_ID, dbUri);
 
   const UserModel = db.model('User', UserSchema);
-  const InterviewModel = db.model('Interview', interviewsSchema);
+  const EventModel = db.model('Event', EventSchema);
 
   await UserModel.deleteMany();
   await UserModel.insertMany(users);
-  await InterviewModel.deleteMany();
-  await InterviewModel.insertMany([]);
+  await EventModel.deleteMany();
+  await EventModel.insertMany(events);
 
   protect.mockImplementation(async (req, res, next) => {
-    req.user = await UserModel.findById(student._id);
+    req.user = student;
     next();
   });
 });
 
-describe('Event Controller', () => {
-  it('TODO', async () => {
-    expect(200).toEqual(200);
+describe('GET /api/events/all', () => {
+  it('getAllEvents', async () => {
+    const resp = await request(app)
+      .get('/api/events/all')
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toEqual(200);
+  });
+});
+
+describe('GET /api/events/ping', () => {
+  it('getActiveEventsNumber', async () => {
+    const resp = await request(app)
+      .get('/api/events/ping')
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toEqual(200);
+  });
+});
+
+describe('POST /api/events/', () => {
+  it('postEvent: can not book further event if there is upcoming one', async () => {
+    eventNew2.requester_id = student._id;
+    eventNew2.receiver_id = agent._id;
+    const resp = await request(app)
+      .post('/api/events/')
+      .set('tenantId', TENANT_ID)
+      .send(eventNew2);
+
+    expect(resp.status).toEqual(403);
+  });
+
+  it('postEvent', async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      req.user = student3;
+      next();
+    });
+    eventNew.requester_id = student3._id;
+    eventNew.receiver_id = agent2._id;
+    const resp = await request(app)
+      .post('/api/events/')
+      .set('tenantId', TENANT_ID)
+      .send(eventNew);
+
+    expect(resp.status).toEqual(201);
+  });
+});
+
+describe('PUT /api/events/:event_id', () => {
+  it('updateEvent: student is not allowed to update others events', async () => {
+    const resp = await request(app)
+      .put(`/api/events/${event2._id}`)
+      .set('tenantId', TENANT_ID)
+      .send({
+        ...event2,
+        description: 'updated'
+      });
+
+    expect(resp.status).toEqual(403);
+  });
+
+  it('updateEvent', async () => {
+    protect.mockImplementation(async (req, res, next) => {
+      req.user = student2;
+      next();
+    });
+    const resp = await request(app)
+      .put(`/api/events/${event2._id}`)
+      .set('tenantId', TENANT_ID)
+      .send({
+        ...event2,
+        description: 'updated'
+      });
+
+    expect(resp.status).toEqual(200);
+  });
+});
+
+describe('DELETE /api/events/:event_id', () => {
+  it('deleteEvent', async () => {
+    const resp = await request(app)
+      .delete(`/api/events/${event3._id}`)
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toEqual(200);
   });
 });

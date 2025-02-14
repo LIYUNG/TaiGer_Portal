@@ -335,7 +335,7 @@ const postEvent = asyncHandler(async (req, res, next) => {
       .model('Agent')
       .find({ _id: agents_ids })
       .select('firstname lastname email selfIntroduction officehours timezone');
-    res.status(200).send({
+    res.status(201).send({
       success: true,
       agents,
       data: events,
@@ -399,7 +399,7 @@ const postEvent = asyncHandler(async (req, res, next) => {
         .select(
           'firstname lastname email selfIntroduction officehours timezone'
         );
-      res.status(200).send({
+      res.status(201).send({
         success: true,
         agents,
         data: events,

@@ -3,16 +3,16 @@ const path = require('path');
 const { spawn } = require('child_process');
 const EventEmitter = require('events');
 const request = require('supertest');
-const { Role } = require('@taiger-common/core');
 
 const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
 const { UserSchema } = require('../../models/User');
-const { generateUser, generateCourse } = require('../fixtures/faker');
+const { generateCourse } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { coursesSchema } = require('../../models/Course');
-const { users } = require('../mock/user');
+const { users, student } = require('../mock/user');
+const { app } = require('../../app');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -44,17 +44,6 @@ jest.mock('../../middlewares/InnerTaigerMultitenantFilter', () => {
   };
 });
 
-jest.mock('../../middlewares/permission-filter', () => {
-  const passthrough = async (req, res, next) => next();
-
-  return {
-    ...jest.requireActual('../../middlewares/permission-filter'),
-    permission_canAccessStudentDatabase_filter: jest
-      .fn()
-      .mockImplementation(passthrough)
-  };
-});
-
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
@@ -65,8 +54,6 @@ jest.mock('../../middlewares/auth', () => {
     permit: jest.fn().mockImplementation((...roles) => passthrough)
   };
 });
-
-const student = generateUser(Role.Student);
 
 const course1 = generateCourse(student._id);
 
@@ -94,11 +81,41 @@ beforeEach(async () => {
   });
 });
 
-describe('updateCredentials Controller', () => {
-  it('TODO', async () => {
-    expect(200).toEqual(200);
+describe('GET /api/courses/:studentId', () => {
+  it('getMycourses', async () => {
+    const resp = await request(app)
+      .get(`/api/courses/${student._id}`)
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.body.data.table_data_string).toContain('(Example)微積分一');
   });
 });
+
+describe('PUT /api/courses/:studentId', () => {
+  it('putMycourses', async () => {
+    const resp = await request(app)
+      .put(`/api/courses/${student._id}`)
+      .set('tenantId', TENANT_ID)
+      .send({
+        table_data_string:
+          '[{"course_chinese":"電子學一","course_english":"Electronics I","credits":"2","grades":"73"}]'
+      });
+
+    expect(resp.status).toEqual(200);
+  });
+});
+
+describe('DELETE /api/courses/:studentId', () => {
+  it('deleteMyCourse', async () => {
+    const resp = await request(app)
+      .delete(`/api/courses/${student._id}`)
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toEqual(200);
+  });
+});
+
 // // TODO: uploading transcript for courses analyser
 // describe('POST /api/courses/transcript/:studentId/:category/:group', () => {
 //   it('should run python script on the uploaded file', async () => {

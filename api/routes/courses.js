@@ -2,11 +2,11 @@ const { Router } = require('express');
 const { Role } = require('@taiger-common/core');
 
 const {
-  GeneralPOSTRequestRateLimiter,
   GeneralGETRequestRateLimiter,
   GeneralPUTRequestRateLimiter,
   TranscriptAnalyserRateLimiter,
-  DownloadTemplateRateLimiter
+  DownloadTemplateRateLimiter,
+  GeneralDELETERequestRateLimiter
 } = require('../middlewares/rate_limiter');
 const { filter_archiv_user } = require('../middlewares/limit_archiv_user');
 const { multitenant_filter } = require('../middlewares/multitenant-filter');
@@ -14,17 +14,15 @@ const {
   InnerTaigerMultitenantFilter
 } = require('../middlewares/InnerTaigerMultitenantFilter');
 const { protect, permit, prohibit } = require('../middlewares/auth');
-
 const {
-  getCourse,
-  createCourse,
-  putCourse,
+  getMycourses,
+  putMycourses,
   processTranscript_api,
   processTranscript_test,
   downloadXLSX,
   processTranscript_api_gatway,
-  downloadJson
-  //   updateCourses,
+  downloadJson,
+  deleteMyCourse
 } = require('../controllers/course');
 const { logAccess } = require('../utils/log/log');
 
@@ -45,25 +43,23 @@ router.route('/transcript/test').get(
 
 router
   .route('/:studentId')
-  .post(
-    filter_archiv_user,
-    GeneralPOSTRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Student, Role.Guest),
-    multitenant_filter,
-    InnerTaigerMultitenantFilter,
-    createCourse
-  )
   .put(
     GeneralPUTRequestRateLimiter,
-    prohibit(Role.Guest, Role.Editor, Role.Student),
+    permit(Role.Admin, Role.Manager, Role.Agent, Role.Student, Role.Guest),
     multitenant_filter,
-    putCourse
+    putMycourses
   )
   .get(
     GeneralGETRequestRateLimiter,
     prohibit(Role.Guest),
     multitenant_filter,
-    getCourse
+    getMycourses
+  )
+  .delete(
+    GeneralDELETERequestRateLimiter,
+    prohibit(Role.Guest),
+    multitenant_filter,
+    deleteMyCourse
   );
 
 // TaiGer Transcript Analyser (Python Backend)

@@ -45,7 +45,6 @@ import {
 
 import {
     getMycourses,
-    postMycourses,
     analyzedFileDownload_test,
     transcriptanalyser_test,
     putMycourses,
@@ -206,10 +205,6 @@ export default function MyCourses() {
         e.preventDefault();
         const table_data_string_locked_temp =
             statedata.table_data_string_locked;
-        // setStatedata((prevState) => ({
-        //   ...prevState,
-        //   table_data_string_locked: !table_data_string_locked_temp
-        // }));
         putMycourses(statedata.student._id.toString(), {
             table_data_string_locked: !table_data_string_locked_temp
         }).then(
@@ -253,7 +248,7 @@ export default function MyCourses() {
             ...prevState,
             isUpdating: true
         }));
-        postMycourses(statedata.student._id.toString(), {
+        putMycourses(statedata.student._id.toString(), {
             student_id: statedata.student._id.toString(),
             name: statedata.student.firstname,
             table_data_string: coursesdata_string,

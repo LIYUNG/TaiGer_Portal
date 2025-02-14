@@ -51,7 +51,12 @@ const generateProgram = (requiredDocuments, optionalDocuments) => ({
 const generateCourse = (student_id) => ({
   _id: new ObjectId().toHexString(),
   student_id,
-  name: faker.lorem.word(10)
+  name: faker.lorem.word(10),
+  table_data_string_locked: false,
+  table_data_string:
+    '[{"course_chinese":"(Example)微積分一","course_english":"calculus","credits":"2","grades":"73"}]',
+  table_data_string_taiger_guided:
+    '[{"course_chinese":"(Example)物理二","course_english":"physics ii","credits":"2","grades":"73"}]'
 });
 
 const generateCommunicationMessage = (props) => ({

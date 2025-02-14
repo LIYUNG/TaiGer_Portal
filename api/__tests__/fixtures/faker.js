@@ -48,6 +48,12 @@ const generateProgram = (requiredDocuments, optionalDocuments) => ({
   optionalDocuments
 });
 
+const generateAllCourse = () => ({
+  _id: new ObjectId().toHexString(),
+  all_course_chinese: faker.lorem.word(10),
+  all_course_english: faker.lorem.word(10)
+});
+
 const generateCourse = (student_id) => ({
   _id: new ObjectId().toHexString(),
   student_id,
@@ -80,6 +86,7 @@ module.exports = {
   generateEditor,
   generateStudent,
   generateProgram,
+  generateAllCourse,
   generateCourse,
   generateCommunicationMessage,
   generateComlaintTicket

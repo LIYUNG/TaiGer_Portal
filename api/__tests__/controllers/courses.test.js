@@ -1,7 +1,3 @@
-const fs = require('fs');
-const path = require('path');
-const { spawn } = require('child_process');
-const EventEmitter = require('events');
 const request = require('supertest');
 
 const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');

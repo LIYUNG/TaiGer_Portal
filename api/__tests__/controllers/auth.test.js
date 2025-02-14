@@ -1,10 +1,8 @@
 const request = require('supertest');
-const { Role } = require('@taiger-common/core');
 
 const { connect, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { UserSchema } = require('../../models/User');
-const { generateUser } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');

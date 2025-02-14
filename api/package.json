@@ -6,7 +6,7 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "prod": "NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json index.js",
-    "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles --coverage --watch",
+    "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles --verbose --coverage --watch",
     "test:ci": "cross-env NODE_ENV=test jest --ci --watchAll=false",
     "format": "prettier --write --cache . --ignore-path .prettierignore",
     "deploy-s3": "aws s3 sync . s3://taiger-file-storage-production-backend-server --exclude \".env.production\" --exclude \"__tests__/*\" --exclude \"node_modules/*\" --exclude \"cert/*\" --exclude \"logs/*\"",

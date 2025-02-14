@@ -102,6 +102,28 @@ beforeEach(async () => {
   });
 });
 
+describe('getUnreadNumberMessages Controller', () => {
+  it('should get messages of an user', async () => {
+    const resp = await request(app)
+      .get('/api/communications/ping/all')
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toBe(200);
+    expect(resp.body.success).toEqual(true);
+  });
+});
+
+describe('loadMessages Controller', () => {
+  it('should load messages from a student', async () => {
+    const resp = await request(app)
+      .get(`/api/communications/${student._id.toString()}/pages/1`)
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toBe(200);
+    expect(resp.body.success).toEqual(true);
+  });
+});
+
 describe('getMessages Controller', () => {
   it('should get messages from a student', async () => {
     const resp = await request(app)
@@ -113,8 +135,8 @@ describe('getMessages Controller', () => {
   });
 });
 
-describe('postMessages Controller', () => {
-  it('should create a new message', async () => {
+describe('postMessages and Controller', () => {
+  it('postMessages should create a new message', async () => {
     const resp = await request(app)
       .post(`/api/communications/${student._id.toString()}`)
       .set('tenantId', TENANT_ID)
@@ -125,17 +147,18 @@ describe('postMessages Controller', () => {
   });
 });
 
-// describe('updateAMessageInThread Controller', () => {
-//   it('should update a message', async () => {
-//     const resp = await request(app)
-//       .put(`/api/communications/${student._id.toString()}`)
-//       .set('tenantId', TENANT_ID)
-//       .send({ description: 'new information' });
-//     const updatedTicket = resp.body.data;
-//     expect(resp.status).toBe(200);
-//     expect(updatedTicket.description).toEqual('new information');
-//   });
-// });
+describe('updateAMessageInThread Controller', () => {
+  it('should update a message', async () => {
+    const messageId = messages[0]._id.toString();
+    const resp = await request(app)
+      .put(`/api/communications/${student._id.toString()}/${messageId}`)
+      .set('tenantId', TENANT_ID)
+      .send({ message: 'new information' });
+    const updatedMessageg = resp.body.data;
+    expect(resp.status).toBe(200);
+    expect(updatedMessageg.message).toContain('new information');
+  });
+});
 
 // describe('deleteComplaint Controller', () => {
 //   it('should delete a message', async () => {

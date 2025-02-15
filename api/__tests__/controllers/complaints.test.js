@@ -7,8 +7,13 @@ const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { complaintSchema } = require('../../models/Complaint');
-const { generateComlaintTicket } = require('../fixtures/faker');
 const { users, student } = require('../mock/user');
+const {
+  tickets,
+  ticket,
+  ticketNew,
+  ticketWithMessage
+} = require('../mock/complaintTickets');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -71,9 +76,6 @@ jest.mock('../../middlewares/auth', () => {
   };
 });
 
-const tickets = [...Array(3)].map(() => generateComlaintTicket());
-const ticket = generateComlaintTicket();
-
 let dbUri;
 
 beforeAll(async () => {
@@ -88,11 +90,10 @@ beforeEach(async () => {
   const ComplaintSchema = db.model('Complaint', complaintSchema);
 
   await ComplaintSchema.deleteMany();
-  await ComplaintSchema.insertMany([...tickets, ticket]);
+  await ComplaintSchema.insertMany(tickets);
 
   await UserModel.deleteMany();
   await UserModel.insertMany(users);
-
   protect.mockImplementation(async (req, res, next) => {
     req.user = await UserModel.findById(student._id);
     next();
@@ -107,6 +108,51 @@ describe('getComplaints Controller', () => {
 
     expect(resp.status).toBe(200);
     expect(resp.body.success).toEqual(true);
+  });
+});
+
+describe('createComplaint Controller', () => {
+  it('should get all tickets', async () => {
+    const resp = await request(app)
+      .post('/api/complaints')
+      .set('tenantId', TENANT_ID)
+      .send({ ticket: ticketNew });
+
+    expect(resp.status).toBe(201);
+    expect(resp.body.success).toEqual(true);
+  });
+});
+
+describe('message In Ticket Controller', () => {
+  it('postMessageInTicket: should post a message in a ticket', async () => {
+    const resp = await request(app)
+      .post(
+        `/api/complaints/new-message/${ticket._id.toString()}/${student._id}`
+      )
+      .set('tenantId', TENANT_ID)
+      .send({
+        message:
+          '{"time":1709677608094,"blocks":[{"id":"9ntXJB6f3L","type":"paragraph","data":{"text":"New message"}}],"version":"2.29.0"}'
+      });
+
+    expect(resp.status).toBe(201);
+    expect(resp.body.data.messages[0].message).toContain('New message');
+  });
+
+  it('updateAMessageInComplaint: should update a message in a ticket', async () => {
+    const resp = await request(app)
+      .put(
+        `/api/complaints/${ticketWithMessage._id.toString()}/${
+          ticketWithMessage.messages[0]._id
+        }`
+      )
+      .set('tenantId', TENANT_ID)
+      .send({
+        message:
+          '{"time":1709677608094,"blocks":[{"id":"9ntXJB6f3L","type":"paragraph","data":{"text":"updated message"}}],"version":"2.29.0"}'
+      });
+
+    expect(resp.status).toBe(200);
   });
 });
 

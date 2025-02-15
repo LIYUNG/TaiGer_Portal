@@ -111,11 +111,26 @@ const generateCommunicationMessage = (props) => ({
   readBy: []
 });
 
-const generateComlaintTicket = () => ({
+const generateComlaintTicket = ({
+  requesterId = new ObjectId().toHexString(),
+  withMessage = false,
+  userId = new ObjectId().toHexString()
+}) => ({
   _id: new ObjectId().toHexString(),
-  requester_id: new ObjectId().toHexString(),
+  requester_id: requesterId,
   title: faker.lorem.words(20),
-  messages: []
+  description: faker.lorem.words(20),
+  messages: withMessage
+    ? [
+        {
+          _id: new ObjectId().toHexString(),
+          user_id: userId,
+          message:
+            '{"time":1709677608094,"blocks":[{"id":"9ntXJB6f3L","type":"paragraph","data":{"text":"old message"}}],"version":"2.29.0"}',
+          file: []
+        }
+      ]
+    : []
 });
 
 module.exports = {

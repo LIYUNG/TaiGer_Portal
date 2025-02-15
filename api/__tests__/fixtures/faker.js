@@ -66,6 +66,22 @@ const generateInterview = (programId, studentId) => ({
   interview_description: faker.lorem.word(10)
 });
 
+const generateProgramRequirement = (programId) => ({
+  _id: new ObjectId().toHexString(),
+  programId: [programId],
+  attributes: ['ELEC-ENG'],
+  program_categories: [
+    {
+      program_category: faker.lorem.word(10),
+      category_description: faker.lorem.word(10),
+      requiredECTS: 15,
+      keywordSets: [{ _id: new ObjectId().toHexString() }],
+      maxScore: 5
+    }
+  ],
+  interview_description: faker.lorem.word(10)
+});
+
 const generateProgram = (requiredDocuments, optionalDocuments) => ({
   _id: new ObjectId().toHexString(),
   school: faker.company.name(),
@@ -152,6 +168,7 @@ module.exports = {
   generateEditor,
   generateEvent,
   generateInterview,
+  generateProgramRequirement,
   generateProgram,
   generateStudent,
   generateTicket,

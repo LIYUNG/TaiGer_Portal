@@ -1,16 +1,21 @@
 const request = require('supertest');
+const { programRequirementSchema } = require('@taiger-common/model');
 
 const { connect, clearDatabase } = require('../fixtures/db');
 const { UserSchema } = require('../../models/User');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
-const { interviewsSchema } = require('../../models/Interview');
-const { users, admin, student3 } = require('../mock/user');
+const { users, admin } = require('../mock/user');
 const { app } = require('../../app');
-const { interviews, interview1, interview3 } = require('../mock/interviews');
 const { program4 } = require('../mock/programs');
 const { disconnectFromDatabase } = require('../../database');
+const {
+  programRequirements1,
+  programRequirements2,
+  programRequirementss,
+  programRequirementsNew
+} = require('../mock/programRequirements');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -79,12 +84,15 @@ beforeEach(async () => {
   const db = connectToDatabase(TENANT_ID, dbUri);
 
   const UserModel = db.model('User', UserSchema);
-  const InterviewModel = db.model('Interview', interviewsSchema);
+  const ProgramRequirementModel = db.model(
+    'ProgramRequirement',
+    programRequirementSchema
+  );
 
   await UserModel.deleteMany();
   await UserModel.insertMany(users);
-  await InterviewModel.deleteMany();
-  await InterviewModel.insertMany(interviews);
+  await ProgramRequirementModel.deleteMany();
+  await ProgramRequirementModel.insertMany(programRequirementss);
 
   protect.mockImplementation(async (req, res, next) => {
     req.user = admin;
@@ -92,50 +100,71 @@ beforeEach(async () => {
   });
 });
 
-describe('POST /api/interviews/create/:program_id/:studentId', () => {
-  it('createInterview', async () => {
+describe('GET /api/program-requirements/', () => {
+  it('getProgramRequirements', async () => {
     const resp = await request(app)
-      .post(`/api/interviews/create/${program4._id}/${student3._id}`)
-      .set('tenantId', TENANT_ID)
-      .send({
-        student_id: student3._id,
-        program_id: program4._id,
-        interview_date: new Date(),
-        interview_description: 'new-interview',
-        interviewer: 'Steve Jobs'
-      });
-
-    expect(resp.status).toEqual(201);
-  });
-});
-
-describe('GET /api/interviews/:interview_id', () => {
-  it('getInterview', async () => {
-    const resp = await request(app)
-      .get(`/api/interviews/${interview1._id}`)
+      .get('/api/program-requirements/')
       .set('tenantId', TENANT_ID);
 
     expect(resp.status).toEqual(200);
   });
 });
 
-describe('PUT /api/interviews/:interview_id', () => {
-  it('updateInterview', async () => {
+describe('GET /api/program-requirements/programs-and-keywords/', () => {
+  it('getDistinctProgramsAndKeywordSets', async () => {
     const resp = await request(app)
-      .put(`/api/interviews/${interview1._id}`)
+      .get('/api/program-requirements/programs-and-keywords')
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toEqual(200);
+  });
+});
+
+describe('POST /api/program-requirements/new/', () => {
+  it('createProgramRequirement', async () => {
+    const resp = await request(app)
+      .post('/api/program-requirements/new/')
       .set('tenantId', TENANT_ID)
       .send({
-        interview_description: 'modified_description'
+        ...programRequirementsNew,
+        program: {
+          school: program4.school,
+          program_name: program4.program_name,
+          degree: program4.degree
+        }
+      });
+
+    expect(resp.status).toEqual(201);
+  });
+});
+
+describe('GET /api/program-requirements/:requirementId', () => {
+  it('getProgramRequirement', async () => {
+    const resp = await request(app)
+      .get(`/api/program-requirements/${programRequirements1._id}`)
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toEqual(200);
+  });
+});
+
+describe('PUT /api/program-requirements/:requirementId', () => {
+  it('updateInterview', async () => {
+    const resp = await request(app)
+      .put(`/api/program-requirements/${programRequirements1._id}`)
+      .set('tenantId', TENANT_ID)
+      .send({
+        admissionDescription: 'modified_description'
       });
 
     expect(resp.status).toEqual(200);
   });
 });
 
-describe('DELETE /api/interviews/:interview_id', () => {
+describe('DELETE /api/program-requirements/:requirementId', () => {
   it('deleteInterview', async () => {
     const resp = await request(app)
-      .delete(`/api/interviews/${interview3._id}`)
+      .delete(`/api/program-requirements/${programRequirements2._id}`)
       .set('tenantId', TENANT_ID);
 
     expect(resp.status).toEqual(200);

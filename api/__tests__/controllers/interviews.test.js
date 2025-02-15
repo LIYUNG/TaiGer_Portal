@@ -10,6 +10,7 @@ const { users, admin, student3 } = require('../mock/user');
 const { app } = require('../../app');
 const { interviews, interview1, interview3 } = require('../mock/interviews');
 const { program4 } = require('../mock/programs');
+const { disconnectFromDatabase } = require('../../database');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -68,7 +69,9 @@ let dbUri;
 beforeAll(async () => {
   dbUri = await connect();
 });
+
 afterAll(async () => {
+  await disconnectFromDatabase(TENANT_ID); // Properly close each connection
   await clearDatabase();
 });
 

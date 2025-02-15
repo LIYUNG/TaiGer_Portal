@@ -32,6 +32,7 @@ const { s3Client } = require('../../aws');
 const { PutObjectCommand } = require('@aws-sdk/client-s3');
 const { GetObjectCommand } = require('@aws-sdk/client-s3');
 const { program1, programs } = require('../mock/programs');
+const { disconnectFromDatabase } = require('../../database');
 
 const s3ClientMock = mockClient(s3Client);
 // for small files upload:
@@ -103,7 +104,9 @@ beforeAll(async () => {
     }
   }));
 });
+
 afterAll(async () => {
+  await disconnectFromDatabase(TENANT_ID); // Properly close each connection
   await clearDatabase();
 });
 

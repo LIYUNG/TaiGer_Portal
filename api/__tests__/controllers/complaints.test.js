@@ -100,8 +100,8 @@ beforeEach(async () => {
   });
 });
 
-describe('getComplaints Controller', () => {
-  it('should get all tickets', async () => {
+describe('GET /api/complaints', () => {
+  it('getComplaints', async () => {
     const resp = await request(app)
       .get('/api/complaints')
       .set('tenantId', TENANT_ID);
@@ -111,8 +111,8 @@ describe('getComplaints Controller', () => {
   });
 });
 
-describe('createComplaint Controller', () => {
-  it('should get all tickets', async () => {
+describe('POST /api/complaints', () => {
+  it('createComplaint', async () => {
     const resp = await request(app)
       .post('/api/complaints')
       .set('tenantId', TENANT_ID)

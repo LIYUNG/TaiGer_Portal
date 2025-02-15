@@ -23,6 +23,7 @@ const { TENANT_ID } = require('../fixtures/constants');
 const { users, agent, student } = require('../mock/user');
 const { s3Client } = require('../../aws');
 const { program1 } = require('../mock/programs');
+const { disconnectFromDatabase } = require('../../database');
 
 const s3ClientMock = mockClient(s3Client);
 
@@ -108,6 +109,7 @@ afterAll(async () => {
   await UserModel.deleteMany();
   await ProgramModel.deleteMany();
 
+  await disconnectFromDatabase(TENANT_ID); // Properly close each connection
   await clearDatabase();
 });
 

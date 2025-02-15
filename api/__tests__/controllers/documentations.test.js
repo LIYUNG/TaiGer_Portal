@@ -9,6 +9,7 @@ const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { users, admin } = require('../mock/user');
 const { program1 } = require('../mock/programs');
+const { disconnectFromDatabase } = require('../../database');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -46,7 +47,11 @@ let dbUri;
 beforeAll(async () => {
   dbUri = await connect();
 });
-afterAll(async () => await clearDatabase());
+
+afterAll(async () => {
+  await disconnectFromDatabase(TENANT_ID); // Properly close each connection
+  await clearDatabase();
+});
 
 beforeEach(async () => {
   const db = connectToDatabase(TENANT_ID, dbUri);

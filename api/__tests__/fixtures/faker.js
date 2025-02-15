@@ -33,6 +33,15 @@ const generateStudent = (agentIds, editorIds) => ({
   academic_background: { language: {}, university: {} }
 });
 
+const generateTicket = ({ programId, requesterId = null }) => ({
+  _id: new ObjectId().toHexString(),
+  program_id: programId,
+  requester_id: requesterId,
+  type: 'program',
+  status: 'open',
+  description: 'deadline wrong'
+});
+
 const generateEvent = (requesterId, receiverId, minutes) => {
   const now = new Date();
   const start = new Date(now.getTime() + minutes * 60 * 1000);
@@ -134,16 +143,17 @@ const generateComlaintTicket = ({
 });
 
 module.exports = {
-  generateUser,
   generateAgent,
-  generateEditor,
-  generateStudent,
-  generateEvent,
-  generateInterview,
-  generateProgram,
   generateAllCourse,
   generateCourseKeywordsSet,
   generateCourse,
   generateCommunicationMessage,
-  generateComlaintTicket
+  generateComlaintTicket,
+  generateEditor,
+  generateEvent,
+  generateInterview,
+  generateProgram,
+  generateStudent,
+  generateTicket,
+  generateUser
 };

@@ -40,31 +40,6 @@ const getTickets = asyncHandler(async (req, res) => {
   }
 });
 
-const getTicket = asyncHandler(async (req, res) => {
-  const { user } = req;
-  if (is_TaiGer_Student(user)) {
-    const ticket = await req.db
-      .model('Ticket')
-      .findById(req.params.ticketId)
-      .select('-requester_id');
-    if (!ticket) {
-      logger.error('getTicket: Invalid ticket id');
-      throw new ErrorResponse(404, 'Ticket not found');
-    }
-    res.send({ success: true, data: ticket });
-  } else {
-    const ticket = await req.db
-      .model('Ticket')
-      .findById(req.params.ticketId)
-      .populate('requester_id', 'firstname lastname email ');
-    if (!ticket) {
-      logger.error('getTicket: Invalid ticket id');
-      throw new ErrorResponse(404, 'Ticket not found');
-    }
-    res.send({ success: true, data: ticket });
-  }
-});
-
 const createTicket = asyncHandler(async (req, res) => {
   const { user } = req;
   const new_ticket = req.body;
@@ -148,7 +123,6 @@ const deleteTicket = asyncHandler(async (req, res) => {
 
 module.exports = {
   getTickets,
-  getTicket,
   createTicket,
   updateTicket,
   deleteTicket

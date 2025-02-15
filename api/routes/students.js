@@ -54,6 +54,7 @@ const {
 } = require('../middlewares/permission-filter');
 const { logAccess } = require('../utils/log/log');
 const { auditLog } = require('../utils/log/auditLog');
+const { validateStudentId } = require('../common/validation');
 
 const router = Router();
 
@@ -138,6 +139,7 @@ router
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     multitenant_filter,
     getStudentAndDocLinks,
     logAccess
@@ -150,6 +152,7 @@ router
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     InnerTaigerMultitenantFilter,
     getArchivStudent,
     logAccess
@@ -159,6 +162,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     InnerTaigerMultitenantFilter,
     updateStudentsArchivStatus,
     logAccess
@@ -171,6 +175,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
     permission_canAssignAgent_filter,
+    validateStudentId,
     assignAgentToStudent,
     auditLog
   );
@@ -182,6 +187,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor),
     permission_canAssignEditor_filter,
+    validateStudentId,
     assignEditorToStudent,
     auditLog
   );
@@ -193,6 +199,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent),
     InnerTaigerMultitenantFilter,
+    validateStudentId,
     assignAttributesToStudent,
     logAccess
   );
@@ -204,6 +211,7 @@ router
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     multitenant_filter,
     getStudentApplications,
     logAccess
@@ -213,6 +221,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     createApplication,
@@ -226,6 +235,7 @@ router
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     ToggleProgramStatus,
@@ -239,6 +249,7 @@ router
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     updateVPDPayment,
@@ -252,6 +263,7 @@ router
     GeneralPUTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     updateVPDFileNecessity,
@@ -262,6 +274,7 @@ router
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     multitenant_filter,
     downloadVPDFile,
     logAccess
@@ -271,6 +284,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     VPDfileUpload,
@@ -294,6 +308,7 @@ router
     filter_archiv_user,
     permit(Role.Admin, Role.Manager, Role.Agent),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     deleteApplication,
@@ -307,6 +322,7 @@ router
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     multitenant_filter,
     downloadProfileFileURL,
     logAccess
@@ -319,6 +335,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Editor, Role.Agent, Role.Student),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     ProfilefileUpload,
@@ -330,6 +347,7 @@ router
     GeneralDELETERequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Student),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     deleteProfileFile,
@@ -343,6 +361,7 @@ router
     GeneralPOSTRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent),
     permission_canAccessStudentDatabase_filter,
+    validateStudentId,
     multitenant_filter,
     InnerTaigerMultitenantFilter,
     updateProfileDocumentStatus,

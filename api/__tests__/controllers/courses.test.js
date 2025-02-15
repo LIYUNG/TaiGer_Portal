@@ -1,19 +1,15 @@
-const fs = require('fs');
-const path = require('path');
-const { spawn } = require('child_process');
-const EventEmitter = require('events');
 const request = require('supertest');
-const { Role } = require('@taiger-common/core');
 
 const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
-const { app } = require('../../app');
 const { UserSchema } = require('../../models/User');
-const { generateUser, generateCourse } = require('../fixtures/faker');
-const { generateProgram } = require('../fixtures/faker');
+const { generateCourse } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { coursesSchema } = require('../../models/Course');
+const { users, student } = require('../mock/user');
+const { app } = require('../../app');
+const { disconnectFromDatabase } = require('../../database');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -45,17 +41,6 @@ jest.mock('../../middlewares/InnerTaigerMultitenantFilter', () => {
   };
 });
 
-jest.mock('../../middlewares/permission-filter', () => {
-  const passthrough = async (req, res, next) => next();
-
-  return {
-    ...jest.requireActual('../../middlewares/permission-filter'),
-    permission_canAccessStudentDatabase_filter: jest
-      .fn()
-      .mockImplementation(passthrough)
-  };
-});
-
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
@@ -67,36 +52,18 @@ jest.mock('../../middlewares/auth', () => {
   };
 });
 
-const admin = generateUser(Role.Admin);
-const agents = [...Array(3)].map(() => generateUser(Role.Agent));
-const agent = generateUser(Role.Agent);
-const editors = [...Array(3)].map(() => generateUser(Role.Editor));
-const editor = generateUser(Role.Editor);
-const students = [...Array(3)].map(() => generateUser(Role.Student));
-const student = generateUser(Role.Student);
-const student2 = generateUser(Role.Student);
-const users = [
-  admin,
-  ...agents,
-  agent,
-  ...editors,
-  editor,
-  ...students,
-  student,
-  student2
-];
-
 const course1 = generateCourse(student._id);
 
-const requiredDocuments = ['transcript', 'resume'];
-const optionalDocuments = ['certificate', 'visa'];
-const program = generateProgram(requiredDocuments, optionalDocuments);
 let dbUri;
 
 beforeAll(async () => {
   dbUri = await connect();
 });
-afterAll(async () => await clearDatabase());
+
+afterAll(async () => {
+  await disconnectFromDatabase(TENANT_ID); // Properly close each connection
+  await clearDatabase();
+});
 
 beforeEach(async () => {
   const db = connectToDatabase(TENANT_ID, dbUri);
@@ -115,11 +82,41 @@ beforeEach(async () => {
   });
 });
 
-describe('updateCredentials Controller', () => {
-  it('TODO', async () => {
-    expect(200).toEqual(200);
+describe('GET /api/courses/:studentId', () => {
+  it('getMycourses', async () => {
+    const resp = await request(app)
+      .get(`/api/courses/${student._id}`)
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.body.data.table_data_string).toContain('(Example)微積分一');
   });
 });
+
+describe('PUT /api/courses/:studentId', () => {
+  it('putMycourses', async () => {
+    const resp = await request(app)
+      .put(`/api/courses/${student._id}`)
+      .set('tenantId', TENANT_ID)
+      .send({
+        table_data_string:
+          '[{"course_chinese":"電子學一","course_english":"Electronics I","credits":"2","grades":"73"}]'
+      });
+
+    expect(resp.status).toEqual(200);
+  });
+});
+
+describe('DELETE /api/courses/:studentId', () => {
+  it('deleteMyCourse', async () => {
+    const resp = await request(app)
+      .delete(`/api/courses/${student._id}`)
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toEqual(200);
+  });
+});
+
 // // TODO: uploading transcript for courses analyser
 // describe('POST /api/courses/transcript/:studentId/:category/:group', () => {
 //   it('should run python script on the uploaded file', async () => {

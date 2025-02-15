@@ -96,29 +96,26 @@ const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   res.status(200).send({ success: true, data: students });
 });
 
-const getSurveyInputDocuments = asyncHandler(
-  async (req, studentId, programId, fileType) => {
-    const document = await req.db
-      .model('surveyInput')
-      .find({
-        studentId,
-        ...(fileType ? { fileType } : {}),
-        ...(programId ? { programId: { $in: [programId, null] } } : {})
-      })
-      .select(
-        'programId fileType surveyType surveyContent isFinalVersion createdAt updatedAt'
-      )
-      .lean()
-      .exec();
+const getSurveyInputDocuments = async (req, studentId, programId, fileType) => {
+  const document = await req.db
+    .model('surveyInput')
+    .find({
+      studentId,
+      ...(fileType ? { fileType } : {}),
+      ...(programId ? { programId: { $in: [programId, null] } } : {})
+    })
+    .select(
+      'programId fileType surveyType surveyContent isFinalVersion createdAt updatedAt'
+    )
+    .lean();
 
-    const surveys = {
-      general: document.find((doc) => !doc.programId),
-      specific: programId && document.find((doc) => doc.programId)
-    };
+  const surveys = {
+    general: document.find((doc) => !doc.programId),
+    specific: programId && document.find((doc) => doc.programId)
+  };
 
-    return surveys;
-  }
-);
+  return surveys;
+};
 
 const getSurveyInputs = asyncHandler(async (req, res, next) => {
   const {
@@ -129,8 +126,7 @@ const getSurveyInputs = asyncHandler(async (req, res, next) => {
     .findById(messagesThreadId)
     .populate('student_id', 'firstname lastname email')
     .populate('program_id', 'school program_name degree lang')
-    .lean()
-    .exec();
+    .lean();
 
   if (!threadDocument) {
     logger.error(
@@ -313,8 +309,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .select(
         'applications applications generaldocs_threads firstname lastname application_preference attributes'
       )
-      .lean()
-      .exec();
+      .lean();
 
     res.status(200).send({ success: true, data: students });
   } else if (user.role === Role.Editor) {
@@ -385,8 +380,7 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
       .select(
         'applications applications generaldocs_threads firstname lastname application_preference'
       )
-      .lean()
-      .exec();
+      .lean();
     res.status(200).send({ success: true, data: [student] });
   } else {
     // Guest
@@ -405,8 +399,7 @@ const initGeneralMessagesThread = asyncHandler(async (req, res) => {
     .model('Student')
     .findById(studentId)
     .populate('generaldocs_threads.doc_thread_id')
-    .populate('agents editors', 'firstname lastname email')
-    .exec();
+    .populate('agents editors', 'firstname lastname email');
 
   if (!student) {
     logger.info('initGeneralMessagesThread: Invalid student id');
@@ -515,7 +508,8 @@ const initApplicationMessagesThread = asyncHandler(async (req, res) => {
     .findById(studentId)
     .populate('applications.programId')
     .populate('agents editors', 'firstname lastname email archiv')
-    .exec();
+    .lean();
+
   const program = student.applications.find(
     (app) => app.programId._id.toString() === program_id
   )?.programId;
@@ -714,8 +708,8 @@ const getMessages = asyncHandler(async (req, res) => {
     .populate('messages.user_id', 'firstname lastname role')
     .populate('program_id')
     .populate('outsourced_user_id', 'firstname lastname role')
-    .lean()
-    .exec();
+    .lean();
+
   const threadAuditLogPromise = req.db
     .model('Audit')
     .find({
@@ -1930,9 +1924,9 @@ const deleteAMessageInThread = asyncHandler(async (req, res) => {
     .findById(messagesThreadId);
 
   const student = await req.db.model('Student').findById(thread.student_id);
-  const application = student.applications.find((application) =>
-    application.doc_modification_thread.some(
-      (thread) => thread.doc_thread_id.toString() === messagesThreadId
+  const application = student.applications.find((app) =>
+    app.doc_modification_thread.some(
+      (thr) => thr.doc_thread_id.toString() === messagesThreadId
     )
   );
   if (!application) {
@@ -2052,7 +2046,8 @@ const assignEssayWritersToEssayTask = asyncHandler(async (req, res, next) => {
       'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
       '-messages'
     )
-    .exec();
+    .lean();
+
   const essayDocumentThreads_Updated = await req.db
     .model('Documentthread')
     .findById(messagesThreadId)

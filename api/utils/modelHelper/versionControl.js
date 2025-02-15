@@ -53,9 +53,9 @@ const createApplicationThread = async (
     throw new ErrorResponse(409, 'Document Thread already existed!');
   }
 
-  const student = await StudentModel.findById(studentId)
-    .populate('applications.programId')
-    .exec();
+  const student = await StudentModel.findById(studentId).populate(
+    'applications.programId'
+  );
 
   if (!student) {
     logger.info('initApplicationMessagesThread: Invalid student id!');

@@ -202,8 +202,7 @@ const updateUserArchivStatus = asyncHandler(async (req, res) => {
       { new: true, strict: false }
     )
     .populate('editors')
-    .lean()
-    .exec();
+    .lean();
   const users = await req.db.model('User').find({}).lean();
   res.status(200).send({ success: true, data: users });
 });

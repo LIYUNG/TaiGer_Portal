@@ -130,8 +130,13 @@ const connectToDatabase = (tenant, uri = null) => {
   return connections[tenant];
 };
 
-const disconnectFromDatabase = (callback = async () => void 0) =>
-  mongoose.connection.close(callback);
+// Ensure disconnection after tests
+const disconnectFromDatabase = async (tenant) => {
+  if (connections[tenant]) {
+    await connections[tenant].close();
+    delete connections[tenant];
+  }
+};
 
 module.exports = {
   mongoDb,

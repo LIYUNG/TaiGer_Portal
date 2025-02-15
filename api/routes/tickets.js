@@ -12,7 +12,6 @@ const { protect, permit } = require('../middlewares/auth');
 
 const {
   getTickets,
-  getTicket,
   createTicket,
   updateTicket,
   deleteTicket
@@ -51,19 +50,6 @@ router
 
 router
   .route('/:ticket_id')
-  .get(
-    filter_archiv_user,
-    GetTicketRateLimiter,
-    permit(
-      Role.Admin,
-      Role.Manager,
-      Role.Agent,
-      Role.Editor,
-      Role.Student,
-      Role.External
-    ),
-    getTicket
-  )
   .put(
     filter_archiv_user,
     UpdateTicketRateLimiter,

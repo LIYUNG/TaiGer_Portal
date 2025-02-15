@@ -30,13 +30,14 @@ const getPermission = asyncHandler(async (req, user) => {
   return cachedPermission;
 });
 
-const getCachedStudentPermission = asyncHandler(async (req, studentId) => {
+const getCachedStudentPermission = async (req, studentId) => {
   let cachedStudent = ten_minutes_cache.get(`/filter/studentId/${studentId}`);
   if (cachedStudent === undefined) {
     const student = await req.db
       .model('Student')
       .findById(studentId)
-      .select('agents editors');
+      .select('agents editors')
+      .lean();
 
     const success = ten_minutes_cache.set(
       `/filter/studentId/${studentId}`,
@@ -48,7 +49,7 @@ const getCachedStudentPermission = asyncHandler(async (req, studentId) => {
     }
   }
   return cachedStudent;
-});
+};
 
 module.exports = {
   getPermission,

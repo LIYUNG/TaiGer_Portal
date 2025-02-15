@@ -21,11 +21,11 @@ const {
   apiGatewayUrl
 } = require('../aws/constants');
 
-const getCourse = asyncHandler(async (req, res) => {
+const getMycourses = asyncHandler(async (req, res) => {
   const { studentId } = req.params;
   const student = await req.db.model('Student').findById(studentId);
   if (!student) {
-    logger.info('getCourse: no student found');
+    logger.info('getMycourses: no student found');
     throw new ErrorResponse(500, 'Invalid student');
   }
   const courses = await req.db
@@ -58,30 +58,21 @@ const getCourse = asyncHandler(async (req, res) => {
   return res.send({ success: true, data: courses });
 });
 
-const putCourse = asyncHandler(async (req, res) => {
-  const { studentId } = req.params;
-  const fields = req.body;
-  fields.updatedAt = new Date();
-  await req.db
-    .model('Course')
-    .findOneAndUpdate({ student_id: studentId }, fields, {
-      new: false
-    })
-    .populate('student_id', 'firstname lastname');
-  res.send({ success: true });
-});
-
-const createCourse = asyncHandler(async (req, res) => {
+const putMycourses = asyncHandler(async (req, res) => {
   const { user } = req;
   const { studentId } = req.params;
   const fields = req.body;
   fields.updatedAt = new Date();
 
+  if (is_TaiGer_Student(user)) {
+    delete fields.table_data_string_locked;
+  }
+
   const courses2 = await req.db
     .model('Course')
     .findOneAndUpdate({ student_id: studentId }, fields, {
       upsert: true,
-      new: true
+      new: false
     })
     .populate('student_id', 'firstname lastname');
   res.send({ success: true, data: courses2 });
@@ -91,7 +82,8 @@ const createCourse = asyncHandler(async (req, res) => {
       .model('Student')
       .findById(studentId)
       .populate('agents', 'firstname lastname email')
-      .exec();
+      .lean();
+
     for (let i = 0; i < student.agents.length; i += 1) {
       if (isNotArchiv(student)) {
         updateCoursesDataAgentEmail(
@@ -111,6 +103,7 @@ const createCourse = asyncHandler(async (req, res) => {
   }
 });
 
+// TODO: deprecated
 const processTranscript_test = asyncHandler(async (req, res, next) => {
   const {
     params: { category, studentId, language }
@@ -190,7 +183,7 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
     .model('Student')
     .findById(studentId)
     .populate('agents', 'firstname lastname email')
-    .exec();
+    .lean();
 
   if (isNotArchiv(student)) {
     await AnalysedCoursesDataStudentEmail(
@@ -207,6 +200,7 @@ const processTranscript_test = asyncHandler(async (req, res, next) => {
   next();
 });
 
+// TODO: deprecated
 const processTranscript_api = asyncHandler(async (req, res, next) => {
   const {
     params: { category, studentId, language }
@@ -269,7 +263,7 @@ const processTranscript_api = asyncHandler(async (req, res, next) => {
     .model('Student')
     .findById(studentId)
     .populate('agents', 'firstname lastname email')
-    .exec();
+    .lean();
 
   if (isNotArchiv(student)) {
     await AnalysedCoursesDataStudentEmail(
@@ -352,7 +346,7 @@ const processTranscript_api_gatway = asyncHandler(async (req, res, next) => {
   next();
 });
 
-// Download original transcript excel
+// TODO: deprecate. Download original transcript excel
 const downloadXLSX = asyncHandler(async (req, res, next) => {
   const {
     user,
@@ -467,23 +461,30 @@ const downloadJson = asyncHandler(async (req, res, next) => {
   }
 });
 
-const deleteCourse = asyncHandler(async (req, res) => {
-  const course = await req.db.model('Course').findById(req.params.id);
+const deleteMyCourse = asyncHandler(async (req, res) => {
+  const { studentId } = req.params;
+  const course = await req.db
+    .model('Course')
+    .findOne({ student_id: studentId });
   if (!course) {
     return res.status(404).send({ error: 'Course not found' });
   }
-  await req.db.model('Course').findByIdAndDelete(req.params.id);
-  return res.send({ success: true });
+  try {
+    await req.db.model('Course').findOneAndDelete({ student_id: studentId });
+    return res.send({ success: true });
+  } catch (e) {
+    logger.info(`deleteMyCourse: ${e}`);
+    throw new ErrorResponse(500, 'deleteMyCourse Internal error');
+  }
 });
 
 module.exports = {
-  getCourse,
-  putCourse,
-  createCourse,
+  getMycourses,
+  putMycourses,
   processTranscript_test,
   processTranscript_api,
   processTranscript_api_gatway,
   downloadXLSX,
   downloadJson,
-  deleteCourse
+  deleteMyCourse
 };

@@ -1,17 +1,15 @@
 const request = require('supertest');
-const { Role } = require('@taiger-common/core');
 
 const { connect, clearDatabase } = require('../fixtures/db');
 const { app } = require('../../app');
 const { UserSchema } = require('../../models/User');
-const {
-  generateUser,
-  generateCommunicationMessage
-} = require('../fixtures/faker');
+const { generateCommunicationMessage } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { communicationsSchema } = require('../../models/Communication');
+const { users, admin, agent, student } = require('../mock/user');
+const { disconnectFromDatabase } = require('../../database');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -54,6 +52,15 @@ jest.mock('../../middlewares/permission-filter', () => {
   };
 });
 
+jest.mock('../../middlewares/chatMultitenantFilter', () => {
+  const passthrough = async (req, res, next) => next();
+
+  return {
+    ...jest.requireActual('../../middlewares/chatMultitenantFilter'),
+    chatMultitenantFilter: jest.fn().mockImplementation(passthrough)
+  };
+});
+
 jest.mock('../../middlewares/auth', () => {
   const passthrough = async (req, res, next) => next();
 
@@ -65,24 +72,6 @@ jest.mock('../../middlewares/auth', () => {
   };
 });
 
-const admin = generateUser(Role.Admin);
-const agents = [...Array(3)].map(() => generateUser(Role.Agent));
-const agent = generateUser(Role.Agent);
-const editors = [...Array(3)].map(() => generateUser(Role.Editor));
-const editor = generateUser(Role.Editor);
-const students = [...Array(3)].map(() => generateUser(Role.Student));
-const student = generateUser(Role.Student);
-const student2 = generateUser(Role.Student);
-const users = [
-  admin,
-  ...agents,
-  agent,
-  ...editors,
-  editor,
-  ...students,
-  student,
-  student2
-];
 const messages = [...Array(3)].map(() =>
   generateCommunicationMessage({ studnet_id: student._id, user_id: agent._id })
 );
@@ -94,7 +83,11 @@ let dbUri;
 beforeAll(async () => {
   dbUri = await connect();
 });
-afterAll(async () => await clearDatabase());
+
+afterAll(async () => {
+  await disconnectFromDatabase(TENANT_ID); // Properly close each connection
+  await clearDatabase();
+});
 
 beforeEach(async () => {
   const db = connectToDatabase(TENANT_ID, dbUri);
@@ -114,6 +107,28 @@ beforeEach(async () => {
   });
 });
 
+describe('getUnreadNumberMessages Controller', () => {
+  it('should get messages of an user', async () => {
+    const resp = await request(app)
+      .get('/api/communications/ping/all')
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toBe(200);
+    expect(resp.body.success).toEqual(true);
+  });
+});
+
+describe('loadMessages Controller', () => {
+  it('should load messages from a student', async () => {
+    const resp = await request(app)
+      .get(`/api/communications/${student._id.toString()}/pages/1`)
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toBe(200);
+    expect(resp.body.success).toEqual(true);
+  });
+});
+
 describe('getMessages Controller', () => {
   it('should get messages from a student', async () => {
     const resp = await request(app)
@@ -125,8 +140,8 @@ describe('getMessages Controller', () => {
   });
 });
 
-describe('postMessages Controller', () => {
-  it('should create a new message', async () => {
+describe('postMessages and Controller', () => {
+  it('postMessages should create a new message', async () => {
     const resp = await request(app)
       .post(`/api/communications/${student._id.toString()}`)
       .set('tenantId', TENANT_ID)
@@ -137,17 +152,18 @@ describe('postMessages Controller', () => {
   });
 });
 
-// describe('updateAMessageInThread Controller', () => {
-//   it('should update a message', async () => {
-//     const resp = await request(app)
-//       .put(`/api/communications/${student._id.toString()}`)
-//       .set('tenantId', TENANT_ID)
-//       .send({ description: 'new information' });
-//     const updatedTicket = resp.body.data;
-//     expect(resp.status).toBe(200);
-//     expect(updatedTicket.description).toEqual('new information');
-//   });
-// });
+describe('updateAMessageInThread Controller', () => {
+  it('should update a message', async () => {
+    const messageId = messages[0]._id.toString();
+    const resp = await request(app)
+      .put(`/api/communications/${student._id.toString()}/${messageId}`)
+      .set('tenantId', TENANT_ID)
+      .send({ message: 'new information' });
+    const updatedMessageg = resp.body.data;
+    expect(resp.status).toBe(200);
+    expect(updatedMessageg.message).toContain('new information');
+  });
+});
 
 // describe('deleteComplaint Controller', () => {
 //   it('should delete a message', async () => {

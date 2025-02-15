@@ -5,12 +5,13 @@ const {
   AWS_S3_ACCESS_KEY,
   isProd,
   AWS_REGION,
-  AWS_LOG_GROUP
+  AWS_LOG_GROUP,
+  isTest
 } = require('../config');
 
 const options = {
   file: {
-    level: 'info',
+    level: isTest() ? 'silent' : 'info',
     filename: './logs/app.log',
     handleExceptions: true,
     format: winston.format.json(),
@@ -19,7 +20,7 @@ const options = {
     colorize: false
   },
   console: {
-    level: 'debug',
+    level: isTest() ? 'silent' : 'debug',
     handleExceptions: true,
     format: winston.format.combine(
       winston.format.colorize(),

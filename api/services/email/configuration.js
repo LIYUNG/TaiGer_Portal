@@ -4,7 +4,8 @@ const {
   SMTP_PORT,
   SMTP_USERNAME,
   SMTP_PASSWORD,
-  isProd
+  isProd,
+  isTest
 } = require('../../config');
 const { ses, limiter, SendRawEmailCommand } = require('../../aws');
 const { senderName, taigerNotReplyGmail } = require('../../constants/email');
@@ -26,17 +27,19 @@ const transporter = isProd()
       }
     });
 
-const sendEmail = (to, subject, message) => {
-  const mail = {
-    from: senderName,
-    to,
-    bcc: taigerNotReplyGmail,
-    subject,
-    // text: message,
-    html: htmlContent(message)
-  };
+const sendEmail = isTest()
+  ? (to, subject, message) => {}
+  : (to, subject, message) => {
+      const mail = {
+        from: senderName,
+        to,
+        bcc: taigerNotReplyGmail,
+        subject,
+        // text: message,
+        html: htmlContent(message)
+      };
 
-  return limiter.schedule(() => transporter.sendMail(mail));
-};
+      return limiter.schedule(() => transporter.sendMail(mail));
+    };
 
 module.exports = { transporter, sendEmail };

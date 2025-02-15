@@ -676,8 +676,7 @@ const UpdateStudentApplications = asyncHandler(async (req, res, next) => {
     .model('Student')
     .findById(studentId)
     .populate('applications.programId')
-    .populate('applications', 'doc_modification_thread.doc_thread_id')
-    .exec();
+    .populate('applications', 'doc_modification_thread.doc_thread_id');
 
   let new_task_flag = false;
   if (!student) {

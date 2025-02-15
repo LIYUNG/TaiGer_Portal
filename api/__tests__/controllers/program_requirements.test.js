@@ -1,28 +1,21 @@
 const request = require('supertest');
-const { EventSchema } = require('@taiger-common/model');
+const { programRequirementSchema } = require('@taiger-common/model');
 
-const { connect, closeDatabase, clearDatabase } = require('../fixtures/db');
+const { connect, clearDatabase } = require('../fixtures/db');
 const { UserSchema } = require('../../models/User');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
-const {
-  users,
-  student,
-  student2,
-  agent2,
-  student3,
-  agent
-} = require('../mock/user');
-const {
-  event3,
-  events,
-  event2,
-  eventNew,
-  eventNew2
-} = require('../mock/events');
+const { users, admin } = require('../mock/user');
 const { app } = require('../../app');
+const { program4 } = require('../mock/programs');
 const { disconnectFromDatabase } = require('../../database');
+const {
+  programRequirements1,
+  programRequirements2,
+  programRequirementss,
+  programRequirementsNew
+} = require('../mock/programRequirements');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -91,101 +84,87 @@ beforeEach(async () => {
   const db = connectToDatabase(TENANT_ID, dbUri);
 
   const UserModel = db.model('User', UserSchema);
-  const EventModel = db.model('Event', EventSchema);
+  const ProgramRequirementModel = db.model(
+    'ProgramRequirement',
+    programRequirementSchema
+  );
 
   await UserModel.deleteMany();
   await UserModel.insertMany(users);
-  await EventModel.deleteMany();
-  await EventModel.insertMany(events);
+  await ProgramRequirementModel.deleteMany();
+  await ProgramRequirementModel.insertMany(programRequirementss);
 
   protect.mockImplementation(async (req, res, next) => {
-    req.user = student;
+    req.user = admin;
     next();
   });
 });
 
-describe('GET /api/events/all', () => {
-  it('getAllEvents', async () => {
+describe('GET /api/program-requirements/', () => {
+  it('getProgramRequirements', async () => {
     const resp = await request(app)
-      .get('/api/events/all')
+      .get('/api/program-requirements/')
       .set('tenantId', TENANT_ID);
 
     expect(resp.status).toEqual(200);
   });
 });
 
-describe('GET /api/events/ping', () => {
-  it('getActiveEventsNumber', async () => {
+describe('GET /api/program-requirements/programs-and-keywords/', () => {
+  it('getDistinctProgramsAndKeywordSets', async () => {
     const resp = await request(app)
-      .get('/api/events/ping')
+      .get('/api/program-requirements/programs-and-keywords')
       .set('tenantId', TENANT_ID);
 
     expect(resp.status).toEqual(200);
   });
 });
 
-describe('POST /api/events/', () => {
-  it('postEvent: can not book further event if there is upcoming one', async () => {
-    eventNew2.requester_id = student._id;
-    eventNew2.receiver_id = agent._id;
+describe('POST /api/program-requirements/new/', () => {
+  it('createProgramRequirement', async () => {
     const resp = await request(app)
-      .post('/api/events/')
+      .post('/api/program-requirements/new/')
       .set('tenantId', TENANT_ID)
-      .send(eventNew2);
-
-    expect(resp.status).toEqual(403);
-  });
-
-  it('postEvent', async () => {
-    protect.mockImplementation(async (req, res, next) => {
-      req.user = student3;
-      next();
-    });
-    eventNew.requester_id = student3._id;
-    eventNew.receiver_id = agent2._id;
-    const resp = await request(app)
-      .post('/api/events/')
-      .set('tenantId', TENANT_ID)
-      .send(eventNew);
+      .send({
+        ...programRequirementsNew,
+        program: {
+          school: program4.school,
+          program_name: program4.program_name,
+          degree: program4.degree
+        }
+      });
 
     expect(resp.status).toEqual(201);
   });
 });
 
-describe('PUT /api/events/:event_id', () => {
-  it('updateEvent: student is not allowed to update others events', async () => {
+describe('GET /api/program-requirements/:requirementId', () => {
+  it('getProgramRequirement', async () => {
     const resp = await request(app)
-      .put(`/api/events/${event2._id}`)
-      .set('tenantId', TENANT_ID)
-      .send({
-        ...event2,
-        description: 'updated'
-      });
+      .get(`/api/program-requirements/${programRequirements1._id}`)
+      .set('tenantId', TENANT_ID);
 
-    expect(resp.status).toEqual(403);
+    expect(resp.status).toEqual(200);
   });
+});
 
-  it('updateEvent', async () => {
-    protect.mockImplementation(async (req, res, next) => {
-      req.user = student2;
-      next();
-    });
+describe('PUT /api/program-requirements/:requirementId', () => {
+  it('updateInterview', async () => {
     const resp = await request(app)
-      .put(`/api/events/${event2._id}`)
+      .put(`/api/program-requirements/${programRequirements1._id}`)
       .set('tenantId', TENANT_ID)
       .send({
-        ...event2,
-        description: 'updated'
+        admissionDescription: 'modified_description'
       });
 
     expect(resp.status).toEqual(200);
   });
 });
 
-describe('DELETE /api/events/:event_id', () => {
-  it('deleteEvent', async () => {
+describe('DELETE /api/program-requirements/:requirementId', () => {
+  it('deleteInterview', async () => {
     const resp = await request(app)
-      .delete(`/api/events/${event3._id}`)
+      .delete(`/api/program-requirements/${programRequirements2._id}`)
       .set('tenantId', TENANT_ID);
 
     expect(resp.status).toEqual(200);

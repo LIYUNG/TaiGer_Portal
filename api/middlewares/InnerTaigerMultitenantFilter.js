@@ -16,10 +16,9 @@ const InnerTaigerMultitenantFilter = asyncHandler(async (req, res, next) => {
     const permissions = await getPermission(req, user);
 
     const student = await getCachedStudentPermission(req, studentId);
-    if (!student) {
+    if (student.length === 0) {
       next(new ErrorResponse(404, 'Student not found'));
-    }
-    if (
+    } else if (
       ![...student.agents, ...student.editors].some(
         (taiger_user) => taiger_user.toString() === user._id.toString()
       ) &&

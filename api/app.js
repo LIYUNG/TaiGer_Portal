@@ -4,13 +4,13 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const helmet = require('helmet');
-const { ORIGIN } = require('./config');
+const { ORIGIN, isTest } = require('./config');
 
 require('./middlewares/passport');
 
 const router = require('./routes');
 const { errorHandler } = require('./middlewares/error-handler');
-const { isDev, isProd } = require('./config');
+const { isProd } = require('./config');
 const httpLogger = require('./services/httpLogger');
 const {
   tenantMiddleware,
@@ -59,7 +59,7 @@ app.use(express.json());
 if (isProd()) {
   app.use(httpLogger);
 }
-if (isDev()) {
+if (!isProd() && !isTest()) {
   app.use(morgan('dev'));
 }
 

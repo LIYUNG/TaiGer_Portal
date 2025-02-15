@@ -11,6 +11,7 @@ const {
 } = require('../../middlewares/decryptCookieMiddleware');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
+const { disconnectFromDatabase } = require('../../database');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -59,11 +60,10 @@ beforeAll(async () => {
   await UserModel.insertMany(users);
 });
 
-// beforeAll(async () => {
-//   await User.deleteMany();
-//   await User.insertMany(users);
-// });
-afterAll(async () => await clearDatabase());
+afterAll(async () => {
+  await disconnectFromDatabase(TENANT_ID); // Properly close each connection
+  await clearDatabase();
+});
 
 describe('GET /api/users', () => {
   protect.mockImplementation(async (req, res, next) => {

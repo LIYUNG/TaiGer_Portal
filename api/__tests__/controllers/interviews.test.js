@@ -1,20 +1,16 @@
-const fs = require('fs');
-const path = require('path');
-const { spawn } = require('child_process');
-const EventEmitter = require('events');
 const request = require('supertest');
-const { Role } = require('@taiger-common/core');
 
 const { connect, clearDatabase } = require('../fixtures/db');
-const { app } = require('../../app');
 const { UserSchema } = require('../../models/User');
-const { programSchema } = require('../../models/Program');
-const { generateUser } = require('../fixtures/faker');
-const { generateProgram } = require('../fixtures/faker');
 const { protect } = require('../../middlewares/auth');
 const { TENANT_ID } = require('../fixtures/constants');
 const { connectToDatabase } = require('../../middlewares/tenantMiddleware');
 const { interviewsSchema } = require('../../models/Interview');
+const { users, admin, student3 } = require('../mock/user');
+const { app } = require('../../app');
+const { interviews, interview1, interview3 } = require('../mock/interviews');
+const { program4 } = require('../mock/programs');
+const { disconnectFromDatabase } = require('../../database');
 
 jest.mock('../../middlewares/tenantMiddleware', () => {
   const passthrough = async (req, res, next) => {
@@ -68,34 +64,14 @@ jest.mock('../../middlewares/auth', () => {
   };
 });
 
-const admin = generateUser(Role.Admin);
-const agents = [...Array(3)].map(() => generateUser(Role.Agent));
-const agent = generateUser(Role.Agent);
-const editors = [...Array(3)].map(() => generateUser(Role.Editor));
-const editor = generateUser(Role.Editor);
-const students = [...Array(3)].map(() => generateUser(Role.Student));
-const student = generateUser(Role.Student);
-const student2 = generateUser(Role.Student);
-const users = [
-  admin,
-  ...agents,
-  agent,
-  ...editors,
-  editor,
-  ...students,
-  student,
-  student2
-];
-
-const requiredDocuments = ['transcript', 'resume'];
-const optionalDocuments = ['certificate', 'visa'];
-const program = generateProgram(requiredDocuments, optionalDocuments);
 let dbUri;
 
 beforeAll(async () => {
   dbUri = await connect();
 });
+
 afterAll(async () => {
+  await disconnectFromDatabase(TENANT_ID); // Properly close each connection
   await clearDatabase();
 });
 
@@ -108,16 +84,60 @@ beforeEach(async () => {
   await UserModel.deleteMany();
   await UserModel.insertMany(users);
   await InterviewModel.deleteMany();
-  await InterviewModel.insertMany([]);
+  await InterviewModel.insertMany(interviews);
 
   protect.mockImplementation(async (req, res, next) => {
-    req.user = await UserModel.findById(student._id);
+    req.user = admin;
     next();
   });
 });
 
-describe('interview Controller', () => {
-  it('TODO', async () => {
-    expect(200).toEqual(200);
+describe('POST /api/interviews/create/:program_id/:studentId', () => {
+  it('createInterview', async () => {
+    const resp = await request(app)
+      .post(`/api/interviews/create/${program4._id}/${student3._id}`)
+      .set('tenantId', TENANT_ID)
+      .send({
+        student_id: student3._id,
+        program_id: program4._id,
+        interview_date: new Date(),
+        interview_description: 'new-interview',
+        interviewer: 'Steve Jobs'
+      });
+
+    expect(resp.status).toEqual(201);
+  });
+});
+
+describe('GET /api/interviews/:interview_id', () => {
+  it('getInterview', async () => {
+    const resp = await request(app)
+      .get(`/api/interviews/${interview1._id}`)
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toEqual(200);
+  });
+});
+
+describe('PUT /api/interviews/:interview_id', () => {
+  it('updateInterview', async () => {
+    const resp = await request(app)
+      .put(`/api/interviews/${interview1._id}`)
+      .set('tenantId', TENANT_ID)
+      .send({
+        interview_description: 'modified_description'
+      });
+
+    expect(resp.status).toEqual(200);
+  });
+});
+
+describe('DELETE /api/interviews/:interview_id', () => {
+  it('deleteInterview', async () => {
+    const resp = await request(app)
+      .delete(`/api/interviews/${interview3._id}`)
+      .set('tenantId', TENANT_ID);
+
+    expect(resp.status).toEqual(200);
   });
 });

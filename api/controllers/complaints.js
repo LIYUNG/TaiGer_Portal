@@ -221,7 +221,7 @@ const postMessageInTicket = asyncHandler(async (req, res) => {
     .findById(ticketId)
     .populate('requester_id messages.user_id');
 
-  res.status(200).send({ success: true, data: ticket2 });
+  res.status(201).send({ success: true, data: ticket2 });
 
   const student = await req.db
     .model('Student')
@@ -326,7 +326,7 @@ const updateAMessageInComplaint = asyncHandler(async (req, res) => {
     throw new ErrorResponse(423, 'Ticket is closed.');
   }
   const msg = ticket.messages.find(
-    (message) => message._id.toString() === messageId
+    (message) => message._id?.toString() === messageId
   );
 
   if (!msg) {
@@ -334,11 +334,11 @@ const updateAMessageInComplaint = asyncHandler(async (req, res) => {
     throw new ErrorResponse(404, 'Message not found');
   }
   // Prevent multitenant
-  if (msg.user_id.toString() !== user._id.toString()) {
+  if (msg.user_id?.toString() !== user._id?.toString()) {
     logger.error(
       'updateAMessageInComplaint : You can only modify your own message.'
     );
-    throw new ErrorResponse(409, 'You can only delete your own message.');
+    throw new ErrorResponse(409, 'You can only modify your own message.');
   }
 
   // Don't need so delete in S3 , will delete by garbage collector

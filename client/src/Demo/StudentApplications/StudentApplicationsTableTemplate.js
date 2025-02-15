@@ -53,7 +53,7 @@ import {
 } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
-
+import { useSnackBar } from '../../contexts/use-snack-bar';
 import { UpdateStudentApplications, removeProgramFromStudent } from '../../api';
 import { TabTitle } from '../Utils/TabTitle';
 import DEMO from '../../store/constant';
@@ -63,9 +63,11 @@ import Loading from '../../components/Loading/Loading';
 import { useNavigate } from 'react-router-dom';
 import { ImportStudentProgramsCard } from './ImportStudentProgramsCard';
 import { StudentPreferenceCard } from './StudentPreferenceCard';
+import { ConfirmationModal } from '../../components/Modal/ConfirmationModal';
 
 const StudentApplicationsTableTemplate = (props) => {
     const { user } = useAuth();
+    const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [
@@ -83,7 +85,6 @@ const StudentApplicationsTableTemplate = (props) => {
         application_status_changed: false,
         applying_program_count: props.student.applying_program_count,
         modalDeleteApplication: false,
-        modalUpdatedApplication: false,
         showProgramCorrectnessReminderModal: true,
         res_status: 0,
         res_modal_status: 0,
@@ -129,12 +130,6 @@ const StudentApplicationsTableTemplate = (props) => {
             modalDeleteApplication: false
         }));
     };
-    const onHideUpdatedApplicationWindow = () => {
-        setStudentApplicationsTableTemplateState((prevState) => ({
-            ...prevState,
-            modalUpdatedApplication: false
-        }));
-    };
 
     const handleDeleteConfirm = (e) => {
         e.preventDefault();
@@ -150,6 +145,13 @@ const StudentApplicationsTableTemplate = (props) => {
                 const { data, success } = resp.data;
                 const { status } = resp;
                 if (success) {
+                    setSeverity('success');
+                    setMessage(
+                        t('The application deleted successfully!', {
+                            ns: 'common'
+                        })
+                    );
+                    setOpenSnackbar(true);
                     setStudentApplicationsTableTemplateState((prevState) => ({
                         ...prevState,
                         isLoaded: true,
@@ -172,6 +174,11 @@ const StudentApplicationsTableTemplate = (props) => {
                 }
             },
             (error) => {
+                setSeverity('error');
+                setMessage(
+                    error.message || 'An error occurred. Please try again.'
+                );
+                setOpenSnackbar(true);
                 setStudentApplicationsTableTemplateState((prevState) => ({
                     ...prevState,
                     isLoaded: true,
@@ -203,13 +210,19 @@ const StudentApplicationsTableTemplate = (props) => {
                 const { data, success } = resp.data;
                 const { status } = resp;
                 if (success) {
+                    setSeverity('success');
+                    setMessage(
+                        t('Applications status updated successfully!', {
+                            ns: 'common'
+                        })
+                    );
+                    setOpenSnackbar(true);
                     setStudentApplicationsTableTemplateState((prevState) => ({
                         ...prevState,
                         isLoaded: true,
                         student: data,
                         success: success,
                         application_status_changed: false,
-                        modalUpdatedApplication: true,
                         res_modal_status: status
                     }));
                 } else {
@@ -223,6 +236,11 @@ const StudentApplicationsTableTemplate = (props) => {
                 }
             },
             (error) => {
+                setSeverity('error');
+                setMessage(
+                    error.message || 'An error occurred. Please try again.'
+                );
+                setOpenSnackbar(true);
                 setStudentApplicationsTableTemplateState((prevState) => ({
                     ...prevState,
                     isLoaded: true,
@@ -877,72 +895,20 @@ const StudentApplicationsTableTemplate = (props) => {
                             </Box>
                         </>
                     ) : null}
-                    <Dialog
-                        aria-labelledby="contained-modal-title-vcenter"
+                    <ConfirmationModal
+                        closeText={t('No', { ns: 'common' })}
+                        confirmText={t('Yes', { ns: 'common' })}
+                        content="This will delete all message and editted files in discussion. Are you sure?"
+                        isLoading={
+                            !studentApplicationsTableTemplateState.isLoaded
+                        }
                         onClose={onHideModalDeleteApplication}
+                        onConfirm={handleDeleteConfirm}
                         open={
                             studentApplicationsTableTemplateState.modalDeleteApplication
                         }
-                        size="small"
-                    >
-                        <DialogTitle>
-                            {t('Warning', { ns: 'common' })}:{' '}
-                            {t('Delete an application', { ns: 'common' })}
-                        </DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                This will delete all message and editted files
-                                in discussion. Are you sure?
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button
-                                color="error"
-                                disabled={
-                                    !studentApplicationsTableTemplateState.isLoaded
-                                }
-                                onClick={handleDeleteConfirm}
-                                variant="contained"
-                            >
-                                {t('Yes', { ns: 'common' })}
-                            </Button>
-                            <Button
-                                onClick={onHideModalDeleteApplication}
-                                variant="outlined"
-                            >
-                                {t('Close', { ns: 'common' })}
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-                    <Dialog
-                        aria-labelledby="contained-modal-title-vcenter"
-                        centered
-                        onClose={onHideUpdatedApplicationWindow}
-                        open={
-                            studentApplicationsTableTemplateState.modalUpdatedApplication
-                        }
-                    >
-                        <DialogTitle>Info:</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                {t(
-                                    'Applications status updated successfully!',
-                                    {
-                                        ns: 'common'
-                                    }
-                                )}
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button
-                                color="primary"
-                                onClick={onHideUpdatedApplicationWindow}
-                                variant="outlined"
-                            >
-                                {t('Close', { ns: 'common' })}
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
+                        title={t('Warning', { ns: 'common' })}
+                    />
                 </Box>
             </>
         </Box>

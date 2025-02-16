@@ -278,50 +278,53 @@ const routes = [
         element: <DashboardDefault />
     },
     {
-        path: '/courses/analysis/courses/new',
-        element: <CourseNew />
+        path: '/courses',
+        children: [
+            { path: 'analysis/courses/new', element: <CourseNew /> },
+            {
+                path: 'analysis/courses/edit/:courseId',
+                errorElement: <DefaultErrorPage />,
+                loader: getCourseLoader,
+                element: <CourseEdit />
+            },
+            {
+                path: 'analysis/courses/all',
+                errorElement: <DefaultErrorPage />,
+                loader: getAllCoursesLoader,
+                element: <AllCourses />
+            },
+            {
+                path: 'analysis/keywords',
+                errorElement: <DefaultErrorPage />,
+                loader: getCourseKeywordSetsLoader,
+                element: <CourseKeywordsEdit />
+            },
+            {
+                path: 'analysis/keywords/new',
+                errorElement: <DefaultErrorPage />,
+                element: <CourseKeywordsOverviewNew />
+            },
+            {
+                path: 'analysis/programs',
+                errorElement: <DefaultErrorPage />,
+                loader: getProgramRequirementsLoader,
+                element: <ProgramRequirements />
+            },
+            {
+                path: 'analysis/programs/requirements/new',
+                errorElement: <DefaultErrorPage />,
+                loader: getProgramsAndCourseKeywordSetsLoader,
+                element: <ProgramRequirementsNewIndex />
+            },
+            {
+                path: 'analysis/programs/requirements/:requirementId',
+                errorElement: <DefaultErrorPage />,
+                loader: getProgramRequirementLoader,
+                element: <ProgramRequirementsEditIndex />
+            }
+        ]
     },
-    {
-        path: '/courses/analysis/courses/edit/:courseId',
-        errorElement: <DefaultErrorPage />,
-        loader: getCourseLoader,
-        element: <CourseEdit />
-    },
-    {
-        path: '/courses/analysis/courses/all',
-        errorElement: <DefaultErrorPage />,
-        loader: getAllCoursesLoader,
-        element: <AllCourses />
-    },
-    {
-        path: '/courses/analysis/keywords',
-        errorElement: <DefaultErrorPage />,
-        loader: getCourseKeywordSetsLoader,
-        element: <CourseKeywordsEdit />
-    },
-    {
-        path: '/courses/analysis/keywords/new',
-        errorElement: <DefaultErrorPage />,
-        element: <CourseKeywordsOverviewNew />
-    },
-    {
-        path: '/courses/analysis/programs',
-        errorElement: <DefaultErrorPage />,
-        loader: getProgramRequirementsLoader,
-        element: <ProgramRequirements />
-    },
-    {
-        path: '/courses/analysis/programs/requirements/new',
-        errorElement: <DefaultErrorPage />,
-        loader: getProgramsAndCourseKeywordSetsLoader,
-        element: <ProgramRequirementsNewIndex />
-    },
-    {
-        path: '/courses/analysis/programs/requirements/:requirementId',
-        errorElement: <DefaultErrorPage />,
-        loader: getProgramRequirementLoader,
-        element: <ProgramRequirementsEditIndex />
-    },
+
     {
         path: '/admissions-overview',
         exact: true,
@@ -329,46 +332,62 @@ const routes = [
         Component: Admissions
     },
     {
-        path: '/archiv/students',
-        exact: true,
-        name: 'My Archived Students',
-        Component: ArchivStudent
+        path: '/archiv',
+        children: [
+            {
+                path: 'students',
+                exact: true,
+                name: 'My Archived Students',
+                Component: ArchivStudent
+            },
+            {
+                path: 'students/all',
+                errorElement: <DefaultErrorPage />,
+                loader: getAllArchivedStudentsLoader,
+                element: <AllArchivStudent />
+            }
+        ]
     },
     {
-        path: '/archiv/students/all',
-        errorElement: <DefaultErrorPage />,
-        loader: getAllArchivedStudentsLoader,
-        element: <AllArchivStudent />
-    },
-    {
-        path: '/programs/:programId/change-requests',
-        exact: true,
-        name: 'ProgramChangeRequestPage',
-        Component: ProgramChangeRequestPage
-    },
-    {
-        path: '/programs/create',
-        errorElement: <DefaultErrorPage />,
-        loader: getDistinctSchoolsLoader,
-        Component: ProgramCreatePage
-    },
-    {
-        path: '/programs/config',
-        errorElement: <DefaultErrorPage />,
-        loader: getDistinctSchoolsLoader,
-        Component: SchoolConfig
-    },
-    {
-        path: '/programs/:programId',
-        errorElement: <DefaultErrorPage />,
-        loader: getProgramLoader,
-        Component: SingleProgram
-    },
-    {
-        path: '/programs/:programId/edit',
-        errorElement: <DefaultErrorPage />,
-        loader: getDistinctSchoolsLoader,
-        Component: ProgramEditPage
+        path: '/programs',
+        children: [
+            {
+                path: '',
+                exact: true,
+                name: 'Program Table',
+                Component: ProgramList
+            },
+            {
+                path: ':programId/change-requests',
+                exact: true,
+                name: 'ProgramChangeRequestPage',
+                Component: ProgramChangeRequestPage
+            },
+            {
+                path: 'create',
+                errorElement: <DefaultErrorPage />,
+                loader: getDistinctSchoolsLoader,
+                Component: ProgramCreatePage
+            },
+            {
+                path: 'config',
+                errorElement: <DefaultErrorPage />,
+                loader: getDistinctSchoolsLoader,
+                Component: SchoolConfig
+            },
+            {
+                path: ':programId',
+                errorElement: <DefaultErrorPage />,
+                loader: getProgramLoader,
+                Component: SingleProgram
+            },
+            {
+                path: ':programId/edit',
+                errorElement: <DefaultErrorPage />,
+                loader: getDistinctSchoolsLoader,
+                Component: ProgramEditPage
+            }
+        ]
     },
     {
         path: '/document-modification/:documentsthreadId',
@@ -376,12 +395,7 @@ const routes = [
         name: 'CVMLRL Modification Thread',
         Component: CVMLRL_Modification_Thread
     },
-    {
-        path: '/programs',
-        exact: true,
-        name: 'Program Table',
-        Component: ProgramList
-    },
+
     {
         path: '/resources',
         exact: true,
@@ -396,22 +410,28 @@ const routes = [
     },
     {
         path: '/student-applications',
-        errorElement: <DefaultErrorPage />,
-        loader: getStudentsLoader,
-        element: <ApplicationsOverview />
+        children: [
+            {
+                path: '',
+                errorElement: <DefaultErrorPage />,
+                loader: getStudentsLoader,
+                element: <ApplicationsOverview />
+            },
+            {
+                path: ':student_id',
+                errorElement: <DefaultErrorPage />,
+                loader: getApplicationStudentLoader,
+                element: <StudentApplications />
+            },
+            {
+                path: 'edit/:student_id',
+                errorElement: <DefaultErrorPage />,
+                loader: getApplicationStudentLoader,
+                element: <StudentApplicationsAssignPage />
+            }
+        ]
     },
-    {
-        path: '/student-applications/:student_id',
-        errorElement: <DefaultErrorPage />,
-        loader: getApplicationStudentLoader,
-        element: <StudentApplications />
-    },
-    {
-        path: '/student-applications/edit/:student_id',
-        errorElement: <DefaultErrorPage />,
-        loader: getApplicationStudentLoader,
-        element: <StudentApplicationsAssignPage />
-    },
+
     {
         path: '/users',
         exact: true,
@@ -420,57 +440,49 @@ const routes = [
     },
     {
         path: '/student-database',
-        errorElement: <DefaultErrorPage />,
-        loader: getAllStudentsV2Loader,
-        element: <StudentDatabase />
+        children: [
+            {
+                path: '',
+                errorElement: <DefaultErrorPage />,
+                loader: getAllStudentsV2Loader,
+                element: <StudentDatabase />
+            },
+            {
+                path: ':studentId',
+                errorElement: <DefaultErrorPage />,
+                loader: getStudentAndDocLinksLoader,
+                element: <SingleStudentPage />
+            }
+        ]
     },
     {
-        path: '/student-database/:studentId',
-        errorElement: <DefaultErrorPage />,
-        loader: getStudentAndDocLinksLoader,
-        element: <SingleStudentPage />
-    },
-    // {
-    //   path: '/maps/google-map',
-    //   exact: true,
-    //   name: 'Google Map',
-    //   Component: GoogleMap
-    // },
-    {
-        path: '/docs/taiger/internal',
-        exact: true,
-        name: 'Documentation',
-        Component: InternaldocsPage
-    },
-    {
-        path: '/docs/:category',
-        exact: true,
-        name: 'Documentation',
-        Component: DocsApplication
-    },
-    {
-        path: '/docs/internal/search/:documentation_id',
-        exact: true,
-        name: 'DocumentationPage',
-        Component: DocsInternalPage
-    },
-    {
-        path: '/docs/search/:documentation_id',
-        exact: true,
-        name: 'DocumentationPage',
-        Component: DocsPage
-    },
-    {
-        path: '/internal/database/public-docs',
-        exact: true,
-        name: 'DocCreatePage',
-        Component: DocCreatePage
-    },
-    {
-        path: '/internal/database/internal-docs',
-        exact: true,
-        name: 'InternalDocCreatePage',
-        Component: InternalDocCreatePage
+        path: '/docs',
+        children: [
+            {
+                path: 'taiger/internal',
+                exact: true,
+                name: 'Documentation',
+                Component: InternaldocsPage
+            },
+            {
+                path: ':category',
+                exact: true,
+                name: 'Documentation',
+                Component: DocsApplication
+            },
+            {
+                path: 'internal/search/:documentation_id',
+                exact: true,
+                name: 'DocumentationPage',
+                Component: DocsInternalPage
+            },
+            {
+                path: 'search/:documentation_id',
+                exact: true,
+                name: 'DocumentationPage',
+                Component: DocsPage
+            }
+        ]
     },
     {
         path: '/download',
@@ -479,28 +491,33 @@ const routes = [
         Component: Download
     },
     {
-        path: '/my-courses/analysis/:user_id',
-        exact: true,
-        name: 'My Courses Analysis',
-        Component: MyCoursesAnalysis
-    },
-    {
-        path: '/my-courses/analysis/v2/:user_id',
-        exact: true,
-        name: 'My Courses Analysis',
-        Component: MyCoursesAnalysisV2
-    },
-    {
-        path: '/my-courses/:student_id',
-        exact: true,
-        name: 'My Courses 2',
-        Component: MyCourses
-    },
-    {
         path: '/my-courses',
-        exact: true,
-        name: 'My Courses 1',
-        Component: MyCourses
+        children: [
+            {
+                path: '',
+                exact: true,
+                name: 'My Courses 1',
+                Component: MyCourses
+            },
+            {
+                path: 'analysis/:user_id',
+                exact: true,
+                name: 'My Courses Analysis',
+                Component: MyCoursesAnalysis
+            },
+            {
+                path: 'analysis/v2/:user_id',
+                exact: true,
+                name: 'My Courses Analysis',
+                Component: MyCoursesAnalysisV2
+            },
+            {
+                path: ':student_id',
+                exact: true,
+                name: 'My Courses 2',
+                Component: MyCourses
+            }
+        ]
     },
     {
         path: '/base-documents',
@@ -533,35 +550,27 @@ const routes = [
         Component: PortalCredentialPage
     },
     {
-        path: '/dashboard/cv-ml-rl',
-        exact: true,
-        name: 'CV/ML/RL Dashboard',
-        Component: CVMLRLDashboard
-    },
-    {
-        path: '/dashboard/essay',
-        exact: true,
-        name: 'CV/ML/RL Dashboard',
-        Component: EssayDashboard
-    },
-    {
-        path: '/internal/widgets/course-analyser',
-        errorElement: <DefaultErrorPage />,
-        name: 'Course Analyser',
-        loader: getProgramRequirementsV2Loader,
-        Component: CoursesAnalysisWidget
-    },
-    {
-        path: '/internal/widgets/course-analyser/v2/:user_id',
-        exact: true,
-        name: 'MyCourses Analysis',
-        Component: MyCoursesAnalysisV2
-    },
-    {
-        path: '/internal/widgets/:user_id',
-        exact: true,
-        name: 'My MyCourses Analysis',
-        Component: MyCoursesAnalysis
+        path: '/dashboard',
+        children: [
+            {
+                path: 'cv-ml-rl',
+                exact: true,
+                name: 'CV/ML/RL Dashboard',
+                Component: CVMLRLDashboard
+            },
+            {
+                path: 'essay',
+                exact: true,
+                name: 'CV/ML/RL Dashboard',
+                Component: EssayDashboard
+            },
+            {
+                path: 'internal',
+                exact: true,
+                name: '',
+                Component: InternalDashboard
+            }
+        ]
     },
     {
         path: '/cv-ml-rl-center',
@@ -592,24 +601,6 @@ const routes = [
         errorElement: <DefaultErrorPage />,
         loader: getMyAcademicBackgroundLoader,
         element: <Survey />
-    },
-    {
-        path: '/teams/permissions',
-        exact: true,
-        name: '',
-        Component: TaiGerPermissions
-    },
-    {
-        path: '/teams/members',
-        exact: true,
-        name: '',
-        Component: TaiGerOrg
-    },
-    {
-        path: '/dashboard/internal',
-        exact: true,
-        name: '',
-        Component: InternalDashboard
     },
     {
         path: '/all-students-applications',
@@ -647,64 +638,117 @@ const routes = [
         element: <StudentOverviewPage />
     },
     {
-        path: '/internal/program-conflict',
-        exact: true,
-        name: '',
-        Component: ProgramConflict
+        path: '/internal',
+        children: [
+            {
+                path: 'program-conflict',
+                exact: true,
+                name: '',
+                Component: ProgramConflict
+            },
+            {
+                path: 'program-task-delta',
+                exact: true,
+                name: '',
+                Component: ProgramTaskDelta
+            },
+            {
+                path: 'accounting',
+                exact: true,
+                name: '',
+                Component: Accounting
+            },
+            {
+                path: 'accounting/users/:taiger_user_id',
+                exact: true,
+                name: '',
+                Component: SingleBalanceSheetOverview
+            },
+            {
+                path: 'widgets/course-analyser',
+                errorElement: <DefaultErrorPage />,
+                name: 'Course Analyser',
+                loader: getProgramRequirementsV2Loader,
+                Component: CoursesAnalysisWidget
+            },
+            {
+                path: 'widgets/course-analyser/v2/:user_id',
+                exact: true,
+                name: 'MyCourses Analysis',
+                Component: MyCoursesAnalysisV2
+            },
+            {
+                path: 'widgets/:user_id',
+                exact: true,
+                name: 'My MyCourses Analysis',
+                Component: MyCoursesAnalysis
+            },
+            {
+                path: 'database/public-docs',
+                exact: true,
+                name: 'DocCreatePage',
+                Component: DocCreatePage
+            },
+            {
+                path: 'database/internal-docs',
+                exact: true,
+                name: 'InternalDocCreatePage',
+                Component: InternalDocCreatePage
+            }
+        ]
     },
     {
-        path: '/internal/program-task-delta',
-        exact: true,
-        name: '',
-        Component: ProgramTaskDelta
-    },
-    {
-        path: '/internal/accounting',
-        exact: true,
-        name: '',
-        Component: Accounting
-    },
-    {
-        path: '/internal/accounting/users/:taiger_user_id',
-        exact: true,
-        name: '',
-        Component: SingleBalanceSheetOverview
-    },
-    {
-        path: '/teams/agents/profile/:user_id',
-        exact: true,
-        name: '',
-        Component: TaiGerMemberProfile
-    },
-    {
-        path: '/teams/agents/:user_id',
-        exact: true,
-        name: '',
-        Component: TaiGerOrgAgent
-    },
-    {
-        path: '/teams/agents/archiv/:user_id',
-        exact: true,
-        name: 'Archived Students',
-        Component: ArchivStudent
-    },
-    {
-        path: '/teams/editors/:user_id',
-        exact: true,
-        name: '',
-        Component: TaiGerOrgEditor
-    },
-    {
-        path: '/teams/editors/archiv/:user_id',
-        exact: true,
-        name: 'Archived Students',
-        Component: ArchivStudent
-    },
-    {
-        path: '/teams/admins/:user_id',
-        exact: true,
-        name: '',
-        Component: TaiGerOrgAdmin
+        path: '/teams',
+        children: [
+            {
+                path: 'agents/profile/:user_id',
+                exact: true,
+                name: '',
+                Component: TaiGerMemberProfile
+            },
+            {
+                path: 'agents/:user_id',
+                exact: true,
+                name: '',
+                Component: TaiGerOrgAgent
+            },
+            {
+                path: 'agents/archiv/:user_id',
+                exact: true,
+                name: 'Archived Students',
+                Component: ArchivStudent
+            },
+            {
+                path: 'editors/:user_id',
+                exact: true,
+                name: '',
+                Component: TaiGerOrgEditor
+            },
+            {
+                path: 'editors/archiv/:user_id',
+                exact: true,
+                name: 'Archived Students',
+                Component: ArchivStudent
+            },
+            {
+                path: 'admins/:user_id',
+                exact: true,
+                name: '',
+                Component: TaiGerOrgAdmin
+            },
+            {
+                path: 'permissions',
+                exact: true,
+                name: '',
+                Component: TaiGerPermissions
+            },
+            {
+                path: 'members',
+                exact: true,
+                name: '',
+                Component: TaiGerOrg
+            }
+        ]
     },
     {
         path: '/',
@@ -722,7 +766,6 @@ if (appConfig.vpdEnable) {
         Component: UniAssist
     });
 }
-
 if (appConfig.interviewEnable) {
     routes.push({
         path: '/interview-training',

@@ -6,28 +6,14 @@ const {
   DeleteObjectCommand,
   waitUntilObjectNotExists,
   DeleteObjectsCommand,
-  paginateListObjectsV2,
   PutObjectCommand,
   ListObjectsCommand
 } = require('@aws-sdk/client-s3');
 
-const {
-  AWS_S3_ACCESS_KEY_ID,
-  AWS_S3_ACCESS_KEY,
-  isProd,
-  AWS_REGION
-} = require('../config');
 const logger = require('../services/logger');
+const { AWS_KEY_CONFIG } = require('./constants');
 
-const s3Client = isProd()
-  ? new S3Client({ region: AWS_REGION })
-  : new S3Client({
-      region: AWS_REGION,
-      credentials: {
-        accessKeyId: AWS_S3_ACCESS_KEY_ID,
-        secretAccessKey: AWS_S3_ACCESS_KEY
-      }
-    });
+const s3Client = new S3Client(AWS_KEY_CONFIG);
 
 const putS3Object = async ({ bucketName, key, Body, ContentType }) => {
   const client = new S3Client({});

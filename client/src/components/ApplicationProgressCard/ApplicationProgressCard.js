@@ -49,6 +49,8 @@ import {
     convertDate
 } from '../../utils/contants';
 import { appConfig } from '../../config';
+import { ConfirmationModal } from '../Modal/ConfirmationModal';
+import { useSnackBar } from '../../contexts/use-snack-bar';
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 10,
@@ -111,6 +113,7 @@ const AdmissionLetterLink = ({ application }) => {
 export default function ApplicationProgressCard(props) {
     const [isCollapse, setIsCollapse] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const { setMessage, setSeverity, setOpenSnackbar } = useSnackBar();
     const navigate = useNavigate();
 
     const [application, setApplication] = useState(props.application);
@@ -177,6 +180,9 @@ export default function ApplicationProgressCard(props) {
                     const application_tmep = { ...application };
                     application_tmep.admission = result;
                     application_tmep.admission_letter = data.admission_letter;
+                    setSeverity('success');
+                    setMessage('Uploaded application status successfully!');
+                    setOpenSnackbar(true);
                     setApplication(application_tmep);
                     setLetter(null);
                     setShowUndoModal(false);
@@ -189,7 +195,12 @@ export default function ApplicationProgressCard(props) {
                     setIsLoading(false);
                 }
             },
-            () => {
+            (error) => {
+                setSeverity('error');
+                setMessage(
+                    error.message || 'An error occurred. Please try again.'
+                );
+                setOpenSnackbar(true);
                 setLetter(null);
                 setIsLoading(false);
             }
@@ -504,42 +515,18 @@ export default function ApplicationProgressCard(props) {
                     />
                 </Collapse>
             </Card>
-            <Dialog onClose={closeUndoModal} open={showUndoModal} size="small">
-                <DialogTitle>{i18next.t('Attention')}</DialogTitle>
-                <DialogContent>
-                    <Typography id="modal-modal-description" sx={{ my: 2 }}>
-                        {i18next.t(
-                            'Do you want to reset the result of the application of'
-                        )}{' '}
-                        <b>{`${application.programId.school}-${application.programId.degree}-${application.programId.program_name}`}</b>
-                        ?
-                    </Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        color="secondary"
-                        disabled={isLoading}
-                        onClick={(e) => handleUpdateResult(e, '-')}
-                        sx={{ mr: 1 }}
-                        title="Undo"
-                        variant="contained"
-                    >
-                        {isLoading ? (
-                            <CircularProgress size="small" />
-                        ) : (
-                            i18next.t('Confirm', { ns: 'common' })
-                        )}
-                    </Button>
-                    <Button
-                        color="secondary"
-                        onClick={closeUndoModal}
-                        title="Undo"
-                        variant="outlined"
-                    >
-                        {i18next.t('Cancel', { ns: 'common' })}
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            <ConfirmationModal
+                closeText={i18next.t('Cancel', { ns: 'common' })}
+                confirmText={i18next.t('Confirm', { ns: 'common' })}
+                content={`${i18next.t(
+                    'Do you want to reset the result of the application of'
+                )} ${application.programId.school} - ${application.programId.degree} - ${application.programId.program_name}?`}
+                isLoading={isLoading}
+                onClose={closeUndoModal}
+                onConfirm={(e) => handleUpdateResult(e, '-')}
+                open={showUndoModal}
+                title={i18next.t('Attention')}
+            />
             <Dialog
                 fullWidth={true}
                 maxWidth="md"

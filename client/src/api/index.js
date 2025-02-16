@@ -29,6 +29,7 @@ export const resendActivation = ({ email }) =>
     request.post('/auth/resend-activation', { email });
 
 export const verify = () => request.get('/auth/verify');
+export const verifyV2 = () => getData('/auth/verify');
 
 // Search API
 export const getQueryStudentsResults = (keywords) =>
@@ -385,8 +386,6 @@ export const postPortalCredentials = (student_id, program_id, credentials) =>
 // Course, Transcript APIs
 export const getMycourses = (student_id) =>
     request.get(`/api/courses/${student_id}`);
-export const postMycourses = (student_id, file) =>
-    request.post(`/api/courses/${student_id}`, file);
 export const putMycourses = (student_id, locked) =>
     request.put(`/api/courses/${student_id}`, locked);
 
@@ -820,10 +819,8 @@ export const updateProgramTicket = (ticket_id, updatedTicket) =>
     request.put(`/api/tickets/${ticket_id}`, updatedTicket);
 export const deleteProgramTicket = (ticket_id) =>
     request.delete(`/api/tickets/${ticket_id}`);
-
 export const getProgramTickets = (type, status) =>
     request.get(`/api/tickets?type=${type}&status=${status}`);
-
 export const getProgramTicketsV2 = ({ type, status }) =>
     getData(`/api/tickets?type=${type}&status=${status}`);
 

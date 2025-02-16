@@ -11,12 +11,7 @@ import {
     Button,
     Badge,
     TextField,
-    Breadcrumbs,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogContentText,
-    DialogActions
+    Breadcrumbs
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as LinkDom, useParams } from 'react-router-dom';
@@ -33,10 +28,12 @@ import { appConfig } from '../../config';
 import DEMO from '../../store/constant';
 import { useAuth } from '../../components/AuthProvider';
 import { TopBar } from '../../components/TopBar/TopBar';
+import { ConfirmationModal } from '../../components/Modal/ConfirmationModal';
 const Questionnaire = () => {
     const { interview_id } = useParams();
     const { t } = useTranslation();
     const { user } = useAuth();
+    const [isLoading, setIsLoading] = React.useState(false);
     const [isChanged, setIsChanged] = React.useState(false);
     const [isModalOpen, setIsModalOpen] = React.useState(false);
     const [values, setValues] = React.useState({
@@ -161,10 +158,7 @@ const Questionnaire = () => {
     };
     const handleSubmit = async () => {
         try {
-            setValues((prevState) => ({
-                ...prevState,
-                isFinal: true
-            }));
+            setIsLoading(true);
             const response = await updateInterviewSurvey(interview_id, {
                 student_id: interview.student_id?._id?.toString(), // Replace with actual respondent ID if needed
                 interview_id: interview_id,
@@ -177,7 +171,12 @@ const Questionnaire = () => {
                 interviewQuestions: values.interviewQuestions,
                 interviewFeedback: values.interviewFeedback
             });
+            setIsLoading(false);
             setIsModalOpen(false);
+            setValues((prevState) => ({
+                ...prevState,
+                isFinal: true
+            }));
             console.log('Survey response submitted:', response.data);
         } catch (error) {
             console.error('Error submitting survey response:', error);
@@ -408,33 +407,21 @@ const Questionnaire = () => {
             >
                 {t('Submit', { ns: 'common' })}
             </Button>
-            <Dialog onClose={() => setIsModalOpen(false)} open={isModalOpen}>
-                <DialogTitle>{t('Attention')}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        {t('Do you want to submit the interview survey?', {
-                            ns: 'interviews'
-                        })}
-                    </DialogContentText>
-                    {t(
-                        'After submission you can not change the survey anymore.',
-                        {
-                            ns: 'interviews'
-                        }
-                    )}
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        color="primary"
-                        disabled={values.isFinal}
-                        fullWidth
-                        onClick={handleSubmit}
-                        variant="contained"
-                    >
-                        {t('Submit', { ns: 'common' })}
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            <ConfirmationModal
+                closeText={t('Cancel', { ns: 'common' })}
+                confirmText={t('Submit', { ns: 'common' })}
+                content={`${t('Do you want to submit the interview survey?', {
+                    ns: 'interviews'
+                })} 
+                ${t('After submission you can not change the survey anymore.', {
+                    ns: 'interviews'
+                })}`}
+                isLoading={isLoading}
+                onClose={() => setIsModalOpen(false)}
+                onConfirm={handleSubmit}
+                open={isModalOpen}
+                title={t('Attention')}
+            />
         </Box>
     );
 };

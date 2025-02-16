@@ -1,24 +1,9 @@
 const { STSClient, AssumeRoleCommand } = require('@aws-sdk/client-sts');
 
 const logger = require('../services/logger');
-const {
-  AWS_S3_ACCESS_KEY_ID,
-  AWS_S3_ACCESS_KEY,
-  AWS_REGION,
-  isProd
-} = require('../config');
+const { AWS_KEY_CONFIG } = require('./constants');
 
-const stsClient = isProd()
-  ? new STSClient({
-      region: AWS_REGION
-    })
-  : new STSClient({
-      region: AWS_REGION,
-      credentials: {
-        accessKeyId: AWS_S3_ACCESS_KEY_ID,
-        secretAccessKey: AWS_S3_ACCESS_KEY
-      }
-    });
+const stsClient = new STSClient(AWS_KEY_CONFIG);
 
 const getTemporaryCredentials = async (roleToAssumeArn) => {
   try {

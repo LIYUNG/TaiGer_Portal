@@ -1,18 +1,10 @@
 import React, { useState } from 'react';
-import {
-    Autocomplete,
-    Button,
-    Checkbox,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    TextField
-} from '@mui/material';
+import { Autocomplete, Checkbox, TextField } from '@mui/material';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { useTranslation } from 'react-i18next';
 import { ATTRIBUTES } from '../../../../utils/contants';
+import { ConfirmationModal } from '../../../../components/Modal/ConfirmationModal';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -70,46 +62,27 @@ const EditAttributesSubpage = (props) => {
     };
 
     return (
-        <Dialog
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-            onClose={props.onHide}
-            open={props.show}
-            size="large"
-        >
-            <DialogTitle>
-                Attributes for {props.student.firstname} -{' '}
-                {props.student.lastname} to
-            </DialogTitle>
-            <DialogContent>
+        <ConfirmationModal
+            closeText={t('Cancel', { ns: 'common' })}
+            confirmText={t('Update', { ns: 'common' })}
+            content={
                 <AttributeInputSelection
                     onAttributesChange={onAttributesChange}
                     updateAttributesList={checkboxState.updateAttributesList}
                 />
-            </DialogContent>
-            <DialogActions>
-                <Button
-                    color="primary"
-                    onClick={(e) =>
-                        props.submitUpdateAttributeslist(
-                            e,
-                            checkboxState.updateAttributesList,
-                            props.student._id
-                        )
-                    }
-                    variant="contained"
-                >
-                    {t('Update', { ns: 'common' })}
-                </Button>
-                <Button
-                    color="secondary"
-                    onClick={props.onHide}
-                    variant="outlined"
-                >
-                    {t('Cancel', { ns: 'common' })}
-                </Button>
-            </DialogActions>
-        </Dialog>
+            }
+            isLoading={props.isLoading}
+            onClose={props.onHide}
+            onConfirm={(e) =>
+                props.submitUpdateAttributeslist(
+                    e,
+                    checkboxState.updateAttributesList,
+                    props.student._id
+                )
+            }
+            open={props.show}
+            title={`Attributes for ${props.student.firstname} - ${props.student.lastname} to`}
+        />
     );
 };
 

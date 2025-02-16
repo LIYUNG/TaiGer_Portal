@@ -1,5 +1,6 @@
 import {
     getAdmissions,
+    verifyV2,
     getProgramsV2,
     getProgramTicketsV2,
     getProgramV2,
@@ -93,6 +94,12 @@ export const getProgramsQuery = () => ({
     queryKey: ['programs'],
     queryFn: getProgramsV2,
     staleTime: 1000 * 60 // 1 minutes
+});
+
+export const getVerifyQuery = () => ({
+    queryKey: ['verify'],
+    queryFn: verifyV2,
+    staleTime: 1000 * 60 * 10 // 10 minutes
 });
 
 export const getStudentsQuery = () => ({

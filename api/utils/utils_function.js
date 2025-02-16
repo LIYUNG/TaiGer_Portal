@@ -34,7 +34,7 @@ const {
   needUpdateCourseSelection
 } = require('../constants');
 const { asyncHandler } = require('../middlewares/error-handler');
-const { isProd, AWS_S3_BUCKET_NAME } = require('../config');
+const { AWS_S3_BUCKET_NAME, TENANT_ID } = require('../config');
 const { connectToDatabase } = require('../middlewares/tenantMiddleware');
 const { deleteS3Objects, listS3ObjectsV2 } = require('../aws/s3');
 const { ErrorResponse } = require('../common/errors');
@@ -274,7 +274,7 @@ const TasksReminderEmails_Student_core = asyncHandler(async (req) => {
 
 // Weekly called.
 const TasksReminderEmails = asyncHandler(async () => {
-  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const tenantId = TENANT_ID;
   const req = {};
   req.db = connectToDatabase(tenantId);
   req.VCModel = req.db.model('VC');
@@ -511,7 +511,7 @@ const UrgentTasksReminderEmails_Editor_core = asyncHandler(async (req) => {
 });
 
 const UrgentTasksReminderEmails = asyncHandler(async () => {
-  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const tenantId = TENANT_ID;
   const req = {};
   req.db = connectToDatabase(tenantId);
   req.VCModel = req.db.model('VC');
@@ -576,7 +576,7 @@ const NextSemesterCourseSelectionStudentReminderEmails = asyncHandler(
 const NextSemesterCourseSelectionAgentReminderEmails = asyncHandler(
   async () => {
     // Only inform active student
-    const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+    const tenantId = TENANT_ID;
     const req = {};
     req.db = connectToDatabase(tenantId);
     req.VCModel = req.db.model('VC');
@@ -667,7 +667,7 @@ const NextSemesterCourseSelectionAgentReminderEmails = asyncHandler(
 );
 
 const NextSemesterCourseSelectionReminderEmails = asyncHandler(async () => {
-  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const tenantId = TENANT_ID;
 
   const req = {};
   req.db = connectToDatabase(tenantId);
@@ -836,7 +836,7 @@ const MeetingDailyReminderChecker = asyncHandler(async () => {
   const twentyFourHoursLater = new Date(currentDate);
   twentyFourHoursLater.setHours(currentDate.getHours() + 24);
 
-  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const tenantId = TENANT_ID;
   const req = {};
   req.db = connectToDatabase(tenantId);
   req.VCModel = req.db.model('VC'); // Only future meeting within 24 hours, not past
@@ -912,7 +912,7 @@ const UnconfirmedMeetingDailyReminderChecker = asyncHandler(async () => {
   const currentDate = new Date();
 
   // Only future meeting within 24 hours, not past
-  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const tenantId = TENANT_ID;
   const req = {};
   req.db = connectToDatabase(tenantId);
   req.VCModel = req.db.model('VC');
@@ -1341,7 +1341,7 @@ const CalculateAverageResponseTimeAndSave = asyncHandler(async (req) => {
 });
 
 const DailyCalculateAverageResponseTime = asyncHandler(async () => {
-  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const tenantId = TENANT_ID;
   const req = {};
   req.db = connectToDatabase(tenantId);
   req.VCModel = req.db.model('VC');
@@ -1356,7 +1356,7 @@ const DailyInterviewSurveyChecker = asyncHandler(async () => {
   const twentyFourHoursAgo = new Date(currentDate);
   twentyFourHoursAgo.setHours(currentDate.getHours() - 24);
   // interviews took place within last 24 hours
-  const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+  const tenantId = TENANT_ID;
   const req = {};
   req.db = connectToDatabase(tenantId);
   req.VCModel = req.db.model('VC');
@@ -1392,7 +1392,7 @@ const NoInterviewTrainerOrTrainingDateDailyReminderChecker = asyncHandler(
     const currentDate = new Date();
     const currentDateString = currentDate.toISOString().split('T')[0]; // Converts to 'YYYY-MM-DD' format
 
-    const tenantId = isProd() ? 'TaiGer_Prod' : 'TaiGer';
+    const tenantId = TENANT_ID;
     const req = {};
     req.db = connectToDatabase(tenantId);
     req.VCModel = req.db.model('VC');

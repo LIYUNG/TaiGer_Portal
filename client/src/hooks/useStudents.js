@@ -135,7 +135,7 @@ function useStudents(props) {
                     var studentIdx = students_temp.findIndex(
                         ({ _id }) => _id === student_id
                     );
-                    students_temp[studentIdx] = data; // datda is single student updated
+                    students_temp[studentIdx] = data; // data is single student updated
                     setStudentsState((prevState) => ({
                         ...prevState,
                         isLoaded: true, //false to reload everything

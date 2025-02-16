@@ -159,7 +159,6 @@ const StudentDashboard = (props) => {
                         </Alert>
                     </Grid>
                 ) : null}
-
                 {student.notification &&
                 !student.notification.isRead_uni_assist_task_assigned &&
                 appConfig.vpdEnable &&
@@ -198,34 +197,6 @@ const StudentDashboard = (props) => {
                                     />
                                 </Link>
                             </Typography>
-                        </Alert>
-                    </Grid>
-                ) : null}
-                {/* new agents assigned banner */}
-                {student.notification &&
-                !student.notification.isRead_new_agent_assigned ? (
-                    <Grid item xs={12}>
-                        <Alert
-                            onClose={(e) =>
-                                removeBanner(e, 'isRead_new_agent_assigned')
-                            }
-                            severity="success"
-                        >
-                            {t('New agent is assigned to you')}
-                        </Alert>
-                    </Grid>
-                ) : null}
-                {/* new editors assigned banner */}
-                {student.notification &&
-                !student.notification.isRead_new_editor_assigned ? (
-                    <Grid item xs={12}>
-                        <Alert
-                            onClose={(e) =>
-                                removeBanner(e, 'isRead_new_editor_assigned')
-                            }
-                            severity="success"
-                        >
-                            {t('New editor is assigned to you')}
                         </Alert>
                     </Grid>
                 ) : null}

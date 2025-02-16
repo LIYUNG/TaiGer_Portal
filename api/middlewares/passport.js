@@ -7,6 +7,7 @@ const { UserSchema } = require('../models/User');
 
 const getUserModel = (db) => db.model('User', UserSchema);
 
+// verify auth middleware,
 passport.use(
   new LocalStrategy(
     { usernameField: 'email', passReqToCallback: true },
@@ -38,6 +39,7 @@ passport.use(
   )
 );
 
+// issue token
 passport.use(
   new JwtStrategy(
     {

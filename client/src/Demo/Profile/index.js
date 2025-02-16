@@ -35,7 +35,7 @@ import { is_TaiGer_Agent } from '@taiger-common/core';
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-import { time_slots } from '../../utils/contants';
+import { daysOfWeek, time_slots } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { updatePersonalData, updateOfficehours, getUser } from '../../api';
@@ -515,15 +515,7 @@ const Profile = () => {
                                 value={profileState.selectedTimezone}
                             />
                             <br />
-                            {[
-                                'Monday',
-                                'Tuesday',
-                                'Wednesday',
-                                'Thursday',
-                                'Friday',
-                                'Saturday',
-                                'Sunday'
-                            ].map((day, i) => (
+                            {daysOfWeek.map((day, i) => (
                                 <Box
                                     key={i}
                                     sx={{ display: 'flex', textAlign: 'right' }}

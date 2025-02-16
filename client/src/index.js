@@ -19,13 +19,13 @@ const app = (
     <CustomThemeProvider>
         <I18nextProvider>
             <SnackBarProvider>
-                <AuthProvider>
-                    <QueryClientProvider client={queryClient}>
+                <QueryClientProvider client={queryClient}>
+                    <AuthProvider>
                         <StrictMode>
                             <App />
                         </StrictMode>
-                    </QueryClientProvider>
-                </AuthProvider>
+                    </AuthProvider>
+                </QueryClientProvider>
             </SnackBarProvider>
         </I18nextProvider>
     </CustomThemeProvider>

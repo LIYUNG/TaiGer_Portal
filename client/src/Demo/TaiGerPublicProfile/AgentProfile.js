@@ -16,7 +16,7 @@ import Select from 'react-select';
 import { is_TaiGer_Student } from '@taiger-common/core';
 import i18next from 'i18next';
 
-import { time_slots } from '../../utils/contants';
+import { daysOfWeek, time_slots } from '../../utils/contants';
 import ErrorPage from '../Utils/ErrorPage';
 import ModalMain from '../Utils/ModalHandler/ModalMain';
 import { getAgentProfile } from '../../api';
@@ -138,15 +138,7 @@ const AgentProfile = () => {
                         />
                         <br />
                         <Grid container spacing={2}>
-                            {[
-                                'Monday',
-                                'Tuesday',
-                                'Wednesday',
-                                'Thursday',
-                                'Friday',
-                                'Saturday',
-                                'Sunday'
-                            ].map((day, i) => (
+                            {daysOfWeek.map((day, i) => (
                                 <Grid item key={i} xs={12}>
                                     <FormControl>
                                         <FormControlLabel

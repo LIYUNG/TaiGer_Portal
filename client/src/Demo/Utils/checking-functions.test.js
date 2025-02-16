@@ -8,6 +8,7 @@ import {
     getRequirement,
     isLanguageInfoComplete,
     isEnglishLanguageInfoComplete,
+    are_base_documents_missing,
     check_if_there_is_german_language_info,
     check_german_language_Notneeded,
     check_german_language_passed,
@@ -290,6 +291,35 @@ describe('isEnglishLanguageInfoComplete', () => {
             }
         };
         expect(isEnglishLanguageInfoComplete(academic_background)).toBe(true);
+    });
+});
+
+describe('are_base_documents_missing', () => {
+    it('should return true if any docs other than Others is missing', () => {
+        const student = {
+            profile: [
+                {
+                    name: ProfileNameType.Bachelor_Certificate,
+                    status: DocumentStatusType.Accepted
+                }
+            ]
+        };
+        expect(are_base_documents_missing(student)).toBe(true);
+    });
+    it('should return false even if Others is missing', () => {
+        const documentlist2_keys = Object.keys(ProfileNameType);
+
+        let profiles = documentlist2_keys.map((docKey) => ({
+            name: docKey,
+            status:
+                docKey === ProfileNameType.Others
+                    ? DocumentStatusType.Missing
+                    : DocumentStatusType.Accepted
+        }));
+        const student = {
+            profile: [...profiles]
+        };
+        expect(are_base_documents_missing(student)).toBe(false);
     });
 });
 

@@ -57,7 +57,9 @@ const Survey = () => {
                 value={{
                     academic_background: data.academic_background,
                     application_preference: data.application_preference,
-                    survey_link: survey_link,
+                    survey_link: survey_link.find(
+                        (link) => link.key === 'Grading_System'
+                    ).link,
                     student_id: user._id.toString()
                 }}
             >

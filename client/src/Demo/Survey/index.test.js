@@ -1,17 +1,17 @@
 import React from 'react';
+import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { render, screen, waitFor } from '@testing-library/react';
-import Survey from '.';
 import 'react-i18next';
+
 import {
     getStudents,
     getProgramTickets,
     getMyAcademicBackground
 } from '../../api';
 import { useAuth } from '../../components/AuthProvider/index';
-import { RouterProvider, createMemoryRouter } from 'react-router-dom';
-
 import { mockSingleData } from '../../test/testingStudentData';
 import { SurveyProvider } from '../../components/SurveyProvider';
+import SurveyComponent from './SurveyComponent';
 
 jest.mock('axios');
 jest.mock('../../api');
@@ -38,11 +38,11 @@ const routes = [
                         mockSingleData.data[0].academic_background,
                     application_preference:
                         mockSingleData.data[0].application_preference,
-                    survey_link: 'dummylink',
+                    survey_link: 'http://example.com',
                     student_id: mockSingleData.data[0]._id.toString()
                 }}
             >
-                <Survey />
+                <SurveyComponent />
             </SurveyProvider>
         ),
         errorElement: <div>Error</div>,

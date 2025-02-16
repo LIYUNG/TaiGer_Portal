@@ -273,6 +273,9 @@ export const are_base_documents_missing = (student) => {
         const { object_init } = based_documents_init(student);
 
         for (let i = 0; i < documentlist2_keys.length; i++) {
+            if (documentlist2_keys[i] === ProfileNameType.Others) {
+                continue;
+            }
             if (
                 object_init[documentlist2_keys[i]] !==
                     DocumentStatusType.Accepted &&

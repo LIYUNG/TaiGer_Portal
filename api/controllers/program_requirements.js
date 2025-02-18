@@ -146,7 +146,7 @@ const updateProgramRequirement = asyncHandler(async (req, res) => {
   if (fields?.program_categories) {
     fields.coursesScore = fields?.program_categories
       ?.map((program_category) => program_category.maxScore)
-      ?.reduce((sum, current) => sum + current, 0);
+      ?.reduce((sum, current) => sum + parseFloat(current), 0);
   }
 
   const updatedProgramRequirement = await req.db

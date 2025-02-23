@@ -1034,42 +1034,158 @@ const CreateIntervalMessageOperation = (student_id, msg1, msg2) => {
     }
   };
 };
-
+/**
+ * Process messages to calculate response intervals based on the following cases:
+ *
+ * Case 1: Single Student Message
+ * =============================
+ * Input: [StudentMsg1]
+ * Interval: now - StudentMsg1.updatedAt
+ * Purpose: Calculate how long the student has been waiting for a response
+ *
+ * Case 2: Multiple Messages
+ * ========================
+ * Input: [StudentMsg1 -> StudentMsg2 -> NonStudentMsg1 -> NonStudentMsg2]
+ * Interval: NonStudentMsg1.updatedAt - StudentMsg2.updatedAt
+ * Purpose: Calculate response time from last student message to first staff response
+ *
+ * Case 3: Ignored Student Message
+ * ==============================
+ * Input: [StudentMsg(ignored=true) -> NonStudentMsg]
+ * Interval: No calculation
+ * Purpose: Skip messages marked as ignored
+ *
+ * Case 4: Latest Message from Student
+ * =================================
+ * Input: [...previousMessages -> StudentMsg]
+ * Interval: now - StudentMsg.updatedAt
+ * Purpose: Calculate current waiting time for pending student message
+ *
+ * General Rules:
+ * - Intervals only calculated from student message to non-student message
+ * - Student messages with ignore_message=true are skipped
+ * - Messages are processed in chronological order
+ * - Only first non-student response is used for interval calculation
+ */
 const ProcessMessages = (student, messages) => {
   const bulkOps = [];
-  messages.sort((a, b) => a.updatedAt - b.updatedAt);
-  if (messages.length > 1) {
-    let msg1 = undefined;
-    let msg2 = undefined;
+  const now = new Date();
 
-    for (const msg of messages) {
-      const UserRole = msg.user_id?.role;
-      if (
-        msg1 === undefined &&
-        UserRole === Role.Student &&
-        msg.ignore_message !== true
-      ) {
-        // Get the first message from student
-        msg1 = msg;
-      } else if (msg1 !== undefined && UserRole !== Role.Student) {
-        msg2 = msg;
+  // If no messages, return empty array
+  if (!messages.length) return bulkOps;
+
+  // Sort messages chronologically
+  messages.sort((a, b) => a.updatedAt - b.updatedAt);
+
+  let lastValidStudentMsg = undefined;
+
+  for (let i = 0; i < messages.length; i++) {
+    const currentMsg = messages[i];
+    const UserRole = currentMsg.user_id?.role;
+
+    // Handle student messages
+    if (UserRole === Role.Student) {
+      // Skip ignored messages
+      if (currentMsg.ignore_message === true) {
+        continue;
       }
-      if (msg1 !== undefined && msg2 !== undefined) {
-        const operation = CreateIntervalMessageOperation(student, msg1, msg2);
+      lastValidStudentMsg = currentMsg;
+
+      // Case 1 & 4: If this is the only message or the last message
+      if (i === messages.length - 1) {
+        const operation = CreateIntervalMessageOperation(
+            student,
+            lastValidStudentMsg,
+            { updatedAt: now } // Create pseudo message with current time
+        );
         if (operation) {
           bulkOps.push(operation);
         }
-        msg1 = undefined;
-        msg2 = undefined;
       }
+      continue;
+    }
+
+    // Handle non-student messages
+    if (UserRole !== Role.Student && lastValidStudentMsg) {
+      // Case 2: Found a non-student message after a valid student message
+      const operation = CreateIntervalMessageOperation(
+          student,
+          lastValidStudentMsg,
+          currentMsg
+      );
+      if (operation) {
+        bulkOps.push(operation);
+      }
+      lastValidStudentMsg = undefined; // Reset for next pair
     }
   }
+
+  return bulkOps;
+};
+
+const ProcessThread = (thread) => {
+  const bulkOps = [];
+  const now = new Date();
+
+  // If no messages in thread, return empty array
+  if (!thread.messages?.length) return bulkOps;
+
+  // Sort messages chronologically
+  thread.messages.sort((a, b) => a.updatedAt - b.updatedAt);
+
+  let lastValidStudentMsg = undefined;
+
+  for (let i = 0; i < thread.messages.length; i++) {
+    try {
+      const currentMsg = thread.messages[i];
+      const UserRole = currentMsg.user_id?.role;
+
+      // Handle student messages
+      if (UserRole === Role.Student) {
+        // Skip ignored messages
+        if (currentMsg.ignore_message === true) {
+          continue;
+        }
+        lastValidStudentMsg = currentMsg;
+
+        // Case 1 & 4: If this is the only message or the last message
+        if (i === thread.messages.length - 1) {
+          const operation = CreateIntervalOperation(
+              thread,
+              lastValidStudentMsg,
+              { updatedAt: now } // Create pseudo message with current time
+          );
+          if (operation) {
+            bulkOps.push(operation);
+          }
+        }
+        continue;
+      }
+
+      // Handle non-student messages
+      if (UserRole !== Role.Student && lastValidStudentMsg) {
+        // Case 2: Found a non-student message after a valid student message
+        const operation = CreateIntervalOperation(
+            thread,
+            lastValidStudentMsg,
+            currentMsg
+        );
+        if (operation) {
+          bulkOps.push(operation);
+        }
+        lastValidStudentMsg = undefined; // Reset for next pair
+      }
+    } catch (error) {
+      logger.error('Error processing message:', error);
+    }
+  }
+
   return bulkOps;
 };
 
 const FindIntervalInCommunicationsAndSave = asyncHandler(async (req) => {
   try {
-    // TODO: active student's message only
+    // TODO: active student's message only (should already done, please check GroupCommunicationByStudent)
     const groupCommunication = await GroupCommunicationByStudent(req);
     const bulkOps = [];
 
@@ -1117,39 +1233,6 @@ const CreateIntervalOperation = (thread, msg1, msg2) => {
       upsert: true
     }
   };
-};
-const ProcessThread = (thread) => {
-  const bulkOps = [];
-  if (thread.messages?.length > 1) {
-    let msg1 = undefined;
-    let msg2 = undefined;
-
-    for (const msg of thread.messages) {
-      try {
-        const UserRole = msg.user_id?.role;
-        if (
-          msg1 === undefined &&
-          UserRole === Role.Student &&
-          msg.ignore_message !== true
-        ) {
-          msg1 = msg;
-        } else if (msg1 !== undefined && UserRole !== Role.Student) {
-          msg2 = msg;
-        }
-      } catch (error) {
-        logger.error('Error finding message user_id:', error);
-      }
-      if (msg1 !== undefined && msg2 !== undefined) {
-        const operation = CreateIntervalOperation(thread, msg1, msg2);
-        if (operation) {
-          bulkOps.push(operation);
-        }
-        msg1 = undefined;
-        msg2 = undefined;
-      }
-    }
-  }
-  return bulkOps;
 };
 
 const FetchStudentsForDocumentThreads = asyncHandler(async (req, filter) =>

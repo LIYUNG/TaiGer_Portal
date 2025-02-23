@@ -2325,7 +2325,7 @@ const getThreadsByStudentIds = async (db, studentIds) => {
 };
 
 const getThreadsByStudent = asyncHandler(async (req, res, next) => {
-  const studentId = req.params.studentId;
+  const { studentId } = req.params;
   const threads = await req.db
     .model('Documentthread')
     .find({ student_id: studentId })

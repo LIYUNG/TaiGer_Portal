@@ -24,7 +24,6 @@ const {
   getStudentsAndDocLinks,
   getStudents,
   getAllStudents,
-  getArchivStudent,
   updateStudentsArchivStatus,
   assignAgentToStudent,
   assignEditorToStudent,
@@ -147,16 +146,6 @@ router
 
 router
   .route('/archiv/:studentId')
-  .get(
-    filter_archiv_user,
-    GeneralGETRequestRateLimiter,
-    permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor),
-    permission_canAccessStudentDatabase_filter,
-    validateStudentId,
-    InnerTaigerMultitenantFilter,
-    getArchivStudent,
-    logAccess
-  )
   .post(
     filter_archiv_user,
     GeneralPOSTRequestRateLimiter,

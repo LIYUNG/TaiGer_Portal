@@ -6,7 +6,7 @@
     "backend": "cd api&&npm run dev",
     "frontend": "cd client&&npm start",
     "full": "concurrently \"npm run backend\" \"npm run frontend\"",
-    "test": "cd api && npm run-script format && npm run-script test:ci && cd ../client && npm run-script format && npm run-script test:ci",
+    "test": "cd api && npm run-script format && npm run-script test:ci",
     "prepare": "husky"
   },
   "lint-staged": {

@@ -33,22 +33,7 @@ const {
   PROGRAM_SPECIFIC_FILETYPE
 } = require('../constants');
 const { getPermission } = require('../utils/queryFunctions');
-
-const fetchStudents = asyncHandler(async (req, filter) =>
-  req.db
-    .model('Student')
-    .find(filter)
-    .populate('agents editors', 'firstname lastname email')
-    .populate('applications.programId')
-    .populate(
-      'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
-      '-messages'
-    )
-    .select(
-      '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
-    )
-    .lean()
-);
+const StudentService = require('../services/students');
 
 const getStudentAndDocLinks = asyncHandler(async (req, res, next) => {
   const {
@@ -162,14 +147,14 @@ const updateDocumentationHelperLink = asyncHandler(async (req, res, next) => {
 });
 
 const getAllArchivStudents = asyncHandler(async (req, res, next) => {
-  const students = await fetchStudents(req, { archiv: true });
+  const students = await StudentService.fetchStudents(req, { archiv: true });
 
   res.status(200).send({ success: true, data: students });
   next();
 });
 
 const getAllActiveStudents = asyncHandler(async (req, res, next) => {
-  const studentsPromise = fetchStudents(req, {
+  const studentsPromise = StudentService.fetchStudents(req, {
     $or: [{ archiv: { $exists: false } }, { archiv: false }]
   });
 
@@ -205,7 +190,7 @@ const getAllActiveStudents = asyncHandler(async (req, res, next) => {
 });
 
 const getAllStudents = asyncHandler(async (req, res, next) => {
-  const students = await fetchStudents(req);
+  const students = await StudentService.fetchStudents(req);
 
   res.status(200).send({ success: true, data: students });
   next();
@@ -215,7 +200,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
   const { user } = req;
 
   if (user.role === Role.Admin) {
-    const studentsPromise = fetchStudents(req, {
+    const studentsPromise = StudentService.fetchStudents(req, {
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     });
     const auditLogPromise = req.db
@@ -262,19 +247,19 @@ const getStudents = asyncHandler(async (req, res, next) => {
     let students = [];
     // TODO: depends on manager type
     if (user.manager_type === ManagerType.Agent) {
-      students = await fetchStudents(req, {
+      students = await StudentService.fetchStudents(req, {
         agents: { $in: user.agents },
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       });
     }
     if (user.manager_type === ManagerType.Editor) {
-      students = await fetchStudents(req, {
+      students = await StudentService.fetchStudents(req, {
         editors: { $in: user.editors },
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       });
     }
     if (user.manager_type === ManagerType.AgentAndEditor) {
-      students = await fetchStudents(req, {
+      students = await StudentService.fetchStudents(req, {
         $and: [
           {
             $or: [
@@ -312,7 +297,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
       notification: user.agent_notification
     });
   } else if (is_TaiGer_Agent(user)) {
-    const studentsPromise = fetchStudents(req, {
+    const studentsPromise = StudentService.fetchStudents(req, {
       agents: user._id,
       $or: [{ archiv: { $exists: false } }, { archiv: false }]
     });
@@ -382,7 +367,7 @@ const getStudents = asyncHandler(async (req, res, next) => {
 
       res.status(200).send({ success: true, data: students });
     } else {
-      const students = await fetchStudents(req, {
+      const students = await StudentService.fetchStudents(req, {
         editors: user._id,
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       });
@@ -528,23 +513,6 @@ const getStudentsAndDocLinks = asyncHandler(async (req, res, next) => {
   next();
 });
 
-const getArchivStudent = asyncHandler(async (req, res, next) => {
-  const {
-    params: { studentId }
-  } = req;
-
-  const students = await req.db
-    .model('Student')
-    .find({
-      _id: studentId,
-      archiv: true
-    })
-    .populate('applications.programId agents editors');
-  // .lean();
-  res.status(200).send({ success: true, data: students[0] });
-  next();
-});
-
 // () TODO email : agent better notification! (only added or removed should be informed.)
 // (O) email : inform student close service
 // (O) email : inform editor that student is archived.
@@ -571,7 +539,7 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
   if (isArchived) {
     // return dashboard students
     if (user.role === Role.Admin) {
-      const students = await fetchStudents(req, {
+      const students = await StudentService.fetchStudents(req, {
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       });
 
@@ -594,14 +562,14 @@ const updateStudentsArchivStatus = asyncHandler(async (req, res, next) => {
 
         res.status(200).send({ success: true, data: students });
       } else {
-        const students = await fetchStudents(req, {
+        const students = await StudentService.fetchStudents(req, {
           agents: user._id,
           $or: [{ archiv: { $exists: false } }, { archiv: false }]
         });
         res.status(200).send({ success: true, data: students });
       }
     } else if (user.role === Role.Editor) {
-      const students = await fetchStudents(req, {
+      const students = await StudentService.fetchStudents(req, {
         editors: user._id,
         $or: [{ archiv: { $exists: false } }, { archiv: false }]
       });
@@ -1327,7 +1295,6 @@ module.exports = {
   getAllStudents,
   getStudents,
   getStudentsAndDocLinks,
-  getArchivStudent,
   updateStudentsArchivStatus,
   assignAgentToStudent,
   assignEditorToStudent,

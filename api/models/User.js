@@ -13,6 +13,7 @@ const bcrypt = require('bcryptjs');
 
 const options = { discriminatorKey: 'role', timestamps: true };
 
+// eslint-disable-next-line func-names, consistent-return
 UserSchema.pre('save', async function (next) {
   const user = this;
   if (!user.isModified('password')) return next();
@@ -26,11 +27,13 @@ UserSchema.pre('save', async function (next) {
   }
 });
 
+// eslint-disable-next-line func-names
 UserSchema.methods.verifyPassword = function (password) {
   const user = this;
   return bcrypt.compare(password, user.password);
 };
 
+// eslint-disable-next-line func-names
 UserSchema.methods.toJSON = function () {
   const user = this.toObject();
   delete user.__v;

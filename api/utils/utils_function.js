@@ -1094,9 +1094,9 @@ const ProcessMessages = (student, messages) => {
       // Case 1 & 4: If this is the only message or the last message
       if (i === messages.length - 1) {
         const operation = CreateIntervalMessageOperation(
-            student,
-            lastValidStudentMsg,
-            { updatedAt: now } // Create pseudo message with current time
+          student,
+          lastValidStudentMsg,
+          { updatedAt: now } // Create pseudo message with current time
         );
         if (operation) {
           bulkOps.push(operation);
@@ -1109,9 +1109,9 @@ const ProcessMessages = (student, messages) => {
     if (UserRole !== Role.Student && lastValidStudentMsg) {
       // Case 2: Found a non-student message after a valid student message
       const operation = CreateIntervalMessageOperation(
-          student,
-          lastValidStudentMsg,
-          currentMsg
+        student,
+        lastValidStudentMsg,
+        currentMsg
       );
       if (operation) {
         bulkOps.push(operation);
@@ -1151,9 +1151,9 @@ const ProcessThread = (thread) => {
         // Case 1 & 4: If this is the only message or the last message
         if (i === thread.messages.length - 1) {
           const operation = CreateIntervalOperation(
-              thread,
-              lastValidStudentMsg,
-              { updatedAt: now } // Create pseudo message with current time
+            thread,
+            lastValidStudentMsg,
+            { updatedAt: now } // Create pseudo message with current time
           );
           if (operation) {
             bulkOps.push(operation);
@@ -1166,9 +1166,9 @@ const ProcessThread = (thread) => {
       if (UserRole !== Role.Student && lastValidStudentMsg) {
         // Case 2: Found a non-student message after a valid student message
         const operation = CreateIntervalOperation(
-            thread,
-            lastValidStudentMsg,
-            currentMsg
+          thread,
+          lastValidStudentMsg,
+          currentMsg
         );
         if (operation) {
           bulkOps.push(operation);

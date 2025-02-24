@@ -65,6 +65,9 @@ const StudentService = {
         populate: {
           path: 'outsourced_user_id messages.user_id',
           select: 'firstname lastname'
+        },
+        options: {
+          projection: { messages: { $slice: -1 } } // Get only the last message
         }
       })
       .populate('editors agents', 'firstname lastname')

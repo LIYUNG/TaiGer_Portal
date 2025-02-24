@@ -2179,34 +2179,45 @@ const getActiveThreadsByStudent = (student) => [
   ...(student.generaldocs_threads || [])
 ];
 
+const getActiveThreadsByStudentWithProgramName = (student) => [
+  ...(student.applications
+    .filter((app) => isProgramDecided(app))
+    .flatMap((app) =>
+      app.doc_modification_thread?.map((thread) => ({
+        _id: String(thread.doc_thread_id._id),
+        file_type: thread.doc_thread_id.file_type,
+        isFinalVersion: thread.doc_thread_id.isFinalVersion,
+        messages: thread.doc_thread_id.messages,
+        student_id: String(student._id),
+        updatedAt: thread.doc_thread_id.updatedAt,
+        program_id: app.programId
+      }))
+    ) || []),
+  ...(student.generaldocs_threads?.map((thread) => ({
+    _id: String(thread.doc_thread_id._id),
+    file_type: thread.doc_thread_id.file_type,
+    isFinalVersion: thread.doc_thread_id.isFinalVersion,
+    messages: thread.doc_thread_id.messages,
+    student_id: String(student._id),
+    updatedAt: thread.doc_thread_id.updatedAt,
+    program_id: null
+  })) || [])
+];
+
 const getThreadsByStudent = asyncHandler(async (req, res, next) => {
   const { studentId } = req.params;
-  const threads = await req.db
-    .model('Documentthread')
-    .find({ student_id: studentId })
-    .sort({ updatedAt: -1 })
-    .select({
-      _id: 1,
-      student_id: 1,
-      file_type: 1,
-      program_id: 1,
-      isFinalVersion: 1,
-      messages: { $slice: -1 }, // only get the last message
-      updatedAt: 1
-    })
-    .populate('program_id', 'school program_name application_deadline');
+
   const student = await StudentService.fetchStudentByIdWithThreadsInfo(
     req,
     studentId
   );
 
-  const threadsV2 = getActiveThreadsByStudent(student);
+  const threads = getActiveThreadsByStudentWithProgramName(student);
 
   res.status(200).send({
     success: true,
     data: {
-      threads: threads,
-      threadsV2: threadsV2
+      threads
     }
   });
 

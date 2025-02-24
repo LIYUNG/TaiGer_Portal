@@ -59,40 +59,17 @@ const {
 } = require('../utils/utils_function');
 const { getS3Object } = require('../aws/s3');
 const { getPermission } = require('../utils/queryFunctions');
+const { TENANT_SHORT_NAME } = require('../constants/common');
+const StudentService = require('../services/students');
 
 const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
-  const students = await req.db
-    .model('Student')
-    .find({
-      $or: [{ archiv: { $exists: false } }, { archiv: false }]
-    })
-    .populate(
-      'applications.programId',
-      'school program_name degree application_deadline semester lang'
-    )
-    .populate({
-      path: 'generaldocs_threads.doc_thread_id',
-      select:
-        'file_type flag_by_user_id isFinalVersion updatedAt messages.file',
-      populate: {
-        path: 'messages.user_id',
-        select: 'firstname lastname'
-      }
-    })
-    .populate({
-      path: 'applications.doc_modification_thread.doc_thread_id',
-      select:
-        'file_type flag_by_user_id outsourced_user_id isFinalVersion updatedAt messages.file',
-      populate: {
-        path: 'outsourced_user_id messages.user_id',
-        select: 'firstname lastname'
-      }
-    })
-    .populate('editors agents', 'firstname lastname')
-    .select(
-      'applications generaldocs_threads firstname lastname application_preference attributes'
-    )
-    .lean();
+  const studentQuery = {
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  };
+  const students = await StudentService.fetchStudentsWithThreadsInfo(
+    req,
+    studentQuery
+  );
   res.status(200).send({ success: true, data: students });
 });
 
@@ -240,110 +217,27 @@ const resetSurveyInput = asyncHandler(async (req, res, next) => {
 });
 
 const getCVMLRLOverview = asyncHandler(async (req, res) => {
-  const {
-    user
-    // params: { userId },
-  } = req;
-  if (is_TaiGer_Admin(user)) {
-    const students = await req.db
-      .model('Student')
-      .find({
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      })
-      .populate(
-        'applications.programId',
-        'school program_name degree application_deadline semester lang'
-      )
-      .populate({
-        path: 'generaldocs_threads.doc_thread_id',
-        select:
-          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
-        populate: {
-          path: 'messages.user_id',
-          select: 'firstname lastname'
-        }
-      })
-      .populate({
-        path: 'applications.doc_modification_thread.doc_thread_id',
-        select:
-          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
-        populate: {
-          path: 'messages.user_id',
-          select: 'firstname lastname'
-        }
-      })
-      .select(
-        'applications generaldocs_threads firstname lastname application_preference attributes'
-      )
-      .lean();
-    res.status(200).send({ success: true, data: students });
-  } else if (is_TaiGer_Agent(user)) {
-    const students = await req.db
-      .model('Student')
-      .find({
-        agents: user._id,
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      })
-      .populate(
-        'applications.programId',
-        'school program_name degree application_deadline semester lang'
-      )
-      .populate({
-        path: 'generaldocs_threads.doc_thread_id',
-        select:
-          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
-        populate: {
-          path: 'messages.user_id',
-          select: 'firstname lastname'
-        }
-      })
-      .populate({
-        path: 'applications.doc_modification_thread.doc_thread_id',
-        select:
-          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
-        populate: {
-          path: 'messages.user_id',
-          select: 'firstname lastname'
-        }
-      })
-      .select(
-        'applications applications generaldocs_threads firstname lastname application_preference attributes'
-      )
-      .lean();
+  const { user } = req;
 
-    res.status(200).send({ success: true, data: students });
-  } else if (user.role === Role.Editor) {
-    const students = await req.db
-      .model('Student')
-      .find({
-        editors: user._id,
-        $or: [{ archiv: { $exists: false } }, { archiv: false }]
-      })
-      .populate(
-        'applications.programId',
-        'school program_name degree application_deadline semester lang'
-      )
-      .populate({
-        path: 'generaldocs_threads.doc_thread_id',
-        select:
-          'file_type isFinalVersion updatedAt flag_by_user_id messages.file',
-        populate: {
-          path: 'messages.user_id outsourced_user_id',
-          select: 'firstname lastname'
-        }
-      })
-      .populate({
-        path: 'applications.doc_modification_thread.doc_thread_id',
-        select:
-          'file_type isFinalVersion updatedAt flag_by_user_id messages.file',
-        populate: {
-          path: 'messages.user_id outsourced_user_id',
-          select: 'firstname lastname'
-        }
-      })
-      .select(
-        'applications applications generaldocs_threads firstname lastname application_preference attributes'
-      );
+  const studentQuery = {
+    $or: [{ archiv: { $exists: false } }, { archiv: false }]
+  };
+
+  if (is_TaiGer_Agent(user)) {
+    studentQuery.agents = user._id.toString();
+  } else if (is_TaiGer_Editor(user)) {
+    studentQuery.editors = user._id.toString();
+  }
+
+  if (
+    is_TaiGer_Admin(user) ||
+    is_TaiGer_Agent(user) ||
+    is_TaiGer_Editor(user)
+  ) {
+    const students = await StudentService.fetchStudentsWithThreadsInfo(
+      req,
+      studentQuery
+    );
     res.status(200).send({ success: true, data: students });
   } else if (is_TaiGer_Student(user)) {
     const obj = user.notification; // create object
@@ -352,35 +246,10 @@ const getCVMLRLOverview = asyncHandler(async (req, res) => {
     await req.db
       .model('Student')
       .findByIdAndUpdate(user._id.toString(), { notification: obj }, {});
-    const student = await req.db
-      .model('Student')
-      .findById(user._id)
-      .populate(
-        'applications.programId',
-        'school program_name degree application_deadline semester lang'
-      )
-      .populate({
-        path: 'generaldocs_threads.doc_thread_id',
-        select:
-          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
-        populate: {
-          path: 'messages.user_id',
-          select: 'firstname lastname'
-        }
-      })
-      .populate({
-        path: 'applications.doc_modification_thread.doc_thread_id',
-        select:
-          'file_type isFinalVersion outsourced_user_id flag_by_user_id updatedAt messages.file',
-        populate: {
-          path: 'messages.user_id',
-          select: 'firstname lastname'
-        }
-      })
-      .select(
-        'applications applications generaldocs_threads firstname lastname application_preference'
-      )
-      .lean();
+    const student = await StudentService.fetchStudentByIdWithThreadsInfo(
+      req,
+      user._id
+    );
     res.status(200).send({ success: true, data: [student] });
   } else {
     // Guest
@@ -2296,33 +2165,19 @@ const getMyStudents = async (req) => {
     }
   }
 
-  const students = await req.db
-    .model('Student')
-    .find(studentQuery)
-    .select('firstname lastname firstname_chinese lastname_chinese -role')
-    .lean();
+  const students = await StudentService.fetchStudentsWithThreadsInfo(
+    req,
+    studentQuery
+  );
   return students;
 };
 
-const getThreadsByStudentIds = async (db, studentIds) => {
-  return await db
-    .model('Documentthread')
-    .find({
-      student_id: { $in: studentIds }
-      // messages: { $exists: true, $not: { $size: 0 } } // ensure messages array is not empty
-    })
-    .sort({ updatedAt: -1 })
-    .select({
-      _id: 1,
-      student_id: 1,
-      file_type: 1,
-      program_id: 1,
-      isFinalVersion: 1,
-      messages: { $slice: -1 }, // only get the last message
-      updatedAt: 1
-    })
-    .populate('messages.user_id', 'firstname lastname role');
-};
+const getActiveThreadsByStudent = (student) => [
+  ...(student.applications
+    .filter((app) => isProgramDecided(app))
+    .flatMap((app) => app.doc_modification_thread) || []),
+  ...(student.generaldocs_threads || [])
+];
 
 const getThreadsByStudent = asyncHandler(async (req, res, next) => {
   const { studentId } = req.params;
@@ -2340,11 +2195,18 @@ const getThreadsByStudent = asyncHandler(async (req, res, next) => {
       updatedAt: 1
     })
     .populate('program_id', 'school program_name application_deadline');
+  const student = await StudentService.fetchStudentByIdWithThreadsInfo(
+    req,
+    studentId
+  );
+
+  const threadsV2 = getActiveThreadsByStudent(student);
 
   res.status(200).send({
     success: true,
     data: {
-      threads: threads
+      threads: threads,
+      threadsV2: threadsV2
     }
   });
 
@@ -2353,18 +2215,14 @@ const getThreadsByStudent = asyncHandler(async (req, res, next) => {
 
 const getMyStudentMetrics = asyncHandler(async (req, res, next) => {
   const students = await getMyStudents(req);
-  const studentIds = students.map((stud, i) => stud._id);
-  const studentThreads = await getThreadsByStudentIds(req.db, studentIds);
 
   const studentsWithCount = students.map((student) => {
     const studentId = String(student._id);
-    const threads = studentThreads.filter(
-      (thread) => String(thread.student_id) === studentId
-    );
+    const threads = getActiveThreadsByStudent(student);
 
     student.threads = threads
       ?.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-      ?.map((thread) => thread?._id);
+      ?.map((thread) => thread?.doc_thread_id?._id);
     student.threadCount = threads.length;
     student.completeThreadCount = threads.filter(
       (thread) => thread.isFinalVersion

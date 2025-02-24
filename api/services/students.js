@@ -8,27 +8,9 @@ const StudentService = {
    * Fetches a student by ID with optional population.
    *
    * @param {mongoose.Connection} db - The Mongoose connection instance.
-   * @param {string} studentId - The student ID.
-   * @param {string[]} [populateFields=[]] - Fields to populate.
+   * @param {string} filter - The query filter.
    * @returns {Promise<mongoose.Document | null>} - The student document.
    */
-  async getStudentById(db, studentId, populateConfig = [], selectFields = '') {
-    const StudentModel = db.model('Student');
-
-    let query = StudentModel.findById(studentId);
-
-    // Apply population dynamically
-    populateConfig.forEach((populateOption) => {
-      query = query.populate(populateOption);
-    });
-
-    // Apply field selection
-    if (selectFields) {
-      query = query.select(selectFields);
-    }
-
-    return query.exec(); // Execute the query
-  },
   async fetchStudents(req, filter) {
     return req.db
       .model('Student')
@@ -43,6 +25,52 @@ const StudentService = {
         '-notification +applications.portal_credentials.application_portal_a.account +applications.portal_credentials.application_portal_a.password +applications.portal_credentials.application_portal_b.account +applications.portal_credentials.application_portal_b.password'
       )
       .select('-notification')
+      .lean();
+  },
+  async fetchStudentsWithThreadsInfo(req, filter) {
+    return req.db
+      .model('Student')
+      .find(filter)
+      .populate(
+        'applications.programId',
+        'school program_name degree application_deadline semester lang'
+      )
+      .populate({
+        path: 'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        select:
+          'file_type flag_by_user_id outsourced_user_id isFinalVersion updatedAt messages.file',
+        populate: {
+          path: 'outsourced_user_id messages.user_id',
+          select: 'firstname lastname'
+        }
+      })
+      .populate('editors agents', 'firstname lastname')
+      .select(
+        'applications generaldocs_threads firstname lastname application_preference attributes'
+      )
+      .lean();
+  },
+  async fetchStudentByIdWithThreadsInfo(req, studentId) {
+    return req.db
+      .model('Student')
+      .findById(studentId)
+      .populate(
+        'applications.programId',
+        'school program_name degree application_deadline semester lang'
+      )
+      .populate({
+        path: 'generaldocs_threads.doc_thread_id applications.doc_modification_thread.doc_thread_id',
+        select:
+          'file_type flag_by_user_id outsourced_user_id isFinalVersion updatedAt messages.file',
+        populate: {
+          path: 'outsourced_user_id messages.user_id',
+          select: 'firstname lastname'
+        }
+      })
+      .populate('editors agents', 'firstname lastname')
+      .select(
+        'applications generaldocs_threads firstname lastname application_preference attributes'
+      )
       .lean();
   }
 };

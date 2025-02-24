@@ -109,6 +109,7 @@ router
     getAllStudents,
     logAccess
   );
+
 router
   .route('/doc-links')
   .post(
@@ -118,11 +119,7 @@ router
     permission_canAccessStudentDatabase_filter,
     updateDocumentationHelperLink,
     logAccess
-  );
-
-// Let student still see their uploaded file status
-router
-  .route('/doc-links')
+  )
   .get(
     GeneralGETRequestRateLimiter,
     permit(Role.Admin, Role.Manager, Role.Agent, Role.Editor, Role.Student),

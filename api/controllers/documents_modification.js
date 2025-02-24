@@ -2236,11 +2236,11 @@ const getMyStudentMetrics = asyncHandler(async (req, res, next) => {
       ?.map((thread) => thread?.doc_thread_id?._id);
     student.threadCount = threads.length;
     student.completeThreadCount = threads.filter(
-      (thread) => thread.doc_thread_id.isFinalVersion
+      (thread) => thread.doc_thread_id?.isFinalVersion
     ).length;
 
     student.needToReply = threads.some((thread) => {
-      const lastMessage = thread.doc_thread_id.messages?.[0];
+      const lastMessage = thread.doc_thread_id?.messages?.[0];
       return (
         lastMessage?.user_id?._id?.toString() === studentId &&
         !thread.isFinalVersion

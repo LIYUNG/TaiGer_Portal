@@ -8,7 +8,7 @@ const isDev = () =>
 
 // TODO: if later use Docker CICD, .env is not needed and env variables are
 // injected from secret manager during deployment
-if (isDev() || isTest()) {
+if (isDev() || isTest() || isProd()) {
   dotenv.config({
     path: path.join(__dirname, `./.env.${process.env.NODE_ENV}`)
   });

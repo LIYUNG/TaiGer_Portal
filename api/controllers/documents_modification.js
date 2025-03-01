@@ -61,6 +61,7 @@ const { getS3Object } = require('../aws/s3');
 const { getPermission } = require('../utils/queryFunctions');
 const { TENANT_SHORT_NAME } = require('../constants/common');
 const StudentService = require('../services/students');
+const DocumentThreadService = require('../services/documentthreads');
 
 const getAllCVMLRLOverview = asyncHandler(async (req, res) => {
   const studentQuery = {
@@ -567,17 +568,19 @@ const getMessages = asyncHandler(async (req, res) => {
     user,
     params: { messagesThreadId }
   } = req;
-  const document_thread = await req.db
-    .model('Documentthread')
-    .findById(messagesThreadId)
-    .populate(
-      'student_id',
-      'firstname lastname firstname_chinese lastname_chinese role agents editors application_preference'
-    )
-    .populate('messages.user_id', 'firstname lastname role')
-    .populate('program_id')
-    .populate('outsourced_user_id', 'firstname lastname role')
-    .lean();
+  const document_thread = await DocumentThreadService.getThreadById(
+    req,
+    messagesThreadId
+  );
+
+  const similarThreads = document_thread?.program_id
+    ? await DocumentThreadService.getThreads(req, {
+        _id: { $ne: messagesThreadId },
+        program_id: document_thread.program_id,
+        isFinalVersion: true,
+        file_type: document_thread.file_type
+      })
+    : null;
 
   const threadAuditLogPromise = req.db
     .model('Audit')
@@ -594,6 +597,7 @@ const getMessages = asyncHandler(async (req, res) => {
       }
     })
     .sort({ createdAt: -1 });
+
   const agentsPromise = req.db
     .model('Agent')
     .find({
@@ -631,9 +635,9 @@ const getMessages = asyncHandler(async (req, res) => {
   // Find conflict list:
   let conflict_list = [];
   if (
-    user.role === Role.Admin ||
+    is_TaiGer_Admin(user) ||
     is_TaiGer_Agent(user) ||
-    user.role === Role.Editor
+    is_TaiGer_Editor(user)
   ) {
     conflict_list = await req.db
       .model('Student')
@@ -657,6 +661,10 @@ const getMessages = asyncHandler(async (req, res) => {
   res.status(200).send({
     success: true,
     data: document_thread,
+    similarThreads:
+      is_TaiGer_Admin(user) || is_TaiGer_Agent(user) || is_TaiGer_Editor(user)
+        ? similarThreads
+        : null,
     agents,
     editors,
     threadAuditLog,

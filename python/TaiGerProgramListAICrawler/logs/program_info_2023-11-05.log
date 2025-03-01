@@ -1,0 +1,894 @@
+2023-11-05 21:38:11 | program_info_logger | INFO | ---------------1. Start looking for ETH Zurich, Mechanical Engineering, M. Sc.------------
+2023-11-05 21:38:11 | program_info_logger | INFO | Start Goolge Search: university: ETH Zurich | program: Mechanical Engineering | degree M. Sc.
+2023-11-05 21:38:12 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc. introduction
+2023-11-05 21:38:12 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/degree-programmes/engineering-sciences/mechanical-engineering.html', 'https://ethz.ch/content/dam/ethz/special-interest/mavt/department-dam/studium/master-programs/documents/web-me-studyguide.pdf', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 21:38:13 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc.'s application deadline
+2023-11-05 21:38:13 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/application/dates.html', 'https://ethz.ch/en/studies/master/degree-programmes/engineering-sciences/mechanical-engineering.html', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 21:38:13 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc., which documents do i need to submit during the online application
+2023-11-05 21:38:13 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/application/international-bachelor/application-documents.html', 'https://ethz.ch/en/studies/master/application/epfl-bachelor/application-documents.html', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 21:38:14 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc., where can i find the online application portal
+2023-11-05 21:38:14 | program_info_logger | INFO | links: ['https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en', 'https://ethz.ch/en/studies/master/application.html', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 21:38:14 | program_info_logger | INFO | Total 8 links
+2023-11-05 21:38:14 | program_info_logger | INFO | Goolge Search COMPLETED
+2023-11-05 21:38:14 | program_info_logger | INFO | --------------------- 2. Start Embedding ---------------------
+2023-11-05 21:38:24 | chromadb.telemetry.product.posthog | INFO | Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2023-11-05 21:38:26 | program_info_logger | INFO | Total Embedding Cost (USD): $0.00015000000000000001
+2023-11-05 21:38:26 | program_info_logger | INFO | --------------------- 3. Start Retrieval process ---------------------
+2023-11-05 21:38:26 | program_info_logger | INFO | use LLM model: {chat}
+2023-11-05 21:38:27 | program_info_logger | INFO | Retrieving (1) Program Base info..........
+2023-11-05 21:38:27 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Can you tell me about this program?
+2023-11-05 21:38:28 | program_info_logger | INFO | {
+  "university_name": "ETH Zurich",
+  "program_name": "Mechanical Engineering",
+  "degree": "Bachelor of Science",
+  "country": "Switzerland",
+  "tuition_fee": null
+}
+2023-11-05 21:38:28 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:28 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:28 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:28 | program_info_logger | INFO | Total Tokens: 990
+2023-11-05 21:38:28 | program_info_logger | INFO | Prompt Tokens: 943
+2023-11-05 21:38:28 | program_info_logger | INFO | Completion Tokens: 47
+2023-11-05 21:38:28 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 21:38:28 | program_info_logger | INFO | Total Cost (USD): $0.0015084999999999999
+2023-11-05 21:38:28 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 21:38:28 | program_info_logger | INFO | Retrieving (2) Application Period info.........
+2023-11-05 21:38:28 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. what is the application period and deadline to apply this program?
+2023-11-05 21:38:31 | program_info_logger | INFO | {
+  "semester": "Both",
+  "winter_semester_application_start": "1 December",
+  "winter_semester_application_deadline": "31 March",
+  "summer_semester_application_start": "1 December",
+  "summer_semester_application_deadline": "30 April"
+}
+2023-11-05 21:38:31 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:31 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:31 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:31 | program_info_logger | INFO | Total Tokens: 1077
+2023-11-05 21:38:31 | program_info_logger | INFO | Prompt Tokens: 1018
+2023-11-05 21:38:31 | program_info_logger | INFO | Completion Tokens: 59
+2023-11-05 21:38:31 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 21:38:31 | program_info_logger | INFO | Total Cost (USD): $0.0016450000000000002
+2023-11-05 21:38:31 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 21:38:31 | program_info_logger | INFO | Retrieving (3) required Document info.........
+2023-11-05 21:38:31 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Which documents do I need to submit during the online application?
+2023-11-05 21:38:34 | program_info_logger | INFO | {
+  "ml_required": "unknown",
+  "ml_requirement": null,
+  "rl_required": "unknown",
+  "rl_requirement": null,
+  "essay_required": "unknown",
+  "essay_requirement": null,
+  "supplementary_form_required": "unknown",
+  "supplementary_form_requirement": null
+}
+2023-11-05 21:38:34 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:34 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:34 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:34 | program_info_logger | INFO | Total Tokens: 1229
+2023-11-05 21:38:34 | program_info_logger | INFO | Prompt Tokens: 1159
+2023-11-05 21:38:34 | program_info_logger | INFO | Completion Tokens: 70
+2023-11-05 21:38:34 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 21:38:34 | program_info_logger | INFO | Total Cost (USD): $0.0018785
+2023-11-05 21:38:34 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 21:38:34 | program_info_logger | INFO | Retrieving (4) required Language info.........
+2023-11-05 21:38:34 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. what are the required language certificate scores to apply this program? e.g. TOFEL, IELTS, GRE, GMAT
+2023-11-05 21:38:36 | program_info_logger | INFO | {
+  "language": "English",
+  "toefl": "Minimum score of 90 (internet-based)",
+  "ielts": "Minimum score of 6.5",
+  "gre": null,
+  "gmat": null,
+  "testdaf": null
+}
+2023-11-05 21:38:36 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:36 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:36 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:36 | program_info_logger | INFO | Total Tokens: 1181
+2023-11-05 21:38:36 | program_info_logger | INFO | Prompt Tokens: 1122
+2023-11-05 21:38:36 | program_info_logger | INFO | Completion Tokens: 59
+2023-11-05 21:38:36 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 21:38:36 | program_info_logger | INFO | Total Cost (USD): $0.0018010000000000003
+2023-11-05 21:38:36 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 21:38:36 | program_info_logger | INFO | Retrieving (5) required Academic Performance info.........
+2023-11-05 21:38:36 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. What are the required academic performance, the overall GPA, and required ETCs in any field to apply this program?
+2023-11-05 21:38:38 | program_info_logger | INFO | {
+  "gpa": "The required overall GPA or previous academic performance to apply for the Mechanical Engineering
+program at ETH Zurich is not specified in the provided information.",
+  "ects": "The required ECTS in any field to apply for the Mechanical Engineering program at ETH Zurich is not
+specified in the provided information."
+}
+2023-11-05 21:38:38 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:38 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:38 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:38 | program_info_logger | INFO | Total Tokens: 968
+2023-11-05 21:38:38 | program_info_logger | INFO | Prompt Tokens: 903
+2023-11-05 21:38:38 | program_info_logger | INFO | Completion Tokens: 65
+2023-11-05 21:38:38 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 21:38:38 | program_info_logger | INFO | Total Cost (USD): $0.0014845000000000001
+2023-11-05 21:38:38 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 21:38:38 | program_info_logger | INFO | Retrieving (6) URL info.........
+2023-11-05 21:38:38 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Can you provide me the application protal, website, and FPSO links and contact details for apply this program?
+2023-11-05 21:38:40 | program_info_logger | INFO | {
+  "application_portal_a": "eApply",
+  "website": "https://www.ethz.ch/en/studies/prospective-bachelor-students/degree-programmes/engineering-
+sciences/mechanical-engineering.html",
+  "fpso": null,
+  "contact": "Please click on the Help link in the top right-hand corner of the webpage for assistance."
+}
+2023-11-05 21:38:40 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:40 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:40 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 21:38:40 | program_info_logger | INFO | Total Tokens: 1045
+2023-11-05 21:38:40 | program_info_logger | INFO | Prompt Tokens: 966
+2023-11-05 21:38:40 | program_info_logger | INFO | Completion Tokens: 79
+2023-11-05 21:38:40 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 21:38:40 | program_info_logger | INFO | Total Cost (USD): $0.001607
+2023-11-05 21:38:40 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 21:38:40 | program_info_logger | INFO | --------------------- 4. Remvoing temp vector database ---------------------
+2023-11-05 21:38:40 | program_info_logger | WARNING | Error deleting 'tempDB': [WinError 32] The process cannot access the file because it is being used by another process: 'tempDB\\1e2a2458-08ce-4ad8-a4fa-866d5fbfbc20\\data_level0.bin'
+2023-11-05 21:38:40 | program_info_logger | INFO | --------------------- 5. Convert DataFrame to JSON for frontend ---------------------
+2023-11-05 21:38:40 | program_info_logger | INFO | json_result saved at ../result/ETHZurich_MechanicalEngineering_M.Sc._2023-11-05.json
+2023-11-05 21:38:40 | program_info_logger | INFO | --------------------- End ----------------------------------
+
+
+
+
+
+2023-11-05 22:16:49 | program_info_logger | INFO | ---------------1. Start looking for ETH Zurich, Mechanical Engineering, M. Sc.------------
+2023-11-05 22:16:49 | program_info_logger | INFO | Start Goolge Search: university: ETH Zurich | program: Mechanical Engineering | degree M. Sc.
+2023-11-05 22:16:50 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc. introduction
+2023-11-05 22:16:50 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/degree-programmes/engineering-sciences/mechanical-engineering.html', 'https://ethz.ch/content/dam/ethz/special-interest/mavt/department-dam/studium/master-programs/documents/web-me-studyguide.pdf', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:16:51 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc.'s application deadline
+2023-11-05 22:16:51 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/application/dates.html', 'https://ethz.ch/en/studies/master/degree-programmes/engineering-sciences/mechanical-engineering.html', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:16:52 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc., which documents do i need to submit during the online application
+2023-11-05 22:16:52 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/application/international-bachelor/application-documents.html', 'https://ethz.ch/en/studies/master/application/epfl-bachelor/application-documents.html', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:16:52 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc., where can i find the online application portal
+2023-11-05 22:16:52 | program_info_logger | INFO | links: ['https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en', 'https://ethz.ch/en/studies/master/application.html', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:16:52 | program_info_logger | INFO | Total 8 links
+2023-11-05 22:16:52 | program_info_logger | INFO | Goolge Search COMPLETED
+2023-11-05 22:16:52 | program_info_logger | INFO | --------------------- 2. Start Embedding ---------------------
+2023-11-05 22:17:01 | chromadb.telemetry.product.posthog | INFO | Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2023-11-05 22:17:02 | program_info_logger | INFO | Total Embedding Cost (USD): $0.00015000000000000001
+2023-11-05 22:17:02 | program_info_logger | INFO | --------------------- 3. Start Retrieval process ---------------------
+2023-11-05 22:17:02 | program_info_logger | INFO | use LLM model: {chat}
+2023-11-05 22:17:03 | program_info_logger | INFO | Retrieving (1) Program Base info..........
+2023-11-05 22:17:03 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Can you tell me about this program?
+2023-11-05 22:17:05 | program_info_logger | INFO | {
+  "university_name": "ETH Zurich",
+  "program_name": "Mechanical Engineering",
+  "degree": "Bachelor of Science",
+  "country": "Switzerland",
+  "tuition_fee": null
+}
+2023-11-05 22:17:05 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:05 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:05 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:05 | program_info_logger | INFO | Total Tokens: 1050
+2023-11-05 22:17:05 | program_info_logger | INFO | Prompt Tokens: 1003
+2023-11-05 22:17:05 | program_info_logger | INFO | Completion Tokens: 47
+2023-11-05 22:17:05 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:17:05 | program_info_logger | INFO | Total Cost (USD): $0.0015984999999999997
+2023-11-05 22:17:05 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:17:05 | program_info_logger | INFO | Retrieving (2) Application Period info.........
+2023-11-05 22:17:05 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. what is the application period and deadline to apply this program?
+2023-11-05 22:17:07 | program_info_logger | INFO | {
+  "semester": "Both",
+  "winter_semester_application_start": "1 December",
+  "winter_semester_application_deadline": "31 March",
+  "summer_semester_application_start": "1 December",
+  "summer_semester_application_deadline": "30 April"
+}
+2023-11-05 22:17:07 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:07 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:07 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:07 | program_info_logger | INFO | Total Tokens: 1137
+2023-11-05 22:17:07 | program_info_logger | INFO | Prompt Tokens: 1078
+2023-11-05 22:17:07 | program_info_logger | INFO | Completion Tokens: 59
+2023-11-05 22:17:07 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:17:07 | program_info_logger | INFO | Total Cost (USD): $0.0017350000000000002
+2023-11-05 22:17:07 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:17:07 | program_info_logger | INFO | Retrieving (3) required Document info.........
+2023-11-05 22:17:07 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Which documents do I need to submit during the online application?
+2023-11-05 22:17:09 | program_info_logger | INFO | {
+  "ml_required": "unknown",
+  "ml_requirement": null,
+  "rl_required": "unknown",
+  "rl_requirement": null,
+  "essay_required": "unknown",
+  "essay_requirement": null,
+  "supplementary_form_required": "unknown",
+  "supplementary_form_requirement": null
+}
+2023-11-05 22:17:09 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:09 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:09 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:09 | program_info_logger | INFO | Total Tokens: 1289
+2023-11-05 22:17:09 | program_info_logger | INFO | Prompt Tokens: 1219
+2023-11-05 22:17:09 | program_info_logger | INFO | Completion Tokens: 70
+2023-11-05 22:17:09 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:17:09 | program_info_logger | INFO | Total Cost (USD): $0.0019685
+2023-11-05 22:17:09 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:17:09 | program_info_logger | INFO | Retrieving (4) required Language info.........
+2023-11-05 22:17:09 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. what are the required language certificate scores to apply this program? e.g. TOFEL, IELTS, GRE, GMAT
+2023-11-05 22:17:11 | program_info_logger | INFO | {
+  "language": "English",
+  "toefl": "Minimum score of 90 (internet-based)",
+  "ielts": "Minimum score of 6.5",
+  "gre": null,
+  "gmat": null,
+  "testdaf": null
+}
+2023-11-05 22:17:11 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:11 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:11 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:11 | program_info_logger | INFO | Total Tokens: 1212
+2023-11-05 22:17:11 | program_info_logger | INFO | Prompt Tokens: 1153
+2023-11-05 22:17:11 | program_info_logger | INFO | Completion Tokens: 59
+2023-11-05 22:17:11 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:17:11 | program_info_logger | INFO | Total Cost (USD): $0.0018475000000000002
+2023-11-05 22:17:11 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:17:11 | program_info_logger | INFO | Retrieving (5) required Academic Performance info.........
+2023-11-05 22:17:11 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. What are the required academic performance, the overall GPA, and required ETCs in any field to apply this program?
+2023-11-05 22:17:13 | program_info_logger | INFO | {
+  "gpa": "The required overall GPA or previous academic performance to apply for the Mechanical Engineering
+program at ETH Zurich is not specified.",
+  "ects": "The required ECTS in any field to apply for the Mechanical Engineering program at ETH Zurich is not
+specified."
+}
+2023-11-05 22:17:13 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:13 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:13 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:13 | program_info_logger | INFO | Total Tokens: 1020
+2023-11-05 22:17:13 | program_info_logger | INFO | Prompt Tokens: 963
+2023-11-05 22:17:13 | program_info_logger | INFO | Completion Tokens: 57
+2023-11-05 22:17:13 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:17:13 | program_info_logger | INFO | Total Cost (USD): $0.0015585
+2023-11-05 22:17:13 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:17:13 | program_info_logger | INFO | Retrieving (6) URL info.........
+2023-11-05 22:17:13 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Can you provide me the application protal, website, and FPSO links and contact details for apply this program?
+2023-11-05 22:17:15 | program_info_logger | INFO | {
+  "application_portal_a": "eApply",
+  "website": "https://www.ethz.ch/en/studies/prospective-bachelor-students/degree-programmes/engineering-
+sciences/mechanical-engineering.html",
+  "fpso": null,
+  "contact": "Please refer to the website for contact details"
+}
+2023-11-05 22:17:15 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:15 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:15 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:15 | program_info_logger | INFO | Total Tokens: 1096
+2023-11-05 22:17:15 | program_info_logger | INFO | Prompt Tokens: 1026
+2023-11-05 22:17:15 | program_info_logger | INFO | Completion Tokens: 70
+2023-11-05 22:17:15 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:17:15 | program_info_logger | INFO | Total Cost (USD): $0.001679
+2023-11-05 22:17:15 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:17:15 | program_info_logger | INFO | --------------------- 4. Remvoing temp vector database ---------------------
+2023-11-05 22:17:15 | program_info_logger | WARNING | Error deleting 'tempDB': [WinError 32] The process cannot access the file because it is being used by another process: 'tempDB\\1e2a2458-08ce-4ad8-a4fa-866d5fbfbc20\\data_level0.bin'
+2023-11-05 22:17:15 | program_info_logger | INFO | --------------------- 5. Convert DataFrame to JSON for frontend ---------------------
+2023-11-05 22:17:15 | program_info_logger | INFO | json_result saved at ../result/ETHZurich_MechanicalEngineering_M.Sc._2023-11-05.json
+2023-11-05 22:17:15 | program_info_logger | INFO | --------------------- End ----------------------------------
+
+
+
+
+
+2023-11-05 22:17:30 | program_info_logger | INFO | ---------------1. Start looking for ETH Zurich, Mechanical Engineering, M. Sc.------------
+2023-11-05 22:17:30 | program_info_logger | INFO | Start Goolge Search: university: ETH Zurich | program: Mechanical Engineering | degree M. Sc.
+2023-11-05 22:17:31 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc. introduction
+2023-11-05 22:17:31 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/degree-programmes/engineering-sciences/mechanical-engineering.html', 'https://ethz.ch/content/dam/ethz/special-interest/mavt/department-dam/studium/master-programs/documents/web-me-studyguide.pdf', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:17:32 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc.'s application deadline
+2023-11-05 22:17:32 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/application/dates.html', 'https://ethz.ch/en/studies/master/degree-programmes/engineering-sciences/mechanical-engineering.html', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:17:33 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc., which documents do i need to submit during the online application
+2023-11-05 22:17:33 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/application/international-bachelor/application-documents.html', 'https://ethz.ch/en/studies/master/application/epfl-bachelor/application-documents.html', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:17:33 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc., where can i find the online application portal
+2023-11-05 22:17:33 | program_info_logger | INFO | links: ['https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en', 'https://ethz.ch/en/studies/master/application.html', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:17:33 | program_info_logger | INFO | Total 8 links
+2023-11-05 22:17:33 | program_info_logger | INFO | Goolge Search COMPLETED
+2023-11-05 22:17:33 | program_info_logger | INFO | --------------------- 2. Start Embedding ---------------------
+2023-11-05 22:17:41 | chromadb.telemetry.product.posthog | INFO | Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2023-11-05 22:17:43 | program_info_logger | INFO | Total Embedding Cost (USD): $0.00015000000000000001
+2023-11-05 22:17:43 | program_info_logger | INFO | --------------------- 3. Start Retrieval process ---------------------
+2023-11-05 22:17:43 | program_info_logger | INFO | use LLM model: {chat}
+2023-11-05 22:17:43 | program_info_logger | INFO | Retrieving (1) Program Base info..........
+2023-11-05 22:17:43 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Can you tell me about this program?
+2023-11-05 22:17:45 | program_info_logger | INFO | {
+  "university_name": "ETH Zurich",
+  "program_name": "Mechanical Engineering",
+  "degree": "Bachelor of Science",
+  "country": "Switzerland",
+  "tuition_fee": null
+}
+2023-11-05 22:17:45 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:45 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:45 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:45 | program_info_logger | INFO | Total Tokens: 1046
+2023-11-05 22:17:45 | program_info_logger | INFO | Prompt Tokens: 999
+2023-11-05 22:17:45 | program_info_logger | INFO | Completion Tokens: 47
+2023-11-05 22:17:45 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:17:45 | program_info_logger | INFO | Total Cost (USD): $0.0015925000000000002
+2023-11-05 22:17:45 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:17:45 | program_info_logger | INFO | Retrieving (2) Application Period info.........
+2023-11-05 22:17:45 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. what is the application period and deadline to apply this program?
+2023-11-05 22:17:47 | program_info_logger | INFO | {
+  "semester": "Both",
+  "winter_semester_application_start": "1 December",
+  "winter_semester_application_deadline": "31 March",
+  "summer_semester_application_start": "1 December",
+  "summer_semester_application_deadline": "30 April"
+}
+2023-11-05 22:17:47 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:47 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:47 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:47 | program_info_logger | INFO | Total Tokens: 1133
+2023-11-05 22:17:47 | program_info_logger | INFO | Prompt Tokens: 1074
+2023-11-05 22:17:47 | program_info_logger | INFO | Completion Tokens: 59
+2023-11-05 22:17:47 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:17:47 | program_info_logger | INFO | Total Cost (USD): $0.0017290000000000003
+2023-11-05 22:17:47 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:17:47 | program_info_logger | INFO | Retrieving (3) required Document info.........
+2023-11-05 22:17:47 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Which documents do I need to submit during the online application?
+2023-11-05 22:17:49 | program_info_logger | INFO | {
+  "ml_required": "unknown",
+  "ml_requirement": null,
+  "rl_required": "unknown",
+  "rl_requirement": null,
+  "essay_required": "unknown",
+  "essay_requirement": null,
+  "supplementary_form_required": "unknown",
+  "supplementary_form_requirement": null
+}
+2023-11-05 22:17:49 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:49 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:49 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:49 | program_info_logger | INFO | Total Tokens: 1285
+2023-11-05 22:17:49 | program_info_logger | INFO | Prompt Tokens: 1215
+2023-11-05 22:17:49 | program_info_logger | INFO | Completion Tokens: 70
+2023-11-05 22:17:49 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:17:49 | program_info_logger | INFO | Total Cost (USD): $0.0019625000000000003
+2023-11-05 22:17:49 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:17:49 | program_info_logger | INFO | Retrieving (4) required Language info.........
+2023-11-05 22:17:49 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. what are the required language certificate scores to apply this program? e.g. TOFEL, IELTS, GRE, GMAT
+2023-11-05 22:17:51 | program_info_logger | INFO | {
+  "language": "English",
+  "toefl": "Minimum score of 90 (internet-based)",
+  "ielts": "Minimum score of 6.5",
+  "gre": null,
+  "gmat": null,
+  "testdaf": null
+}
+2023-11-05 22:17:51 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:51 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:51 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:51 | program_info_logger | INFO | Total Tokens: 1208
+2023-11-05 22:17:51 | program_info_logger | INFO | Prompt Tokens: 1149
+2023-11-05 22:17:51 | program_info_logger | INFO | Completion Tokens: 59
+2023-11-05 22:17:51 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:17:51 | program_info_logger | INFO | Total Cost (USD): $0.0018415
+2023-11-05 22:17:51 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:17:51 | program_info_logger | INFO | Retrieving (5) required Academic Performance info.........
+2023-11-05 22:17:51 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. What are the required academic performance, the overall GPA, and required ETCs in any field to apply this program?
+2023-11-05 22:17:52 | program_info_logger | INFO | {
+  "gpa": "The required overall GPA or previous academic performance to apply for the Mechanical Engineering
+program at ETH Zurich is not specified.",
+  "ects": "The required ECTs in any field to apply for the Mechanical Engineering program at ETH Zurich is not
+specified."
+}
+2023-11-05 22:17:52 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:52 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:52 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:52 | program_info_logger | INFO | Total Tokens: 1017
+2023-11-05 22:17:52 | program_info_logger | INFO | Prompt Tokens: 959
+2023-11-05 22:17:52 | program_info_logger | INFO | Completion Tokens: 58
+2023-11-05 22:17:52 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:17:52 | program_info_logger | INFO | Total Cost (USD): $0.0015545
+2023-11-05 22:17:52 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:17:52 | program_info_logger | INFO | Retrieving (6) URL info.........
+2023-11-05 22:17:52 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Can you provide me the application protal, website, and FPSO links and contact details for apply this program?
+2023-11-05 22:17:54 | program_info_logger | INFO | {
+  "application_portal_a": "eApply",
+  "website": "ETH Zurich",
+  "fpso": null,
+  "contact": "Contact"
+}
+2023-11-05 22:17:54 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:54 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:54 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:17:54 | program_info_logger | INFO | Total Tokens: 1056
+2023-11-05 22:17:54 | program_info_logger | INFO | Prompt Tokens: 1022
+2023-11-05 22:17:54 | program_info_logger | INFO | Completion Tokens: 34
+2023-11-05 22:17:54 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:17:54 | program_info_logger | INFO | Total Cost (USD): $0.001601
+2023-11-05 22:17:54 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:17:54 | program_info_logger | INFO | --------------------- 4. Remvoing temp vector database ---------------------
+2023-11-05 22:17:54 | program_info_logger | WARNING | Error deleting 'tempDB': [WinError 32] The process cannot access the file because it is being used by another process: 'tempDB\\1e2a2458-08ce-4ad8-a4fa-866d5fbfbc20\\data_level0.bin'
+2023-11-05 22:17:54 | program_info_logger | INFO | --------------------- 5. Convert DataFrame to JSON for frontend ---------------------
+2023-11-05 22:17:54 | program_info_logger | INFO | json_result saved at ../result/ETHZurich_MechanicalEngineering_M.Sc._2023-11-05.json
+2023-11-05 22:17:54 | program_info_logger | INFO | --------------------- End ----------------------------------
+
+
+
+
+
+2023-11-05 22:18:27 | program_info_logger | INFO | ---------------1. Start looking for ETH Zurich, Mechanical Engineering, M. Sc.------------
+2023-11-05 22:18:27 | program_info_logger | INFO | Start Goolge Search: university: ETH Zurich | program: Mechanical Engineering | degree M. Sc.
+2023-11-05 22:18:28 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc. introduction
+2023-11-05 22:18:28 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/degree-programmes/engineering-sciences/mechanical-engineering.html', 'https://ethz.ch/content/dam/ethz/special-interest/mavt/department-dam/studium/master-programs/documents/web-me-studyguide.pdf', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:18:28 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc.'s application deadline
+2023-11-05 22:18:28 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/application/dates.html', 'https://ethz.ch/en/studies/master/degree-programmes/engineering-sciences/mechanical-engineering.html', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:18:29 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc., which documents do i need to submit during the online application
+2023-11-05 22:18:29 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/application/international-bachelor/application-documents.html', 'https://ethz.ch/en/studies/master/application/epfl-bachelor/application-documents.html', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:18:30 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc., where can i find the online application portal
+2023-11-05 22:18:30 | program_info_logger | INFO | links: ['https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en', 'https://ethz.ch/en/studies/master/application.html', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:18:30 | program_info_logger | INFO | Total 8 links
+2023-11-05 22:18:30 | program_info_logger | INFO | Goolge Search COMPLETED
+2023-11-05 22:18:30 | program_info_logger | INFO | --------------------- 2. Start Embedding ---------------------
+2023-11-05 22:18:38 | chromadb.telemetry.product.posthog | INFO | Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2023-11-05 22:18:39 | program_info_logger | INFO | Total Embedding Cost (USD): $0.00015000000000000001
+2023-11-05 22:18:39 | program_info_logger | INFO | --------------------- 3. Start Retrieval process ---------------------
+2023-11-05 22:18:40 | program_info_logger | INFO | use LLM model: {chat}
+2023-11-05 22:18:40 | program_info_logger | INFO | Retrieving (1) Program Base info..........
+2023-11-05 22:18:40 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Can you tell me about this program?
+2023-11-05 22:18:42 | program_info_logger | INFO | {
+  "university_name": "ETH Zurich",
+  "program_name": "Mechanical Engineering",
+  "degree": "Bachelor of Science",
+  "country": "Switzerland",
+  "tuition_fee": null
+}
+2023-11-05 22:18:42 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:42 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:42 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:42 | program_info_logger | INFO | Total Tokens: 1046
+2023-11-05 22:18:42 | program_info_logger | INFO | Prompt Tokens: 999
+2023-11-05 22:18:42 | program_info_logger | INFO | Completion Tokens: 47
+2023-11-05 22:18:42 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:18:42 | program_info_logger | INFO | Total Cost (USD): $0.0015925000000000002
+2023-11-05 22:18:42 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:18:42 | program_info_logger | INFO | Retrieving (2) Application Period info.........
+2023-11-05 22:18:42 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. what is the application period and deadline to apply this program?
+2023-11-05 22:18:43 | program_info_logger | INFO | {
+  "semester": "Both",
+  "winter_semester_application_start": "1 December",
+  "winter_semester_application_deadline": "31 March",
+  "summer_semester_application_start": "1 December",
+  "summer_semester_application_deadline": "30 April"
+}
+2023-11-05 22:18:43 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:43 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:43 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:43 | program_info_logger | INFO | Total Tokens: 1133
+2023-11-05 22:18:43 | program_info_logger | INFO | Prompt Tokens: 1074
+2023-11-05 22:18:43 | program_info_logger | INFO | Completion Tokens: 59
+2023-11-05 22:18:43 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:18:43 | program_info_logger | INFO | Total Cost (USD): $0.0017290000000000003
+2023-11-05 22:18:43 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:18:43 | program_info_logger | INFO | Retrieving (3) required Document info.........
+2023-11-05 22:18:43 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Which documents do I need to submit during the online application?
+2023-11-05 22:18:45 | program_info_logger | INFO | {
+  "ml_required": "unknown",
+  "ml_requirement": null,
+  "rl_required": "unknown",
+  "rl_requirement": null,
+  "essay_required": "unknown",
+  "essay_requirement": null,
+  "supplementary_form_required": "unknown",
+  "supplementary_form_requirement": null
+}
+2023-11-05 22:18:45 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:45 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:45 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:45 | program_info_logger | INFO | Total Tokens: 1285
+2023-11-05 22:18:45 | program_info_logger | INFO | Prompt Tokens: 1215
+2023-11-05 22:18:45 | program_info_logger | INFO | Completion Tokens: 70
+2023-11-05 22:18:45 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:18:45 | program_info_logger | INFO | Total Cost (USD): $0.0019625000000000003
+2023-11-05 22:18:45 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:18:45 | program_info_logger | INFO | Retrieving (4) required Language info.........
+2023-11-05 22:18:45 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. what are the required language certificate scores to apply this program? e.g. TOFEL, IELTS, GRE, GMAT
+2023-11-05 22:18:47 | program_info_logger | INFO | {
+  "language": "English",
+  "toefl": "Minimum score of 90 (internet-based) or 577 (paper-based)",
+  "ielts": "Minimum score of 6.5",
+  "gre": null,
+  "gmat": null,
+  "testdaf": null
+}
+2023-11-05 22:18:47 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:47 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:47 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:47 | program_info_logger | INFO | Total Tokens: 1215
+2023-11-05 22:18:47 | program_info_logger | INFO | Prompt Tokens: 1149
+2023-11-05 22:18:47 | program_info_logger | INFO | Completion Tokens: 66
+2023-11-05 22:18:47 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:18:47 | program_info_logger | INFO | Total Cost (USD): $0.0018555
+2023-11-05 22:18:47 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:18:47 | program_info_logger | INFO | Retrieving (5) required Academic Performance info.........
+2023-11-05 22:18:47 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. What are the required academic performance, the overall GPA, and required ETCs in any field to apply this program?
+2023-11-05 22:18:49 | program_info_logger | INFO | {
+  "gpa": "The required overall GPA or previous academic performance to apply for the Mechanical Engineering
+program at ETH Zurich is not specified.",
+  "ects": "The required ECTs in any field to apply for the Mechanical Engineering program at ETH Zurich is not
+specified."
+}
+2023-11-05 22:18:49 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:49 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:49 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:49 | program_info_logger | INFO | Total Tokens: 1017
+2023-11-05 22:18:49 | program_info_logger | INFO | Prompt Tokens: 959
+2023-11-05 22:18:49 | program_info_logger | INFO | Completion Tokens: 58
+2023-11-05 22:18:49 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:18:49 | program_info_logger | INFO | Total Cost (USD): $0.0015545
+2023-11-05 22:18:49 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:18:49 | program_info_logger | INFO | Retrieving (6) URL info.........
+2023-11-05 22:18:49 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Can you provide me the application protal, website, and FPSO links and contact details for apply this program?
+2023-11-05 22:18:51 | program_info_logger | INFO | {
+  "application_portal_a": "eApply",
+  "website": "ETH Zurich",
+  "fpso": null,
+  "contact": "Contact"
+}
+2023-11-05 22:18:51 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:51 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:51 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:18:51 | program_info_logger | INFO | Total Tokens: 1056
+2023-11-05 22:18:51 | program_info_logger | INFO | Prompt Tokens: 1022
+2023-11-05 22:18:51 | program_info_logger | INFO | Completion Tokens: 34
+2023-11-05 22:18:51 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:18:51 | program_info_logger | INFO | Total Cost (USD): $0.001601
+2023-11-05 22:18:51 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:18:51 | program_info_logger | INFO | --------------------- 4. Remvoing temp vector database ---------------------
+2023-11-05 22:18:51 | program_info_logger | WARNING | Error deleting 'tempDB': [WinError 32] The process cannot access the file because it is being used by another process: 'tempDB\\1e2a2458-08ce-4ad8-a4fa-866d5fbfbc20\\data_level0.bin'
+2023-11-05 22:18:51 | program_info_logger | INFO | --------------------- 5. Convert DataFrame to JSON for frontend ---------------------
+2023-11-05 22:18:51 | program_info_logger | INFO | json_result saved at ../result/ETHZurich_MechanicalEngineering_M.Sc._2023-11-05.json
+2023-11-05 22:18:51 | program_info_logger | INFO | --------------------- End ----------------------------------
+
+
+
+
+
+2023-11-05 22:26:01 | program_info_logger | INFO | ---------------1. Start looking for ETH Zurich, Mechanical Engineering, M. Sc.------------
+2023-11-05 22:26:01 | program_info_logger | INFO | Start Goolge Search: university: ETH Zurich | program: Mechanical Engineering | degree M. Sc.
+2023-11-05 22:26:02 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc. introduction
+2023-11-05 22:26:02 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/degree-programmes/engineering-sciences/mechanical-engineering.html', 'https://ethz.ch/content/dam/ethz/special-interest/mavt/department-dam/studium/master-programs/documents/web-me-studyguide.pdf', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:26:03 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc.'s application deadline
+2023-11-05 22:26:03 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/application/dates.html', 'https://ethz.ch/en/studies/master/degree-programmes/engineering-sciences/mechanical-engineering.html', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:26:04 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc., which documents do i need to submit during the online application
+2023-11-05 22:26:04 | program_info_logger | INFO | links: ['https://ethz.ch/en/studies/master/application/international-bachelor/application-documents.html', 'https://ethz.ch/en/studies/master/application/epfl-bachelor/application-documents.html', 'https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257']
+2023-11-05 22:26:05 | program_info_logger | INFO | search: ETH Zurich Mechanical Engineering M. Sc., where can i find the online application portal
+2023-11-05 22:26:05 | program_info_logger | INFO | links: ['https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en', 'https://ethz.ch/en/studies/master/application.html', 'https://www.quora.com/What-are-the-requirements-for-getting-into-a-Master%E2%80%99s-in-mechanical-engineering-course-at-ETH-Zurich']
+2023-11-05 22:26:05 | program_info_logger | INFO | Total 9 links
+2023-11-05 22:26:05 | program_info_logger | INFO | Goolge Search COMPLETED
+2023-11-05 22:26:05 | program_info_logger | INFO | --------------------- 2. Start Embedding ---------------------
+2023-11-05 22:26:13 | chromadb.telemetry.product.posthog | INFO | Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2023-11-05 22:26:15 | program_info_logger | INFO | Total Embedding Cost (USD): $0.00042540000000000004
+2023-11-05 22:26:15 | program_info_logger | INFO | --------------------- 3. Start Retrieval process ---------------------
+2023-11-05 22:26:15 | program_info_logger | INFO | use LLM model: {chat}
+2023-11-05 22:26:16 | program_info_logger | INFO | Retrieving (1) Program Base info..........
+2023-11-05 22:26:16 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Can you tell me about this program?
+2023-11-05 22:26:19 | program_info_logger | INFO | {
+  "university_name": "ETH Zurich",
+  "program_name": "Mechanical Engineering",
+  "degree": "Bachelor of Science",
+  "country": "Switzerland",
+  "tuition_fee": null
+}
+2023-11-05 22:26:19 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:26:19 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:26:19 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:26:19 | program_info_logger | INFO | Total Tokens: 1046
+2023-11-05 22:26:19 | program_info_logger | INFO | Prompt Tokens: 999
+2023-11-05 22:26:19 | program_info_logger | INFO | Completion Tokens: 47
+2023-11-05 22:26:19 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:26:19 | program_info_logger | INFO | Total Cost (USD): $0.0015925000000000002
+2023-11-05 22:26:19 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:26:19 | program_info_logger | INFO | Retrieving (2) Application Period info.........
+2023-11-05 22:26:19 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. what is the application period and deadline to apply this program?
+2023-11-05 22:26:21 | program_info_logger | INFO | {
+  "semester": "Both",
+  "winter_semester_application_start": "1 December",
+  "winter_semester_application_deadline": "31 March",
+  "summer_semester_application_start": "1 December",
+  "summer_semester_application_deadline": "30 April"
+}
+2023-11-05 22:26:21 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:26:21 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:26:21 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:26:21 | program_info_logger | INFO | Total Tokens: 1133
+2023-11-05 22:26:21 | program_info_logger | INFO | Prompt Tokens: 1074
+2023-11-05 22:26:21 | program_info_logger | INFO | Completion Tokens: 59
+2023-11-05 22:26:21 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:26:21 | program_info_logger | INFO | Total Cost (USD): $0.0017290000000000003
+2023-11-05 22:26:21 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:26:21 | program_info_logger | INFO | Retrieving (3) required Document info.........
+2023-11-05 22:26:21 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Which documents do I need to submit during the online application?
+2023-11-05 22:26:24 | program_info_logger | INFO | {
+  "ml_required": "No",
+  "ml_requirement": null,
+  "rl_required": "Yes",
+  "rl_requirement": "At least two recommendation letters are required",
+  "essay_required": "No",
+  "essay_requirement": null,
+  "supplementary_form_required": "No",
+  "supplementary_form_requirement": null
+}
+2023-11-05 22:26:24 | program_info_logger | INFO | source: https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257
+2023-11-05 22:26:24 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:26:24 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:26:24 | program_info_logger | INFO | Total Tokens: 1222
+2023-11-05 22:26:24 | program_info_logger | INFO | Prompt Tokens: 1145
+2023-11-05 22:26:24 | program_info_logger | INFO | Completion Tokens: 77
+2023-11-05 22:26:24 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:26:24 | program_info_logger | INFO | Total Cost (USD): $0.0018715000000000001
+2023-11-05 22:26:24 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:26:24 | program_info_logger | INFO | Retrieving (4) required Language info.........
+2023-11-05 22:26:24 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. what are the required language certificate scores to apply this program? e.g. TOFEL, IELTS, GRE, GMAT
+2023-11-05 22:26:25 | program_info_logger | INFO | {
+  "language": "English",
+  "toefl": "Minimum score of 90 (internet-based) or 577 (paper-based)",
+  "ielts": "Minimum score of 6.5",
+  "gre": null,
+  "gmat": null,
+  "testdaf": null
+}
+2023-11-05 22:26:25 | program_info_logger | INFO | source: https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257
+2023-11-05 22:26:25 | program_info_logger | INFO | source: https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257
+2023-11-05 22:26:25 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:26:25 | program_info_logger | INFO | Total Tokens: 1167
+2023-11-05 22:26:25 | program_info_logger | INFO | Prompt Tokens: 1101
+2023-11-05 22:26:25 | program_info_logger | INFO | Completion Tokens: 66
+2023-11-05 22:26:25 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:26:25 | program_info_logger | INFO | Total Cost (USD): $0.0017835
+2023-11-05 22:26:25 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:26:25 | program_info_logger | INFO | Retrieving (5) required Academic Performance info.........
+2023-11-05 22:26:25 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. What are the required academic performance, the overall GPA, and required ETCs in any field to apply this program?
+2023-11-05 22:26:27 | program_info_logger | INFO | {
+  "gpa": "very good to good grades are mandatory",
+  "ects": null
+}
+2023-11-05 22:26:27 | program_info_logger | INFO | source: https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257
+2023-11-05 22:26:27 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:26:27 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:26:27 | program_info_logger | INFO | Total Tokens: 912
+2023-11-05 22:26:27 | program_info_logger | INFO | Prompt Tokens: 889
+2023-11-05 22:26:27 | program_info_logger | INFO | Completion Tokens: 23
+2023-11-05 22:26:27 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:26:27 | program_info_logger | INFO | Total Cost (USD): $0.0013795
+2023-11-05 22:26:27 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:26:27 | program_info_logger | INFO | Retrieving (6) URL info.........
+2023-11-05 22:26:27 | program_info_logger | INFO | Query: I want to apply for Mechanical Engineering at ETH Zurich. Can you provide me the application protal, website, and FPSO links and contact details for apply this program?
+2023-11-05 22:26:29 | program_info_logger | INFO | {
+  "application_portal_a": "eApply",
+  "website": "ETH Zurich",
+  "fpso": null,
+  "contact": "Contact"
+}
+2023-11-05 22:26:29 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:26:29 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:26:29 | program_info_logger | INFO | source: https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en
+2023-11-05 22:26:29 | program_info_logger | INFO | Total Tokens: 1056
+2023-11-05 22:26:29 | program_info_logger | INFO | Prompt Tokens: 1022
+2023-11-05 22:26:29 | program_info_logger | INFO | Completion Tokens: 34
+2023-11-05 22:26:29 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:26:29 | program_info_logger | INFO | Total Cost (USD): $0.001601
+2023-11-05 22:26:29 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:26:29 | program_info_logger | INFO | --------------------- 4. Remvoing temp vector database ---------------------
+2023-11-05 22:26:29 | program_info_logger | WARNING | Error deleting 'tempDB': [WinError 32] The process cannot access the file because it is being used by another process: 'tempDB\\1e2a2458-08ce-4ad8-a4fa-866d5fbfbc20\\data_level0.bin'
+2023-11-05 22:26:29 | program_info_logger | INFO | --------------------- 5. Convert DataFrame to JSON for frontend ---------------------
+2023-11-05 22:26:29 | program_info_logger | INFO | json_result saved at ../result/ETHZurich_MechanicalEngineering_M.Sc._2023-11-05.json
+2023-11-05 22:26:29 | program_info_logger | INFO | --------------------- End ----------------------------------
+
+
+
+
+
+2023-11-05 22:26:59 | program_info_logger | INFO | ---------------1. Start looking for Aalen University, Polymer Technology, M. Sc.------------
+2023-11-05 22:26:59 | program_info_logger | INFO | Start Goolge Search: university: Aalen University | program: Polymer Technology | degree M. Sc.
+2023-11-05 22:27:00 | program_info_logger | INFO | search: Aalen University Polymer Technology M. Sc. introduction
+2023-11-05 22:27:00 | program_info_logger | INFO | links: ['https://www.hs-aalen.de/en/courses/46-polymer-technology', 'https://www.hs-aalen.de/en/courses/46/info', 'https://www2.daad.de/deutschland/studienangebote/international-programmes/en/detail/3701/']
+2023-11-05 22:27:01 | program_info_logger | INFO | search: Aalen University Polymer Technology M. Sc.'s application deadline
+2023-11-05 22:27:01 | program_info_logger | INFO | links: ['https://www.hs-aalen.de/en/courses/46-polymer-technology', 'https://www.hs-aalen.de/en/courses/46/apply', 'https://www2.daad.de/deutschland/studienangebote/international-programmes/en/detail/3701/']
+2023-11-05 22:27:02 | program_info_logger | INFO | search: Aalen University Polymer Technology M. Sc., which documents do i need to submit during the online application
+2023-11-05 22:27:02 | program_info_logger | INFO | links: ['https://www.mygermanuniversity.com/master/polymer-technology/1201#:~:text=R%C3%A9sum%C3%A9.,skills%20(see%20language%20requirements).', 'https://www.hs-aalen.de/en/courses/46-polymer-technology', 'https://www.hs-aalen.de/en/courses/46/apply']
+2023-11-05 22:27:02 | program_info_logger | INFO | search: Aalen University Polymer Technology M. Sc., where can i find the online application portal
+2023-11-05 22:27:02 | program_info_logger | INFO | links: ['https://www.hs-aalen.de/en/courses/46/apply', 'https://www.hs-aalen.de/en/courses/46-polymer-technology', 'https://www2.daad.de/deutschland/studienangebote/international-programmes/en/detail/3701/']
+2023-11-05 22:27:02 | program_info_logger | INFO | Total 5 links
+2023-11-05 22:27:02 | program_info_logger | INFO | Goolge Search COMPLETED
+2023-11-05 22:27:02 | program_info_logger | INFO | --------------------- 2. Start Embedding ---------------------
+2023-11-05 22:27:11 | chromadb.telemetry.product.posthog | INFO | Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2023-11-05 22:27:13 | program_info_logger | INFO | Total Embedding Cost (USD): $0.0008510000000000001
+2023-11-05 22:27:13 | program_info_logger | INFO | --------------------- 3. Start Retrieval process ---------------------
+2023-11-05 22:27:13 | program_info_logger | INFO | use LLM model: {chat}
+2023-11-05 22:27:14 | program_info_logger | INFO | Retrieving (1) Program Base info..........
+2023-11-05 22:27:14 | program_info_logger | INFO | Query: I want to apply for Polymer Technology at Aalen University. Can you tell me about this program?
+2023-11-05 22:27:15 | program_info_logger | INFO | {
+  "university_name": "Aalen University",
+  "program_name": "Polymer Technology",
+  "degree": "Master of Science",
+  "country": "Germany",
+  "tuition_fee": "€1500 per semester"
+}
+2023-11-05 22:27:15 | program_info_logger | INFO | source: https://www.mygermanuniversity.com/master/polymer-technology/1201#:~:text=R%C3%A9sum%C3%A9.,skills%20(see%20language%20requirements).
+2023-11-05 22:27:15 | program_info_logger | INFO | source: https://www2.daad.de/deutschland/studienangebote/international-programmes/en/detail/3701/
+2023-11-05 22:27:15 | program_info_logger | INFO | source: https://www.hs-aalen.de/en/courses/46-polymer-technology
+2023-11-05 22:27:15 | program_info_logger | INFO | Total Tokens: 1039
+2023-11-05 22:27:15 | program_info_logger | INFO | Prompt Tokens: 987
+2023-11-05 22:27:15 | program_info_logger | INFO | Completion Tokens: 52
+2023-11-05 22:27:15 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:27:15 | program_info_logger | INFO | Total Cost (USD): $0.0015845
+2023-11-05 22:27:15 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:27:15 | program_info_logger | INFO | Retrieving (2) Application Period info.........
+2023-11-05 22:27:15 | program_info_logger | INFO | Query: I want to apply for Polymer Technology at Aalen University. what is the application period and deadline to apply this program?
+2023-11-05 22:27:17 | program_info_logger | INFO | {
+  "semester": "Both",
+  "winter_semester_application_start": "15 July",
+  "winter_semester_application_deadline": "15 November",
+  "summer_semester_application_start": "15 November",
+  "summer_semester_application_deadline": "15 July"
+}
+2023-11-05 22:27:17 | program_info_logger | INFO | source: https://www.hs-aalen.de/en/courses/46/apply
+2023-11-05 22:27:17 | program_info_logger | INFO | source: https://www.mygermanuniversity.com/master/polymer-technology/1201#:~:text=R%C3%A9sum%C3%A9.,skills%20(see%20language%20requirements).
+2023-11-05 22:27:17 | program_info_logger | INFO | source: https://www2.daad.de/deutschland/studienangebote/international-programmes/en/detail/3701/
+2023-11-05 22:27:17 | program_info_logger | INFO | Total Tokens: 1120
+2023-11-05 22:27:17 | program_info_logger | INFO | Prompt Tokens: 1061
+2023-11-05 22:27:17 | program_info_logger | INFO | Completion Tokens: 59
+2023-11-05 22:27:17 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:27:17 | program_info_logger | INFO | Total Cost (USD): $0.0017095
+2023-11-05 22:27:17 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:27:17 | program_info_logger | INFO | Retrieving (3) required Document info.........
+2023-11-05 22:27:17 | program_info_logger | INFO | Query: I want to apply for Polymer Technology at Aalen University. Which documents do I need to submit during the online application?
+2023-11-05 22:27:19 | program_info_logger | INFO | {
+  "ml_required": "No",
+  "ml_requirement": null,
+  "rl_required": "No",
+  "rl_requirement": null,
+  "essay_required": "No",
+  "essay_requirement": null,
+  "supplementary_form_required": "No",
+  "supplementary_form_requirement": null
+}
+2023-11-05 22:27:19 | program_info_logger | INFO | source: https://www.hs-aalen.de/en/courses/46-polymer-technology
+2023-11-05 22:27:19 | program_info_logger | INFO | source: https://www.mygermanuniversity.com/master/polymer-technology/1201#:~:text=R%C3%A9sum%C3%A9.,skills%20(see%20language%20requirements).
+2023-11-05 22:27:19 | program_info_logger | INFO | source: https://www.hs-aalen.de/en/courses/46/apply
+2023-11-05 22:27:19 | program_info_logger | INFO | Total Tokens: 1279
+2023-11-05 22:27:19 | program_info_logger | INFO | Prompt Tokens: 1209
+2023-11-05 22:27:19 | program_info_logger | INFO | Completion Tokens: 70
+2023-11-05 22:27:19 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:27:19 | program_info_logger | INFO | Total Cost (USD): $0.0019535000000000004
+2023-11-05 22:27:19 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:27:19 | program_info_logger | INFO | Retrieving (4) required Language info.........
+2023-11-05 22:27:19 | program_info_logger | INFO | Query: I want to apply for Polymer Technology at Aalen University. what are the required language certificate scores to apply this program? e.g. TOFEL, IELTS, GRE, GMAT
+2023-11-05 22:27:21 | program_info_logger | INFO | {
+  "language": "English",
+  "toefl": null,
+  "ielts": null,
+  "gre": null,
+  "gmat": null,
+  "testdaf": null
+}
+2023-11-05 22:27:21 | program_info_logger | INFO | source: https://www.hs-aalen.de/en/courses/46-polymer-technology
+2023-11-05 22:27:21 | program_info_logger | INFO | source: https://www.mygermanuniversity.com/master/polymer-technology/1201#:~:text=R%C3%A9sum%C3%A9.,skills%20(see%20language%20requirements).
+2023-11-05 22:27:21 | program_info_logger | INFO | source: https://www2.daad.de/deutschland/studienangebote/international-programmes/en/detail/3701/
+2023-11-05 22:27:21 | program_info_logger | INFO | Total Tokens: 1181
+2023-11-05 22:27:21 | program_info_logger | INFO | Prompt Tokens: 1137
+2023-11-05 22:27:21 | program_info_logger | INFO | Completion Tokens: 44
+2023-11-05 22:27:21 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:27:21 | program_info_logger | INFO | Total Cost (USD): $0.0017935
+2023-11-05 22:27:21 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:27:21 | program_info_logger | INFO | Retrieving (5) required Academic Performance info.........
+2023-11-05 22:27:21 | program_info_logger | INFO | Query: I want to apply for Polymer Technology at Aalen University. What are the required academic performance, the overall GPA, and required ETCs in any field to apply this program?
+2023-11-05 22:27:23 | program_info_logger | INFO | {
+  "gpa": "The required overall GPA or previous academic performance to apply for the Master of Science in
+Polymer Technology program at Aalen University is not specified.",
+  "ects": "The required ECTS in any field to apply for the Master of Science in Polymer Technology program at
+Aalen University is not specified."
+}
+2023-11-05 22:27:23 | program_info_logger | INFO | source: https://www.hs-aalen.de/en/courses/46-polymer-technology
+2023-11-05 22:27:23 | program_info_logger | INFO | source: https://www.mygermanuniversity.com/master/polymer-technology/1201#:~:text=R%C3%A9sum%C3%A9.,skills%20(see%20language%20requirements).
+2023-11-05 22:27:23 | program_info_logger | INFO | source: https://www2.daad.de/deutschland/studienangebote/international-programmes/en/detail/3701/
+2023-11-05 22:27:23 | program_info_logger | INFO | Total Tokens: 1014
+2023-11-05 22:27:23 | program_info_logger | INFO | Prompt Tokens: 947
+2023-11-05 22:27:23 | program_info_logger | INFO | Completion Tokens: 67
+2023-11-05 22:27:23 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:27:23 | program_info_logger | INFO | Total Cost (USD): $0.0015545
+2023-11-05 22:27:23 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:27:23 | program_info_logger | INFO | Retrieving (6) URL info.........
+2023-11-05 22:27:23 | program_info_logger | INFO | Query: I want to apply for Polymer Technology at Aalen University. Can you provide me the application protal, website, and FPSO links and contact details for apply this program?
+2023-11-05 22:27:25 | program_info_logger | INFO | {
+  "application_portal_a": "https://www.aalen-university.de/en/study/online-application-portal/",
+  "website": "https://www.aalen-university.de/en/study/master-programmes/polymer-technology/",
+  "fpso": null,
+  "contact": "info@hs-aalen.de"
+}
+2023-11-05 22:27:25 | program_info_logger | INFO | source: https://www.mygermanuniversity.com/master/polymer-technology/1201#:~:text=R%C3%A9sum%C3%A9.,skills%20(see%20language%20requirements).
+2023-11-05 22:27:25 | program_info_logger | INFO | source: https://www.hs-aalen.de/en/courses/46/apply
+2023-11-05 22:27:25 | program_info_logger | INFO | source: https://www2.daad.de/deutschland/studienangebote/international-programmes/en/detail/3701/
+2023-11-05 22:27:25 | program_info_logger | INFO | Total Tokens: 1059
+2023-11-05 22:27:25 | program_info_logger | INFO | Prompt Tokens: 989
+2023-11-05 22:27:25 | program_info_logger | INFO | Completion Tokens: 70
+2023-11-05 22:27:25 | program_info_logger | INFO | Successful Requests: 1
+2023-11-05 22:27:25 | program_info_logger | INFO | Total Cost (USD): $0.0016235
+2023-11-05 22:27:25 | program_info_logger | INFO | -------------------------------------------------
+
+
+2023-11-05 22:27:25 | program_info_logger | INFO | --------------------- 4. Remvoing temp vector database ---------------------
+2023-11-05 22:27:25 | program_info_logger | WARNING | Error deleting 'tempDB': [WinError 32] The process cannot access the file because it is being used by another process: 'tempDB\\1e2a2458-08ce-4ad8-a4fa-866d5fbfbc20\\data_level0.bin'
+2023-11-05 22:27:25 | program_info_logger | INFO | --------------------- 5. Convert DataFrame to JSON for frontend ---------------------
+2023-11-05 22:27:25 | program_info_logger | INFO | json_result saved at ../result/AalenUniversity_PolymerTechnology_M.Sc._2023-11-05.json
+2023-11-05 22:27:25 | program_info_logger | INFO | --------------------- End ----------------------------------
+
+
+
+
+

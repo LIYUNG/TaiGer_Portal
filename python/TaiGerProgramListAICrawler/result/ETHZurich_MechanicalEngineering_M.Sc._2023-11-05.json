@@ -1,0 +1,242 @@
+{
+  "university_name": {
+    "Result": "ETH Zurich",
+    "Source": [
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "program_name": {
+    "Result": "Mechanical Engineering",
+    "Source": [
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "degree": {
+    "Result": "Bachelor of Science",
+    "Source": [
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "country": {
+    "Result": "Switzerland",
+    "Source": [
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "tuition_fee": {
+    "Result": null,
+    "Source": [
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "semester": {
+    "Result": "Both",
+    "Source": [
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "winter_semester_application_start": {
+    "Result": "1 December",
+    "Source": [
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "winter_semester_application_deadline": {
+    "Result": "31 March",
+    "Source": [
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "summer_semester_application_start": {
+    "Result": "1 December",
+    "Source": [
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "summer_semester_application_deadline": {
+    "Result": "30 April",
+    "Source": [
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "ml_required": {
+    "Result": "No",
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "ml_requirement": {
+    "Result": null,
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "rl_required": {
+    "Result": "Yes",
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "rl_requirement": {
+    "Result": "At least two recommendation letters are required",
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "essay_required": {
+    "Result": "No",
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "essay_requirement": {
+    "Result": null,
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "supplementary_form_required": {
+    "Result": "No",
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "supplementary_form_requirement": {
+    "Result": null,
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "language": {
+    "Result": "English",
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "toefl": {
+    "Result": "Minimum score of 90 (internet-based) or 577 (paper-based)",
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "ielts": {
+    "Result": "Minimum score of 6.5",
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "gre": {
+    "Result": null,
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "gmat": {
+    "Result": null,
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "testdaf": {
+    "Result": null,
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "gpa": {
+    "Result": "very good to good grades are mandatory",
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "ects": {
+    "Result": null,
+    "Source": [
+      "https://collab.dvb.bayern/pages/viewpage.action?pageId=73390257",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "application_portal_a": {
+    "Result": "eApply",
+    "Source": [
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "website": {
+    "Result": "ETH Zurich",
+    "Source": [
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "fpso": {
+    "Result": null,
+    "Source": [
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  },
+  "contact": {
+    "Result": "Contact",
+    "Source": [
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en",
+      "https://www.lehrbetrieb.ethz.ch/eApply/ealogin.view?lang=en"
+    ]
+  }
+}

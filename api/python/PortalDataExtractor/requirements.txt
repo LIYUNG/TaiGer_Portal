@@ -1,2 +1,0 @@
-pymongo==4.7.1
-beautifulsoup4==4.12.3
